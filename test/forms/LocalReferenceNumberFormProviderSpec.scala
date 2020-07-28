@@ -26,24 +26,16 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours with Mu
   val requiredKey = "localReferenceNumber.error.required"
   val lengthKey = "localReferenceNumber.error.length"
   val maxLength = 22
+  val fieldName = "value"
 
   val form = new LocalReferenceNumberFormProvider()()
 
   ".value" - {
 
-    val fieldName = "value"
-
     behave like fieldThatBindsValidData(
       form,
       fieldName,
       stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
@@ -55,7 +47,6 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours with Mu
 
   "must not bind strings that do not match regex" in {
 
-    val fieldName = "value"
     val invalidKey = "localReferenceNumber.error.invalidCharacters"
     val validRegex    = "[a-zA-Z0-9-_]+"
     val expectedError = FormError(fieldName, invalidKey, Seq(validRegex))
@@ -67,6 +58,16 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours with Mu
     forAll(genInvalidString) {
       invalidString =>
         val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors must contain(expectedError)
+    }
+  }
+
+  "must not bind strings longer than 22 characters" in {
+
+    val expectedError = FormError(fieldName, lengthKey, Seq(maxLength))
+    forAll(stringsLongerThan(maxLength + 1)) {
+      string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
         result.errors must contain(expectedError)
     }
   }

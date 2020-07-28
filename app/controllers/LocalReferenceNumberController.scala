@@ -38,7 +38,6 @@ class LocalReferenceNumberController @Inject()(
     navigator: Navigator,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
     formProvider: LocalReferenceNumberFormProvider,
     val controllerComponents: MessagesControllerComponents,
     renderer: Renderer
