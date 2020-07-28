@@ -17,9 +17,11 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import org.scalacheck.Gen
+import org.scalatest.MustMatchers
+import play.api.data.{Field, FormError}
 
-class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
+class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours with MustMatchers {
 
   val requiredKey = "localReferenceNumber.error.required"
   val lengthKey = "localReferenceNumber.error.length"
@@ -49,5 +51,23 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "must not bind strings that do not match regex" in {
+
+    val fieldName = "value"
+    val invalidKey = "localReferenceNumber.error.invalidCharacters"
+    val validRegex    = "[a-zA-Z0-9-_]+"
+    val expectedError = FormError(fieldName, invalidKey, Seq(validRegex))
+
+    val genInvalidString: Gen[String] = {
+      stringsWithMaxLength(maxLength) suchThat (!_.matches("[a-zA-Z0-9-_]+"))
+    }
+
+    forAll(genInvalidString) {
+      invalidString =>
+        val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors must contain(expectedError)
+    }
   }
 }

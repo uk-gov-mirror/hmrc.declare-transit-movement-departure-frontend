@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.LocalReferenceNumberFormProvider
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.LocalReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,12 +46,15 @@ class LocalReferenceNumberController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(LocalReferenceNumberPage) match {
+      val preparedForm = request.userAnswers match {
         case None => form
-        case Some(value) => form.fill(value)
+        case Some(ua) => ua.get(LocalReferenceNumberPage) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
       }
 
       val json = Json.obj(
@@ -62,8 +65,10 @@ class LocalReferenceNumberController @Inject()(
       renderer.render("localReferenceNumber.njk", json).map(Ok(_))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
+
+      val ua = request.userAnswers.getOrElse(UserAnswers(request.internalId))
 
       form.bindFromRequest().fold(
         formWithErrors => {
@@ -77,7 +82,7 @@ class LocalReferenceNumberController @Inject()(
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(LocalReferenceNumberPage, value))
+            updatedAnswers <- Future.fromTry(ua.set(LocalReferenceNumberPage, value))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(LocalReferenceNumberPage, mode, updatedAnswers))
       )
