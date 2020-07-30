@@ -38,6 +38,7 @@ lazy val root = (project in file("."))
     useSuperShell in ThisBuild     := false,
     scalacOptions ++= Seq("-feature"),
     libraryDependencies ++= AppDependencies(),
+    dependencyOverrides += "commons-codec" % "commons-codec" % "1.12", //added for reactive mongo issues
     retrieveManaged := true,
     evictionWarningOptions in update :=
       EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
