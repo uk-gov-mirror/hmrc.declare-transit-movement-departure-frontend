@@ -39,7 +39,7 @@ class SessionActionSpec extends SpecBase {
 
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
-        val sessionAction = new SessionIdentifierAction(frontendAppConfig, bodyParsers)
+        val sessionAction = new SessionIdentifierAction(bodyParsers)
 
         val controller = new Harness(sessionAction)
 
@@ -58,7 +58,7 @@ class SessionActionSpec extends SpecBase {
 
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
-        val sessionAction = new SessionIdentifierAction(frontendAppConfig, bodyParsers)
+        val sessionAction = new SessionIdentifierAction(bodyParsers)
 
         val controller = new Harness(sessionAction)
 

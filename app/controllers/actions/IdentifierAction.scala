@@ -38,8 +38,6 @@ class AuthenticatedIdentifierAction @Inject()(
                                              )
                                              (implicit val executionContext: ExecutionContext) extends IdentifierAction with AuthorisedFunctions {
 
-  private val enrolmentIdentifierKey: String = "VATRegNoTURN"
-
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter
@@ -49,12 +47,12 @@ class AuthenticatedIdentifierAction @Inject()(
       .retrieve(Retrievals.authorisedEnrolments) {
         enrolments =>
           val eoriNumber: String = (for {
-            enrolment  <- enrolments.enrolments.find(_.key.equals(config.enrolmentKey))
-            identifier <- enrolment.getIdentifier(enrolmentIdentifierKey)
-          } yield identifier.value).getOrElse(throw InsufficientEnrolments(s"Unable to retrieve enrolment for $enrolmentIdentifierKey"))
+            enrolment <- enrolments.enrolments.find(_.key.equals(config.enrolmentKey))
+            identifier <- enrolment.getIdentifier(config.enrolmentIdentifierKey)
+          } yield identifier.value).getOrElse(throw InsufficientEnrolments(s"Unable to retrieve enrolment for ${config.enrolmentIdentifierKey}"))
 
           block(IdentifierRequest(request, eoriNumber))
-    } recover {
+      } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>
@@ -64,7 +62,6 @@ class AuthenticatedIdentifierAction @Inject()(
 }
 
 class SessionIdentifierAction @Inject()(
-                                         config: FrontendAppConfig,
                                          val parser: BodyParsers.Default
                                        )
                                        (implicit val executionContext: ExecutionContext) extends IdentifierAction {
