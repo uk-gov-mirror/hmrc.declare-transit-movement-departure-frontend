@@ -17,15 +17,14 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.LocalReferenceNumber
 import play.api.data.Form
 
 class LocalReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[LocalReferenceNumber] =
     Form(
-      "value" -> text("localReferenceNumber.error.required")
-        .verifying(maxLength(22, "localReferenceNumber.error.length"), regexp("[a-zA-Z0-9-_]+", "localReferenceNumber.error.invalidCharacters"))
+      "value" -> lrn("localReferenceNumber.error.required", "localReferenceNumber.error.length")
     )
 }

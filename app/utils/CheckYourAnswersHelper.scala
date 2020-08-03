@@ -18,31 +18,11 @@ package utils
 
 import java.time.format.DateTimeFormatter
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages._
+import models.UserAnswers
 import play.api.i18n.Messages
-import CheckYourAnswersHelper._
 import uk.gov.hmrc.viewmodels._
-import uk.gov.hmrc.viewmodels.SummaryList._
-import uk.gov.hmrc.viewmodels.Text.Literal
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
-
-  def localReferenceNumber: Option[Row] = userAnswers.get(LocalReferenceNumberPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"localReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.LocalReferenceNumberController.onPageLoad(CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"localReferenceNumber.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
 
   private def yesOrNo(answer: Boolean): Content =
     if (answer) {

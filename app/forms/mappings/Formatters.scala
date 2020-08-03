@@ -18,7 +18,7 @@ package forms.mappings
 
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import models.Enumerable
+import models.{Enumerable, LocalReferenceNumber}
 
 import scala.util.control.Exception.nonFatalCatch
 
@@ -91,5 +91,21 @@ trait Formatters {
 
       override def unbind(key: String, value: A): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
+    }
+
+  private[mappings] def lrnFormatter(requiredKey: String, invalidKey: String): Formatter[LocalReferenceNumber] =
+    new Formatter[LocalReferenceNumber] {
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalReferenceNumber] =
+        stringFormatter(requiredKey)
+          .bind(key, data)
+          .right
+          .flatMap {
+            str =>
+              LocalReferenceNumber(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey))))
+          }
+
+      override def unbind(key: String, value: LocalReferenceNumber): Map[String, String] =
+        Map(key -> value.toString)
     }
 }

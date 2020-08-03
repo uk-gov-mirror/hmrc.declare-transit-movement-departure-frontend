@@ -18,7 +18,7 @@ package base
 
 import config.FrontendAppConfig
 import controllers.actions._
-import models.UserAnswers
+import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.mockito.Mockito
 import org.scalatest.{BeforeAndAfterEach, OptionValues, TryValues}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -42,8 +42,10 @@ trait SpecBase extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with O
   }
 
   val userAnswersId = "id"
+  val eoriNumber: EoriNumber       = EoriNumber("EOriNumber")
+  val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
 
-  def emptyUserAnswers = UserAnswers(userAnswersId, Json.obj())
+  val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())
 
   def injector: Injector = app.injector
 
@@ -62,7 +64,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with O
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[DataRetrievalActionProvider].toInstance(new FakeDataRetrievalActionProvider(userAnswers)),
         bind[NunjucksRenderer].toInstance(mockRenderer)
       )
 }

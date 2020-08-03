@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.LocalReferenceNumberFormProvider
 import javax.inject.Inject
-import models.{Mode, UserAnswers}
+import models.{EoriNumber, LocalReferenceNumber, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.LocalReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,7 +37,6 @@ class LocalReferenceNumberController @Inject()(
     sessionRepository: SessionRepository,
     navigator: Navigator,
     identify: IdentifierAction,
-    getData: DataRetrievalAction,
     formProvider: LocalReferenceNumberFormProvider,
     val controllerComponents: MessagesControllerComponents,
     renderer: Renderer
@@ -45,45 +44,40 @@ class LocalReferenceNumberController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onPageLoad: Action[AnyContent] = identify.async {
     implicit request =>
 
-      val preparedForm = request.userAnswers match {
-        case None => form
-        case Some(ua) => ua.get(LocalReferenceNumberPage) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
-      }
-
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "mode" -> mode
-      )
+      val json = Json.obj("form" -> form)
 
       renderer.render("localReferenceNumber.njk", json).map(Ok(_))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit: Action[AnyContent] = identify.async {
     implicit request =>
-
-      val ua = request.userAnswers.getOrElse(UserAnswers(request.internalId))
 
       form.bindFromRequest().fold(
         formWithErrors => {
 
           val json = Json.obj(
-            "form" -> formWithErrors,
-            "mode" -> mode
+            "form" -> formWithErrors
           )
 
           renderer.render("localReferenceNumber.njk", json).map(BadRequest(_))
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(ua.set(LocalReferenceNumberPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(LocalReferenceNumberPage, mode, updatedAnswers))
+            userAnswers <- getOrCreateUserAnswers(request.eoriNumber, value)
+            _           <- sessionRepository.set(userAnswers)
+          } yield  Redirect(navigator.nextPage(LocalReferenceNumberPage, NormalMode, userAnswers))
       )
+  }
+
+  def getOrCreateUserAnswers(eoriNumber: EoriNumber, value: LocalReferenceNumber): Future[UserAnswers] = {
+    val initialUserAnswers = UserAnswers(id = value, eoriNumber = eoriNumber)
+
+    sessionRepository.get(id = value, eoriNumber = eoriNumber) map {
+      userAnswers =>
+        userAnswers getOrElse initialUserAnswers
+    }
   }
 }

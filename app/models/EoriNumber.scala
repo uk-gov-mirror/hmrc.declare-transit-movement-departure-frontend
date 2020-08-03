@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{__, JsString, Reads, Writes}
 
+case class EoriNumber(value: String)
 
-class LocalReferenceNumberPageSpec extends PageBehaviours {
-
-  "LocalReferenceNumberPage" - {
-
-    beRetrievable[String](LocalReferenceNumberPage)
-
-    beSettable[String](LocalReferenceNumberPage)
-
-    beRemovable[String](LocalReferenceNumberPage)
-  }
+object EoriNumber {
+  implicit def reads: Reads[EoriNumber]   = __.read[String] map EoriNumber.apply
+  implicit def writes: Writes[EoriNumber] = Writes(eori => JsString(eori.value))
 }
