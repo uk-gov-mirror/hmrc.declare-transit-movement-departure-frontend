@@ -6,11 +6,11 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /$className;format="decap"$                        controllers.$className$Controller.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /$className;format="decap"$                        controllers.$className$Controller.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /:lrn/$className;format="decap"$                        controllers.$className$Controller.onPageLoad(lrn: MovementReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /:lrn/$className;format="decap"$                        controllers.$className$Controller.onSubmit(lrn: MovementReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /change$className$                  controllers.$className$Controller.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /change$className$                  controllers.$className$Controller.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /:lrn/change$className$                  controllers.$className$Controller.onPageLoad(lrn: MovementReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /:lrn/change$className$                  controllers.$className$Controller.onSubmit(lrn: MovementReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
@@ -58,7 +58,7 @@ awk '/class CheckYourAnswersHelper/ {\
      print "        actions = List(";\
      print "          Action(";\
      print "            content            = msg\"site.edit\",";\
-     print "            href               = routes.$className$Controller.onPageLoad(CheckMode).url,";\
+     print "            href               = routes.$className$Controller.onPageLoad(lrn, CheckMode).url,";\
      print "            visuallyHiddenText = Some(msg\"site.edit.hidden\".withArgs(msg\"$className;format="decap"$.checkYourAnswersLabel\"))";\
      print "          )";\
      print "        )";\
