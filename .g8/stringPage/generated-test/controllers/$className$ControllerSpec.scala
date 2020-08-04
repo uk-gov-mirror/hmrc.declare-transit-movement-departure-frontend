@@ -11,13 +11,13 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.$className$Page
 import play.api.inject.bind
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
@@ -51,8 +51,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "lrn"    -> lrn
       )
 
       templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
@@ -78,13 +77,12 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
@@ -109,12 +107,11 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       val request =
         FakeRequest(POST, $className;format="decap"$Route)
-          .withFormUrlEncodedBody(("value", "true"))
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -138,10 +135,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
@@ -171,7 +167,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       val request =
         FakeRequest(POST, $className;format="decap"$Route)
-          .withFormUrlEncodedBody(("value", "true"))
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
