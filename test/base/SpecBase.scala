@@ -42,7 +42,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with O
   }
 
   val userAnswersId = "id"
-  val eoriNumber: EoriNumber       = EoriNumber("EOriNumber")
+  val eoriNumber: EoriNumber       = EoriNumber("EoriNumber")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
 
   val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())

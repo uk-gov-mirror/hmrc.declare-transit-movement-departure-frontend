@@ -6,7 +6,7 @@ import matchers.JsonMatchers
 import models.{NormalMode, $className$, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.$className$Page
@@ -25,7 +25,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(NormalMode).url
+  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, NormalMode).url
 
   val formProvider = new $className$FormProvider()
   val form = formProvider()
@@ -51,6 +51,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> $className$.radios(form)
       )
 
@@ -65,7 +66,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(userAnswersId).set($className$Page, $className$.values.head).success.value
+      val userAnswers = emptyUserAnswers.set($className$Page, $className$.values.head).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, $className;format="decap"$Route)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -82,6 +83,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       val expectedJson = Json.obj(
         "form"   -> filledForm,
         "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> $className$.radios(filledForm)
       )
 
@@ -138,6 +140,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       val expectedJson = Json.obj(
         "form"   -> boundForm,
         "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> $className$.radios(boundForm)
       )
 

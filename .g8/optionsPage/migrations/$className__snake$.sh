@@ -6,11 +6,11 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /$className;format="decap"$                        controllers.$className$Controller.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /$className;format="decap"$                        controllers.$className$Controller.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /:lrn/$className;format="decap"$                        controllers.$className$Controller.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /:lrn/$className;format="decap"$                        controllers.$className$Controller.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /change$className$                  controllers.$className$Controller.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /change$className$                  controllers.$className$Controller.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /:lrn/change$className$                  controllers.$className$Controller.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /:lrn/change$className$                  controllers.$className$Controller.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
@@ -22,7 +22,7 @@ echo "$className;format="decap"$.checkYourAnswersLabel = $title$" >> ../conf/mes
 echo "$className;format="decap"$.error.required = Select $className;format="decap"$" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
-awk '/trait UserAnswersEntryGenerators/ {\
+awk '/self: Generators =>/ {\
     print;\
     print "";\
     print "  implicit lazy val arbitrary$className$UserAnswersEntry: Arbitrary[($className$Page.type, JsValue)] =";\
@@ -43,7 +43,7 @@ awk '/trait PageGenerators/ {\
     next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
 
 echo "Adding to ModelGenerators"
-awk '/trait ModelGenerators/ {\
+awk '/self: Generators =>/ {\
     print;\
     print "";\
     print "  implicit lazy val arbitrary$className$: Arbitrary[$className$] =";\
@@ -70,7 +70,7 @@ awk '/class CheckYourAnswersHelper/ {\
      print "        actions = List(";\
      print "          Action(";\
      print "            content            = msg\"site.edit\",";\
-     print "            href               = routes.$className$Controller.onPageLoad(CheckMode).url,";\
+     print "            href               = routes.$className$Controller.onPageLoad(lrn, CheckMode).url,";\
      print "            visuallyHiddenText = Some(msg\"site.edit.hidden\".withArgs(msg\"$className;format="decap"$.checkYourAnswersLabel\"))";\
      print "          )";\
      print "        )";\
