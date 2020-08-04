@@ -137,7 +137,7 @@ localReferenceNumber.error.required = Enter the local reference number
 localReferenceNumber.error.length = Local reference number must be 22 characters or less
 localReferenceNumber.error.invalidCharacters = Local reference number must only include letters a to z, numbers 0 to 9, hyphens and underscores
 
-addSecurityDetails.title = addSecurityDetails
-addSecurityDetails.heading = addSecurityDetails
-addSecurityDetails.checkYourAnswersLabel = addSecurityDetails
-addSecurityDetails.error.required = Select yes if addSecurityDetails
+addSecurityDetails.title = Do you need to add safety and security details?
+addSecurityDetails.heading = Do you need to add safety and security details?
+addSecurityDetails.checkYourAnswersLabel = Do you need to add safety and security details?
+addSecurityDetails.error.required = Select yes if you need to add safety and security details

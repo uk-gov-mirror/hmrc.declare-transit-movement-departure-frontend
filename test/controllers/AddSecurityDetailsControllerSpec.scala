@@ -129,7 +129,7 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
 
       val result = route(application, request).value
 
-      status(result) mustEqual SEE_OTHERgit
+      status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
 

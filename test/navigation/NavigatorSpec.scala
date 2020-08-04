@@ -43,6 +43,16 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               .mustBe(routes.IndexController.onPageLoad())
         }
       }
+
+      "must go from Local Reference Number page to Add Security Details page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(LocalReferenceNumberPage, NormalMode, answers)
+              .mustBe(routes.AddSecurityDetailsController.onPageLoad(answers.id, NormalMode))
+        }
+      }
     }
 
     "in Check mode" - {
