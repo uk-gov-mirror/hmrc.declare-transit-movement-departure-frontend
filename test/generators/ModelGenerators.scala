@@ -18,10 +18,9 @@ package generators
 
 import models._
 import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
 
 trait ModelGenerators {
-
+ self: Generators =>
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
