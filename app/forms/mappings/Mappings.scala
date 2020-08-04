@@ -49,6 +49,6 @@ trait Mappings extends Formatters with Constraints {
                            args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
-  protected def lrn(requiredKey: String, invalidKey: String): FieldMapping[LocalReferenceNumber] =
-    of(lrnFormatter(requiredKey, invalidKey))
+  protected def lrn(requiredKey: String, lengthKey: String, invalidKey: String): FieldMapping[LocalReferenceNumber] =
+    of(lrnFormatter(requiredKey, lengthKey, invalidKey))
 }
