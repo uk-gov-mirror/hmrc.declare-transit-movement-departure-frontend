@@ -24,7 +24,7 @@ import play.api.data.FormError
 class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "localReferenceNumber.error.required"
-  val invalidKey  = "localReferenceNumber.error.length"
+  val invalidKey  = "localReferenceNumber.error.invalid"
 
   val form = new LocalReferenceNumberFormProvider()()
 
@@ -44,7 +44,7 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind invalid MRNs" in {
+    "must not bind invalid LRNs" in {
 
       forAll(arbitrary[String]) {
         value =>

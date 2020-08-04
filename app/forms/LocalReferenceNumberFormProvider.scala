@@ -25,6 +25,6 @@ class LocalReferenceNumberFormProvider @Inject() extends Mappings {
 
   def apply(): Form[LocalReferenceNumber] =
     Form(
-      "value" -> lrn("localReferenceNumber.error.required", "localReferenceNumber.error.length")
+      "value" -> lrn("localReferenceNumber.error.required", "localReferenceNumber.error.invalid")
     )
 }
