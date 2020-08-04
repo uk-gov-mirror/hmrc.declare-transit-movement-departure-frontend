@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class AddSecurityDetailsPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryAddSecurityDetailsPage: Arbitrary[AddSecurityDetailsPage.type] =
-    Arbitrary(AddSecurityDetailsPage)
+  "AddSecurityDetailsPage" - {
 
-  implicit lazy val arbitraryLocalReferenceNumberPage: Arbitrary[LocalReferenceNumberPage.type] =
-    Arbitrary(LocalReferenceNumberPage)
+    beRetrievable[Boolean](AddSecurityDetailsPage)
+
+    beSettable[Boolean](AddSecurityDetailsPage)
+
+    beRemovable[Boolean](AddSecurityDetailsPage)
+  }
 }

@@ -27,6 +27,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addSecurityDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddSecurityDetailsController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSecurityDetails.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   private def yesOrNo(answer: Boolean): Content =
     if (answer) {
       msg"site.yes"

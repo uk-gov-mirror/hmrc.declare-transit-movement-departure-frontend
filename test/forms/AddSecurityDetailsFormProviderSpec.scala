@@ -14,16 +14,32 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-trait PageGenerators {
+class AddSecurityDetailsFormProviderSpec extends BooleanFieldBehaviours {
 
-  implicit lazy val arbitraryAddSecurityDetailsPage: Arbitrary[AddSecurityDetailsPage.type] =
-    Arbitrary(AddSecurityDetailsPage)
+  val requiredKey = "addSecurityDetails.error.required"
+  val invalidKey = "error.boolean"
 
-  implicit lazy val arbitraryLocalReferenceNumberPage: Arbitrary[LocalReferenceNumberPage.type] =
-    Arbitrary(LocalReferenceNumberPage)
+  val form = new AddSecurityDetailsFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

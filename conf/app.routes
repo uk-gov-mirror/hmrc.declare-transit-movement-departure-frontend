@@ -18,3 +18,8 @@ GET        /local-reference-number                        controllers.LocalRefer
 POST       /local-reference-number                        controllers.LocalReferenceNumberController.onSubmit
 GET        /change-local-reference-number                  controllers.LocalReferenceNumberController.onPageLoad
 POST       /change-local-reference-number                  controllers.LocalReferenceNumberController.onSubmit
+
+GET        /:lrn/addSecurityDetails                        controllers.AddSecurityDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addSecurityDetails                        controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddSecurityDetails                  controllers.AddSecurityDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddSecurityDetails                  controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
