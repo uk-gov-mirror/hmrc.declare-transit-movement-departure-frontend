@@ -11,13 +11,13 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.$className$Page
 import play.api.inject.bind
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
@@ -28,7 +28,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
   val formProvider = new $className$FormProvider()
   val form = formProvider()
 
-  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(NormalMode).url
+  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, NormalMode).url
 
   "$className$ Controller" - {
 
@@ -49,8 +49,10 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode
+        "form"   -> form,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(form("value"))
       )
 
       templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
@@ -64,7 +66,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(userAnswersId).set($className$Page, "answer").success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set($className$Page, "answer").success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, $className;format="decap"$Route)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -76,11 +78,13 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "mode" -> NormalMode
+        "form"   -> filledForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(filledForm("value"))
       )
 
       templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
@@ -105,11 +109,12 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       val request =
         FakeRequest(POST, $className;format="decap"$Route)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -133,8 +138,10 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "mode" -> NormalMode
+        "form"   -> boundForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(boundForm("value"))
       )
 
       templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
@@ -164,7 +171,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       val request =
         FakeRequest(POST, $className;format="decap"$Route)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
