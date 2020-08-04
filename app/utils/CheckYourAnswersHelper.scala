@@ -18,8 +18,11 @@ package utils
 
 import java.time.format.DateTimeFormatter
 
-import models.UserAnswers
+import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import pages._
+import controllers.routes
 import play.api.i18n.Messages
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
@@ -30,6 +33,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     } else {
       msg"site.no"
     }
+
+  def lrn: LocalReferenceNumber = userAnswers.id
 }
 
 object CheckYourAnswersHelper {

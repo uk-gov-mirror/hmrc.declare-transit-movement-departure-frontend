@@ -41,7 +41,7 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val helper = new CheckYourAnswersHelper(request.userAnswers)
+      val helper: CheckYourAnswersHelper = new CheckYourAnswersHelper(request.userAnswers)
 
       val answers: Seq[SummaryList.Row] = Seq()
 
