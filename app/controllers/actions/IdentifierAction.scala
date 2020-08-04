@@ -19,7 +19,6 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
-import models.EoriNumber
 import models.requests.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -41,13 +40,19 @@ class AuthenticatedIdentifierAction @Inject()(
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter
+      .fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised().retrieve(Retrievals.internalId) {
-      _.map {
-        internalId => block(IdentifierRequest(request, EoriNumber(internalId)))
-      }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
-    } recover {
+    authorised(Enrolment(config.enrolmentKey))
+      .retrieve(Retrievals.authorisedEnrolments) {
+        enrolments =>
+          val eoriNumber: String = (for {
+            enrolment <- enrolments.enrolments.find(_.key.equals(config.enrolmentKey))
+            identifier <- enrolment.getIdentifier(config.enrolmentIdentifierKey)
+          } yield identifier.value).getOrElse(throw InsufficientEnrolments(s"Unable to retrieve enrolment for ${config.enrolmentIdentifierKey}"))
+
+          block(IdentifierRequest(request, eoriNumber))
+      } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>
@@ -56,3 +61,20 @@ class AuthenticatedIdentifierAction @Inject()(
   }
 }
 
+class SessionIdentifierAction @Inject()(
+                                         val parser: BodyParsers.Default
+                                       )
+                                       (implicit val executionContext: ExecutionContext) extends IdentifierAction {
+
+  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+
+    hc.sessionId match {
+      case Some(session) =>
+        block(IdentifierRequest(request, session.value))
+      case None =>
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+    }
+  }
+}
