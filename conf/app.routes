@@ -23,3 +23,4 @@ GET        /:lrn/add-security-details                        controllers.AddSecu
 POST       /:lrn/add-security-details                        controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/change-add-security-details                  controllers.AddSecurityDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/change-add-security-details                  controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/declarationSummary                       controllers.DeclarationSummaryController.onPageLoad(lrn: LocalReferenceNumber)
