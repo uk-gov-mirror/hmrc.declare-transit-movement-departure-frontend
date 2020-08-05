@@ -93,18 +93,20 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def lrnFormatter(requiredKey: String, invalidKey: String): Formatter[LocalReferenceNumber] =
+  private[mappings] def lrnFormatter(requiredKey: String, lengthKey: String, invalidKey: String): Formatter[LocalReferenceNumber] =
     new Formatter[LocalReferenceNumber] {
-
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalReferenceNumber] =
         stringFormatter(requiredKey)
           .bind(key, data)
           .right
           .flatMap {
             str =>
-              LocalReferenceNumber(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey))))
+              if(str.length <= LocalReferenceNumber.maxLength) {
+                LocalReferenceNumber(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey))))
+              } else {
+                Left(Seq(FormError(key, lengthKey)))
+              }
           }
-
       override def unbind(key: String, value: LocalReferenceNumber): Map[String, String] =
         Map(key -> value.toString)
     }
