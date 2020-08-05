@@ -46,7 +46,7 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind invalid MRNs" in {
+    "must not bind invalid LRNs" in {
 
       forAll(arbitrary[String]) {
         value =>
