@@ -6,7 +6,7 @@ import matchers.JsonMatchers
 import models.{NormalMode, $className$, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.$className$Page
@@ -28,10 +28,11 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
   val formProvider = new $className$FormProvider()
   val form = formProvider()
 
-  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(NormalMode).url
+  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, NormalMode).url
 
   val userAnswers = UserAnswers(
-    userAnswersId,
+    lrn,
+    eoriNumber,
     Json.obj(
       $className$Page.toString -> Json.obj(
         "$field1Name$" -> "value 1",
@@ -60,6 +61,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       val expectedJson = Json.obj(
         "form" -> form,
+        "lrn"  -> lrn,
         "mode" -> NormalMode
       )
 
@@ -94,6 +96,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
+        "lrn"  -> lrn,
         "mode" -> NormalMode
       )
 
@@ -149,8 +152,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual "$className;format="decap"$.njk"

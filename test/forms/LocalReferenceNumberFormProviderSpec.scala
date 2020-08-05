@@ -18,13 +18,15 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import models.LocalReferenceNumber
+import models.LocalReferenceNumber.maxLength
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError
 
 class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "localReferenceNumber.error.required"
-  val invalidKey  = "localReferenceNumber.error.length"
+  val lengthKey = "localReferenceNumber.error.length"
+  val invalidKey  = "localReferenceNumber.error.invalidCharacters"
 
   val form = new LocalReferenceNumberFormProvider()()
 
@@ -51,7 +53,13 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
           whenever(value != "" && LocalReferenceNumber(value).isEmpty) {
 
             val result = form.bind(Map("value" -> value))
-            result.errors must contain(FormError("value", invalidKey))
+            if (value.length > maxLength) {
+              result.errors must contain(FormError("value", lengthKey))
+            }
+              else
+              {
+                result.errors must contain(FormError("value", invalidKey))
+              }
           }
       }
     }

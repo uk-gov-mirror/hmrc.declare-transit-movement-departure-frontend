@@ -25,7 +25,7 @@ import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,13 +41,19 @@ class AuthenticatedIdentifierAction @Inject()(
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter
+      .fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised().retrieve(Retrievals.internalId) {
-      _.map {
-        internalId => block(IdentifierRequest(request, EoriNumber(internalId)))
-      }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
-    } recover {
+    authorised(Enrolment(config.enrolmentKey))
+      .retrieve(Retrievals.authorisedEnrolments) {
+        enrolments =>
+          val eoriNumber: String = (for {
+            enrolment <- enrolments.enrolments.find(_.key.equals(config.enrolmentKey))
+            identifier <- enrolment.getIdentifier(config.enrolmentIdentifierKey)
+          } yield identifier.value).getOrElse(throw InsufficientEnrolments(s"Unable to retrieve enrolment for ${config.enrolmentIdentifierKey}"))
+
+          block(IdentifierRequest(request, EoriNumber(eoriNumber)))
+      } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>

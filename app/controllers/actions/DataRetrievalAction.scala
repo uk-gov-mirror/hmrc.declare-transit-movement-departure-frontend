@@ -26,8 +26,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DataRetrievalActionProviderImpl @Inject()(sessionRepository: SessionRepository, ec: ExecutionContext) extends DataRetrievalActionProvider {
 
-  def apply(mrn: LocalReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest] =
-    new DataRetrievalAction(mrn, ec, sessionRepository)
+  def apply(lrn: LocalReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest] =
+    new DataRetrievalAction(lrn, ec, sessionRepository)
 }
 
 trait DataRetrievalActionProvider {
