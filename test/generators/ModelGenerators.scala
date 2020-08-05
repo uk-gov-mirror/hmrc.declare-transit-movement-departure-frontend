@@ -17,10 +17,15 @@
 package generators
 
 import models._
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
  self: Generators =>
+
+  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
+    Arbitrary {
+      Gen.oneOf(DeclarationType.values.toSeq)
+    }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {

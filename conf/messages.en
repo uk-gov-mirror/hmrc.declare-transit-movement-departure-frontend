@@ -141,3 +141,10 @@ addSecurityDetails.title = Do you need to add safety and security details?
 addSecurityDetails.heading = Do you need to add safety and security details?
 addSecurityDetails.checkYourAnswersLabel = Do you need to add safety and security details?
 addSecurityDetails.error.required = Select yes if you need to add safety and security details
+
+declarationType.title = declarationType
+declarationType.heading = declarationType
+declarationType.option1 = Option 1
+declarationType.option2 = Option 2
+declarationType.checkYourAnswersLabel = declarationType
+declarationType.error.required = Select declarationType
