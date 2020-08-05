@@ -19,12 +19,13 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
+import models.EoriNumber
 import models.requests.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,7 +52,7 @@ class AuthenticatedIdentifierAction @Inject()(
             identifier <- enrolment.getIdentifier(config.enrolmentIdentifierKey)
           } yield identifier.value).getOrElse(throw InsufficientEnrolments(s"Unable to retrieve enrolment for ${config.enrolmentIdentifierKey}"))
 
-          block(IdentifierRequest(request, eoriNumber))
+          block(IdentifierRequest(request, EoriNumber(eoriNumber)))
       } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
@@ -61,20 +62,3 @@ class AuthenticatedIdentifierAction @Inject()(
   }
 }
 
-class SessionIdentifierAction @Inject()(
-                                         val parser: BodyParsers.Default
-                                       )
-                                       (implicit val executionContext: ExecutionContext) extends IdentifierAction {
-
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
-
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-
-    hc.sessionId match {
-      case Some(session) =>
-        block(IdentifierRequest(request, session.value))
-      case None =>
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-    }
-  }
-}

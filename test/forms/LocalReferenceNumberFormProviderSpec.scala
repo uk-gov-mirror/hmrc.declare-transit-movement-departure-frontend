@@ -17,26 +17,27 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalacheck.Gen
-import org.scalatest.matchers.must.Matchers
-import play.api.data.{Field, FormError}
+import models.LocalReferenceNumber
+import models.LocalReferenceNumber.maxLength
+import org.scalacheck.Arbitrary.arbitrary
+import play.api.data.FormError
 
-class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours with ScalaCheckPropertyChecks with Matchers {
+class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "localReferenceNumber.error.required"
   val lengthKey = "localReferenceNumber.error.length"
-  val maxLength = 22
-  val fieldName = "value"
+  val invalidKey  = "localReferenceNumber.error.invalidCharacters"
 
   val form = new LocalReferenceNumberFormProvider()()
 
   ".value" - {
 
+    val fieldName = "value"
+
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      arbitrary[LocalReferenceNumber].map(_.toString)
     )
 
     behave like mandatoryField(
@@ -44,32 +45,25 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours with Sc
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-  }
 
-  "must not bind strings that do not match regex" in {
+    "must not bind invalid MRNs" in {
 
-    val invalidKey = "localReferenceNumber.error.invalidCharacters"
-    val validRegex    = "[a-zA-Z0-9-_]+"
-    val expectedError = FormError(fieldName, invalidKey, Seq(validRegex))
+      forAll(arbitrary[String]) {
+        value =>
+          whenever(value != "" && LocalReferenceNumber(value).isEmpty) {
 
-    val genInvalidString: Gen[String] = {
-      stringsWithMaxLength(maxLength) suchThat (!_.matches("[a-zA-Z0-9-_]+"))
+            val result = form.bind(Map("value" -> value))
+            if (value.length > maxLength) {
+              result.errors must contain(FormError("value", lengthKey))
+            }
+              else
+              {
+                result.errors must contain(FormError("value", invalidKey))
+              }
+          }
+      }
     }
 
-    forAll(genInvalidString) {
-      invalidString =>
-        val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors must contain(expectedError)
-    }
-  }
-
-  "must not bind strings longer than 22 characters" in {
-
-    val expectedError = FormError(fieldName, lengthKey, Seq(maxLength))
-    forAll(stringsLongerThan(maxLength + 1)) {
-      string =>
-        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-        result.errors must contain(expectedError)
-    }
   }
 }
+

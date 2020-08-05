@@ -39,12 +39,12 @@ import scala.concurrent.Future
 
 class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
   val formProvider = new LocalReferenceNumberFormProvider()
   val form = formProvider()
 
-  lazy val localReferenceNumberRoute = routes.LocalReferenceNumberController.onPageLoad(NormalMode).url
+  lazy val localReferenceNumberRoute: String = routes.LocalReferenceNumberController.onPageLoad.url
 
   "LocalReferenceNumber Controller" - {
 
@@ -65,38 +65,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar with
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode
-      )
-
-      templateCaptor.getValue mustEqual "localReferenceNumber.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = UserAnswers(userAnswersId).set(LocalReferenceNumberPage, "answer").success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, localReferenceNumberRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> "answer"))
-
-      val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "mode" -> NormalMode
+        "form" -> form
       )
 
       templateCaptor.getValue mustEqual "localReferenceNumber.njk"
@@ -109,6 +78,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar with
 
       val mockSessionRepository = mock[SessionRepository]
 
+      when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(Some(emptyUserAnswers))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
@@ -149,8 +119,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar with
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "mode" -> NormalMode
+        "form" -> boundForm
       )
 
       templateCaptor.getValue mustEqual "localReferenceNumber.njk"
