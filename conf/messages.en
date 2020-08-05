@@ -135,16 +135,19 @@ localReferenceNumber.heading = What is the local reference number (LRN)?
 localReferenceNumber.checkYourAnswersLabel = What is the local reference number (LRN)?
 localReferenceNumber.error.required = Enter the local reference number
 localReferenceNumber.error.length = Local reference number must be 22 characters or less
-localReferenceNumber.error.invalid = Local reference number must only include letters a to z, numbers 0 to 9, hyphens and underscores
+localReferenceNumber.error.invalidCharacters = Local reference number must only include letters a to z, numbers 0 to 9, hyphens and underscores
 
 addSecurityDetails.title = Do you need to add safety and security details?
 addSecurityDetails.heading = Do you need to add safety and security details?
 addSecurityDetails.checkYourAnswersLabel = Do you need to add safety and security details?
 addSecurityDetails.error.required = Select yes if you need to add safety and security details
 
-declarationType.title = declarationType
-declarationType.heading = declarationType
-declarationType.option1 = Option 1
-declarationType.option2 = Option 2
-declarationType.checkYourAnswersLabel = declarationType
-declarationType.error.required = Select declarationType
+declarationType.title = What declaration do you want to create?
+declarationType.heading = What declaration do you want to create?
+declarationType.option1 = T1 (goods moving under external Union Transit procedure)
+declarationType.option2 = T2 (goods moving under internal Union Transit procedure)
+declarationType.option3 = T- (mixed consignment of T1 and T2 goods)
+declarationType.option4 = T2 (T2F between different fiscal territories)
+declarationType.checkYourAnswersLabel = What declaration do you want to create?
+declarationType.error.required = Select the declaration you want to create
+declarationType.preHeading = Movement details
