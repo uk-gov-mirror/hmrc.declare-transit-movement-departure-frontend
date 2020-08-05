@@ -25,9 +25,9 @@ import models._
 
 @Singleton
 class Navigator @Inject()() {
-
   private val normalRoutes: Page => UserAnswers => Call = {
     case LocalReferenceNumberPage => ua => routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode)
+    case DeclarationTypePage => ua => routes.ProcedureTypeController.onPageLoad(ua.id, NormalMode)
     case _ => _ => routes.IndexController.onPageLoad()
   }
 

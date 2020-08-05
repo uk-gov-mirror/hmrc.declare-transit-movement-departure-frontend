@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import models.ProcedureType
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class ProcedureTypeSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryProcedureTypePage: Arbitrary[ProcedureTypePage.type] =
-    Arbitrary(ProcedureTypePage)
+  "ProcedureTypePage" - {
 
-  implicit lazy val arbitraryDeclarationTypePage: Arbitrary[DeclarationTypePage.type] =
-    Arbitrary(DeclarationTypePage)
+    beRetrievable[ProcedureType](ProcedureTypePage)
 
-  implicit lazy val arbitraryAddSecurityDetailsPage: Arbitrary[AddSecurityDetailsPage.type] =
-    Arbitrary(AddSecurityDetailsPage)
+    beSettable[ProcedureType](ProcedureTypePage)
 
-  implicit lazy val arbitraryLocalReferenceNumberPage: Arbitrary[LocalReferenceNumberPage.type] =
-    Arbitrary(LocalReferenceNumberPage)
+    beRemovable[ProcedureType](ProcedureTypePage)
+  }
 }

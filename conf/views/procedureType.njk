@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("declarationType.title"), form.errors) }}
+  {{ title(messages("procedureType.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -27,7 +27,7 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.DeclarationTypeController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.ProcedureTypeController.onSubmit(lrn, mode).url }}" method="post">
 
         <span class="govuk-caption-xl">{{messages('movementDetails.preHeading')}}</span>
 
@@ -37,7 +37,7 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('declarationType.heading'),
+                text: messages('procedureType.heading'),
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--xl"
               }
