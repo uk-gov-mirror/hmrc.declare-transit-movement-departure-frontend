@@ -37,8 +37,8 @@ object ProcedureType extends Enumerable.Implicits {
 
     val field = form("value")
     val items = Seq(
-      Radios.Radio(msg"procedureType.normal", Normal.toString),
-      Radios.Radio(msg"procedureType.simplified", Simplified.toString)
+      Radios.Radio(msg"procedureType.option1", Normal.toString),
+      Radios.Radio(msg"procedureType.option2", Simplified.toString)
     )
 
     Radios(field, items)

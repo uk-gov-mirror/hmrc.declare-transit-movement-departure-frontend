@@ -41,6 +41,8 @@ index.title = common-transit-convention-departure
 index.heading = common-transit-convention-departure
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
+movementDetails.preHeading = Movement details
+
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
@@ -150,11 +152,10 @@ declarationType.option3 = T- (mixed consignment of T1 and T2 goods)
 declarationType.option4 = T2 (T2F between different fiscal territories)
 declarationType.checkYourAnswersLabel = What declaration do you want to create?
 declarationType.error.required = Select the declaration you want to create
-declarationType.preHeading = Movement details
 
-procedureType.title = procedureType
-procedureType.heading = procedureType
-procedureType.normal = Normal
-procedureType.simplified = Simplified
-procedureType.checkYourAnswersLabel = procedureType
-procedureType.error.required = Select procedureType
+procedureType.title = What type of procedure are you using?
+procedureType.heading = What type of procedure are you using?
+procedureType.option1 = Normal
+procedureType.option2 = Simplified
+procedureType.checkYourAnswersLabel = What type of procedure are you using?
+procedureType.error.required = Select the type of procedure are you using
