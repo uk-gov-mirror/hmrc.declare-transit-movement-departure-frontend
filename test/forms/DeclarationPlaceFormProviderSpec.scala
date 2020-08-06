@@ -28,7 +28,7 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "declarationPlace.error.length"
   val invalidKey = "declarationPlace.error.invalid"
   val maxLength = 9
-  val postCodeRegex: String = "^[a-z0-9]+([\\s]{1}[a-z0-9]+)*"
+  val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
 
   val form = new DeclarationPlaceFormProvider()()
 

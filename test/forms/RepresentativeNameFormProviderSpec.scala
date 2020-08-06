@@ -17,14 +17,16 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class RepresentativeNameFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "representativeName.error.required"
   val lengthKey = "representativeName.error.length"
+  val invalidKey = "representativeName.error.invalid"
   val maxLength = 35
-
+  val representativeNameRegex: String = "^[a-zA-Z0-9]{1,35}}"
   val form = new RepresentativeNameFormProvider()()
 
   ".value" - {
@@ -37,17 +39,35 @@ class RepresentativeNameFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings longer than max length" in {
+
+      val expectedError = List(FormError(fieldName, lengthKey, Seq(maxLength)))
+
+      forAll(stringsLongerThan(maxLength + 1)) {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
+
+    "must not bind strings that do not match regex" in {
+
+      val expectedError = List(FormError(fieldName, invalidKey, Seq(representativeNameRegex)))
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(representativeNameRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }
