@@ -19,14 +19,29 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import pages._
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+
+  def containersUsedPage: Option[Row] = userAnswers.get(ContainersUsedPage) map {
+    answer =>
+      Row(
+        key = Key(msg"containersUsed.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content = msg"site.edit",
+            href = routes.ContainersUsedPageController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"containersUsed.checkYourAnswersLabel")),
+            attributes = Map("id" -> s"""change-containers-used""")
+          )
+        )
+      )
+  }
 
   def procedureType: Option[Row] = userAnswers.get(ProcedureTypePage) map {
     answer =>

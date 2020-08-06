@@ -20,6 +20,7 @@ import models._
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+
  self: Generators =>
 
   implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType] =
@@ -38,7 +39,6 @@ trait ModelGenerators {
         lrn <- alphaNumericWithMaxLength(22)
       } yield new LocalReferenceNumber(lrn)
     }
-
 
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] = {
     Arbitrary {
