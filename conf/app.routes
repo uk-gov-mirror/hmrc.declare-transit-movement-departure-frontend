@@ -19,9 +19,20 @@ POST       /local-reference-number                        controllers.LocalRefer
 GET        /change-local-reference-number                 controllers.LocalReferenceNumberController.onPageLoad
 POST       /change-local-reference-number                 controllers.LocalReferenceNumberController.onSubmit
 
-GET        /:lrn/add-security-details                     controllers.AddSecurityDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/add-security-details                     controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/change-add-security-details              controllers.AddSecurityDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/change-add-security-details              controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/add-security-details                        controllers.AddSecurityDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/add-security-details                        controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-add-security-details                  controllers.AddSecurityDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-add-security-details                  controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/declarationSummary                       controllers.DeclarationSummaryController.onPageLoad(lrn: LocalReferenceNumber)
+
+GET        /:lrn/declaration-type                        controllers.DeclarationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/declaration-type                        controllers.DeclarationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-declaration-type                  controllers.DeclarationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-declaration-type                  controllers.DeclarationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/procedure-type                        controllers.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/procedure-type                        controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-procedure-type                  controllers.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-procedure-type                  controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+

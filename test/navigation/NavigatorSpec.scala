@@ -53,6 +53,16 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               .mustBe(routes.AddSecurityDetailsController.onPageLoad(answers.id, NormalMode))
         }
       }
+
+      "must go from Declaration Type page to Procedure Type page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(DeclarationTypePage, NormalMode, answers)
+              .mustBe(routes.ProcedureTypeController.onPageLoad(answers.id, NormalMode))
+        }
+      }
     }
 
     "in Check mode" - {

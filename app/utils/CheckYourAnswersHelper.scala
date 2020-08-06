@@ -28,6 +28,36 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def procedureType: Option[Row] = userAnswers.get(ProcedureTypePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"procedureType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(msg"procedureType.$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ProcedureTypeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"procedureType.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def declarationType: Option[Row] = userAnswers.get(DeclarationTypePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"declarationType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(msg"declarationType.$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.DeclarationTypeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationType.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(

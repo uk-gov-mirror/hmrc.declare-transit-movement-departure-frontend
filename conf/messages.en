@@ -41,6 +41,8 @@ index.title = common-transit-convention-departure
 index.heading = common-transit-convention-departure
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
+movementDetails.preHeading = Movement details
+
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
@@ -135,7 +137,7 @@ localReferenceNumber.heading = What is the local reference number (LRN)?
 localReferenceNumber.checkYourAnswersLabel = What is the local reference number (LRN)?
 localReferenceNumber.error.required = Enter the local reference number
 localReferenceNumber.error.length = Local reference number must be 22 characters or less
-localReferenceNumber.error.invalid = Local reference number must only include letters a to z, numbers 0 to 9, hyphens and underscores
+localReferenceNumber.error.invalidCharacters = Local reference number must only include letters a to z, numbers 0 to 9, hyphens and underscores
 
 addSecurityDetails.title = Do you need to add safety and security details?
 addSecurityDetails.heading = Do you need to add safety and security details?
@@ -144,3 +146,19 @@ addSecurityDetails.error.required = Select yes if you need to add safety and sec
 
 declarationSummary.title = declarationSummary
 declarationSummary.heading = declarationSummary
+
+declarationType.title = What declaration do you want to create?
+declarationType.heading = What declaration do you want to create?
+declarationType.option1 = T1 (goods moving under external Union Transit procedure)
+declarationType.option2 = T2 (goods moving under internal Union Transit procedure)
+declarationType.option3 = T- (mixed consignment of T1 and T2 goods)
+declarationType.option4 = T2 (T2F between different fiscal territories)
+declarationType.checkYourAnswersLabel = What declaration do you want to create?
+declarationType.error.required = Select the declaration you want to create
+
+procedureType.title = What type of procedure are you using?
+procedureType.heading = What type of procedure are you using?
+procedureType.option1 = Normal
+procedureType.option2 = Simplified
+procedureType.checkYourAnswersLabel = What type of procedure are you using?
+procedureType.error.required = Select the type of procedure are you using
