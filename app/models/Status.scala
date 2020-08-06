@@ -20,14 +20,17 @@ import play.api.libs.json.{JsString, Writes}
 
 sealed trait Status
 
-case object NotStarted extends Status
-case object Incomplete extends Status
-case object Complete extends Status
+object Status {
 
-  object Status {
-    implicit val writes: Writes[Status] = Writes[Status] {
-      case NotStarted => JsString(NotStarted.toString)
-      case Incomplete => JsString(Incomplete.toString)
-      case Complete   => JsString(Complete.toString)
-    }
+  case object NotStarted extends Status
+
+  case object Incomplete extends Status
+
+  case object Complete extends Status
+
+  implicit val writes: Writes[Status] = Writes[Status] {
+    case NotStarted => JsString(NotStarted.toString)
+    case Incomplete => JsString(Incomplete.toString)
+    case Complete => JsString(Complete.toString)
   }
+}

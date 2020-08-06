@@ -17,8 +17,9 @@
 package models
 
 import play.api.libs.json.{Json, OWrites}
+import play.api.mvc.Call
 
-case class Section (name: String, href: String, status: Status = NotStarted)
+case class Section (name: String, href: Call, status: Status = NotStarted)
 
 object Section {
   implicit val writes: OWrites[Section] = Json.writes[Section]

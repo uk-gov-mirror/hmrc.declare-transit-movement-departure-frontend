@@ -144,8 +144,16 @@ addSecurityDetails.heading = Do you need to add safety and security details?
 addSecurityDetails.checkYourAnswersLabel = Do you need to add safety and security details?
 addSecurityDetails.error.required = Select yes if you need to add safety and security details
 
-declarationSummary.title = declarationSummary
-declarationSummary.heading = declarationSummary
+declarationSummary.title = Declaration summary
+declarationSummary.heading = Declaration summary
+declarationSummary.departureDetails = Departure details
+declarationSummary.p = You can save your declaration and come back later. You have 28 days from the first time you save to complete this declaration or your information will be deleted.
+declarationSummary.section.addMovementDetails = Add movement details
+declarationSummary.section.AddRoute = Add route
+declarationSummary.section.addTransport = Add transport
+declarationSummary.section.addTradersDetails = Add trader’s details
+declarationSummary.section.AddGoodsSummary = Add goods summary
+declarationSummary.section.AddGuarantee = Add guarantee
 
 declarationType.title = What declaration do you want to create?
 declarationType.heading = What declaration do you want to create?
@@ -162,3 +170,4 @@ procedureType.option1 = Normal
 procedureType.option2 = Simplified
 procedureType.checkYourAnswersLabel = What type of procedure are you using?
 procedureType.error.required = Select the type of procedure are you using
+
