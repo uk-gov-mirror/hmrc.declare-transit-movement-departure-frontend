@@ -26,6 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DeclarationPlacePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.mvc.Call
