@@ -50,18 +50,18 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind strings longer than max length" in {
 
-      val expectedError = FormError(fieldName, lengthKey, Seq(maxLength))
+      val expectedError = List(FormError(fieldName, lengthKey, Seq(maxLength)))
 
       forAll(stringsLongerThan(maxLength + 1)) {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors must contain(expectedError)
+          result.errors mustBe expectedError
       }
     }
 
     "must not bind strings that do not match regex" in {
 
-      val expectedError = FormError(fieldName, invalidKey, Seq(postCodeRegex))
+      val expectedError = List(FormError(fieldName, invalidKey, Seq(postCodeRegex)))
 
       val genInvalidString: Gen[String] = {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
@@ -70,7 +70,7 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
       forAll(genInvalidString) {
         invalidString =>
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
+          result.errors mustBe expectedError
       }
     }
   }
