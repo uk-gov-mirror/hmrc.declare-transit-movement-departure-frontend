@@ -17,13 +17,19 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.LocalReferenceNumber
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "declarationPlace.error.required"
   val lengthKey = "declarationPlace.error.length"
+  val invalidKey = "declarationPlace.error.invalid"
   val maxLength = 9
+  val postCodeRegex: String = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
+
 
   val form = new DeclarationPlaceFormProvider()()
 
@@ -37,17 +43,36 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings longer than max length" in {
+
+      val expectedError = FormError(fieldName, lengthKey, Seq(maxLength))
+
+      forAll(stringsLongerThan(maxLength + 1)) {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
+
+    "must not bind strings that do not match regex" in {
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(postCodeRegex))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
   }
 }

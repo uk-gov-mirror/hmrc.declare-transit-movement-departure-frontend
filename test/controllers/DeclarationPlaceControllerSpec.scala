@@ -100,8 +100,11 @@ class DeclarationPlaceControllerSpec extends SpecBase with MockitoSugar with Nun
         "lrn"  -> lrn,
         "mode" -> NormalMode
       )
+println("888888888888888" + jsonCaptor.getValue)
+println("EXPECTED JSON" + expectedJson)
 
       templateCaptor.getValue mustEqual "declarationPlace.njk"
+
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()

@@ -17,15 +17,21 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
 
+import scala.util.matching.Regex
+
 class DeclarationPlaceFormProvider @Inject() extends Mappings {
+
+  val postCodeRegex: String = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
+  val maxLengthPostCode =9
 
   def apply(): Form[String] =
     Form(
+
       "value" -> text("declarationPlace.error.required")
-        .verifying(maxLength(9, "declarationPlace.error.length"))
-    )
+      .verifying(maxLength(maxLengthPostCode, "declarationPlace.error.length"))
+      .verifying(regexp(postCodeRegex, "declarationPlace.error.invalid")))
 }
+
