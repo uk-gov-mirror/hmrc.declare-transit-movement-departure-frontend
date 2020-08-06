@@ -18,8 +18,9 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
 import play.api.data.Form
+
+import scala.util.matching.Regex
 
 class DeclarationPlaceFormProvider @Inject() extends Mappings {
 
@@ -30,9 +31,7 @@ class DeclarationPlaceFormProvider @Inject() extends Mappings {
     Form(
 
       "value" -> text("declarationPlace.error.required")
-      .verifying(StopOnFirstFail[String](
-        maxLength(maxLengthPostCode, "declarationPlace.error.length"),
-        regexp(postCodeRegex, "declarationPlace.error.invalid")
-      )))
+      .verifying(maxLength(maxLengthPostCode, "declarationPlace.error.length"))
+      .verifying(regexp(postCodeRegex, "declarationPlace.error.invalid")))
 }
 
