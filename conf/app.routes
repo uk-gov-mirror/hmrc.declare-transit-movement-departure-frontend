@@ -38,3 +38,8 @@ GET        /:lrn/declaration-place                        controllers.Declaratio
 POST       /:lrn/declaration-place                        controllers.DeclarationPlaceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/change-declaration-place                  controllers.DeclarationPlaceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/change-declaration-place                  controllers.DeclarationPlaceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/declaration-for-someone-else                        controllers.DeclarationForSomeoneElseController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/declaration-for-someone-else                        controllers.DeclarationForSomeoneElseController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-declaration-for-someone-else                  controllers.DeclarationForSomeoneElseController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-declaration-for-someone-else                  controllers.DeclarationForSomeoneElseController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
