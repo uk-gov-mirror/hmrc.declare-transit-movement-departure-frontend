@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.ContainersUsedPageFormProvider
 import matchers.JsonMatchers
-import models.{ContainersUsed, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -45,17 +45,6 @@ class ContainersUsedControllerSpec extends SpecBase with MockitoSugar with Nunju
   val form = formProvider()
 
   lazy val containersUsedPageRoute = routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
-
-  val userAnswers = UserAnswers(
-    lrn,
-    eoriNumber,
-    Json.obj(
-      ContainersUsed.toString -> Json.obj(
-        "field1" -> "value 1",
-        "field2" -> "value 2"
-      )
-    )
-  )
 
   "ContainersUsedPage Controller" - {
 
