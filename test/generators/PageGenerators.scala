@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryDeclarationPlacePage: Arbitrary[DeclarationPlacePage.type] =
+    Arbitrary(DeclarationPlacePage)
+
   implicit lazy val arbitraryProcedureTypePage: Arbitrary[ProcedureTypePage.type] =
     Arbitrary(ProcedureTypePage)
 

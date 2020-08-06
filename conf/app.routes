@@ -33,3 +33,8 @@ GET        /:lrn/procedure-type                        controllers.ProcedureType
 POST       /:lrn/procedure-type                        controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/change-procedure-type                  controllers.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/change-procedure-type                  controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/declaration-place                        controllers.DeclarationPlaceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/declaration-place                        controllers.DeclarationPlaceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-declaration-place                  controllers.DeclarationPlaceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-declaration-place                  controllers.DeclarationPlaceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
