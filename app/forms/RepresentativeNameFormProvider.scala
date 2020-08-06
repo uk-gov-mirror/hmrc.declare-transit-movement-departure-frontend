@@ -23,7 +23,7 @@ import play.api.data.Form
 
 class RepresentativeNameFormProvider @Inject() extends Mappings {
 
-  val representativeNameRegex: String = "^[a-zA-Z0-9]{1,35}}"
+  val representativeNameRegex: String = "^[a-zA-Z0-9 ]*$"
   val maxLengthRepresentativeName = 35
 
   def apply(): Form[String] =

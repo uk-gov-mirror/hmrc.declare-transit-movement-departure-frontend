@@ -26,7 +26,7 @@ class RepresentativeNameFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "representativeName.error.length"
   val invalidKey = "representativeName.error.invalid"
   val maxLength = 35
-  val representativeNameRegex: String = "^[a-zA-Z0-9]{1,35}}"
+  val representativeNameRegex: String =  "^[a-zA-Z0-9 ]*$"
   val form = new RepresentativeNameFormProvider()()
 
   ".value" - {
