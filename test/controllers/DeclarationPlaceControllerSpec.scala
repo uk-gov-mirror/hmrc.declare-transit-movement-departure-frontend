@@ -1,7 +1,23 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers
 
 import base.SpecBase
-import forms.$className$FormProvider
+import forms.DeclarationPlaceFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
@@ -9,7 +25,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.$className$Page
+import pages.DeclarationPlacePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.mvc.Call
@@ -21,16 +38,16 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class $className$ControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class DeclarationPlaceControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new $className$FormProvider()
+  val formProvider = new DeclarationPlaceFormProvider()
   val form = formProvider()
 
-  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, NormalMode).url
+  lazy val declarationPlaceRoute = routes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url
 
-  "$className$ Controller" - {
+  "DeclarationPlace Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -38,7 +55,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, $className;format="decap"$Route)
+      val request = FakeRequest(GET, declarationPlaceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -54,7 +71,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "lrn"    -> lrn
       )
 
-      templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
+      templateCaptor.getValue mustEqual "declarationPlace.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -65,9 +82,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set($className$Page, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(DeclarationPlacePage, "answer").success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, $className;format="decap"$Route)
+      val request = FakeRequest(GET, declarationPlaceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -85,7 +102,8 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
+      templateCaptor.getValue mustEqual "declarationPlace.njk"
+
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -106,7 +124,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
           .build()
 
       val request =
-        FakeRequest(POST, $className;format="decap"$Route)
+        FakeRequest(POST, declarationPlaceRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
@@ -123,7 +141,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, $className;format="decap"$Route).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, declarationPlaceRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -140,7 +158,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
+      templateCaptor.getValue mustEqual "declarationPlace.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -150,7 +168,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, $className;format="decap"$Route)
+      val request = FakeRequest(GET, declarationPlaceRoute)
 
       val result = route(application, request).value
 
@@ -166,7 +184,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, $className;format="decap"$Route)
+        FakeRequest(POST, declarationPlaceRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value

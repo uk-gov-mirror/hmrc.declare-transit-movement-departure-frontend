@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package forms.behaviours
+package forms
 
-import play.api.data.{Form, FormError}
+import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
 
-trait StringFieldBehaviours extends FieldBehaviours {
+import scala.util.matching.Regex
 
-    def fieldWithMaxLength(form: Form[_],
-                           fieldName: String,
-                           maxLength: Int,
-                           lengthError: FormError): Unit = {
+class DeclarationPlaceFormProvider @Inject() extends Mappings {
 
-    s"must not bind strings longer than $maxLength characters" in {
+  val postCodeRegex: String = "^[a-z0-9]+([\\s]{1}[a-z0-9]+)*"
+  val maxLengthPostCode =9
 
-      forAll(stringsLongerThan(maxLength) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
-      }
-    }
-  }
+  def apply(): Form[String] =
+    Form(
+
+      "value" -> text("declarationPlace.error.required")
+      .verifying(maxLength(maxLengthPostCode, "declarationPlace.error.length"))
+      .verifying(regexp(postCodeRegex, "declarationPlace.error.invalid")))
 }
 

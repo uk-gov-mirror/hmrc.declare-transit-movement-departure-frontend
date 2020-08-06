@@ -41,14 +41,17 @@ index.title = common-transit-convention-departure
 index.heading = common-transit-convention-departure
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
+movementDetails.preHeading = Movement details
+
+postcode = Postcode
+postcodeExample = Like, AB1 1AB.
+
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
-
-movementDetails.preHeading = Movement details
 
 #### Compliance statement
 
@@ -164,3 +167,16 @@ procedureType.option1 = Normal
 procedureType.option2 = Simplified
 procedureType.checkYourAnswersLabel = What type of procedure are you using?
 procedureType.error.required = Select the type of procedure are you using
+
+declarationPlace.title = What is the postcode for the place of declaration?
+declarationPlace.heading = What is the postcode for the place of declaration?
+declarationPlace.checkYourAnswersLabel = What is the postcode for the place of declaration?
+declarationPlace.paragraph = This is where you are making the declaration.
+declarationPlace.error.required = Enter the postcode for the place of declaration
+declarationPlace.error.length = The postcode for the place of declaration must be 9 characters or less
+declarationPlace.error.invalid = The postcode for the place of declaration must only include letters a to z, numbers 0 to 9 or blank spaces
+
+declarationForSomeoneElse.title = Are you creating this declaration on behalf of someone else?
+declarationForSomeoneElse.heading = Are you creating this declaration on behalf of someone else?
+declarationForSomeoneElse.checkYourAnswersLabel = Are you creating this declaration on behalf of someone else?
+declarationForSomeoneElse.error.required = Select yes if you are creating this declaration on behalf of someone else
