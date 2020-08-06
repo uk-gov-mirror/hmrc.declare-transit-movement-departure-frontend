@@ -48,3 +48,8 @@ GET        /:lrn/declaration-for-someone-else                        controllers
 POST       /:lrn/declaration-for-someone-else                        controllers.DeclarationForSomeoneElseController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/change-declaration-for-someone-else                  controllers.DeclarationForSomeoneElseController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/change-declaration-for-someone-else                  controllers.DeclarationForSomeoneElseController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/representative-name                        controllers.RepresentativeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/representative-name                        controllers.RepresentativeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-representative-name                  controllers.RepresentativeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-representative-name                  controllers.RepresentativeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
-import play.api.data.Form
+import play.api.libs.json.JsPath
 
-class DeclarationPlaceFormProvider @Inject() extends Mappings {
+case object RepresentativeNamePage extends QuestionPage[String] {
 
-  val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
-  val maxLengthPostCode =9
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("declarationPlace.error.required")
-      .verifying(StopOnFirstFail[String](
-        maxLength(maxLengthPostCode, "declarationPlace.error.length"),
-        regexp(postCodeRegex, "declarationPlace.error.invalid")
-      )))
+  override def toString: String = "representativeName"
 }
-
