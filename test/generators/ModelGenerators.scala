@@ -23,6 +23,11 @@ trait ModelGenerators {
 
  self: Generators =>
 
+  implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType] =
+    Arbitrary {
+      Gen.oneOf(ProcedureType.values.toSeq)
+    }
+
   implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
     Arbitrary {
       Gen.oneOf(DeclarationType.values.toSeq)

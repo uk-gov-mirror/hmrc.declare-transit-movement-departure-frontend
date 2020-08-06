@@ -33,3 +33,8 @@ GET        /:lrn/containers-used                        controllers.ContainersUs
 POST       /:lrn/containers-used                        controllers.ContainersUsedPageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/change-containers-used                  controllers.ContainersUsedPageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/change-containers-used                  controllers.ContainersUsedPageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/procedure-type                        controllers.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/procedure-type                        controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-procedure-type                  controllers.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-procedure-type                  controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

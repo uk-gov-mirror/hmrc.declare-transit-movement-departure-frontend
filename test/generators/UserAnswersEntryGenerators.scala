@@ -34,6 +34,14 @@ self: Generators =>
       } yield (page, value)
     }
 
+  implicit lazy val arbitraryProcedureTypeUserAnswersEntry: Arbitrary[(ProcedureTypePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ProcedureTypePage.type]
+        value <- arbitrary[ProcedureType].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryDeclarationTypeUserAnswersEntry: Arbitrary[(DeclarationTypePage.type, JsValue)] =
     Arbitrary {
       for {

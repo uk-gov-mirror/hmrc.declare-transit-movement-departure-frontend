@@ -24,6 +24,9 @@ trait PageGenerators {
   implicit lazy val arbitraryContainersUsedPage: Arbitrary[ContainersUsedPage.type] =
     Arbitrary(ContainersUsedPage)
 
+  implicit lazy val arbitraryProcedureTypePage: Arbitrary[ProcedureTypePage.type] =
+    Arbitrary(ProcedureTypePage)
+
   implicit lazy val arbitraryDeclarationTypePage: Arbitrary[DeclarationTypePage.type] =
     Arbitrary(DeclarationTypePage)
 
