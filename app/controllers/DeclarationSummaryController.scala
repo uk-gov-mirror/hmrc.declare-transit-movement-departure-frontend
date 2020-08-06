@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.LocalReferenceNumber
+import models.{LocalReferenceNumber, Section, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,8 +39,14 @@ class DeclarationSummaryController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val json = Json.obj("lrn" -> lrn)
+      val sections = getSections(request.userAnswers)
+      val json = Json.obj("lrn" -> lrn, "sections" -> sections)
 
       renderer.render("declarationSummary.njk", json).map(Ok(_))
+  }
+
+  def getSections(userAnswers: UserAnswers): Seq[Section] = {
+
+
   }
 }
