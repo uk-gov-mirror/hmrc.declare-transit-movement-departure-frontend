@@ -16,16 +16,14 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.LocalReferenceNumber
+import javax.inject.Inject
 import play.api.data.Form
 
-class LocalReferenceNumberFormProvider @Inject() extends Mappings {
+class ContainersUsedPageFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalReferenceNumber] =
-    Form(
-      "value" -> lrn("localReferenceNumber.error.required", "localReferenceNumber.error.length", "localReferenceNumber.error.invalidCharacters")
-
-    )
-}
+   def apply(): Form[Boolean] =
+     Form(
+     "value" -> boolean("containersUsed.error.required")
+     )
+ }

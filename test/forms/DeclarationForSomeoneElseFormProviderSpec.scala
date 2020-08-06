@@ -16,16 +16,30 @@
 
 package forms
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import models.LocalReferenceNumber
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class LocalReferenceNumberFormProvider @Inject() extends Mappings {
+class DeclarationForSomeoneElseFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(): Form[LocalReferenceNumber] =
-    Form(
-      "value" -> lrn("localReferenceNumber.error.required", "localReferenceNumber.error.length", "localReferenceNumber.error.invalidCharacters")
+  val requiredKey = "declarationForSomeoneElse.error.required"
+  val invalidKey = "error.boolean"
 
+  val form = new DeclarationForSomeoneElseFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }
