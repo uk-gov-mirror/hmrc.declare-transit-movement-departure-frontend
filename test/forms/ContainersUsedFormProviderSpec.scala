@@ -14,22 +14,32 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-trait PageGenerators {
+class ContainersUsedFormProviderSpec extends BooleanFieldBehaviours {
 
-  implicit lazy val arbitraryContainersUsedPage: Arbitrary[ContainersUsedPage.type] =
-    Arbitrary(ContainersUsedPage)
+  val requiredKey = "containersUsed.error.required"
+  val invalidKey = "error.boolean"
 
-  implicit lazy val arbitraryDeclarationTypePage: Arbitrary[DeclarationTypePage.type] =
-    Arbitrary(DeclarationTypePage)
+  val form = new ContainersUsedPageFormProvider()()
 
-  implicit lazy val arbitraryAddSecurityDetailsPage: Arbitrary[AddSecurityDetailsPage.type] =
-    Arbitrary(AddSecurityDetailsPage)
+  ".value" - {
 
-  implicit lazy val arbitraryLocalReferenceNumberPage: Arbitrary[LocalReferenceNumberPage.type] =
-    Arbitrary(LocalReferenceNumberPage)
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import javax.inject.Inject
 
-trait PageGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
+import play.api.data.Forms._
+import models.ContainersUsed
 
-  implicit lazy val arbitraryContainersUsedPage: Arbitrary[ContainersUsedPage.type] =
-    Arbitrary(ContainersUsedPage)
+class ContainersUsedPageFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryDeclarationTypePage: Arbitrary[DeclarationTypePage.type] =
-    Arbitrary(DeclarationTypePage)
-
-  implicit lazy val arbitraryAddSecurityDetailsPage: Arbitrary[AddSecurityDetailsPage.type] =
-    Arbitrary(AddSecurityDetailsPage)
-
-  implicit lazy val arbitraryLocalReferenceNumberPage: Arbitrary[LocalReferenceNumberPage.type] =
-    Arbitrary(LocalReferenceNumberPage)
-}
+   def apply(): Form[Boolean] =
+     Form(
+     "value" -> boolean("containersUsed.error.required")
+     )
+ }

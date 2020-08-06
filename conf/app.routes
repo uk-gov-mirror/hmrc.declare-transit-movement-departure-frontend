@@ -28,3 +28,8 @@ GET        /:lrn/declaration-type                        controllers.Declaration
 POST       /:lrn/declaration-type                        controllers.DeclarationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/change-declaration-type                  controllers.DeclarationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/change-declaration-type                  controllers.DeclarationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/containers-used                        controllers.ContainersUsedPageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/containers-used                        controllers.ContainersUsedPageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-containers-used                  controllers.ContainersUsedPageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-containers-used                  controllers.ContainersUsedPageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

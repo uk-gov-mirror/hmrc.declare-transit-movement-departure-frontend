@@ -151,3 +151,9 @@ declarationType.option4 = T2 (T2F between different fiscal territories)
 declarationType.checkYourAnswersLabel = What declaration do you want to create?
 declarationType.error.required = Select the declaration you want to create
 declarationType.preHeading = Movement details
+
+containersUsed.title = Have you used any containers?
+containersUsed.heading = Have you used any containers?
+containersUsed.preHeading = Movement details
+containersUsed.checkYourAnswersLabel = Have you used any containers?
+containersUsed.error.required = Select yes if you have used any containers

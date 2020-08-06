@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package generators
+package models
 
-import org.scalacheck.Arbitrary
-import pages._
+import play.api.libs.json._
 
-trait PageGenerators {
+case class ContainersUsed(field1: String, field2: String)
 
-  implicit lazy val arbitraryContainersUsedPage: Arbitrary[ContainersUsedPage.type] =
-    Arbitrary(ContainersUsedPage)
-
-  implicit lazy val arbitraryDeclarationTypePage: Arbitrary[DeclarationTypePage.type] =
-    Arbitrary(DeclarationTypePage)
-
-  implicit lazy val arbitraryAddSecurityDetailsPage: Arbitrary[AddSecurityDetailsPage.type] =
-    Arbitrary(AddSecurityDetailsPage)
-
-  implicit lazy val arbitraryLocalReferenceNumberPage: Arbitrary[LocalReferenceNumberPage.type] =
-    Arbitrary(LocalReferenceNumberPage)
+object ContainersUsed {
+  implicit val format = Json.format[ContainersUsed]
 }

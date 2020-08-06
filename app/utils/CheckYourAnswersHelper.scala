@@ -28,6 +28,22 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def containersUsedPage: Option[Row] = userAnswers.get(ContainersUsedPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"containersUsed.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ContainersUsedPageController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"containersUsed.checkYourAnswersLabel")),
+            attributes         = Map("id" -> s"""change-containers-used""")
+          )
+        )
+      )
+  }
+
   def declarationType: Option[Row] = userAnswers.get(DeclarationTypePage) map {
     answer =>
       Row(
