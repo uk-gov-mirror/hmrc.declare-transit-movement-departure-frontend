@@ -27,6 +27,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def representativeName: Option[Row] = userAnswers.get(RepresentativeNamePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"representativeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.RepresentativeNameController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"representativeName.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def containersUsedPage: Option[Row] = userAnswers.get(ContainersUsedPage) map {
     answer =>
       Row(

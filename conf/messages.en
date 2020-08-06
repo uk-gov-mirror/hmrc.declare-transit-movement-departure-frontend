@@ -180,3 +180,10 @@ declarationForSomeoneElse.title = Are you creating this declaration on behalf of
 declarationForSomeoneElse.heading = Are you creating this declaration on behalf of someone else?
 declarationForSomeoneElse.checkYourAnswersLabel = Are you creating this declaration on behalf of someone else?
 declarationForSomeoneElse.error.required = Select yes if you are creating this declaration on behalf of someone else
+
+representativeName.title = What is your company’s name?
+representativeName.heading = What is your company’s name?
+representativeName.checkYourAnswersLabel = What is your company’s name?
+representativeName.error.required = Enter your company’s name
+representativeName.error.length = RepresentativeName must be 35 characters or less
+representativeName.error.invalid = RepresentativeName must only include letters a to z or numbers 0 to 9
