@@ -18,6 +18,8 @@ package controllers
 
 import base.SpecBase
 import matchers.JsonMatchers
+import models.Status.NotStarted
+import models.{NormalMode, Section}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -26,6 +28,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import utils.SectionsHelper
 
 import scala.concurrent.Future
 
@@ -34,7 +37,6 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockitoSugar with J
   "DeclarationSummary Controller" - {
 
     "return OK and the correct view for a GET" in {
-
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
@@ -57,4 +59,6 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockitoSugar with J
       application.stop()
     }
   }
+
+
 }
