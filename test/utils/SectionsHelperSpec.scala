@@ -29,10 +29,10 @@ class SectionsHelperSpec extends SpecBase {
       val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
       val url = routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
-
+      val expectedResult = List(Section(messages("declarationSummary.section.addMovementDetails", "Add"), url, NotStarted))
       val result = sectionsHelper.getSections
 
-      result mustBe expectedSections
+      result mustBe expectedResult
     }
 
     "must return movement details section with status as InProgress" in {
@@ -41,7 +41,7 @@ class SectionsHelperSpec extends SpecBase {
         .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
 
       val url = routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
-      val expectedResult = List(Section("declarationSummary.section.addMovementDetails", url, InProgress))
+      val expectedResult = List(Section(messages("declarationSummary.section.addMovementDetails", "Add"), url, InProgress))
 
       val sectionsHelper = new SectionsHelper(userAnswers)
       val result = sectionsHelper.getSections
@@ -58,7 +58,7 @@ class SectionsHelperSpec extends SpecBase {
         .set(DeclarationForSomeoneElsePage, true).toOption.value
 
       val url = routes.CheckYourAnswersController.onPageLoad(lrn).url
-      val expectedResult = List(Section("declarationSummary.section.addMovementDetails", url, Completed))
+      val expectedResult = List(Section(messages("declarationSummary.section.addMovementDetails", "Edit"), url, Completed))
 
       val sectionsHelper = new SectionsHelper(userAnswers)
       val result = sectionsHelper.getSections
@@ -67,10 +67,8 @@ class SectionsHelperSpec extends SpecBase {
     }
   }
 
-  val declarationTypePageUrl: String = routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
-  val add = "Add"
   lazy val expectedSections: Seq[Section] = Seq(
-    Section(messages("declarationSummary.section.addMovementDetails", add), declarationTypePageUrl, NotStarted)/*,
+    Section(messages("declarationSummary.section.addMovementDetails", "Add"), "", NotStarted)/*,
     Section(messages("declarationSummary.section.AddRoute", add), "", NotStarted),
     Section(messages("declarationSummary.section.addTransport", add), "", NotStarted),
     Section(messages("declarationSummary.section.addTradersDetails", add), "", NotStarted),
