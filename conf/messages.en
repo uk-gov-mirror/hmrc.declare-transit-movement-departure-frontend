@@ -194,3 +194,6 @@ representativeCapacity.option1 = Direct (principal solely liable)
 representativeCapacity.option2 = Indirect (principal and agent jointly liable)
 representativeCapacity.checkYourAnswersLabel = What is your capacity?
 representativeCapacity.error.required = Select your capacity
+
+movementDetailsCheckYourAnswers.title = Check your answers
+movementDetailsCheckYourAnswers.heading = Check your answers
