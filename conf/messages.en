@@ -163,8 +163,8 @@ containersUsed.error.required = Select yes if you have used any containers
 
 procedureType.title = What type of procedure are you using?
 procedureType.heading = What type of procedure are you using?
-procedureType.option1 = Normal
-procedureType.option2 = Simplified
+procedureType.normal = Normal
+procedureType.simplified = Simplified
 procedureType.checkYourAnswersLabel = What type of procedure are you using?
 procedureType.error.required = Select the type of procedure are you using
 
