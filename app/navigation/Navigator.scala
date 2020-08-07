@@ -38,6 +38,7 @@ class Navigator @Inject()() {
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
+    case page if isMovementDetailsSectionPage(page) => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)//TODO create new CYA
     case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
   }
 
@@ -47,4 +48,13 @@ class Navigator @Inject()() {
     case CheckMode =>
       checkRouteMap(page)(userAnswers)
   }
+
+  private def isMovementDetailsSectionPage(page: Page): Boolean = {
+     page match {
+       case DeclarationTypePage| ProcedureTypePage | ContainersUsedPage |
+            DeclarationPlacePage | DeclarationForSomeoneElsePage | RepresentativeNamePage | RepresentativeCapacityPage=> true
+       case _ => false
+     }
+  }
 }
+

@@ -138,6 +138,19 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
         }
       }
+      "Movement Details Section" - {
+
+        "Must go from Declaration-Type to Movement Details Check Your Answers" - {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+
+              navigator.nextPage(DeclarationTypePage, CheckMode, answers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+
+          }
+        }
+      }
     }
   }
 }
