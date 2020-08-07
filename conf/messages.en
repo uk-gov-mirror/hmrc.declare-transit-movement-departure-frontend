@@ -10,7 +10,7 @@ site.edit.hidden = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Save and continue
-site.service_name = common-transit-convention-departure
+site.service_name =  Common Transit Convention for traders
 site.textarea.char_limit = (Limit is {0} characters)
 site.title.suffix = - common-transit-convention-departure - GOV.UK
 
@@ -187,3 +187,10 @@ representativeName.checkYourAnswersLabel = What is your company’s name?
 representativeName.error.required = Enter your company’s name
 representativeName.error.length = RepresentativeName must be 35 characters or less
 representativeName.error.invalid = RepresentativeName must only include letters a to z or numbers 0 to 9
+
+representativeCapacity.title = What is your capacity?
+representativeCapacity.heading = What is your capacity?
+representativeCapacity.option1 = Direct (principal solely liable)
+representativeCapacity.option2 = Indirect (principal and agent jointly liable)
+representativeCapacity.checkYourAnswersLabel = What is your capacity?
+representativeCapacity.error.required = Select your capacity

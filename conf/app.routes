@@ -53,3 +53,8 @@ GET        /:lrn/representative-name                        controllers.Represen
 POST       /:lrn/representative-name                        controllers.RepresentativeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/change-representative-name                  controllers.RepresentativeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/change-representative-name                  controllers.RepresentativeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/representative-capacity                        controllers.RepresentativeCapacityController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/representative-capacity                        controllers.RepresentativeCapacityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-representative-capacity                  controllers.RepresentativeCapacityController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-representative-capacity                  controllers.RepresentativeCapacityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
