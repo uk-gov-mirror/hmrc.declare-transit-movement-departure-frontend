@@ -18,13 +18,13 @@ package utils
 
 import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
-import models.{NormalMode, Section, Status, UserAnswers}
+import models.{NormalMode, SectionDetails, Status, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 
 class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  def getSections: Seq[Section] = {
+  def getSections: Seq[SectionDetails] = {
 
     val mandatorySections = Seq(
       movementDetailsSection/*,
@@ -50,62 +50,62 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
     }
   }
 
-  private def movementDetailsSection: Section = {
+  private def movementDetailsSection: SectionDetails = {
     val startPage: String = routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
     val cyaPageAndStatus: (String, Status) = (routes.CheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage).getOrElse(cyaPageAndStatus)
 
-    Section(messages("declarationSummary.section.addMovementDetails",addOrEdit(status)), page, status)
+    SectionDetails(messages("declarationSummary.section.addMovementDetails",addOrEdit(status)), page, status)
   }
 
   private def addOrEdit(status: Status): String = if(status == Completed) messages("site.edit") else messages("site.add")
 
-  private def routesSection: Section = {
+  private def routesSection: SectionDetails = {
     val startPage: String = ""
     val cyaPageAndStatus: (String, Status) = (routes.CheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage).getOrElse(cyaPageAndStatus)
 
-    Section("declarationSummary.section.addMovementDetails", page, status)
+    SectionDetails("declarationSummary.section.addMovementDetails", page, status)
   }
 
-  private def transportSection: Section = {
+  private def transportSection: SectionDetails = {
     val startPage: String = ""
     val cyaPageAndStatus: (String, Status) = (routes.CheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage).getOrElse(cyaPageAndStatus)
 
-    Section("declarationSummary.section.addMovementDetails", page, status)
+    SectionDetails("declarationSummary.section.addMovementDetails", page, status)
   }
 
-  private def tradersDetailsSection: Section = {
+  private def tradersDetailsSection: SectionDetails = {
     val startPage: String = ""
     val cyaPageAndStatus: (String, Status) = (routes.CheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage).getOrElse(cyaPageAndStatus)
 
-    Section("declarationSummary.section.addMovementDetails", page, status)
+    SectionDetails("declarationSummary.section.addMovementDetails", page, status)
   }
 
-  private def goodsSummarySection: Section = {
+  private def goodsSummarySection: SectionDetails = {
     val startPage: String = ""
     val cyaPageAndStatus: (String, Status) = (routes.CheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage).getOrElse(cyaPageAndStatus)
 
-    Section("declarationSummary.section.addMovementDetails", page, status)
+    SectionDetails("declarationSummary.section.addMovementDetails", page, status)
   }
 
-  private def guaranteeSection: Section = {
+  private def guaranteeSection: SectionDetails = {
     val startPage: String = ""
     val cyaPageAndStatus: (String, Status) = (routes.CheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage).getOrElse(cyaPageAndStatus)
 
-    Section("declarationSummary.section.addMovementDetails", page, status)
+    SectionDetails("declarationSummary.section.addMovementDetails", page, status)
   }
 
-  private def safetyAnsSecuritySection: Section = {
+  private def safetyAnsSecuritySection: SectionDetails = {
     val startPage: String = ""
     val cyaPageAndStatus: (String, Status) = (routes.CheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage).getOrElse(cyaPageAndStatus)
 
-    Section("declarationSummary.section.addMovementDetails", page, status)
+    SectionDetails("declarationSummary.section.addMovementDetails", page, status)
   }
 
   private val movementDetailsPages: Seq[(Option[_], String)] = {

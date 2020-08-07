@@ -18,8 +18,8 @@ package models
 
 import play.api.libs.json.{Json, OWrites}
 
-case class Section (name: String, href: String, status: Status = Status.NotStarted)
+case class SectionDetails(name: String, href: String, status: Status = Status.NotStarted)
 
-object Section {
-  implicit val writes: OWrites[Section] = Json.writes[Section]
+object SectionDetails {
+  implicit val writes: OWrites[SectionDetails] = Json.writes[SectionDetails]
 }

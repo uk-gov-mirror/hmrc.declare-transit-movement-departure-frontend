@@ -18,8 +18,6 @@ package controllers
 
 import base.SpecBase
 import matchers.JsonMatchers
-import models.Status.NotStarted
-import models.{NormalMode, Section}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -28,7 +26,6 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import utils.SectionsHelper
 
 import scala.concurrent.Future
 
@@ -51,7 +48,8 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockitoSugar with J
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn)
+      val expectedJson = Json.obj("lrn" -> lrn,
+        "backToTransitMovements" -> frontendAppConfig.manageTransitMovementsUrl)
 
       templateCaptor.getValue mustEqual "declarationSummary.njk"
       jsonCaptor.getValue must containJson(expectedJson)

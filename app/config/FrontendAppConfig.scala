@@ -42,6 +42,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val enrolmentKey: String     = configuration.get[String]("keys.enrolmentKey")
   lazy val enrolmentIdentifierKey: String = "VATRegNoTURN"
 
+  lazy val manageTransitMovementsUrl: String = configuration.get[String]("urls.manageTransitMovementsFrontend")
+
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 

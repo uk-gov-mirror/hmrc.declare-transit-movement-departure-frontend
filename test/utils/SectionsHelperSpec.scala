@@ -19,7 +19,7 @@ package utils
 import base.SpecBase
 import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
-import models.{DeclarationType, NormalMode, ProcedureType, Section}
+import models.{DeclarationType, NormalMode, ProcedureType, SectionDetails}
 import pages._
 
 class SectionsHelperSpec extends SpecBase {
@@ -29,7 +29,7 @@ class SectionsHelperSpec extends SpecBase {
       val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
       val url = routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
-      val expectedResult = List(Section(messages("declarationSummary.section.addMovementDetails", "Add"), url, NotStarted))
+      val expectedResult = List(SectionDetails(messages("declarationSummary.section.addMovementDetails", "Add"), url, NotStarted))
       val result = sectionsHelper.getSections
 
       result mustBe expectedResult
@@ -41,7 +41,7 @@ class SectionsHelperSpec extends SpecBase {
         .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
 
       val url = routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
-      val expectedResult = List(Section(messages("declarationSummary.section.addMovementDetails", "Add"), url, InProgress))
+      val expectedResult = List(SectionDetails(messages("declarationSummary.section.addMovementDetails", "Add"), url, InProgress))
 
       val sectionsHelper = new SectionsHelper(userAnswers)
       val result = sectionsHelper.getSections
@@ -58,7 +58,7 @@ class SectionsHelperSpec extends SpecBase {
         .set(DeclarationForSomeoneElsePage, true).toOption.value
 
       val url = routes.CheckYourAnswersController.onPageLoad(lrn).url
-      val expectedResult = List(Section(messages("declarationSummary.section.addMovementDetails", "Edit"), url, Completed))
+      val expectedResult = List(SectionDetails(messages("declarationSummary.section.addMovementDetails", "Edit"), url, Completed))
 
       val sectionsHelper = new SectionsHelper(userAnswers)
       val result = sectionsHelper.getSections
@@ -67,8 +67,8 @@ class SectionsHelperSpec extends SpecBase {
     }
   }
 
-  lazy val expectedSections: Seq[Section] = Seq(
-    Section(messages("declarationSummary.section.addMovementDetails", "Add"), "", NotStarted)/*,
+  lazy val expectedSections: Seq[SectionDetails] = Seq(
+    SectionDetails(messages("declarationSummary.section.addMovementDetails", "Add"), "", NotStarted)/*,
     Section(messages("declarationSummary.section.AddRoute", add), "", NotStarted),
     Section(messages("declarationSummary.section.addTransport", add), "", NotStarted),
     Section(messages("declarationSummary.section.addTradersDetails", add), "", NotStarted),
