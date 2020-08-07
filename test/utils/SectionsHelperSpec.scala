@@ -24,15 +24,18 @@ import pages._
 
 class SectionsHelperSpec extends SpecBase {
 
+
   "SectionsHelper" - {
     "must return movement details section with status as NotStarted" in {
       val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
       val url = routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
-      val expectedResult = List(SectionDetails(messages("declarationSummary.section.addMovementDetails", "Add"), url, NotStarted))
+      val sectionName = messages("declarationSummary.section.movementDetails", "Add")
+      val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+
       val result = sectionsHelper.getSections
 
-      result mustBe expectedResult
+      result mustBe expectedSections
     }
 
     "must return movement details section with status as InProgress" in {
@@ -41,7 +44,8 @@ class SectionsHelperSpec extends SpecBase {
         .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
 
       val url = routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
-      val expectedResult = List(SectionDetails(messages("declarationSummary.section.addMovementDetails", "Add"), url, InProgress))
+      val section = SectionDetails(messages("declarationSummary.section.movementDetails", "Add"), url, InProgress)
+      val expectedResult = updateSectionsWithExpectedValue(section)
 
       val sectionsHelper = new SectionsHelper(userAnswers)
       val result = sectionsHelper.getSections
@@ -58,7 +62,8 @@ class SectionsHelperSpec extends SpecBase {
         .set(DeclarationForSomeoneElsePage, true).toOption.value
 
       val url = routes.CheckYourAnswersController.onPageLoad(lrn).url
-      val expectedResult = List(SectionDetails(messages("declarationSummary.section.addMovementDetails", "Edit"), url, Completed))
+      val section = SectionDetails(messages("declarationSummary.section.movementDetails", "Edit"), url, Completed)
+      val expectedResult = updateSectionsWithExpectedValue(section)
 
       val sectionsHelper = new SectionsHelper(userAnswers)
       val result = sectionsHelper.getSections
@@ -67,14 +72,20 @@ class SectionsHelperSpec extends SpecBase {
     }
   }
 
-  lazy val expectedSections: Seq[SectionDetails] = Seq(
-    SectionDetails(messages("declarationSummary.section.addMovementDetails", "Add"), "", NotStarted)/*,
-    Section(messages("declarationSummary.section.AddRoute", add), "", NotStarted),
-    Section(messages("declarationSummary.section.addTransport", add), "", NotStarted),
-    Section(messages("declarationSummary.section.addTradersDetails", add), "", NotStarted),
-    Section(messages("declarationSummary.section.AddGoodsSummary", add), "", NotStarted),
-    Section(messages("declarationSummary.section.AddGoodsSummary", add), "", NotStarted),
-    Section(messages("declarationSummary.section.AddGoodsSummary", add), "", NotStarted),*/
-  )
+  private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
+     val sections: Seq[SectionDetails] = Seq(
+      SectionDetails(messages("declarationSummary.section.movementDetails", "Add"), "", NotStarted),
+      SectionDetails(messages("declarationSummary.section.routes", "Add"), "", NotStarted),
+      SectionDetails(messages("declarationSummary.section.transport", "Add"), "", NotStarted),
+      SectionDetails(messages("declarationSummary.section.tradersDetails", "Add"), "", NotStarted),
+      SectionDetails(messages("declarationSummary.section.goodsSummary", "Add"), "", NotStarted),
+      SectionDetails(messages("declarationSummary.section.guarantee", "Add"), "", NotStarted)
+    )
+    sections.map {
+      section =>
+        if (section.name == sectionDtls.name) sectionDtls else section
+    }
+  }
+
 }
 

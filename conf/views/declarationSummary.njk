@@ -16,6 +16,36 @@
           {{ messages("declarationSummary.heading") }}
         </h1>
 
+         <p class="govuk-body">
+          {{ messages("declarationSummary.p") }}
+         </p>
+
+          <ol class="app-task-list">
+               <li>
+                 <h2 class="app-task-list__section">
+                   <span class="app-task-list__section-number">{{ messages("declarationSummary.departureDetails") }}</span>
+                 </h2>
+
+                {% for section in sections %}
+                     <ul class="app-task-list__items">
+                       <li class="app-task-list__item">
+                         <span class="app-task-list__task-name">
+                                 {% if section.href %}
+                                    <a class="govuk-link" href={{section.href}} >{{ section.name }}</a>
+                                 {% else %}
+                                      <p> {{ section.name }} <p>
+                                 {% endif %}
+                         </span>
+                         <span class="hmrc-status-tag" id="movement-details-not-started">
+                          {{ messages("site."+section.status) }}
+                         </span>
+                       </li>
+                     </ul>
+                 {% endfor %}
+               </li>
+          </ol>
+
+          <p class="govuk-body"><a href={{backToTransitMovements}}>{{ messages("declarationSummary.backToTransitMovements")}}</a></p>
       </div>
     </div>
   </div>
