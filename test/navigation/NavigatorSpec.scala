@@ -120,7 +120,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
 
             navigator.nextPage(RepresentativeCapacityPage, NormalMode, answers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+              .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
     }
@@ -146,7 +146,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
 
               navigator.nextPage(DeclarationTypePage, CheckMode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
           }
         }

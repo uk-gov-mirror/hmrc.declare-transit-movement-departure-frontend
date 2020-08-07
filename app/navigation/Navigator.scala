@@ -33,12 +33,12 @@ class Navigator @Inject()() {
     case DeclarationPlacePage => ua => routes.DeclarationForSomeoneElseController.onPageLoad(ua.id, NormalMode)
     case DeclarationForSomeoneElsePage => ua => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
     case RepresentativeNamePage => ua => routes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
-    case RepresentativeCapacityPage => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
+    case RepresentativeCapacityPage => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => _ => routes.IndexController.onPageLoad()
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
-    case page if isMovementDetailsSectionPage(page) => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)//TODO create new CYA
+    case page if isMovementDetailsSectionPage(page) => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
   }
 
