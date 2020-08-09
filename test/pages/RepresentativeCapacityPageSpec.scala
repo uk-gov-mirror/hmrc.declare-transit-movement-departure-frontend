@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
-import play.api.data.Form
+import models.RepresentativeCapacity
+import pages.behaviours.PageBehaviours
 
-class DeclarationPlaceFormProvider @Inject() extends Mappings {
+class RepresentativeCapacitySpec extends PageBehaviours {
 
-  val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
-  val maxLengthPostCode =9
+  "RepresentativeCapacityPage" - {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("declarationPlace.error.required")
-      .verifying(StopOnFirstFail[String](
-        maxLength(maxLengthPostCode, "declarationPlace.error.length"),
-        regexp(postCodeRegex, "declarationPlace.error.invalid")
-      )))
+    beRetrievable[RepresentativeCapacity](RepresentativeCapacityPage)
+
+    beSettable[RepresentativeCapacity](RepresentativeCapacityPage)
+
+    beRemovable[RepresentativeCapacity](RepresentativeCapacityPage)
+  }
 }
-

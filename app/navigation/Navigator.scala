@@ -29,10 +29,17 @@ class Navigator @Inject()() {
     case LocalReferenceNumberPage => ua => routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode)
     case AddSecurityDetailsPage => ua => routes.DeclarationSummaryController.onPageLoad(ua.id)
     case DeclarationTypePage => ua => routes.ProcedureTypeController.onPageLoad(ua.id, NormalMode)
+    case ProcedureTypePage => ua => routes.ContainersUsedPageController.onPageLoad(ua.id, NormalMode)
+    case ContainersUsedPage => ua => routes.DeclarationPlaceController.onPageLoad(ua.id, NormalMode)
+    case DeclarationPlacePage => ua => routes.DeclarationForSomeoneElseController.onPageLoad(ua.id, NormalMode)
+    case DeclarationForSomeoneElsePage => ua => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
+    case RepresentativeNamePage => ua => routes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
+    case RepresentativeCapacityPage => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => _ => routes.IndexController.onPageLoad()
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
+    case page if isMovementDetailsSectionPage(page) => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
   }
 
@@ -42,4 +49,13 @@ class Navigator @Inject()() {
     case CheckMode =>
       checkRouteMap(page)(userAnswers)
   }
+
+  private def isMovementDetailsSectionPage(page: Page): Boolean = {
+     page match {
+       case DeclarationTypePage| ProcedureTypePage | ContainersUsedPage |
+            DeclarationPlacePage | DeclarationForSomeoneElsePage | RepresentativeNamePage | RepresentativeCapacityPage=> true
+       case _ => false
+     }
+  }
 }
+

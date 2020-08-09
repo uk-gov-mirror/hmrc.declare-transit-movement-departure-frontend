@@ -21,17 +21,17 @@ import forms.mappings.Mappings
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 import play.api.data.Form
 
-class DeclarationPlaceFormProvider @Inject() extends Mappings {
+class RepresentativeNameFormProvider @Inject() extends Mappings {
 
-  val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
-  val maxLengthPostCode =9
+  val representativeNameRegex: String = "^[a-zA-Z0-9 ]*$"
+  val maxLengthRepresentativeName = 35
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("declarationPlace.error.required")
-      .verifying(StopOnFirstFail[String](
-        maxLength(maxLengthPostCode, "declarationPlace.error.length"),
-        regexp(postCodeRegex, "declarationPlace.error.invalid")
-      )))
+      "value" -> text("representativeName.error.required")
+        .verifying(StopOnFirstFail[String](
+         maxLength(maxLengthRepresentativeName, "representativeName.error.length"),
+          regexp(representativeNameRegex, "representativeName.error.invalid")
+        ))
+    )
 }
-

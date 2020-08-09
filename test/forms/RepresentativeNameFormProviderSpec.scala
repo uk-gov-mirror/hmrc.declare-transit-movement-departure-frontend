@@ -17,20 +17,17 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.LocalReferenceNumber
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
+class RepresentativeNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "declarationPlace.error.required"
-  val lengthKey = "declarationPlace.error.length"
-  val invalidKey = "declarationPlace.error.invalid"
-  val maxLength = 9
-  val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
-
-  val form = new DeclarationPlaceFormProvider()()
+  val requiredKey = "representativeName.error.required"
+  val lengthKey = "representativeName.error.length"
+  val invalidKey = "representativeName.error.invalid"
+  val maxLength = 35
+  val representativeNameRegex: String =  "^[a-zA-Z0-9 ]*$"
+  val form = new RepresentativeNameFormProvider()()
 
   ".value" - {
 
@@ -61,10 +58,9 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind strings that do not match regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(postCodeRegex)))
-
+      val expectedError = List(FormError(fieldName, invalidKey, Seq(representativeNameRegex)))
       val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(representativeNameRegex))
       }
 
       forAll(genInvalidString) {

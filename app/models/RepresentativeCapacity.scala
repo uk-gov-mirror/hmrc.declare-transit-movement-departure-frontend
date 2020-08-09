@@ -21,29 +21,29 @@ import play.api.i18n.Messages
 import play.api.libs.json._
 import uk.gov.hmrc.viewmodels._
 
-sealed trait ProcedureType
+sealed trait RepresentativeCapacity
 
-object ProcedureType extends Enumerable.Implicits {
+object RepresentativeCapacity extends Enumerable.Implicits {
 
-  case object Normal extends WithName("normal") with ProcedureType
-  case object Simplified extends WithName("simplified") with ProcedureType
+  case object Option1 extends WithName("option1") with RepresentativeCapacity
+  case object Option2 extends WithName("option2") with RepresentativeCapacity
 
-  val values: Seq[ProcedureType] = Seq(
-    Normal,
-    Simplified
+  val values: Seq[RepresentativeCapacity] = Seq(
+    Option1,
+    Option2
   )
 
   def radios(form: Form[_])(implicit messages: Messages): Seq[Radios.Item] = {
 
     val field = form("value")
     val items = Seq(
-      Radios.Radio(msg"procedureType.normal", Normal.toString),
-      Radios.Radio(msg"procedureType.simplified", Simplified.toString)
+      Radios.Radio(msg"representativeCapacity.option1", Option1.toString),
+      Radios.Radio(msg"representativeCapacity.option2", Option2.toString)
     )
 
     Radios(field, items)
   }
 
-  implicit val enumerable: Enumerable[ProcedureType] =
+  implicit val enumerable: Enumerable[RepresentativeCapacity] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

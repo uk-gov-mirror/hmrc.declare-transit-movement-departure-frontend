@@ -21,6 +21,12 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryRepresentativeCapacityPage: Arbitrary[RepresentativeCapacityPage.type] =
+    Arbitrary(RepresentativeCapacityPage)
+
+  implicit lazy val arbitraryRepresentativeNamePage: Arbitrary[RepresentativeNamePage.type] =
+    Arbitrary(RepresentativeNamePage)
+
   implicit lazy val arbitraryContainersUsedPage: Arbitrary[ContainersUsedPage.type] =
     Arbitrary(ContainersUsedPage)
 

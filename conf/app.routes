@@ -50,3 +50,15 @@ GET        /:lrn/movement-details/declaration-for-someone-else                  
 POST       /:lrn/movement-details/declaration-for-someone-else                        controllers.DeclarationForSomeoneElseController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/movement-details/change-declaration-for-someone-else                  controllers.DeclarationForSomeoneElseController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/movement-details/change-declaration-for-someone-else                  controllers.DeclarationForSomeoneElseController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/representative-name                        controllers.RepresentativeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/representative-name                        controllers.RepresentativeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-representative-name                  controllers.RepresentativeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-representative-name                  controllers.RepresentativeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/representative-capacity                        controllers.RepresentativeCapacityController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/representative-capacity                        controllers.RepresentativeCapacityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-representative-capacity                  controllers.RepresentativeCapacityController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-representative-capacity                  controllers.RepresentativeCapacityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/movement-details-check-your-answers                       controllers.MovementDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)

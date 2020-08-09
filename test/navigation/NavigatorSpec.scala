@@ -63,6 +63,66 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               .mustBe(routes.ProcedureTypeController.onPageLoad(answers.id, NormalMode))
         }
       }
+
+      "must go from Procedure Type page to Container Used page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(ProcedureTypePage, NormalMode, answers)
+              .mustBe(routes.ContainersUsedPageController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from  Container Used page to Declaration Place page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(ContainersUsedPage, NormalMode, answers)
+              .mustBe(routes.DeclarationPlaceController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from Declaration Place page to Declaration For Someone Else page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(DeclarationPlacePage, NormalMode, answers)
+              .mustBe(routes.DeclarationForSomeoneElseController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from Declaration For Someone Else page to Representative Name page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, answers)
+              .mustBe(routes.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from Representative Name page to Representative Capacity page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(RepresentativeNamePage, NormalMode, answers)
+              .mustBe(routes.RepresentativeCapacityController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from Representative Capacity page to Check Your Answers page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(RepresentativeCapacityPage, NormalMode, answers)
+              .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
     }
 
     "in Check mode" - {
@@ -76,6 +136,19 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
             navigator.nextPage(UnknownPage, CheckMode, answers)
               .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+      "Movement Details Section" - {
+
+        "Must go from Declaration-Type to Movement Details Check Your Answers" - {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+
+              navigator.nextPage(DeclarationTypePage, CheckMode, answers)
+                .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+          }
         }
       }
     }
