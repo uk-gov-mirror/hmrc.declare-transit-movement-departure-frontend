@@ -20,35 +20,34 @@
           {{ messages("declarationSummary.p") }}
          </p>
 
-          <ol class="app-task-list">
-               <li>
-                 <h2 class="app-task-list__section">
-                   <span class="app-task-list__section-number">{{ messages("declarationSummary.departureDetails") }}</span>
-                 </h2>
+     <h2 class="app-task-list__section">
+       <span class="app-task-list__section-number">{{ messages("declarationSummary.departureDetails") }}</span>
+     </h2>
 
-                {% for section in sections %}
-                     <ul class="app-task-list__items">
-                       <li class="app-task-list__item">
-                         <span class="app-task-list__task-name">
-                                 {% if section.href %}
-                                      {% if section.status == "completed" %}
-                                         <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.edit")) }}</a>
-                                      {% else %}
-                                         <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.add")) }}</a>
-                                      {% endif %}
-                                 {% else %}
-                                      <p> {{ messages(section.name, messages("site.add")) }} <p>
-                                 {% endif %}
-                         </span>
-                         <span class="hmrc-status-tag" id="movement-details-not-started">
-                          {{ messages("site."+section.status) }}
-                         </span>
-                       </li>
-                     </ul>
-                 {% endfor %}
-               </li>
-          </ol>
-
+     <div class="govuk-summary-sectionRows__row">
+       <dl class="govuk-summary-list govuk-summary-list govuk-!-margin-bottom-9">
+            {% for section in sections %}
+                   <div class="govuk-summary-list__row">
+                     <dt class="govuk-summary-list__key govuk-!-width-one-half">
+                       {% if section.href %}
+                             {% if section.status == "completed" %}
+                                <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.edit")) }}</a>
+                             {% else %}
+                                <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.add")) }}</a>
+                             {% endif %}
+                        {% else %}
+                             <p> {{ messages(section.name, messages("site.add")) }} <p>
+                        {% endif %}
+                     </dt>
+                     <dd class="govuk-summary-list__value">
+                     </dd>
+                       <dd class="govuk-summary-list__actions">
+                             <p> {{ messages("site."+section.status) }} <p>
+                       </dd>
+                   </div>
+             {% endfor %}
+          </dl>
+       </div>
           <p class="govuk-body"><a href={{backToTransitMovements}}>{{ messages("declarationSummary.backToTransitMovements")}}</a></p>
       </div>
     </div>
