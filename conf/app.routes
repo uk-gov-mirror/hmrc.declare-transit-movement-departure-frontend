@@ -61,5 +61,5 @@ POST       /:lrn/representative-capacity                        controllers.Repr
 GET        /:lrn/change-representative-capacity                  controllers.RepresentativeCapacityController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/change-representative-capacity                  controllers.RepresentativeCapacityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/movement-details-check-your-answers                       controllers.MovementDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /:lrn/movement-details-check-your-answers                       controllers.MovementDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
+GET        /:lrn/movement-details/check-your-answers                       controllers.MovementDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/movement-details/check-your-answers                       controllers.MovementDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
