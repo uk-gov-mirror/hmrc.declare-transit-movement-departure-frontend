@@ -43,8 +43,7 @@ class MovementDetailsCheckYourAnswersController @Inject()(
       implicit request =>
         val sections: Seq[Section] = createSections(request.userAnswers)
         val json = Json.obj("lrn" -> lrn,
-          "sections" -> Json.toJson(sections),
-          "onSubmitUrl" -> routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
+          "sections" -> Json.toJson(sections)
         )
 
         renderer.render("movementDetailsCheckYourAnswers.njk", json).map(Ok(_))
