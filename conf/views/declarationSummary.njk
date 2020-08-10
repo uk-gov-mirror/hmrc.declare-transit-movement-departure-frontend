@@ -31,9 +31,13 @@
                        <li class="app-task-list__item">
                          <span class="app-task-list__task-name">
                                  {% if section.href %}
-                                    <a class="govuk-link" href={{section.href}} >{{ section.name }}</a>
+                                      {% if section.status == "completed" %}
+                                         <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.edit")) }}</a>
+                                      {% else %}
+                                         <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.add")) }}</a>
+                                      {% endif %}
                                  {% else %}
-                                      <p> {{ section.name }} <p>
+                                      <p> {{ messages(section.name, messages("site.add")) }} <p>
                                  {% endif %}
                          </span>
                          <span class="hmrc-status-tag" id="movement-details-not-started">

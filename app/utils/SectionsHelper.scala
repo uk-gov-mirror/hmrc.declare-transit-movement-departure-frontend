@@ -54,39 +54,31 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
     val cyaPageAndStatus: (String, Status) = (routes.CheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage).getOrElse(cyaPageAndStatus)
 
-    SectionDetails(messages("declarationSummary.section.movementDetails",addOrEdit(status)), page, status)
+    SectionDetails("declarationSummary.section.movementDetails", page, status)
   }
 
-  private def addOrEdit(status: Status): String = if(status == Completed) messages("site.edit") else messages("site.add")
-
   private def routesSection: SectionDetails = {
-    val status = NotStarted
-    SectionDetails(messages("declarationSummary.section.routes", addOrEdit(status)), "", status)
+    SectionDetails("declarationSummary.section.routes", "", NotStarted)
   }
 
   private def transportSection: SectionDetails = {
-    val status = NotStarted
-    SectionDetails(messages("declarationSummary.section.transport", addOrEdit(status)), "", status)
+    SectionDetails("declarationSummary.section.transport", "", NotStarted)
   }
 
   private def tradersDetailsSection: SectionDetails = {
-    val status = NotStarted
-    SectionDetails(messages("declarationSummary.section.tradersDetails", addOrEdit(status)), "", NotStarted)
+    SectionDetails("declarationSummary.section.tradersDetails", "", NotStarted)
   }
 
   private def goodsSummarySection: SectionDetails = {
-    val status = NotStarted
-    SectionDetails(messages("declarationSummary.section.goodsSummary", addOrEdit(status)), "", status)
+    SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted)
   }
 
   private def guaranteeSection: SectionDetails = {
-    val status = NotStarted
-    SectionDetails(messages("declarationSummary.section.guarantee", addOrEdit(status)), "", status)
+    SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
   }
 
   private def safetyAnsSecuritySection: SectionDetails = {
-    val status = NotStarted
-    SectionDetails(messages("declarationSummary.section.safetyAndSecurity", addOrEdit(status)), "", status)
+    SectionDetails("declarationSummary.section.safetyAndSecurity", "", NotStarted)
   }
 
   private val movementDetailsPages: Seq[(Option[_], String)] = {

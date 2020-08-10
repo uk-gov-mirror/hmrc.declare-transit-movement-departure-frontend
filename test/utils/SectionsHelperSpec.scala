@@ -30,7 +30,7 @@ class SectionsHelperSpec extends SpecBase {
       val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
       val url = routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
-      val sectionName = messages("declarationSummary.section.movementDetails", "Add")
+      val sectionName = "declarationSummary.section.movementDetails"
       val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
       val result = sectionsHelper.getSections
@@ -44,8 +44,8 @@ class SectionsHelperSpec extends SpecBase {
         .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
 
       val url = routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
-      val section = SectionDetails(messages("declarationSummary.section.movementDetails", "Add"), url, InProgress)
-      val expectedResult = updateSectionsWithExpectedValue(section)
+      val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, InProgress)
+      val expectedResult = updateSectionsWithExpectedValue(expectedSection)
 
       val sectionsHelper = new SectionsHelper(userAnswers)
       val result = sectionsHelper.getSections
@@ -62,8 +62,8 @@ class SectionsHelperSpec extends SpecBase {
         .set(DeclarationForSomeoneElsePage, true).toOption.value
 
       val url = routes.CheckYourAnswersController.onPageLoad(lrn).url
-      val section = SectionDetails(messages("declarationSummary.section.movementDetails", "Edit"), url, Completed)
-      val expectedResult = updateSectionsWithExpectedValue(section)
+      val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, Completed)
+      val expectedResult = updateSectionsWithExpectedValue(expectedSection)
 
       val sectionsHelper = new SectionsHelper(userAnswers)
       val result = sectionsHelper.getSections
@@ -74,12 +74,12 @@ class SectionsHelperSpec extends SpecBase {
 
   private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
      val sections: Seq[SectionDetails] = Seq(
-      SectionDetails(messages("declarationSummary.section.movementDetails", "Add"), "", NotStarted),
-      SectionDetails(messages("declarationSummary.section.routes", "Add"), "", NotStarted),
-      SectionDetails(messages("declarationSummary.section.transport", "Add"), "", NotStarted),
-      SectionDetails(messages("declarationSummary.section.tradersDetails", "Add"), "", NotStarted),
-      SectionDetails(messages("declarationSummary.section.goodsSummary", "Add"), "", NotStarted),
-      SectionDetails(messages("declarationSummary.section.guarantee", "Add"), "", NotStarted)
+      SectionDetails("declarationSummary.section.movementDetails", "", NotStarted),
+      SectionDetails("declarationSummary.section.routes", "", NotStarted),
+      SectionDetails("declarationSummary.section.transport", "", NotStarted),
+      SectionDetails("declarationSummary.section.tradersDetails", "", NotStarted),
+      SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted),
+      SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
     )
     sections.map {
       section =>
