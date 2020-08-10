@@ -49,10 +49,28 @@ class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with Mockit
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn)
+      val expectedJson = Json.obj("lrn" -> lrn,
+        "onSubmitUrl" -> routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
+      )
 
       templateCaptor.getValue mustEqual "movementDetailsCheckYourAnswers.njk"
       jsonCaptor.getValue must containJson(expectedJson)
+
+      application.stop()
+    }
+
+    "redirect to 'Declaration summary' page for a POST" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request = FakeRequest(POST, routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.DeclarationSummaryController.onPageLoad(lrn).url
 
       application.stop()
     }

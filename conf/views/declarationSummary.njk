@@ -12,6 +12,7 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
 
+        <span class="govuk-caption-xl">{{ lrn }}</span>
         <h1 class="govuk-heading-xl">
           {{ messages("declarationSummary.heading") }}
         </h1>
@@ -20,31 +21,31 @@
           {{ messages("declarationSummary.p") }}
          </p>
 
-     <h2 class="app-task-list__section">
+     <h2>
        <span class="app-task-list__section-number">{{ messages("declarationSummary.departureDetails") }}</span>
      </h2>
 
      <div class="govuk-summary-sectionRows__row">
        <dl class="govuk-summary-list govuk-summary-list govuk-!-margin-bottom-9">
             {% for section in sections %}
-                   <div class="govuk-summary-list__row">
-                     <dt class="govuk-summary-list__key govuk-!-width-one-half">
-                       {% if section.href %}
-                             {% if section.status == "completed" %}
-                                <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.edit")) }}</a>
-                             {% else %}
-                                <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.add")) }}</a>
-                             {% endif %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__value govuk-!-width-one-half">
+                   {% if section.href %}
+                        {% if section.status == "completed" %}
+                           <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.edit")) }} <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.edit")) }}</span></a>
                         {% else %}
-                             <p> {{ messages(section.name, messages("site.add")) }} <p>
+                           <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.add")) }} <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.add")) }}</span></a>
                         {% endif %}
-                     </dt>
-                     <dd class="govuk-summary-list__value">
-                     </dd>
-                       <dd class="govuk-summary-list__actions">
-                             <p> {{ messages("site."+section.status) }} <p>
-                       </dd>
-                   </div>
+                   {% else %}
+                        {{ messages(section.name, messages("site.add")) }}
+                   {% endif %}
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                  </dd>
+                    <dd class="govuk-summary-list__actions">
+                        {{ messages("site."+section.status) }}
+                    </dd>
+                </div>
              {% endfor %}
           </dl>
        </div>

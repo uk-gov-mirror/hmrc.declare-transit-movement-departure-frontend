@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
 import viewModels.sections.Section
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class MovementDetailsCheckYourAnswersController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -42,12 +42,18 @@ class MovementDetailsCheckYourAnswersController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         val sections: Seq[Section] = createSections(request.userAnswers)
-        val json = Json.obj("lrn" -> lrn, "sections" -> Json.toJson(sections))
+        val json = Json.obj("lrn" -> lrn,
+          "sections" -> Json.toJson(sections),
+          "onSubmitUrl" -> routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        )
 
-          renderer.render("movementDetailsCheckYourAnswers.njk", json).map(Ok(_))
+        renderer.render("movementDetailsCheckYourAnswers.njk", json).map(Ok(_))
   }
 
-
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+    implicit request =>
+      Future.successful(Redirect(routes.DeclarationSummaryController.onPageLoad(lrn)))
+  }
 
   private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
     val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers)

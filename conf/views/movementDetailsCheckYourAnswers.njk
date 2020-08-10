@@ -4,8 +4,6 @@
 {% from "macros/section.njk"                       import section as sectionMacro %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 
-
-
 {% block pageTitle %}
   {{ title(messages("movementDetailsCheckYourAnswers.title")) }}
 {% endblock %}
@@ -20,17 +18,20 @@
           {{ messages("movementDetailsCheckYourAnswers.heading") }}
         </h1>
 
-           {{ csrf() | safe }}
-
         {% for section in sections %}
              {{ sectionMacro(section.sectionTitle, section.rows) }}
         {% endfor %}
+
+        <form action="{{ onSubmitUrl }}" method="post">
+
+           {{ csrf() | safe }}
 
          {{ govukButton({
               text: messages("site.continue"),
               preventDoubleClick: true,
               attributes: {id:"submit"}
             }) }}
+         </form>
       </div>
     </div>
   </div>
