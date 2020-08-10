@@ -16,9 +16,12 @@
 
 package pages
 
+import generators.UserAnswersGenerator
+import models.{RepresentativeCapacity, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
-class DeclarationForSomeoneElsePageSpec extends PageBehaviours {
+class DeclarationForSomeoneElsePageSpec extends PageBehaviours with UserAnswersGenerator {
 
   "DeclarationForSomeoneElsePage" - {
 
@@ -27,5 +30,33 @@ class DeclarationForSomeoneElsePageSpec extends PageBehaviours {
     beSettable[Boolean](DeclarationForSomeoneElsePage)
 
     beRemovable[Boolean](DeclarationForSomeoneElsePage)
+
+    "cleanup" - {
+      "must remove RepresentativeNamePage and RepresentativeCapacityPage when there is a change of the answer to 'No'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result = userAnswers.set(RepresentativeNamePage, "answer").success.value
+              .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct).success.value
+              .set(DeclarationForSomeoneElsePage, false).success.value
+
+            result.get(RepresentativeCapacityPage) must not be defined
+            result.get(RepresentativeNamePage) must not be defined
+        }
+      }
+
+      "must keep RepresentativeNamePage and RepresentativeCapacityPage when there is a change of the answer to 'Yes'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result = userAnswers.set(RepresentativeNamePage, "answer").success.value
+              .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct).success.value
+              .set(DeclarationForSomeoneElsePage, true).success.value
+
+            result.get(RepresentativeCapacityPage) mustBe defined
+            result.get(RepresentativeNamePage) mustBe defined
+        }
+      }
+    }
   }
 }

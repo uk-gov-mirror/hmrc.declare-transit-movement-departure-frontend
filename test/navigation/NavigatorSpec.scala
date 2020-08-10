@@ -94,13 +94,25 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
       }
 
-      "must go from Declaration For Someone Else page to Representative Name page" in {
+      "must go from Declaration For Someone Else page to Representative Name page on selecting option 'Yes'" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, true).toOption.value
 
-            navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, answers)
+            navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
               .mustBe(routes.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from Declaration For Someone Else page to movement details check your answers page on selecting option 'No'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
+
+            navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
+              .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
 

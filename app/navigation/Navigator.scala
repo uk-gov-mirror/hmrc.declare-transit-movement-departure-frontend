@@ -25,6 +25,15 @@ import models._
 
 @Singleton
 class Navigator @Inject()() {
+
+  private def isDeclarationForSomeoneElse(ua: UserAnswers): Call = {
+    if(ua.get(DeclarationForSomeoneElsePage).contains(true)) {
+      routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
+    } else {
+      routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    }
+  }
+
   private val normalRoutes: Page => UserAnswers => Call = {
     case LocalReferenceNumberPage => ua => routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode)
     case AddSecurityDetailsPage => ua => routes.DeclarationSummaryController.onPageLoad(ua.id)
@@ -32,7 +41,7 @@ class Navigator @Inject()() {
     case ProcedureTypePage => ua => routes.ContainersUsedPageController.onPageLoad(ua.id, NormalMode)
     case ContainersUsedPage => ua => routes.DeclarationPlaceController.onPageLoad(ua.id, NormalMode)
     case DeclarationPlacePage => ua => routes.DeclarationForSomeoneElseController.onPageLoad(ua.id, NormalMode)
-    case DeclarationForSomeoneElsePage => ua => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
+    case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua)
     case RepresentativeNamePage => ua => routes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
     case RepresentativeCapacityPage => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => _ => routes.IndexController.onPageLoad()
