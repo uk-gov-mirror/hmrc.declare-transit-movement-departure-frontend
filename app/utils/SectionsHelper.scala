@@ -19,7 +19,7 @@ package utils
 import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
-import pages._
+import pages.{RepresentativeNamePage, _}
 import play.api.i18n.Messages
 
 class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
@@ -51,7 +51,7 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
   private def movementDetailsSection: SectionDetails = {
     val startPage: String = routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
-    val cyaPageAndStatus: (String, Status) = (routes.CheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
+    val cyaPageAndStatus: (String, Status) = (routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
     val (page, status) = getIncompletePage(startPage).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.movementDetails", page, status)
@@ -89,6 +89,8 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
       userAnswers.get(ContainersUsedPage) -> routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(DeclarationPlacePage) -> routes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(DeclarationForSomeoneElsePage) -> routes.DeclarationForSomeoneElseController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(RepresentativeNamePage) ->  routes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(RepresentativeCapacityPage) ->  routes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url
     )
   }
 

@@ -208,8 +208,8 @@ representativeName.error.invalid = RepresentativeName must only include letters 
 
 representativeCapacity.title = What is your capacity?
 representativeCapacity.heading = What is your capacity?
-representativeCapacity.option1 = Direct (principal solely liable)
-representativeCapacity.option2 = Indirect (principal and agent jointly liable)
+representativeCapacity.direct = Direct (principal solely liable)
+representativeCapacity.indirect = Indirect (principal and agent jointly liable)
 representativeCapacity.checkYourAnswersLabel = Representativegit capacity
 representativeCapacity.error.required = Select your capacity
 

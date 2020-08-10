@@ -19,7 +19,7 @@ package utils
 import base.SpecBase
 import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
-import models.{DeclarationType, NormalMode, ProcedureType, SectionDetails}
+import models.{DeclarationType, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails}
 import pages._
 
 class SectionsHelperSpec extends SpecBase {
@@ -60,8 +60,10 @@ class SectionsHelperSpec extends SpecBase {
         .set(ContainersUsedPage, true).toOption.value
         .set(DeclarationPlacePage, "answers").toOption.value
         .set(DeclarationForSomeoneElsePage, true).toOption.value
+        .set(RepresentativeNamePage, "name").toOption.value
+        .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct).toOption.value
 
-      val url = routes.CheckYourAnswersController.onPageLoad(lrn).url
+      val url = routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
       val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, Completed)
       val expectedResult = updateSectionsWithExpectedValue(expectedSection)
 
