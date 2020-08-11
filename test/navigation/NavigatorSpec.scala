@@ -161,6 +161,42 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
           }
+
+          "must go from Declaration For Someone Else page to Representative Name page on selecting option 'Yes'" in {
+
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, true).toOption.value
+                  .remove(RepresentativeNamePage).toOption.value
+
+                navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
+                  .mustBe(routes.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
+          "must go from Declaration For Someone Else page to CYA page on selecting option 'Yes' and representativeNamePage has data" in {
+
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, true).toOption.value
+                  .set(RepresentativeNamePage, "answer").toOption.value
+
+                navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
+                  .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+            }
+          }
+
+          "must go from Declaration For Someone Else page to movement details check your answers page on selecting option 'No'" in {
+
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
+
+                navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
+                  .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+            }
+          }
+
         }
       }
     }
