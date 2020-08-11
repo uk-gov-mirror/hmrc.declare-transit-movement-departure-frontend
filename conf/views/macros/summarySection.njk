@@ -9,7 +9,6 @@
             {% for section in sections %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__value govuk-!-width-one-half">
-                   {% if section.href %}
                         {% if section.status == "completed" %}
                            <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.edit")) }}
                             <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.edit")) }}</span></a>
@@ -17,9 +16,6 @@
                            <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.add")) }}
                             <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.add")) }}</span></a>
                         {% endif %}
-                   {% else %}
-                        {{ messages(section.name, messages("site.add")) }}
-                   {% endif %}
                   </dt>
                   <dd class="govuk-summary-list__value">
                   </dd>
