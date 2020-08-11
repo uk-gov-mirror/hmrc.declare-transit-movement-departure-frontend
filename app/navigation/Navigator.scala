@@ -40,6 +40,7 @@ class Navigator @Inject()() {
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
+    case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, CheckMode)
     case page if isMovementDetailsSectionPage(page) => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
   }
@@ -60,10 +61,10 @@ class Navigator @Inject()() {
   }
 
   private def isDeclarationForSomeoneElse(ua: UserAnswers, mode: Mode): Call = {
-    if(ua.get(DeclarationForSomeoneElsePage).contains(true)) {
-      routes.RepresentativeNameController.onPageLoad(ua.id, mode)
-    } else {
-      routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    (ua.get(DeclarationForSomeoneElsePage), ua.get(RepresentativeNamePage), mode) match {
+      case (Some(true), None, CheckMode) => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), _, NormalMode) => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
+      case _ => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 }
