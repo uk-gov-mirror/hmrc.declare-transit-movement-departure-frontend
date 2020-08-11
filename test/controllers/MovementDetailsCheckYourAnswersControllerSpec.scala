@@ -49,9 +49,7 @@ class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with Mockit
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn,
-        "onSubmitUrl" -> routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
-      )
+      val expectedJson = Json.obj("lrn" -> lrn)
 
       templateCaptor.getValue mustEqual "movementDetailsCheckYourAnswers.njk"
       jsonCaptor.getValue must containJson(expectedJson)
