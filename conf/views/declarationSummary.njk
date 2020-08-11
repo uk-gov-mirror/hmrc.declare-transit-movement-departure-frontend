@@ -1,0 +1,32 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                         import title %}
+{% from "macros/summarySection.njk"                import summarySection as summarySectionMacro %}
+
+{% block pageTitle %}
+  {{ title(messages("declarationSummary.title")) }}
+{% endblock %}
+
+{% block mainContent %}
+
+  <div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">{{ lrn }}</span>
+        <h1 class="govuk-heading-xl">
+          {{ messages("declarationSummary.heading") }}
+        </h1>
+
+         <p class="govuk-body">
+          {{ messages("declarationSummary.p") }}
+         </p>
+
+         {{ summarySectionMacro(messages("declarationSummary.departureDetails"), sections) }}
+
+          <p class="govuk-body"><a href={{backToTransitMovements}}>{{ messages("declarationSummary.backToTransitMovements")}}</a></p>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

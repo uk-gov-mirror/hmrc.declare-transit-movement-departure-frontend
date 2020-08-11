@@ -14,8 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import queries.{Gettable, Settable}
+import play.api.libs.json.{JsString, Writes}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
+sealed trait Status
+
+object Status {
+
+  case object NotStarted extends Status
+
+  case object InProgress extends Status
+
+  case object Completed extends Status
+
+  implicit val writes: Writes[Status] = Writes[Status] {
+    case NotStarted => JsString("notStarted")
+    case InProgress => JsString("inProgress")
+    case Completed => JsString("completed")
+  }
+}

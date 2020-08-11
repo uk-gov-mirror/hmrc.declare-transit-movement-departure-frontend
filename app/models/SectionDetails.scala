@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import queries.{Gettable, Settable}
+import play.api.libs.json.{Json, OWrites}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
+case class SectionDetails(name: String, href: String, status: Status = Status.NotStarted)
+
+object SectionDetails {
+  implicit val writes: OWrites[SectionDetails] = Json.writes[SectionDetails]
+}

@@ -80,7 +80,7 @@ class DataRetrievalActionSpec
 
     "must return an OptionalDataRequest with an empty UserAnswers" - {
 
-      "where there are no existing answers for this MRN" in {
+      "where there are no existing answers for this LRN" in {
 
         when(sessionRepository.get(any(), any())) thenReturn Future.successful(None)
 

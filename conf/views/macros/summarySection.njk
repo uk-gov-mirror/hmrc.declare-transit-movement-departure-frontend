@@ -1,0 +1,30 @@
+{% macro summarySection(sectionTitle, sections) %}
+
+   {% if sectionTitle %}
+        <h2 class="govuk-heading-m">{{ sectionTitle }}</h2>
+   {%  endif %}
+
+    <div class="govuk-summary-sectionRows__row">
+       <dl class="govuk-summary-list govuk-summary-list govuk-!-margin-bottom-9">
+            {% for section in sections %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__value govuk-!-width-one-half">
+                        {% if section.status == "completed" %}
+                           <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.edit")) }}
+                            <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.edit")) }}</span></a>
+                        {% else %}
+                           <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.add")) }}
+                            <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.add")) }}</span></a>
+                        {% endif %}
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                  </dd>
+                    <dd class="govuk-summary-list__actions">
+                        {{ messages("site."+section.status) }}
+                    </dd>
+                </div>
+             {% endfor %}
+          </dl>
+       </div>
+
+{% endmacro %}

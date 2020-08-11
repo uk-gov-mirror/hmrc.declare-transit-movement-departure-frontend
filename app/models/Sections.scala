@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import queries.{Gettable, Settable}
-
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
+case class Sections (sections: Seq[SectionDetails])
