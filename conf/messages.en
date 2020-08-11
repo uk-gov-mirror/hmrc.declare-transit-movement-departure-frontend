@@ -210,7 +210,7 @@ representativeCapacity.title = What is your capacity?
 representativeCapacity.heading = What is your capacity?
 representativeCapacity.direct = Direct (principal solely liable)
 representativeCapacity.indirect = Indirect (principal and agent jointly liable)
-representativeCapacity.checkYourAnswersLabel = Representativegit capacity
+representativeCapacity.checkYourAnswersLabel = Representative capacity
 representativeCapacity.error.required = Select your capacity
 
 movementDetailsCheckYourAnswers.title = Check your answers
