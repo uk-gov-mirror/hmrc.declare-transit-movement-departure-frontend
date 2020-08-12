@@ -149,7 +149,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
             content            = msg"site.edit",
             href               = routes.AddSecurityDetailsController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSecurityDetails.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-add-containers""")
+            attributes = Map("id" -> s"""change-add-security-details""")
           )
         )
       )
