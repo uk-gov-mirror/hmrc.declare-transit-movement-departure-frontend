@@ -36,7 +36,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           Action(
             content            = msg"site.edit",
             href               = routes.RepresentativeCapacityController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"representativeCapacity.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"representativeCapacity.checkYourAnswersLabel")),
+            attributes = Map("id" -> s"""change-representative-capacity""")
           )
         )
       )
@@ -51,7 +52,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           Action(
             content            = msg"site.edit",
             href               = routes.RepresentativeNameController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"representativeName.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"representativeName.checkYourAnswersLabel")),
+            attributes = Map("id" -> s"""change-representative-name""")
           )
         )
       )
@@ -82,7 +84,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           Action(
             content            = msg"site.edit",
             href               = routes.DeclarationForSomeoneElseController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationForSomeoneElse.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationForSomeoneElse.checkYourAnswersLabel")),
+            attributes = Map("id" -> s"""change-declaration-for-someone-else""")
           )
         )
       )
@@ -97,7 +100,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           Action(
             content            = msg"site.edit",
             href               = routes.DeclarationPlaceController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationPlace.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationPlace.checkYourAnswersLabel")),
+            attributes = Map("id" -> s"""change-declaration-place""")
           )
         )
       )
@@ -112,7 +116,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           Action(
             content            = msg"site.edit",
             href               = routes.ProcedureTypeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"procedureType.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"procedureType.checkYourAnswersLabel")),
+            attributes = Map("id" -> s"""change-procedure-type""")
           )
         )
       )
@@ -127,7 +132,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           Action(
             content            = msg"site.edit",
             href               = routes.DeclarationTypeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationType.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationType.checkYourAnswersLabel")),
+            attributes = Map("id" -> s"""change-declaration-type""")
           )
         )
       )
@@ -142,7 +148,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           Action(
             content            = msg"site.edit",
             href               = routes.AddSecurityDetailsController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSecurityDetails.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSecurityDetails.checkYourAnswersLabel")),
+            attributes = Map("id" -> s"""change-add-containers""")
           )
         )
       )
