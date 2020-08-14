@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.ProcedureTypeFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, ProcedureType, UserAnswers}
+import models.{NormalMode, ProcedureType}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -37,11 +37,16 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ProcedureTypeControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val procedureTypeRoute = routes.ProcedureTypeController.onPageLoad(lrn, NormalMode).url
+  lazy val procedureTypeRoute =
+    routes.ProcedureTypeController.onPageLoad(lrn, NormalMode).url
 
   val formProvider = new ProcedureTypeFormProvider()
   val form = formProvider()
@@ -53,7 +58,8 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request = FakeRequest(GET, procedureTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -62,12 +68,13 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn" -> lrn,
         "radios" -> ProcedureType.radios(form)
       )
 
@@ -82,8 +89,12 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ProcedureTypePage, ProcedureType.values.head).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val userAnswers = emptyUserAnswers
+        .set(ProcedureTypePage, ProcedureType.values.head)
+        .success
+        .value
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, procedureTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -92,14 +103,16 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> ProcedureType.values.head.toString))
+      val filledForm =
+        form.bind(Map("value" -> ProcedureType.values.head.toString))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
+        "form" -> filledForm,
+        "mode" -> NormalMode,
+        "lrn" -> lrn,
         "radios" -> ProcedureType.radios(filledForm)
       )
 
@@ -141,8 +154,10 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, procedureTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request = FakeRequest(POST, procedureTypeRoute)
+        .withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -151,12 +166,13 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
+        "form" -> boundForm,
+        "mode" -> NormalMode,
+        "lrn" -> lrn,
         "radios" -> ProcedureType.radios(boundForm)
       )
 
@@ -175,7 +191,9 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -192,7 +210,9 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController
+        .onPageLoad()
+        .url
 
       application.stop()
     }

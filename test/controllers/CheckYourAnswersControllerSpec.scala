@@ -20,11 +20,10 @@ import base.SpecBase
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.SummaryList
 
 import scala.concurrent.Future
 
@@ -37,9 +36,11 @@ class CheckYourAnswersControllerSpec extends SpecBase {
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(lrn).url)
+      val request =
+        FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(lrn).url)
 
       val result = route(application, request).value
 
@@ -48,7 +49,8 @@ class CheckYourAnswersControllerSpec extends SpecBase {
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       templateCaptor.getValue mustEqual "check-your-answers.njk"
 
@@ -59,13 +61,16 @@ class CheckYourAnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(lrn).url)
+      val request =
+        FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(lrn).url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController
+        .onPageLoad()
+        .url
 
       application.stop()
     }

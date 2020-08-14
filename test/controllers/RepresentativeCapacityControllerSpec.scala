@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.RepresentativeCapacityFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, RepresentativeCapacity, UserAnswers}
+import models.{NormalMode, RepresentativeCapacity}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -37,11 +37,16 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class RepresentativeCapacityControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val representativeCapacityRoute = routes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url
+  lazy val representativeCapacityRoute =
+    routes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url
 
   val formProvider = new RepresentativeCapacityFormProvider()
   val form = formProvider()
@@ -53,7 +58,8 @@ class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar wi
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request = FakeRequest(GET, representativeCapacityRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -62,12 +68,13 @@ class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar wi
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn" -> lrn,
         "radios" -> RepresentativeCapacity.radios(form)
       )
 
@@ -82,8 +89,12 @@ class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar wi
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(RepresentativeCapacityPage, RepresentativeCapacity.values.head).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val userAnswers = emptyUserAnswers
+        .set(RepresentativeCapacityPage, RepresentativeCapacity.values.head)
+        .success
+        .value
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, representativeCapacityRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -92,14 +103,16 @@ class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar wi
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> RepresentativeCapacity.values.head.toString))
+      val filledForm =
+        form.bind(Map("value" -> RepresentativeCapacity.values.head.toString))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
+        "form" -> filledForm,
+        "mode" -> NormalMode,
+        "lrn" -> lrn,
         "radios" -> RepresentativeCapacity.radios(filledForm)
       )
 
@@ -125,7 +138,9 @@ class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar wi
 
       val request =
         FakeRequest(POST, representativeCapacityRoute)
-          .withFormUrlEncodedBody(("value", RepresentativeCapacity.values.head.toString))
+          .withFormUrlEncodedBody(
+            ("value", RepresentativeCapacity.values.head.toString)
+          )
 
       val result = route(application, request).value
 
@@ -141,8 +156,10 @@ class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar wi
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, representativeCapacityRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request = FakeRequest(POST, representativeCapacityRoute)
+        .withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -151,12 +168,13 @@ class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar wi
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
+        "form" -> boundForm,
+        "mode" -> NormalMode,
+        "lrn" -> lrn,
         "radios" -> RepresentativeCapacity.radios(boundForm)
       )
 
@@ -175,7 +193,9 @@ class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar wi
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -186,13 +206,17 @@ class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar wi
 
       val request =
         FakeRequest(POST, representativeCapacityRoute)
-          .withFormUrlEncodedBody(("value", RepresentativeCapacity.values.head.toString))
+          .withFormUrlEncodedBody(
+            ("value", RepresentativeCapacity.values.head.toString)
+          )
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController
+        .onPageLoad()
+        .url
 
       application.stop()
     }

@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.RepresentativeNameFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -27,7 +27,7 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.RepresentativeNamePage
 import play.api.inject.bind
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -37,14 +37,19 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class RepresentativeNameControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class RepresentativeNameControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new RepresentativeNameFormProvider()
   val form = formProvider()
 
-  lazy val representativeNameRoute = routes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url
+  lazy val representativeNameRoute =
+    routes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url
 
   "RepresentativeName Controller" - {
 
@@ -53,7 +58,8 @@ class RepresentativeNameControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request = FakeRequest(GET, representativeNameRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -62,13 +68,11 @@ class RepresentativeNameControllerSpec extends SpecBase with MockitoSugar with N
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn
-      )
+      val expectedJson =
+        Json.obj("form" -> form, "mode" -> NormalMode, "lrn" -> lrn)
 
       templateCaptor.getValue mustEqual "representativeName.njk"
       jsonCaptor.getValue must containJson(expectedJson)
@@ -81,8 +85,10 @@ class RepresentativeNameControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(RepresentativeNamePage, "answer").success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val userAnswers =
+        emptyUserAnswers.set(RepresentativeNamePage, "answer").success.value
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, representativeNameRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -91,15 +97,13 @@ class RepresentativeNameControllerSpec extends SpecBase with MockitoSugar with N
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val filledForm = form.bind(Map("value" -> "answer"))
 
-      val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
-      )
+      val expectedJson =
+        Json.obj("form" -> filledForm, "lrn" -> lrn, "mode" -> NormalMode)
 
       templateCaptor.getValue mustEqual "representativeName.njk"
       jsonCaptor.getValue must containJson(expectedJson)
@@ -138,8 +142,10 @@ class RepresentativeNameControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, representativeNameRoute).withFormUrlEncodedBody(("value", ""))
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request = FakeRequest(POST, representativeNameRoute)
+        .withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -148,13 +154,11 @@ class RepresentativeNameControllerSpec extends SpecBase with MockitoSugar with N
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
-      )
+      val expectedJson =
+        Json.obj("form" -> boundForm, "lrn" -> lrn, "mode" -> NormalMode)
 
       templateCaptor.getValue mustEqual "representativeName.njk"
       jsonCaptor.getValue must containJson(expectedJson)
@@ -172,7 +176,9 @@ class RepresentativeNameControllerSpec extends SpecBase with MockitoSugar with N
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -189,7 +195,9 @@ class RepresentativeNameControllerSpec extends SpecBase with MockitoSugar with N
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
