@@ -16,55 +16,59 @@
 
 package base
 
-import config.FrontendAppConfig
 import controllers.actions._
-import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
+import models.EoriNumber
+import models.LocalReferenceNumber
+import models.UserAnswers
 import org.mockito.Mockito
-import org.scalatest.{BeforeAndAfterEach, OptionValues, TryValues}
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.OptionValues
+import org.scalatest.TryValues
+import org.scalatest.concurrent.IntegrationPatience
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.guice._
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
+import play.api.i18n.MessagesApi
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
+import play.api.test.Helpers
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 
-trait SpecBase extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with OptionValues with TryValues
-  with ScalaFutures with IntegrationPatience with MockitoSugar with BeforeAndAfterEach {
+trait SpecBase
+    extends AnyFreeSpec
+    with Matchers
+    with OptionValues
+    with TryValues
+    with ScalaFutures
+    with IntegrationPatience
+    with MockitoSugar
+    with BeforeAndAfterEach {
 
   override def beforeEach {
     Mockito.reset(mockRenderer)
   }
 
-  val userAnswersId = "id"
-  val eoriNumber: EoriNumber       = EoriNumber("EoriNumber")
+  val userAnswersId             = "id"
+  val eoriNumber: EoriNumber    = EoriNumber("EoriNumber")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
 
   val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())
 
-  def injector: Injector = app.injector
-
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
-
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-
-  def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-
   val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+  implicit def messages: Messages = Helpers.stubMessages()
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalActionProvider].toInstance(new FakeDataRetrievalActionProvider(userAnswers)),
-        bind[NunjucksRenderer].toInstance(mockRenderer)
+        bind[DataRetrievalActionProvider]
+          .toInstance(new FakeDataRetrievalActionProvider(userAnswers)),
+        bind[NunjucksRenderer].toInstance(mockRenderer),
+        bind[MessagesApi].toInstance(Helpers.stubMessagesApi())
       )
 }
