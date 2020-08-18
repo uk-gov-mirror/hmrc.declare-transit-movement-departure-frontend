@@ -8,8 +8,15 @@ lazy val appName: String = "declare-transit-movement-departure-frontend"
 
 resolvers += "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/"
 
+val silencerVersion = "1.7.0"
+
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtArtifactory)
+  .enablePlugins(
+    PlayScala,
+    SbtAutoBuildPlugin,
+    SbtDistributablesPlugin,
+    SbtArtifactory
+  )
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(DefaultBuildSettings.scalaSettings: _*)
   .settings(DefaultBuildSettings.defaultSettings(): _*)
@@ -35,7 +42,7 @@ lazy val root = (project in file("."))
     ScoverageKeys.coverageMinimum := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
-    useSuperShell in ThisBuild     := false,
+    useSuperShell in ThisBuild := false,
     scalacOptions ++= Seq("-feature"),
     libraryDependencies ++= AppDependencies(),
     dependencyOverrides += "commons-codec" % "commons-codec" % "1.12", //added for reactive mongo issues
@@ -47,17 +54,29 @@ lazy val root = (project in file("."))
       Resolver.jcenterRepo
     ),
     Concat.groups := Seq(
-      "javascripts/application.js" -> group(Seq("lib/govuk-frontend/govuk/all.js", "javascripts/ctc.js"))
+      "javascripts/application.js" -> group(
+        Seq("lib/govuk-frontend/govuk/all.js", "javascripts/ctc.js")
+      )
     ),
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
-    pipelineStages in Assets := Seq(concat,uglify)
+    pipelineStages in Assets := Seq(concat, uglify)
+  )
+  .settings(
+    // ***************
+    // Use the silencer plugin to suppress warnings
+    scalacOptions += "-P:silencer:pathFilters=routes",
+    libraryDependencies ++= Seq(
+      compilerPlugin(
+        "com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full
+      ),
+      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
+    )
+    // ***************
   )
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
-  fork        := true,
-  javaOptions ++= Seq(
-    "-Dconfig.resource=test.application.conf"
-  )
+  fork := true,
+  javaOptions ++= Seq("-Dconfig.resource=test.application.conf")
 )
 
 dependencyOverrides ++= AppDependencies.overrides

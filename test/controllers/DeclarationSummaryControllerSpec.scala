@@ -17,12 +17,16 @@
 package controllers
 
 import base.SpecBase
+import config.FrontendAppConfig
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.JsObject
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -37,10 +41,12 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockitoSugar with J
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, routes.DeclarationSummaryController.onPageLoad(lrn).url)
+      val application       = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val frontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+
+      val request        = FakeRequest(GET, routes.DeclarationSummaryController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -48,8 +54,11 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockitoSugar with J
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn,
-        "backToTransitMovements" -> frontendAppConfig.manageTransitMovementsUrl)
+      val expectedJson =
+        Json.obj(
+          "lrn"                    -> lrn,
+          "backToTransitMovements" -> frontendAppConfig.manageTransitMovementsUrl
+        )
 
       templateCaptor.getValue mustEqual "declarationSummary.njk"
       jsonCaptor.getValue must containJson(expectedJson)
@@ -57,6 +66,5 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockitoSugar with J
       application.stop()
     }
   }
-
 
 }

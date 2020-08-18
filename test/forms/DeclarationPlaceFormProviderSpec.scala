@@ -17,8 +17,6 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.LocalReferenceNumber
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -52,25 +50,24 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
 
       val expectedError = List(FormError(fieldName, lengthKey, Seq(maxLength)))
 
-      forAll(stringsLongerThan(maxLength + 1)) {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustBe expectedError
+      forAll(stringsLongerThan(maxLength + 1)) { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors mustBe expectedError
       }
     }
 
     "must not bind strings that do not match regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(postCodeRegex)))
+      val expectedError =
+        List(FormError(fieldName, invalidKey, Seq(postCodeRegex)))
 
       val genInvalidString: Gen[String] = {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
       }
 
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+      forAll(genInvalidString) { invalidString =>
+        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors mustBe expectedError
       }
     }
   }
