@@ -215,3 +215,8 @@ representativeCapacity.error.required = Select your capacity
 
 movementDetailsCheckYourAnswers.title = Check your answers
 movementDetailsCheckYourAnswers.heading = Check your answers
+
+isPrincipalEoriKnown.title = isPrincipalEoriKnown
+isPrincipalEoriKnown.heading = isPrincipalEoriKnown
+isPrincipalEoriKnown.checkYourAnswersLabel = isPrincipalEoriKnown
+isPrincipalEoriKnown.error.required = Select yes if isPrincipalEoriKnown
