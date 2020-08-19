@@ -66,9 +66,12 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
   }
 
   private def tradersDetailsSection: SectionDetails = {
-    SectionDetails("declarationSummary.section.tradersDetails", "", NotStarted)
-  }
+    val startPage: String = routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
+    val (page, status) = getIncompletePage(startPage, traderDetailsPage).getOrElse(cyaPageAndStatus)
 
+    SectionDetails("declarationSummary.section.tradersDetails", page, status)
+  }
   private def goodsSummarySection: SectionDetails = {
     SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted)
   }
@@ -97,6 +100,14 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
       userAnswers.get(DeclarationForSomeoneElsePage) -> routes.DeclarationForSomeoneElseController.onPageLoad(lrn, NormalMode).url
     ) ++ declareForSomeoneElseDiversionPages
 
+  }
+
+  private val traderDetailsPage: Seq[(Option[_], String)] = {
+    val lrn = userAnswers.id
+
+    Seq(
+      userAnswers.get(IsPrincipalEoriKnownPage) -> routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
+    )
   }
 
 }

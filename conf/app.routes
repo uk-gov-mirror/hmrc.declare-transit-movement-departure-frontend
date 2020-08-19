@@ -63,3 +63,8 @@ POST       /:lrn/change-representative-capacity                  controllers.Rep
 
 GET        /:lrn/movement-details/check-your-answers                       controllers.MovementDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /:lrn/movement-details/check-your-answers                       controllers.MovementDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
+
+GET        /:lrn/trader-details/is-principal-eori-known                        controllers.IsPrincipalEoriKnownController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/trader-details/is-principal-eori-known                        controllers.IsPrincipalEoriKnownController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/trader-details/change-is-principal-eori-known                  controllers.IsPrincipalEoriKnownController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/trader-details/change-is-principal-eori-known                  controllers.IsPrincipalEoriKnownController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

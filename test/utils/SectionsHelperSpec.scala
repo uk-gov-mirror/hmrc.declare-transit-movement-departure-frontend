@@ -72,6 +72,18 @@ class SectionsHelperSpec extends SpecBase {
 
       result mustBe expectedResult
     }
+
+    "must return trader's details section with status as NotStarted" in {
+      val sectionsHelper = new SectionsHelper(emptyUserAnswers)
+
+      val url = routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
+      val sectionName = "declarationSummary.section.tradersDetails"
+      val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+
+      val result = sectionsHelper.getSections
+
+      result mustBe expectedSections
+    }
   }
 
   private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
@@ -90,4 +102,3 @@ class SectionsHelperSpec extends SpecBase {
   }
 
 }
-

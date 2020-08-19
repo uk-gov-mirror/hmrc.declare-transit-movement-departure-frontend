@@ -27,6 +27,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def isPrincipalEoriKnown: Option[Row] = userAnswers.get(IsPrincipalEoriKnownPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"isPrincipalEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.IsPrincipalEoriKnownController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"isPrincipalEoriKnown.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def representativeCapacity: Option[Row] = userAnswers.get(RepresentativeCapacityPage) map {
     answer =>
       Row(
