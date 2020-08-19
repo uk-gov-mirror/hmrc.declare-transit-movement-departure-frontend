@@ -28,7 +28,7 @@
         {% endif %}
 
         <form action="{{ routes.controllers.IsPrincipalEoriKnownController.onSubmit(lrn, mode).url }}" method="post">
-        <span class="govuk-caption-xl">{{messages('isPrincipalEoriKnown.preHeading')}}</span>
+        <span class="govuk-caption-xl">{{messages('traderDetails.preHeading')}}</span>
 
           {{ csrf() | safe }}
 

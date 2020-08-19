@@ -47,6 +47,7 @@ index.heading = common-transit-convention-departure
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 movementDetails.preHeading = Movement details
+traderDetails.preHeading = Trader’s details
 
 postcode = Postcode
 postcodeExample = Like, AB1 1AB.
@@ -220,10 +221,9 @@ isPrincipalEoriKnown.title =  Do you know the principal’s EORI number?
 isPrincipalEoriKnown.heading =  Do you know the principal’s EORI number?
 isPrincipalEoriKnown.checkYourAnswersLabel =  Know principal’s EORI number?
 isPrincipalEoriKnown.error.required = Select yes if you know the principal’s EORI number
-isPrincipalEoriKnown.preHeading = Trader’s details
 
-principalName.title = principalName
-principalName.heading = principalName
-principalName.checkYourAnswersLabel = principalName
-principalName.error.required = Enter principalName
+principalName.title = What is the principal’s EORI number?
+principalName.heading = What is the principal’s EORI number?
+principalName.checkYourAnswersLabel =  Principal’s name
+principalName.error.required =  Enter the principal's name
 principalName.error.length = PrincipalName must be 35 characters or less

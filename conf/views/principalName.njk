@@ -29,6 +29,8 @@
 
         <form action="{{ routes.controllers.PrincipalNameController.onSubmit(lrn, mode).url }}" method="post">
 
+        <span class="govuk-caption-xl">{{messages('traderDetails.preHeading')}}</span>
+
           {{ csrf() | safe }}
 
           {{ govukInput({
