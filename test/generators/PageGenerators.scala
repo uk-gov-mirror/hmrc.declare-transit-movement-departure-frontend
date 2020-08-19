@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryWhatIsPrincipalEoriPage: Arbitrary[WhatIsPrincipalEoriPage.type] =
+    Arbitrary(WhatIsPrincipalEoriPage)
+
   implicit lazy val arbitraryRepresentativeCapacityPage: Arbitrary[RepresentativeCapacityPage.type] =
     Arbitrary(RepresentativeCapacityPage)
 

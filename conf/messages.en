@@ -215,3 +215,9 @@ representativeCapacity.error.required = Select your capacity
 
 movementDetailsCheckYourAnswers.title = Check your answers
 movementDetailsCheckYourAnswers.heading = Check your answers
+
+whatIsPrincipalEori.title = whatIsPrincipalEori
+whatIsPrincipalEori.heading = whatIsPrincipalEori
+whatIsPrincipalEori.checkYourAnswersLabel = whatIsPrincipalEori
+whatIsPrincipalEori.error.required = Enter whatIsPrincipalEori
+whatIsPrincipalEori.error.length = WhatIsPrincipalEori must be 17 characters or less
