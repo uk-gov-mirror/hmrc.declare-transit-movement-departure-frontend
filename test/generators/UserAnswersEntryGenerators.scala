@@ -23,6 +23,7 @@ import pages._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
+  self: Generators =>
 
   implicit lazy val arbitraryIsPrincipalEoriKnownUserAnswersEntry: Arbitrary[(IsPrincipalEoriKnownPage.type, JsValue)] =
     Arbitrary {
@@ -31,8 +32,6 @@ trait UserAnswersEntryGenerators extends PageGenerators {
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
-
-  self: Generators =>
 
   implicit lazy val arbitraryRepresentativeCapacityUserAnswersEntry: Arbitrary[(RepresentativeCapacityPage.type, JsValue)] =
     Arbitrary {

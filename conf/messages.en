@@ -216,7 +216,8 @@ representativeCapacity.error.required = Select your capacity
 movementDetailsCheckYourAnswers.title = Check your answers
 movementDetailsCheckYourAnswers.heading = Check your answers
 
-isPrincipalEoriKnown.title = isPrincipalEoriKnown
-isPrincipalEoriKnown.heading = isPrincipalEoriKnown
-isPrincipalEoriKnown.checkYourAnswersLabel = isPrincipalEoriKnown
+isPrincipalEoriKnown.title =  Do you know the principal’s EORI number?
+isPrincipalEoriKnown.heading =  Do you know the principal’s EORI number?
+isPrincipalEoriKnown.checkYourAnswersLabel =  Know principal’s EORI number?
 isPrincipalEoriKnown.error.required = Select yes if isPrincipalEoriKnown
+isPrincipalEoriKnown.preHeading = Trader’s details
