@@ -102,7 +102,3 @@ class SectionsHelperSpec extends SpecBase {
   }
 
 }
-result
-List(SectionDetails(declarationSummary.section.movementDetails,/ABCD1234567890123/movement-details/declaration-type,NotStarted), SectionDetails(declarationSummary.section.routes,,NotStarted), SectionDetails(declarationSummary.section.transport,,NotStarted), SectionDetails(declarationSummary.section.tradersDetails,,NotStarted),                                           SectionDetails(declarationSummary.section.goodsSummary,,NotStarted), SectionDetails(declarationSummary.section.guarantee,,NotStarted))
-List(SectionDetails(declarationSummary.section.movementDetails,,NotStarted),                                                     SectionDetails(declarationSummary.section.routes,,NotStarted), SectionDetails(declarationSummary.section.transport,,NotStarted), SectionDetails(declarationSummary.section.tradersDetails,/ABCD1234567890123/is-principal-eori-known,NotStarted), SectionDetails(declarationSummary.section.goodsSummary,,NotStarted), SectionDetails(declarationSummary.section.guarantee,,NotStarted))
-expected sections
