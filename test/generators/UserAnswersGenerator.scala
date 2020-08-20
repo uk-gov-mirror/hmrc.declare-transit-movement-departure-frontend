@@ -28,6 +28,7 @@ trait UserAnswersGenerator extends TryValues {
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(IsPrincipalEoriKnownPage.type, JsValue)] ::
+    arbitrary[(WhatIsPrincipalEoriPage.type, JsValue)] ::
     arbitrary[(RepresentativeCapacityPage.type, JsValue)] ::
     arbitrary[(RepresentativeNamePage.type, JsValue)] ::
     arbitrary[(ContainersUsedPage.type, JsValue)] ::

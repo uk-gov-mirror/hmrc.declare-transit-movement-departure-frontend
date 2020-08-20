@@ -24,6 +24,9 @@ trait PageGenerators {
   implicit lazy val arbitraryIsPrincipalEoriKnownPage: Arbitrary[IsPrincipalEoriKnownPage.type] =
     Arbitrary(IsPrincipalEoriKnownPage)
 
+  implicit lazy val arbitraryWhatIsPrincipalEoriPage: Arbitrary[WhatIsPrincipalEoriPage.type] =
+    Arbitrary(WhatIsPrincipalEoriPage)
+
   implicit lazy val arbitraryRepresentativeCapacityPage: Arbitrary[RepresentativeCapacityPage.type] =
     Arbitrary(RepresentativeCapacityPage)
 
