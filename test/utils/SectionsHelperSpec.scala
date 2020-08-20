@@ -88,10 +88,10 @@ class SectionsHelperSpec extends SpecBase {
 
   private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
      val sections: Seq[SectionDetails] = Seq(
-      SectionDetails("declarationSummary.section.movementDetails", "", NotStarted),
+      SectionDetails("declarationSummary.section.movementDetails",routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.routes", "", NotStarted),
       SectionDetails("declarationSummary.section.transport", "", NotStarted),
-      SectionDetails("declarationSummary.section.tradersDetails", "", NotStarted),
+      SectionDetails("declarationSummary.section.tradersDetails",routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted),
       SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
     )
