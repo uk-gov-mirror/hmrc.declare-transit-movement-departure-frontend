@@ -1,9 +1,25 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers
 
 import base.SpecBase
 import forms.WhatIsPrincipalEoriFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -11,7 +27,7 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.WhatIsPrincipalEoriPage
 import play.api.inject.bind
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -27,6 +43,7 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
 
   val formProvider = new WhatIsPrincipalEoriFormProvider()
   val form = formProvider()
+  private val validEori    = "AB123456789012345"
 
   lazy val whatIsPrincipalEoriRoute = routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url
 
@@ -65,7 +82,7 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(WhatIsPrincipalEoriPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(WhatIsPrincipalEoriPage, validEori).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, whatIsPrincipalEoriRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -77,7 +94,7 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> validEori))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -107,7 +124,7 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
 
       val request =
         FakeRequest(POST, whatIsPrincipalEoriRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", validEori))
 
       val result = route(application, request).value
 

@@ -17,15 +17,22 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class WhatIsPrincipalEoriFormProvider @Inject() extends Mappings {
+
+  val eoriNumberRegex: String = "^[A-Z]{2}[0-9]{1,15}"
+  val maxLengthEoriNumber: Int = 17
+  val validEoriCharactersRegex: String = "^[A-Z0-9]*$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("whatIsPrincipalEori.error.required")
-        .verifying(maxLength(17, "whatIsPrincipalEori.error.length"))
-    )
+        .verifying(StopOnFirstFail[String](
+          maxLength(maxLengthEoriNumber, "whatIsPrincipalEori.error.length"),
+          regexp(validEoriCharactersRegex, "whatIsPrincipalEori.error.invalidCharacters"),
+          regexp(eoriNumberRegex, "whatIsPrincipalEori.error.invalidFormat")
+    )))
 }
