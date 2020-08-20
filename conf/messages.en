@@ -217,6 +217,12 @@ representativeCapacity.error.required = Select your capacity
 movementDetailsCheckYourAnswers.title = Check your answers
 movementDetailsCheckYourAnswers.heading = Check your answers
 
+isPrincipalEoriKnown.title =  Do you know the principal’s EORI number?
+isPrincipalEoriKnown.heading =  Do you know the principal’s EORI number?
+isPrincipalEoriKnown.checkYourAnswersLabel =  Know principal’s EORI number?
+isPrincipalEoriKnown.error.required = Select yes if you know the principal’s EORI number
+isPrincipalEoriKnown.preHeading = Trader’s details
+
 whatIsPrincipalEori.title = What is the principal’s EORI number?
 whatIsPrincipalEori.heading = What is the principal’s EORI number?
 whatIsPrincipalEori.checkYourAnswersLabel = What is the principal’s EORI number?

@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryIsPrincipalEoriKnownPage: Arbitrary[IsPrincipalEoriKnownPage.type] =
+    Arbitrary(IsPrincipalEoriKnownPage)
+
   implicit lazy val arbitraryWhatIsPrincipalEoriPage: Arbitrary[WhatIsPrincipalEoriPage.type] =
     Arbitrary(WhatIsPrincipalEoriPage)
 
