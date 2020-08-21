@@ -222,8 +222,8 @@ isPrincipalEoriKnown.heading =  Do you know the principal’s EORI number?
 isPrincipalEoriKnown.checkYourAnswersLabel =  Know principal’s EORI number?
 isPrincipalEoriKnown.error.required = Select yes if you know the principal’s EORI number
 
-principalName.title = What is the principal’s EORI number?
-principalName.heading = What is the principal’s EORI number?
+principalName.title =  What is the principal’s name?
+principalName.heading =  What is the principal’s name?
 principalName.checkYourAnswersLabel =  Principal’s name
 principalName.error.required =  Enter the principal's name
 principalName.error.length = PrincipalName must be 35 characters or less
