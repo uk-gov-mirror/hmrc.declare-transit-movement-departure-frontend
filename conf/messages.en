@@ -221,7 +221,13 @@ isPrincipalEoriKnown.title =  Do you know the principal’s EORI number?
 isPrincipalEoriKnown.heading =  Do you know the principal’s EORI number?
 isPrincipalEoriKnown.checkYourAnswersLabel =  Know principal’s EORI number?
 isPrincipalEoriKnown.error.required = Select yes if you know the principal’s EORI number
-isPrincipalEoriKnown.preHeading = Trader’s details
+
+principalName.title =  What is the principal’s name?
+principalName.heading =  What is the principal’s name?
+principalName.checkYourAnswersLabel =  Principal’s name
+principalName.error.required =  Enter the principal's name
+principalName.error.length = PrincipalName must be 35 characters or less
+principalName.error.invalidCharacters =  The principal's name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, underscores, and greater than (>) and less than (<) signs
 
 whatIsPrincipalEori.title = What is the principal’s EORI number?
 whatIsPrincipalEori.heading = What is the principal’s EORI number?
