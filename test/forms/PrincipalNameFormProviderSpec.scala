@@ -24,6 +24,9 @@ class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "principalName.error.required"
   val lengthKey = "principalName.error.length"
   val maxLength = 35
+  val principalNameRegex: String = "^([a-zA-Z0-9@'><\\/?%&.-_]{1,35})$"
+  val validrincipalNameCharactersRegex: String = "^[a-zA-Z0-9@'><\\/?%&.-_]*$"
+
 
   val form = new PrincipalNameFormProvider()()
 
