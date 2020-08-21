@@ -227,3 +227,4 @@ principalName.heading = What is the principal’s EORI number?
 principalName.checkYourAnswersLabel =  Principal’s name
 principalName.error.required =  Enter the principal's name
 principalName.error.length = PrincipalName must be 35 characters or less
+principalName.error.invalidCharacters =  The principal's name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, underscores, and greater than (>) and less than (<) signs
