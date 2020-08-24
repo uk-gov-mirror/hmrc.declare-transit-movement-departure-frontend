@@ -83,3 +83,5 @@ GET        /:lrn/trader-details/add-consignor                        controllers
 POST       /:lrn/trader-details/add-consignor                        controllers.AddConsignorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/trader-details/change-add-consignor                  controllers.AddConsignorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/trader-details/change-add-consignor                  controllers.AddConsignorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /technical-difficulties                       controllers.TechnicalDifficultiesController.onPageLoad

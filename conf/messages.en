@@ -65,6 +65,13 @@ session_expired.guidance = The details you have given have been deleted because 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+technicalDifficulties.title = Sorry, there is a problem with the service
+technicalDifficulties.heading = Sorry, there is a problem with the service
+technicalDifficulties.tryAgain = Try again later.
+technicalDifficulties.savedAnswers = We saved your answers. They will be available for up to 28 days.
+technicalDifficulties.contact = You can
+technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement(opens in a new tab)
+
 #### Compliance statement
 
 ## section one
@@ -249,3 +256,5 @@ addConsignor.checkYourAnswersLabel = Do you need to add a consignor?
 addConsignor.error.required = Select yes if you need to add a consignor
 addConsignor.heading = Do you need to add a consignor?
 addConsignor.preHeading = Trader''s details
+
+
