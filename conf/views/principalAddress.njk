@@ -29,6 +29,8 @@
 
         <form action="{{ routes.controllers.PrincipalAddressController.onSubmit(lrn, mode).url }}" method="post">
 
+        <span class="govuk-caption-xl">{{messages('traderDetails.preHeading')}}</span>
+
           {{ csrf() | safe }}
 
         <h1 class="govuk-heading-xl">
@@ -36,23 +38,36 @@
         </h1>
 
           {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
             label: {
-              text: messages('principalAddress.Number and street')
+              text: messages('principalAddress.numberAndStreet')
             },
-            id: "Number and street",
-            name: "Number and street",
-            value: form.Number and street.value,
-            errorMessage: form.Number and street.error
+            id: "numberAndStreet",
+            name: "numberAndStreet",
+            value: form.numberAndStreet.value,
+            errorMessage: form.numberAndStreet.error
           }) }}
 
           {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
             label: {
-              text: messages('principalAddress.Town')
+              text: messages('principalAddress.town')
             },
-            id: "Town",
-            name: "Town",
-            value: form.Town.value,
-            errorMessage: form.Town.error
+            id: "town",
+            name: "town",
+            value: form.town.value,
+            errorMessage: form.town.error
+          }) }}
+
+          {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
+            label: {
+              text: messages('principalAddress.postcode')
+            },
+            id: "postcode",
+            name: "postcode",
+            value: form.postcode.value,
+            errorMessage: form.postcode.error
           }) }}
 
           {{ govukButton({

@@ -31,7 +31,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     answer =>
       Row(
         key     = Key(msg"principalAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.Number and street} ${answer.Town}"),
+        value   = Value(lit"${answer.NumberandStreet} ${answer.Town}"),
         actions = List(
           Action(
             content            = msg"site.edit",
