@@ -39,7 +39,7 @@ class AllowlistFilterSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
     } yield (key, value)
   )
 
-  "the list of whitelisted IP addresses" - {
+  "the list of allowlisted IP addresses" - {
 
     "must throw an exception" - {
 
@@ -48,12 +48,12 @@ class AllowlistFilterSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
         forAll(otherConfigGen, arbitrary[String], arbitrary[String]) {
           (otherConfig, destination, excluded) =>
 
-            whenever(!otherConfig.contains("filters.whitelist.ips")) {
+            whenever(!otherConfig.contains("filters.allowlist.ips")) {
 
               val config = Configuration(
                 (otherConfig +
-                  ("filters.whitelist.destination" -> destination) +
-                  ("filters.whitelist.excluded"    -> excluded)
+                  ("filters.allowlist.destination" -> destination) +
+                  ("filters.allowlist.excluded"    -> excluded)
                 ).toSeq: _*
               )
 
@@ -80,9 +80,9 @@ class AllowlistFilterSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
               ).toSeq: _*
             )
 
-            val whitelistFilter = new AllowlistFilter(config, mockMaterializer)
+            val allowlistFilter = new AllowlistFilter(config, mockMaterializer)
 
-            whitelistFilter.whitelist mustBe empty
+            allowlistFilter.whitelist mustBe empty
           }
       }
     }
@@ -106,15 +106,15 @@ class AllowlistFilterSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
               ).toSeq: _*
             )
 
-            val whitelistFilter = new AllowlistFilter(config, mockMaterializer)
+            val allowlistFilter = new AllowlistFilter(config, mockMaterializer)
 
-            whitelistFilter.whitelist must contain theSameElementsAs ips
+            allowlistFilter.whitelist must contain theSameElementsAs ips
         }
       }
     }
   }
 
-  "the destination for non-whitelisted visitors" - {
+  "the destination for non-allowlisted visitors" - {
 
     "must throw an exception" - {
 
@@ -153,9 +153,9 @@ class AllowlistFilterSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
               ).toSeq: _*
           )
 
-          val whitelistFilter = new AllowlistFilter(config, mockMaterializer)
+          val allowlistFilter = new AllowlistFilter(config, mockMaterializer)
 
-          whitelistFilter.destination mustEqual Call("GET", destination)
+          allowlistFilter.destination mustEqual Call("GET", destination)
       }
     }
   }
@@ -207,9 +207,9 @@ class AllowlistFilterSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
 
             val expectedCalls = excludedPaths.map(Call("GET", _))
 
-            val whitelistFilter = new AllowlistFilter(config, mockMaterializer)
+            val allowlistFilter = new AllowlistFilter(config, mockMaterializer)
 
-            whitelistFilter.excludedPaths must contain theSameElementsAs expectedCalls
+            allowlistFilter.excludedPaths must contain theSameElementsAs expectedCalls
         }
       }
     }
