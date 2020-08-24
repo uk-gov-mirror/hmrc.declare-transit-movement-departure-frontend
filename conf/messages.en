@@ -39,6 +39,12 @@ phaseBanner.1 = This is a new service – your
 phaseBanner.2 = feedback
 phaseBanner.3 = will help us to improve it.
 
+pageNotFound.heading = Page not found
+pageNotFound.paragraph1 = If you typed the web address, check it is correct.
+pageNotFound.paragraph2 = If you pasted the web address, check you copied the entire address.
+pageNotFound.paragraph3Start = If the web address is correct or you selected a link or button,
+pageNotFound.contactLink=contact the New Computerised Transit System(NCTS) helpdesk if you need to speak to someone about your transit movement(opens in a new tab).
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
@@ -58,6 +64,13 @@ session_expired.guidance = The details you have given have been deleted because 
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+technicalDifficulties.title = Sorry, there is a problem with the service
+technicalDifficulties.heading = Sorry, there is a problem with the service
+technicalDifficulties.tryAgain = Try again later.
+technicalDifficulties.savedAnswers = We saved your answers. They will be available for up to 28 days.
+technicalDifficulties.contact = You can
+technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement(opens in a new tab)
 
 #### Compliance statement
 
@@ -241,3 +254,5 @@ isConsignorEoriKnown.title = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.heading = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.checkYourAnswersLabel = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.error.required = Select yes if you know the consignor’s EORI number
+
+
