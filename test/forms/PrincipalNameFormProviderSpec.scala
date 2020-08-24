@@ -17,18 +17,16 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import org.scalacheck.Gen
 import play.api.data.FormError
 
 class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "principalName.error.required"
   val lengthKey = "principalName.error.length"
-  val maxLengthPrincipalName = 35
+  val maxLength = 35
   val invalidCharacters = "principalName.error.invalidCharacters"
-  val invalidFormatKey = "principalName.error.invalidFormat"
   val principalNameRegex: String = "^([a-zA-Z0-9@'><\\/?%&.-_]{1,35})$"
-  val validPrincipalNameCharactersRegex: String = "^[a-zA-Z0-9@'><\\/?%&.-_]*$"
+  val validrincipalNameCharactersRegex: String = "^[a-zA-Z0-9@'><\\/?%&.-_]*$"
 
 
   val form = new PrincipalNameFormProvider()()
@@ -40,14 +38,14 @@ class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLengthPrincipalName)
+      stringsWithMaxLength(maxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLengthPrincipalName,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLengthPrincipalName))
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
@@ -55,36 +53,6 @@ class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-
-    "must not bind strings that do not match the valid principal name characters regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(validPrincipalNameCharactersRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLengthPrincipalName) suchThat (!_.matches(validPrincipalNameCharactersRegex))
-      }
-
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
-      }
-    }
-
-    "must not bind strings that do not match the principal name regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidFormatKey, Seq(principalNameRegex)))
-
-      val genInvalidString: Gen[String] = {
-        alphaNumericWithMaxLength(maxLengthPrincipalName).map(_.toUpperCase) suchThat (!_.matches(principalNameRegex))
-      }
-
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
-      }
-    }
 
   }
 }
