@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package models.reference
 
-import play.api.libs.json._
+import play.api.libs.json.{Json, OFormat}
 
-case class PrincipalAddress(NumberandStreet: String, Town: String, Postcode: String, Country: String)
+case class Country(code: CountryCode, description: String)
 
-object PrincipalAddress {
-
-  object Constants {
-    val numberAndStreetLength = 35
-    val townLength = 35
-    val postcodeLength = 9
-  }
-
-  implicit val format = Json.format[PrincipalAddress]
+object Country {
+  implicit val format: OFormat[Country] = Json.format[Country]
 }

@@ -16,17 +16,20 @@
 
 package models
 
-import play.api.libs.json._
+import models.reference.{Country, CountryCode}
 
-case class PrincipalAddress(NumberandStreet: String, Town: String, Postcode: String, Country: String)
+class CountryList(val countries: Seq[Country]) {
 
-object PrincipalAddress {
+  def fullList: Seq[Country]                                = countries
+  def getCountry(countryCode: CountryCode): Option[Country] = countries.find(_.code == countryCode)
 
-  object Constants {
-    val numberAndStreetLength = 35
-    val townLength = 35
-    val postcodeLength = 9
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case value: CountryList => value.countries == countries
+      case _                  => false
+    }
+}
 
-  implicit val format = Json.format[PrincipalAddress]
+object CountryList {
+  def apply(countries: Seq[Country]): CountryList = new CountryList(countries)
 }

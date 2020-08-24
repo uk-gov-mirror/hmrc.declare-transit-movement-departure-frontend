@@ -20,8 +20,9 @@ import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms._
-import models.PrincipalAddress
+import models.{CountryList, PrincipalAddress}
 import models.PrincipalAddress.Constants.{numberAndStreetLength, postcodeLength, townLength}
+import models.reference.Country
 
 class PrincipalAddressFormProvider @Inject() extends Mappings {
 
@@ -32,8 +33,8 @@ class PrincipalAddressFormProvider @Inject() extends Mappings {
       "town" -> text("principalAddress.town.required")
         .verifying(maxLength(townLength, "principalAddress.error.town.length")),
       "postcode" -> text("principalAddress.postcode.required")
-        .verifying(maxLength(postcodeLength, "principalAddress.error.postcode.length"))
-
-    )(PrincipalAddress.apply)(PrincipalAddress.unapply)
+        .verifying(maxLength(postcodeLength, "principalAddress.error.postcode.length")),
+      "country" -> text("eventCountry.error.required"))
+       (PrincipalAddress.apply)(PrincipalAddress.unapply)
   )
 }
