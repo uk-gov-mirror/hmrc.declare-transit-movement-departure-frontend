@@ -241,3 +241,5 @@ addConsignor.title = Do you need to add a consignor?
 addConsignor.heading = Do you need to add a consignor?
 addConsignor.checkYourAnswersLabel = Do you need to add a consignor?
 addConsignor.error.required = Select yes if you need to add a consignor
+addConsignor.heading = Do you need to add a consignor?
+addConsignor.preHeading = Trader''s details

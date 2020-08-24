@@ -28,6 +28,7 @@
         {% endif %}
 
         <form action="{{ routes.controllers.AddConsignorController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('addConsignor.preHeading')}}</span>
 
           {{ csrf() | safe }}
 
