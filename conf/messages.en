@@ -244,3 +244,13 @@ whatIsPrincipalEori.error.required = Enter the principal’s EORI number
 whatIsPrincipalEori.error.length = The principal’s EORI number must be 17 characters or less
 whatIsPrincipalEori.error.invalidCharacters = The principal’s EORI number must only include letters a to z and numbers 0 to 9
 whatIsPrincipalEori.error.invalidFormat = Enter the principal’s EORI number in the right format
+
+principalAddress.title = principalAddress
+principalAddress.heading = principalAddress
+principalAddress.Number and street = Number and street
+principalAddress.Town = Town
+principalAddress.checkYourAnswersLabel = principalAddress
+principalAddress.error.Number and street.required = Enter Number and street
+principalAddress.error.Town.required = Enter Town
+principalAddress.error.Number and street.length = Number and street must be 35 characters or less
+principalAddress.error.Town.length = Town must be 35 characters or less

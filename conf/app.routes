@@ -78,3 +78,8 @@ GET        /:lrn/trader-details/what-is-principal-eori                        co
 POST       /:lrn/trader-details/what-is-principal-eori                        controllers.WhatIsPrincipalEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/trader-details/change-what-is-principal-eori                 controllers.WhatIsPrincipalEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/trader-details/change-what-is-principal-eori                 controllers.WhatIsPrincipalEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/principalAddress                        controllers.PrincipalAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/principalAddress                        controllers.PrincipalAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changePrincipalAddress                  controllers.PrincipalAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changePrincipalAddress                  controllers.PrincipalAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

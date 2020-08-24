@@ -27,6 +27,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def principalAddress: Option[Row] = userAnswers.get(PrincipalAddressPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"principalAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"${answer.Number and street} ${answer.Town}"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.PrincipalAddressController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"principalAddress.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def principalName: Option[Row] = userAnswers.get(PrincipalNamePage) map {
     answer =>
       Row(
