@@ -270,4 +270,7 @@ consignorEori.error.length = Consignor's Eori number must be 17 characters or le
 consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
 consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
 
-
+addConsignee.title = Do you need to add a consignee?
+addConsignee.heading = Do you need to add a consignee?
+addConsignee.checkYourAnswersLabel = Do you need to add a consignee?
+addConsignee.error.required = Select yes if you need to add a consignee
