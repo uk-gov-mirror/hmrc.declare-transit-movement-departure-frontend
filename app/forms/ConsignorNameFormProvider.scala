@@ -17,16 +17,21 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 import play.api.data.Form
 
-class PrincipalNameFormProvider @Inject() extends Mappings {
+class ConsignorNameFormProvider @Inject() extends Mappings {
+
+  val consignorNameRegex: String = "^[a-zA-Z0-9 ]*$"
+  val maxLengthConsignorName = 35
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("principalName.error.required")
-        .verifying(maxLength(35, "principalName.error.length"))
-
+      "value" -> text("consignorName.error.required")
+        .verifying(StopOnFirstFail[String](
+          maxLength(maxLengthConsignorName, "consignorName.error.length"),
+          regexp(consignorNameRegex, "consignorName.error.invalid")
+        ))
     )
-}
+  }
