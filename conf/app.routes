@@ -90,3 +90,8 @@ GET        /:lrn/trader-details/change-is-consignor-eori-known                  
 POST       /:lrn/trader-details/change-is-consignor-eori-known                   controllers.IsConsignorEoriKnownController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /technical-difficulties                       controllers.TechnicalDifficultiesController.onPageLoad
+
+GET        /:lrn/trader-details/consignor-name                        controllers.ConsignorNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/trader-details/consignor-name                        controllers.ConsignorNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/trader-details/change-consignor-name                  controllers.ConsignorNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/trader-details/change-consignor-name                  controllers.ConsignorNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

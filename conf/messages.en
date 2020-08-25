@@ -263,3 +263,9 @@ isConsignorEoriKnown.checkYourAnswersLabel = Do you know the consignor’s EORI 
 isConsignorEoriKnown.error.required = Select yes if you know the consignor’s EORI number
 
 
+
+consignorName.title = consignorName
+consignorName.heading = consignorName
+consignorName.checkYourAnswersLabel = consignorName
+consignorName.error.required = Enter consignorName
+consignorName.error.length = ConsignorName must be 35 characters or less
