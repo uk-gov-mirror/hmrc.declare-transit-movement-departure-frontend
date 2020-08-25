@@ -27,6 +27,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def addConsignee: Option[Row] = userAnswers.get(AddConsigneePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addConsignee.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddConsigneeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignee.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def consignorEori: Option[Row] = userAnswers.get(ConsignorEoriPage) map {
     answer =>
       Row(
