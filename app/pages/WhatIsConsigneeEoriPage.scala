@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
+import play.api.libs.json.JsPath
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case object WhatIsConsigneeEoriPage extends QuestionPage[String] {
 
-class PrincipalNameFormProvider @Inject() extends Mappings {
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("principalName.error.required")
-        .verifying(maxLength(35, "principalName.error.length"))
-
-    )
+  override def toString: String = "whatIsConsigneeEori"
 }

@@ -16,17 +16,30 @@
 
 package forms
 
-import javax.inject.Inject
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class IsConsigneeEoriKnownFormProviderSpec extends BooleanFieldBehaviours {
 
-class PrincipalNameFormProvider @Inject() extends Mappings {
+  val requiredKey = "isConsigneeEoriKnown.error.required"
+  val invalidKey = "error.boolean"
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("principalName.error.required")
-        .verifying(maxLength(35, "principalName.error.length"))
+  val form = new IsConsigneeEoriKnownFormProvider()()
 
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

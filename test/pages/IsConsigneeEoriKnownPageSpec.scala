@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
+import pages.behaviours.PageBehaviours
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class IsConsigneeEoriKnownPageSpec extends PageBehaviours {
 
-class PrincipalNameFormProvider @Inject() extends Mappings {
+  "IsConsigneeEoriKnownPage" - {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("principalName.error.required")
-        .verifying(maxLength(35, "principalName.error.length"))
+    beRetrievable[Boolean](IsConsigneeEoriKnownPage)
 
-    )
+    beSettable[Boolean](IsConsigneeEoriKnownPage)
+
+    beRemovable[Boolean](IsConsigneeEoriKnownPage)
+  }
 }

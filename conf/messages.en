@@ -217,8 +217,8 @@ representativeName.title = What is your company’s name?
 representativeName.heading = What is your company’s name?
 representativeName.checkYourAnswersLabel = Representative name
 representativeName.error.required = Enter your company’s name
-representativeName.error.length = RepresentativeName must be 35 characters or less
-representativeName.error.invalid = RepresentativeName must only include letters a to z or numbers 0 to 9
+representativeName.error.length = Your company’s name must be 35 characters or less
+representativeName.error.invalid = Your company’s name must only include letters a to z or numbers 0 to 9  or blank spaces
 
 representativeCapacity.title = What is your capacity?
 representativeCapacity.heading = What is your capacity?
@@ -255,13 +255,19 @@ addConsignor.heading = Do you need to add a consignor?
 addConsignor.checkYourAnswersLabel = Do you need to add a consignor?
 addConsignor.error.required = Select yes if you need to add a consignor
 addConsignor.heading = Do you need to add a consignor?
-addConsignor.preHeading = Trader’s details
+addConsignor.preHeading = Trader''s details
 
 isConsignorEoriKnown.title = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.heading = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.checkYourAnswersLabel = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.error.required = Select yes if you know the consignor’s EORI number
 
+consignorName.title = What is the consignor’s name?
+consignorName.heading = What is the consignor’s name?
+consignorName.checkYourAnswersLabel = What is the consignor’s name?
+consignorName.error.required = Enter the consignor’s name
+consignorName.error.length = Consignor’s name must be 35 characters or less
+consignorName.error.invalid = Consignor’s name must only include letters a to z and numbers 0 to 9 or blank spaces
 consignorEori.title = What is the consignor’s EORI number?
 consignorEori.heading = What is the consignor’s EORI number?
 consignorEori.checkYourAnswersLabel = What is the consignor’s EORI number?
@@ -270,7 +276,30 @@ consignorEori.error.length = Consignor’s Eori number must be 17 characters or 
 consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
 consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
 
+isConsigneeEoriKnown.title = Do you know the consignee’s EORI number?
+isConsigneeEoriKnown.heading = Do you know the consignee’s EORI number?
+isConsigneeEoriKnown.checkYourAnswersLabel = Do you know the consignee’s EORI number?
+isConsigneeEoriKnown.error.required = Select yes if you know the consignee’s EORI number
 
+addConsignee.title = Do you need to add a consignee?
+addConsignee.heading = Do you need to add a consignee?
+addConsignee.checkYourAnswersLabel = Do you need to add a consignee?
+addConsignee.error.required = Select yes if you need to add a consignee
+
+consigneeName.title = What is the consignee’s name?
+consigneeName.heading = What is the consignee’s name?
+consigneeName.checkYourAnswersLabel = What is the consignee’s name?
+consigneeName.error.required = Enter the consignee’s name
+consigneeName.error.length = The consignee’s name must be 35 characters or less
+consigneeName.error.invalid = The consignee’s name must only include letters a to z and numbers 0 to 9 or blank spaces
+
+whatIsConsigneeEori.title = What is the consignee’s EORI number?
+whatIsConsigneeEori.heading = What is the consignee’s EORI number?
+whatIsConsigneeEori.checkYourAnswersLabel = What is the consignee’s EORI number?
+whatIsConsigneeEori.error.required = Enter the consignee’s EORI number
+whatIsConsigneeEori.error.length = The consignee’s EORI number must be 17 characters or less
+whatIsConsigneeEori.error.invalidCharacters = The consignee’s EORI number must only include letters a to z and numbers 0 to 9
+whatIsConsigneeEori.error.invalidFormat = Enter the consignee’s EORI number in the right format
 
 consignorAddress.title = What is the address of the consignor
 consignorAddress.heading = What is {0}’s address?
