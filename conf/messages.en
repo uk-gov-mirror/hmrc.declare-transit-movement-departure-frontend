@@ -255,7 +255,7 @@ addConsignor.heading = Do you need to add a consignor?
 addConsignor.checkYourAnswersLabel = Do you need to add a consignor?
 addConsignor.error.required = Select yes if you need to add a consignor
 addConsignor.heading = Do you need to add a consignor?
-addConsignor.preHeading = Trader''s details
+addConsignor.preHeading = Trader’s details
 
 isConsignorEoriKnown.title = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.heading = Do you know the consignor’s EORI number?
@@ -266,8 +266,24 @@ consignorEori.title = What is the consignor’s EORI number?
 consignorEori.heading = What is the consignor’s EORI number?
 consignorEori.checkYourAnswersLabel = What is the consignor’s EORI number?
 consignorEori.error.required = Enter the consignor's EORI umber
-consignorEori.error.length = Consignor's Eori number must be 17 characters or less
+consignorEori.error.length = Consignor’s Eori number must be 17 characters or less
 consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
 consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
 
 
+
+consignorAddress.title = What is the address of the consignor
+consignorAddress.heading = What is {0}’s address?
+consignorAddress.AddressLine1 = Address line 1
+consignorAddress.AddressLine2 = Address line 2
+consignorAddress.AddressLine3 = Address line 3
+consignorAddress.AddressLine4 = Address line 4
+consignorAddress.checkYourAnswersLabel = consignorAddress
+consignorAddress.error.AddressLine1.required = Enter Address line 1
+consignorAddress.error.AddressLine2.required = Enter Address line 2
+consignorAddress.error.AddressLine3.required = Enter Address line 3
+consignorAddress.error.AddressLine4.required = Enter Address line 4
+consignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
+consignorAddress.error.Addressline2.length = Address line 2 must be 35 characters or less
+consignorAddress.error.Addressline3.length = Address line 3 must be 35 characters or less
+consignorAddress.error.Addressline4.length = Address line 4 must be 35 characters or less

@@ -17,11 +17,22 @@
 package generators
 
 import models._
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+  self: Generators =>
 
- self: Generators =>
+  implicit lazy val arbitraryConsignorAddress: Arbitrary[ConsignorAddress] =
+      Arbitrary {
+      for {
+        addressLine1 <- arbitrary[String]
+        addressLine2 <- arbitrary[String]
+        addressLine3 <- arbitrary[String]
+        addressLine4 <- arbitrary[String]
+      } yield ConsignorAddress(addressLine1, addressLine2, addressLine3, addressLine4)
+    }
+
 
   implicit lazy val arbitraryRepresentativeCapacity: Arbitrary[RepresentativeCapacity] =
     Arbitrary {
