@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryCountryOfDispatchPage: Arbitrary[CountryOfDispatchPage.type] =
+    Arbitrary(CountryOfDispatchPage)
+
   implicit lazy val arbitraryIsConsigneeEoriKnownPage: Arbitrary[IsConsigneeEoriKnownPage.type] =
     Arbitrary(IsConsigneeEoriKnownPage)
 

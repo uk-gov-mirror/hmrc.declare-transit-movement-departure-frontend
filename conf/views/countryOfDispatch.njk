@@ -1,0 +1,69 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "macros/title.njk"                         import title %}
+
+{% block pageTitle %}
+  {{ title(messages("countryOfDispatch.title"), form.errors) }}
+{% endblock %}
+
+{% block mainContent %}
+
+  {{ govukBackLink({
+    text: messages("site.back")
+  }) }}
+
+  <div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if form.errors.length > 0 %}
+          {{ govukErrorSummary({
+            "titleText": messages("error.summary.title"),
+            "errorList": form.errors
+          }) }}
+        {% endif %}
+
+        <form action="{{ routes.controllers.CountryOfDispatchController.onSubmit(lrn, mode).url }}" method="post">
+
+          {{ csrf() | safe }}
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("countryOfDispatch.heading") }}
+        </h1>
+
+          {{ govukInput({
+            label: {
+              text: messages('countryOfDispatch.country')
+            },
+            id: "country",
+            name: "country",
+            value: form.country.value,
+            errorMessage: form.country.error
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: messages('countryOfDispatch.field2')
+            },
+            id: "field2",
+            name: "field2",
+            value: form.field2.value,
+            errorMessage: form.field2.error
+          }) }}
+
+          {{ govukButton({
+            text: messages("site.continue"),
+              attributes: {id:"submit"}
+          }) }}
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

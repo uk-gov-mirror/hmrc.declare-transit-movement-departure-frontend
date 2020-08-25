@@ -27,6 +27,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def countryOfDispatch: Option[Row] = userAnswers.get(CountryOfDispatchPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"countryOfDispatch.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"${answer.country}"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CountryOfDispatchController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"countryOfDispatch.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def isConsigneeEoriKnown: Option[Row] = userAnswers.get(IsConsigneeEoriKnownPage) map {
     answer =>
       Row(
