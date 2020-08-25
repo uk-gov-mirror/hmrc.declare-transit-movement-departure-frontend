@@ -42,6 +42,21 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       )
   }
 
+  def consignorEori: Option[Row] = userAnswers.get(ConsignorEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"consignorEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsignorEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consignorEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addConsignor: Option[Row] = userAnswers.get(AddConsignorPage) map {
     answer =>
       Row(
