@@ -17,22 +17,34 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms._
 import models.ConsignorAddress
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ConsignorAddressFormProvider @Inject() extends Mappings {
 
-   def apply(): Form[ConsignorAddress] = Form(
+  val addressRegex: String = "^[a-zA-Z0-9 ]*$"
+
+
+  def apply(): Form[ConsignorAddress] = Form(
      mapping(
       "AddressLine1" -> text("consignorAddress.error.AddressLine1.required")
-        .verifying(maxLength(35, "consignorAddress.error.AddressLine1.length")),
-      "AddressLine2" -> text("consignorAddress.error.AddressLine2.required")
-        .verifying(maxLength(35, "consignorAddress.error.AddressLine2.length")),
+        .verifying(StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine1.length"),
+          regexp(addressRegex, "consignorAddress.error.line2.invalid"))),
+
+
+  "AddressLine2" -> text("consignorAddress.error.AddressLine2.required")
+       .verifying(StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine2.length"),
+          regexp(addressRegex, "consignorAddress.error.line2.invalid"))),
+
+
        "AddressLine3" -> text("consignorAddress.error.AddressLine3.required")
-         .verifying(maxLength(35, "consignorAddress.error.AddressLine3.length")),
+         .verifying(StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine3.length"),
+           regexp(addressRegex, "consignorAddress.error.line3.invalid"))),
+
+
        "AddressLine4" -> text("consignorAddress.error.AddressLine4.required")
          .verifying(maxLength(35, "consignorAddress.error.AddressLine4.length"))
     )(ConsignorAddress.apply)(ConsignorAddress.unapply)

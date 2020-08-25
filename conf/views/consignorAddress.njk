@@ -36,7 +36,8 @@
           {{ messages("consignorAddress.heading", consignorName) }}
         </h1>
 
-          {{ govukInput({
+          {{ govukInput ({
+            classes: "govuk-!-width-two-thirds",
             label: {
               text: messages('consignorAddress.AddressLine1')
             },
@@ -47,6 +48,7 @@
           }) }}
 
           {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
             label: {
               text: messages('consignorAddress.AddressLine2')
             },
@@ -57,6 +59,7 @@
           }) }}
 
           {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
             label: {
               text: messages('consignorAddress.AddressLine2')
             },
@@ -67,6 +70,7 @@
           }) }}
 
           {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
             label: {
               text: messages('consignorAddress.AddressLine4')
              },
