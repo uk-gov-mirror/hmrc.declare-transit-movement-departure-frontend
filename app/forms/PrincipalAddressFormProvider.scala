@@ -33,8 +33,8 @@ class PrincipalAddressFormProvider @Inject() extends Mappings {
       "town" -> text("principalAddress.town.required")
         .verifying(maxLength(townLength, "principalAddress.error.town.length")),
       "postcode" -> text("principalAddress.postcode.required")
-        .verifying(maxLength(postcodeLength, "principalAddress.error.postcode.length")),
-      "country" -> text("eventCountry.error.required"))
+        .verifying(maxLength(postcodeLength, "principalAddress.error.postcode.length"))
+    )
        (PrincipalAddress.apply)(PrincipalAddress.unapply)
   )
 }

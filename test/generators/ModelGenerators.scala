@@ -20,16 +20,17 @@ import models._
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+  self: Generators =>
 
   implicit lazy val arbitraryPrincipalAddress: Arbitrary[PrincipalAddress] =
     Arbitrary {
       for {
-        Number and street <- arbitrary[String]
-        Town <- arbitrary[String]
-      } yield PrincipalAddress(Number and street, Town)
+        numberAndStreet <- stringsWithMaxLength(PrincipalAddress.Constants.numberAndStreetLength)
+        town <- stringsWithMaxLength(PrincipalAddress.Constants.townLength)
+        postcode <- stringsWithMaxLength(PrincipalAddress.Constants.postcodeLength)
+      } yield PrincipalAddress(numberAndStreet, town, postcode)
     }
 
- self: Generators =>
 
   implicit lazy val arbitraryRepresentativeCapacity: Arbitrary[RepresentativeCapacity] =
     Arbitrary {

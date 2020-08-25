@@ -33,7 +33,6 @@ self: Generators =>
         value <- arbitrary[PrincipalAddress].map(Json.toJson(_))
       } yield (page, value)
     }
-  self: Generators =>
 
   implicit lazy val arbitraryPrincipalNameUserAnswersEntry: Arbitrary[(PrincipalNamePage.type, JsValue)] =
     Arbitrary {

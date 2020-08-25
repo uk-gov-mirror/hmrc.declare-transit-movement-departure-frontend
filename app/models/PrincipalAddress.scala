@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json._
 
-case class PrincipalAddress(NumberandStreet: String, Town: String, Postcode: String, Country: String)
+case class PrincipalAddress(numberAndStreet: String, town: String, postcode: String)
 
 object PrincipalAddress {
 
