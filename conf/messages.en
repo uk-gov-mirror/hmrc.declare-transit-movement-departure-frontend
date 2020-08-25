@@ -280,3 +280,11 @@ addConsignee.title = Do you need to add a consignee?
 addConsignee.heading = Do you need to add a consignee?
 addConsignee.checkYourAnswersLabel = Do you need to add a consignee?
 addConsignee.error.required = Select yes if you need to add a consignee
+
+whatIsConsigneeEori.title = What is the consignee’s EORI number?
+whatIsConsigneeEori.heading = What is the consignee’s EORI number?
+whatIsConsigneeEori.checkYourAnswersLabel = What is the consignee’s EORI number?
+whatIsConsigneeEori.error.required = Enter the consignee’s EORI number
+whatIsConsigneeEori.error.length = The consignee’s EORI number must be 17 characters or less
+whatIsConsigneeEori.error.invalidCharacters = The consignee’s EORI number must only include letters a to z and numbers 0 to 9
+whatIsConsigneeEori.error.invalidFormat = Enter the consignee’s EORI number in the right format
