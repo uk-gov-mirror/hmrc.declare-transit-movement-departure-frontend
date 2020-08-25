@@ -84,4 +84,9 @@ POST       /:lrn/trader-details/add-consignor                        controllers
 GET        /:lrn/trader-details/change-add-consignor                  controllers.AddConsignorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/trader-details/change-add-consignor                  controllers.AddConsignorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /:lrn/trader-details/is-consignor-eori-known                        controllers.IsConsignorEoriKnownController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/trader-details/is-consignor-eori-known                         controllers.IsConsignorEoriKnownController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/trader-details/change-is-consignor-eori-known                   controllers.IsConsignorEoriKnownController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/trader-details/change-is-consignor-eori-known                   controllers.IsConsignorEoriKnownController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /technical-difficulties                       controllers.TechnicalDifficultiesController.onPageLoad

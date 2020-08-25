@@ -257,4 +257,9 @@ addConsignor.error.required = Select yes if you need to add a consignor
 addConsignor.heading = Do you need to add a consignor?
 addConsignor.preHeading = Trader''s details
 
+isConsignorEoriKnown.title = Do you know the consignor’s EORI number?
+isConsignorEoriKnown.heading = Do you know the consignor’s EORI number?
+isConsignorEoriKnown.checkYourAnswersLabel = Do you know the consignor’s EORI number?
+isConsignorEoriKnown.error.required = Select yes if you know the consignor’s EORI number
+
 
