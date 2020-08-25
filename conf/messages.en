@@ -255,7 +255,6 @@ addConsignor.heading = Do you need to add a consignor?
 addConsignor.checkYourAnswersLabel = Do you need to add a consignor?
 addConsignor.error.required = Select yes if you need to add a consignor
 addConsignor.heading = Do you need to add a consignor?
-addConsignor.preHeading = Trader''s details
 
 isConsignorEoriKnown.title = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.heading = Do you know the consignor’s EORI number?
@@ -270,4 +269,7 @@ consignorEori.error.length = Consignor's Eori number must be 17 characters or le
 consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
 consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
 
-
+isConsigneeEoriKnown.title = Do you know the consignee’s EORI number?
+isConsigneeEoriKnown.heading = Do you know the consignee’s EORI number?
+isConsigneeEoriKnown.checkYourAnswersLabel = Do you know the consignee’s EORI number?
+isConsigneeEoriKnown.error.required = Select yes if you know the consignee’s EORI number
