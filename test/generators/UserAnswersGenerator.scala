@@ -30,6 +30,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(WhatIsConsigneeEoriPage.type, JsValue)] ::
     arbitrary[(ConsignorNamePage.type, JsValue)] ::
     arbitrary[(AddConsigneePage.type, JsValue)] ::
+    arbitrary[(IsConsigneeEoriKnownPage.type, JsValue)] ::
     arbitrary[(ConsignorEoriPage.type, JsValue)] ::
     arbitrary[(AddConsignorPage.type, JsValue)] ::
     arbitrary[(IsConsignorEoriKnownPage.type, JsValue)] ::
