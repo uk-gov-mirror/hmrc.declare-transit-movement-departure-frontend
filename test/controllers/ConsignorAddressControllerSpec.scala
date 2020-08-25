@@ -109,8 +109,8 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
         Map(
           "AddressLine1" -> "value 1",
           "AddressLine2" -> "value 2",
-          "AddressLine3" -> "value 2",
-          "AddressLine4" -> "value 2"
+          "AddressLine3" -> "value 3",
+          "AddressLine4" -> "value 4"
         )
       )
 
@@ -143,7 +143,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       val request =
         FakeRequest(POST, consignorAddressRoute)
-          .withFormUrlEncodedBody(("Address line 1", "value 1"), ("Address line 2", "value 2"))
+          .withFormUrlEncodedBody(("AddressLine1", "value 1"), ("AddressLine2", "value 2"), ("AddressLine3", "value 3"), ("AddressLine4", "value 4"))
 
       val result = route(application, request).value
 
