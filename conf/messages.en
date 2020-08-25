@@ -262,4 +262,12 @@ isConsignorEoriKnown.heading = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.checkYourAnswersLabel = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.error.required = Select yes if you know the consignor’s EORI number
 
+consignorEori.title = What is the consignor’s EORI number?
+consignorEori.heading = What is the consignor’s EORI number?
+consignorEori.checkYourAnswersLabel = What is the consignor’s EORI number?
+consignorEori.error.required = Enter the consignor's EORI umber
+consignorEori.error.length = Consignor's Eori number must be 17 characters or less
+consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
+consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
+
 
