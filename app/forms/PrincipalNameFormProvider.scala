@@ -27,5 +27,6 @@ class PrincipalNameFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("principalName.error.required")
         .verifying(maxLength(35, "principalName.error.length"))
+
     )
 }

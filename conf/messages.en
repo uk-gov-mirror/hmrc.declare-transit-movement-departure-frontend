@@ -262,10 +262,9 @@ isConsignorEoriKnown.heading = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.checkYourAnswersLabel = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.error.required = Select yes if you know the consignor’s EORI number
 
-
-
-consignorName.title = consignorName
-consignorName.heading = consignorName
-consignorName.checkYourAnswersLabel = consignorName
-consignorName.error.required = Enter consignorName
-consignorName.error.length = ConsignorName must be 35 characters or less
+consignorName.title = What is the consignor’s name?
+consignorName.heading = What is the consignor’s name?
+consignorName.checkYourAnswersLabel = What is the consignor’s name?
+consignorName.error.required = Enter the consignor'''s name
+consignorName.error.length = Consignor''s name must be 35 characters or less
+consignorName.error.invalid = Consignor''s name must only include letters a to z and numbers 0 to 9
