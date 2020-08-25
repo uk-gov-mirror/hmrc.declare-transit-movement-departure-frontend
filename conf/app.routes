@@ -115,3 +115,8 @@ GET        /:lrn/trader-details/what-is-consignee-eori                        co
 POST       /:lrn/trader-details/what-is-consignee-eori                        controllers.WhatIsConsigneeEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/trader-details/change-what-is-consignee-eori                  controllers.WhatIsConsigneeEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/trader-details/change-what-is-consignee-eori                  controllers.WhatIsConsigneeEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/trader-details/consignee-name                        controllers.ConsigneeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/trader-details/consignee-name                        controllers.ConsigneeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/trader-details/change-consignee-name                  controllers.ConsigneeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/trader-details/change-consignee-name                  controllers.ConsigneeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
