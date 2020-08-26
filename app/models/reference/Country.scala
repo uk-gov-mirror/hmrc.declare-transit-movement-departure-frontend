@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models.reference
 
-import models.CountryOfDispatch
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Json, OFormat}
 
-class CountryOfDispatchPageSpec extends PageBehaviours {
+case class Country(code: CountryCode, description: String)
 
-  "CountryOfDispatchPage" - {
-
-    beRetrievable[CountryOfDispatch](CountryOfDispatchPage)
-
-    beSettable[CountryOfDispatch](CountryOfDispatchPage)
-
-    beRemovable[CountryOfDispatch](CountryOfDispatchPage)
-  }
+object Country {
+  implicit val format: OFormat[Country] = Json.format[Country]
 }

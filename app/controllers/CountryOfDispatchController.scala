@@ -16,15 +16,18 @@
 
 package controllers
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.CountryOfDispatchFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.reference.Country
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.CountryOfDispatchPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc._
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -39,49 +42,66 @@ class CountryOfDispatchController @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
+                                       referenceDataConnector: ReferenceDataConnector,
                                        formProvider: CountryOfDispatchFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(CountryOfDispatchPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          val form = formProvider(countries)
+
+          val preparedForm = request.userAnswers
+            .get(CountryOfDispatchPage)
+            .flatMap(countries.getCountry)
+            .map(form.fill)
+            .getOrElse(form)
+
+          renderPage(lrn, mode, preparedForm, countries.fullList, Results.Ok)
       }
-
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("countryOfDispatch.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          formProvider(countries)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList, Results.BadRequest),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfDispatchPage, value.code))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(CountryOfDispatchPage, mode, updatedAnswers))
+            )
+      }
+  }
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
-          )
+  private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
+    implicit request: Request[AnyContent]): Future[Result] = {
+    val json = Json.obj(
+      "form"        -> form,
+      "lrn"         -> lrn,
+      "mode"        -> mode,
+      "countries"   -> countryJsonList(form.value, countries),
+      "onSubmitUrl" -> routes.CountryOfDispatchController.onSubmit(lrn, mode).url
+    )
 
-          renderer.render("countryOfDispatch.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfDispatchPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfDispatchPage, mode, updatedAnswers))
-      )
+    renderer.render("countryOfDispatch.njk", json).map(status(_))
+  }
+
+  private def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {
+    val countryJsonList = countries.map {
+      country =>
+        Json.obj("text" -> country.description, "value" -> country.code, "selected" -> value.contains(country))
+    }
+
+    Json.obj("value" -> "", "text" -> "") +: countryJsonList
   }
 }

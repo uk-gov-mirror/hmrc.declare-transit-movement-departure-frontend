@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.CountryList
-import models.reference.Country
-import play.api.data.Form
+package object connectors {
 
-class CountryOfDispatchFormProvider @Inject() extends Mappings {
+  implicit val httpReads: HttpReads[HttpResponse] =
+    new HttpReads[HttpResponse] {
+      override def read(method: String, url: String, response: HttpResponse): HttpResponse =
+        response
+    }
 
-  def apply(countryList: CountryList): Form[Country] =
-    Form(
-      "value" -> text("countryOfDispatch.error.required")
-        .verifying("countryOfDispatch.error.required", value => countryList.fullList.exists(_.code.code == value))
-        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
-    )
- }
+}

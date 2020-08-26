@@ -17,20 +17,10 @@
 package generators
 
 import models._
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
   self: Generators =>
-
-  implicit lazy val arbitraryCountryOfDispatch: Arbitrary[CountryOfDispatch] =
-    Arbitrary {
-      for {
-        country <- arbitrary[String]
-      } yield CountryOfDispatch(country)
-    }
-
-
 
   implicit lazy val arbitraryRepresentativeCapacity: Arbitrary[RepresentativeCapacity] =
     Arbitrary {

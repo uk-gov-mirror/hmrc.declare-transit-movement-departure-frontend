@@ -19,7 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, LocalReferenceNumber, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -27,11 +27,13 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  def countryOfDispatch: Option[Row] = userAnswers.get(CountryOfDispatchPage) map {
+  def countryOfDispatch(codeList: CountryList): Option[Row] = userAnswers.get(CountryOfDispatchPage) map {
     answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
       Row(
         key     = Key(msg"countryOfDispatch.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.country}"),
+        value   = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",

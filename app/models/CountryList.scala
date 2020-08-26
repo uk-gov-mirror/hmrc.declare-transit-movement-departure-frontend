@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.CountryList
-import models.reference.Country
-import play.api.data.Form
+import models.reference.{Country, CountryCode}
 
-class CountryOfDispatchFormProvider @Inject() extends Mappings {
+class CountryList(val countries: Seq[Country]) {
 
-  def apply(countryList: CountryList): Form[Country] =
-    Form(
-      "value" -> text("countryOfDispatch.error.required")
-        .verifying("countryOfDispatch.error.required", value => countryList.fullList.exists(_.code.code == value))
-        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
-    )
- }
+  def fullList: Seq[Country]                                = countries
+  def getCountry(countryCode: CountryCode): Option[Country] = countries.find(_.code == countryCode)
+
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case value: CountryList => value.countries == countries
+      case _                  => false
+    }
+}
+
+object CountryList {
+  def apply(countries: Seq[Country]): CountryList = new CountryList(countries)
+}

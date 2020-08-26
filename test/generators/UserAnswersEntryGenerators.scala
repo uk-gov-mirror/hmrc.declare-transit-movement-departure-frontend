@@ -30,7 +30,7 @@ self: Generators =>
     Arbitrary {
       for {
         page  <- arbitrary[CountryOfDispatchPage.type]
-        value <- arbitrary[CountryOfDispatch].map(Json.toJson(_))
+        value <- stringsWithMaxLength(2).suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 

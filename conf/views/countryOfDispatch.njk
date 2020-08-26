@@ -1,6 +1,7 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
 {% from "govuk/components/input/macro.njk"         import govukInput %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
@@ -8,6 +9,12 @@
 
 {% block pageTitle %}
   {{ title(messages("countryOfDispatch.title"), form.errors) }}
+{% endblock %}
+
+{% block pageHead %}
+  <!--[if gt IE 8]><!-->
+  <link href="{{ routes.controllers.Assets.versioned("stylesheets/accessible-autocomplete.min.css").url }}" media="screen" rel="stylesheet" type="text/css" />
+  <!--<![endif]-->
 {% endblock %}
 
 {% block mainContent %}
@@ -31,29 +38,20 @@
 
           {{ csrf() | safe }}
 
-        <h1 class="govuk-heading-xl">
-          {{ messages("countryOfDispatch.heading") }}
-        </h1>
 
-          {{ govukInput({
-            label: {
-              text: messages('countryOfDispatch.country')
-            },
-            id: "country",
-            name: "country",
-            value: form.country.value,
-            errorMessage: form.country.error
-          }) }}
-
-          {{ govukInput({
-            label: {
-              text: messages('countryOfDispatch.field2')
-            },
-            id: "field2",
-            name: "field2",
-            value: form.field2.value,
-            errorMessage: form.field2.error
-          }) }}
+            {{ govukSelect({
+              classes: "govuk-input--width-20 autocomplete",
+              label: {
+                text: messages('countryOfDispatch.heading'),
+                isPageHeading: true,
+                classes: "govuk-label--xl"
+              },
+              id: "value",
+              name: "value",
+              value: form.value.value,
+              errorMessage: form.value.error,
+              items: countries
+            }) }}
 
           {{ govukButton({
             text: messages("site.continue"),
@@ -66,4 +64,8 @@
     </div>
   </div>
 
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="{{ routes.controllers.Assets.versioned("javascripts/accessible-autocomplete.js").url }}"></script>
 {% endblock %}

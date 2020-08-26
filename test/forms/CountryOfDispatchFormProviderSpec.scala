@@ -17,17 +17,19 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.CountryList
+import models.reference.{Country, CountryCode}
 import play.api.data.FormError
 
 class CountryOfDispatchFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new CountryOfDispatchFormProvider()()
+  val countries: CountryList = CountryList(Seq(Country(CountryCode("AD"), "Andorra")))
+  val form = new CountryOfDispatchFormProvider()(countries)
 
-  ".country" - {
+  ".value" - {
 
-    val fieldName = "country"
-    val requiredKey = "countryOfDispatch.error.country.required"
-    val lengthKey = "countryOfDispatch.error.country.length"
+    val fieldName = "value"
+    val requiredKey = "countryOfDispatch.error.required"
     val maxLength = 2
 
     behave like fieldThatBindsValidData(
@@ -36,44 +38,25 @@ class CountryOfDispatchFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind if country code does not exist in the country list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a country code which is in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "AD"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
   }
 
-  ".field2" - {
-
-    val fieldName = "field2"
-    val requiredKey = "countryOfDispatch.error.field2.required"
-    val lengthKey = "countryOfDispatch.error.field2.length"
-    val maxLength = 100
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
 }

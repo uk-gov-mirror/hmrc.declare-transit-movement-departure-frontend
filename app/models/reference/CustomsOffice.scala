@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package models.reference
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.CountryList
-import models.reference.Country
-import play.api.data.Form
+import play.api.libs.json.{Json, OFormat}
 
-class CountryOfDispatchFormProvider @Inject() extends Mappings {
+case class CustomsOffice(id: String, name: String, roles: Seq[String], phoneNumber: Option[String])
 
-  def apply(countryList: CountryList): Form[Country] =
-    Form(
-      "value" -> text("countryOfDispatch.error.required")
-        .verifying("countryOfDispatch.error.required", value => countryList.fullList.exists(_.code.code == value))
-        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
-    )
- }
+object CustomsOffice {
+  implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
+}
