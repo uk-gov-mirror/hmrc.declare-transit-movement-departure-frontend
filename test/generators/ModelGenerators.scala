@@ -20,8 +20,7 @@ import models._
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
-
- self: Generators =>
+  self: Generators =>
 
   implicit lazy val arbitraryRepresentativeCapacity: Arbitrary[RepresentativeCapacity] =
     Arbitrary {

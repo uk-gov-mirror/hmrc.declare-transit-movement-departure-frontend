@@ -58,7 +58,8 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
   }
 
   private def routesSection: SectionDetails = {
-    SectionDetails("declarationSummary.section.routes", "", NotStarted)
+    val startPage: String = routes.CountryOfDispatchController.onPageLoad(userAnswers.id, NormalMode).url
+    SectionDetails("declarationSummary.section.routes", startPage, NotStarted)
   }
 
   private def transportSection: SectionDetails = {

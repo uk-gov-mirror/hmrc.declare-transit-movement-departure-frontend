@@ -37,6 +37,7 @@ import play.api.inject.{Injector, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 
 trait SpecBase
@@ -62,12 +63,13 @@ trait SpecBase
 
   val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
   implicit def messages: Messages = Helpers.stubMessages()
 
   def injector: Injector = app.injector
 
   def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
-
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()

@@ -120,3 +120,8 @@ GET        /:lrn/trader-details/consignee-name                        controller
 POST       /:lrn/trader-details/consignee-name                        controllers.ConsigneeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/trader-details/change-consignee-name                  controllers.ConsigneeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/trader-details/change-consignee-name                  controllers.ConsigneeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/route/dispatch-country                        controllers.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/route/dispatch-country                        controllers.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/route/dispatch-country                        controllers.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/route/dispatch-country                        controllers.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

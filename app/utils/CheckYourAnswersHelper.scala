@@ -19,7 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, LocalReferenceNumber, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -52,6 +52,23 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
             content            = msg"site.edit",
             href               = routes.WhatIsConsigneeEoriController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"whatIsConsigneeEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def countryOfDispatch(codeList: CountryList): Option[Row] = userAnswers.get(CountryOfDispatchPage) map {
+    answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
+      Row(
+        key     = Key(msg"countryOfDispatch.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$countryName"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CountryOfDispatchController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"countryOfDispatch.checkYourAnswersLabel"))
           )
         )
       )
