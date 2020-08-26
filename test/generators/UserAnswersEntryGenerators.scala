@@ -34,6 +34,24 @@ self: Generators =>
       } yield (page, value)
     }
 
+  implicit lazy val arbitraryConsigneeNameUserAnswersEntry: Arbitrary[(ConsigneeNamePage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[ConsigneeNamePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+
+  implicit lazy val arbitraryWhatIsConsigneeEoriUserAnswersEntry: Arbitrary[(WhatIsConsigneeEoriPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[WhatIsConsigneeEoriPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+
   implicit lazy val arbitraryConsignorNameUserAnswersEntry: Arbitrary[(ConsignorNamePage.type, JsValue)] =
       Arbitrary {
       for {

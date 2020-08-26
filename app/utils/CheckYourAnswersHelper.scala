@@ -27,6 +27,36 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def consigneeName: Option[Row] = userAnswers.get(ConsigneeNamePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"consigneeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsigneeNameController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consigneeName.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def whatIsConsigneeEori: Option[Row] = userAnswers.get(WhatIsConsigneeEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"whatIsConsigneeEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.WhatIsConsigneeEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"whatIsConsigneeEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def countryOfDispatch(codeList: CountryList): Option[Row] = userAnswers.get(CountryOfDispatchPage) map {
     answer =>
       val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
