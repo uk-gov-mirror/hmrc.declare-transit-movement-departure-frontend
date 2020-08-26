@@ -25,13 +25,12 @@ class PrincipalNameFormProvider @Inject() extends Mappings {
 
   val principalNameRegex: String = "^([a-zA-Z0-9@'><\\/?%&.-_]{1,35})$"
   val maxLengthPrincipalName = 35
-  val validPrincipalNameCharactersRegex: String = "^[a-zA-Z0-9@'><\\/?%&.-_]*$"
+
   def apply(): Form[String] =
     Form(
       "value" -> text("principalName.error.required")
         .verifying(StopOnFirstFail[String](
           maxLength(maxLengthPrincipalName, "principalName.error.length"),
-          regexp(validPrincipalNameCharactersRegex, "principalName.error.invalidCharacters"),
-          regexp(principalNameRegex, "principalName.error.invalidFormat")
+          regexp(principalNameRegex, "principalName.error.invalidCharacters"),
         )))
 }

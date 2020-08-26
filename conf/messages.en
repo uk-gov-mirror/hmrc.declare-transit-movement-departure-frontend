@@ -234,8 +234,6 @@ principalName.checkYourAnswersLabel =  Principal’s name
 principalName.error.required =  Enter the principal's name
 principalName.error.length = PrincipalName must be 35 characters or less
 principalName.error.invalidCharacters =  The principal's name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, underscores, and greater than (>) and less than (<) signs
-principalName.error.invalidFormat = Enter the principal’s name in the right format
-
 
 whatIsPrincipalEori.title = What is the principal’s EORI number?
 whatIsPrincipalEori.heading = What is the principal’s EORI number?
@@ -246,19 +244,18 @@ whatIsPrincipalEori.error.invalidCharacters = The principal’s EORI number must
 whatIsPrincipalEori.error.invalidFormat = Enter the principal’s EORI number in the right format
 
 principalAddress.title = What is the principal’s address?
-principalAddress.heading = What is the {0}’s address?
+principalAddress.heading = What is {0}’s address?
 principalAddress.numberAndStreet = Number and street
 principalAddress.town = Town
 principalAddress.postcode = Postcode
 principalAddress.country = Country
 principalAddress.checkYourAnswersLabel =  Principal’s address
-principalAddress.error.numberAndStreet.required = Enter Number and street
-principalAddress.error.town.required = Enter Town
+principalAddress.error.numberAndStreet.required = Enter the number and street of {0}’s address
+principalAddress.error.town.required = Enter the town of {0}’s address
 principalAddress.error.postcode.required = Enter the postcode of {0}’s address
 principalAddress.error.numberAndStreet.length = Number and street must be 35 characters or less
 principalAddress.error.town.length = Town must be 35 characters or less
 principalAddress.error.postcode.length = Postcode must be 9 characters or less
 principalAddress.error.country.length = Country must be 2 characters or less
-principalAddress.error.postcode.hint = Enter the postcode of [principalName]’s address in the right format, like AB1 1AB
-principalAddress.error.postcode.invalid = Enter a real postcode
-
+principalAddress.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
+principalAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z and numbers 0 to 9

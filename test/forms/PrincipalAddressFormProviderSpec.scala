@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
@@ -47,7 +48,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
   }
 
@@ -74,7 +75,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
   }
 
@@ -83,6 +84,8 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "postcode"
     val requiredKey = "principalAddress.error.postcode.required"
     val lengthKey = "principalAddress.error.postcode.length"
+    val invalidKey = "principalAddress.error.postcode.invalid"
+    val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
     val maxLength = 9
 
     behave like fieldThatBindsValidData(
@@ -91,17 +94,35 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
+
+    "must not bind strings longer than max length" in {
+
+      val expectedError = List(FormError(fieldName, lengthKey, Seq(maxLength)))
+
+      forAll(stringsLongerThan(maxLength + 1)) { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors mustBe expectedError
+      }
+    }
+
+    "must not bind strings that do not match regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidKey, Seq(postCodeRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
+      }
+
+      forAll(genInvalidString) { invalidString =>
+        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors mustBe expectedError
+      }
+    }
   }
 }

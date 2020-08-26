@@ -22,17 +22,23 @@ import models.PrincipalAddress
 import models.PrincipalAddress.Constants.{numberAndStreetLength, postcodeLength, townLength}
 import play.api.data.Form
 import play.api.data.Forms._
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class PrincipalAddressFormProvider @Inject() extends Mappings {
 
+  val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
+
   def apply(principalName: String): Form[PrincipalAddress] = Form(
     mapping(
-      "numberAndStreet" -> text("principalAddress.error.numberAndStreet.required")
+      "numberAndStreet" -> text("principalAddress.error.numberAndStreet.required", Seq(principalName))
         .verifying(maxLength(numberAndStreetLength, "principalAddress.error.numberAndStreet.length")),
-      "town" -> text("principalAddress.error.town.required")
+      "town" -> text("principalAddress.error.town.required", Seq(principalName))
         .verifying(maxLength(townLength, "principalAddress.error.town.length")),
       "postcode" -> text("principalAddress.error.postcode.required", Seq(principalName))
-        .verifying(maxLength(postcodeLength, "principalAddress.error.postcode.length"))
+        .verifying(StopOnFirstFail[String](
+          maxLength(postcodeLength, "principalAddress.error.postcode.length"),
+          regexp(postCodeRegex, "principalAddress.error.postcode.invalid")
+        ))
     )(PrincipalAddress.apply)(PrincipalAddress.unapply)
   )
 }
