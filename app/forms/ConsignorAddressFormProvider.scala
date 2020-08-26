@@ -20,8 +20,10 @@ import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms._
-import models.ConsignorAddress
+import models.{ConsignorAddress, CountryList}
+import models.reference.Country
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
 
 class ConsignorAddressFormProvider @Inject() extends Mappings {
 

@@ -16,14 +16,16 @@
 
 package controllers
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.ConsignorAddressFormProvider
 import javax.inject.Inject
+import models.reference.Country
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.{ConsignorAddressPage, ConsignorNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
@@ -39,6 +41,7 @@ class ConsignorAddressController @Inject()(
                                             identify: IdentifierAction,
                                             getData: DataRetrievalActionProvider,
                                             requireData: DataRequiredAction,
+                                            referenceDataConnector: ReferenceDataConnector,
                                             formProvider: ConsignorAddressFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
@@ -48,45 +51,58 @@ class ConsignorAddressController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(ConsignorNamePage) match {
-        case Some(consignorName) =>
-          val preparedForm = request.userAnswers.get(ConsignorAddressPage) match {
-            case Some(value) => formProvider().fill(value)
-            case None => formProvider()
-          }
-
-          val json = Json.obj(
-            "form" -> preparedForm,
-            "lrn" -> lrn,
-            "mode" -> mode,
-            "consignorName" -> consignorName
-          )
-
-          renderer.render("consignorAddress.njk", json).map(Ok(_))
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-
-      }
-  }
-
-      def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-        implicit request =>
-
-          form.bindFromRequest().fold(
-            formWithErrors => {
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          request.userAnswers.get(ConsignorNamePage) match {
+            case Some(consignorName) =>
+              val preparedForm = request.userAnswers.get(ConsignorAddressPage) match {
+                case Some(value) => formProvider().fill(value)
+                case None => formProvider()
+              }
 
               val json = Json.obj(
-                "form" -> formWithErrors,
+                "form" -> preparedForm,
                 "lrn" -> lrn,
-                "mode" -> mode
+                "mode" -> mode,
+                "consignorName" -> consignorName,
+                "countries" -> countryJsonList(None, countries.fullList)
               )
 
-              renderer.render("consignorAddress.njk", json).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorAddressPage, value))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ConsignorAddressPage, mode, updatedAnswers))
-          )
+              renderer.render("consignorAddress.njk", json).map(Ok(_))
+            case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+
+          }
       }
   }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+    implicit request =>
+
+      form.bindFromRequest().fold(
+        formWithErrors => {
+
+          val json = Json.obj(
+            "form" -> formWithErrors,
+            "lrn" -> lrn,
+            "mode" -> mode
+          )
+
+          renderer.render("consignorAddress.njk", json).map(BadRequest(_))
+        },
+        value =>
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorAddressPage, value))
+            _ <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(ConsignorAddressPage, mode, updatedAnswers))
+      )
+  }
+
+  private def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {
+    val countryJsonList = countries.map {
+      country =>
+        Json.obj("text" -> country.description, "value" -> country.code, "selected" -> value.contains(country))
+    }
+
+    Json.obj("value" -> "", "text" -> "") +: countryJsonList
+  }
+}
