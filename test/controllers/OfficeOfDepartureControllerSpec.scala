@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import forms.PrincipalNameFormProvider
+import forms.OfficeOfDepartureFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
@@ -25,7 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.PrincipalNamePage
+import pages.OfficeOfDeparturePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,16 +37,16 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new PrincipalNameFormProvider()
+  val formProvider = new OfficeOfDepartureFormProvider()
   val form = formProvider()
 
-  lazy val principalNameRoute = routes.PrincipalNameController.onPageLoad(lrn, NormalMode).url
+  lazy val officeOfDepartureRoute = routes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url
 
-  "PrincipalName Controller" - {
+  "OfficeOfDeparture Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -54,7 +54,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, principalNameRoute)
+      val request = FakeRequest(GET, officeOfDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -70,7 +70,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "lrn"    -> lrn
       )
 
-      templateCaptor.getValue mustEqual "principalName.njk"
+      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -81,9 +81,9 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(PrincipalNamePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, "answer").success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, principalNameRoute)
+      val request = FakeRequest(GET, officeOfDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -101,7 +101,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "principalName.njk"
+      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -122,7 +122,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
           .build()
 
       val request =
-        FakeRequest(POST, principalNameRoute)
+        FakeRequest(POST, officeOfDepartureRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
@@ -139,7 +139,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, principalNameRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, officeOfDepartureRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -156,7 +156,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "principalName.njk"
+      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -166,7 +166,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, principalNameRoute)
+      val request = FakeRequest(GET, officeOfDepartureRoute)
 
       val result = route(application, request).value
 
@@ -182,7 +182,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, principalNameRoute)
+        FakeRequest(POST, officeOfDepartureRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value

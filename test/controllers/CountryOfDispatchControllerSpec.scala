@@ -21,7 +21,7 @@ import connectors.ReferenceDataConnector
 import forms.CountryOfDispatchFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
-import models.{CountryList, NormalMode, UserAnswers}
+import models.{CountryList, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

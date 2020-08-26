@@ -306,3 +306,9 @@ countryOfDispatch.title = What is the country of dispatch?
 countryOfDispatch.heading = What is the country of dispatch?
 countryOfDispatch.checkYourAnswersLabel = Country of dispatch
 countryOfDispatch.error.required = Select the country of dispatch
+
+officeOfDeparture.title = officeOfDeparture
+officeOfDeparture.heading = officeOfDeparture
+officeOfDeparture.checkYourAnswersLabel = officeOfDeparture
+officeOfDeparture.error.required = Enter officeOfDeparture
+officeOfDeparture.error.length = OfficeOfDeparture must be 2 characters or less
