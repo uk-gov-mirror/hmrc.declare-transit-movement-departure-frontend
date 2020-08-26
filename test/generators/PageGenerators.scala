@@ -24,6 +24,33 @@ trait PageGenerators {
   implicit lazy val arbitraryPrincipalAddressPage: Arbitrary[PrincipalAddressPage.type] =
     Arbitrary(PrincipalAddressPage)
 
+  implicit lazy val arbitraryConsigneeNamePage: Arbitrary[ConsigneeNamePage.type] =
+    Arbitrary(ConsigneeNamePage)
+
+  implicit lazy val arbitraryWhatIsConsigneeEoriPage: Arbitrary[WhatIsConsigneeEoriPage.type] =
+    Arbitrary(WhatIsConsigneeEoriPage)
+
+  implicit lazy val arbitraryCountryOfDispatchPage: Arbitrary[CountryOfDispatchPage.type] =
+    Arbitrary(CountryOfDispatchPage)
+
+  implicit lazy val arbitraryIsConsigneeEoriKnownPage: Arbitrary[IsConsigneeEoriKnownPage.type] =
+    Arbitrary(IsConsigneeEoriKnownPage)
+
+  implicit lazy val arbitraryAddConsigneePage: Arbitrary[AddConsigneePage.type] =
+    Arbitrary(AddConsigneePage)
+
+  implicit lazy val arbitraryConsignorEoriPage: Arbitrary[ConsignorEoriPage.type] =
+    Arbitrary(ConsignorEoriPage)
+
+  implicit lazy val arbitraryConsignorNamePage: Arbitrary[ConsignorNamePage.type] =
+    Arbitrary(ConsignorNamePage)
+
+  implicit lazy val arbitraryIsConsignorEoriKnownPage: Arbitrary[IsConsignorEoriKnownPage.type] =
+    Arbitrary(IsConsignorEoriKnownPage)
+
+  implicit lazy val arbitraryAddConsignorPage: Arbitrary[AddConsignorPage.type] =
+    Arbitrary(AddConsignorPage)
+
   implicit lazy val arbitraryPrincipalNamePage: Arbitrary[PrincipalNamePage.type] =
     Arbitrary(PrincipalNamePage)
 
