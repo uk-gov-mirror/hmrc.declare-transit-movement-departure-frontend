@@ -16,25 +16,10 @@
 
 package models.reference
 
+import play.api.libs.json.{Json, OFormat}
 
-import play.api.libs.json._
+case class CustomsOffice(id: String, name: String, roles: Seq[String], phoneNumber: Option[String])
 
-case class CountryCode(code: String)
-
-object CountryCode {
-
-  object Constants {
-    val countryCodeLength = 2
-  }
-
-  implicit val format: Format[CountryCode] =
-    new Format[CountryCode] {
-      override def writes(o: CountryCode): JsValue = JsString(o.code)
-
-      override def reads(json: JsValue): JsResult[CountryCode] = json match {
-        case JsString(code) => JsSuccess(CountryCode(code))
-        case x              => JsError(s"Expected a string, got a ${x.getClass}")
-      }
-    }
-
+object CustomsOffice {
+  implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
 }

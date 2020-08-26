@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package connectors
+package forms
 
-import config.FrontendAppConfig
+import forms.mappings.Mappings
 import javax.inject.Inject
 import models.CountryList
 import models.reference.Country
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import play.api.data.Form
 
-import scala.concurrent.{ExecutionContext, Future}
+class CountryOfDispatchFormProvider @Inject() extends Mappings {
 
-class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClient) {
-
-  def getCountryList()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CountryList] = {
-    val serviceUrl = s"${config.referenceDataUrl}/countries-full-list"
-    http.GET[Vector[Country]](serviceUrl).map(CountryList(_))
-  }
-}
+  def apply(countryList: CountryList): Form[Country] =
+    Form(
+      "value" -> text("countryOfDispatch.error.required")
+        .verifying("countryOfDispatch.error.required", value => countryList.fullList.exists(_.code.code == value))
+        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
+    )
+ }

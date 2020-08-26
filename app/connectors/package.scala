@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-package models.reference
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
+package object connectors {
 
-import play.api.libs.json._
-
-case class CountryCode(code: String)
-
-object CountryCode {
-
-  object Constants {
-    val countryCodeLength = 2
-  }
-
-  implicit val format: Format[CountryCode] =
-    new Format[CountryCode] {
-      override def writes(o: CountryCode): JsValue = JsString(o.code)
-
-      override def reads(json: JsValue): JsResult[CountryCode] = json match {
-        case JsString(code) => JsSuccess(CountryCode(code))
-        case x              => JsError(s"Expected a string, got a ${x.getClass}")
-      }
+  implicit val httpReads: HttpReads[HttpResponse] =
+    new HttpReads[HttpResponse] {
+      override def read(method: String, url: String, response: HttpResponse): HttpResponse =
+        response
     }
 
 }
