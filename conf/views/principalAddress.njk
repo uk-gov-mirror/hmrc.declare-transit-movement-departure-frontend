@@ -35,7 +35,7 @@
           {{ csrf() | safe }}
 
         <h1 class="govuk-heading-xl">
-          {{ messages("principalAddress.heading") }}
+          {{ messages("principalAddress.heading", principalName) }}
         </h1>
 
           {{ govukInput({

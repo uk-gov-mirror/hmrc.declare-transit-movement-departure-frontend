@@ -21,12 +21,13 @@ import play.api.data.FormError
 
 class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new PrincipalAddressFormProvider()()
+  val principalName: String = "principal Name"
+  val form = new PrincipalAddressFormProvider()(principalName)
 
-  ".Number and street" - {
+  ".numberAndStreet" - {
 
-    val fieldName = "Number and street"
-    val requiredKey = "principalAddress.error.numberAndStreet"
+    val fieldName = "numberAndStreet"
+    val requiredKey = "principalAddress.error.numberAndStreet.required"
     val lengthKey = "principalAddress.error.numberAndStreet.length"
     val maxLength = 35
 
@@ -50,10 +51,10 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     )
   }
 
-  ".Town" - {
+  ".town" - {
 
-    val fieldName = "Town"
-    val requiredKey = "principalAddress.town.required"
+    val fieldName = "town"
+    val requiredKey = "principalAddress.error.town.required"
     val lengthKey = "principalAddress.error.town.length"
     val maxLength = 35
 
@@ -77,10 +78,10 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     )
   }
 
-  ".Postcode" - {
+  ".postcode" - {
 
-    val fieldName = "Town"
-    val requiredKey = "principalAddress.postcode.required"
+    val fieldName = "postcode"
+    val requiredKey = "principalAddress.error.postcode.required"
     val lengthKey = "principalAddress.error.postcode.length"
     val maxLength = 9
 
@@ -100,7 +101,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
   }
 }

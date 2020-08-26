@@ -17,9 +17,7 @@
 package base
 
 import controllers.actions._
-import models.EoriNumber
-import models.LocalReferenceNumber
-import models.UserAnswers
+import models.{EoriNumber, LocalReferenceNumber, PrincipalAddress, UserAnswers}
 import org.mockito.Mockito
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.OptionValues
@@ -56,6 +54,10 @@ trait SpecBase
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
 
   val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())
+
+  val principalName: String = "principalName"
+
+  val principalAddress: PrincipalAddress = PrincipalAddress("numberAndStreet", "town", "NE99 1XN")
 
   val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 

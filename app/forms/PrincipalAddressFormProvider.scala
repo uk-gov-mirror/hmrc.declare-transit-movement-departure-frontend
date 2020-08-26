@@ -16,25 +16,23 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.PrincipalAddress
+import models.PrincipalAddress.Constants.{numberAndStreetLength, postcodeLength, townLength}
 import play.api.data.Form
 import play.api.data.Forms._
-import models.{CountryList, PrincipalAddress}
-import models.PrincipalAddress.Constants.{numberAndStreetLength, postcodeLength, townLength}
-import models.reference.Country
 
 class PrincipalAddressFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[PrincipalAddress] = Form(
+  def apply(principalName: String): Form[PrincipalAddress] = Form(
     mapping(
       "numberAndStreet" -> text("principalAddress.error.numberAndStreet.required")
         .verifying(maxLength(numberAndStreetLength, "principalAddress.error.numberAndStreet.length")),
-      "town" -> text("principalAddress.town.required")
+      "town" -> text("principalAddress.error.town.required")
         .verifying(maxLength(townLength, "principalAddress.error.town.length")),
-      "postcode" -> text("principalAddress.postcode.required")
+      "postcode" -> text("principalAddress.error.postcode.required", Seq(principalName))
         .verifying(maxLength(postcodeLength, "principalAddress.error.postcode.length"))
-    )
-       (PrincipalAddress.apply)(PrincipalAddress.unapply)
+    )(PrincipalAddress.apply)(PrincipalAddress.unapply)
   )
 }

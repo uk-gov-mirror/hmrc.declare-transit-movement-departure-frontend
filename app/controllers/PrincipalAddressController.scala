@@ -19,9 +19,9 @@ package controllers
 import controllers.actions._
 import forms.PrincipalAddressFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.PrincipalAddressPage
+import pages.{PrincipalAddressPage, PrincipalNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,55 +33,64 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 class PrincipalAddressController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: PrincipalAddressFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                            override val messagesApi: MessagesApi,
+                                            sessionRepository: SessionRepository,
+                                            navigator: Navigator,
+                                            identify: IdentifierAction,
+                                            getData: DataRetrievalActionProvider,
+                                            requireData: DataRequiredAction,
+                                            formProvider: PrincipalAddressFormProvider,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            renderer: Renderer
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      request.userAnswers.get(PrincipalNamePage) match {
+        case Some(principalName) =>
+          val preparedForm = request.userAnswers.get(PrincipalAddressPage) match {
+            case Some(value) => formProvider(principalName).fill(value)
+            case None => formProvider(principalName)
+          }
 
-      val preparedForm = request.userAnswers.get(PrincipalAddressPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+          val json = Json.obj(
+            "form" -> preparedForm,
+            "lrn" -> lrn,
+            "mode" -> mode,
+            "principalName" -> principalName
+          )
+
+          renderer.render("principalAddress.njk", json).map(Ok(_))
+        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }
-
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("principalAddress.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      request.userAnswers.get(PrincipalNamePage) match {
+        case Some(principalName) =>
+          formProvider(principalName)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+                val json = Json.obj(
+                  "form" -> formWithErrors,
+                  "lrn" -> lrn,
+                  "mode" -> mode,
+                  "principalName" -> principalName
+                )
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
-          )
-
-          renderer.render("principalAddress.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PrincipalAddressPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PrincipalAddressPage, mode, updatedAnswers))
-      )
+                renderer.render("principalAddress.njk", json).map(BadRequest(_))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(PrincipalAddressPage, value))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(PrincipalAddressPage, mode, updatedAnswers))
+            )
+        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 }

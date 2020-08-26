@@ -25,7 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.PrincipalAddressPage
+import pages.{PrincipalAddressPage, PrincipalNamePage}
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -42,20 +42,10 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new PrincipalAddressFormProvider()
-  val form = formProvider()
+  val form = formProvider(principalName)
 
   lazy val principalAddressRoute = routes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url
 
-  val userAnswers = UserAnswers(
-    lrn,
-    eoriNumber,
-    Json.obj(
-      PrincipalAddressPage.toString -> Json.obj(
-        "Number and street" -> "value 1",
-        "Town" -> "value 2"
-      )
-    )
-  )
 
   "PrincipalAddress Controller" - {
 
@@ -64,7 +54,12 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers
+        .set(PrincipalNamePage, "foo")
+        .success
+        .value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, principalAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -92,6 +87,14 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
+      val userAnswers = emptyUserAnswers
+        .set(PrincipalNamePage, principalName)
+        .success
+        .value
+        .set(PrincipalAddressPage, principalAddress)
+        .success
+        .value
+
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, principalAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -105,15 +108,17 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       val filledForm = form.bind(
         Map(
-          "Number and street" -> "value 1",
-          "Town" -> "value 2"
+          "numberAndStreet" -> principalAddress.numberAndStreet,
+          "town"->principalAddress.town,
+      "postcode" -> principalAddress.postcode
         )
       )
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
         "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "mode" -> NormalMode,
+        "principalName" -> principalName
       )
 
       templateCaptor.getValue mustEqual "principalAddress.njk"
@@ -128,8 +133,13 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      val userAnswers = emptyUserAnswers
+        .set(PrincipalNamePage, principalName)
+        .success
+        .value
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -139,7 +149,11 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       val request =
         FakeRequest(POST, principalAddressRoute)
-          .withFormUrlEncodedBody(("Number and street", "value 1"), ("Town", "value 2"))
+          .withFormUrlEncodedBody(
+            ("numberAndStreet", principalAddress.numberAndStreet),
+            ("town", principalAddress.town),
+            ("postcode", principalAddress.postcode)
+          )
 
       val result = route(application, request).value
 
@@ -155,7 +169,12 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers
+        .set(PrincipalNamePage, principalName)
+        .success
+        .value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(POST, principalAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
