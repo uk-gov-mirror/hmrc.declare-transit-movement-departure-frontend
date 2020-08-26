@@ -5,6 +5,8 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
+
 
 {% block pageTitle %}
   {{ title(messages("consignorAddress.title"), form.errors) }}
@@ -69,21 +71,22 @@
             errorMessage: form.AddressLine3.error
           }) }}
 
-          {{ govukInput({
-            classes: "govuk-!-width-two-thirds",
-            label: {
-              text: messages('consignorAddress.AddressLine4')
-             },
-             id: "AddressLine4",
-             name: "AddressLine4",
-             value: form.AddressLine4.value,
-             errorMessage: form.AddressLine4.error
-             }) }}
 
-          {{ govukButton({
-            text: messages("site.continue"),
-              attributes: {id:"submit"}
-          }) }}
+          {{ govukSelect({
+                    classes: "govuk-input--width-20 autocomplete",
+                    label: {
+                               text: messages('consignorAddress.AddressLine4')
+                              },
+                    id: "value",
+                    name: "value",
+                    errorMessage: form.value.error,
+                    items: countries
+                  }) }}
+
+                  {{ govukButton({
+                    text: messages("site.continue"),
+                      attributes: {id:"submit"}
+                  }) }}
 
         </form>
 
@@ -91,4 +94,8 @@
     </div>
   </div>
 
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="{{ routes.controllers.Assets.versioned("javascripts/accessible-autocomplete.js").url }}"></script>
 {% endblock %}
