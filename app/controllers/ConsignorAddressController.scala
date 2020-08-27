@@ -21,16 +21,17 @@ import controllers.actions._
 import forms.ConsignorAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
-import models.{CountryList, LocalReferenceNumber, Mode}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.{ConsignorAddressPage, ConsignorNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -110,12 +111,4 @@ class ConsignorAddressController @Inject()(
       }
   }
 
-  private def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {
-    val countryJsonList = countries.map {
-      country =>
-        Json.obj("text" -> country.description, "value" -> country.code, "selected" -> value.contains(country))
-    }
-
-    Json.obj("value" -> "", "text" -> "") +: countryJsonList
-  }
 }
