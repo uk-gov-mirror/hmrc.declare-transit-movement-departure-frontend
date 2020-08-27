@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.ReferenceDataConnector
 import forms.OfficeOfDepartureFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{CustomsOfficeList, NormalMode}
 import models.reference.CustomsOffice
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -43,14 +43,14 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
   def onwardRoute = Call("GET", "/foo")
 
-  val customsOffice1 = CustomsOffice("officeId", "someName", Seq.empty, None)
-  val customsOffice2 = CustomsOffice("id", "name", Seq.empty, None)
-  val customsOffices  = Seq(customsOffice1, customsOffice2)
+  val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
+  val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
+  val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
   val form = new OfficeOfDepartureFormProvider()(customsOffices)
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  lazy val officeOfDepartureRoute = routes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url
+  lazy val officeOfDepartureRoute: String = routes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -81,8 +81,9 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       val expectedCustomsOfficeJson = Seq(
         Json.obj("value" -> "", "text"         -> ""),
-        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false),
-        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> false)
+        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> false),
+        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
+
       )
 
       val expectedJson = Json.obj(
@@ -104,7 +105,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
         .thenReturn(Future.successful(Html("")))
       when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, customsOffice1).success.value
+      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, customsOffice1.id).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
@@ -122,8 +123,8 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       val expectedCustomsOfficeJson = Seq(
         Json.obj("value" -> "", "text"         -> ""),
-        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false),
-        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> true)
+        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> true),
+        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
       )
 
       val expectedJson = Json.obj(

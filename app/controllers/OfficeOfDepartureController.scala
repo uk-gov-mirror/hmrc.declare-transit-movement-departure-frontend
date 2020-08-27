@@ -20,17 +20,17 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.OfficeOfDepartureFormProvider
 import javax.inject.Inject
-import models.reference.CustomsOffice
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.OfficeOfDeparturePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,16 +52,14 @@ class OfficeOfDepartureController @Inject()(
       referenceDataConnector.getCustomsOffices flatMap {
         customsOffices =>
           val form = formProvider(customsOffices)
-
-          val preparedForm = request.userAnswers.get(OfficeOfDeparturePage) match {
-            case None => form
-            case Some(value) => form.fill(value)
-          }
+          val preparedForm = request.userAnswers.get(OfficeOfDeparturePage)
+            .flatMap(customsOffices.getCustomsOffice)
+            .map(form.fill).getOrElse(form)
 
           val json = Json.obj(
             "form" -> preparedForm,
             "lrn" -> lrn,
-            "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices),
+            "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
             "mode" -> mode
           )
 
@@ -79,7 +77,7 @@ class OfficeOfDepartureController @Inject()(
               val json = Json.obj(
                 "form" -> formWithErrors,
                 "lrn" -> lrn,
-                "customsOffices" -> getCustomsOfficesAsJson(form.value, customsOffices),
+                "customsOffices" -> getCustomsOfficesAsJson(form.value, customsOffices.customsOffices),
                 "mode" -> mode
               )
 
@@ -87,22 +85,12 @@ class OfficeOfDepartureController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfDeparturePage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfDeparturePage, value.id))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(OfficeOfDeparturePage, mode, updatedAnswers))
           )
       }
   }
 
-  private def getCustomsOfficesAsJson(value: Option[CustomsOffice], customsOffices: Seq[CustomsOffice]): Seq[JsObject] = {
-    val customsOfficeObjects = customsOffices.map {
-      office =>
-        Json.obj(
-          "value" -> office.id,
-          "text" -> s"${office.name} (${office.id})",
-          "selected" -> value.contains(office)
-        )
-    }
-    Json.obj("value" -> "", "text" -> "") +: customsOfficeObjects
-  }
+
 }

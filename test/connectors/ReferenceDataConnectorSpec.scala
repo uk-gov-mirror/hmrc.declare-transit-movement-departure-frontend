@@ -19,8 +19,8 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
-import models.CountryList
 import models.reference.{Country, CountryCode, CustomsOffice}
+import models.{CountryList, CustomsOfficeList}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -87,10 +87,10 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         )
 
         val expectedResult = {
-          Seq(
+          CustomsOfficeList(Seq(
             CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
             CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
-          )
+          ))
         }
 
         connector.getCustomsOffices.futureValue mustBe expectedResult

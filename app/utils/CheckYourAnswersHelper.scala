@@ -19,7 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, CountryList, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, CustomsOfficeList, LocalReferenceNumber, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -27,19 +27,22 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  def officeOfDeparture: Option[Row] = userAnswers.get(OfficeOfDeparturePage) map {
+  def officeOfDeparture(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(OfficeOfDeparturePage) flatMap {
     answer =>
+    customsOfficeList.getCustomsOffice(answer) map {
+      customsOffice =>
       Row(
-        key     = Key(msg"officeOfDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.name} (${answer.id})"),
+        key = Key(msg"officeOfDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"${customsOffice.name} (${customsOffice.id})"),
         actions = List(
           Action(
-            content            = msg"site.edit",
-            href               = routes.OfficeOfDepartureController.onPageLoad(lrn, CheckMode).url,
+            content = msg"site.edit",
+            href = routes.OfficeOfDepartureController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"officeOfDeparture.checkYourAnswersLabel"))
           )
         )
       )
+    }
   }
 
   def consigneeName: Option[Row] = userAnswers.get(ConsigneeNamePage) map {
