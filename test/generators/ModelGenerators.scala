@@ -17,6 +17,8 @@
 package generators
 
 import models._
+import models.reference.{Country, CountryCode}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
