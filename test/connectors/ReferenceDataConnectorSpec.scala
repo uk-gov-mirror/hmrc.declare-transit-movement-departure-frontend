@@ -18,7 +18,6 @@ package connectors
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
-import generators.ModelGenerators
 import helper.WireMockServerHandler
 import models.CountryList
 import models.reference.{Country, CountryCode, CustomsOffice}
