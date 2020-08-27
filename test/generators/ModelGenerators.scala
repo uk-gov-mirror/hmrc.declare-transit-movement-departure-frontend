@@ -17,19 +17,34 @@
 package generators
 
 import models._
+import models.reference.{Country, CountryCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
+    Arbitrary {
+      Gen.pick(CountryCode.Constants.countryCodeLength, 'A' to 'Z').map(code => CountryCode(code.mkString))
+    }
+
+  implicit lazy val arbitraryCountry: Arbitrary[Country] = {
+    Arbitrary {
+      for {
+        code <- arbitrary[CountryCode]
+        name <- arbitrary[String]
+      } yield Country(code, name)
+    }
+  }
+
   implicit lazy val arbitraryConsignorAddress: Arbitrary[ConsignorAddress] =
-      Arbitrary {
+    Arbitrary {
       for {
         addressLine1 <- arbitrary[String]
         addressLine2 <- arbitrary[String]
         addressLine3 <- arbitrary[String]
-        addressLine4 <- arbitrary[String]
+        addressLine4 <- arbitrary[Country]
       } yield ConsignorAddress(addressLine1, addressLine2, addressLine3, addressLine4)
     }
 

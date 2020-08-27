@@ -30,7 +30,7 @@ class ConsignorAddressFormProvider @Inject() extends Mappings {
   val addressRegex: String = "^[a-zA-Z0-9 ]*$"
 
 
-  def apply(): Form[ConsignorAddress] = Form(
+  def apply(countryList: CountryList): Form[ConsignorAddress] = Form(
      mapping(
       "AddressLine1" -> text("consignorAddress.error.AddressLine1.required")
         .verifying(StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine1.length"),
@@ -47,8 +47,9 @@ class ConsignorAddressFormProvider @Inject() extends Mappings {
            regexp(addressRegex, "consignorAddress.error.line3.invalid"))),
 
 
-       "AddressLine4" -> text("consignorAddress.error.AddressLine4.required")
-         .verifying(maxLength(35, "consignorAddress.error.AddressLine4.length"))
+       "country" -> text("consignorAddress.error.AddressLine4.required")
+         .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))
+         .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
     )(ConsignorAddress.apply)(ConsignorAddress.unapply)
    )
  }

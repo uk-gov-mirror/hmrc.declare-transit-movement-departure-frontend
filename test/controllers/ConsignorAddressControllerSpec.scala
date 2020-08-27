@@ -19,7 +19,8 @@ package controllers
 import base.SpecBase
 import forms.ConsignorAddressFormProvider
 import matchers.JsonMatchers
-import models.{ConsignorAddress, NormalMode, UserAnswers}
+import models.reference.{Country, CountryCode}
+import models.{ConsignorAddress, CountryList, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -40,9 +41,11 @@ import scala.concurrent.Future
 class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
+  val country = Country(CountryCode("GB"), "United Kingdom")
+  val countries = CountryList(Seq(country))
 
   val formProvider = new ConsignorAddressFormProvider()
-  val form = formProvider()
+  val form = formProvider(countries)
 
   lazy val consignorAddressRoute = routes.ConsignorAddressController.onPageLoad(lrn, NormalMode).url
 
@@ -54,7 +57,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
         "AddressLine1" -> "value 1",
         "AddressLine2" -> "value 2",
         "AddressLine3" -> "value 3",
-        "AddressLine4" -> "value 4"
+        "country" -> country
       )
     )
   )
@@ -97,7 +100,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      val consignorAddress: ConsignorAddress = ConsignorAddress("Address line 1", "Address line 2", "Address line 3","Address line 4")
+      val consignorAddress: ConsignorAddress = ConsignorAddress("Address line 1", "Address line 2", "Address line 3", country)
 
       val userAnswers = emptyUserAnswers
         .set(ConsignorNamePage, "consignorName")
@@ -123,7 +126,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
           "AddressLine1" -> "Address line 1",
           "AddressLine2" -> "Address line 2",
           "AddressLine3" -> "Address line 3",
-          "AddressLine4" -> "Address line 4"
+          "country" -> "GB"
         )
       )
 
@@ -144,9 +147,13 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val userAnswers = emptyUserAnswers
+        .set(ConsignorNamePage, "consignorName")
+        .success
+        .value
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -156,7 +163,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       val request =
         FakeRequest(POST, consignorAddressRoute)
-          .withFormUrlEncodedBody(("AddressLine1", "value 1"), ("AddressLine2", "value 2"), ("AddressLine3", "value 3"), ("AddressLine4", "value 4"))
+          .withFormUrlEncodedBody(("AddressLine1", "value 1"), ("AddressLine2", "value 2"), ("AddressLine3", "value 3"), ("country", "GB"))
 
       val result = route(application, request).value
 
@@ -171,8 +178,12 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      val userAnswers = emptyUserAnswers
+        .set(ConsignorNamePage, "consignorName")
+        .success
+        .value
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(POST, consignorAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

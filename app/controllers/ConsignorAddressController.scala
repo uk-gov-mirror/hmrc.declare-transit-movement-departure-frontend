@@ -47,7 +47,6 @@ class ConsignorAddressController @Inject()(
                                             renderer: Renderer
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -56,8 +55,8 @@ class ConsignorAddressController @Inject()(
           request.userAnswers.get(ConsignorNamePage) match {
             case Some(consignorName) =>
               val preparedForm = request.userAnswers.get(ConsignorAddressPage) match {
-                case Some(value) => formProvider().fill(value)
-                case None => formProvider()
+                case Some(value) => formProvider(countries).fill(value)
+                case None => formProvider(countries)
               }
 
               val json = Json.obj(
@@ -65,7 +64,7 @@ class ConsignorAddressController @Inject()(
                 "lrn" -> lrn,
                 "mode" -> mode,
                 "consignorName" -> consignorName,
-                "countries" -> countryJsonList(None, countries.fullList)
+                "countries" -> countryJsonList(preparedForm.value.map(_.AddressLine4), countries.fullList)
               )
 
               renderer.render("consignorAddress.njk", json).map(Ok(_))
@@ -77,24 +76,35 @@ class ConsignorAddressController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      request.userAnswers.get(ConsignorNamePage) match {
+        case Some(consignorName) =>
+          referenceDataConnector.getCountryList() flatMap {
+            countries =>
+              formProvider(countries)
+                .bindFromRequest()
+                .fold(
+                  formWithErrors => {
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+                    val json = Json.obj(
+                      "form" -> formWithErrors,
+                      "lrn" -> lrn,
+                      "mode" -> mode,
+                      "consignorName" -> consignorName,
+                      "countries" -> countryJsonList(None, countries.fullList)
+                    )
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn" -> lrn,
-            "mode" -> mode
-          )
+                    renderer.render("consignorAddress.njk", json).map(BadRequest(_))
+                  },
+                  value =>
+                    for {
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorAddressPage, value))
+                      _ <- sessionRepository.set(updatedAnswers)
+                    } yield Redirect(navigator.nextPage(ConsignorAddressPage, mode, updatedAnswers))
+                )
+          }
+        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 
-          renderer.render("consignorAddress.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorAddressPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ConsignorAddressPage, mode, updatedAnswers))
-      )
+      }
   }
 
   private def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {

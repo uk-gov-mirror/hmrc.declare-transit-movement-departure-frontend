@@ -17,11 +17,17 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.CountryList
+import models.reference.{Country, CountryCode}
 import play.api.data.FormError
 
 class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new ConsignorAddressFormProvider()()
+  val country = Country(CountryCode("GB"), "United Kingdom")
+  val countries = CountryList(Seq(country))
+
+  val formProvider = new ConsignorAddressFormProvider()
+  val form = formProvider(countries)
 
   ".AddressLine1" - {
 
