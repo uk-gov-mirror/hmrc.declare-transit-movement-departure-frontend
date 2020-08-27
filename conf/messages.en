@@ -306,3 +306,13 @@ countryOfDispatch.title = What is the country of dispatch?
 countryOfDispatch.heading = What is the country of dispatch?
 countryOfDispatch.checkYourAnswersLabel = Country of dispatch
 countryOfDispatch.error.required = Select the country of dispatch
+
+consigneeAddress.title = consigneeAddress
+consigneeAddress.heading = consigneeAddress
+consigneeAddress.AddressLine1 = AddressLine1
+consigneeAddress.AddressLine2 = AddressLine2
+consigneeAddress.checkYourAnswersLabel = consigneeAddress
+consigneeAddress.error.AddressLine1.required = Enter AddressLine1
+consigneeAddress.error.AddressLine2.required = Enter AddressLine2
+consigneeAddress.error.AddressLine1.length = AddressLine1 must be 35 characters or less
+consigneeAddress.error.AddressLine2.length = AddressLine2 must be 35 characters or less
