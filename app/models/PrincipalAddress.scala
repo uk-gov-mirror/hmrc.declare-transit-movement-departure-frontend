@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package models.reference
-
+package models
 
 import play.api.libs.json._
 
-case class CountryCode(code: String)
+case class PrincipalAddress(numberAndStreet: String, town: String, postcode: String)
 
-object CountryCode {
+object PrincipalAddress {
 
   object Constants {
-    val countryCodeLength = 2
+    val numberAndStreetLength = 35
+    val townLength = 35
+    val postcodeLength = 9
   }
 
-  implicit val format: Format[CountryCode] =
-    new Format[CountryCode] {
-      override def writes(o: CountryCode): JsValue = JsString(o.code)
-
-      override def reads(json: JsValue): JsResult[CountryCode] = json match {
-        case JsString(code) => JsSuccess(CountryCode(code))
-        case x              => JsError(s"Expected a string, got a ${x.getClass}")
-      }
-    }
-
+  implicit val format = Json.format[PrincipalAddress]
 }

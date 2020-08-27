@@ -27,6 +27,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def principalAddress: Option[Row] = userAnswers.get(PrincipalAddressPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"principalAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"${answer.numberAndStreet} ${answer.town} ${answer.postcode}"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.PrincipalAddressController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"principalAddress.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def officeOfDeparture(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(OfficeOfDeparturePage) flatMap {
     answer =>
     customsOfficeList.getCustomsOffice(answer) map {
@@ -132,6 +147,21 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
             content            = msg"site.edit",
             href               = routes.AddConsigneeController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignee.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def consignorAddress: Option[Row] = userAnswers.get(ConsignorAddressPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"consignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2} ${answer.AddressLine3} ${answer.country}"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsignorAddressController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consignorAddress.checkYourAnswersLabel"))
           )
         )
       )

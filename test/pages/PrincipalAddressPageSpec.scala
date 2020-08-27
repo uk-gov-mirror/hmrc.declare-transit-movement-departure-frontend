@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages
 
+import models.PrincipalAddress
+import pages.behaviours.PageBehaviours
 
-import play.api.libs.json._
+class PrincipalAddressPageSpec extends PageBehaviours {
 
-case class CountryCode(code: String)
+  "PrincipalAddressPage" - {
 
-object CountryCode {
+    beRetrievable[PrincipalAddress](PrincipalAddressPage)
 
-  object Constants {
-    val countryCodeLength = 2
+    beSettable[PrincipalAddress](PrincipalAddressPage)
+
+    beRemovable[PrincipalAddress](PrincipalAddressPage)
   }
-
-  implicit val format: Format[CountryCode] =
-    new Format[CountryCode] {
-      override def writes(o: CountryCode): JsValue = JsString(o.code)
-
-      override def reads(json: JsValue): JsResult[CountryCode] = json match {
-        case JsString(code) => JsSuccess(CountryCode(code))
-        case x              => JsError(s"Expected a string, got a ${x.getClass}")
-      }
-    }
-
 }

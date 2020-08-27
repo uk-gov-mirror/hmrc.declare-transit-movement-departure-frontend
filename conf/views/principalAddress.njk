@@ -1,0 +1,85 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "macros/title.njk"                         import title %}
+
+{% block pageTitle %}
+  {{ title(messages("principalAddress.title"), form.errors) }}
+{% endblock %}
+
+{% block mainContent %}
+
+  {{ govukBackLink({
+    text: messages("site.back")
+  }) }}
+
+  <div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if form.errors.length > 0 %}
+          {{ govukErrorSummary({
+            "titleText": messages("error.summary.title"),
+            "errorList": form.errors
+          }) }}
+        {% endif %}
+
+        <form action="{{ routes.controllers.PrincipalAddressController.onSubmit(lrn, mode).url }}" method="post">
+
+        <span class="govuk-caption-xl">{{messages('traderDetails.preHeading')}}</span>
+
+          {{ csrf() | safe }}
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("principalAddress.heading", principalName) }}
+        </h1>
+
+          {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
+            label: {
+              text: messages('principalAddress.numberAndStreet')
+            },
+            id: "numberAndStreet",
+            name: "numberAndStreet",
+            value: form.numberAndStreet.value,
+            errorMessage: form.numberAndStreet.error
+          }) }}
+
+          {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
+            label: {
+              text: messages('principalAddress.town')
+            },
+            id: "town",
+            name: "town",
+            value: form.town.value,
+            errorMessage: form.town.error
+          }) }}
+
+          {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
+            label: {
+              text: messages('principalAddress.postcode')
+            },
+            id: "postcode",
+            name: "postcode",
+            value: form.postcode.value,
+            errorMessage: form.postcode.error
+          }) }}
+
+          {{ govukButton({
+            text: messages("site.continue"),
+              attributes: {id:"submit"}
+          }) }}
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

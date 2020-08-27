@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages
 
+import models.ConsignorAddress
+import pages.behaviours.PageBehaviours
 
-import play.api.libs.json._
+class ConsignorAddressPageSpec extends PageBehaviours {
 
-case class CountryCode(code: String)
+  "ConsignorAddressPage" - {
 
-object CountryCode {
+    beRetrievable[ConsignorAddress](ConsignorAddressPage)
 
-  object Constants {
-    val countryCodeLength = 2
+    beSettable[ConsignorAddress](ConsignorAddressPage)
+
+    beRemovable[ConsignorAddress](ConsignorAddressPage)
   }
-
-  implicit val format: Format[CountryCode] =
-    new Format[CountryCode] {
-      override def writes(o: CountryCode): JsValue = JsString(o.code)
-
-      override def reads(json: JsValue): JsResult[CountryCode] = json match {
-        case JsString(code) => JsSuccess(CountryCode(code))
-        case x              => JsError(s"Expected a string, got a ${x.getClass}")
-      }
-    }
-
 }

@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages
 
+import models.ConsignorAddress
+import play.api.libs.json.JsPath
 
-import play.api.libs.json._
+case object ConsignorAddressPage extends QuestionPage[ConsignorAddress] {
 
-case class CountryCode(code: String)
+  override def path: JsPath = JsPath \ toString
 
-object CountryCode {
-
-  object Constants {
-    val countryCodeLength = 2
-  }
-
-  implicit val format: Format[CountryCode] =
-    new Format[CountryCode] {
-      override def writes(o: CountryCode): JsValue = JsString(o.code)
-
-      override def reads(json: JsValue): JsResult[CountryCode] = json match {
-        case JsString(code) => JsSuccess(CountryCode(code))
-        case x              => JsError(s"Expected a string, got a ${x.getClass}")
-      }
-    }
-
+  override def toString: String = "consignorAddress"
 }

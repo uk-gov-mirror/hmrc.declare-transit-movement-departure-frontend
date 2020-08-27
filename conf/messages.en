@@ -219,7 +219,7 @@ representativeName.heading = What is your company’s name?
 representativeName.checkYourAnswersLabel = Representative name
 representativeName.error.required = Enter your company’s name
 representativeName.error.length = Your company’s name must be 35 characters or less
-representativeName.error.invalid = Your company’s name must only include letters a to z or numbers 0 to 9  or blank spaces
+representativeName.error.invalid = Your company’s name must only include letters a to z or numbers 0 to 9
 
 representativeCapacity.title = What is your capacity?
 representativeCapacity.heading = What is your capacity?
@@ -251,6 +251,25 @@ whatIsPrincipalEori.error.length = The principal’s EORI number must be 17 char
 whatIsPrincipalEori.error.invalidCharacters = The principal’s EORI number must only include letters a to z and numbers 0 to 9
 whatIsPrincipalEori.error.invalidFormat = Enter the principal’s EORI number in the right format
 
+principalAddress.title = What is the principal’s address?
+principalAddress.heading = What is {0}’s address?
+principalAddress.country = Country
+principalAddress.checkYourAnswersLabel =  Principal’s address
+
+principalAddress.numberAndStreet = Number and street
+principalAddress.town = Town
+principalAddress.postcode = Postcode
+principalAddress.error.numberAndStreet.required = Enter the number and street of {0}’s address
+principalAddress.error.town.required = Enter the town of {0}’s address
+principalAddress.error.postcode.required = Enter the postcode of {0}’s address
+principalAddress.error.numberAndStreet.length = Number and street must be 35 characters or less
+principalAddress.error.town.length = Town must be 35 characters or less
+principalAddress.error.postcode.length = Postcode must be 9 characters or less
+principalAddress.error.numberAndStreet.invalid = The  number and street of {0}'s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
+principalAddress.error.town.invalid = The town of {0}'s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
+principalAddress.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
+principalAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z and numbers 0 to 9
+
 addConsignor.title = Do you need to add a consignor?
 addConsignor.heading = Do you need to add a consignor?
 addConsignor.checkYourAnswersLabel = Do you need to add a consignor?
@@ -268,11 +287,12 @@ consignorName.checkYourAnswersLabel = What is the consignor’s name?
 consignorName.error.required = Enter the consignor’s name
 consignorName.error.length = Consignor’s name must be 35 characters or less
 consignorName.error.invalid = Consignor’s name must only include letters a to z and numbers 0 to 9 or blank spaces
+
 consignorEori.title = What is the consignor’s EORI number?
 consignorEori.heading = What is the consignor’s EORI number?
 consignorEori.checkYourAnswersLabel = What is the consignor’s EORI number?
 consignorEori.error.required = Enter the consignor's EORI umber
-consignorEori.error.length = Consignor's Eori number must be 17 characters or less
+consignorEori.error.length = Consignor’s Eori number must be 17 characters or less
 consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
 consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
 
@@ -301,6 +321,23 @@ whatIsConsigneeEori.error.length = The consignee’s EORI number must be 17 char
 whatIsConsigneeEori.error.invalidCharacters = The consignee’s EORI number must only include letters a to z and numbers 0 to 9
 whatIsConsigneeEori.error.invalidFormat = Enter the consignee’s EORI number in the right format
 
+consignorAddress.title = What is the address of the consignor
+consignorAddress.heading = What is {0}’s address?
+consignorAddress.AddressLine1 = Address line 1
+consignorAddress.AddressLine2 = Address line 2
+consignorAddress.AddressLine3 = Address line 3
+consignorAddress.AddressLine4 = Country
+consignorAddress.checkYourAnswersLabel = consignorAddress
+consignorAddress.error.AddressLine1.required = Enter the first line of the consignor’s address
+consignorAddress.error.AddressLine2.required = Enter the second line of the consignor’s address
+consignorAddress.error.AddressLine3.required = Enter the third line of the consignor’s address
+consignorAddress.error.country.required = Enter the country of the consignor’s address
+consignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
+consignorAddress.error.Addressline2.length = Address line 2 must be 35 characters or less
+consignorAddress.error.Addressline3.length = Address line 3 must be 35 characters or less
+consignorAddress.error.line1.invalid= The first line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+consignorAddress.error.line2.invalid= The second line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+consignorAddress.error.line3.invalid= The third line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 
 countryOfDispatch.title = What is the country of dispatch?
 countryOfDispatch.heading = What is the country of dispatch?
