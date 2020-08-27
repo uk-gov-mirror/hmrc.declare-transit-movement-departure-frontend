@@ -16,6 +16,7 @@
 
 package base
 
+import config.FrontendAppConfig
 import controllers.actions._
 import models.{EoriNumber, LocalReferenceNumber, PrincipalAddress, UserAnswers}
 import org.mockito.Mockito
@@ -27,18 +28,21 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages
 import play.api.i18n.MessagesApi
-import play.api.inject.bind
+import play.api.inject.{Injector, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 
 trait SpecBase
     extends AnyFreeSpec
     with Matchers
     with OptionValues
+    with GuiceOneAppPerSuite
     with TryValues
     with ScalaFutures
     with IntegrationPatience
@@ -61,7 +65,13 @@ trait SpecBase
 
   val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
   implicit def messages: Messages = Helpers.stubMessages()
+
+  def injector: Injector = app.injector
+
+  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()

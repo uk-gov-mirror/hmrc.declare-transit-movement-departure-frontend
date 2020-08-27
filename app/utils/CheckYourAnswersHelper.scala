@@ -19,7 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, LocalReferenceNumber, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -37,6 +37,143 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
             content            = msg"site.edit",
             href               = routes.PrincipalAddressController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"principalAddress.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def consigneeName: Option[Row] = userAnswers.get(ConsigneeNamePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"consigneeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsigneeNameController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consigneeName.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def whatIsConsigneeEori: Option[Row] = userAnswers.get(WhatIsConsigneeEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"whatIsConsigneeEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.WhatIsConsigneeEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"whatIsConsigneeEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def countryOfDispatch(codeList: CountryList): Option[Row] = userAnswers.get(CountryOfDispatchPage) map {
+    answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
+      Row(
+        key     = Key(msg"countryOfDispatch.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$countryName"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CountryOfDispatchController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"countryOfDispatch.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def isConsigneeEoriKnown: Option[Row] = userAnswers.get(IsConsigneeEoriKnownPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"isConsigneeEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.IsConsigneeEoriKnownController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"isConsigneeEoriKnown.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def consignorName: Option[Row] = userAnswers.get(ConsignorNamePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"consignorName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsignorNameController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consignorName.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addConsignee: Option[Row] = userAnswers.get(AddConsigneePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addConsignee.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddConsigneeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignee.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def consignorEori: Option[Row] = userAnswers.get(ConsignorEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"consignorEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsignorEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consignorEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addConsignor: Option[Row] = userAnswers.get(AddConsignorPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addConsignor.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddConsignorController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignor.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def isConsignorEoriKnown: Option[Row] = userAnswers.get(IsConsignorEoriKnownPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"isConsignorEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.IsConsignorEoriKnownController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"isConsignorEoriKnown.checkYourAnswersLabel"))
           )
         )
       )
