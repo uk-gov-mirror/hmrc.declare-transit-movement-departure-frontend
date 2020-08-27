@@ -21,19 +21,19 @@ import models.CountryList
 import models.reference.{Country, CountryCode}
 import play.api.data.FormError
 
-class ConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
+class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
   val country = Country(CountryCode("GB"), "United Kingdom")
   val countries = CountryList(Seq(country))
 
-  val formProvider = new ConsigneeAddressFormProvider()
+  val formProvider = new ConsignorAddressFormProvider()
   val form = formProvider(countries)
 
   ".AddressLine1" - {
 
     val fieldName = "AddressLine1"
-    val requiredKey = "consigneeAddress.error.AddressLine1.required"
-    val lengthKey = "consigneeAddress.error.AddressLine1.length"
+    val requiredKey = "consignorAddress.error.AddressLine1.required"
+    val lengthKey = "consignorAddress.error.AddressLine1.length"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
@@ -59,8 +59,8 @@ class ConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
   ".AddressLine2" - {
 
     val fieldName = "AddressLine2"
-    val requiredKey = "consigneeAddress.error.AddressLine2.required"
-    val lengthKey = "consigneeAddress.error.AddressLine2.length"
+    val requiredKey = "consignorAddress.error.AddressLine2.required"
+    val lengthKey = "consignorAddress.error.AddressLine2.length"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
@@ -86,8 +86,8 @@ class ConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
   ".AddressLine3" - {
 
     val fieldName = "AddressLine3"
-    val requiredKey = "consigneeAddress.error.AddressLine3.required"
-    val lengthKey = "consigneeAddress.error.AddressLine3.length"
+    val requiredKey = "consignorAddress.error.AddressLine3.required"
+    val lengthKey = "consignorAddress.error.AddressLine3.length"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(

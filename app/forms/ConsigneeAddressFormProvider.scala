@@ -16,21 +16,40 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.reference.Country
+import models.{ConsigneeAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms._
-import models.ConsigneeAddress
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
 
 class ConsigneeAddressFormProvider @Inject() extends Mappings {
 
-   def apply(): Form[ConsigneeAddress] = Form(
-     mapping(
+  val addressRegex: String = "^[a-zA-Z0-9 ]*$"
+
+
+  def apply(countryList: CountryList): Form[ConsigneeAddress] = Form(
+    mapping(
       "AddressLine1" -> text("consigneeAddress.error.AddressLine1.required")
-        .verifying(maxLength(35, "consigneeAddress.error.AddressLine1.length")),
+        .verifying(StopOnFirstFail[String](maxLength(35, "consigneeAddress.error.AddressLine1.length"),
+          regexp(addressRegex, "consigneeAddress.error.line1.invalid"))),
+
+
       "AddressLine2" -> text("consigneeAddress.error.AddressLine2.required")
-        .verifying(maxLength(35, "consigneeAddress.error.AddressLine2.length"))
+        .verifying(StopOnFirstFail[String](maxLength(35, "consigneeAddress.error.AddressLine2.length"),
+          regexp(addressRegex, "consigneeAddress.error.line2.invalid"))),
+
+
+      "AddressLine3" -> text("consigneeAddress.error.AddressLine3.required")
+        .verifying(StopOnFirstFail[String](maxLength(35, "consigneeAddress.error.AddressLine3.length"),
+          regexp(addressRegex, "consigneeAddress.error.line3.invalid"))),
+
+
+      "country" -> text("consigneeAddress.error.country.required")
+        .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))
+        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
     )(ConsigneeAddress.apply)(ConsigneeAddress.unapply)
-   )
- }
+  )
+}

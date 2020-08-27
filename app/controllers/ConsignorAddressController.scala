@@ -18,12 +18,12 @@ package controllers
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import forms.ConsigneeAddressFormProvider
+import forms.ConsignorAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
-import models.{LocalReferenceNumber, Mode}
+import models.{CountryList, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.{ConsigneeAddressPage, ConsigneeNamePage}
+import pages.{ConsignorAddressPage, ConsignorNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsigneeAddressController @Inject()(
+class ConsignorAddressController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             sessionRepository: SessionRepository,
                                             navigator: Navigator,
@@ -42,7 +42,7 @@ class ConsigneeAddressController @Inject()(
                                             getData: DataRetrievalActionProvider,
                                             requireData: DataRequiredAction,
                                             referenceDataConnector: ReferenceDataConnector,
-                                            formProvider: ConsigneeAddressFormProvider,
+                                            formProvider: ConsignorAddressFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             renderer: Renderer
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
@@ -52,9 +52,9 @@ class ConsigneeAddressController @Inject()(
     implicit request =>
       referenceDataConnector.getCountryList() flatMap {
         countries =>
-          request.userAnswers.get(ConsigneeNamePage) match {
-            case Some(consigneeName) =>
-              val preparedForm = request.userAnswers.get(ConsigneeAddressPage) match {
+          request.userAnswers.get(ConsignorNamePage) match {
+            case Some(consignorName) =>
+              val preparedForm = request.userAnswers.get(ConsignorAddressPage) match {
                 case Some(value) => formProvider(countries).fill(value)
                 case None => formProvider(countries)
               }
@@ -63,11 +63,11 @@ class ConsigneeAddressController @Inject()(
                 "form" -> preparedForm,
                 "lrn" -> lrn,
                 "mode" -> mode,
-                "consigneeName" -> consigneeName,
+                "consignorName" -> consignorName,
                 "countries" -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
               )
 
-              renderer.render("consigneeAddress.njk", json).map(Ok(_))
+              renderer.render("consignorAddress.njk", json).map(Ok(_))
             case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 
           }
@@ -76,8 +76,8 @@ class ConsigneeAddressController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(ConsigneeNamePage) match {
-        case Some(consigneeName) =>
+      request.userAnswers.get(ConsignorNamePage) match {
+        case Some(consignorName) =>
           referenceDataConnector.getCountryList() flatMap {
             countries =>
               formProvider(countries)
@@ -92,17 +92,17 @@ class ConsigneeAddressController @Inject()(
                       "form" -> formWithErrors,
                       "lrn" -> lrn,
                       "mode" -> mode,
-                      "consigneeName" -> consigneeName,
+                      "consignorName" -> consignorName,
                       "countries" -> countryJsonList(countryValue, countries.fullList)
                     )
 
-                    renderer.render("consigneeAddress.njk", json).map(BadRequest(_))
+                    renderer.render("consignorAddress.njk", json).map(BadRequest(_))
                   },
                   value =>
                     for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeAddressPage, value))
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorAddressPage, value))
                       _ <- sessionRepository.set(updatedAnswers)
-                    } yield Redirect(navigator.nextPage(ConsigneeAddressPage, mode, updatedAnswers))
+                    } yield Redirect(navigator.nextPage(ConsignorAddressPage, mode, updatedAnswers))
                 )
           }
         case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))

@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import models.reference.Country
-import play.api.libs.json._
+import models.ConsignorAddress
+import pages.behaviours.PageBehaviours
 
-case class ConsigneeAddress (AddressLine1: String, AddressLine2: String, AddressLine3: String, country: Country)
+class ConsignorAddressPageSpec extends PageBehaviours {
 
-object ConsigneeAddress {
-  implicit val format = Json.format[ConsigneeAddress]
+  "ConsignorAddressPage" - {
+
+    beRetrievable[ConsignorAddress](ConsignorAddressPage)
+
+    beSettable[ConsignorAddress](ConsignorAddressPage)
+
+    beRemovable[ConsignorAddress](ConsignorAddressPage)
+  }
 }
