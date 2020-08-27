@@ -217,8 +217,8 @@ representativeName.title = What is your company’s name?
 representativeName.heading = What is your company’s name?
 representativeName.checkYourAnswersLabel = Representative name
 representativeName.error.required = Enter your company’s name
-representativeName.error.length = RepresentativeName must be 35 characters or less
-representativeName.error.invalid = RepresentativeName must only include letters a to z or numbers 0 to 9
+representativeName.error.length = Your company’s name must be 35 characters or less
+representativeName.error.invalid = Your company’s name must only include letters a to z or numbers 0 to 9
 
 representativeCapacity.title = What is your capacity?
 representativeCapacity.heading = What is your capacity?
