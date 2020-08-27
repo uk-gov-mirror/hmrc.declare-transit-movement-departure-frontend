@@ -137,3 +137,4 @@ GET        /:lrn/route/dispatch-country                        controllers.Count
 POST       /:lrn/route/dispatch-country                        controllers.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/trader-details/check-your-answers                       controllers.TraderDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/trader-details/check-your-answers                       controllers.TraderDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)

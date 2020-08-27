@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
 import viewModels.sections.Section
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class TraderDetailsCheckYourAnswersController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -46,6 +46,11 @@ class TraderDetailsCheckYourAnswersController @Inject()(
       )
 
       renderer.render("traderDetailsCheckYourAnswers.njk", json).map(Ok(_))
+  }
+
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+    implicit request =>
+      Future.successful(Redirect(routes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
   private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {

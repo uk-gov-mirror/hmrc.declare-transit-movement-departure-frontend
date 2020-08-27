@@ -323,3 +323,6 @@ countryOfDispatch.title = What is the country of dispatch?
 countryOfDispatch.heading = What is the country of dispatch?
 countryOfDispatch.checkYourAnswersLabel = Country of dispatch
 countryOfDispatch.error.required = Select the country of dispatch
+
+traderDetailsCheckYourAnswers.title = Check your answers
+traderDetailsCheckYourAnswers.heading = Check your answers

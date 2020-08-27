@@ -68,7 +68,7 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
   private def tradersDetailsSection: SectionDetails = {
     val startPage: String = routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
-    val cyaPageAndStatus: (String, Status) = (routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
+    val cyaPageAndStatus: (String, Status) = (routes.TraderDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage, traderDetailsPage).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.tradersDetails", page, status)
@@ -108,6 +108,18 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
     Seq(
       userAnswers.get(IsPrincipalEoriKnownPage) -> routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(WhatIsPrincipalEoriPage) -> routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(PrincipalNamePage) -> routes.PrincipalNameController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(PrincipalAddressPage) -> routes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(AddConsignorPage) -> routes.AddConsignorController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(IsConsignorEoriKnownPage) -> routes.IsConsignorEoriKnownController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(ConsignorNamePage) -> routes.ConsignorNameController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(ConsignorAddressPage) -> routes.ConsignorAddressController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(ConsignorEoriPage) -> routes.ConsignorEoriController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(AddConsigneePage) -> routes.AddConsigneeController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(IsConsigneeEoriKnownPage) -> routes.IsConsigneeEoriKnownController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(ConsigneeNamePage) -> routes.ConsigneeNameController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(WhatIsConsigneeEoriPage) -> routes.WhatIsConsigneeEoriController.onPageLoad(lrn, NormalMode).url,
     )
   }
 
