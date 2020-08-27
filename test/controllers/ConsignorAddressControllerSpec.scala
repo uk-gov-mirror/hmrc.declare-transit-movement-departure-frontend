@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import connectors.ReferenceDataConnector
 import forms.ConsignorAddressFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
@@ -24,7 +25,7 @@ import models.{ConsignorAddress, CountryList, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{ConsigneeNamePage, ConsignorAddressPage, ConsignorNamePage}
 import play.api.inject.bind
@@ -43,6 +44,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
   def onwardRoute = Call("GET", "/foo")
   val country = Country(CountryCode("GB"), "United Kingdom")
   val countries = CountryList(Seq(country))
+  val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   val formProvider = new ConsignorAddressFormProvider()
   val form = formProvider(countries)
@@ -61,6 +63,15 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       )
     )
   )
+  def jsonCountryList(preSelected: Boolean): Seq[JsObject] = Seq(
+    Json.obj("text" -> "", "value"               -> ""),
+    Json.obj("text" -> "United Kingdom", "value" -> "GB", "selected" -> preSelected)
+  )
+
+  override def beforeEach: Unit = {
+    reset(mockReferenceDataConnector)
+    super.beforeEach
+  }
 
   "ConsignorAddress Controller" - {
 
@@ -68,12 +79,16 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
       val userAnswers = emptyUserAnswers
         .set(ConsignorNamePage, "foo")
         .success
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(GET, consignorAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -100,6 +115,8 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
       val consignorAddress: ConsignorAddress = ConsignorAddress("Address line 1", "Address line 2", "Address line 3", country)
 
       val userAnswers = emptyUserAnswers
@@ -110,7 +127,9 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
         .success
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(GET, consignorAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -147,6 +166,8 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
       val userAnswers = emptyUserAnswers
         .set(ConsignorNamePage, "consignorName")
         .success
@@ -158,6 +179,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
+          .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
           .build()
 
 
@@ -178,12 +200,16 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar with Nun
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
       val userAnswers = emptyUserAnswers
         .set(ConsignorNamePage, "consignorName")
         .success
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(POST, consignorAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

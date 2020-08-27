@@ -123,7 +123,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     answer =>
       Row(
         key     = Key(msg"consignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2} ${answer.AddressLine3} ${answer.AddressLine4}"),
+        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2} ${answer.AddressLine3} ${answer.country}"),
         actions = List(
           Action(
             content            = msg"site.edit",

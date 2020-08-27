@@ -20,8 +20,8 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.ConsignorAddressFormProvider
 import javax.inject.Inject
-import models.reference.Country
-import models.{LocalReferenceNumber, Mode}
+import models.reference.{Country, CountryCode}
+import models.{CountryList, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.{ConsignorAddressPage, ConsignorNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -64,7 +64,7 @@ class ConsignorAddressController @Inject()(
                 "lrn" -> lrn,
                 "mode" -> mode,
                 "consignorName" -> consignorName,
-                "countries" -> countryJsonList(preparedForm.value.map(_.AddressLine4), countries.fullList)
+                "countries" -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
               )
 
               renderer.render("consignorAddress.njk", json).map(Ok(_))
@@ -84,13 +84,16 @@ class ConsignorAddressController @Inject()(
                 .bindFromRequest()
                 .fold(
                   formWithErrors => {
-
+                    val countryValue: Option[Country] = formWithErrors.data.get("country").flatMap {
+                      country =>
+                        countries.getCountry(CountryCode(country))
+                    }
                     val json = Json.obj(
                       "form" -> formWithErrors,
                       "lrn" -> lrn,
                       "mode" -> mode,
                       "consignorName" -> consignorName,
-                      "countries" -> countryJsonList(None, countries.fullList)
+                      "countries" -> countryJsonList(countryValue, countries.fullList)
                     )
 
                     renderer.render("consignorAddress.njk", json).map(BadRequest(_))
