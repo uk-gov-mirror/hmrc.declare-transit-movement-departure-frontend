@@ -34,10 +34,12 @@
           }) }}
         {% endif %}
 
+
         <form action="{{ routes.controllers.CountryOfDispatchController.onSubmit(lrn, mode).url }}" method="post">
 
-          {{ csrf() | safe }}
+        <span class="govuk-caption-xl">{{messages('routeDetails.preHeading')}}</span>
 
+          {{ csrf() | safe }}
 
             {{ govukSelect({
               classes: "govuk-input--width-20 autocomplete",

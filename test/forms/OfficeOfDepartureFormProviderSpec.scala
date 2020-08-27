@@ -17,15 +17,16 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.reference.CustomsOffice
 import play.api.data.FormError
 
 class OfficeOfDepartureFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "officeOfDeparture.error.required"
-  val lengthKey = "officeOfDeparture.error.length"
-  val maxLength = 35
+  val maxLength   = 8
 
-  val form = new OfficeOfDepartureFormProvider()()
+  val customsOffices = Seq(CustomsOffice("id", "name", Seq.empty, None), CustomsOffice("officeId", "someName", Seq.empty, None))
+  val form = new OfficeOfDepartureFormProvider()(customsOffices)
 
   ".value" - {
 
@@ -37,17 +38,24 @@ class OfficeOfDepartureFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind if customs office id does not exist in the customs office list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a customs office id which is in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "officeId"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
   }
 }

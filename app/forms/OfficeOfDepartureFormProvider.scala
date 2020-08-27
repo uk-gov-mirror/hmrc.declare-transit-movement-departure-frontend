@@ -16,16 +16,17 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.reference.CustomsOffice
 import play.api.data.Form
 
 class OfficeOfDepartureFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(customsOffices: Seq[CustomsOffice]): Form[CustomsOffice] =
     Form(
       "value" -> text("officeOfDeparture.error.required")
-        .verifying(maxLength(35, "officeOfDeparture.error.length"))
+        .verifying("officeOfDeparture.error.required", value => customsOffices.exists(_.id == value))
+        .transform[CustomsOffice](value => customsOffices.find(_.id == value).get, _.id)
     )
 }

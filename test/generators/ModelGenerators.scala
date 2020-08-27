@@ -17,6 +17,8 @@
 package generators
 
 import models._
+import models.reference.CustomsOffice
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
@@ -24,17 +26,17 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryRepresentativeCapacity: Arbitrary[RepresentativeCapacity] =
     Arbitrary {
-      Gen.oneOf(RepresentativeCapacity.values.toSeq)
+      Gen.oneOf(RepresentativeCapacity.values)
     }
 
   implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType] =
     Arbitrary {
-      Gen.oneOf(ProcedureType.values.toSeq)
+      Gen.oneOf(ProcedureType.values)
     }
 
   implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.toSeq)
+      Gen.oneOf(DeclarationType.values)
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
@@ -49,6 +51,20 @@ trait ModelGenerators {
       for {
         number <- stringsWithMaxLength(17)
       } yield EoriNumber(number)
+    }
+  }
+
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] = {
+
+    val genRoles = Gen.someOf(Seq("TRA", "DEP", "DES"))
+
+    Arbitrary {
+      for {
+        id          <- arbitrary[String]
+        name        <- arbitrary[String]
+        roles       <- genRoles
+        phoneNumber <- Gen.option(arbitrary[String])
+      } yield CustomsOffice(id, name, roles, phoneNumber)
     }
   }
 }

@@ -17,11 +17,13 @@
 package controllers
 
 import base.SpecBase
+import connectors.ReferenceDataConnector
 import forms.OfficeOfDepartureFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
+import models.reference.CustomsOffice
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -41,10 +43,19 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new OfficeOfDepartureFormProvider()
-  val form = formProvider()
+  val customsOffice1 = CustomsOffice("officeId", "someName", Seq.empty, None)
+  val customsOffice2 = CustomsOffice("id", "name", Seq.empty, None)
+  val customsOffices  = Seq(customsOffice1, customsOffice2)
+  val form = new OfficeOfDepartureFormProvider()(customsOffices)
+
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   lazy val officeOfDepartureRoute = routes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockRefDataConnector)
+  }
 
   "OfficeOfDeparture Controller" - {
 
@@ -53,7 +64,11 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
       val request = FakeRequest(GET, officeOfDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -64,10 +79,17 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val expectedCustomsOfficeJson = Seq(
+        Json.obj("value" -> "", "text"         -> ""),
+        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false),
+        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> false)
+      )
+
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "lrn"    -> lrn,
+        "customsOffices" -> expectedCustomsOfficeJson
       )
 
       templateCaptor.getValue mustEqual "officeOfDeparture.njk"
@@ -80,9 +102,12 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, "answer").success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, customsOffice1).success.value
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
       val request = FakeRequest(GET, officeOfDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -93,12 +118,19 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "officeId"))
+
+      val expectedCustomsOfficeJson = Seq(
+        Json.obj("value" -> "", "text"         -> ""),
+        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false),
+        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> true)
+      )
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
         "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "mode" -> NormalMode,
+        "customsOffices" -> expectedCustomsOfficeJson
       )
 
       templateCaptor.getValue mustEqual "officeOfDeparture.njk"
@@ -112,18 +144,20 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
           )
           .build()
 
       val request =
         FakeRequest(POST, officeOfDepartureRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "id"))
 
       val result = route(application, request).value
 
@@ -137,8 +171,11 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
       val request = FakeRequest(POST, officeOfDepartureRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

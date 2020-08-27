@@ -54,6 +54,7 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 
 movementDetails.preHeading = Movement details
 traderDetails.preHeading = Trader’s details
+routeDetails.preHeading = Route details
 
 postcode = Postcode
 postcodeExample = Like, AB1 1AB.
@@ -255,7 +256,6 @@ addConsignor.heading = Do you need to add a consignor?
 addConsignor.checkYourAnswersLabel = Do you need to add a consignor?
 addConsignor.error.required = Select yes if you need to add a consignor
 addConsignor.heading = Do you need to add a consignor?
-addConsignor.preHeading = Trader’s details
 
 isConsignorEoriKnown.title = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.heading = Do you know the consignor’s EORI number?
@@ -307,8 +307,9 @@ countryOfDispatch.heading = What is the country of dispatch?
 countryOfDispatch.checkYourAnswersLabel = Country of dispatch
 countryOfDispatch.error.required = Select the country of dispatch
 
-officeOfDeparture.title = officeOfDeparture
-officeOfDeparture.heading = officeOfDeparture
-officeOfDeparture.checkYourAnswersLabel = officeOfDeparture
-officeOfDeparture.error.required = Enter officeOfDeparture
-officeOfDeparture.error.length = OfficeOfDeparture must be 2 characters or less
+officeOfDeparture.title = Where is the office of departure?
+officeOfDeparture.heading = Where is the office of departure?
+officeOfDeparture.checkYourAnswersLabel = Office of departure
+officeOfDeparture.error.required = Select the office of departure
+officeOfDeparture.hintText = Give the office location or code. For example, Dover or GB000060.
+officeOfDeparture.label = This is the Customs office where the transit movement starts.
