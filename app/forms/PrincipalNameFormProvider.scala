@@ -17,16 +17,20 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class PrincipalNameFormProvider @Inject() extends Mappings {
+
+  val principalNameRegex: String = "^([a-zA-Z0-9@'><\\/?%&.-_]{1,35})$"
+  val maxLengthPrincipalName = 35
 
   def apply(): Form[String] =
     Form(
       "value" -> text("principalName.error.required")
-        .verifying(maxLength(35, "principalName.error.length"))
-
-    )
+        .verifying(StopOnFirstFail[String](
+          maxLength(maxLengthPrincipalName, "principalName.error.length"),
+          regexp(principalNameRegex, "principalName.error.invalidCharacters"),
+        )))
 }
