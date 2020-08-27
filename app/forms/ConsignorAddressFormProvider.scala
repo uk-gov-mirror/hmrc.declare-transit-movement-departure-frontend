@@ -34,7 +34,7 @@ class ConsignorAddressFormProvider @Inject() extends Mappings {
      mapping(
       "AddressLine1" -> text("consignorAddress.error.AddressLine1.required")
         .verifying(StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine1.length"),
-          regexp(addressRegex, "consignorAddress.error.line2.invalid"))),
+          regexp(addressRegex, "consignorAddress.error.line1.invalid"))),
 
 
   "AddressLine2" -> text("consignorAddress.error.AddressLine2.required")
