@@ -24,11 +24,10 @@ import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
 
-  private[mappings] def stringFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
-
+  private[mappings] def stringFormatter(errorKey: String, args: Seq[Any] = Seq.empty): Formatter[String] = new Formatter[String] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
-        case None | Some("") => Left(Seq(FormError(key, errorKey)))
+        case None | Some("") => Left(Seq(FormError(key, errorKey, args)))
         case Some(s) => Right(s)
       }
 
@@ -101,12 +100,13 @@ trait Formatters {
           .right
           .flatMap {
             str =>
-              if(str.length <= LocalReferenceNumber.maxLength) {
+              if (str.length <= LocalReferenceNumber.maxLength) {
                 LocalReferenceNumber(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey))))
               } else {
                 Left(Seq(FormError(key, lengthKey)))
               }
           }
+
       override def unbind(key: String, value: LocalReferenceNumber): Map[String, String] =
         Map(key -> value.toString)
     }

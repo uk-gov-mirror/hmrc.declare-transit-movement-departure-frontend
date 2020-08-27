@@ -24,8 +24,8 @@ import models.{Enumerable, LocalReferenceNumber}
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def text(errorKey: String = "error.required"): FieldMapping[String] =
-    of(stringFormatter(errorKey))
+  protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
+    of(stringFormatter(errorKey, args))
 
   protected def int(requiredKey: String = "error.required",
                     wholeNumberKey: String = "error.wholeNumber",
