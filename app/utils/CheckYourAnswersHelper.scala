@@ -119,6 +119,21 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       )
   }
 
+  def consignorAddress: Option[Row] = userAnswers.get(ConsignorAddressPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"consignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2} ${answer.AddressLine3} ${answer.country}"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsignorAddressController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consignorAddress.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def consignorEori: Option[Row] = userAnswers.get(ConsignorEoriPage) map {
     answer =>
       Row(
