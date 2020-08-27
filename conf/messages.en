@@ -287,11 +287,12 @@ consignorName.checkYourAnswersLabel = What is the consignor’s name?
 consignorName.error.required = Enter the consignor’s name
 consignorName.error.length = Consignor’s name must be 35 characters or less
 consignorName.error.invalid = Consignor’s name must only include letters a to z and numbers 0 to 9 or blank spaces
+
 consignorEori.title = What is the consignor’s EORI number?
 consignorEori.heading = What is the consignor’s EORI number?
 consignorEori.checkYourAnswersLabel = What is the consignor’s EORI number?
 consignorEori.error.required = Enter the consignor's EORI umber
-consignorEori.error.length = Consignor's Eori number must be 17 characters or less
+consignorEori.error.length = Consignor’s Eori number must be 17 characters or less
 consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
 consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
 
@@ -320,6 +321,23 @@ whatIsConsigneeEori.error.length = The consignee’s EORI number must be 17 char
 whatIsConsigneeEori.error.invalidCharacters = The consignee’s EORI number must only include letters a to z and numbers 0 to 9
 whatIsConsigneeEori.error.invalidFormat = Enter the consignee’s EORI number in the right format
 
+consignorAddress.title = What is the address of the consignor
+consignorAddress.heading = What is {0}’s address?
+consignorAddress.AddressLine1 = Address line 1
+consignorAddress.AddressLine2 = Address line 2
+consignorAddress.AddressLine3 = Address line 3
+consignorAddress.AddressLine4 = Country
+consignorAddress.checkYourAnswersLabel = consignorAddress
+consignorAddress.error.AddressLine1.required = Enter the first line of the consignor’s address
+consignorAddress.error.AddressLine2.required = Enter the second line of the consignor’s address
+consignorAddress.error.AddressLine3.required = Enter the third line of the consignor’s address
+consignorAddress.error.country.required = Enter the country of the consignor’s address
+consignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
+consignorAddress.error.Addressline2.length = Address line 2 must be 35 characters or less
+consignorAddress.error.Addressline3.length = Address line 3 must be 35 characters or less
+consignorAddress.error.line1.invalid= The first line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+consignorAddress.error.line2.invalid= The second line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+consignorAddress.error.line3.invalid= The third line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 
 countryOfDispatch.title = What is the country of dispatch?
 countryOfDispatch.heading = What is the country of dispatch?
