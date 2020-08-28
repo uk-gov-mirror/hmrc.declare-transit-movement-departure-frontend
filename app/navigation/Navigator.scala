@@ -48,8 +48,8 @@ class Navigator @Inject()() {
     case ConsignorAddressPage => ua => routes.AddConsigneeController.onPageLoad(ua.id, NormalMode)
     case AddConsigneePage => ua => addConsigneeRoute(ua, NormalMode)
     case IsConsigneeEoriKnownPage => ua => isConsigneeEoriKnownRoute(ua, NormalMode)
-//    case ConsigneeNamePage => ua => routes.ConsigneeAddressController.onPageLoad(ua.id, NormalMode)
-//    case ConsigneeAddressPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id, NormalMode)
+    case ConsigneeNamePage => ua => routes.ConsigneeAddressController.onPageLoad(ua.id, NormalMode)
+    case ConsigneeAddressPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case WhatIsConsigneeEoriPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => _ => routes.IndexController.onPageLoad()
   }
