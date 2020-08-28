@@ -39,6 +39,7 @@ class Navigator @Inject()() {
     case CountryOfDispatchPage => ua => routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode)
     case PrincipalNamePage => ua => routes.PrincipalAddressController.onPageLoad(ua.id, NormalMode) //TODO: come back to this when working on navigation
     case ConsignorNamePage => ua => routes.ConsignorAddressController.onPageLoad(ua.id, NormalMode)
+    case ConsigneeNamePage => ua => routes.ConsigneeAddressController.onPageLoad(ua.id, NormalMode)
     case _ => _ => routes.IndexController.onPageLoad()
   }
 

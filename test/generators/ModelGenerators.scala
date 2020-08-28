@@ -22,7 +22,18 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+
   self: Generators =>
+
+  implicit lazy val arbitraryConsigneeAddress: Arbitrary[ConsigneeAddress] =
+    Arbitrary {
+      for {
+        addressLine1 <- arbitrary[String]
+        addressLine2 <- arbitrary[String]
+        addressLine3 <- arbitrary[String]
+        addressLine4 <- arbitrary[Country]
+      } yield ConsigneeAddress(addressLine1, addressLine2, addressLine3, addressLine4)
+    }
 
   implicit lazy val arbitraryPrincipalAddress: Arbitrary[PrincipalAddress] =
     Arbitrary {
