@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import controllers.actions._
 import forms.ContainersUsedPageFormProvider

@@ -22,7 +22,7 @@
              {{ sectionMacro(section.sectionTitle, section.rows) }}
         {% endfor %}
 
-        <form action="{{ routes.controllers.MovementDetailsCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
+        <form action="{{ routes.controllers.movementDetails.MovementDetailsCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
 
            {{ csrf() | safe }}
 

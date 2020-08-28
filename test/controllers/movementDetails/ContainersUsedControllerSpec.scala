@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import base.SpecBase
+import controllers.routes
 import forms.ContainersUsedPageFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}

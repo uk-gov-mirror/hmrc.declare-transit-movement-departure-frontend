@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import base.SpecBase
-import forms.DeclarationForSomeoneElseFormProvider
+import controllers.routes
+import forms.DeclarationPlaceFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DeclarationForSomeoneElsePage
+import pages.DeclarationPlacePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -33,28 +34,34 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class DeclarationPlaceControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new DeclarationForSomeoneElseFormProvider()
+  val formProvider = new DeclarationPlaceFormProvider()
   val form = formProvider()
 
-  lazy val declarationForSomeoneElseRoute = routes.DeclarationForSomeoneElseController.onPageLoad(lrn, NormalMode).url
+  lazy val declarationPlaceRoute =
+    routes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url
 
-  "DeclarationForSomeoneElse Controller" - {
+  "DeclarationPlace Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, declarationForSomeoneElseRoute)
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request = FakeRequest(GET, declarationPlaceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -62,16 +69,13 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
-      )
+      val expectedJson =
+        Json.obj("form" -> form, "mode" -> NormalMode, "lrn" -> lrn)
 
-      templateCaptor.getValue mustEqual "declarationForSomeoneElse.njk"
+      templateCaptor.getValue mustEqual "declarationPlace.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -82,9 +86,11 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(DeclarationForSomeoneElsePage, true).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, declarationForSomeoneElseRoute)
+      val userAnswers =
+        emptyUserAnswers.set(DeclarationPlacePage, "answer").success.value
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request = FakeRequest(GET, declarationPlaceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -92,18 +98,16 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> "answer"))
 
-      val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
-      )
+      val expectedJson =
+        Json.obj("form" -> filledForm, "lrn" -> lrn, "mode" -> NormalMode)
 
-      templateCaptor.getValue mustEqual "declarationForSomeoneElse.njk"
+      templateCaptor.getValue mustEqual "declarationPlace.njk"
+
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -124,13 +128,12 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
           .build()
 
       val request =
-        FakeRequest(POST, declarationForSomeoneElseRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, declarationPlaceRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -141,8 +144,10 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, declarationForSomeoneElseRoute).withFormUrlEncodedBody(("value", ""))
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request = FakeRequest(POST, declarationPlaceRoute)
+        .withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -151,16 +156,13 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1))
+        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
-      )
+      val expectedJson =
+        Json.obj("form" -> boundForm, "lrn" -> lrn, "mode" -> NormalMode)
 
-      templateCaptor.getValue mustEqual "declarationForSomeoneElse.njk"
+      templateCaptor.getValue mustEqual "declarationPlace.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -170,13 +172,15 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, declarationForSomeoneElseRoute)
+      val request = FakeRequest(GET, declarationPlaceRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -186,14 +190,16 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, declarationForSomeoneElseRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, declarationPlaceRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController
+        .onPageLoad()
+        .url
 
       application.stop()
     }

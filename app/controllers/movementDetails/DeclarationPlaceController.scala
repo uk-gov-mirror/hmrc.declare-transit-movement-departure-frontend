@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import controllers.actions._
-import forms.RepresentativeCapacityFormProvider
+import forms.DeclarationPlaceFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber, RepresentativeCapacity}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.RepresentativeCapacityPage
+import pages.DeclarationPlacePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,14 +32,14 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RepresentativeCapacityController @Inject()(
+class DeclarationPlaceController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
                                        navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
-                                       formProvider: RepresentativeCapacityFormProvider,
+                                       formProvider: DeclarationPlaceFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
@@ -49,19 +49,18 @@ class RepresentativeCapacityController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(RepresentativeCapacityPage) match {
+      val preparedForm = request.userAnswers.get(DeclarationPlacePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios"  -> RepresentativeCapacity.radios(preparedForm)
+        "form" -> preparedForm,
+        "lrn"  -> lrn,
+        "mode" -> mode
       )
 
-      renderer.render("representativeCapacity.njk", json).map(Ok(_))
+      renderer.render("declarationPlace.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -71,19 +70,18 @@ class RepresentativeCapacityController @Inject()(
         formWithErrors => {
 
           val json = Json.obj(
-            "form"   -> formWithErrors,
-            "mode"   -> mode,
-            "lrn"    -> lrn,
-            "radios" -> RepresentativeCapacity.radios(formWithErrors)
+            "form" -> formWithErrors,
+            "lrn"  -> lrn,
+            "mode" -> mode
           )
 
-          renderer.render("representativeCapacity.njk", json).map(BadRequest(_))
+          renderer.render("declarationPlace.njk", json).map(BadRequest(_))
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(RepresentativeCapacityPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclarationPlacePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(RepresentativeCapacityPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(DeclarationPlacePage, mode, updatedAnswers))
       )
   }
 }

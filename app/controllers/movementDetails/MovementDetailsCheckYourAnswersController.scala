@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import controllers.actions._
+import controllers.{routes => mainRoutes}
 import javax.inject.Inject
 import models.{LocalReferenceNumber, UserAnswers}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -51,7 +52,7 @@ class MovementDetailsCheckYourAnswersController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      Future.successful(Redirect(routes.DeclarationSummaryController.onPageLoad(lrn)))
+      Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
   private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {

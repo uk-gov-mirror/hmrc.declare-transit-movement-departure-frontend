@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import base.SpecBase
-import forms.RepresentativeCapacityFormProvider
+import controllers.routes
+import forms.RepresentativeNameFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, RepresentativeCapacity}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.RepresentativeCapacityPage
+import pages.RepresentativeNamePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,7 +38,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class RepresentativeCapacityControllerSpec
+class RepresentativeNameControllerSpec
     extends SpecBase
     with MockitoSugar
     with NunjucksSupport
@@ -45,13 +46,13 @@ class RepresentativeCapacityControllerSpec
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val representativeCapacityRoute =
-    routes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url
-
-  val formProvider = new RepresentativeCapacityFormProvider()
+  val formProvider = new RepresentativeNameFormProvider()
   val form = formProvider()
 
-  "RepresentativeCapacity Controller" - {
+  lazy val representativeNameRoute =
+    routes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url
+
+  "RepresentativeName Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -60,7 +61,7 @@ class RepresentativeCapacityControllerSpec
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, representativeCapacityRoute)
+      val request = FakeRequest(GET, representativeNameRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -71,14 +72,10 @@ class RepresentativeCapacityControllerSpec
       verify(mockRenderer, times(1))
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
-        "radios" -> RepresentativeCapacity.radios(form)
-      )
+      val expectedJson =
+        Json.obj("form" -> form, "mode" -> NormalMode, "lrn" -> lrn)
 
-      templateCaptor.getValue mustEqual "representativeCapacity.njk"
+      templateCaptor.getValue mustEqual "representativeName.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -89,13 +86,11 @@ class RepresentativeCapacityControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers
-        .set(RepresentativeCapacityPage, RepresentativeCapacity.values.head)
-        .success
-        .value
+      val userAnswers =
+        emptyUserAnswers.set(RepresentativeNamePage, "answer").success.value
       val application =
         applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, representativeCapacityRoute)
+      val request = FakeRequest(GET, representativeNameRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -106,17 +101,12 @@ class RepresentativeCapacityControllerSpec
       verify(mockRenderer, times(1))
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm =
-        form.bind(Map("value" -> RepresentativeCapacity.values.head.toString))
+      val filledForm = form.bind(Map("value" -> "answer"))
 
-      val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
-        "radios" -> RepresentativeCapacity.radios(filledForm)
-      )
+      val expectedJson =
+        Json.obj("form" -> filledForm, "lrn" -> lrn, "mode" -> NormalMode)
 
-      templateCaptor.getValue mustEqual "representativeCapacity.njk"
+      templateCaptor.getValue mustEqual "representativeName.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -137,15 +127,12 @@ class RepresentativeCapacityControllerSpec
           .build()
 
       val request =
-        FakeRequest(POST, representativeCapacityRoute)
-          .withFormUrlEncodedBody(
-            ("value", RepresentativeCapacity.values.head.toString)
-          )
+        FakeRequest(POST, representativeNameRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -158,9 +145,9 @@ class RepresentativeCapacityControllerSpec
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, representativeCapacityRoute)
-        .withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request = FakeRequest(POST, representativeNameRoute)
+        .withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -171,14 +158,10 @@ class RepresentativeCapacityControllerSpec
       verify(mockRenderer, times(1))
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
-        "radios" -> RepresentativeCapacity.radios(boundForm)
-      )
+      val expectedJson =
+        Json.obj("form" -> boundForm, "lrn" -> lrn, "mode" -> NormalMode)
 
-      templateCaptor.getValue mustEqual "representativeCapacity.njk"
+      templateCaptor.getValue mustEqual "representativeName.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -188,11 +171,12 @@ class RepresentativeCapacityControllerSpec
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, representativeCapacityRoute)
+      val request = FakeRequest(GET, representativeNameRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual routes.SessionExpiredController
         .onPageLoad()
         .url
@@ -205,10 +189,8 @@ class RepresentativeCapacityControllerSpec
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, representativeCapacityRoute)
-          .withFormUrlEncodedBody(
-            ("value", RepresentativeCapacity.values.head.toString)
-          )
+        FakeRequest(POST, representativeNameRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
