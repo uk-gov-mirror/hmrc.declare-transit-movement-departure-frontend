@@ -36,7 +36,9 @@ class Navigator @Inject()() {
     case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, NormalMode)
     case RepresentativeNamePage => ua => routes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
     case RepresentativeCapacityPage => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnown(ua, NormalMode)
     case PrincipalNamePage => ua => routes.PrincipalAddressController.onPageLoad(ua.id, NormalMode) //TODO: come back to this when working on navigation
+    case PrincipalAddressPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode) //TODO: come back to this when working on navigation
     case ConsignorNamePage => ua => routes.ConsignorAddressController.onPageLoad(ua.id, NormalMode)
     case _ => _ => routes.IndexController.onPageLoad()
   }
@@ -67,6 +69,13 @@ class Navigator @Inject()() {
       case (Some(true), None, CheckMode) => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
       case (Some(true), _, NormalMode) => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
       case _ => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    }
+  }
+  private def isPrincipalEoriKnown(ua: UserAnswers, mode: Mode): Call = {
+    (ua.get(IsPrincipalEoriKnownPage), ua.get(WhatIsPrincipalEoriPage),mode) match {
+      case (Some(true), None, CheckMode) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), _, NormalMode) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, NormalMode)
+      case _ => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 }
