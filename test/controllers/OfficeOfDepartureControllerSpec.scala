@@ -17,15 +17,17 @@
 package controllers
 
 import base.SpecBase
-import forms.ConsignorEoriFormProvider
+import connectors.ReferenceDataConnector
+import forms.OfficeOfDepartureFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{CustomsOfficeList, NormalMode}
+import models.reference.CustomsOffice
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ConsignorEoriPage
+import pages.OfficeOfDeparturePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,25 +39,37 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class ConsignorEoriControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new ConsignorEoriFormProvider()
-  val form = formProvider()
-  private val validEori    = "AB123456789012345"
+  val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
+  val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
+  val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+  val form = new OfficeOfDepartureFormProvider()(customsOffices)
 
-  lazy val consignorEoriRoute = routes.ConsignorEoriController.onPageLoad(lrn, NormalMode).url
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  "ConsignorEori Controller" - {
+  lazy val officeOfDepartureRoute: String = routes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockRefDataConnector)
+  }
+
+  "OfficeOfDeparture Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, consignorEoriRoute)
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request = FakeRequest(GET, officeOfDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -65,13 +79,21 @@ class ConsignorEoriControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val expectedCustomsOfficeJson = Seq(
+        Json.obj("value" -> "", "text"         -> ""),
+        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> false),
+        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
+
+      )
+
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "lrn"    -> lrn,
+        "customsOffices" -> expectedCustomsOfficeJson
       )
 
-      templateCaptor.getValue mustEqual "consignorEori.njk"
+      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -81,10 +103,13 @@ class ConsignorEoriControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val userAnswers = emptyUserAnswers.set(ConsignorEoriPage, validEori).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, consignorEoriRoute)
+      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, customsOffice1.id).success.value
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request = FakeRequest(GET, officeOfDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -94,15 +119,22 @@ class ConsignorEoriControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> validEori))
+      val filledForm = form.bind(Map("value" -> "officeId"))
+
+      val expectedCustomsOfficeJson = Seq(
+        Json.obj("value" -> "", "text"         -> ""),
+        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> true),
+        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
+      )
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
         "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "mode" -> NormalMode,
+        "customsOffices" -> expectedCustomsOfficeJson
       )
 
-      templateCaptor.getValue mustEqual "consignorEori.njk"
+      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -113,18 +145,20 @@ class ConsignorEoriControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
           )
           .build()
 
       val request =
-        FakeRequest(POST, consignorEoriRoute)
-          .withFormUrlEncodedBody(("value", validEori))
+        FakeRequest(POST, officeOfDepartureRoute)
+          .withFormUrlEncodedBody(("value", "id"))
 
       val result = route(application, request).value
 
@@ -138,9 +172,12 @@ class ConsignorEoriControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, consignorEoriRoute).withFormUrlEncodedBody(("value", ""))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request = FakeRequest(POST, officeOfDepartureRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -157,7 +194,7 @@ class ConsignorEoriControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "consignorEori.njk"
+      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -167,7 +204,7 @@ class ConsignorEoriControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, consignorEoriRoute)
+      val request = FakeRequest(GET, officeOfDepartureRoute)
 
       val result = route(application, request).value
 
@@ -183,7 +220,7 @@ class ConsignorEoriControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, consignorEoriRoute)
+        FakeRequest(POST, officeOfDepartureRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value

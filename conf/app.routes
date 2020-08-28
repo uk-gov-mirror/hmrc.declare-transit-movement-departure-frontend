@@ -136,6 +136,11 @@ POST       /:lrn/route/dispatch-country                        controllers.Count
 GET        /:lrn/route/dispatch-country                        controllers.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/route/dispatch-country                        controllers.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /:lrn/office-of-departure                         controllers.OfficeOfDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/office-of-departure                         controllers.OfficeOfDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-office-of-departure                  controllers.OfficeOfDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-office-of-departure                  controllers.OfficeOfDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /:lrn/trader-details/consignee-address                        controllers.ConsigneeAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/trader-details/consignee-address                        controllers.ConsigneeAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/trader-details/change-consignee-address                  controllers.ConsigneeAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
