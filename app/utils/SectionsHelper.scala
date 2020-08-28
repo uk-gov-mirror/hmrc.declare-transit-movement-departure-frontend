@@ -106,6 +106,13 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
   private val traderDetailsPage: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
 
+    val isPricipalEorinKnowDiversionPages= if(userAnswers.get(IsPrincipalEoriKnownPage).contains(true)) {
+      Seq(userAnswers.get(WhatIsPrincipalEoriPage) -> routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url)
+    } else {
+      Seq(userAnswers.get(PrincipalNamePage) -> routes.PrincipalNameController.onPageLoad(lrn, NormalMode).url,
+           userAnswers.get(PrincipalAddressPage) -> routes.PrincipalAddressController.onPageLoad(lrn,NormalMode).url)
+    }
+
     Seq(
       userAnswers.get(IsPrincipalEoriKnownPage) -> routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(WhatIsPrincipalEoriPage) -> routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url,
@@ -120,7 +127,7 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
       userAnswers.get(IsConsigneeEoriKnownPage) -> routes.IsConsigneeEoriKnownController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(ConsigneeNamePage) -> routes.ConsigneeNameController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(WhatIsConsigneeEoriPage) -> routes.WhatIsConsigneeEoriController.onPageLoad(lrn, NormalMode).url,
-    )
+    ) ++ isPricipalEorinKnowDiversionPages
   }
 
 }

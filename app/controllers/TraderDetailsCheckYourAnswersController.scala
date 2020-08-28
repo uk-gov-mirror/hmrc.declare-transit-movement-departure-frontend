@@ -58,6 +58,7 @@ class TraderDetailsCheckYourAnswersController @Inject()(
 
     Seq(Section(
       Seq(checkYourAnswersHelper.isPrincipalEoriKnown,
+        checkYourAnswersHelper.whatIsPrincipalEori,
         checkYourAnswersHelper.principalName,
         checkYourAnswersHelper.principalAddress,
         checkYourAnswersHelper.addConsignor,
