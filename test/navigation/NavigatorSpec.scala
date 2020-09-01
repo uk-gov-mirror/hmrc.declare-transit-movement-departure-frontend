@@ -392,10 +392,57 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 .remove(WhatIsPrincipalEoriPage).toOption.value
 
               navigator.nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
-                .mustBe(routes.WhatIsPrincipalEoriController.onPageLoad(answers.id, NormalMode))
+                .mustBe(routes.WhatIsPrincipalEoriController.onPageLoad(answers.id, CheckMode))
           }
         }
 
+        "Must go from Is principal eori known page to What is principal's name page if the option selected is 'NO'" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(IsPrincipalEoriKnownPage, false).toOption.value
+                .remove(WhatIsPrincipalEoriPage).toOption.value
+
+              navigator.nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(routes.PrincipalNameController.onPageLoad(answers.id, CheckMode))
+          }
+        }
+
+        "must go from Principal name page to Check Your Answers page if Principal's Address previously answered" in {
+
+          forAll(arbitrary[UserAnswers], arbitrary[PrincipalAddress]) {
+
+            (answers, principalAddress) =>
+
+              val updatedAnswers =
+                answers.set(PrincipalAddressPage, principalAddress).success.value
+              navigator.nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
+                .mustBe(routes.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+
+        "must go from Principal name page to Principals Address page if Principal's Address not previously answered" in {
+
+           forAll(arbitrary[UserAnswers]) {
+              answers =>
+
+            val updatedAnswers =
+              answers.remove(PrincipalAddressPage).success.value
+
+            navigator.nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
+                .mustBe(routes.PrincipalAddressController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+
+        "must go from What is Principal's Eori page to Check Your Answers Page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+
+                      navigator.nextPage(WhatIsPrincipalEoriPage, CheckMode, answers)
+                        .mustBe(routes.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
       }
     }
   }

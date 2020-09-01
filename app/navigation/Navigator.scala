@@ -57,6 +57,8 @@ class Navigator @Inject()() {
   private val checkRouteMap: Page => UserAnswers => Call = {
     case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, CheckMode)
     case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, CheckMode)
+    case PrincipalNamePage => ua => principalNamePageRoute(ua, CheckMode)
+    case WhatIsPrincipalEoriPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case page if isMovementDetailsSectionPage(page) => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case page if isTraderDetailsSectionPage(page) => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
@@ -77,6 +79,12 @@ class Navigator @Inject()() {
     }
   }
 
+  private def principalNamePageRoute(ua: UserAnswers, mode: Mode) = {
+    ua.get(PrincipalAddressPage) match {
+      case Some(_) => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+        case _ => routes.PrincipalAddressController.onPageLoad(ua.id, mode)
+    }
+  }
   private def isTraderDetailsSectionPage(page: Page): Boolean = {
     page match {
       case IsPrincipalEoriKnownPage | WhatIsPrincipalEoriPage | PrincipalNamePage |
@@ -98,14 +106,14 @@ class Navigator @Inject()() {
   def principalEoriKnown(mode: Mode, ua: UserAnswers): Call = {
     (ua.get(IsPrincipalEoriKnownPage), mode) match {
       case (Some(true), NormalMode) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, NormalMode)
-      case (Some(true), CheckMode) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), CheckMode) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, CheckMode)
     }
   }
 
   def principaEoriNotKnown(mode: Mode, ua: UserAnswers): Call = {
     (ua.get(IsPrincipalEoriKnownPage), mode) match {
       case (Some(false), NormalMode) => routes.PrincipalNameController.onPageLoad(ua.id, NormalMode)
-      case (Some(false), CheckMode) => routes.PrincipalNameController.onPageLoad(ua.id, NormalMode)
+      case (Some(false), CheckMode) => routes.PrincipalNameController.onPageLoad(ua.id, CheckMode)
     }
   }
 
