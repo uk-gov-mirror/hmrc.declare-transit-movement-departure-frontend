@@ -18,6 +18,7 @@ package utils
 
 import base.SpecBase
 import controllers.routes
+import controllers.movementDetails.{routes => movementDetailsRoutes}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{DeclarationType, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails}
 import pages._
@@ -28,7 +29,7 @@ class SectionsHelperSpec extends SpecBase {
     "must return movement details section with status as NotStarted" in {
       val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
-      val url = routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
+      val url = movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
       val sectionName = "declarationSummary.section.movementDetails"
       val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
@@ -42,7 +43,7 @@ class SectionsHelperSpec extends SpecBase {
       val userAnswers = emptyUserAnswers.set(DeclarationTypePage, DeclarationType.values.head).toOption.value
         .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
 
-      val url = routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
+      val url = movementDetailsRoutes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
       val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, InProgress)
       val expectedResult = updateSectionsWithExpectedValue(expectedSection)
 
@@ -62,7 +63,7 @@ class SectionsHelperSpec extends SpecBase {
         .set(RepresentativeNamePage, "name").toOption.value
         .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct).toOption.value
 
-      val url = routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
+      val url = movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
       val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, Completed)
       val expectedResult = updateSectionsWithExpectedValue(expectedSection)
 
@@ -99,7 +100,7 @@ class SectionsHelperSpec extends SpecBase {
 
   private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
      val sections: Seq[SectionDetails] = Seq(
-      SectionDetails("declarationSummary.section.movementDetails",routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url, NotStarted),
+      SectionDetails("declarationSummary.section.movementDetails",movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.routes", routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.transport", "", NotStarted),
       SectionDetails("declarationSummary.section.tradersDetails",routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url, NotStarted),

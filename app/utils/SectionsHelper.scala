@@ -16,13 +16,13 @@
 
 package utils
 
+import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
 import pages.{RepresentativeNamePage, _}
-import play.api.i18n.Messages
 
-class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class SectionsHelper(userAnswers: UserAnswers) {
 
   def getSections: Seq[SectionDetails] = {
 
@@ -50,8 +50,8 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
   }
 
   private def movementDetailsSection: SectionDetails = {
-    val startPage: String = routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
-    val cyaPageAndStatus: (String, Status) = (routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
+    val startPage: String = movementDetailsRoutes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
     val (page, status) = getIncompletePage(startPage, movementDetailsPages).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.movementDetails", page, status)
@@ -68,7 +68,7 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
   private def tradersDetailsSection: SectionDetails = {
     val startPage: String = routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
-    val cyaPageAndStatus: (String, Status) = (routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
+    val cyaPageAndStatus: (String, Status) = (movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
     val (page, status) = getIncompletePage(startPage, traderDetailsPage).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.tradersDetails", page, status)
@@ -89,16 +89,16 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
     val lrn = userAnswers.id
 
     val declareForSomeoneElseDiversionPages = if(userAnswers.get(DeclarationForSomeoneElsePage).contains(true)) {
-      Seq(userAnswers.get(RepresentativeNamePage) -> routes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url,
-        userAnswers.get(RepresentativeCapacityPage) -> routes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url)
+      Seq(userAnswers.get(RepresentativeNamePage) -> movementDetailsRoutes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url,
+        userAnswers.get(RepresentativeCapacityPage) -> movementDetailsRoutes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url)
     } else {Seq.empty}
 
     Seq(
-      userAnswers.get(DeclarationTypePage) -> routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(ProcedureTypePage) -> routes.ProcedureTypeController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(ContainersUsedPage) -> routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(DeclarationPlacePage) -> routes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(DeclarationForSomeoneElsePage) -> routes.DeclarationForSomeoneElseController.onPageLoad(lrn, NormalMode).url
+      userAnswers.get(DeclarationTypePage) -> movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(ProcedureTypePage) -> movementDetailsRoutes.ProcedureTypeController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(ContainersUsedPage) -> movementDetailsRoutes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(DeclarationPlacePage) -> movementDetailsRoutes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(DeclarationForSomeoneElsePage) -> movementDetailsRoutes.DeclarationForSomeoneElseController.onPageLoad(lrn, NormalMode).url
     ) ++ declareForSomeoneElseDiversionPages
 
   }

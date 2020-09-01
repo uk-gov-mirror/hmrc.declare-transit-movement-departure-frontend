@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import base.SpecBase
-import forms.RepresentativeNameFormProvider
+import controllers.{routes => mainRoute}
+import forms.DeclarationPlaceFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
@@ -25,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.RepresentativeNamePage
+import pages.DeclarationPlacePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,7 +38,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class RepresentativeNameControllerSpec
+class DeclarationPlaceControllerSpec
     extends SpecBase
     with MockitoSugar
     with NunjucksSupport
@@ -45,13 +46,13 @@ class RepresentativeNameControllerSpec
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new RepresentativeNameFormProvider()
+  val formProvider = new DeclarationPlaceFormProvider()
   val form = formProvider()
 
-  lazy val representativeNameRoute =
-    routes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url
+  lazy val declarationPlaceRoute =
+    routes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url
 
-  "RepresentativeName Controller" - {
+  "DeclarationPlace Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -60,7 +61,7 @@ class RepresentativeNameControllerSpec
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, representativeNameRoute)
+      val request = FakeRequest(GET, declarationPlaceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -74,7 +75,7 @@ class RepresentativeNameControllerSpec
       val expectedJson =
         Json.obj("form" -> form, "mode" -> NormalMode, "lrn" -> lrn)
 
-      templateCaptor.getValue mustEqual "representativeName.njk"
+      templateCaptor.getValue mustEqual "declarationPlace.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -86,10 +87,10 @@ class RepresentativeNameControllerSpec
         .thenReturn(Future.successful(Html("")))
 
       val userAnswers =
-        emptyUserAnswers.set(RepresentativeNamePage, "answer").success.value
+        emptyUserAnswers.set(DeclarationPlacePage, "answer").success.value
       val application =
         applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, representativeNameRoute)
+      val request = FakeRequest(GET, declarationPlaceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -105,7 +106,8 @@ class RepresentativeNameControllerSpec
       val expectedJson =
         Json.obj("form" -> filledForm, "lrn" -> lrn, "mode" -> NormalMode)
 
-      templateCaptor.getValue mustEqual "representativeName.njk"
+      templateCaptor.getValue mustEqual "declarationPlace.njk"
+
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -126,7 +128,7 @@ class RepresentativeNameControllerSpec
           .build()
 
       val request =
-        FakeRequest(POST, representativeNameRoute)
+        FakeRequest(POST, declarationPlaceRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
@@ -144,7 +146,7 @@ class RepresentativeNameControllerSpec
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, representativeNameRoute)
+      val request = FakeRequest(POST, declarationPlaceRoute)
         .withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -160,7 +162,7 @@ class RepresentativeNameControllerSpec
       val expectedJson =
         Json.obj("form" -> boundForm, "lrn" -> lrn, "mode" -> NormalMode)
 
-      templateCaptor.getValue mustEqual "representativeName.njk"
+      templateCaptor.getValue mustEqual "declarationPlace.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -170,13 +172,13 @@ class RepresentativeNameControllerSpec
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, representativeNameRoute)
+      val request = FakeRequest(GET, declarationPlaceRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
         .onPageLoad()
         .url
 
@@ -188,14 +190,14 @@ class RepresentativeNameControllerSpec
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, representativeNameRoute)
+        FakeRequest(POST, declarationPlaceRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
         .onPageLoad()
         .url
 

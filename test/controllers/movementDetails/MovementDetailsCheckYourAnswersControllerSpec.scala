@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -68,7 +69,7 @@ class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with Mockit
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.DeclarationSummaryController.onPageLoad(lrn).url
+      redirectLocation(result).value mustEqual mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
 
       application.stop()
     }
