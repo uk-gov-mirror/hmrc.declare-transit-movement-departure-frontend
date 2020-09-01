@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckYourAnswersHelper
+import utils.{CheckYourAnswersHelper, MovementDetailsCheckYourAnswersHelper}
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,7 +56,7 @@ class MovementDetailsCheckYourAnswersController @Inject()(
   }
 
   private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
-    val checkYourAnswersHelper = new CheckYourAnswersHelper(userAnswers)
+    val checkYourAnswersHelper = new MovementDetailsCheckYourAnswersHelper(userAnswers)
 
     Seq(Section(
       Seq(checkYourAnswersHelper.declarationType,

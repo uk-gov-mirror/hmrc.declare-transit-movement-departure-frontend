@@ -17,7 +17,7 @@
 package controllers.movementDetails
 
 import base.SpecBase
-import controllers.routes
+import controllers.{routes => mainRoute}
 import forms.RepresentativeNameFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -177,7 +177,7 @@ class RepresentativeNameControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
         .onPageLoad()
         .url
 
@@ -196,7 +196,7 @@ class RepresentativeNameControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
         .onPageLoad()
         .url
 

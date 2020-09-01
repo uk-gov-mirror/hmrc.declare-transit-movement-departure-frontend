@@ -17,7 +17,7 @@
 package controllers.movementDetails
 
 import base.SpecBase
-import controllers.routes
+import controllers.{routes => mainRoute}
 import forms.RepresentativeCapacityFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, RepresentativeCapacity}
@@ -194,7 +194,7 @@ class RepresentativeCapacityControllerSpec
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
         .onPageLoad()
         .url
 
@@ -215,7 +215,7 @@ class RepresentativeCapacityControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
         .onPageLoad()
         .url
 

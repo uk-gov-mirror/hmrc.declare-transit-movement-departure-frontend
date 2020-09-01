@@ -17,7 +17,7 @@
 package controllers.movementDetails
 
 import base.SpecBase
-import controllers.routes
+import controllers.{routes => mainRoutes}
 import forms.ContainersUsedPageFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -174,7 +174,7 @@ class ContainersUsedControllerSpec extends SpecBase with MockitoSugar with Nunju
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -191,7 +191,7 @@ class ContainersUsedControllerSpec extends SpecBase with MockitoSugar with Nunju
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

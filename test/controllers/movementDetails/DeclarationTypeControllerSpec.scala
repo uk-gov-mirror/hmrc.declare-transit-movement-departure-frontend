@@ -17,7 +17,7 @@
 package controllers.movementDetails
 
 import base.SpecBase
-import controllers.routes
+import controllers.{routes => mainRoutes}
 import forms.DeclarationTypeFormProvider
 import matchers.JsonMatchers
 import models.{DeclarationType, NormalMode}
@@ -176,7 +176,7 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -193,7 +193,7 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

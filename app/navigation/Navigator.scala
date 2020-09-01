@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import play.api.mvc.Call
 import controllers.routes
+import controllers.movementDetails.{routes => movementDetailsRoutes}
 import pages._
 import models._
 
@@ -29,13 +30,13 @@ class Navigator @Inject()() {
   private val normalRoutes: Page => UserAnswers => Call = {
     case LocalReferenceNumberPage => ua => routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode)
     case AddSecurityDetailsPage => ua => routes.DeclarationSummaryController.onPageLoad(ua.id)
-    case DeclarationTypePage => ua => routes.ProcedureTypeController.onPageLoad(ua.id, NormalMode)
-    case ProcedureTypePage => ua => routes.ContainersUsedPageController.onPageLoad(ua.id, NormalMode)
-    case ContainersUsedPage => ua => routes.DeclarationPlaceController.onPageLoad(ua.id, NormalMode)
-    case DeclarationPlacePage => ua => routes.DeclarationForSomeoneElseController.onPageLoad(ua.id, NormalMode)
+    case DeclarationTypePage => ua => movementDetailsRoutes.ProcedureTypeController.onPageLoad(ua.id, NormalMode)
+    case ProcedureTypePage => ua => movementDetailsRoutes.ContainersUsedPageController.onPageLoad(ua.id, NormalMode)
+    case ContainersUsedPage => ua => movementDetailsRoutes.DeclarationPlaceController.onPageLoad(ua.id, NormalMode)
+    case DeclarationPlacePage => ua => movementDetailsRoutes.DeclarationForSomeoneElseController.onPageLoad(ua.id, NormalMode)
     case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, NormalMode)
-    case RepresentativeNamePage => ua => routes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
-    case RepresentativeCapacityPage => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case RepresentativeNamePage => ua => movementDetailsRoutes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
+    case RepresentativeCapacityPage => ua => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case CountryOfDispatchPage => ua => routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode)
     case PrincipalNamePage => ua => routes.PrincipalAddressController.onPageLoad(ua.id, NormalMode) //TODO: come back to this when working on navigation
     case ConsignorNamePage => ua => routes.ConsignorAddressController.onPageLoad(ua.id, NormalMode)
@@ -45,7 +46,7 @@ class Navigator @Inject()() {
 
   private val checkRouteMap: Page => UserAnswers => Call = {
     case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, CheckMode)
-    case page if isMovementDetailsSectionPage(page) => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case page if isMovementDetailsSectionPage(page) => ua => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
   }
 
@@ -66,9 +67,9 @@ class Navigator @Inject()() {
 
   private def isDeclarationForSomeoneElse(ua: UserAnswers, mode: Mode): Call = {
     (ua.get(DeclarationForSomeoneElsePage), ua.get(RepresentativeNamePage), mode) match {
-      case (Some(true), None, CheckMode) => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
-      case (Some(true), _, NormalMode) => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
-      case _ => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(true), None, CheckMode) => movementDetailsRoutes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), _, NormalMode) => movementDetailsRoutes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
+      case _ => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 }

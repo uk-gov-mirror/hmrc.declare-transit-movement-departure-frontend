@@ -17,7 +17,7 @@
 package controllers.movementDetails
 
 import base.SpecBase
-import controllers.routes
+import controllers.{routes => mainRoute}
 import forms.DeclarationForSomeoneElseFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -177,7 +177,7 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -194,7 +194,7 @@ class DeclarationForSomeoneElseControllerSpec extends SpecBase with MockitoSugar
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

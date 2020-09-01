@@ -18,6 +18,7 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
+import controllers.movementDetails.{routes => movementDetailsRoute}
 import generators.Generators
 import pages._
 import models._
@@ -60,7 +61,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
 
             navigator.nextPage(DeclarationTypePage, NormalMode, answers)
-              .mustBe(routes.ProcedureTypeController.onPageLoad(answers.id, NormalMode))
+              .mustBe(movementDetailsRoute.ProcedureTypeController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -70,7 +71,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
 
             navigator.nextPage(ProcedureTypePage, NormalMode, answers)
-              .mustBe(routes.ContainersUsedPageController.onPageLoad(answers.id, NormalMode))
+              .mustBe(movementDetailsRoute.ContainersUsedPageController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -80,7 +81,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
 
             navigator.nextPage(ContainersUsedPage, NormalMode, answers)
-              .mustBe(routes.DeclarationPlaceController.onPageLoad(answers.id, NormalMode))
+              .mustBe(movementDetailsRoute.DeclarationPlaceController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -90,7 +91,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
 
             navigator.nextPage(DeclarationPlacePage, NormalMode, answers)
-              .mustBe(routes.DeclarationForSomeoneElseController.onPageLoad(answers.id, NormalMode))
+              .mustBe(movementDetailsRoute.DeclarationForSomeoneElseController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -101,7 +102,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, true).toOption.value
 
             navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
-              .mustBe(routes.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
+              .mustBe(movementDetailsRoute.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -112,7 +113,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
 
             navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
-              .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+              .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
 
@@ -122,7 +123,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
 
             navigator.nextPage(RepresentativeNamePage, NormalMode, answers)
-              .mustBe(routes.RepresentativeCapacityController.onPageLoad(answers.id, NormalMode))
+              .mustBe(movementDetailsRoute.RepresentativeCapacityController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -132,7 +133,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
 
             navigator.nextPage(RepresentativeCapacityPage, NormalMode, answers)
-              .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+              .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
 
@@ -168,7 +169,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
 
               navigator.nextPage(DeclarationTypePage, CheckMode, answers)
-                .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
           }
 
@@ -180,7 +181,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                   .remove(RepresentativeNamePage).toOption.value
 
                 navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
-                  .mustBe(routes.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(movementDetailsRoute.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
             }
           }
 
@@ -192,7 +193,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                   .set(RepresentativeNamePage, "answer").toOption.value
 
                 navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
-                  .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                  .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
             }
           }
 
@@ -203,7 +204,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
 
                 navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
-                  .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                  .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
             }
           }
 

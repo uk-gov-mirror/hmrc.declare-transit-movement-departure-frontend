@@ -16,6 +16,7 @@
 
 import models.reference.{Country, CustomsOffice}
 import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.viewmodels.{Content, MessageInterpolators}
 
 package object utils {
   val defaultOption: JsObject = Json.obj("value" -> "", "text" -> "")
@@ -40,6 +41,13 @@ package object utils {
     }
     defaultOption +: customsOfficeObjects
   }
+
+  def yesOrNo(answer: Boolean): Content =
+    if (answer) {
+      msg"site.yes"
+    } else {
+      msg"site.no"
+    }
 
 
 }

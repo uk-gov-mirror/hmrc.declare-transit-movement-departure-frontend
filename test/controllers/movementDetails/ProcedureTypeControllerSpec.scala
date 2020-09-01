@@ -17,7 +17,7 @@
 package controllers.movementDetails
 
 import base.SpecBase
-import controllers.routes
+import controllers.{routes => mainRoute}
 import forms.ProcedureTypeFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, ProcedureType}
@@ -192,7 +192,7 @@ class ProcedureTypeControllerSpec
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
         .onPageLoad()
         .url
 
@@ -211,7 +211,7 @@ class ProcedureTypeControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
         .onPageLoad()
         .url
 
