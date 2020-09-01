@@ -443,6 +443,17 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                         .mustBe(routes.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
+
+        "must go from Add consignor page to Is consignor eori known page when 'YES' is selected" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(AddConsignorPage, true).success.value
+              navigator.nextPage(AddConsignorPage, CheckMode, updatedAnswers)
+                .mustBe(routes.IsConsignorEoriKnownController.onPageLoad(answers.id, CheckMode))
+          }
+        }
       }
     }
   }
