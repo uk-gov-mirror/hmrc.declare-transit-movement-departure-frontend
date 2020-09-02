@@ -21,7 +21,7 @@ import controllers.{routes => mainRoutes}
 import forms.DeclarationTypeFormProvider
 import matchers.JsonMatchers
 import models.{DeclarationType, NormalMode}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeMovementDetailsNavigator, FakeNavigator, MovementDetailsNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -119,7 +119,7 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind[MovementDetailsNavigator].toInstance(new FakeMovementDetailsNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

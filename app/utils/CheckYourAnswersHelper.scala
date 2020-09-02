@@ -19,9 +19,8 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, CountryList, CustomsOfficeList, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
-import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
@@ -57,24 +56,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def officeOfDeparture(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(OfficeOfDeparturePage) flatMap {
-    answer =>
-    customsOfficeList.getCustomsOffice(answer) map {
-      customsOffice =>
-      Row(
-        key = Key(msg"officeOfDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"${customsOffice.name} (${customsOffice.id})"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = routes.OfficeOfDepartureController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"officeOfDeparture.checkYourAnswersLabel"))
-          )
-        )
-      )
-    }
-  }
-
   def consigneeName: Option[Row] = userAnswers.get(ConsigneeNamePage) map {
     answer =>
       Row(
@@ -100,23 +81,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.WhatIsConsigneeEoriController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"whatIsConsigneeEori.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def countryOfDispatch(codeList: CountryList): Option[Row] = userAnswers.get(CountryOfDispatchPage) map {
-    answer =>
-      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
-
-      Row(
-        key     = Key(msg"countryOfDispatch.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$countryName"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.CountryOfDispatchController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"countryOfDispatch.checkYourAnswersLabel"))
           )
         )
       )

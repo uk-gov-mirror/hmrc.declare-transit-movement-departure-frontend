@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.routeDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._

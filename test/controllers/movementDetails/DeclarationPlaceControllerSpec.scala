@@ -21,7 +21,7 @@ import controllers.{routes => mainRoute}
 import forms.DeclarationPlaceFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeMovementDetailsNavigator, MovementDetailsNavigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -122,7 +122,7 @@ class DeclarationPlaceControllerSpec
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind[MovementDetailsNavigator].toInstance(new FakeMovementDetailsNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

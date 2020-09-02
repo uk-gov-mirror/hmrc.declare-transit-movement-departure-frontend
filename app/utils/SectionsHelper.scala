@@ -17,6 +17,7 @@
 package utils
 
 import controllers.movementDetails.{routes => movementDetailsRoutes}
+import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
@@ -58,7 +59,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private def routesSection: SectionDetails = {
-    val startPage: String = routes.CountryOfDispatchController.onPageLoad(userAnswers.id, NormalMode).url
+    val startPage: String = routeDetailsRoutes.CountryOfDispatchController.onPageLoad(userAnswers.id, NormalMode).url
     SectionDetails("declarationSummary.section.routes", startPage, NotStarted)
   }
 

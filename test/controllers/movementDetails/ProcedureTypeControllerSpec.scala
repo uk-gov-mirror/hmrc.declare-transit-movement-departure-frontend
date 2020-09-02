@@ -21,7 +21,7 @@ import controllers.{routes => mainRoute}
 import forms.ProcedureTypeFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, ProcedureType}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeMovementDetailsNavigator, FakeNavigator, MovementDetailsNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -132,7 +132,7 @@ class ProcedureTypeControllerSpec
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind[MovementDetailsNavigator].toInstance(new FakeMovementDetailsNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

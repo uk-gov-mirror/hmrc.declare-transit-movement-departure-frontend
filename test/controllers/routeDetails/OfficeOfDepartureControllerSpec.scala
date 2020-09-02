@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.routeDetails
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoute}
 import forms.OfficeOfDepartureFormProvider
 import matchers.JsonMatchers
-import models.{CustomsOfficeList, NormalMode}
 import models.reference.CustomsOffice
+import models.{CustomsOfficeList, NormalMode}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.OfficeOfDeparturePage
 import play.api.inject.bind
@@ -210,7 +211,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -227,7 +228,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

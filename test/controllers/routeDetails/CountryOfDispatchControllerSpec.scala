@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.routeDetails
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoute}
 import forms.CountryOfDispatchFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
@@ -207,7 +208,7 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -224,7 +225,7 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
