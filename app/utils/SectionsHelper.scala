@@ -16,15 +16,14 @@
 
 package utils
 
-import java.io
 
+import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
-import play.api.i18n.Messages
 
-class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class SectionsHelper(userAnswers: UserAnswers) {
 
   def getSections: Seq[SectionDetails] = {
 
@@ -52,8 +51,8 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
   }
 
   private def movementDetailsSection: SectionDetails = {
-    val startPage: String = routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
-    val cyaPageAndStatus: (String, Status) = (routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
+    val startPage: String = movementDetailsRoutes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
     val (page, status) = getIncompletePage(startPage, movementDetailsPages).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.movementDetails", page, status)
@@ -92,18 +91,18 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
     val lrn = userAnswers.id
 
     val declareForSomeoneElseDiversionPages = if (userAnswers.get(DeclarationForSomeoneElsePage).contains(true)) {
-      Seq(userAnswers.get(RepresentativeNamePage) -> routes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url,
-        userAnswers.get(RepresentativeCapacityPage) -> routes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url)
+      Seq(userAnswers.get(RepresentativeNamePage) -> movementDetailsRoutes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url,
+        userAnswers.get(RepresentativeCapacityPage) -> movementDetailsRoutes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url)
     } else {
       Seq.empty
     }
 
     Seq(
-      userAnswers.get(DeclarationTypePage) -> routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(ProcedureTypePage) -> routes.ProcedureTypeController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(ContainersUsedPage) -> routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(DeclarationPlacePage) -> routes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(DeclarationForSomeoneElsePage) -> routes.DeclarationForSomeoneElseController.onPageLoad(lrn, NormalMode).url
+      userAnswers.get(DeclarationTypePage) -> movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(ProcedureTypePage) -> movementDetailsRoutes.ProcedureTypeController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(ContainersUsedPage) -> movementDetailsRoutes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(DeclarationPlacePage) -> movementDetailsRoutes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(DeclarationForSomeoneElsePage) -> movementDetailsRoutes.DeclarationForSomeoneElseController.onPageLoad(lrn, NormalMode).url
     ) ++ declareForSomeoneElseDiversionPages
 
   }
@@ -111,7 +110,7 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
   private val traderDetailsPage: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
 
-    val isPrincipalEoriKnowDiversionPages: Seq[(Option[io.Serializable], String)] = userAnswers.get(IsPrincipalEoriKnownPage) match {
+    val isPrincipalEoriKnowDiversionPages = userAnswers.get(IsPrincipalEoriKnownPage) match {
       case Some(true) => Seq(userAnswers.get(WhatIsPrincipalEoriPage) -> routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url)
       case Some(false) =>
         Seq(userAnswers.get(PrincipalNamePage) -> routes.PrincipalNameController.onPageLoad(lrn, NormalMode).url,
@@ -119,7 +118,7 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
       case _ => Seq.empty
     }
 
-    val isConsignorEoriKnownPage: Seq[(Option[io.Serializable], String)] = userAnswers.get(IsConsignorEoriKnownPage) match {
+    val isConsignorEoriKnownPage = userAnswers.get(IsConsignorEoriKnownPage) match {
       case Some(true) =>
         Seq(userAnswers.get(ConsignorEoriPage) -> routes.ConsignorEoriController.onPageLoad(lrn, NormalMode).url)
       case Some(false) =>
@@ -128,14 +127,14 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
       case _ => Seq.empty
     }
 
-    val isConsigneeEoriKnownPage: Seq[(Option[io.Serializable], String)] = userAnswers.get(IsConsigneeEoriKnownPage) match {
+    val isConsigneeEoriKnownPage = userAnswers.get(IsConsigneeEoriKnownPage) match {
       case Some(true) => Seq(userAnswers.get(WhatIsConsigneeEoriPage) -> routes.WhatIsConsigneeEoriController.onPageLoad(lrn, NormalMode).url)
       case Some(false) =>
         Seq(userAnswers.get(ConsigneeNamePage) -> routes.ConsigneeNameController.onPageLoad(lrn, NormalMode).url,
           userAnswers.get(ConsigneeAddressPage) -> routes.ConsigneeAddressController.onPageLoad(lrn, NormalMode).url)
       case _ => Seq.empty
     }
-    val addConsigneeDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(AddConsigneePage).contains(true)) {
+    val addConsigneeDiversionPage = if (userAnswers.get(AddConsigneePage).contains(true)) {
       Seq(userAnswers.get(IsConsigneeEoriKnownPage) -> routes.IsConsigneeEoriKnownController.onPageLoad(lrn, NormalMode).url)
 
     } else {

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import controllers.actions._
-import forms.DeclarationTypeFormProvider
+import forms.ProcedureTypeFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber, DeclarationType}
+import models.{LocalReferenceNumber, Mode, ProcedureType}
 import navigation.Navigator
-import pages.DeclarationTypePage
+import pages.ProcedureTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,14 +32,14 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationTypeController @Inject()(
+class ProcedureTypeController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
                                        navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
-                                       formProvider: DeclarationTypeFormProvider,
+                                       formProvider: ProcedureTypeFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
@@ -49,7 +49,7 @@ class DeclarationTypeController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(DeclarationTypePage) match {
+      val preparedForm = request.userAnswers.get(ProcedureTypePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -58,10 +58,10 @@ class DeclarationTypeController @Inject()(
         "form"   -> preparedForm,
         "mode"   -> mode,
         "lrn"    -> lrn,
-        "radios"  -> DeclarationType.radios(preparedForm)
+        "radios"  -> ProcedureType.radios(preparedForm)
       )
 
-      renderer.render("declarationType.njk", json).map(Ok(_))
+      renderer.render("procedureType.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -74,16 +74,16 @@ class DeclarationTypeController @Inject()(
             "form"   -> formWithErrors,
             "mode"   -> mode,
             "lrn"    -> lrn,
-            "radios" -> DeclarationType.radios(formWithErrors)
+            "radios" -> ProcedureType.radios(formWithErrors)
           )
 
-          renderer.render("declarationType.njk", json).map(BadRequest(_))
+          renderer.render("procedureType.njk", json).map(BadRequest(_))
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclarationTypePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ProcedureTypePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DeclarationTypePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(ProcedureTypePage, mode, updatedAnswers))
       )
   }
 }

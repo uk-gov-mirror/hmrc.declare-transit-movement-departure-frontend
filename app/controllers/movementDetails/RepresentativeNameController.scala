@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import controllers.actions._
 import forms.RepresentativeNameFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.RepresentativeNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
