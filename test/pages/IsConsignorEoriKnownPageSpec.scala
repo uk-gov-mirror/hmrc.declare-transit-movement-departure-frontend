@@ -32,8 +32,10 @@ class IsConsignorEoriKnownPageSpec extends PageBehaviours {
   }
 
   "cleanup" - {
+
     "must remove ConsignorAddressPage and ConsignorNamePage when there is a change of the answer to 'Yes'" in {
-val consigneeAddress = arbitrary[ConsignorAddress].sample.value
+
+      val consigneeAddress = arbitrary[ConsignorAddress].sample.value
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers.set(ConsignorNamePage, "answer").success.value
