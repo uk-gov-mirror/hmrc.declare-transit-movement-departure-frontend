@@ -33,30 +33,25 @@ class AddConsignorPageSpec extends PageBehaviours {
 
   "cleanup" - {
 
-    "must remove ConsignorAddressPage and ConsignorNamePage when they exist in userAnswers" in {
+    "must remove ConsignorAddressPage, ConsignorNamePage and ConsignorEoriPage when they exist in userAnswers" in {
 
-      val consigneeAddress = arbitrary[ConsignorAddress].sample.value
+      val consignorAddress = arbitrary[ConsignorAddress].sample.value
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          val result = userAnswers.set(ConsignorNamePage, "answer").success.value
-            .set(ConsignorAddressPage, consigneeAddress).success.value
-            .set(AddConsignorPage, false).success.value
+          val result = userAnswers
+            .set(ConsignorNamePage, "answer").success.value
+            .set(ConsignorAddressPage, consignorAddress).success.value
+            .set(ConsignorEoriPage, "GB123456").success.value
+            .set(AddConsignorPage, true).success.value
 
           result.get(ConsignorNamePage) must not be defined
           result.get(ConsignorAddressPage) must not be defined
-      }
-    }
-
-    "must remove ConsignorEoriPage when submitting answer to addConsignor page" in {
-
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          val result = userAnswers.set(ConsignorEoriPage, "GB123456").success.value
-            .set(AddConsignorPage, true).success.value
-
           result.get(ConsignorEoriPage) must not be defined
+
       }
     }
+
+
   }
 
 }
