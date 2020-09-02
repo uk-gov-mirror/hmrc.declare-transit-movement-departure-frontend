@@ -16,6 +16,8 @@
 
 package pages
 
+import models.{ConsignorAddress, RepresentativeCapacity, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddConsignorPageSpec extends PageBehaviours {
