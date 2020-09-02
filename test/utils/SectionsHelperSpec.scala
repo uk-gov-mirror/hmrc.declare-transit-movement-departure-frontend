@@ -25,75 +25,95 @@ import pages._
 class SectionsHelperSpec extends SpecBase {
 
   "SectionsHelper" - {
-    "must return movement details section with status as NotStarted" in {
-      val sectionsHelper = new SectionsHelper(emptyUserAnswers)
+    "MovementDetails" - {
+      "must return movement details section with status as NotStarted" in {
+        val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
-      val url = routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
-      val sectionName = "declarationSummary.section.movementDetails"
-      val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+        val url = routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.movementDetails"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
-      val result = sectionsHelper.getSections
+        val result = sectionsHelper.getSections
 
-      result mustBe expectedSections
+        result mustBe expectedSections
+      }
+
+      "must return movement details section with status as InProgress" in {
+
+        val userAnswers = emptyUserAnswers.set(DeclarationTypePage, DeclarationType.values.head).toOption.value
+          .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
+
+        val url = routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
+        val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, InProgress)
+        val expectedResult = updateSectionsWithExpectedValue(expectedSection)
+
+        val sectionsHelper = new SectionsHelper(userAnswers)
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedResult
+      }
+
+      "must return movement details section with status as Complete" in {
+
+        val userAnswers = emptyUserAnswers.set(DeclarationTypePage, DeclarationType.values.head).toOption.value
+          .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
+          .set(ContainersUsedPage, true).toOption.value
+          .set(DeclarationPlacePage, "answers").toOption.value
+          .set(DeclarationForSomeoneElsePage, true).toOption.value
+          .set(RepresentativeNamePage, "name").toOption.value
+          .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct).toOption.value
+
+        val url = routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, Completed)
+        val expectedResult = updateSectionsWithExpectedValue(expectedSection)
+
+        val sectionsHelper = new SectionsHelper(userAnswers)
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedResult
+      }
     }
 
-    "must return movement details section with status as InProgress" in {
+    "Trader Details" - {
+      "must return trader's details section with status as NotStarted" in {
+        val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
-      val userAnswers = emptyUserAnswers.set(DeclarationTypePage, DeclarationType.values.head).toOption.value
-        .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
+        val url = routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.tradersDetails"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
-      val url = routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
-      val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, InProgress)
-      val expectedResult = updateSectionsWithExpectedValue(expectedSection)
+        val result = sectionsHelper.getSections
 
-      val sectionsHelper = new SectionsHelper(userAnswers)
-      val result = sectionsHelper.getSections
+        result mustBe expectedSections
+      }
 
-      result mustBe expectedResult
+      "must return trader's details section with status as In Progress" in {
+        val userAnswers = emptyUserAnswers.set(IsPrincipalEoriKnownPage,true).success.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+
+        val url = routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.tradersDetails"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, InProgress))
+
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
+
     }
 
-    "must return movement details section with status as Complete" in {
+    "Routes Details" - {
+      "must return routes section with status as NotStarted" in {
+        val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
-      val userAnswers = emptyUserAnswers.set(DeclarationTypePage, DeclarationType.values.head).toOption.value
-        .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
-        .set(ContainersUsedPage, true).toOption.value
-        .set(DeclarationPlacePage, "answers").toOption.value
-        .set(DeclarationForSomeoneElsePage, true).toOption.value
-        .set(RepresentativeNamePage, "name").toOption.value
-        .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct).toOption.value
+        val url = routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.routes"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
-      val url = routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
-      val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, Completed)
-      val expectedResult = updateSectionsWithExpectedValue(expectedSection)
+        val result = sectionsHelper.getSections
 
-      val sectionsHelper = new SectionsHelper(userAnswers)
-      val result = sectionsHelper.getSections
-
-      result mustBe expectedResult
-    }
-
-    "must return trader's details section with status as NotStarted" in {
-      val sectionsHelper = new SectionsHelper(emptyUserAnswers)
-
-      val url = routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
-      val sectionName = "declarationSummary.section.tradersDetails"
-      val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
-
-      val result = sectionsHelper.getSections
-
-      result mustBe expectedSections
-    }
-
-    "must return routes section with status as NotStarted" in {
-      val sectionsHelper = new SectionsHelper(emptyUserAnswers)
-
-      val url = routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
-      val sectionName = "declarationSummary.section.routes"
-      val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
-
-      val result = sectionsHelper.getSections
-
-      result mustBe expectedSections
+        result mustBe expectedSections
+      }
     }
   }
 
@@ -112,3 +132,4 @@ class SectionsHelperSpec extends SpecBase {
     }
   }
 }
+

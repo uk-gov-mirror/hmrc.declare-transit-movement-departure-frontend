@@ -16,10 +16,12 @@
 
 package utils
 
+import java.io
+
 import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
-import pages.{RepresentativeNamePage, _}
+import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
 import play.api.i18n.Messages
 
 class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
@@ -73,6 +75,7 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
     SectionDetails("declarationSummary.section.tradersDetails", page, status)
   }
+
   private def goodsSummarySection: SectionDetails = {
     SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted)
   }
@@ -88,10 +91,12 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
   private val movementDetailsPages: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
 
-    val declareForSomeoneElseDiversionPages = if(userAnswers.get(DeclarationForSomeoneElsePage).contains(true)) {
+    val declareForSomeoneElseDiversionPages = if (userAnswers.get(DeclarationForSomeoneElsePage).contains(true)) {
       Seq(userAnswers.get(RepresentativeNamePage) -> routes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url,
         userAnswers.get(RepresentativeCapacityPage) -> routes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url)
-    } else {Seq.empty}
+    } else {
+      Seq.empty
+    }
 
     Seq(
       userAnswers.get(DeclarationTypePage) -> routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url,
@@ -106,28 +111,44 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
   private val traderDetailsPage: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
 
-    val isPricipalEorinKnowDiversionPages= if(userAnswers.get(IsPrincipalEoriKnownPage).contains(true)) {
+    val isPrincipalEoriKnowDiversionPages: Seq[(Option[io.Serializable], String)] = if (userAnswers.get(IsPrincipalEoriKnownPage).contains(true)) {
       Seq(userAnswers.get(WhatIsPrincipalEoriPage) -> routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url)
     } else {
       Seq(userAnswers.get(PrincipalNamePage) -> routes.PrincipalNameController.onPageLoad(lrn, NormalMode).url,
-           userAnswers.get(PrincipalAddressPage) -> routes.PrincipalAddressController.onPageLoad(lrn,NormalMode).url)
+        userAnswers.get(PrincipalAddressPage) -> routes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url)
     }
 
+    val isConsignorEoriKnownPage: Seq[(Option[io.Serializable], String)] = if (userAnswers.get(IsConsignorEoriKnownPage).contains(true)) {
+      Seq(userAnswers.get(ConsignorEoriPage) -> routes.ConsignorEoriController.onPageLoad(lrn, NormalMode).url)
+    } else {
+      Seq(userAnswers.get(ConsignorNamePage) -> routes.ConsignorNameController.onPageLoad(lrn, NormalMode).url,
+        userAnswers.get(ConsignorAddressPage) -> routes.ConsignorAddressController.onPageLoad(lrn, NormalMode).url)
+    }
+
+    val isConsigneeEoriKnownPage: Seq[(Option[io.Serializable], String)] = if (userAnswers.get(IsConsigneeEoriKnownPage).contains(true)) {
+      Seq(userAnswers.get(WhatIsConsigneeEoriPage) -> routes.WhatIsConsigneeEoriController.onPageLoad(lrn, NormalMode).url)
+    } else {
+      Seq(userAnswers.get(ConsigneeNamePage) -> routes.ConsigneeNameController.onPageLoad(lrn, NormalMode).url,
+        userAnswers.get(ConsigneeAddressPage) -> routes.ConsigneeAddressController.onPageLoad(lrn, NormalMode).url)
+    }
+    val addConsigneeDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(AddConsigneePage).contains(true)) {
+      Seq(userAnswers.get(IsConsigneeEoriKnownPage) -> routes.IsConsigneeEoriKnownController.onPageLoad(lrn, NormalMode).url)
+
+    } else {
+      Seq.empty
+    }
+    val addConsignorPageDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(AddConsignorPage).contains(true)) {
+      Seq(userAnswers.get(IsConsignorEoriKnownPage) -> routes.IsConsignorEoriKnownController.onPageLoad(lrn, NormalMode).url)
+
+    } else {
+      addConsigneeDiversionPage
+    }
+    val addConsignorPage = Seq(userAnswers.get(AddConsignorPage) -> routes.AddConsignorController.onPageLoad(lrn, NormalMode).url)
+    val addConsigneePage = Seq(userAnswers.get(AddConsigneePage) -> routes.AddConsigneeController.onPageLoad(lrn, NormalMode).url)
     Seq(
       userAnswers.get(IsPrincipalEoriKnownPage) -> routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(WhatIsPrincipalEoriPage) -> routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(PrincipalNamePage) -> routes.PrincipalNameController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(PrincipalAddressPage) -> routes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(AddConsignorPage) -> routes.AddConsignorController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(IsConsignorEoriKnownPage) -> routes.IsConsignorEoriKnownController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(ConsignorNamePage) -> routes.ConsignorNameController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(ConsignorAddressPage) -> routes.ConsignorAddressController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(ConsignorEoriPage) -> routes.ConsignorEoriController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(AddConsigneePage) -> routes.AddConsigneeController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(IsConsigneeEoriKnownPage) -> routes.IsConsigneeEoriKnownController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(ConsigneeNamePage) -> routes.ConsigneeNameController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(WhatIsConsigneeEoriPage) -> routes.WhatIsConsigneeEoriController.onPageLoad(lrn, NormalMode).url,
-    ) ++ isPricipalEorinKnowDiversionPages
+
+    ) ++ isPrincipalEoriKnowDiversionPages ++ addConsignorPage ++ addConsignorPageDiversionPage ++ isConsignorEoriKnownPage ++ addConsigneePage ++ addConsigneeDiversionPage ++ isConsigneeEoriKnownPage
   }
 
 }
