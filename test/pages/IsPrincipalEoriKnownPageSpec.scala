@@ -16,6 +16,8 @@
 
 package pages
 
+import models.{ConsignorAddress, PrincipalAddress, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class IsPrincipalEoriKnownPageSpec extends PageBehaviours {
@@ -28,4 +30,33 @@ class IsPrincipalEoriKnownPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](IsPrincipalEoriKnownPage)
   }
+
+  "cleanup" - {
+
+    "must remove PrincipalAddressPage and PrincipalNamePage when there is a change of the answer to 'Yes'" in {
+
+      val principalAddress = arbitrary[PrincipalAddress].sample.value
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val result = userAnswers.set(PrincipalNamePage, "answer").success.value
+            .set(PrincipalAddressPage, principalAddress).success.value
+            .set(IsPrincipalEoriKnownPage, true).success.value
+
+          result.get(PrincipalNamePage) must not be defined
+          result.get(PrincipalAddressPage) must not be defined
+      }
+    }
+
+    "must remove PrincipalEoriPage when there is a change of the answer to 'No'" in {
+
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val result = userAnswers.set(WhatIsPrincipalEoriPage, "GB123456").success.value
+            .set(IsPrincipalEoriKnownPage, false).success.value
+
+          result.get(WhatIsPrincipalEoriPage) must not be defined
+      }
+    }
+  }
+
 }

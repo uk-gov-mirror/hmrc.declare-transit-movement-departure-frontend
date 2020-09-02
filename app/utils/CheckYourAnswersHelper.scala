@@ -19,7 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, ConsignorAddress, CountryList, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, CustomsOfficeList, LocalReferenceNumber, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -36,6 +36,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         value   = Value(address),
         actions = List(
           Action(
+
             content            = msg"site.edit",
             href               = routes.ConsigneeAddressController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consigneeAddress.checkYourAnswersLabel"))
@@ -46,9 +47,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
   def principalAddress: Option[Row] = userAnswers.get(PrincipalAddressPage) map {
     answer =>
+      val address =   Html(Seq(answer.numberAndStreet, answer.town, answer.postcode)
+        .mkString("<br>"))
       Row(
         key     = Key(msg"principalAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.numberAndStreet} ${answer.town} ${answer.postcode}"),
+        value   = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -57,6 +60,24 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           )
         )
       )
+  }
+
+  def officeOfDeparture(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(OfficeOfDeparturePage) flatMap {
+    answer =>
+    customsOfficeList.getCustomsOffice(answer) map {
+      customsOffice =>
+      Row(
+        key = Key(msg"officeOfDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"${customsOffice.name} (${customsOffice.id})"),
+        actions = List(
+          Action(
+            content = msg"site.edit",
+            href = routes.OfficeOfDepartureController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"officeOfDeparture.checkYourAnswersLabel"))
+          )
+        )
+      )
+    }
   }
 
   def consigneeName: Option[Row] = userAnswers.get(ConsigneeNamePage) map {
@@ -395,11 +416,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     }
 
   def lrn: LocalReferenceNumber = userAnswers.id
-
-  def addressHtml(address: ConsignorAddress): Html = Html(
-    Seq(address.AddressLine1, address.AddressLine2, address.AddressLine3, address.country.description)
-      .mkString("<br>")
-  )
 }
 
 object CheckYourAnswersHelper {

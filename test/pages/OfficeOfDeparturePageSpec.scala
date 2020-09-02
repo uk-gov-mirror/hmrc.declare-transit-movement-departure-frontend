@@ -16,23 +16,17 @@
 
 package pages
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
 
-case object IsPrincipalEoriKnownPage extends QuestionPage[Boolean] {
+class OfficeOfDeparturePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "OfficeOfDeparturePage" - {
 
-  override def toString: String = "isPrincipalEoriKnown"
+    beRetrievable[String](OfficeOfDeparturePage)
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some(false) => userAnswers.remove(WhatIsPrincipalEoriPage)
-      case Some(true) => userAnswers.remove(PrincipalNamePage)
-        .flatMap (_.remove(PrincipalAddressPage))
-      case _ => super.cleanup(value, userAnswers)
-    }
+    beSettable[String](OfficeOfDeparturePage)
+
+    beRemovable[String](OfficeOfDeparturePage)
   }
 }

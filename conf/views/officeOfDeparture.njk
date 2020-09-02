@@ -2,13 +2,12 @@
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
 {% from "govuk/components/select/macro.njk"        import govukSelect %}
-{% from "govuk/components/input/macro.njk"         import govukInput %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("countryOfDispatch.title"), form.errors) }}
+  {{ title(messages("officeOfDeparture.title"), form.errors) }}
 {% endblock %}
 
 {% block pageHead %}
@@ -34,30 +33,35 @@
           }) }}
         {% endif %}
 
-
-        <form action="{{ routes.controllers.CountryOfDispatchController.onSubmit(lrn, mode).url }}" method="post">
-
         <span class="govuk-caption-xl">{{messages('routeDetails.preHeading')}}</span>
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("officeOfDeparture.heading") }}
+        </h1>
+
+        <form action="{{ routes.controllers.OfficeOfDepartureController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
-            {{ govukSelect({
-              classes: "govuk-input--width-20 autocomplete",
-              label: {
-                text: messages('countryOfDispatch.heading'),
-                isPageHeading: true,
-                classes: "govuk-label--xl"
-              },
-              id: "value",
-              name: "value",
-              value: form.value.value,
-              errorMessage: form.value.error,
-              items: countries
-            }) }}
+          {{ govukSelect({
+            classes: "govuk-input--width-20 autocomplete",
+            label: {
+              text: messages('officeOfDeparture.label'),
+              isPageHeading: false,
+              classes: "govuk-body"
+            },
+            id: "value",
+            name: "value",
+            hint: {
+              text: messages('officeOfDeparture.hintText')
+            },
+            errorMessage: form.value.error,
+            items: customsOffices
+          }) }}
 
           {{ govukButton({
             text: messages("site.continue"),
-              attributes: {id:"submit"}
+            attributes: {id:"submit"}
           }) }}
 
         </form>
@@ -65,7 +69,6 @@
       </div>
     </div>
   </div>
-
 {% endblock %}
 
 {% block pageScripts %}

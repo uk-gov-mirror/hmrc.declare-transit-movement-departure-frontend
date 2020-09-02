@@ -137,7 +137,18 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
+
+
+      "must go from Country of dispatch page to Office of departure page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(CountryOfDispatchPage, NormalMode, answers)
+              .mustBe(routes.OfficeOfDepartureController.onPageLoad(answers.id, NormalMode))
+        }
       }
+    }
 
       "Trader Details section" - {
 
