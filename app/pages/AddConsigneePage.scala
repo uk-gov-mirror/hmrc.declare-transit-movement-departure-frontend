@@ -16,11 +16,23 @@
 
 package pages
 
+import models.UserAnswers
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object AddConsigneePage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addConsignee"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(true) | Some (false) => userAnswers.remove(ConsigneeNamePage)
+        .flatMap(_.remove(ConsigneeAddressPage))
+        .flatMap(_.remove(WhatIsConsigneeEoriPage))
+      case _ => super.cleanup(value, userAnswers)
+    }
+  }
 }
