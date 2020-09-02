@@ -19,7 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, CountryList, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, ConsignorAddress, CountryList, LocalReferenceNumber, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -29,9 +29,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
   def consigneeAddress: Option[Row] = userAnswers.get(ConsigneeAddressPage) map {
     answer =>
+      val address =   Html(Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+        .mkString("<br>"))
       Row(
         key     = Key(msg"consigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2}"),
+        value   = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -151,9 +153,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
   def consignorAddress: Option[Row] = userAnswers.get(ConsignorAddressPage) map {
     answer =>
+   val address =   Html(Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+        .mkString("<br>"))
+
       Row(
         key     = Key(msg"consignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2} ${answer.AddressLine3} ${answer.country}"),
+        value   = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -390,6 +395,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     }
 
   def lrn: LocalReferenceNumber = userAnswers.id
+
+  def addressHtml(address: ConsignorAddress): Html = Html(
+    Seq(address.AddressLine1, address.AddressLine2, address.AddressLine3, address.country.description)
+      .mkString("<br>")
+  )
 }
 
 object CheckYourAnswersHelper {

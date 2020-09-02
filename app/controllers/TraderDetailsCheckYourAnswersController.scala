@@ -64,10 +64,12 @@ class TraderDetailsCheckYourAnswersController @Inject()(
         checkYourAnswersHelper.addConsignor,
         checkYourAnswersHelper.isConsignorEoriKnown,
         checkYourAnswersHelper.consignorName,
+        checkYourAnswersHelper.consignorAddress,
         checkYourAnswersHelper.consignorEori,
         checkYourAnswersHelper.addConsignee,
         checkYourAnswersHelper.isConsigneeEoriKnown,
         checkYourAnswersHelper.consigneeName,
+        checkYourAnswersHelper.consigneeAddress,
         checkYourAnswersHelper.whatIsConsigneeEori,
       ).flatten
     ))

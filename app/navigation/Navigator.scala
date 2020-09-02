@@ -148,7 +148,6 @@ class Navigator @Inject()() {
   }
 
   private def addConsignorRoute(ua: UserAnswers, mode: Mode): Call = {
-    println("\n\n\n\n\n\n##############" + ua.get(AddConsignorPage) + mode)
     (ua.get(AddConsignorPage), mode) match {
       case (Some(true), NormalMode) => routes.IsConsignorEoriKnownController.onPageLoad(ua.id, NormalMode)
       case (Some(true), CheckMode) => routes.IsConsignorEoriKnownController.onPageLoad(ua.id, CheckMode)
