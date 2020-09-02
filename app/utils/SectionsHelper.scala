@@ -111,25 +111,29 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
   private val traderDetailsPage: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
 
-    val isPrincipalEoriKnowDiversionPages: Seq[(Option[io.Serializable], String)] = if (userAnswers.get(IsPrincipalEoriKnownPage).contains(true)) {
-      Seq(userAnswers.get(WhatIsPrincipalEoriPage) -> routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url)
-    } else {
-      Seq(userAnswers.get(PrincipalNamePage) -> routes.PrincipalNameController.onPageLoad(lrn, NormalMode).url,
-        userAnswers.get(PrincipalAddressPage) -> routes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url)
+    val isPrincipalEoriKnowDiversionPages: Seq[(Option[io.Serializable], String)] = userAnswers.get(IsPrincipalEoriKnownPage) match {
+      case Some(true) => Seq(userAnswers.get(WhatIsPrincipalEoriPage) -> routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url)
+      case Some(false) =>
+        Seq(userAnswers.get(PrincipalNamePage) -> routes.PrincipalNameController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(PrincipalAddressPage) -> routes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url)
+      case _ => Seq.empty
     }
 
-    val isConsignorEoriKnownPage: Seq[(Option[io.Serializable], String)] = if (userAnswers.get(IsConsignorEoriKnownPage).contains(true)) {
-      Seq(userAnswers.get(ConsignorEoriPage) -> routes.ConsignorEoriController.onPageLoad(lrn, NormalMode).url)
-    } else {
-      Seq(userAnswers.get(ConsignorNamePage) -> routes.ConsignorNameController.onPageLoad(lrn, NormalMode).url,
-        userAnswers.get(ConsignorAddressPage) -> routes.ConsignorAddressController.onPageLoad(lrn, NormalMode).url)
+    val isConsignorEoriKnownPage: Seq[(Option[io.Serializable], String)] = userAnswers.get(IsConsignorEoriKnownPage) match {
+      case Some(true) =>
+        Seq(userAnswers.get(ConsignorEoriPage) -> routes.ConsignorEoriController.onPageLoad(lrn, NormalMode).url)
+      case Some(false) =>
+        Seq(userAnswers.get(ConsignorNamePage) -> routes.ConsignorNameController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(ConsignorAddressPage) -> routes.ConsignorAddressController.onPageLoad(lrn, NormalMode).url)
+      case _ => Seq.empty
     }
 
-    val isConsigneeEoriKnownPage: Seq[(Option[io.Serializable], String)] = if (userAnswers.get(IsConsigneeEoriKnownPage).contains(true)) {
-      Seq(userAnswers.get(WhatIsConsigneeEoriPage) -> routes.WhatIsConsigneeEoriController.onPageLoad(lrn, NormalMode).url)
-    } else {
-      Seq(userAnswers.get(ConsigneeNamePage) -> routes.ConsigneeNameController.onPageLoad(lrn, NormalMode).url,
-        userAnswers.get(ConsigneeAddressPage) -> routes.ConsigneeAddressController.onPageLoad(lrn, NormalMode).url)
+    val isConsigneeEoriKnownPage: Seq[(Option[io.Serializable], String)] = userAnswers.get(IsConsigneeEoriKnownPage) match {
+      case Some(true) => Seq(userAnswers.get(WhatIsConsigneeEoriPage) -> routes.WhatIsConsigneeEoriController.onPageLoad(lrn, NormalMode).url)
+      case Some(false) =>
+        Seq(userAnswers.get(ConsigneeNamePage) -> routes.ConsigneeNameController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(ConsigneeAddressPage) -> routes.ConsigneeAddressController.onPageLoad(lrn, NormalMode).url)
+      case _ => Seq.empty
     }
     val addConsigneeDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(AddConsigneePage).contains(true)) {
       Seq(userAnswers.get(IsConsigneeEoriKnownPage) -> routes.IsConsigneeEoriKnownController.onPageLoad(lrn, NormalMode).url)
@@ -137,14 +141,17 @@ class SectionsHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
     } else {
       Seq.empty
     }
+
+    val addConsignorPage: Seq[(Option[Boolean], String)] = Seq(userAnswers.get(AddConsignorPage) -> routes.AddConsignorController.onPageLoad(lrn, NormalMode).url)
+    val addConsigneePage: Seq[(Option[Boolean], String)] = Seq(userAnswers.get(AddConsigneePage) -> routes.AddConsigneeController.onPageLoad(lrn, NormalMode).url)
+
     val addConsignorPageDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(AddConsignorPage).contains(true)) {
       Seq(userAnswers.get(IsConsignorEoriKnownPage) -> routes.IsConsignorEoriKnownController.onPageLoad(lrn, NormalMode).url)
 
     } else {
-      addConsigneeDiversionPage
+      addConsigneePage
     }
-    val addConsignorPage = Seq(userAnswers.get(AddConsignorPage) -> routes.AddConsignorController.onPageLoad(lrn, NormalMode).url)
-    val addConsigneePage = Seq(userAnswers.get(AddConsigneePage) -> routes.AddConsigneeController.onPageLoad(lrn, NormalMode).url)
+
     Seq(
       userAnswers.get(IsPrincipalEoriKnownPage) -> routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
 

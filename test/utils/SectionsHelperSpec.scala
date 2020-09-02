@@ -99,7 +99,28 @@ class SectionsHelperSpec extends SpecBase {
 
         result mustBe expectedSections
       }
+      "must return trader's details section with status as Completed" in {
+        val userAnswers = emptyUserAnswers
+          .set(IsPrincipalEoriKnownPage,true).success.value
+          .set(WhatIsPrincipalEoriPage, "GB123456").success.value
+          .set(AddConsignorPage, true).success.value
+          .set(IsConsignorEoriKnownPage, true).success.value
+          .set(ConsignorEoriPage, "GB123456").success.value
+          .set(AddConsigneePage, true).success.value
+          .set(IsConsigneeEoriKnownPage, true).success.value
+          .set(WhatIsConsigneeEoriPage, "GB123456").success.value
 
+
+        val sectionsHelper = new SectionsHelper(userAnswers)
+
+        val url = routes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        val sectionName = "declarationSummary.section.tradersDetails"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
+
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
     }
 
     "Routes Details" - {
@@ -132,4 +153,3 @@ class SectionsHelperSpec extends SpecBase {
     }
   }
 }
-
