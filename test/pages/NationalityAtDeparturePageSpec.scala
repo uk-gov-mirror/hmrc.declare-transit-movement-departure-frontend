@@ -16,6 +16,7 @@
 
 package pages
 
+import models.reference.{Country, CountryCode}
 import pages.behaviours.PageBehaviours
 
 
@@ -23,10 +24,10 @@ class NationalityAtDeparturePageSpec extends PageBehaviours {
 
   "NationalityAtDeparturePage" - {
 
-    beRetrievable[String](NationalityAtDeparturePage)
+    beRetrievable[CountryCode](NationalityAtDeparturePage)
 
-    beSettable[String](NationalityAtDeparturePage)
+    beSettable[CountryCode](NationalityAtDeparturePage)
 
-    beRemovable[String](NationalityAtDeparturePage)
+    beRemovable[CountryCode](NationalityAtDeparturePage)
   }
 }

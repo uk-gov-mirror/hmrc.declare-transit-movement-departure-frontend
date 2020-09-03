@@ -16,19 +16,23 @@
 
 package controllers
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.NationalityAtDepartureFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.reference.Country
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.NationalityAtDeparturePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,49 +43,55 @@ class NationalityAtDepartureController @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
+                                       referenceDataConnector: ReferenceDataConnector,
                                        formProvider: NationalityAtDepartureFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+      implicit request =>
+        referenceDataConnector.getCountryList() flatMap {
+          countries =>
+            val form = formProvider(countries)
 
-      val preparedForm = request.userAnswers.get(NationalityAtDeparturePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+            val preparedForm = request.userAnswers
+              .get(NationalityAtDeparturePage)
+              .flatMap(countries.getCountry)
+              .map(form.fill)
+              .getOrElse(form)
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("nationalityAtDeparture.njk", json).map(Ok(_))
-  }
+            renderPage(lrn, mode, preparedForm, countries.fullList, Results.Ok)
+        }
+    }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+      implicit request =>
+        referenceDataConnector.getCountryList() flatMap {
+          countries =>
+            formProvider(countries)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList, Results.BadRequest),
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityAtDeparturePage, value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(NationalityAtDeparturePage, mode, updatedAnswers))
+              )
+        }
+    }
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
-
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
-          )
-
-          renderer.render("nationalityAtDeparture.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityAtDeparturePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NationalityAtDeparturePage, mode, updatedAnswers))
+    private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
+      implicit request: Request[AnyContent]): Future[Result] = {
+      val json = Json.obj(
+        "form"        -> form,
+        "lrn"         -> lrn,
+        "mode"        -> mode,
+        "countries"   -> countryJsonList(form.value, countries),
+        "onSubmitUrl" -> routes.NationalityAtDepartureController.onSubmit(lrn, mode).url
       )
-  }
+
+      renderer.render("nationalityAtDeparture.njk", json).map(status(_))
+    }
 }
