@@ -37,7 +37,7 @@ class Navigator @Inject()() {
     case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, NormalMode)
     case RepresentativeNamePage => ua => movementDetailsRoutes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
     case RepresentativeCapacityPage => ua => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    case CountryOfDispatchPage => ua => routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode)
+    case CountryOfDispatchPage => ua => routeDetailsRoutes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode)
     case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, NormalMode)
     case PrincipalNamePage => ua => routes.PrincipalAddressController.onPageLoad(ua.id, NormalMode)
     case PrincipalAddressPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode)
