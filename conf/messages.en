@@ -376,3 +376,10 @@ nationalityAtDeparture.title = What is the nationality at departure?
 nationalityAtDeparture.heading = What is the nationality at departure?
 nationalityAtDeparture.checkYourAnswersLabel = What is the nationality at departure?
 nationalityAtDeparture.error.required = Enter the nationality at departure
+
+idCrossingBorder.title = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.heading = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.checkYourAnswersLabel = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.error.required = Enter the name, registration or reference of the vehicle crossing the border
+idCrossingBorder.error.length = The name, registration or reference of the vehicle crossing the border must be 27 characters or less
+idCrossingBorder.error.invalid = The name, registration or reference of the vehicle crossing the border must only include letters a to z, numbers 0 to 9…(CHECK)
