@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package navigation
+package utils.annotations;
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, NormalMode, UserAnswers}
+import com.google.inject.BindingAnnotation;
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends AbstractNavigator {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
-
-  override protected def normalRoutes: Page => UserAnswers => Call = ???
-
-  override protected def checkRouteMap: Page => UserAnswers => Call = ???
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface MovementDetails {
 }

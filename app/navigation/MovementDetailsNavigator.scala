@@ -24,9 +24,9 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class MovementDetailsNavigator @Inject()() {
+class MovementDetailsNavigator @Inject()() extends AbstractNavigator {
 
-  private val normalRoutes: Page => UserAnswers => Call = {
+  override protected def normalRoutes: Page => UserAnswers => Call = {
     case DeclarationTypePage => ua => routes.ProcedureTypeController.onPageLoad(ua.id, NormalMode)
     case ProcedureTypePage => ua => routes.ContainersUsedPageController.onPageLoad(ua.id, NormalMode)
     case ContainersUsedPage => ua => routes.DeclarationPlaceController.onPageLoad(ua.id, NormalMode)
@@ -37,17 +37,10 @@ class MovementDetailsNavigator @Inject()() {
     case _ => _ => mainRoutes.IndexController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => Call = {
+  override protected def checkRouteMap: Page => UserAnswers => Call = {
     case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, CheckMode)
     case page if isMovementDetailsSectionPage(page) => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => ua => mainRoutes.CheckYourAnswersController.onPageLoad(ua.id)
-  }
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case NormalMode =>
-      normalRoutes(page)(userAnswers)
-    case CheckMode =>
-      checkRouteMap(page)(userAnswers)
   }
 
   private def isMovementDetailsSectionPage(page: Page): Boolean = {
@@ -65,5 +58,6 @@ class MovementDetailsNavigator @Inject()() {
       case _ => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
+
 }
 

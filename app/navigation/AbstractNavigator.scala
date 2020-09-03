@@ -16,16 +16,20 @@
 
 package navigation
 
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
-import pages._
-import models.{Mode, NormalMode, UserAnswers}
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends AbstractNavigator {
+trait AbstractNavigator {
+  protected def normalRoutes: Page => UserAnswers => Call
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
+  protected def checkRouteMap: Page => UserAnswers => Call
 
-  override protected def normalRoutes: Page => UserAnswers => Call = ???
-
-  override protected def checkRouteMap: Page => UserAnswers => Call = ???
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
+    case NormalMode =>
+      normalRoutes(page)(userAnswers)
+    case CheckMode =>
+      checkRouteMap(page)(userAnswers)
+  }
 }
+
