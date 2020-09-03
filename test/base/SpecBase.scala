@@ -61,7 +61,7 @@ trait SpecBase
 
   val principalName: String = "principalName"
 
-  val principalAddress: PrincipalAddress = PrincipalAddress("numberAndStreet", "town", "NE99 1XN")
+  val principalAddress: PrincipalAddress = PrincipalAddress("numberAndStreet", "town", "SW1A 1AA")
 
   val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 
