@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
@@ -24,6 +25,9 @@ class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "idAtDeparture.error.required"
   val lengthKey = "idAtDeparture.error.length"
   val maxLength = 27
+  val idRegex: String = "^[a-zA-Z0-9]*$"
+  val invalidCharacters = "idAtDeparture.error.invalid"
+
 
   val form = new IdAtDepartureFormProvider()()
 
@@ -49,5 +53,20 @@ class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+    "must not bind strings that do not match the Idregex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidCharacters, Seq(idRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(idRegex))
+      }
+
+      forAll(genInvalidString) { invalidString =>
+        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors mustBe expectedError
+      }
+    }
+
   }
 }

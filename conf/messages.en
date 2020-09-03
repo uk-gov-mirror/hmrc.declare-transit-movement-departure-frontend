@@ -376,3 +376,4 @@ idAtDeparture.heading = What is the name, registration or reference of the vehic
 idAtDeparture.checkYourAnswersLabel = Name, registration or reference of the vehicle at departure
 idAtDeparture.error.required = Enter the name, registration or reference of the vehicle at departure
 idAtDeparture.error.length = The name, registration or reference of the vehicle at departure must be 27 characters or less
+idAtDeparture.error.invalid = The name, registration or reference of the vehicle at departure must only include letters a to z and numbers 0 to 9
