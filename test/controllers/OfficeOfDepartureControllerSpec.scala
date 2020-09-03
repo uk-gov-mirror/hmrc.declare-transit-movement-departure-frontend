@@ -17,22 +17,19 @@
 package controllers
 
 import base.SpecBase
-import forms.DeclarationTypeFormProvider
+import connectors.ReferenceDataConnector
+import forms.OfficeOfDepartureFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
-import models.DeclarationType
-import navigation.FakeNavigator
-import navigation.Navigator
-import org.mockito.ArgumentCaptor
+import models.{CustomsOfficeList, NormalMode}
+import models.reference.CustomsOffice
+import navigation.{FakeNavigator, Navigator}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DeclarationTypePage
+import pages.OfficeOfDeparturePage
 import play.api.inject.bind
-import play.api.libs.json.JsObject
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,26 +39,39 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val declarationTypeRoute = routes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
+  val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
+  val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
+  val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+  val form = new OfficeOfDepartureFormProvider()(customsOffices)
 
-  val formProvider = new DeclarationTypeFormProvider()
-  val form         = formProvider()
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  "DeclarationType Controller" - {
+  lazy val officeOfDepartureRoute: String = routes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockRefDataConnector)
+  }
+
+  "OfficeOfDeparture Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, declarationTypeRoute)
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request = FakeRequest(GET, officeOfDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -69,14 +79,21 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val expectedCustomsOfficeJson = Seq(
+        Json.obj("value" -> "", "text"         -> ""),
+        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> false),
+        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
+
+      )
+
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
-        "radios" -> DeclarationType.radios(form)
+        "customsOffices" -> expectedCustomsOfficeJson
       )
 
-      templateCaptor.getValue mustEqual "declarationType.njk"
+      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -86,12 +103,15 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val userAnswers    = emptyUserAnswers.set(DeclarationTypePage, DeclarationType.values.head).success.value
-      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, declarationTypeRoute)
+      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, customsOffice1.id).success.value
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request = FakeRequest(GET, officeOfDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -99,16 +119,22 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> DeclarationType.values.head.toString))
+      val filledForm = form.bind(Map("value" -> "officeId"))
 
-      val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> DeclarationType.radios(filledForm)
+      val expectedCustomsOfficeJson = Seq(
+        Json.obj("value" -> "", "text"         -> ""),
+        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> true),
+        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
       )
 
-      templateCaptor.getValue mustEqual "declarationType.njk"
+      val expectedJson = Json.obj(
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode,
+        "customsOffices" -> expectedCustomsOfficeJson
+      )
+
+      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -119,23 +145,24 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
           )
           .build()
 
       val request =
-        FakeRequest(POST, declarationTypeRoute)
-          .withFormUrlEncodedBody(("value", DeclarationType.values.head.toString))
+        FakeRequest(POST, officeOfDepartureRoute)
+          .withFormUrlEncodedBody(("value", "id"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -145,12 +172,15 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, declarationTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm      = form.bind(Map("value" -> "invalid value"))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request = FakeRequest(POST, officeOfDepartureRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -159,13 +189,12 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> DeclarationType.radios(boundForm)
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "declarationType.njk"
+      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -175,11 +204,12 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, declarationTypeRoute)
+      val request = FakeRequest(GET, officeOfDepartureRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -190,8 +220,8 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, declarationTypeRoute)
-          .withFormUrlEncodedBody(("value", DeclarationType.values.head.toString))
+        FakeRequest(POST, officeOfDepartureRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 

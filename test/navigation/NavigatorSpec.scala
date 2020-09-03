@@ -18,6 +18,7 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
+import controllers.movementDetails.{routes => movementDetailsRoute}
 import generators.Generators
 import pages._
 import models._
@@ -61,40 +62,40 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
 
-              navigator.nextPage(DeclarationTypePage, NormalMode, answers)
-                .mustBe(routes.ProcedureTypeController.onPageLoad(answers.id, NormalMode))
-          }
+            navigator.nextPage(DeclarationTypePage, NormalMode, answers)
+              .mustBe(movementDetailsRoute.ProcedureTypeController.onPageLoad(answers.id, NormalMode))
         }
+      }
 
         "must go from Procedure Type page to Container Used page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
 
-              navigator.nextPage(ProcedureTypePage, NormalMode, answers)
-                .mustBe(routes.ContainersUsedPageController.onPageLoad(answers.id, NormalMode))
-          }
+            navigator.nextPage(ProcedureTypePage, NormalMode, answers)
+              .mustBe(movementDetailsRoute.ContainersUsedPageController.onPageLoad(answers.id, NormalMode))
         }
+      }
 
         "must go from  Container Used page to Declaration Place page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
 
-              navigator.nextPage(ContainersUsedPage, NormalMode, answers)
-                .mustBe(routes.DeclarationPlaceController.onPageLoad(answers.id, NormalMode))
-          }
+            navigator.nextPage(ContainersUsedPage, NormalMode, answers)
+              .mustBe(movementDetailsRoute.DeclarationPlaceController.onPageLoad(answers.id, NormalMode))
         }
+      }
 
         "must go from Declaration Place page to Declaration For Someone Else page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
 
-              navigator.nextPage(DeclarationPlacePage, NormalMode, answers)
-                .mustBe(routes.DeclarationForSomeoneElseController.onPageLoad(answers.id, NormalMode))
-          }
+            navigator.nextPage(DeclarationPlacePage, NormalMode, answers)
+              .mustBe(movementDetailsRoute.DeclarationForSomeoneElseController.onPageLoad(answers.id, NormalMode))
         }
+      }
 
         "must go from Declaration For Someone Else page to Representative Name page on selecting option 'Yes'" in {
 
@@ -102,10 +103,10 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, true).toOption.value
 
-              navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
-                .mustBe(routes.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
-          }
+            navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
+              .mustBe(movementDetailsRoute.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
         }
+      }
 
         "must go from Declaration For Someone Else page to movement details check your answers page on selecting option 'No'" in {
 
@@ -113,31 +114,42 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
 
-              navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
-                .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
-          }
+            navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
+              .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
+      }
 
         "must go from Representative Name page to Representative Capacity page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
 
-              navigator.nextPage(RepresentativeNamePage, NormalMode, answers)
-                .mustBe(routes.RepresentativeCapacityController.onPageLoad(answers.id, NormalMode))
-          }
+            navigator.nextPage(RepresentativeNamePage, NormalMode, answers)
+              .mustBe(movementDetailsRoute.RepresentativeCapacityController.onPageLoad(answers.id, NormalMode))
         }
+      }
 
         "must go from Representative Capacity page to Check Your Answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
 
-              navigator.nextPage(RepresentativeCapacityPage, NormalMode, answers)
-                .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
-          }
+            navigator.nextPage(RepresentativeCapacityPage, NormalMode, answers)
+              .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
+
+
+      "must go from Country of dispatch page to Office of departure page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(CountryOfDispatchPage, NormalMode, answers)
+              .mustBe(routes.OfficeOfDepartureController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+    }
 
       "Trader Details section" - {
 
@@ -340,7 +352,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
 
               navigator.nextPage(DeclarationTypePage, CheckMode, answers)
-                .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
           }
 
@@ -352,7 +364,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                   .remove(RepresentativeNamePage).toOption.value
 
                 navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
-                  .mustBe(routes.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(movementDetailsRoute.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
             }
           }
 
@@ -364,7 +376,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                   .set(RepresentativeNamePage, "answer").toOption.value
 
                 navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
-                  .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                  .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
             }
           }
 
@@ -375,7 +387,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
 
                 navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
-                  .mustBe(routes.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                  .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
             }
           }
 
@@ -392,10 +404,68 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 .remove(WhatIsPrincipalEoriPage).toOption.value
 
               navigator.nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
-                .mustBe(routes.WhatIsPrincipalEoriController.onPageLoad(answers.id, NormalMode))
+                .mustBe(routes.WhatIsPrincipalEoriController.onPageLoad(answers.id, CheckMode))
           }
         }
 
+        "Must go from Is principal eori known page to What is principal's name page if the option selected is 'NO'" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(IsPrincipalEoriKnownPage, false).toOption.value
+                .remove(WhatIsPrincipalEoriPage).toOption.value
+
+              navigator.nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(routes.PrincipalNameController.onPageLoad(answers.id, CheckMode))
+          }
+        }
+
+        "must go from Principal name page to Check Your Answers page if Principal's Address previously answered" in {
+
+          forAll(arbitrary[UserAnswers], arbitrary[PrincipalAddress]) {
+
+            (answers, principalAddress) =>
+
+              val updatedAnswers =
+                answers.set(PrincipalAddressPage, principalAddress).success.value
+              navigator.nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
+                .mustBe(routes.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+
+        "must go from Principal name page to Principals Address page if Principal's Address not previously answered" in {
+
+           forAll(arbitrary[UserAnswers]) {
+              answers =>
+
+            val updatedAnswers =
+              answers.remove(PrincipalAddressPage).success.value
+
+            navigator.nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
+                .mustBe(routes.PrincipalAddressController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+
+        "must go from What is Principal's Eori page to Check Your Answers Page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+
+                      navigator.nextPage(WhatIsPrincipalEoriPage, CheckMode, answers)
+                        .mustBe(routes.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+
+        "must go from Add consignor page to Is consignor eori known page when 'YES' is selected" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(AddConsignorPage, true).success.value
+              navigator.nextPage(AddConsignorPage, CheckMode, updatedAnswers)
+                .mustBe(routes.IsConsignorEoriKnownController.onPageLoad(answers.id, CheckMode))
+          }
+        }
       }
     }
   }

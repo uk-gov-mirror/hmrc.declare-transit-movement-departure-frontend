@@ -19,21 +19,24 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, CountryList, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, CustomsOfficeList, LocalReferenceNumber, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def consigneeAddress: Option[Row] = userAnswers.get(ConsigneeAddressPage) map {
     answer =>
+      val address =   Html(Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+        .mkString("<br>"))
       Row(
         key     = Key(msg"consigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2}"),
+        value   = Value(address),
         actions = List(
           Action(
+
             content            = msg"site.edit",
             href               = routes.ConsigneeAddressController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consigneeAddress.checkYourAnswersLabel"))
@@ -44,9 +47,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
   def principalAddress: Option[Row] = userAnswers.get(PrincipalAddressPage) map {
     answer =>
+      val address =   Html(Seq(answer.numberAndStreet, answer.town, answer.postcode)
+        .mkString("<br>"))
       Row(
         key     = Key(msg"principalAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.numberAndStreet} ${answer.town} ${answer.postcode}"),
+        value   = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -55,6 +60,24 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           )
         )
       )
+  }
+
+  def officeOfDeparture(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(OfficeOfDeparturePage) flatMap {
+    answer =>
+    customsOfficeList.getCustomsOffice(answer) map {
+      customsOffice =>
+      Row(
+        key = Key(msg"officeOfDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"${customsOffice.name} (${customsOffice.id})"),
+        actions = List(
+          Action(
+            content = msg"site.edit",
+            href = routes.OfficeOfDepartureController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"officeOfDeparture.checkYourAnswersLabel"))
+          )
+        )
+      )
+    }
   }
 
   def consigneeName: Option[Row] = userAnswers.get(ConsigneeNamePage) map {
@@ -151,9 +174,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
   def consignorAddress: Option[Row] = userAnswers.get(ConsignorAddressPage) map {
     answer =>
+   val address =   Html(Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+        .mkString("<br>"))
+
       Row(
         key     = Key(msg"consignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2} ${answer.AddressLine3} ${answer.country}"),
+        value   = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -254,118 +280,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       )
   }
 
-  def representativeCapacity: Option[Row] = userAnswers.get(RepresentativeCapacityPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"representativeCapacity.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(msg"representativeCapacity.$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.RepresentativeCapacityController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"representativeCapacity.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-representative-capacity""")
-          )
-        )
-      )
-  }
-
-  def representativeName: Option[Row] = userAnswers.get(RepresentativeNamePage) map {
-    answer =>
-      Row(
-        key     = Key(msg"representativeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.RepresentativeNameController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"representativeName.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-representative-name""")
-          )
-        )
-      )
-  }
-
-  def containersUsedPage: Option[Row] = userAnswers.get(ContainersUsedPage) map {
-    answer =>
-      Row(
-        key = Key(msg"containersUsed.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = routes.ContainersUsedPageController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"containersUsed.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-containers-used""")
-          )
-        )
-      )
-  }
-
-  def declarationForSomeoneElse: Option[Row] = userAnswers.get(DeclarationForSomeoneElsePage) map {
-    answer =>
-      Row(
-        key     = Key(msg"declarationForSomeoneElse.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.DeclarationForSomeoneElseController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationForSomeoneElse.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-declaration-for-someone-else""")
-          )
-        )
-      )
-  }
-
-  def declarationPlace: Option[Row] = userAnswers.get(DeclarationPlacePage) map {
-    answer =>
-      Row(
-        key     = Key(msg"declarationPlace.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.DeclarationPlaceController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationPlace.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-declaration-place""")
-          )
-        )
-      )
-  }
-
-  def procedureType: Option[Row] = userAnswers.get(ProcedureTypePage) map {
-    answer =>
-      Row(
-        key     = Key(msg"procedureType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(msg"procedureType.$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.ProcedureTypeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"procedureType.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-procedure-type""")
-          )
-        )
-      )
-  }
-
-  def declarationType: Option[Row] = userAnswers.get(DeclarationTypePage) map {
-    answer =>
-      Row(
-        key     = Key(msg"declarationType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(msg"declarationType.$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.DeclarationTypeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarationType.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-declaration-type""")
-          )
-        )
-      )
-  }
-
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(
@@ -381,13 +295,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         )
       )
   }
-
-  private def yesOrNo(answer: Boolean): Content =
-    if (answer) {
-      msg"site.yes"
-    } else {
-      msg"site.no"
-    }
 
   def lrn: LocalReferenceNumber = userAnswers.id
 }

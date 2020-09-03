@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movementDetails
 
 import controllers.actions._
-import forms.ProcedureTypeFormProvider
+import forms.DeclarationForSomeoneElseFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber, ProcedureType}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.ProcedureTypePage
+import pages.DeclarationForSomeoneElsePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ProcedureTypeController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: ProcedureTypeFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+class DeclarationForSomeoneElseController @Inject()(
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalActionProvider,
+    requireData: DataRequiredAction,
+    formProvider: DeclarationForSomeoneElseFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
@@ -49,7 +49,7 @@ class ProcedureTypeController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ProcedureTypePage) match {
+      val preparedForm = request.userAnswers.get(DeclarationForSomeoneElsePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -58,10 +58,10 @@ class ProcedureTypeController @Inject()(
         "form"   -> preparedForm,
         "mode"   -> mode,
         "lrn"    -> lrn,
-        "radios"  -> ProcedureType.radios(preparedForm)
+        "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
-      renderer.render("procedureType.njk", json).map(Ok(_))
+      renderer.render("declarationForSomeoneElse.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -74,16 +74,16 @@ class ProcedureTypeController @Inject()(
             "form"   -> formWithErrors,
             "mode"   -> mode,
             "lrn"    -> lrn,
-            "radios" -> ProcedureType.radios(formWithErrors)
+            "radios" -> Radios.yesNo(formWithErrors("value"))
           )
 
-          renderer.render("procedureType.njk", json).map(BadRequest(_))
+          renderer.render("declarationForSomeoneElse.njk", json).map(BadRequest(_))
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ProcedureTypePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclarationForSomeoneElsePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ProcedureTypePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(DeclarationForSomeoneElsePage, mode, updatedAnswers))
       )
   }
 }

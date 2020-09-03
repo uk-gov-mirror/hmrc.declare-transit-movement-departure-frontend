@@ -54,6 +54,7 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 
 movementDetails.preHeading = Movement details
 traderDetails.preHeading = Trader’s details
+routeDetails.preHeading = Route details
 
 postcode = Postcode
 postcodeExample = Like, AB1 1AB.
@@ -263,6 +264,9 @@ principalAddress.error.numberAndStreet.length = Number and street must be 35 cha
 principalAddress.error.town.length = Town must be 35 characters or less
 principalAddress.error.postcode.length = Postcode must be 9 characters or less
 principalAddress.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
+principalAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z and numbers 0 to 9
+principalAddress.error.numberAndStreet.invalid = The  number and street of {0}'s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
+principalAddress.error.town.invalid = The town of {0}'s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
 principalAddress.error.postcode.invalidCharacters = The postcode of {0}’s address must only include letters a to z and numbers 0 to 9
 
 addConsignor.title = Do you need to add a consignor?
@@ -270,7 +274,6 @@ addConsignor.heading = Do you need to add a consignor?
 addConsignor.checkYourAnswersLabel = Do you need to add a consignor?
 addConsignor.error.required = Select yes if you need to add a consignor
 addConsignor.heading = Do you need to add a consignor?
-addConsignor.preHeading = Trader’s details
 
 isConsignorEoriKnown.title = Do you know the consignor’s EORI number?
 isConsignorEoriKnown.heading = Do you know the consignor’s EORI number?
@@ -339,8 +342,13 @@ countryOfDispatch.heading = What is the country of dispatch?
 countryOfDispatch.checkYourAnswersLabel = Country of dispatch
 countryOfDispatch.error.required = Select the country of dispatch
 
-traderDetailsCheckYourAnswers.title = Check your answers
-traderDetailsCheckYourAnswers.heading = Check your answers
+officeOfDeparture.title = Where is the office of departure?
+officeOfDeparture.heading = Where is the office of departure?
+officeOfDeparture.checkYourAnswersLabel = Office of departure
+officeOfDeparture.error.required = Select the office of departure
+officeOfDeparture.hintText = Give the office location or code. For example, Dover or GB000060.
+officeOfDeparture.label = This is the Customs office where the transit movement starts.
+
 
 consigneeAddress.title = What is the address of the consignee
 consigneeAddress.heading = What is {0}’s address?

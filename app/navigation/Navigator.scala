@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import play.api.mvc.Call
 import controllers.routes
+import controllers.movementDetails.{routes => movementDetailsRoutes}
 import pages._
 import models._
 
@@ -29,18 +30,18 @@ class Navigator @Inject()() {
   private val normalRoutes: Page => UserAnswers => Call = {
     case LocalReferenceNumberPage => ua => routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode)
     case AddSecurityDetailsPage => ua => routes.DeclarationSummaryController.onPageLoad(ua.id)
-    case DeclarationTypePage => ua => routes.ProcedureTypeController.onPageLoad(ua.id, NormalMode)
-    case ProcedureTypePage => ua => routes.ContainersUsedPageController.onPageLoad(ua.id, NormalMode)
-    case ContainersUsedPage => ua => routes.DeclarationPlaceController.onPageLoad(ua.id, NormalMode)
-    case DeclarationPlacePage => ua => routes.DeclarationForSomeoneElseController.onPageLoad(ua.id, NormalMode)
+    case DeclarationTypePage => ua => movementDetailsRoutes.ProcedureTypeController.onPageLoad(ua.id, NormalMode)
+    case ProcedureTypePage => ua => movementDetailsRoutes.ContainersUsedPageController.onPageLoad(ua.id, NormalMode)
+    case ContainersUsedPage => ua => movementDetailsRoutes.DeclarationPlaceController.onPageLoad(ua.id, NormalMode)
+    case DeclarationPlacePage => ua => movementDetailsRoutes.DeclarationForSomeoneElseController.onPageLoad(ua.id, NormalMode)
     case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, NormalMode)
-    case RepresentativeNamePage => ua => routes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
-    case RepresentativeCapacityPage => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
-
+    case RepresentativeNamePage => ua => movementDetailsRoutes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
+    case RepresentativeCapacityPage => ua => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case CountryOfDispatchPage => ua => routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode)
     case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, NormalMode)
-    case PrincipalNamePage => ua => routes.PrincipalAddressController.onPageLoad(ua.id, NormalMode) //TODO: come back to this when working on navigation
-    case PrincipalAddressPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode) //TODO: come back to this when working on navigation
-    case WhatIsPrincipalEoriPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode) //TODO: come back to this when working on navigation
+    case PrincipalNamePage => ua => routes.PrincipalAddressController.onPageLoad(ua.id, NormalMode)
+    case PrincipalAddressPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode)
+    case WhatIsPrincipalEoriPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode)
     case AddConsignorPage => ua => addConsignorRoute(ua, NormalMode)
     case IsConsignorEoriKnownPage => ua => isConsignorEoriKnownRoute(ua, NormalMode)
     case ConsignorEoriPage => ua => routes.AddConsigneeController.onPageLoad(ua.id, NormalMode)
@@ -56,9 +57,21 @@ class Navigator @Inject()() {
 
   private val checkRouteMap: Page => UserAnswers => Call = {
     case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, CheckMode)
+    case page if isMovementDetailsSectionPage(page) => ua => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, CheckMode)
-    case page if isMovementDetailsSectionPage(page) => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case PrincipalNamePage => ua => principalNamePageRoute(ua, CheckMode)
+    case ConsignorNamePage => ua => consignorNamePageRoute(ua, CheckMode)
+    case ConsigneeNamePage => ua => consigneeNamePageRoute(ua, CheckMode)
+    case IsConsignorEoriKnownPage => ua => isConsignorEoriKnownRoute(ua, CheckMode)
+    case IsConsigneeEoriKnownPage => ua => isConsigneeEoriKnownRoute(ua, CheckMode)
+
+    case WhatIsPrincipalEoriPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case ConsignorEoriPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case WhatIsConsigneeEoriPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case page if isMovementDetailsSectionPage(page) => ua => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case page if isTraderDetailsSectionPage(page) => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case AddConsignorPage => ua => addConsignorRoute(ua, CheckMode)
+    case AddConsigneePage => ua => addConsigneeRoute(ua, CheckMode)
     case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
   }
 
@@ -77,57 +90,56 @@ class Navigator @Inject()() {
     }
   }
 
+  private def principalNamePageRoute(ua: UserAnswers, mode: Mode) = {
+    ua.get(PrincipalAddressPage) match {
+      case Some(_) => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _ => routes.PrincipalAddressController.onPageLoad(ua.id, mode)
+    }
+  }
+
+  private def consignorNamePageRoute(ua: UserAnswers, mode: Mode) = {
+    ua.get(ConsignorAddressPage) match {
+      case Some(_) => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _ => routes.ConsignorAddressController.onPageLoad(ua.id, mode)
+    }
+  }
+
+  private def consigneeNamePageRoute(ua: UserAnswers, mode: Mode) = {
+    ua.get(ConsigneeAddressPage) match {
+      case Some(_) => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _ => routes.ConsigneeAddressController.onPageLoad(ua.id, mode)
+    }
+  }
+
   private def isTraderDetailsSectionPage(page: Page): Boolean = {
     page match {
-      case IsPrincipalEoriKnownPage | WhatIsPrincipalEoriPage | PrincipalNamePage |
-           PrincipalAddressPage | AddConsignorPage | IsConsignorEoriKnownPage | ConsignorNamePage | ConsignorAddressPage |
-           AddConsigneePage | ConsigneeNamePage | ConsigneeAddressPage => true
+      case IsPrincipalEoriKnownPage | WhatIsPrincipalEoriPage | PrincipalNamePage | PrincipalAddressPage |
+           IsConsignorEoriKnownPage | ConsignorEoriPage | ConsignorNamePage | ConsignorAddressPage |
+           IsConsigneeEoriKnownPage | WhatIsConsigneeEoriPage | ConsigneeNamePage | ConsigneeAddressPage => true
       case _ => false
     }
   }
 
   private def isDeclarationForSomeoneElse(ua: UserAnswers, mode: Mode): Call = {
     (ua.get(DeclarationForSomeoneElsePage), ua.get(RepresentativeNamePage), mode) match {
-      case (Some(true), None, CheckMode) => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
-      case (Some(true), _, NormalMode) => routes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
-      case _ => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    }
-  }
-
-
-  def principalEoriKnown(mode: Mode, ua: UserAnswers): Call = {
-    (ua.get(IsPrincipalEoriKnownPage), mode) match {
-      case (Some(true), NormalMode) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, NormalMode)
-      case (Some(true), CheckMode) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, NormalMode)
-    }
-  }
-
-  def principaEoriNotKnown(mode: Mode, ua: UserAnswers): Call = {
-    (ua.get(IsPrincipalEoriKnownPage), mode) match {
-      case (Some(false), NormalMode) => routes.PrincipalNameController.onPageLoad(ua.id, NormalMode)
-      case (Some(false), CheckMode) => routes.PrincipalNameController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), None, CheckMode) => movementDetailsRoutes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), _, NormalMode) => movementDetailsRoutes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
+      case _ => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 
   private def isPrincipalEoriKnownRoute(ua: UserAnswers, mode: Mode): Call = {
     ua.get(IsPrincipalEoriKnownPage) match {
-      case Some(true) => principalEoriKnown(mode, ua)
-      case Some(false) => principaEoriNotKnown(mode, ua)
+      case Some(true) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, mode)
+      case Some(false) => routes.PrincipalNameController.onPageLoad(ua.id, mode)
       case _ => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
-//
-//        (ua.get(IsPrincipalEoriKnownPage), ua.get(WhatIsPrincipalEoriPage), mode) match {
-//          case (Some(true),None, CheckMode) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, CheckMode)
-//          case (Some(true),_, NormalMode) => routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, NormalMode)
-//          case (Some(false), None, CheckMode) => routes.PrincipalNameController.onPageLoad(ua.id, NormalMode)
-//          case (Some(false), None, NormalMode) => routes.PrincipalNameController.onPageLoad(ua.id, NormalMode)
-//          case _ => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
-//        }
   }
 
   private def addConsignorRoute(ua: UserAnswers, mode: Mode): Call = {
     (ua.get(AddConsignorPage), mode) match {
       case (Some(true), NormalMode) => routes.IsConsignorEoriKnownController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), CheckMode) => routes.IsConsignorEoriKnownController.onPageLoad(ua.id, CheckMode)
       case (Some(false), NormalMode) => routes.AddConsigneeController.onPageLoad(ua.id, NormalMode)
       case _ => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
@@ -136,7 +148,8 @@ class Navigator @Inject()() {
   private def isConsignorEoriKnownRoute(ua: UserAnswers, mode: Mode): Call = {
     (ua.get(IsConsignorEoriKnownPage), mode) match {
       case (Some(true), NormalMode) => routes.ConsignorEoriController.onPageLoad(ua.id, NormalMode)
-      case (Some(false), NormalMode) => routes.ConsignorNameController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), CheckMode) => routes.ConsignorEoriController.onPageLoad(ua.id, CheckMode)
+      case (Some(false), _) => routes.ConsignorNameController.onPageLoad(ua.id, mode)
       case _ => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
@@ -144,6 +157,7 @@ class Navigator @Inject()() {
   private def addConsigneeRoute(ua: UserAnswers, mode: Mode): Call = {
     (ua.get(AddConsigneePage), mode) match {
       case (Some(true), NormalMode) => routes.IsConsigneeEoriKnownController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), CheckMode) => routes.IsConsigneeEoriKnownController.onPageLoad(ua.id, CheckMode)
       case (Some(false), NormalMode) => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
       case _ => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
@@ -152,7 +166,8 @@ class Navigator @Inject()() {
   private def isConsigneeEoriKnownRoute(ua: UserAnswers, mode: Mode): Call = {
     (ua.get(IsConsigneeEoriKnownPage), mode) match {
       case (Some(true), NormalMode) => routes.WhatIsConsigneeEoriController.onPageLoad(ua.id, NormalMode)
-      case (Some(false), NormalMode) => routes.ConsigneeNameController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), CheckMode) => routes.WhatIsConsigneeEoriController.onPageLoad(ua.id, CheckMode)
+      case (Some(false), _) => routes.ConsigneeNameController.onPageLoad(ua.id, mode)
       case _ => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
