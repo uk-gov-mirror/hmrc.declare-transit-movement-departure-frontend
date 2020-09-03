@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import base.SpecBase
-import forms.ConsignorNameFormProvider
+import controllers.{routes => mainRoutes}
+import forms.AddConsignorFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ConsignorNamePage
+import pages.AddConsignorPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -33,20 +34,20 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddConsignorControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new ConsignorNameFormProvider()
+  val formProvider = new AddConsignorFormProvider()
   val form = formProvider()
 
-  lazy val consignorNameRoute = routes.ConsignorNameController.onPageLoad(lrn, NormalMode).url
+  lazy val addConsignorRoute = routes.AddConsignorController.onPageLoad(lrn, NormalMode).url
 
-  "ConsignorName Controller" - {
+  "AddConsignor Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -54,7 +55,7 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, consignorNameRoute)
+      val request = FakeRequest(GET, addConsignorRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -67,10 +68,11 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(form("value"))
       )
 
-      templateCaptor.getValue mustEqual "consignorName.njk"
+      templateCaptor.getValue mustEqual "addConsignor.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -81,9 +83,9 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ConsignorNamePage, "answer").success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddConsignorPage, true).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, consignorNameRoute)
+      val request = FakeRequest(GET, addConsignorRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -93,15 +95,16 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"   -> filledForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(filledForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "consignorName.njk"
+      templateCaptor.getValue mustEqual "addConsignor.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -122,12 +125,13 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
           .build()
 
       val request =
-        FakeRequest(POST, consignorNameRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, addConsignorRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -139,7 +143,7 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, consignorNameRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, addConsignorRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -151,12 +155,13 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"   -> boundForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(boundForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "consignorName.njk"
+      templateCaptor.getValue mustEqual "addConsignor.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -166,13 +171,13 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, consignorNameRoute)
+      val request = FakeRequest(GET, addConsignorRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -182,14 +187,14 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, consignorNameRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, addConsignorRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

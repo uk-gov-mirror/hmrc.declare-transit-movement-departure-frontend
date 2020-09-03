@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import forms.IsPrincipalEoriKnownFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -176,7 +177,7 @@ class IsPrincipalEoriKnownControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -193,7 +194,7 @@ class IsPrincipalEoriKnownControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

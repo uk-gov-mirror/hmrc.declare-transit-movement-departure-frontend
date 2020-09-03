@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import controllers.actions._
-import forms.PrincipalNameFormProvider
+import forms.WhatIsPrincipalEoriFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.PrincipalNamePage
+import pages.WhatIsPrincipalEoriPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,14 +32,14 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PrincipalNameController @Inject()(
+class WhatIsPrincipalEoriController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
                                        navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
-                                       formProvider: PrincipalNameFormProvider,
+                                       formProvider: WhatIsPrincipalEoriFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
@@ -49,7 +49,7 @@ class PrincipalNameController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(PrincipalNamePage) match {
+      val preparedForm = request.userAnswers.get(WhatIsPrincipalEoriPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -60,7 +60,7 @@ class PrincipalNameController @Inject()(
         "mode" -> mode
       )
 
-      renderer.render("principalName.njk", json).map(Ok(_))
+      renderer.render("whatIsPrincipalEori.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -75,13 +75,13 @@ class PrincipalNameController @Inject()(
             "mode" -> mode
           )
 
-          renderer.render("principalName.njk", json).map(BadRequest(_))
+          renderer.render("whatIsPrincipalEori.njk", json).map(BadRequest(_))
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PrincipalNamePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatIsPrincipalEoriPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PrincipalNamePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhatIsPrincipalEoriPage, mode, updatedAnswers))
       )
   }
 }

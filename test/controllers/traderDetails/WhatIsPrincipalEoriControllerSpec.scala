@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import base.SpecBase
-import forms.PrincipalNameFormProvider
+import controllers.{routes => mainRoutes}
+import forms.WhatIsPrincipalEoriFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
@@ -25,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.PrincipalNamePage
+import pages.WhatIsPrincipalEoriPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,16 +38,17 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new PrincipalNameFormProvider()
+  val formProvider = new WhatIsPrincipalEoriFormProvider()
   val form = formProvider()
+  private val validEori    = "AB123456789012345"
 
-  lazy val principalNameRoute = routes.PrincipalNameController.onPageLoad(lrn, NormalMode).url
+  lazy val whatIsPrincipalEoriRoute = routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url
 
-  "PrincipalName Controller" - {
+  "WhatIsPrincipalEori Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -54,7 +56,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, principalNameRoute)
+      val request = FakeRequest(GET, whatIsPrincipalEoriRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -70,7 +72,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "lrn"    -> lrn
       )
 
-      templateCaptor.getValue mustEqual "principalName.njk"
+      templateCaptor.getValue mustEqual "whatIsPrincipalEori.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -81,9 +83,9 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(PrincipalNamePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(WhatIsPrincipalEoriPage, validEori).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, principalNameRoute)
+      val request = FakeRequest(GET, whatIsPrincipalEoriRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -93,7 +95,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> validEori))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -101,7 +103,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "principalName.njk"
+      templateCaptor.getValue mustEqual "whatIsPrincipalEori.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -122,8 +124,8 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
           .build()
 
       val request =
-        FakeRequest(POST, principalNameRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, whatIsPrincipalEoriRoute)
+          .withFormUrlEncodedBody(("value", validEori))
 
       val result = route(application, request).value
 
@@ -139,7 +141,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, principalNameRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, whatIsPrincipalEoriRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -156,7 +158,7 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "principalName.njk"
+      templateCaptor.getValue mustEqual "whatIsPrincipalEori.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -166,13 +168,13 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, principalNameRoute)
+      val request = FakeRequest(GET, whatIsPrincipalEoriRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -182,14 +184,14 @@ class PrincipalNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, principalNameRoute)
+        FakeRequest(POST, whatIsPrincipalEoriRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

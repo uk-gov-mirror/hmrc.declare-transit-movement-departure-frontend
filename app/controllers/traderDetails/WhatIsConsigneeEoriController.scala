@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import controllers.actions._
-import forms.ConsignorEoriFormProvider
+import forms.WhatIsConsigneeEoriFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.ConsignorEoriPage
+import pages.WhatIsConsigneeEoriPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,14 +32,14 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorEoriController @Inject()(
+class WhatIsConsigneeEoriController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
                                        navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
-                                       formProvider: ConsignorEoriFormProvider,
+                                       formProvider: WhatIsConsigneeEoriFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
@@ -49,7 +49,7 @@ class ConsignorEoriController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsignorEoriPage) match {
+      val preparedForm = request.userAnswers.get(WhatIsConsigneeEoriPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -60,7 +60,7 @@ class ConsignorEoriController @Inject()(
         "mode" -> mode
       )
 
-      renderer.render("consignorEori.njk", json).map(Ok(_))
+      renderer.render("whatIsConsigneeEori.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -75,13 +75,13 @@ class ConsignorEoriController @Inject()(
             "mode" -> mode
           )
 
-          renderer.render("consignorEori.njk", json).map(BadRequest(_))
+          renderer.render("whatIsConsigneeEori.njk", json).map(BadRequest(_))
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorEoriPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatIsConsigneeEoriPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ConsignorEoriPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhatIsConsigneeEoriPage, mode, updatedAnswers))
       )
   }
 }

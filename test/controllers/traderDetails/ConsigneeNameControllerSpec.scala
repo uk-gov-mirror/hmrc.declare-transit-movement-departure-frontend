@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import forms.ConsigneeNameFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -172,7 +173,7 @@ class ConsigneeNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -189,7 +190,7 @@ class ConsigneeNameControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

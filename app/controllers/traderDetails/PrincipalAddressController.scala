@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import controllers.actions._
+import controllers.{routes => mainRoutes}
 import forms.PrincipalAddressFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
@@ -62,7 +63,7 @@ class PrincipalAddressController @Inject()(
           )
 
           renderer.render("principalAddress.njk", json).map(Ok(_))
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
   }
 
@@ -90,7 +91,7 @@ class PrincipalAddressController @Inject()(
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(PrincipalAddressPage, mode, updatedAnswers))
             )
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
   }
 }

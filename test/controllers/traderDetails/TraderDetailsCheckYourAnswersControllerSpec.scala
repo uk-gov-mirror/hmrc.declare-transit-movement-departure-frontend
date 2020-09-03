@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import base.SpecBase
 import matchers.JsonMatchers

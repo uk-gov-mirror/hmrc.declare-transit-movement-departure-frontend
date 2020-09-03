@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import base.SpecBase
-import forms.WhatIsPrincipalEoriFormProvider
+import controllers.{routes => mainRoutes}
+import forms.IsConsignorEoriKnownFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.WhatIsPrincipalEoriPage
+import pages.IsConsignorEoriKnownPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -33,21 +34,20 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class IsConsignorEoriKnownControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new WhatIsPrincipalEoriFormProvider()
+  val formProvider = new IsConsignorEoriKnownFormProvider()
   val form = formProvider()
-  private val validEori    = "AB123456789012345"
 
-  lazy val whatIsPrincipalEoriRoute = routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url
+  lazy val isConsignorEoriKnownRoute = routes.IsConsignorEoriKnownController.onPageLoad(lrn, NormalMode).url
 
-  "WhatIsPrincipalEori Controller" - {
+  "IsConsignorEoriKnown Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -55,7 +55,7 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, whatIsPrincipalEoriRoute)
+      val request = FakeRequest(GET, isConsignorEoriKnownRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -68,10 +68,11 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(form("value"))
       )
 
-      templateCaptor.getValue mustEqual "whatIsPrincipalEori.njk"
+      templateCaptor.getValue mustEqual "isConsignorEoriKnown.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -82,9 +83,9 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(WhatIsPrincipalEoriPage, validEori).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(IsConsignorEoriKnownPage, true).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, whatIsPrincipalEoriRoute)
+      val request = FakeRequest(GET, isConsignorEoriKnownRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -94,15 +95,16 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> validEori))
+      val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"   -> filledForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(filledForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "whatIsPrincipalEori.njk"
+      templateCaptor.getValue mustEqual "isConsignorEoriKnown.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -123,12 +125,13 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
           .build()
 
       val request =
-        FakeRequest(POST, whatIsPrincipalEoriRoute)
-          .withFormUrlEncodedBody(("value", validEori))
+        FakeRequest(POST, isConsignorEoriKnownRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -140,7 +143,7 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, whatIsPrincipalEoriRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, isConsignorEoriKnownRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -152,12 +155,13 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"   -> boundForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(boundForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "whatIsPrincipalEori.njk"
+      templateCaptor.getValue mustEqual "isConsignorEoriKnown.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -167,13 +171,13 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, whatIsPrincipalEoriRoute)
+      val request = FakeRequest(GET, isConsignorEoriKnownRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -183,14 +187,14 @@ class WhatIsPrincipalEoriControllerSpec extends SpecBase with MockitoSugar with 
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, whatIsPrincipalEoriRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, isConsignorEoriKnownRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

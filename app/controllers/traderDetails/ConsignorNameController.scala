@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import controllers.actions._
-import forms.AddConsigneeFormProvider
+import forms.ConsignorNameFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.AddConsigneePage
+import pages.ConsignorNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddConsigneeController @Inject()(
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: Navigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalActionProvider,
-    requireData: DataRequiredAction,
-    formProvider: AddConsigneeFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    renderer: Renderer
+class ConsignorNameController @Inject()(
+                                       override val messagesApi: MessagesApi,
+                                       sessionRepository: SessionRepository,
+                                       navigator: Navigator,
+                                       identify: IdentifierAction,
+                                       getData: DataRetrievalActionProvider,
+                                       requireData: DataRequiredAction,
+                                       formProvider: ConsignorNameFormProvider,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
@@ -49,19 +49,18 @@ class AddConsigneeController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddConsigneePage) match {
+      val preparedForm = request.userAnswers.get(ConsignorNamePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
+        "form" -> preparedForm,
+        "lrn"  -> lrn,
+        "mode" -> mode
       )
 
-      renderer.render("addConsignee.njk", json).map(Ok(_))
+      renderer.render("consignorName.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -71,19 +70,18 @@ class AddConsigneeController @Inject()(
         formWithErrors => {
 
           val json = Json.obj(
-            "form"   -> formWithErrors,
-            "mode"   -> mode,
-            "lrn"    -> lrn,
-            "radios" -> Radios.yesNo(formWithErrors("value"))
+            "form" -> formWithErrors,
+            "lrn"  -> lrn,
+            "mode" -> mode
           )
 
-          renderer.render("addConsignee.njk", json).map(BadRequest(_))
+          renderer.render("consignorName.njk", json).map(BadRequest(_))
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConsigneePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddConsigneePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(ConsignorNamePage, mode, updatedAnswers))
       )
   }
 }

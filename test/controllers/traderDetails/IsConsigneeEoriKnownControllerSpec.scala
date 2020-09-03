@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.traderDetails
 
 import base.SpecBase
-import forms.AddConsigneeFormProvider
+import controllers.{routes => mainRoutes}
+import forms.IsConsigneeEoriKnownFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
@@ -25,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddConsigneePage
+import pages.IsConsigneeEoriKnownPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,16 +38,16 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class IsConsigneeEoriKnownControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new AddConsigneeFormProvider()
+  val formProvider = new IsConsigneeEoriKnownFormProvider()
   val form = formProvider()
 
-  lazy val addConsigneeRoute = routes.AddConsigneeController.onPageLoad(lrn, NormalMode).url
+  lazy val isConsigneeEoriKnownRoute = routes.IsConsigneeEoriKnownController.onPageLoad(lrn, NormalMode).url
 
-  "AddConsignee Controller" - {
+  "IsConsigneeEoriKnown Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -54,7 +55,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with Nunjuck
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, addConsigneeRoute)
+      val request = FakeRequest(GET, isConsigneeEoriKnownRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -71,7 +72,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with Nunjuck
         "radios" -> Radios.yesNo(form("value"))
       )
 
-      templateCaptor.getValue mustEqual "addConsignee.njk"
+      templateCaptor.getValue mustEqual "isConsigneeEoriKnown.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -82,9 +83,9 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with Nunjuck
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddConsigneePage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(IsConsigneeEoriKnownPage, true).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, addConsigneeRoute)
+      val request = FakeRequest(GET, isConsigneeEoriKnownRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -103,7 +104,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with Nunjuck
         "radios" -> Radios.yesNo(filledForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "addConsignee.njk"
+      templateCaptor.getValue mustEqual "isConsigneeEoriKnown.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -124,7 +125,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with Nunjuck
           .build()
 
       val request =
-        FakeRequest(POST, addConsigneeRoute)
+        FakeRequest(POST, isConsigneeEoriKnownRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -142,7 +143,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with Nunjuck
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, addConsigneeRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, isConsigneeEoriKnownRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -160,7 +161,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with Nunjuck
         "radios" -> Radios.yesNo(boundForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "addConsignee.njk"
+      templateCaptor.getValue mustEqual "isConsigneeEoriKnown.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -170,13 +171,13 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with Nunjuck
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, addConsigneeRoute)
+      val request = FakeRequest(GET, isConsigneeEoriKnownRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -186,14 +187,14 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar with Nunjuck
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, addConsigneeRoute)
+        FakeRequest(POST, isConsigneeEoriKnownRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
