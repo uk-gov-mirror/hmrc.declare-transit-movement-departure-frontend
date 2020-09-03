@@ -18,19 +18,16 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import models.CountryList
+import models.reference.Country
 import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class PrincipalNameFormProvider @Inject() extends Mappings {
+class NationalityAtDepartureFormProvider @Inject() extends Mappings {
 
-  val principalNameRegex: String = "^[a-zA-Z0-9 ]*$"
-  val maxLengthPrincipalName = 35
-
-  def apply(): Form[String] =
+  def apply(countryList: CountryList): Form[Country] =
     Form(
-      "value" -> text("principalName.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLengthPrincipalName, "principalName.error.length"),
-          regexp(principalNameRegex, "principalName.error.invalidCharacters"),
-        )))
+      "value" -> text("nationalityAtDeparture.error.required")
+        .verifying("nationalityAtDeparture.error.required", value => countryList.fullList.exists(_.code.code == value))
+        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
+    )
 }

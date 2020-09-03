@@ -26,13 +26,46 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def consigneeAddress: Option[Row] = userAnswers.get(ConsigneeAddressPage) map {
+  def nationalityAtDeparture: Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
     answer =>
       Row(
-        key     = Key(msg"consigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2}"),
+        key     = Key(msg"nationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
         actions = List(
           Action(
+            content            = msg"site.edit",
+            href               = routes.NationalityAtDepartureController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityAtDeparture.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def idAtDeparture: Option[Row] = userAnswers.get(IdAtDeparturePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"idAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.IdAtDepartureController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idAtDeparture.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def consigneeAddress: Option[Row] = userAnswers.get(ConsigneeAddressPage) map {
+    answer =>
+      val address =   Html(Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+        .mkString("<br>"))
+      Row(
+        key     = Key(msg"consigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(address),
+        actions = List(
+          Action(
+
             content            = msg"site.edit",
             href               = routes.ConsigneeAddressController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consigneeAddress.checkYourAnswersLabel"))
@@ -43,9 +76,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def principalAddress: Option[Row] = userAnswers.get(PrincipalAddressPage) map {
     answer =>
+      val address =   Html(Seq(answer.numberAndStreet, answer.town, answer.postcode)
+        .mkString("<br>"))
       Row(
         key     = Key(msg"principalAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.numberAndStreet} ${answer.town} ${answer.postcode}"),
+        value   = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -133,9 +168,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def consignorAddress: Option[Row] = userAnswers.get(ConsignorAddressPage) map {
     answer =>
+   val address =   Html(Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+        .mkString("<br>"))
+
       Row(
         key     = Key(msg"consignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.AddressLine1} ${answer.AddressLine2} ${answer.AddressLine3} ${answer.country}"),
+        value   = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",

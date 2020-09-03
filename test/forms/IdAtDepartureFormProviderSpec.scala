@@ -20,15 +20,16 @@ import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
+class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "principalName.error.required"
-  val lengthKey = "principalName.error.length"
-  val maxLength = 35
-  val invalidCharacters = "principalName.error.invalidCharacters"
-  val principalNameRegex: String = "^[a-zA-Z0-9 ]*$"
+  val requiredKey = "idAtDeparture.error.required"
+  val lengthKey = "idAtDeparture.error.length"
+  val maxLength = 27
+  val idRegex: String = "^[a-zA-Z0-9]*$"
+  val invalidCharacters = "idAtDeparture.error.invalid"
 
-  val form = new PrincipalNameFormProvider()()
+
+  val form = new IdAtDepartureFormProvider()()
 
   ".value" - {
 
@@ -52,14 +53,13 @@ class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-
-    "must not bind strings that do not match the principal eori name regex" in {
+    "must not bind strings that do not match the Idregex" in {
 
       val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(principalNameRegex)))
+        List(FormError(fieldName, invalidCharacters, Seq(idRegex)))
 
       val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(principalNameRegex))
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(idRegex))
       }
 
       forAll(genInvalidString) { invalidString =>

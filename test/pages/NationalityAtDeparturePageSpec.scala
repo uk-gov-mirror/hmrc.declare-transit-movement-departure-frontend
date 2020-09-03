@@ -16,24 +16,18 @@
 
 package pages
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import models.reference.{Country, CountryCode}
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
 
-case object AddConsigneePage extends QuestionPage[Boolean] {
+class NationalityAtDeparturePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "NationalityAtDeparturePage" - {
 
-  override def toString: String = "addConsignee"
+    beRetrievable[CountryCode](NationalityAtDeparturePage)
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some (false) => userAnswers.remove(ConsigneeNamePage)
-        .flatMap(_.remove(ConsigneeAddressPage))
-        .flatMap(_.remove(WhatIsConsigneeEoriPage))
-        .flatMap(_.remove(IsConsigneeEoriKnownPage))
-      case _ => super.cleanup(value, userAnswers)
-    }
+    beSettable[CountryCode](NationalityAtDeparturePage)
+
+    beRemovable[CountryCode](NationalityAtDeparturePage)
   }
 }
