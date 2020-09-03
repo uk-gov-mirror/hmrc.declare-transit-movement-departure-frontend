@@ -141,16 +141,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
       }
 
-
-      "must go from Country of dispatch page to Office of departure page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            navigator.nextPage(CountryOfDispatchPage, NormalMode, answers)
-              .mustBe(routeDetailsRoute.OfficeOfDepartureController.onPageLoad(answers.id, NormalMode))
-        }
-      }
     }
 
       "Trader Details section" - {
@@ -328,6 +318,28 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           }
         }
 
+      }
+
+      "Route Details section" - {
+        "must go from Country of dispatch page to Office of departure page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+
+              navigator.nextPage(CountryOfDispatchPage, NormalMode, answers)
+                .mustBe(routeDetailsRoute.OfficeOfDepartureController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Office of departure page to destination country page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+
+              navigator.nextPage(OfficeOfDeparturePage, NormalMode, answers)
+                .mustBe(routeDetailsRoute.DestinationCountryController.onPageLoad(answers.id, NormalMode))
+          }
+        }
       }
 
 
