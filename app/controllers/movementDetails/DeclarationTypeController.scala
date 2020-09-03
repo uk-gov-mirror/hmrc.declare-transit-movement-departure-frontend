@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.DeclarationTypeFormProvider
 import javax.inject.Inject
 import models.{DeclarationType, LocalReferenceNumber, Mode}
-import navigation.MovementDetailsNavigator
+import navigation.Navigator
 import pages.DeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationTypeController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
-                                       navigator: MovementDetailsNavigator,
+                                       navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,

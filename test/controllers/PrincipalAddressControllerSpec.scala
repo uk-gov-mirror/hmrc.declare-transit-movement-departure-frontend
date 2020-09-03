@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.PrincipalAddressFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, PrincipalAddress, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
