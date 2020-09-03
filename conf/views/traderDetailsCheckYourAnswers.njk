@@ -5,7 +5,7 @@
 {% from "macros/section.njk"                       import section as sectionMacro %}
 
 {% block pageTitle %}
-  {{ title(messages("traderDetailsCheckYourAnswers.title")) }}
+  {{ title(messages("checkYourAnswers.title")) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -17,7 +17,7 @@
         <h1 class="govuk-heading-xl">
 
          <span class="govuk-caption-xl">{{messages('traderDetails.preHeading')}}</span>
-          {{ messages("movementDetailsCheckYourAnswers.heading") }}
+          {{ messages("checkYourAnswers.heading") }}
 
         </h1>
 
@@ -27,7 +27,7 @@
              {{ sectionMacro(section.sectionTitle, section.rows) }}
         {% endfor %}
 
-        <form action="{{ routes.controllers.MovementDetailsCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
+        <form action="{{ routes.controllers.TraderDetailsCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
             {{ csrf() | safe }}
 
          {{ govukButton({

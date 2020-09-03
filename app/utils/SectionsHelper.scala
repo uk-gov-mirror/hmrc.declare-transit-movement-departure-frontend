@@ -69,7 +69,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
   private def tradersDetailsSection: SectionDetails = {
     val startPage: String = routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
-    val cyaPageAndStatus: (String, Status) = (routes.TraderDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
+    val cyaPageAndStatus: (String, Status) = (routes.TraderDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
     val (page, status) = getIncompletePage(startPage, traderDetailsPage).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.tradersDetails", page, status)

@@ -43,8 +43,7 @@ class MovementDetailsCheckYourAnswersController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         val sections: Seq[Section] = createSections(request.userAnswers)
-        val
-        json = Json.obj("lrn" -> lrn,
+        val json = Json.obj("lrn" -> lrn,
           "sections" -> Json.toJson(sections)
         )
 
