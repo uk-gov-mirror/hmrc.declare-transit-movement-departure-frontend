@@ -85,8 +85,10 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "postcode"
     val requiredKey = "principalAddress.error.postcode.required"
     val lengthKey = "principalAddress.error.postcode.length"
-    val invalidKey = "principalAddress.error.postcode.invalid"
-    val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
+    val invalidFormatKey = "principalAddress.error.postcode.invalidFormat"
+    val invalidCharactersKey = "principalAddress.error.postcode.invalidCharacters"
+    val validPostcodeCharactersRegex : String = "^[A-Z0-9]*$"
+    val postCodeRegex: String = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
     val maxLength = 9
 
     behave like fieldThatBindsValidData(
@@ -111,13 +113,13 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings that do not match postcode regex" in {
 
       val expectedError =
-        List(FormError(fieldName, invalidKey, Seq(postCodeRegex)))
+        List(FormError(fieldName, invalidFormatKey, Seq(principalName)))
 
       val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
+        alphaNumericWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
       }
 
       forAll(genInvalidString) { invalidString =>
@@ -125,5 +127,21 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
         result.errors mustBe expectedError
       }
     }
+
+    "must not bind strings that do not match valid postcode characters regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidFormatKey, Seq(principalName)))
+
+      val genInvalidString: Gen[String] = {
+        alphaNumericWithMaxLength(maxLength) suchThat (!_.matches(validPostcodeCharactersRegex))
+      }
+
+      forAll(genInvalidString) { invalidString =>
+        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors mustBe expectedError
+      }
+    }
+
   }
 }
