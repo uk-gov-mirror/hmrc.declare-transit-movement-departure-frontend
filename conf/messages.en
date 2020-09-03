@@ -263,7 +263,7 @@ principalAddress.error.numberAndStreet.length = Number and street must be 35 cha
 principalAddress.error.town.length = Town must be 35 characters or less
 principalAddress.error.postcode.length = Postcode must be 9 characters or less
 principalAddress.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
-principalAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z and numbers 0 to 9
+principalAddress.error.postcode.invalidCharacters = The postcode of {0}’s address must only include letters a to z and numbers 0 to 9
 
 addConsignor.title = Do you need to add a consignor?
 addConsignor.heading = Do you need to add a consignor?

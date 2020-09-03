@@ -79,6 +79,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     )
   }
 
+
   ".postcode" - {
 
     val fieldName = "postcode"
