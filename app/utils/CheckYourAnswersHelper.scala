@@ -27,6 +27,36 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def nationalityAtDeparture: Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"nationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.NationalityAtDepartureController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityAtDeparture.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def idAtDeparture: Option[Row] = userAnswers.get(IdAtDeparturePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"idAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.IdAtDepartureController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idAtDeparture.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def consigneeAddress: Option[Row] = userAnswers.get(ConsigneeAddressPage) map {
     answer =>
       val address =   Html(Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
