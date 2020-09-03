@@ -55,6 +55,7 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 movementDetails.preHeading = Movement details
 traderDetails.preHeading = Trader’s details
 routeDetails.preHeading = Route details
+transportDetails.preHeading = Transport details
 
 postcode = Postcode
 postcodeExample = Like, AB1 1AB.
@@ -369,3 +370,10 @@ consigneeAddress.error.Addressline3.length = Address line 3 must be 35 character
 consigneeAddress.error.line1.invalid= The first line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 consigneeAddress.error.line2.invalid= The second line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 consigneeAddress.error.line3.invalid= The third line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+
+idAtDeparture.title = What is the name, registration or reference of the vehicle at departure?
+idAtDeparture.heading = What is the name, registration or reference of the vehicle at departure?
+idAtDeparture.checkYourAnswersLabel = Name, registration or reference of the vehicle at departure
+idAtDeparture.error.required = Enter the name, registration or reference of the vehicle at departure
+idAtDeparture.error.length = The name, registration or reference of the vehicle at departure must be 27 characters or less
+idAtDeparture.error.invalid = The name, registration or reference of the vehicle at departure must only include letters a to z and numbers 0 to 9
