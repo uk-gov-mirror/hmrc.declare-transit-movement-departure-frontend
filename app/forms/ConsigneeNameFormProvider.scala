@@ -26,6 +26,7 @@ class ConsigneeNameFormProvider @Inject() extends Mappings {
   val consigneeNameRegex: String = "^[a-zA-Z0-9 ]*$"
   val maxLengthConsigneeName = 35
 
+
   def apply(): Form[String] =
     Form(
       "value" -> text("consigneeName.error.required")
