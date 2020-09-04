@@ -346,6 +346,11 @@ officeOfDeparture.error.required = Select the office of departure
 officeOfDeparture.hintText = Give the office location or code. For example, Dover or GB000060.
 officeOfDeparture.label = This is the Customs office where the transit movement starts.
 
+destinationCountry.title = What is the destination country?
+destinationCountry.heading = What is the destination country?
+destinationCountry.checkYourAnswersLabel = Destination country
+destinationCountry.label = This is the country where the transit movement is ending.
+destinationCountry.error.required = Select the destination country
 
 consigneeAddress.title = What is the address of the consignee
 consigneeAddress.heading = What is {0}’s address?

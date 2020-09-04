@@ -37,4 +37,9 @@ class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClie
     val serviceUrl = s"${config.referenceDataUrl}/countries-full-list"
     http.GET[Seq[Country]](serviceUrl).map(CountryList(_))
   }
+
+  def getTransitCountryList()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CountryList] = {
+    val serviceUrl = s"${config.referenceDataUrl}/transit-countries"
+    http.GET[Seq[Country]](serviceUrl).map(CountryList(_))
+  }
 }
