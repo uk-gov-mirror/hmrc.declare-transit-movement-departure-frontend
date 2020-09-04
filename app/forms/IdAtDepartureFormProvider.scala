@@ -31,7 +31,8 @@ class IdAtDepartureFormProvider @Inject() extends Mappings {
       "value" -> text("idAtDeparture.error.required")
         .verifying(StopOnFirstFail[String](
           maxLength(idMaxLength, "idAtDeparture.error.length"),
-          regexp(idRegex, "idAtDeparture.error.invalid")
-        ))
-    )
+          regexp(idRegex, "idAtDeparture.error.invalidCharacters"),
+        )))
 }
+
+

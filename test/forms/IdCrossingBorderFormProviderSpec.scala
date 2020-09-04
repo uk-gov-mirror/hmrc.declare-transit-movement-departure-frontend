@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
@@ -24,7 +25,8 @@ class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "idCrossingBorder.error.required"
   val lengthKey = "idCrossingBorder.error.length"
   val maxLength = 27
-
+  val invalidCharacters = "idCrossingBorder.error.invalidCharacters"
+  val idRegex: String = "^[a-zA-Z0-9]*$"
   val form = new IdCrossingBorderFormProvider()()
 
   ".value" - {
@@ -49,5 +51,20 @@ class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the id regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidCharacters, Seq(idRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(idRegex))
+      }
+
+      forAll(genInvalidString) { invalidString =>
+        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors mustBe expectedError
+      }
+    }
   }
 }
