@@ -289,7 +289,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.IsPrincipalEoriKnownController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"isPrincipalEoriKnown.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"isPrincipalEoriKnown.checkYourAnswersLabel")),
+            attributes = Map("id" -> s"""change-is-principal-eori-known""")
           )
         )
       )
