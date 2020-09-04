@@ -376,3 +376,8 @@ nationalityAtDeparture.title = What is the nationality at departure?
 nationalityAtDeparture.heading = What is the nationality at departure?
 nationalityAtDeparture.checkYourAnswersLabel = What is the nationality at departure?
 nationalityAtDeparture.error.required = Enter the nationality at departure
+
+changeAtBorder.title = Will these details change at the border?
+changeAtBorder.heading = Will these details change at the border?
+changeAtBorder.checkYourAnswersLabel = Will these details change at the border?
+changeAtBorder.error.required = Select yes if these details will change at the border

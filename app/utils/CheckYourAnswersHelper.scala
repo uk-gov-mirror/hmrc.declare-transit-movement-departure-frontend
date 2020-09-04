@@ -27,6 +27,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def changeAtBorder: Option[Row] = userAnswers.get(ChangeAtBorderPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"changeAtBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ChangeAtBorderController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeAtBorder.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def nationalityAtDeparture: Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
     answer =>
       Row(
