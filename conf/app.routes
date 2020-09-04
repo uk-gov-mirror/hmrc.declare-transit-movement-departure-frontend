@@ -71,8 +71,8 @@ POST       /:lrn/trader-details/change-is-principal-eori-known                  
 
 GET        /:lrn/trader-details/principal-name                        controllers.traderDetails.PrincipalNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/trader-details/principal-name                        controllers.traderDetails.PrincipalNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/change-trader-details/principal-name                 controllers.traderDetails.PrincipalNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/change-trader-details/principal-name                 controllers.traderDetails.PrincipalNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/trader-details/change-principal-name                 controllers.traderDetails.PrincipalNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/trader-details/change-principal-name                 controllers.traderDetails.PrincipalNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/trader-details/what-is-principal-eori                        controllers.traderDetails.WhatIsPrincipalEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/trader-details/what-is-principal-eori                        controllers.traderDetails.WhatIsPrincipalEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -168,6 +168,11 @@ GET        /:lrn/route/destination-country                         controllers.r
 POST       /:lrn/route/destination-country                         controllers.routeDetails.DestinationCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/route/change-destination-country                  controllers.routeDetails.DestinationCountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/route/change-destination-country                  controllers.routeDetails.DestinationCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/change-at-border                        controllers.transportDetails.ChangeAtBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/change-at-border                        controllers.transportDetails.ChangeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/change-change-at-border                  controllers.transportDetails.ChangeAtBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/change-change-at-border                  controllers.transportDetails.ChangeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/transport-details/add-id-at-departure                        controllers.transportDetails.AddIdAtDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/transport-details/add-id-at-departure                        controllers.transportDetails.AddIdAtDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

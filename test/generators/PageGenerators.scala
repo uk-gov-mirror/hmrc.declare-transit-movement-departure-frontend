@@ -30,6 +30,9 @@ trait PageGenerators {
   implicit lazy val arbitraryDestinationCountryPage: Arbitrary[DestinationCountryPage.type] =
     Arbitrary(DestinationCountryPage)
 
+  implicit lazy val arbitraryChangeAtBorderPage: Arbitrary[ChangeAtBorderPage.type] =
+    Arbitrary(ChangeAtBorderPage)
+
   implicit lazy val arbitraryNationalityAtDeparturePage: Arbitrary[NationalityAtDeparturePage.type] =
     Arbitrary(NationalityAtDeparturePage)
 
