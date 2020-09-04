@@ -20,16 +20,14 @@ import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
+class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "idAtDeparture.error.required"
-  val lengthKey = "idAtDeparture.error.length"
+  val requiredKey = "idCrossingBorder.error.required"
+  val lengthKey = "idCrossingBorder.error.length"
   val maxLength = 27
+  val invalidCharacters = "idCrossingBorder.error.invalidCharacters"
   val idRegex: String = "^[a-zA-Z0-9]*$"
-  val invalidCharacters = "idAtDeparture.error.invalidCharacters"
-
-
-  val form = new IdAtDepartureFormProvider()()
+  val form = new IdCrossingBorderFormProvider()()
 
   ".value" - {
 
@@ -68,6 +66,5 @@ class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
         result.errors mustBe expectedError
       }
     }
-
   }
 }
