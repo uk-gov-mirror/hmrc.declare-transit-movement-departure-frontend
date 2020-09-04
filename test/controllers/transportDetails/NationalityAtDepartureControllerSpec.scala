@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transportDetails
 
 import base.SpecBase
-import forms.IdAtDepartureFormProvider
+import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoutes}
+import forms.NationalityAtDepartureFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.reference.{Country, CountryCode}
+import models.{CountryList, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.IdAtDeparturePage
+import pages.NationalityAtDeparturePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,24 +40,42 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class IdAtDepartureControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+
+  val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new IdAtDepartureFormProvider()
-  val form = formProvider()
+  val formProvider = new NationalityAtDepartureFormProvider()
+  private val country = Country(CountryCode("GB"), "United Kingdom")
+  val countries = CountryList(Seq(country))
+  val form = formProvider(countries)
 
-  lazy val idAtDepartureRoute = routes.IdAtDepartureController.onPageLoad(lrn, NormalMode).url
+  lazy val nationalityAtDepartureRoute = routes.NationalityAtDepartureController.onPageLoad(lrn, NormalMode).url
 
-  "IdAtDeparture Controller" - {
+  def jsonCountryList(preSelected: Boolean): Seq[JsObject] = Seq(
+    Json.obj("text" -> "", "value" -> ""),
+    Json.obj("text" -> "United Kingdom", "value" -> "GB", "selected" -> preSelected)
+  )
+
+  override def beforeEach: Unit = {
+    reset(mockReferenceDataConnector)
+    super.beforeEach
+  }
+
+  "NationalityAtDeparture Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, idAtDepartureRoute)
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
+
+      val request = FakeRequest(GET, nationalityAtDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -65,12 +86,14 @@ class IdAtDepartureControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "form" -> form,
+        "lrn" -> lrn,
+        "mode" -> NormalMode,
+        "countries" -> jsonCountryList(preSelected = false),
+        "onSubmitUrl" -> routes.NationalityAtDepartureController.onSubmit(lrn, NormalMode).url
       )
 
-      templateCaptor.getValue mustEqual "idAtDeparture.njk"
+      templateCaptor.getValue mustEqual "nationalityAtDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -81,9 +104,12 @@ class IdAtDepartureControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(IdAtDeparturePage, "answer").success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, idAtDepartureRoute)
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
+      val application = applicationBuilder(userAnswers = emptyUserAnswers.set(NationalityAtDeparturePage, CountryCode("GB")).toOption)
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
+      val request = FakeRequest(GET, nationalityAtDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -93,15 +119,17 @@ class IdAtDepartureControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "GB"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "lrn" -> lrn,
+        "mode" -> NormalMode,
+        "countries" -> jsonCountryList(true),
+        "onSubmitUrl" -> routes.NationalityAtDepartureController.onSubmit(lrn, NormalMode).url
       )
 
-      templateCaptor.getValue mustEqual "idAtDeparture.njk"
+      templateCaptor.getValue mustEqual "nationalityAtDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -112,18 +140,19 @@ class IdAtDepartureControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
           .build()
 
       val request =
-        FakeRequest(POST, idAtDepartureRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, nationalityAtDepartureRoute)
+          .withFormUrlEncodedBody(("value", "GB"))
 
       val result = route(application, request).value
 
@@ -135,11 +164,20 @@ class IdAtDepartureControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
+      val mockSessionRepository = mock[SessionRepository]
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, idAtDepartureRoute).withFormUrlEncodedBody(("value", ""))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(
+          bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      )
+        .build()
+      val request = FakeRequest(POST, nationalityAtDepartureRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -152,11 +190,11 @@ class IdAtDepartureControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       val expectedJson = Json.obj(
         "form" -> boundForm,
-        "lrn"  -> lrn,
+        "lrn" -> lrn,
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "idAtDeparture.njk"
+      templateCaptor.getValue mustEqual "nationalityAtDeparture.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -166,13 +204,13 @@ class IdAtDepartureControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, idAtDepartureRoute)
+      val request = FakeRequest(GET, nationalityAtDepartureRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -182,14 +220,14 @@ class IdAtDepartureControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, idAtDepartureRoute)
+        FakeRequest(POST, nationalityAtDepartureRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

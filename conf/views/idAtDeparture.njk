@@ -27,7 +27,7 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.IdAtDepartureController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.transportDetails.IdAtDepartureController.onSubmit(lrn, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('transportDetails.preHeading')}}</span>
 
           {{ csrf() | safe }}
