@@ -17,8 +17,10 @@
 package navigation
 
 import base.SpecBase
+import controllers.routeDetails.{routes => routeDetailsRoute}
 import controllers.routes
 import controllers.movementDetails.{routes => movementDetailsRoute}
+import controllers.traderDetails.{routes => traderDetailsRoute}
 import generators.Generators
 import pages._
 import models._
@@ -146,7 +148,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
 
             navigator.nextPage(CountryOfDispatchPage, NormalMode, answers)
-              .mustBe(routes.OfficeOfDepartureController.onPageLoad(answers.id, NormalMode))
+              .mustBe(routeDetailsRoute.OfficeOfDepartureController.onPageLoad(answers.id, NormalMode))
         }
       }
     }
@@ -160,7 +162,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(IsPrincipalEoriKnownPage, true).success.value
               navigator.nextPage(IsPrincipalEoriKnownPage, NormalMode, updatedAnswers)
-                .mustBe(routes.WhatIsPrincipalEoriController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.WhatIsPrincipalEoriController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -171,7 +173,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(IsPrincipalEoriKnownPage, false).success.value
               navigator.nextPage(IsPrincipalEoriKnownPage, NormalMode, updatedAnswers)
-                .mustBe(routes.PrincipalNameController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.PrincipalNameController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -180,7 +182,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator.nextPage(WhatIsPrincipalEoriPage, NormalMode, answers)
-                .mustBe(routes.AddConsignorController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -189,7 +191,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator.nextPage(PrincipalNamePage, NormalMode, answers)
-                .mustBe(routes.PrincipalAddressController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.PrincipalAddressController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -198,7 +200,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator.nextPage(PrincipalAddressPage, NormalMode, answers)
-                .mustBe(routes.AddConsignorController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -209,7 +211,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(AddConsignorPage, true).success.value
               navigator.nextPage(AddConsignorPage, NormalMode, updatedAnswers)
-                .mustBe(routes.IsConsignorEoriKnownController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.IsConsignorEoriKnownController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -220,7 +222,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(AddConsignorPage, false).success.value
               navigator.nextPage(AddConsignorPage, NormalMode, updatedAnswers)
-                .mustBe(routes.AddConsigneeController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.AddConsigneeController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -231,7 +233,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(IsConsignorEoriKnownPage, true).success.value
               navigator.nextPage(IsConsignorEoriKnownPage, NormalMode, updatedAnswers)
-                .mustBe(routes.ConsignorEoriController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.ConsignorEoriController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -242,7 +244,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(IsConsignorEoriKnownPage, false).success.value
               navigator.nextPage(IsConsignorEoriKnownPage, NormalMode, updatedAnswers)
-                .mustBe(routes.ConsignorNameController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.ConsignorNameController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -251,7 +253,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator.nextPage(ConsignorNamePage, NormalMode, answers)
-                .mustBe(routes.ConsignorAddressController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.ConsignorAddressController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -260,7 +262,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator.nextPage(ConsignorAddressPage, NormalMode, answers)
-                .mustBe(routes.AddConsigneeController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.AddConsigneeController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -271,7 +273,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(AddConsigneePage, true).success.value
               navigator.nextPage(AddConsigneePage, NormalMode, updatedAnswers)
-                .mustBe(routes.IsConsigneeEoriKnownController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.IsConsigneeEoriKnownController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -282,7 +284,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(AddConsigneePage, false).success.value
               navigator.nextPage(AddConsigneePage, NormalMode, updatedAnswers)
-                .mustBe(routes.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
 
@@ -293,7 +295,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(IsConsigneeEoriKnownPage, true).success.value
               navigator.nextPage(IsConsigneeEoriKnownPage, NormalMode, updatedAnswers)
-                .mustBe(routes.WhatIsConsigneeEoriController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.WhatIsConsigneeEoriController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -304,7 +306,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(IsConsigneeEoriKnownPage, false).success.value
               navigator.nextPage(IsConsigneeEoriKnownPage, NormalMode, updatedAnswers)
-                .mustBe(routes.ConsigneeNameController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -313,7 +315,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator.nextPage(ConsigneeNamePage, NormalMode, answers)
-                .mustBe(routes.ConsigneeAddressController.onPageLoad(answers.id, NormalMode))
+                .mustBe(traderDetailsRoute.ConsigneeAddressController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -322,7 +324,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator.nextPage(ConsigneeAddressPage, NormalMode, answers)
-                .mustBe(routes.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
 
@@ -404,7 +406,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 .remove(WhatIsPrincipalEoriPage).toOption.value
 
               navigator.nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
-                .mustBe(routes.WhatIsPrincipalEoriController.onPageLoad(answers.id, CheckMode))
+                .mustBe(traderDetailsRoute.WhatIsPrincipalEoriController.onPageLoad(answers.id, CheckMode))
           }
         }
 
@@ -416,7 +418,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 .remove(WhatIsPrincipalEoriPage).toOption.value
 
               navigator.nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
-                .mustBe(routes.PrincipalNameController.onPageLoad(answers.id, CheckMode))
+                .mustBe(traderDetailsRoute.PrincipalNameController.onPageLoad(answers.id, CheckMode))
           }
         }
 
@@ -429,7 +431,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers =
                 answers.set(PrincipalAddressPage, principalAddress).success.value
               navigator.nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
-                .mustBe(routes.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
 
@@ -442,7 +444,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               answers.remove(PrincipalAddressPage).success.value
 
             navigator.nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
-                .mustBe(routes.PrincipalAddressController.onPageLoad(updatedAnswers.id, CheckMode))
+                .mustBe(traderDetailsRoute.PrincipalAddressController.onPageLoad(updatedAnswers.id, CheckMode))
           }
         }
 
@@ -452,7 +454,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
 
                       navigator.nextPage(WhatIsPrincipalEoriPage, CheckMode, answers)
-                        .mustBe(routes.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                        .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
 
@@ -463,7 +465,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedAnswers = answers
                 .set(AddConsignorPage, true).success.value
               navigator.nextPage(AddConsignorPage, CheckMode, updatedAnswers)
-                .mustBe(routes.IsConsignorEoriKnownController.onPageLoad(answers.id, CheckMode))
+                .mustBe(traderDetailsRoute.IsConsignorEoriKnownController.onPageLoad(answers.id, CheckMode))
           }
         }
       }

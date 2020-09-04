@@ -21,7 +21,7 @@ import connectors.ReferenceDataConnector
 import forms.NationalityAtDepartureFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
-import models.{CountryList, NormalMode, UserAnswers}
+import models.{CountryList, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -29,7 +29,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.NationalityAtDeparturePage
 import play.api.inject.bind
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

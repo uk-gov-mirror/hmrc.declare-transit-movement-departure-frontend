@@ -16,7 +16,7 @@
 
 package pages
 
-import models.{ConsignorAddress, RepresentativeCapacity, UserAnswers}
+import models.{ConsignorAddress, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 

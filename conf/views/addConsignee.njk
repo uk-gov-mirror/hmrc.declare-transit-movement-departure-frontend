@@ -27,7 +27,7 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.AddConsigneeController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.traderDetails.AddConsigneeController.onSubmit(lrn, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('traderDetails.preHeading')}}</span>
           {{ csrf() | safe }}
 
