@@ -98,6 +98,11 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
       val result = regexp("""^\d+$""", "error.invalid")("foo")
       result mustEqual Invalid("error.invalid", """^\d+$""")
     }
+
+    "must return Invalid for an input that does not match the expression with the given args" in {
+      val result = regexp("""^\d+$""", "error.invalid", "frank")("foo")
+      result mustEqual Invalid("error.invalid", "frank")
+    }
   }
 
   "maxLength" - {
