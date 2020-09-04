@@ -26,7 +26,7 @@ class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "idAtDeparture.error.length"
   val maxLength = 27
   val idRegex: String = "^[a-zA-Z0-9]*$"
-  val invalidCharacters = "idAtDeparture.error.invalid"
+  val invalidCharacters = "idAtDeparture.error.invalidCharacters"
 
 
   val form = new IdAtDepartureFormProvider()()
@@ -53,7 +53,8 @@ class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-    "must not bind strings that do not match the Idregex" in {
+
+    "must not bind strings that do not match the id regex" in {
 
       val expectedError =
         List(FormError(fieldName, invalidCharacters, Seq(idRegex)))

@@ -17,8 +17,9 @@
 package utils
 
 import base.SpecBase
-import controllers.routes
 import controllers.movementDetails.{routes => movementDetailsRoutes}
+import controllers.routeDetails.{routes => routeDetailsRoutes}
+import controllers.traderDetails.{routes => traderDetailsRoutes}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{DeclarationType, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails}
 import pages._
@@ -79,7 +80,7 @@ class SectionsHelperSpec extends SpecBase {
       "must return trader's details section with status as NotStarted" in {
         val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
-        val url = routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
+        val url = traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
         val sectionName = "declarationSummary.section.tradersDetails"
         val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
@@ -92,7 +93,7 @@ class SectionsHelperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers.set(IsPrincipalEoriKnownPage,true).success.value
         val sectionsHelper = new SectionsHelper(userAnswers)
 
-        val url = routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url
+        val url = traderDetailsRoutes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url
         val sectionName = "declarationSummary.section.tradersDetails"
         val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, InProgress))
 
@@ -114,7 +115,7 @@ class SectionsHelperSpec extends SpecBase {
 
         val sectionsHelper = new SectionsHelper(userAnswers)
 
-        val url = routes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        val url = traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
         val sectionName = "declarationSummary.section.tradersDetails"
         val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
 
@@ -128,9 +129,9 @@ class SectionsHelperSpec extends SpecBase {
       "must return routes section with status as NotStarted" in {
         val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
-        val url = routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
-        val sectionName = "declarationSummary.section.routes"
-        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+      val url = routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
+      val sectionName = "declarationSummary.section.routes"
+      val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
         val result = sectionsHelper.getSections
 
@@ -142,9 +143,9 @@ class SectionsHelperSpec extends SpecBase {
   private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
      val sections: Seq[SectionDetails] = Seq(
       SectionDetails("declarationSummary.section.movementDetails",movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.routes", routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url, NotStarted),
+      SectionDetails("declarationSummary.section.routes", routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.transport", "", NotStarted),
-      SectionDetails("declarationSummary.section.tradersDetails",routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url, NotStarted),
+      SectionDetails("declarationSummary.section.tradersDetails",traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted),
       SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
     )
