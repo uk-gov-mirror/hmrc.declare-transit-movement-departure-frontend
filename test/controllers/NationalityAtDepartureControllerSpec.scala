@@ -163,10 +163,19 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
+      val mockSessionRepository = mock[SessionRepository]
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(
+          bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      )
+        .build()
       val request = FakeRequest(POST, nationalityAtDepartureRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
