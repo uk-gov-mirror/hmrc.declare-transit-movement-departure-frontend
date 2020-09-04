@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import pages.behaviours.PageBehaviours
 
-class IdAtDepartureFormProvider @Inject() extends Mappings {
 
-  val idRegex: String = "^[a-zA-Z0-9]*$"
-  val idMaxLength = 27
+class IdCrossingBorderPageSpec extends PageBehaviours {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("idAtDeparture.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(idMaxLength, "idAtDeparture.error.length"),
-          regexp(idRegex, "idAtDeparture.error.invalidCharacters"),
-        )))
+  "IdCrossingBorderPage" - {
+
+    beRetrievable[String](IdCrossingBorderPage)
+
+    beSettable[String](IdCrossingBorderPage)
+
+    beRemovable[String](IdCrossingBorderPage)
+  }
 }
-
-

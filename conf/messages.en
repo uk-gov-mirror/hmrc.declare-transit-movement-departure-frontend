@@ -375,9 +375,16 @@ idAtDeparture.heading = What is the name, registration or reference of the vehic
 idAtDeparture.checkYourAnswersLabel = Name, registration or reference of the vehicle at departure
 idAtDeparture.error.required = Enter the name, registration or reference of the vehicle at departure
 idAtDeparture.error.length = The name, registration or reference of the vehicle at departure must be 27 characters or less
-idAtDeparture.error.invalid = The name, registration or reference of the vehicle at departure must only include letters a to z and numbers 0 to 9
+idAtDeparture.error.invalidCharacters = The name, registration or reference of the vehicle at departure must only include letters a to z and numbers 0 to 9
 
 nationalityAtDeparture.title = What is the nationality at departure?
 nationalityAtDeparture.heading = What is the nationality at departure?
 nationalityAtDeparture.checkYourAnswersLabel = What is the nationality at departure?
 nationalityAtDeparture.error.required = Enter the nationality at departure
+
+idCrossingBorder.title = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.heading = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.checkYourAnswersLabel = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.error.required = Enter the name, registration or reference of the vehicle crossing the border
+idCrossingBorder.error.length = The name, registration or reference of the vehicle crossing the border must be 27 characters or less
+idCrossingBorder.error.invalidCharacters = The name, registration or reference of the vehicle crossing the border must only include letters a to z and numbers 0 to 9

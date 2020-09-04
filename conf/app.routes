@@ -163,3 +163,8 @@ GET        /:lrn/transport-details/nationality-at-departure                     
 POST       /:lrn/transport-details/nationality-at-departure                        controllers.NationalityAtDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/transport-details/change-nationality-at-departure                  controllers.NationalityAtDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/transport-details/change-nationality-at-departure                controllers.NationalityAtDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/id-crossing-border                        controllers.IdCrossingBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/id-crossing-border                        controllers.IdCrossingBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/change-id-crossing-border                  controllers.IdCrossingBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/change-id-crossing-border                 controllers.IdCrossingBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
