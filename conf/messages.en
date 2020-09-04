@@ -391,3 +391,8 @@ idCrossingBorder.checkYourAnswersLabel = What is the name, registration or refer
 idCrossingBorder.error.required = Enter the name, registration or reference of the vehicle crossing the border
 idCrossingBorder.error.length = The name, registration or reference of the vehicle crossing the border must be 27 characters or less
 idCrossingBorder.error.invalidCharacters = The name, registration or reference of the vehicle crossing the border must only include letters a to z and numbers 0 to 9
+
+addIdAtDeparture.title = addIdAtDeparture
+addIdAtDeparture.heading = addIdAtDeparture
+addIdAtDeparture.checkYourAnswersLabel = addIdAtDeparture
+addIdAtDeparture.error.required = Select yes if addIdAtDeparture
