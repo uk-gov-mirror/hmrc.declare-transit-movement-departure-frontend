@@ -16,7 +16,7 @@
 
 package pages
 
-import models.reference.{Country, CountryCode}
+import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
 
