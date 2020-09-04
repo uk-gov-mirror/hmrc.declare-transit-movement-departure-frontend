@@ -59,6 +59,23 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
+  def destinationCountry(codeList: CountryList): Option[Row] = userAnswers.get(DestinationCountryPage) map {
+    answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
+      Row(
+        key     = Key(msg"destinationCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$countryName"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.DestinationCountryController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"destinationCountry.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def lrn: LocalReferenceNumber = userAnswers.id
 }
 

@@ -16,12 +16,14 @@
 
 package utils
 
+
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
+import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
-import pages.{RepresentativeNamePage, _}
+import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
 
 class SectionsHelper(userAnswers: UserAnswers) {
 
@@ -68,12 +70,13 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private def tradersDetailsSection: SectionDetails = {
-    val startPage: String = routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
-    val cyaPageAndStatus: (String, Status) = (movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed) //TODO specific check your answers
+    val startPage: String = traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
     val (page, status) = getIncompletePage(startPage, traderDetailsPage).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.tradersDetails", page, status)
   }
+
   private def goodsSummarySection: SectionDetails = {
     SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted)
   }
@@ -89,10 +92,12 @@ class SectionsHelper(userAnswers: UserAnswers) {
   private val movementDetailsPages: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
 
-    val declareForSomeoneElseDiversionPages = if(userAnswers.get(DeclarationForSomeoneElsePage).contains(true)) {
+    val declareForSomeoneElseDiversionPages = if (userAnswers.get(DeclarationForSomeoneElsePage).contains(true)) {
       Seq(userAnswers.get(RepresentativeNamePage) -> movementDetailsRoutes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url,
         userAnswers.get(RepresentativeCapacityPage) -> movementDetailsRoutes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url)
-    } else {Seq.empty}
+    } else {
+      Seq.empty
+    }
 
     Seq(
       userAnswers.get(DeclarationTypePage) -> movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url,
@@ -107,9 +112,51 @@ class SectionsHelper(userAnswers: UserAnswers) {
   private val traderDetailsPage: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
 
+    val isPrincipalEoriKnowDiversionPages = userAnswers.get(IsPrincipalEoriKnownPage) match {
+      case Some(true) => Seq(userAnswers.get(WhatIsPrincipalEoriPage) -> traderDetailsRoutes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url)
+      case Some(false) =>
+        Seq(userAnswers.get(PrincipalNamePage) -> traderDetailsRoutes.PrincipalNameController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(PrincipalAddressPage) -> traderDetailsRoutes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url)
+      case _ => Seq.empty
+    }
+
+    val isConsignorEoriKnownPage = userAnswers.get(IsConsignorEoriKnownPage) match {
+      case Some(true) =>
+        Seq(userAnswers.get(ConsignorEoriPage) -> traderDetailsRoutes.ConsignorEoriController.onPageLoad(lrn, NormalMode).url)
+      case Some(false) =>
+        Seq(userAnswers.get(ConsignorNamePage) -> traderDetailsRoutes.ConsignorNameController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(ConsignorAddressPage) -> traderDetailsRoutes.ConsignorAddressController.onPageLoad(lrn, NormalMode).url)
+      case _ => Seq.empty
+    }
+
+    val isConsigneeEoriKnownPage = userAnswers.get(IsConsigneeEoriKnownPage) match {
+      case Some(true) => Seq(userAnswers.get(WhatIsConsigneeEoriPage) -> traderDetailsRoutes.WhatIsConsigneeEoriController.onPageLoad(lrn, NormalMode).url)
+      case Some(false) =>
+        Seq(userAnswers.get(ConsigneeNamePage) -> traderDetailsRoutes.ConsigneeNameController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(ConsigneeAddressPage) -> traderDetailsRoutes.ConsigneeAddressController.onPageLoad(lrn, NormalMode).url)
+      case _ => Seq.empty
+    }
+    val addConsigneeDiversionPage = if (userAnswers.get(AddConsigneePage).contains(true)) {
+      Seq(userAnswers.get(IsConsigneeEoriKnownPage) -> traderDetailsRoutes.IsConsigneeEoriKnownController.onPageLoad(lrn, NormalMode).url)
+
+    } else {
+      Seq.empty
+    }
+
+    val addConsignorPage: Seq[(Option[Boolean], String)] = Seq(userAnswers.get(AddConsignorPage) -> traderDetailsRoutes.AddConsignorController.onPageLoad(lrn, NormalMode).url)
+    val addConsigneePage: Seq[(Option[Boolean], String)] = Seq(userAnswers.get(AddConsigneePage) -> traderDetailsRoutes.AddConsigneeController.onPageLoad(lrn, NormalMode).url)
+
+    val addConsignorPageDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(AddConsignorPage).contains(true)) {
+      Seq(userAnswers.get(IsConsignorEoriKnownPage) -> traderDetailsRoutes.IsConsignorEoriKnownController.onPageLoad(lrn, NormalMode).url)
+
+    } else {
+      addConsigneePage
+    }
+
     Seq(
-      userAnswers.get(IsPrincipalEoriKnownPage) -> routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
-    )
+      userAnswers.get(IsPrincipalEoriKnownPage) -> traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
+
+    ) ++ isPrincipalEoriKnowDiversionPages ++ addConsignorPage ++ addConsignorPageDiversionPage ++ isConsignorEoriKnownPage ++ addConsigneePage ++ addConsigneeDiversionPage ++ isConsigneeEoriKnownPage
   }
 
 }

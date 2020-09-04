@@ -23,7 +23,7 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class PrincipalNameFormProvider @Inject() extends Mappings {
 
-  val principalNameRegex: String = "^([a-zA-Z0-9@'><\\/?%&.-_]{1,35})$"
+  val principalNameRegex: String = "^[a-zA-Z0-9 ]*$"
   val maxLengthPrincipalName = 35
 
   def apply(): Form[String] =

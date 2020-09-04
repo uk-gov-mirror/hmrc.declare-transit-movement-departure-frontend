@@ -5,7 +5,7 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 
 {% block pageTitle %}
-  {{ title(messages("movementDetailsCheckYourAnswers.title")) }}
+  {{ title(messages("checkYourAnswers.title")) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -15,7 +15,7 @@
       <div class="govuk-grid-column-two-thirds">
 
         <h1 class="govuk-heading-xl">
-          {{ messages("movementDetailsCheckYourAnswers.heading") }}
+          {{ messages("checkYourAnswers.heading") }}
         </h1>
 
         {% for section in sections %}

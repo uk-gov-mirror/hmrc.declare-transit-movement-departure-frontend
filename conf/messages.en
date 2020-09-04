@@ -55,6 +55,7 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 movementDetails.preHeading = Movement details
 traderDetails.preHeading = Trader’s details
 routeDetails.preHeading = Route details
+transportDetails.preHeading = Transport details
 
 postcode = Postcode
 postcodeExample = Like, AB1 1AB.
@@ -253,22 +254,20 @@ whatIsPrincipalEori.error.invalidFormat = Enter the principal’s EORI number in
 
 principalAddress.title = What is the principal’s address?
 principalAddress.heading = What is {0}’s address?
-principalAddress.country = Country
-principalAddress.checkYourAnswersLabel =  Principal’s address
-
 principalAddress.numberAndStreet = Number and street
 principalAddress.town = Town
 principalAddress.postcode = Postcode
+principalAddress.checkYourAnswersLabel =  Principal’s address
 principalAddress.error.numberAndStreet.required = Enter the number and street of {0}’s address
 principalAddress.error.town.required = Enter the town of {0}’s address
 principalAddress.error.postcode.required = Enter the postcode of {0}’s address
 principalAddress.error.numberAndStreet.length = Number and street must be 35 characters or less
 principalAddress.error.town.length = Town must be 35 characters or less
-principalAddress.error.postcode.length = Postcode must be 9 characters or less
 principalAddress.error.numberAndStreet.invalid = The  number and street of {0}'s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
 principalAddress.error.town.invalid = The town of {0}'s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
+principalAddress.error.postcode.length = Postcode must be 9 characters or less
 principalAddress.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
-principalAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z and numbers 0 to 9
+principalAddress.error.postcode.invalidCharacters = The postcode of {0}’s address must only include letters a to z and numbers 0 to 9
 
 addConsignor.title = Do you need to add a consignor?
 addConsignor.heading = Do you need to add a consignor?
@@ -287,12 +286,11 @@ consignorName.checkYourAnswersLabel = What is the consignor’s name?
 consignorName.error.required = Enter the consignor’s name
 consignorName.error.length = Consignor’s name must be 35 characters or less
 consignorName.error.invalid = Consignor’s name must only include letters a to z and numbers 0 to 9 or blank spaces
-
 consignorEori.title = What is the consignor’s EORI number?
 consignorEori.heading = What is the consignor’s EORI number?
 consignorEori.checkYourAnswersLabel = What is the consignor’s EORI number?
 consignorEori.error.required = Enter the consignor's EORI umber
-consignorEori.error.length = Consignor’s Eori number must be 17 characters or less
+consignorEori.error.length = Consignor's Eori number must be 17 characters or less
 consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
 consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
 
@@ -351,6 +349,11 @@ officeOfDeparture.error.required = Select the office of departure
 officeOfDeparture.hintText = Give the office location or code. For example, Dover or GB000060.
 officeOfDeparture.label = This is the Customs office where the transit movement starts.
 
+destinationCountry.title = What is the destination country?
+destinationCountry.heading = What is the destination country?
+destinationCountry.checkYourAnswersLabel = Destination country
+destinationCountry.label = This is the country where the transit movement is ending.
+destinationCountry.error.required = Select the destination country
 
 consigneeAddress.title = What is the address of the consignee
 consigneeAddress.heading = What is {0}’s address?
@@ -369,3 +372,27 @@ consigneeAddress.error.Addressline3.length = Address line 3 must be 35 character
 consigneeAddress.error.line1.invalid= The first line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 consigneeAddress.error.line2.invalid= The second line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 consigneeAddress.error.line3.invalid= The third line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+
+idAtDeparture.title = What is the name, registration or reference of the vehicle at departure?
+idAtDeparture.heading = What is the name, registration or reference of the vehicle at departure?
+idAtDeparture.checkYourAnswersLabel = Name, registration or reference of the vehicle at departure
+idAtDeparture.error.required = Enter the name, registration or reference of the vehicle at departure
+idAtDeparture.error.length = The name, registration or reference of the vehicle at departure must be 27 characters or less
+idAtDeparture.error.invalidCharacters = The name, registration or reference of the vehicle at departure must only include letters a to z and numbers 0 to 9
+
+nationalityAtDeparture.title = What is the nationality at departure?
+nationalityAtDeparture.heading = What is the nationality at departure?
+nationalityAtDeparture.checkYourAnswersLabel = What is the nationality at departure?
+nationalityAtDeparture.error.required = Enter the nationality at departure
+
+idCrossingBorder.title = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.heading = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.checkYourAnswersLabel = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.error.required = Enter the name, registration or reference of the vehicle crossing the border
+idCrossingBorder.error.length = The name, registration or reference of the vehicle crossing the border must be 27 characters or less
+idCrossingBorder.error.invalidCharacters = The name, registration or reference of the vehicle crossing the border must only include letters a to z and numbers 0 to 9
+
+changeAtBorder.title = Will these details change at the border?
+changeAtBorder.heading = Will these details change at the border?
+changeAtBorder.checkYourAnswersLabel = Will these details change at the border?
+changeAtBorder.error.required = Select yes if these details will change at the border
