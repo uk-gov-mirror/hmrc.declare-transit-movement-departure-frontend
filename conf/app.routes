@@ -71,8 +71,8 @@ POST       /:lrn/trader-details/change-is-principal-eori-known                  
 
 GET        /:lrn/trader-details/principal-name                        controllers.traderDetails.PrincipalNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/trader-details/principal-name                        controllers.traderDetails.PrincipalNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/change-trader-details/principal-name                 controllers.traderDetails.PrincipalNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/change-trader-details/principal-name                 controllers.traderDetails.PrincipalNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/trader-details/change-principal-name                 controllers.traderDetails.PrincipalNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/trader-details/change-principal-name                 controllers.traderDetails.PrincipalNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/trader-details/what-is-principal-eori                        controllers.traderDetails.WhatIsPrincipalEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/trader-details/what-is-principal-eori                        controllers.traderDetails.WhatIsPrincipalEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
