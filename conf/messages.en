@@ -348,7 +348,7 @@ officeOfDeparture.label = This is the Customs office where the transit movement 
 
 destinationCountry.title = What is the destination country?
 destinationCountry.heading = What is the destination country?
-destinationCountry.checkYourAnswersLabel = Country of dispatch
+destinationCountry.checkYourAnswersLabel = Destination country
 destinationCountry.label = This is the country where the transit movement is ending.
 destinationCountry.error.required = Select the destination country
 
