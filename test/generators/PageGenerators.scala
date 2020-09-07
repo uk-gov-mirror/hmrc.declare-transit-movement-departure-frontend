@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryModeCrossingBorderPage: Arbitrary[ModeCrossingBorderPage.type] =
+    Arbitrary(ModeCrossingBorderPage)
+
   implicit lazy val arbitraryInlandModePage: Arbitrary[InlandModePage.type] =
     Arbitrary(InlandModePage)
 

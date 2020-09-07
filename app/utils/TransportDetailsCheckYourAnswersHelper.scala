@@ -24,6 +24,20 @@ import uk.gov.hmrc.viewmodels._
 
 class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def modeCrossingBorder: Option[Row] = userAnswers.get(ModeCrossingBorderPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"modeCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ModeCrossingBorderController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeCrossingBorder.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def inlandMode: Option[Row] = userAnswers.get(InlandModePage) map {
     answer =>

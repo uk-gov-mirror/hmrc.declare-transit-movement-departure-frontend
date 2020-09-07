@@ -411,3 +411,9 @@ inlandMode.heading = What is the inland mode?
 inlandMode.checkYourAnswersLabel = What is the inland mode?
 inlandMode.error.required = Enter the inland Mode
 inlandMode.error.length = The inland mode must be 100 characters or less
+
+modeCrossingBorder.title = What is the mode crossing the border?
+modeCrossingBorder.heading = What is the mode crossing the border?
+modeCrossingBorder.checkYourAnswersLabel = What is the mode crossing the border?
+modeCrossingBorder.error.required = Enter the mode crossing the border
+modeCrossingBorder.error.length = Mode crossing border must be 100 characters or less
