@@ -21,6 +21,7 @@ import forms.LocalReferenceNumberFormProvider
 import javax.inject.Inject
 import models.{EoriNumber, LocalReferenceNumber, NormalMode, UserAnswers}
 import navigation.Navigator
+import navigation.annotations.CommonDetails
 import pages.LocalReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -29,14 +30,13 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import navigation.annotations.MainNavigation
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class LocalReferenceNumberController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 sessionRepository: SessionRepository,
-                                                @MainNavigation navigator: Navigator,
+                                                @CommonDetails navigator: Navigator,
                                                 identify: IdentifierAction,
                                                 formProvider: LocalReferenceNumberFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
