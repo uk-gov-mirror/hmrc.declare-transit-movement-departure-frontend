@@ -21,6 +21,7 @@ import forms.AddSecurityDetailsFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
+import navigation.annotations.CommonDetails
 import pages.AddSecurityDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -29,14 +30,13 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import navigation.annotations.MainNavigation
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddSecurityDetailsController @Inject()(
                                               override val messagesApi: MessagesApi,
                                               sessionRepository: SessionRepository,
-                                              @MainNavigation navigator: Navigator,
+                                              @CommonDetails navigator: Navigator,
                                               identify: IdentifierAction,
                                               getData: DataRetrievalActionProvider,
                                               requireData: DataRequiredAction,
