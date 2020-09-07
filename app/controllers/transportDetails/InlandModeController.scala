@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transportDetails
 
 import controllers.actions._
 import forms.InlandModeFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.InlandModePage
 import play.api.i18n.{I18nSupport, MessagesApi}
