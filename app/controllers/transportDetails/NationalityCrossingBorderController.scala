@@ -16,19 +16,23 @@
 
 package controllers.transportDetails
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.NationalityCrossingBorderFormProvider
 import javax.inject.Inject
+import models.reference.Country
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.NationalityCrossingBorderPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.countryJsonList
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,49 +43,56 @@ class NationalityCrossingBorderController @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
+                                       referenceDataConnector: ReferenceDataConnector,
                                        formProvider: NationalityCrossingBorderFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          val form = formProvider(countries)
 
-      val preparedForm = request.userAnswers.get(NationalityCrossingBorderPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+          val preparedForm = request.userAnswers
+            .get(NationalityCrossingBorderPage)
+            .flatMap(countries.getCountry)
+            .map(form.fill)
+            .getOrElse(form)
+
+          renderPage(lrn, mode, preparedForm, countries.fullList, Results.Ok)
       }
-
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("nationalityCrossingBorder.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          formProvider(countries)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList, Results.BadRequest),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityCrossingBorderPage, value.code))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(NationalityCrossingBorderPage, mode, updatedAnswers))
+            )
+      }
+  }
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+  private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
+    implicit request: Request[AnyContent]): Future[Result] = {
+    val json = Json.obj(
+      "form"        -> form,
+      "lrn"         -> lrn,
+      "mode"        -> mode,
+      "countries"   -> countryJsonList(form.value, countries),
+      "onSubmitUrl" -> routes.NationalityCrossingBorderController.onSubmit(lrn, mode).url
+    )
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
-          )
-
-          renderer.render("nationalityCrossingBorder.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityCrossingBorderPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NationalityCrossingBorderPage, mode, updatedAnswers))
-      )
+    renderer.render("nationalityCrossingBorder.njk", json).map(status(_))
   }
 }

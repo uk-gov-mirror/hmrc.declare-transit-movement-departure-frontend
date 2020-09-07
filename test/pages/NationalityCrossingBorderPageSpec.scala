@@ -16,6 +16,7 @@
 
 package pages
 
+import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
 
@@ -23,10 +24,10 @@ class NationalityCrossingBorderPageSpec extends PageBehaviours {
 
   "NationalityCrossingBorderPage" - {
 
-    beRetrievable[String](NationalityCrossingBorderPage)
+    beRetrievable[CountryCode](NationalityCrossingBorderPage)
 
-    beSettable[String](NationalityCrossingBorderPage)
+    beSettable[CountryCode](NationalityCrossingBorderPage)
 
-    beRemovable[String](NationalityCrossingBorderPage)
+    beRemovable[CountryCode](NationalityCrossingBorderPage)
   }
 }
