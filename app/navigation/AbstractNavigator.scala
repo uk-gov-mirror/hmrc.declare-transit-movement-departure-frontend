@@ -19,15 +19,9 @@ package navigation
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
-import controllers.routes
 
 trait Navigator {
-  def defaultPage: Call = routes.IndexController.onPageLoad()
-
-  def nextOptionalPage(page: Page, mode: Mode, userAnswers: UserAnswers): Option[Call]
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    nextOptionalPage(page, mode, userAnswers).getOrElse(defaultPage)
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
 }
 
 abstract class AbstractNavigator extends Navigator {
@@ -35,11 +29,11 @@ abstract class AbstractNavigator extends Navigator {
 
   protected def checkRouteMap: Page => UserAnswers => Call
 
-  override def nextOptionalPage(page: Page, mode: Mode, userAnswers: UserAnswers): Option[Call] = mode match {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
-      Some(normalRoutes(page)(userAnswers))
+      normalRoutes(page)(userAnswers)
     case CheckMode =>
-      Some(checkRouteMap(page)(userAnswers))
+      checkRouteMap(page)(userAnswers)
   }
 }
 
