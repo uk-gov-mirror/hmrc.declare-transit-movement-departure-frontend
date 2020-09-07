@@ -64,7 +64,6 @@ class TransportDetailsCheckYourAnswersController @Inject()(
         checkYourAnswersHelper.idCrossingBorder,
         checkYourAnswersHelper.inlandMode,
         checkYourAnswersHelper.modeAtBorder,
-        checkYourAnswersHelper.lrn,
         checkYourAnswersHelper.modeCrossingBorder,
         checkYourAnswersHelper.addIdAtDeparture,
         checkYourAnswersHelper.nationalityCrossingBorder
