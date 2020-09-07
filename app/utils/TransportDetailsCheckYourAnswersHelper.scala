@@ -24,6 +24,8 @@ import uk.gov.hmrc.viewmodels._
 
 class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+
+
   def idCrossingBorder: Option[Row] = userAnswers.get(IdCrossingBorderPage) map {
     answer =>
       Row(
