@@ -405,3 +405,9 @@ addIdAtDeparture.error.required = Select yes if you need to add the name, regist
 addIdAtDepartureLater.title = Name, registration or reference of the vehicle at departure must be added later
 addIdAtDepartureLater.heading = Name, registration or reference of the vehicle at departure must be added later
 addIdAtDepartureLater.paragraph = This must be manually recorded on the transit accompanying document (TAD) box 55.
+
+inlandMode.title = What is the inland mode?
+inlandMode.heading = What is the inland mode?
+inlandMode.checkYourAnswersLabel = What is the inland mode?
+inlandMode.error.required = Enter the inland Mode
+inlandMode.error.length = The inland mode must be 100 characters or less
