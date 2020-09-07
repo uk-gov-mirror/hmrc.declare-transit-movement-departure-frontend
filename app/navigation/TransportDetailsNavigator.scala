@@ -24,10 +24,12 @@ import play.api.mvc.Call
 
 @Singleton
 class TransportDetailsNavigator @Inject()() extends Navigator {
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ => _ => None
+  }
 
-  override val normalRoutes: Page => UserAnswers => Call = (_ => _ => routes.IndexController.onPageLoad())
-
-  override val checkRoutes: Page => UserAnswers => Call = (_ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id))
-
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ => _ => None
+  }
 }
 

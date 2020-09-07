@@ -19,17 +19,31 @@ package navigation
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
+import controllers.routes
 
 trait Navigator {
-  protected def normalRoutes: Page => UserAnswers => Call
+  protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]]
 
-  protected def checkRoutes: Page => UserAnswers => Call
+  protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]]
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
-      normalRoutes(page)(userAnswers)
+      normalRoutes.lift(page) match {
+        case None => routes.IndexController.onPageLoad()
+        case Some(call) => handleCall(userAnswers, call)
+      }
     case CheckMode =>
-      checkRoutes(page)(userAnswers)
+      checkRoutes.lift(page) match {
+        case None => routes.CheckYourAnswersController.onPageLoad(userAnswers.id)
+        case Some(call) => handleCall(userAnswers, call)
+      }
+  }
+
+  private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) = {
+    call(userAnswers) match {
+      case Some(onwardRoute) => onwardRoute
+      case None => routes.SessionExpiredController.onPageLoad()
+    }
   }
 }
 
