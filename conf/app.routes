@@ -180,3 +180,8 @@ GET        /:lrn/transport-details/add-id-at-departure                        co
 POST       /:lrn/transport-details/add-id-at-departure                        controllers.transportDetails.AddIdAtDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/transport-details/change-add-id-at-departure                controllers.transportDetails.AddIdAtDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/transport-details/change-add-id-at-departure                controllers.transportDetails.AddIdAtDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/destinationOffice                        controllers.DestinationOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/destinationOffice                        controllers.DestinationOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeDestinationOffice                  controllers.DestinationOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeDestinationOffice                  controllers.DestinationOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

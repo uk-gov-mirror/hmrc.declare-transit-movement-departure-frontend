@@ -18,9 +18,9 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.{MainNavigator, MovementDetailsNavigator, Navigator}
+import navigation._
 import repositories.{DefaultSessionRepository, SessionRepository}
-import utils.annotations.{MainNavigation, MovementDetails, RouteDetails, TraderDetails, TransportDetails}
+import utils.annotations._
 
 class Module extends AbstractModule {
 
@@ -28,9 +28,9 @@ class Module extends AbstractModule {
 
     bind(classOf[Navigator]).annotatedWith(classOf[MainNavigation]).to(classOf[MainNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[MovementDetails]).to(classOf[MovementDetailsNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[RouteDetails]).to(classOf[MovementDetailsNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[TransportDetails]).to(classOf[MovementDetailsNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[TraderDetails]).to(classOf[MovementDetailsNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[RouteDetails]).to(classOf[RouteDetailsNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[TransportDetails]).to(classOf[TransportDetailsNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[TraderDetails]).to(classOf[TraderDetailsNavigator])
 
     bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()

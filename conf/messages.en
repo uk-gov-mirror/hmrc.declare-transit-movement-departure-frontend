@@ -405,3 +405,9 @@ addIdAtDeparture.error.required = Select yes if you need to add the name, regist
 addIdAtDepartureLater.title = Name, registration or reference of the vehicle at departure must be added later
 addIdAtDepartureLater.heading = Name, registration or reference of the vehicle at departure must be added later
 addIdAtDepartureLater.paragraph = This must be manually recorded on the transit accompanying document (TAD) box 55.
+
+destinationOffice.title = destinationOffice
+destinationOffice.heading = destinationOffice
+destinationOffice.checkYourAnswersLabel = destinationOffice
+destinationOffice.error.required = Enter destinationOffice
+destinationOffice.error.length = DestinationOffice must be 20 characters or less
