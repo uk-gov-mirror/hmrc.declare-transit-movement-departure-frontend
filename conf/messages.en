@@ -429,3 +429,6 @@ modeAtBorder.heading = What is the mode at the border?
 modeAtBorder.checkYourAnswersLabel = What is the mode at the border?
 modeAtBorder.error.required = Enter the mode at the border
 modeAtBorder.error.length = The mode at the border must be 100 characters or less
+
+transportDetailsCheckYourAnswers.title = transportDetailsCheckYourAnswers
+transportDetailsCheckYourAnswers.heading = transportDetailsCheckYourAnswers

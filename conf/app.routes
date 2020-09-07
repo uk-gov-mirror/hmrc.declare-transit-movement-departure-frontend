@@ -200,3 +200,5 @@ GET        /:lrn/transport-details/mode-at-border                        control
 POST       /:lrn/transport-details/mode-at-border                        controllers.transportDetails.ModeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/transport-details/change-mode-at-border                  controllers.transportDetails.ModeAtBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/transport-details/change-mode-at-border                  controllers.transportDetails.ModeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details-check-your-answers                       controllers.transportDetails.TransportDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
