@@ -405,3 +405,9 @@ addIdAtDeparture.error.required = Select yes if you need to add the name, regist
 addIdAtDepartureLater.title = Name, registration or reference of the vehicle at departure must be added later
 addIdAtDepartureLater.heading = Name, registration or reference of the vehicle at departure must be added later
 addIdAtDepartureLater.paragraph = This must be manually recorded on the transit accompanying document (TAD) box 55.
+
+nationalityCrossingBorder.title = What is the nationality crossing the border?
+nationalityCrossingBorder.heading = What is the nationality crossing the border?
+nationalityCrossingBorder.checkYourAnswersLabel = Nationality crossing the border
+nationalityCrossingBorder.error.required = Enter the nationality crossing the border
+nationalityCrossingBorder.error.length = The nationality crossing the border must be 35 characters or less

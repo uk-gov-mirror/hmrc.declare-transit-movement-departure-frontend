@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryNationalityCrossingBorderPage: Arbitrary[NationalityCrossingBorderPage.type] =
+    Arbitrary(NationalityCrossingBorderPage)
+
   implicit lazy val arbitraryAddIdAtDeparturePage: Arbitrary[AddIdAtDeparturePage.type] =
     Arbitrary(AddIdAtDeparturePage)
 

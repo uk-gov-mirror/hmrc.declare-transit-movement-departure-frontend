@@ -27,6 +27,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def nationalityCrossingBorder: Option[Row] = userAnswers.get(NationalityCrossingBorderPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"nationalityCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.NationalityCrossingBorderController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityCrossingBorder.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
 
 
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
