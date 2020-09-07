@@ -19,6 +19,7 @@ package navigation
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
+import controllers.transportDetails.{routes => transportDetailsRoutes}
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models._
@@ -54,6 +55,7 @@ class Navigator @Inject()() {
     case ConsigneeNamePage => ua => traderDetailsRoutes.ConsigneeAddressController.onPageLoad(ua.id, NormalMode)
     case ConsigneeAddressPage => ua => traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case WhatIsConsigneeEoriPage => ua => traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case AddIdAtDepartureLaterPage => ua => transportDetailsRoutes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode)
     case _ => _ => routes.IndexController.onPageLoad()
   }
 

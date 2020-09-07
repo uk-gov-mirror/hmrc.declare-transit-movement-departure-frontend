@@ -18,7 +18,9 @@ package controllers.transportDetails
 
 import controllers.actions._
 import javax.inject.Inject
-import models.LocalReferenceNumber
+import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
+import pages.AddIdAtDepartureLaterPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,14 +35,18 @@ class AddIdAtDepartureLaterController @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
+                                       navigator: Navigator,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val json = Json.obj("lrn" -> lrn)
+      val json = Json.obj("lrn" -> lrn,
+        "nextPageUrl" -> navigator.nextPage(AddIdAtDepartureLaterPage, mode, request.userAnswers).url,
+        "mode" -> mode
+      )
 
       renderer.render("addIdAtDepartureLater.njk", json).map(Ok(_))
   }
