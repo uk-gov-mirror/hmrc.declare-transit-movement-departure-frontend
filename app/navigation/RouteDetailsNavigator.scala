@@ -17,22 +17,22 @@
 package navigation
 
 import controllers.routeDetails.{routes => routeDetailsRoutes}
-import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
 import play.api.mvc.Call
 
 @Singleton
-class RouteDetailsNavigator @Inject()() extends AbstractNavigator {
+class RouteDetailsNavigator @Inject()() extends Navigator {
 
-  override val normalRoutes: Page => UserAnswers => Call = {
-    case CountryOfDispatchPage => ua => routeDetailsRoutes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode)
-    case OfficeOfDeparturePage => ua => routeDetailsRoutes.DestinationCountryController.onPageLoad(ua.id, NormalMode)
-    case _ => _ => routes.IndexController.onPageLoad()
+  override val normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case CountryOfDispatchPage => ua => Some(routeDetailsRoutes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode))
+    case OfficeOfDeparturePage => ua => Some(routeDetailsRoutes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
   }
 
-  override val checkRouteMap: Page => UserAnswers => Call = (_ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id))
+  override val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ => _ => None
+  }
 
 }
 

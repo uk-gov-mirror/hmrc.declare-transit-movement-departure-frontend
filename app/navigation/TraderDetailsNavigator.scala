@@ -24,41 +24,39 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class TraderDetailsNavigator @Inject()() extends AbstractNavigator {
+class TraderDetailsNavigator @Inject()() extends Navigator {
 
-  override val normalRoutes: Page => UserAnswers => Call = {
-    case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, NormalMode)
-    case PrincipalNamePage => ua => routes.PrincipalAddressController.onPageLoad(ua.id, NormalMode)
-    case PrincipalAddressPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode)
-    case WhatIsPrincipalEoriPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode)
-    case AddConsignorPage => ua => addConsignorRoute(ua, NormalMode)
-    case IsConsignorEoriKnownPage => ua => isConsignorEoriKnownRoute(ua, NormalMode)
-    case ConsignorEoriPage => ua => routes.AddConsigneeController.onPageLoad(ua.id, NormalMode)
-    case ConsignorNamePage => ua => routes.ConsignorAddressController.onPageLoad(ua.id, NormalMode)
-    case ConsignorAddressPage => ua => routes.AddConsigneeController.onPageLoad(ua.id, NormalMode)
-    case AddConsigneePage => ua => addConsigneeRoute(ua, NormalMode)
-    case IsConsigneeEoriKnownPage => ua => isConsigneeEoriKnownRoute(ua, NormalMode)
-    case ConsigneeNamePage => ua => routes.ConsigneeAddressController.onPageLoad(ua.id, NormalMode)
-    case ConsigneeAddressPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    case WhatIsConsigneeEoriPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    case _ => _ => mainRoutes.IndexController.onPageLoad()
+  override val normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case IsPrincipalEoriKnownPage => ua => Some(isPrincipalEoriKnownRoute(ua, NormalMode))
+    case PrincipalNamePage => ua => Some(routes.PrincipalAddressController.onPageLoad(ua.id, NormalMode))
+    case PrincipalAddressPage => ua => Some(routes.AddConsignorController.onPageLoad(ua.id, NormalMode))
+    case WhatIsPrincipalEoriPage => ua => Some(routes.AddConsignorController.onPageLoad(ua.id, NormalMode))
+    case AddConsignorPage => ua => Some(addConsignorRoute(ua, NormalMode))
+    case IsConsignorEoriKnownPage => ua => Some(isConsignorEoriKnownRoute(ua, NormalMode))
+    case ConsignorEoriPage => ua => Some(routes.AddConsigneeController.onPageLoad(ua.id, NormalMode))
+    case ConsignorNamePage => ua => Some(routes.ConsignorAddressController.onPageLoad(ua.id, NormalMode))
+    case ConsignorAddressPage => ua => Some(routes.AddConsigneeController.onPageLoad(ua.id, NormalMode))
+    case AddConsigneePage => ua => Some(addConsigneeRoute(ua, NormalMode))
+    case IsConsigneeEoriKnownPage => ua => Some(isConsigneeEoriKnownRoute(ua, NormalMode))
+    case ConsigneeNamePage => ua => Some(routes.ConsigneeAddressController.onPageLoad(ua.id, NormalMode))
+    case ConsigneeAddressPage => ua => Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case WhatIsConsigneeEoriPage => ua => Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
 
-  override val checkRouteMap: Page => UserAnswers => Call = {
-    case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, CheckMode)
-    case PrincipalNamePage => ua => principalNamePageRoute(ua, CheckMode)
-    case ConsignorNamePage => ua => consignorNamePageRoute(ua, CheckMode)
-    case ConsigneeNamePage => ua => consigneeNamePageRoute(ua, CheckMode)
-    case IsConsignorEoriKnownPage => ua => isConsignorEoriKnownRoute(ua, CheckMode)
-    case IsConsigneeEoriKnownPage => ua => isConsigneeEoriKnownRoute(ua, CheckMode)
+  override val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case IsPrincipalEoriKnownPage => ua => Some(isPrincipalEoriKnownRoute(ua, CheckMode))
+    case PrincipalNamePage => ua => Some(principalNamePageRoute(ua, CheckMode))
+    case ConsignorNamePage => ua => Some(consignorNamePageRoute(ua, CheckMode))
+    case ConsigneeNamePage => ua => Some(consigneeNamePageRoute(ua, CheckMode))
+    case IsConsignorEoriKnownPage => ua => Some(isConsignorEoriKnownRoute(ua, CheckMode))
+    case IsConsigneeEoriKnownPage => ua => Some(isConsigneeEoriKnownRoute(ua, CheckMode))
 
-    case WhatIsPrincipalEoriPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    case ConsignorEoriPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    case WhatIsConsigneeEoriPage => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    case page if isTraderDetailsSectionPage(page) => ua => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    case AddConsignorPage => ua => addConsignorRoute(ua, CheckMode)
-    case AddConsigneePage => ua => addConsigneeRoute(ua, CheckMode)
-    case _ => ua => mainRoutes.CheckYourAnswersController.onPageLoad(ua.id)
+    case WhatIsPrincipalEoriPage => ua => Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case ConsignorEoriPage => ua => Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case WhatIsConsigneeEoriPage => ua => Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case page if isTraderDetailsSectionPage(page) => ua => Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case AddConsignorPage => ua => Some(addConsignorRoute(ua, CheckMode))
+    case AddConsigneePage => ua => Some(addConsigneeRoute(ua, CheckMode))
   }
 
 

@@ -29,7 +29,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.annotations.MainNavigation
+import navigation.annotations.MainNavigation
 
 import scala.concurrent.{ExecutionContext, Future}
 

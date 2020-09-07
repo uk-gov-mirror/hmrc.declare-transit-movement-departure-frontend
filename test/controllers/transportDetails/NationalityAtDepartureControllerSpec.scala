@@ -37,7 +37,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.annotations.TransportDetails
+import navigation.annotations.TransportDetails
 
 import scala.concurrent.Future
 

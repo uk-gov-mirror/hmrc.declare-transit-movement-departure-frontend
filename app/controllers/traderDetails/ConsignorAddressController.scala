@@ -33,7 +33,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils._
-import utils.annotations.TraderDetails
+import navigation.annotations.TraderDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 

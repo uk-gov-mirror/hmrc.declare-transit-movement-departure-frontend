@@ -67,7 +67,7 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
 
             navigator.nextPage(UnknownPage, CheckMode, answers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+              .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }
 

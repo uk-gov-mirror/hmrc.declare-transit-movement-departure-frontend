@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.TransportDetails
+import navigation.annotations.TransportDetails
 
 import scala.concurrent.ExecutionContext
 
