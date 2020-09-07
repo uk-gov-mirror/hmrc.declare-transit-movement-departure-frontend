@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryInlandModePage: Arbitrary[InlandModePage.type] =
+    Arbitrary(InlandModePage)
+
   implicit lazy val arbitraryAddIdAtDeparturePage: Arbitrary[AddIdAtDeparturePage.type] =
     Arbitrary(AddIdAtDeparturePage)
 
