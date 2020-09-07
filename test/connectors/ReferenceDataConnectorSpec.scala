@@ -101,6 +101,28 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       }
     }
 
+    "getCustomsOfficesOfTheCountry" - {
+      "must return a successful future response with a sequence of CustomsOffices" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/customs-offices/GB"))
+            .willReturn(okJson(customsOfficeResponseJson))
+        )
+
+        val expectedResult = {
+          CustomsOfficeList(Seq(
+            CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
+            CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
+          ))
+        }
+
+        connector.getCustomsOfficesOfTheCountry(CountryCode("GB")).futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$startUrl/customs-offices/GB", connector.getCustomsOfficesOfTheCountry(CountryCode("GB")))
+      }
+    }
+
     "getCountryList" - {
 
       "must return Seq of Country when successful" in {

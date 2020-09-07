@@ -19,9 +19,8 @@ package config
 import com.google.inject.AbstractModule
 import controllers.actions._
 import navigation._
-import repositories.{DefaultSessionRepository, SessionRepository}
-import utils.annotations._
 import navigation.annotations._
+import repositories.{DefaultSessionRepository, SessionRepository}
 
 class Module extends AbstractModule {
 

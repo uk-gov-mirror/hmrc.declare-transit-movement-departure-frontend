@@ -18,17 +18,19 @@ package controllers.routeDetails
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import controllers.{routes => mainRoute}
-import forms.OfficeOfDepartureFormProvider
+import controllers.{routes => mainRoutes}
+import forms.DestinationOfficeFormProvider
 import matchers.JsonMatchers
-import models.reference.CustomsOffice
-import models.{CustomsOfficeList, NormalMode}
+import models.reference.{Country, CountryCode, CustomsOffice}
+import models.{CountryList, CustomsOfficeList, NormalMode}
+import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.OfficeOfDeparturePage
+import pages.{DestinationCountryPage, DestinationOfficePage}
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,41 +39,44 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import navigation.annotations.RouteDetails
 
 import scala.concurrent.Future
 
-class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
-  val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
-  val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
-  val form = new OfficeOfDepartureFormProvider()(customsOffices)
-
-  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-
-  lazy val officeOfDepartureRoute: String = routes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url
+  private val countryCode = CountryCode("GB")
+  private val countries = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
+  private val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
+  private val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
+  private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+  private val form = new DestinationOfficeFormProvider()(customsOffices)
+  private val mockReferenceDataConnector = mock[ReferenceDataConnector]
+   lazy val destinationOfficeRoute = routes.DestinationOfficeController.onPageLoad(lrn, NormalMode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    Mockito.reset(mockRefDataConnector)
+    reset(mockReferenceDataConnector)
   }
 
-  "OfficeOfDeparture Controller" - {
+  "DestinationOffice Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+        .thenReturn(Future.successful(customsOffices))
+      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, officeOfDepartureRoute)
+      val request = FakeRequest(GET, destinationOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -91,11 +96,33 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
         "form"   -> form,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
+        "countryName" -> "United Kingdom",
         "customsOffices" -> expectedCustomsOfficeJson
       )
 
-      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
+      templateCaptor.getValue mustEqual "destinationOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
+
+      application.stop()
+    }
+
+    "must redirect to session expired when destination country value is 'None'" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+        .thenReturn(Future.successful(customsOffices))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
+      val request = FakeRequest(GET, destinationOfficeRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -104,13 +131,18 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, customsOffice1.id).success.value
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+        .thenReturn(Future.successful(customsOffices))
+
+      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
+      val userAnswers = emptyUserAnswers.set(DestinationOfficePage, "officeId").success.value
+        .set(DestinationCountryPage, countryCode).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, officeOfDepartureRoute)
+      val request = FakeRequest(GET, destinationOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -132,10 +164,11 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
         "form" -> filledForm,
         "lrn"  -> lrn,
         "mode" -> NormalMode,
+        "countryName" -> "United Kingdom",
         "customsOffices" -> expectedCustomsOfficeJson
       )
 
-      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
+      templateCaptor.getValue mustEqual "destinationOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -145,20 +178,22 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       val mockSessionRepository = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+        .thenReturn(Future.successful(customsOffices))
 
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
+           bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector),
             bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
+            bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
       val request =
-        FakeRequest(POST, officeOfDepartureRoute)
+        FakeRequest(POST, destinationOfficeRoute)
           .withFormUrlEncodedBody(("value", "id"))
 
       val result = route(application, request).value
@@ -173,12 +208,14 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
-        .build()
-      val request = FakeRequest(POST, officeOfDepartureRoute).withFormUrlEncodedBody(("value", ""))
+      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+        .thenReturn(Future.successful(customsOffices))
+      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request = FakeRequest(POST, destinationOfficeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -195,7 +232,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
+      templateCaptor.getValue mustEqual "destinationOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -205,13 +242,13 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, officeOfDepartureRoute)
+      val request = FakeRequest(GET, destinationOfficeRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -221,16 +258,17 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, officeOfDepartureRoute)
+        FakeRequest(POST, destinationOfficeRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
   }
+
 }

@@ -406,8 +406,8 @@ addIdAtDepartureLater.title = Name, registration or reference of the vehicle at 
 addIdAtDepartureLater.heading = Name, registration or reference of the vehicle at departure must be added later
 addIdAtDepartureLater.paragraph = This must be manually recorded on the transit accompanying document (TAD) box 55.
 
-destinationOffice.title = destinationOffice
-destinationOffice.heading = destinationOffice
+destinationOffice.title = What is the office of destination in {0}?
+destinationOffice.heading = What is the office of destination in {0}?
+destinationOffice.label = This is the office in where the transit movement is ending.
 destinationOffice.checkYourAnswersLabel = destinationOffice
-destinationOffice.error.required = Enter destinationOffice
-destinationOffice.error.length = DestinationOffice must be 20 characters or less
+destinationOffice.error.required = Select the office in [country of destination] that the are goods ending up
