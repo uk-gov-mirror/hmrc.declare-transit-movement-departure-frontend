@@ -18,7 +18,6 @@ package controllers.transportDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import controllers.routes
 import forms.NationalityAtDepartureFormProvider
 import javax.inject.Inject
 import models.reference.Country
@@ -34,20 +33,21 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils._
+import utils.annotations.TransportDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class NationalityAtDepartureController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       referenceDataConnector: ReferenceDataConnector,
-                                       formProvider: NationalityAtDepartureFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+                                                  override val messagesApi: MessagesApi,
+                                                  sessionRepository: SessionRepository,
+                                                  @TransportDetails navigator: Navigator,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalActionProvider,
+                                                  requireData: DataRequiredAction,
+                                                  referenceDataConnector: ReferenceDataConnector,
+                                                  formProvider: NationalityAtDepartureFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {

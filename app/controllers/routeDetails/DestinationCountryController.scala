@@ -33,21 +33,22 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils._
+import utils.annotations.RouteDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class DestinationCountryController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       referenceDataConnector: ReferenceDataConnector,
-                                       formProvider: DestinationCountryFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                              override val messagesApi: MessagesApi,
+                                              sessionRepository: SessionRepository,
+                                              @RouteDetails navigator: Navigator,
+                                              identify: IdentifierAction,
+                                              getData: DataRetrievalActionProvider,
+                                              requireData: DataRequiredAction,
+                                              referenceDataConnector: ReferenceDataConnector,
+                                              formProvider: DestinationCountryFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              renderer: Renderer
+                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -78,7 +79,7 @@ class DestinationCountryController @Inject()(
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(DestinationCountryPage, value.code))
-                  _              <- sessionRepository.set(updatedAnswers)
+                  _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(DestinationCountryPage, mode, updatedAnswers))
             )
       }
@@ -87,10 +88,10 @@ class DestinationCountryController @Inject()(
   private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
     implicit request: Request[AnyContent]): Future[Result] = {
     val json = Json.obj(
-      "form"        -> form,
-      "lrn"         -> lrn,
-      "mode"        -> mode,
-      "countries"   -> countryJsonList(form.value, countries),
+      "form" -> form,
+      "lrn" -> lrn,
+      "mode" -> mode,
+      "countries" -> countryJsonList(form.value, countries),
       "onSubmitUrl" -> routes.DestinationCountryController.onSubmit(lrn, mode).url
     )
 

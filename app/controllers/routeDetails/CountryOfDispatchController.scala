@@ -33,20 +33,21 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils._
+import utils.annotations.RouteDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryOfDispatchController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       referenceDataConnector: ReferenceDataConnector,
-                                       formProvider: CountryOfDispatchFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+                                             override val messagesApi: MessagesApi,
+                                             sessionRepository: SessionRepository,
+                                             @RouteDetails navigator: Navigator,
+                                             identify: IdentifierAction,
+                                             getData: DataRetrievalActionProvider,
+                                             requireData: DataRequiredAction,
+                                             referenceDataConnector: ReferenceDataConnector,
+                                             formProvider: CountryOfDispatchFormProvider,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {

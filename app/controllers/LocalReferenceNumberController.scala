@@ -29,18 +29,19 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.annotations.MainNavigation
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class LocalReferenceNumberController @Inject()(
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: Navigator,
-    identify: IdentifierAction,
-    formProvider: LocalReferenceNumberFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                                override val messagesApi: MessagesApi,
+                                                sessionRepository: SessionRepository,
+                                                @MainNavigation navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                formProvider: LocalReferenceNumberFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                renderer: Renderer
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -67,8 +68,8 @@ class LocalReferenceNumberController @Inject()(
         value =>
           for {
             userAnswers <- getOrCreateUserAnswers(request.eoriNumber, value)
-            _           <- sessionRepository.set(userAnswers)
-          } yield  Redirect(navigator.nextPage(LocalReferenceNumberPage, NormalMode, userAnswers))
+            _ <- sessionRepository.set(userAnswers)
+          } yield Redirect(navigator.nextPage(LocalReferenceNumberPage, NormalMode, userAnswers))
       )
   }
 

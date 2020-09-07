@@ -29,20 +29,21 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.annotations.TraderDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhatIsConsigneeEoriController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: WhatIsConsigneeEoriFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                               override val messagesApi: MessagesApi,
+                                               sessionRepository: SessionRepository,
+                                               @TraderDetails navigator: Navigator,
+                                               identify: IdentifierAction,
+                                               getData: DataRetrievalActionProvider,
+                                               requireData: DataRequiredAction,
+                                               formProvider: WhatIsConsigneeEoriFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               renderer: Renderer
+                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -56,7 +57,7 @@ class WhatIsConsigneeEoriController @Inject()(
 
       val json = Json.obj(
         "form" -> preparedForm,
-        "lrn"  -> lrn,
+        "lrn" -> lrn,
         "mode" -> mode
       )
 
@@ -71,7 +72,7 @@ class WhatIsConsigneeEoriController @Inject()(
 
           val json = Json.obj(
             "form" -> formWithErrors,
-            "lrn"  -> lrn,
+            "lrn" -> lrn,
             "mode" -> mode
           )
 
@@ -80,7 +81,7 @@ class WhatIsConsigneeEoriController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatIsConsigneeEoriPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(WhatIsConsigneeEoriPage, mode, updatedAnswers))
       )
   }

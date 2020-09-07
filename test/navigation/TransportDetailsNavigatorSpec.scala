@@ -16,16 +16,22 @@
 
 package navigation
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, NormalMode, UserAnswers}
+import base.SpecBase
+import generators.Generators
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
+  val navigator = new TransportDetailsNavigator
 
-  override def nextOptionalPage(page: Page, mode: Mode, userAnswers: UserAnswers): Option[Call] = Some(desiredRoute)
+  "TransportDetailsNavigator" - {
+
+    "in Normal mode" - {
+
+    }
+
+    "in Check mode" - {
+
+    }
+  }
 }
-
-

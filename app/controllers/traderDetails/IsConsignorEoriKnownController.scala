@@ -29,20 +29,21 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import utils.annotations.TraderDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IsConsignorEoriKnownController @Inject()(
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: Navigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalActionProvider,
-    requireData: DataRequiredAction,
-    formProvider: IsConsignorEoriKnownFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                                override val messagesApi: MessagesApi,
+                                                sessionRepository: SessionRepository,
+                                                @TraderDetails navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalActionProvider,
+                                                requireData: DataRequiredAction,
+                                                formProvider: IsConsignorEoriKnownFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                renderer: Renderer
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -55,9 +56,9 @@ class IsConsignorEoriKnownController @Inject()(
       }
 
       val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
+        "form" -> preparedForm,
+        "mode" -> mode,
+        "lrn" -> lrn,
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
@@ -71,9 +72,9 @@ class IsConsignorEoriKnownController @Inject()(
         formWithErrors => {
 
           val json = Json.obj(
-            "form"   -> formWithErrors,
-            "mode"   -> mode,
-            "lrn"    -> lrn,
+            "form" -> formWithErrors,
+            "mode" -> mode,
+            "lrn" -> lrn,
             "radios" -> Radios.yesNo(formWithErrors("value"))
           )
 
@@ -82,7 +83,7 @@ class IsConsignorEoriKnownController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IsConsignorEoriKnownPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(IsConsignorEoriKnownPage, mode, updatedAnswers))
       )
   }

@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.DeclarationTypeFormProvider
 import javax.inject.Inject
 import models.{DeclarationType, LocalReferenceNumber, Mode}
+import navigation.{MovementDetailsNavigator, Navigator}
 import navigation.Navigator
 import pages.DeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,13 +30,14 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.annotations.MovementDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationTypeController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
-                                       navigator: Navigator,
+                                       @MovementDetails navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,

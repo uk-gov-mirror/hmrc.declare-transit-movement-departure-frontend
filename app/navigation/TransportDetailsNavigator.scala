@@ -16,16 +16,18 @@
 
 package navigation
 
-import play.api.mvc.Call
+import controllers.routes
+import javax.inject.{Inject, Singleton}
+import models._
 import pages._
-import models.{Mode, NormalMode, UserAnswers}
+import play.api.mvc.Call
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+@Singleton
+class TransportDetailsNavigator @Inject()() extends AbstractNavigator {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
+  override val normalRoutes: Page => UserAnswers => Call = (_ => _ => routes.IndexController.onPageLoad())
 
-  override def nextOptionalPage(page: Page, mode: Mode, userAnswers: UserAnswers): Option[Call] = Some(desiredRoute)
+  override val checkRouteMap: Page => UserAnswers => Call = (_ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id))
+
 }
-
 

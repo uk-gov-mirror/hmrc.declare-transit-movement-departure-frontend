@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.DeclarationForSomeoneElseFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.{AbstractNavigator, MovementDetailsNavigator}
+import navigation.Navigator
 import pages.DeclarationForSomeoneElsePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -34,16 +34,16 @@ import utils.annotations.MovementDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationForSomeoneElseController @Inject()(
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    @MovementDetails navigator: AbstractNavigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalActionProvider,
-    requireData: DataRequiredAction,
-    formProvider: DeclarationForSomeoneElseFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                                     override val messagesApi: MessagesApi,
+                                                     sessionRepository: SessionRepository,
+                                                     @MovementDetails navigator: Navigator,
+                                                     identify: IdentifierAction,
+                                                     getData: DataRetrievalActionProvider,
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: DeclarationForSomeoneElseFormProvider,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     renderer: Renderer
+                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -56,9 +56,9 @@ class DeclarationForSomeoneElseController @Inject()(
       }
 
       val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
+        "form" -> preparedForm,
+        "mode" -> mode,
+        "lrn" -> lrn,
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
@@ -72,9 +72,9 @@ class DeclarationForSomeoneElseController @Inject()(
         formWithErrors => {
 
           val json = Json.obj(
-            "form"   -> formWithErrors,
-            "mode"   -> mode,
-            "lrn"    -> lrn,
+            "form" -> formWithErrors,
+            "mode" -> mode,
+            "lrn" -> lrn,
             "radios" -> Radios.yesNo(formWithErrors("value"))
           )
 
@@ -83,7 +83,7 @@ class DeclarationForSomeoneElseController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclarationForSomeoneElsePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(DeclarationForSomeoneElsePage, mode, updatedAnswers))
       )
   }

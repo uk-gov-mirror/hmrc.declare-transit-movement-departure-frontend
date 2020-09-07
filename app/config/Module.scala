@@ -18,26 +18,19 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.{AbstractNavigator, MovementDetailsNavigator, Navigator}
+import navigation.{MainNavigator, MovementDetailsNavigator, Navigator}
 import repositories.{DefaultSessionRepository, SessionRepository}
-import utils.annotations.{MainNavigation, MovementDetails}
+import utils.annotations.{MainNavigation, MovementDetails, RouteDetails, TraderDetails, TransportDetails}
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
 
- /*   val navigators = Multibinder.newSetBinder(binder(), classOf[AbstractNavigator])
-    navigators.addBinding().to(classOf[Navigator])
-    navigators.addBinding().to(classOf[MovementDetailsNavigator])*/
-
-
-    bind(classOf[AbstractNavigator])
-      .annotatedWith(classOf[MainNavigation])
-      .to(classOf[Navigator])
-
-    bind(classOf[AbstractNavigator])
-      .annotatedWith(classOf[MovementDetails])
-      .to(classOf[MovementDetailsNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[MainNavigation]).to(classOf[MainNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[MovementDetails]).to(classOf[MovementDetailsNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[RouteDetails]).to(classOf[MovementDetailsNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[TransportDetails]).to(classOf[MovementDetailsNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[TraderDetails]).to(classOf[MovementDetailsNavigator])
 
     bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()

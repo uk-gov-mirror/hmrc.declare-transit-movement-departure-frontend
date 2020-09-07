@@ -16,7 +16,6 @@
 
 package navigation
 
-import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.routes
@@ -26,18 +25,11 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class Navigator @Inject()() {
+class MainNavigator @Inject()() extends AbstractNavigator {
 
-  private val normalRoutes: Page => UserAnswers => Call = {
+  override val normalRoutes: Page => UserAnswers => Call = {
     case LocalReferenceNumberPage => ua => routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode)
     case AddSecurityDetailsPage => ua => routes.DeclarationSummaryController.onPageLoad(ua.id)
-    case DeclarationTypePage => ua => movementDetailsRoutes.ProcedureTypeController.onPageLoad(ua.id, NormalMode)
-    case ProcedureTypePage => ua => movementDetailsRoutes.ContainersUsedPageController.onPageLoad(ua.id, NormalMode)
-    case ContainersUsedPage => ua => movementDetailsRoutes.DeclarationPlaceController.onPageLoad(ua.id, NormalMode)
-    case DeclarationPlacePage => ua => movementDetailsRoutes.DeclarationForSomeoneElseController.onPageLoad(ua.id, NormalMode)
-    case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, NormalMode)
-    case RepresentativeNamePage => ua => movementDetailsRoutes.RepresentativeCapacityController.onPageLoad(ua.id, NormalMode)
-    case RepresentativeCapacityPage => ua => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case CountryOfDispatchPage => ua => routeDetailsRoutes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode)
     case OfficeOfDeparturePage => ua => routeDetailsRoutes.DestinationCountryController.onPageLoad(ua.id, NormalMode)
     case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, NormalMode)
@@ -57,9 +49,7 @@ class Navigator @Inject()() {
     case _ => _ => routes.IndexController.onPageLoad()
   }
 
-  private val checkRouteMap: Page => UserAnswers => Call = {
-    case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, CheckMode)
-    case page if isMovementDetailsSectionPage(page) => ua => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
+  override val checkRouteMap: Page => UserAnswers => Call = {
     case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, CheckMode)
     case PrincipalNamePage => ua => principalNamePageRoute(ua, CheckMode)
     case ConsignorNamePage => ua => consignorNamePageRoute(ua, CheckMode)
@@ -70,27 +60,12 @@ class Navigator @Inject()() {
     case WhatIsPrincipalEoriPage => ua => traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case ConsignorEoriPage => ua => traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case WhatIsConsigneeEoriPage => ua => traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    case page if isMovementDetailsSectionPage(page) => ua => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case page if isTraderDetailsSectionPage(page) => ua => traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case AddConsignorPage => ua => addConsignorRoute(ua, CheckMode)
     case AddConsigneePage => ua => addConsigneeRoute(ua, CheckMode)
     case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case NormalMode =>
-      normalRoutes(page)(userAnswers)
-    case CheckMode =>
-      checkRouteMap(page)(userAnswers)
-  }
-
-  private def isMovementDetailsSectionPage(page: Page): Boolean = {
-    page match {
-      case DeclarationTypePage | ProcedureTypePage | ContainersUsedPage |
-           DeclarationPlacePage | DeclarationForSomeoneElsePage | RepresentativeNamePage | RepresentativeCapacityPage => true
-      case _ => false
-    }
-  }
 
   private def principalNamePageRoute(ua: UserAnswers, mode: Mode) = {
     ua.get(PrincipalAddressPage) match {
@@ -119,14 +94,6 @@ class Navigator @Inject()() {
            IsConsignorEoriKnownPage | ConsignorEoriPage | ConsignorNamePage | ConsignorAddressPage |
            IsConsigneeEoriKnownPage | WhatIsConsigneeEoriPage | ConsigneeNamePage | ConsigneeAddressPage => true
       case _ => false
-    }
-  }
-
-  private def isDeclarationForSomeoneElse(ua: UserAnswers, mode: Mode): Call = {
-    (ua.get(DeclarationForSomeoneElsePage), ua.get(RepresentativeNamePage), mode) match {
-      case (Some(true), None, CheckMode) => movementDetailsRoutes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
-      case (Some(true), _, NormalMode) => movementDetailsRoutes.RepresentativeNameController.onPageLoad(ua.id, NormalMode)
-      case _ => movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 

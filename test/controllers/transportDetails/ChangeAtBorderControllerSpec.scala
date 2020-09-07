@@ -17,6 +17,7 @@
 package controllers.transportDetails
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import forms.ChangeAtBorderFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -34,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
+import utils.annotations.TransportDetails
 
 import scala.concurrent.Future
 
@@ -119,7 +120,7 @@ class ChangeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunju
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

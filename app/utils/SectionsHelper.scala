@@ -20,7 +20,6 @@ package utils
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
-import controllers.routes
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
