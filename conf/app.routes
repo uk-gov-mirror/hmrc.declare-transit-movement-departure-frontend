@@ -154,6 +154,8 @@ POST       /:lrn/transport-details/id-crossing-border                        con
 GET        /:lrn/transport-details/change-id-crossing-border                  controllers.transportDetails.IdCrossingBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/transport-details/change-id-crossing-border                 controllers.transportDetails.IdCrossingBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /:lrn/transport-details/add-id-at-departure-later                       controllers.transportDetails.AddIdAtDepartureLaterController.onPageLoad(lrn: LocalReferenceNumber, mode:Mode = NormalMode)
+
 GET        /:lrn/route/dispatch-country                        controllers.routeDetails.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/route/dispatch-country                        controllers.routeDetails.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/route/dispatch-country                        controllers.routeDetails.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
@@ -173,3 +175,8 @@ GET        /:lrn/transport-details/change-at-border                        contr
 POST       /:lrn/transport-details/change-at-border                        controllers.transportDetails.ChangeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/transport-details/change-change-at-border                  controllers.transportDetails.ChangeAtBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/transport-details/change-change-at-border                  controllers.transportDetails.ChangeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/add-id-at-departure                        controllers.transportDetails.AddIdAtDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/add-id-at-departure                        controllers.transportDetails.AddIdAtDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/change-add-id-at-departure                controllers.transportDetails.AddIdAtDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/change-add-id-at-departure                controllers.transportDetails.AddIdAtDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

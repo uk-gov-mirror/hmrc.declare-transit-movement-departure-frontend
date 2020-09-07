@@ -396,3 +396,12 @@ changeAtBorder.title = Will these details change at the border?
 changeAtBorder.heading = Will these details change at the border?
 changeAtBorder.checkYourAnswersLabel = Will these details change at the border?
 changeAtBorder.error.required = Select yes if these details will change at the border
+
+addIdAtDeparture.title = Do you need to add the name, registration or reference of the vehicle at departure?
+addIdAtDeparture.heading = Do you need to add the name, registration or reference of the vehicle at departure?
+addIdAtDeparture.checkYourAnswersLabel = Do you need to add the name, registration or reference of the vehicle at departure?
+addIdAtDeparture.error.required = Select yes if you need to add the name, registration or reference of the vehicle at departure
+
+addIdAtDepartureLater.title = Name, registration or reference of the vehicle at departure must be added later
+addIdAtDepartureLater.heading = Name, registration or reference of the vehicle at departure must be added later
+addIdAtDepartureLater.paragraph = This must be manually recorded on the transit accompanying document (TAD) box 55.
