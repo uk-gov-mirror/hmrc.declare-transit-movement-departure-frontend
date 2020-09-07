@@ -23,11 +23,11 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class TransportDetailsNavigator @Inject()() extends AbstractNavigator {
+class TransportDetailsNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = (_ => _ => routes.IndexController.onPageLoad())
 
-  override val checkRouteMap: Page => UserAnswers => Call = (_ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id))
+  override val checkRoutes: Page => UserAnswers => Call = (_ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id))
 
 }
 

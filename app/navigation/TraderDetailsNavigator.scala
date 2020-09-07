@@ -24,10 +24,10 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class TraderDetailsNavigator @Inject()() extends AbstractNavigator {
+class TraderDetailsNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, NormalMode)
+    case IsPrincipalEoriKnownPage => isPrincipalEoriKnownRoute(_, NormalMode)
     case PrincipalNamePage => ua => routes.PrincipalAddressController.onPageLoad(ua.id, NormalMode)
     case PrincipalAddressPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode)
     case WhatIsPrincipalEoriPage => ua => routes.AddConsignorController.onPageLoad(ua.id, NormalMode)
@@ -44,7 +44,7 @@ class TraderDetailsNavigator @Inject()() extends AbstractNavigator {
     case _ => _ => mainRoutes.IndexController.onPageLoad()
   }
 
-  override val checkRouteMap: Page => UserAnswers => Call = {
+  override val checkRoutes: Page => UserAnswers => Call = {
     case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, CheckMode)
     case PrincipalNamePage => ua => principalNamePageRoute(ua, CheckMode)
     case ConsignorNamePage => ua => consignorNamePageRoute(ua, CheckMode)

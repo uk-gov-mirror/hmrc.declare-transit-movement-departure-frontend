@@ -20,13 +20,13 @@ import com.google.inject.AbstractModule
 import controllers.actions._
 import navigation._
 import repositories.{DefaultSessionRepository, SessionRepository}
-import utils.annotations._
+import navigation.annotations._
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
 
-    bind(classOf[Navigator]).annotatedWith(classOf[MainNavigation]).to(classOf[MainNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[MainNavigation]).to(classOf[CommonNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[MovementDetails]).to(classOf[MovementDetailsNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[RouteDetails]).to(classOf[RouteDetailsNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[TransportDetails]).to(classOf[TransportDetailsNavigator])

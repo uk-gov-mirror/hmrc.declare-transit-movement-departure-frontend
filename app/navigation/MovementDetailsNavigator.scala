@@ -24,7 +24,7 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class MovementDetailsNavigator @Inject()() extends AbstractNavigator {
+class MovementDetailsNavigator @Inject()() extends Navigator {
 
   override protected def normalRoutes: Page => UserAnswers => Call = {
     case DeclarationTypePage => ua => routes.ProcedureTypeController.onPageLoad(ua.id, NormalMode)
@@ -37,7 +37,7 @@ class MovementDetailsNavigator @Inject()() extends AbstractNavigator {
     case _ => _ => mainRoutes.IndexController.onPageLoad()
   }
 
-  override protected def checkRouteMap: Page => UserAnswers => Call = {
+  override protected def checkRoutes: Page => UserAnswers => Call = {
     case DeclarationForSomeoneElsePage => ua => isDeclarationForSomeoneElse(ua, CheckMode)
     case page if isMovementDetailsSectionPage(page) => ua => routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case _ => ua => mainRoutes.CheckYourAnswersController.onPageLoad(ua.id)

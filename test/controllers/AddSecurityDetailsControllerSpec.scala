@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.annotations.MainNavigation
+import navigation.annotations.MainNavigation
 
 import scala.concurrent.Future
 

@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package navigation
+package navigation.annotations;
 
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import pages.Page
-import play.api.mvc.Call
+import com.google.inject.BindingAnnotation;
 
-trait Navigator {
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface RouteDetails {
 }
-
-abstract class AbstractNavigator extends Navigator {
-  protected def normalRoutes: Page => UserAnswers => Call
-
-  protected def checkRouteMap: Page => UserAnswers => Call
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case NormalMode =>
-      normalRoutes(page)(userAnswers)
-    case CheckMode =>
-      checkRouteMap(page)(userAnswers)
-  }
-}
-

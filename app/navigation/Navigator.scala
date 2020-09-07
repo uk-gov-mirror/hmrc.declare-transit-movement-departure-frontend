@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package utils.annotations;
+package navigation
 
-import com.google.inject.BindingAnnotation;
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import pages.Page
+import play.api.mvc.Call
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+trait Navigator {
+  protected def normalRoutes: Page => UserAnswers => Call
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
-@BindingAnnotation
-public @interface MainNavigation {
+  protected def checkRoutes: Page => UserAnswers => Call
+
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
+    case NormalMode =>
+      normalRoutes(page)(userAnswers)
+    case CheckMode =>
+      checkRoutes(page)(userAnswers)
+  }
 }
+

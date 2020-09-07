@@ -24,7 +24,7 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class RouteDetailsNavigator @Inject()() extends AbstractNavigator {
+class RouteDetailsNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
     case CountryOfDispatchPage => ua => routeDetailsRoutes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode)
@@ -32,7 +32,7 @@ class RouteDetailsNavigator @Inject()() extends AbstractNavigator {
     case _ => _ => routes.IndexController.onPageLoad()
   }
 
-  override val checkRouteMap: Page => UserAnswers => Call = (_ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id))
+  override val checkRoutes: Page => UserAnswers => Call = (_ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id))
 
 }
 

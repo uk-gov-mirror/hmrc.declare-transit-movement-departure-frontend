@@ -26,7 +26,7 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class MainNavigator @Inject()() extends AbstractNavigator {
+class CommonNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
     case LocalReferenceNumberPage => ua => routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode)
@@ -51,7 +51,7 @@ class MainNavigator @Inject()() extends AbstractNavigator {
     case _ => _ => routes.IndexController.onPageLoad()
   }
 
-  override val checkRouteMap: Page => UserAnswers => Call = {
+  override val checkRoutes: Page => UserAnswers => Call = {
     case IsPrincipalEoriKnownPage => ua => isPrincipalEoriKnownRoute(ua, CheckMode)
     case PrincipalNamePage => ua => principalNamePageRoute(ua, CheckMode)
     case ConsignorNamePage => ua => consignorNamePageRoute(ua, CheckMode)
