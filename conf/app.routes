@@ -195,3 +195,8 @@ GET        /:lrn/transport-details/mode-crossing-border                        c
 POST       /:lrn/transport-details/mode-crossing-border                        controllers.transportDetails.ModeCrossingBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/transport-details/change-mode-crossing-border               controllers.transportDetails.ModeCrossingBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/transport-details/change-mode-crossing-border                  controllers.transportDetails.ModeCrossingBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/mode-at-border                        controllers.transportDetails.ModeAtBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/mode-at-border                        controllers.transportDetails.ModeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/change-mode-at-border                  controllers.transportDetails.ModeAtBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/change-mode-at-border                  controllers.transportDetails.ModeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
