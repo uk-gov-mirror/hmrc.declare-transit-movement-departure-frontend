@@ -27,7 +27,7 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.ModeCrossingBorderController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.transportDetails.ModeCrossingBorderController.onSubmit(lrn, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('transportDetails.preHeading')}}</span>
 
           {{ csrf() | safe }}
