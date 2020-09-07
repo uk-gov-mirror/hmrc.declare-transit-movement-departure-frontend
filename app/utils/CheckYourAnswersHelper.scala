@@ -27,24 +27,6 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def modeAtBorder: Option[Row] = userAnswers.get(ModeAtBorderPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"modeAtBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.ModeAtBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeAtBorder.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-
-
-
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(
