@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.ProcedureTypeFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode, ProcedureType}
-import navigation.{MovementDetailsNavigator, Navigator}
+import navigation.Navigator
 import pages.ProcedureTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

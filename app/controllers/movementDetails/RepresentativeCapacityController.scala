@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.RepresentativeCapacityFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode, RepresentativeCapacity}
-import navigation.{MovementDetailsNavigator, Navigator}
+import navigation.Navigator
 import pages.RepresentativeCapacityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
