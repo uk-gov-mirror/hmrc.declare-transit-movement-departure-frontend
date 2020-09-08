@@ -58,14 +58,15 @@ class TransportDetailsCheckYourAnswersController @Inject()(
     val checkYourAnswersHelper = new TransportDetailsCheckYourAnswersHelper(userAnswers)
 
     Seq(Section(
-      Seq(checkYourAnswersHelper.nationalityAtDeparture,
-        checkYourAnswersHelper.changeAtBorder,
-        checkYourAnswersHelper.idAtDeparture,
-        checkYourAnswersHelper.idCrossingBorder,
+      Seq(
         checkYourAnswersHelper.inlandMode,
-        checkYourAnswersHelper.modeAtBorder,
-        checkYourAnswersHelper.modeCrossingBorder,
         checkYourAnswersHelper.addIdAtDeparture,
+        checkYourAnswersHelper.idAtDeparture,
+        checkYourAnswersHelper.nationalityAtDeparture,
+        checkYourAnswersHelper.changeAtBorder,
+        checkYourAnswersHelper.modeAtBorder,
+        checkYourAnswersHelper.idCrossingBorder,
+        checkYourAnswersHelper.modeCrossingBorder,
         checkYourAnswersHelper.nationalityCrossingBorder
       ).flatten
     ))
