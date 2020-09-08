@@ -59,7 +59,8 @@ class DestinationOfficeController @Inject()(
           referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
             customsOffices =>
               referenceDataConnector.getTransitCountryList() flatMap { countryList =>
-              val form = formProvider(customsOffices)
+              val countryName = countryList.getCountry(countryCode).fold(countryCode.code)(_.description)
+              val form = formProvider(customsOffices, countryName)
               val preparedForm: Form[CustomsOffice] = request.userAnswers.get(DestinationOfficePage)
                 .flatMap(customsOffices.getCustomsOffice)
                 .map(form.fill).getOrElse(form)
@@ -68,7 +69,7 @@ class DestinationOfficeController @Inject()(
                   "form" -> preparedForm,
                   "lrn" -> lrn,
                   "customsOffices" -> getCustomsOfficesAsJson(form.value, customsOffices.customsOffices),
-                  "countryName" -> countryList.getCountry(countryCode).fold(countryCode.code)(_.description),
+                  "countryName" -> countryName,
                   "mode" -> mode
                 )
                 renderer.render("destinationOffice.njk", json).map(Ok(_))
@@ -78,24 +79,6 @@ class DestinationOfficeController @Inject()(
       }
   }
 
-  private def loadPage(form: Form[CustomsOffice],
-                       customsOffices: CustomsOfficeList,
-                       lrn: LocalReferenceNumber,
-                       mode: Mode,
-                       country: CountryCode,
-                       status: Status)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    referenceDataConnector.getTransitCountryList() flatMap { countryList =>
-      val json = Json.obj(
-        "form" -> form,
-        "lrn" -> lrn,
-        "customsOffices" -> getCustomsOfficesAsJson(form.value, customsOffices.customsOffices),
-        "countryName" -> countryList.getCountry(country).fold(country.code)(_.description),
-        "mode" -> mode
-      )
-      renderer.render("destinationOffice.njk", json).map(status(_))
-    }
-  }
-
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       request.userAnswers.get(DestinationCountryPage) match {
@@ -103,10 +86,19 @@ class DestinationOfficeController @Inject()(
           referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
             customsOffices =>
               referenceDataConnector.getTransitCountryList() flatMap { countryList =>
-                val form = formProvider(customsOffices, countryList.getCountry(countryCode).fold(countryCode.code)(_.description))
+
+                val countryName = countryList.getCountry(countryCode).fold(countryCode.code)(_.description)
+                val form = formProvider(customsOffices, countryName)
                 form.bindFromRequest().fold(
                   formWithErrors => {
-                    loadPage(formWithErrors, customsOffices, lrn, mode, countryCode, BadRequest)
+                    val json = Json.obj(
+                      "form" -> form,
+                      "lrn" -> lrn,
+                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.customsOffices),
+                      "countryName" -> countryName,
+                      "mode" -> mode
+                    )
+                    renderer.render("destinationOffice.njk", json).map(BadRequest(_))
                   },
                   value =>
                     for {
