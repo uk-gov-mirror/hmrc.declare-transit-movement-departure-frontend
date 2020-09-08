@@ -56,6 +56,12 @@ class Navigator @Inject()() {
     case ConsigneeAddressPage => ua => traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case WhatIsConsigneeEoriPage => ua => traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case AddIdAtDepartureLaterPage => ua => transportDetailsRoutes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode)
+    case InlandModePage => ua => transportDetailsRoutes.AddIdAtDepartureController.onPageLoad(ua.id, NormalMode)
+    case AddIdAtDepartureLaterPage => ua => transportDetailsRoutes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode)
+    case IdAtDeparturePage => ua => transportDetailsRoutes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode)
+    case NationalityAtDeparturePage => ua => transportDetailsRoutes.ChangeAtBorderController.onPageLoad(ua.id, NormalMode)
+    case AddIdAtDeparturePage => ua => addIdAtDepartureRoute(ua, NormalMode)
+    case ChangeAtBorderPage => ua => changeAtBorderRoute(ua, NormalMode)
     case _ => _ => routes.IndexController.onPageLoad()
   }
 
@@ -85,6 +91,22 @@ class Navigator @Inject()() {
     case CheckMode =>
       checkRouteMap(page)(userAnswers)
   }
+
+  def addIdAtDepartureRoute (ua: UserAnswers, mode: Mode): Call = {
+    ua.get(AddIdAtDeparturePage) match {
+      case Some(true) => transportDetailsRoutes.IdAtDepartureController.onPageLoad(ua.id, mode)
+      case Some(false) => transportDetailsRoutes.AddIdAtDepartureLaterController.onPageLoad(ua.id)
+      case _ => transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    }
+  }
+
+  def changeAtBorderRoute (ua: UserAnswers, mode: Mode): Call = {
+    ua.get(ChangeAtBorderPage) match {
+      case Some(true) => transportDetailsRoutes.ModeAtBorderController.onPageLoad(ua.id, mode)
+      case _ => transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    }
+  }
+
 
   private def isMovementDetailsSectionPage(page: Page): Boolean = {
     page match {
