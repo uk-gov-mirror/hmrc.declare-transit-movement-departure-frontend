@@ -375,31 +375,31 @@ consigneeAddress.error.line3.invalid= The third line of the consignee’s addres
 
 idAtDeparture.title = What is the name, registration or reference of the vehicle at departure?
 idAtDeparture.heading = What is the name, registration or reference of the vehicle at departure?
-idAtDeparture.checkYourAnswersLabel = Name, registration or reference of the vehicle at departure
+idAtDeparture.checkYourAnswersLabel = Name, registration or reference at departure
 idAtDeparture.error.required = Enter the name, registration or reference of the vehicle at departure
 idAtDeparture.error.length = The name, registration or reference of the vehicle at departure must be 27 characters or less
 idAtDeparture.error.invalidCharacters = The name, registration or reference of the vehicle at departure must only include letters a to z and numbers 0 to 9
 
 nationalityAtDeparture.title = What is the nationality at departure?
 nationalityAtDeparture.heading = What is the nationality at departure?
-nationalityAtDeparture.checkYourAnswersLabel = What is the nationality at departure?
+nationalityAtDeparture.checkYourAnswersLabel = Nationality at departure
 nationalityAtDeparture.error.required = Enter the nationality at departure
 
 idCrossingBorder.title = What is the name, registration or reference of the vehicle crossing the border?
 idCrossingBorder.heading = What is the name, registration or reference of the vehicle crossing the border?
-idCrossingBorder.checkYourAnswersLabel = What is the name, registration or reference of the vehicle crossing the border?
+idCrossingBorder.checkYourAnswersLabel = Name, registration or reference of the vehicle crossing the border
 idCrossingBorder.error.required = Enter the name, registration or reference of the vehicle crossing the border
 idCrossingBorder.error.length = The name, registration or reference of the vehicle crossing the border must be 27 characters or less
 idCrossingBorder.error.invalidCharacters = The name, registration or reference of the vehicle crossing the border must only include letters a to z and numbers 0 to 9
 
 changeAtBorder.title = Will these details change at the border?
 changeAtBorder.heading = Will these details change at the border?
-changeAtBorder.checkYourAnswersLabel = Will these details change at the border?
+changeAtBorder.checkYourAnswersLabel = Details change at border
 changeAtBorder.error.required = Select yes if these details will change at the border
 
 addIdAtDeparture.title = Do you need to add the name, registration or reference of the vehicle at departure?
 addIdAtDeparture.heading = Do you need to add the name, registration or reference of the vehicle at departure?
-addIdAtDeparture.checkYourAnswersLabel = Do you need to add the name, registration or reference of the vehicle at departure?
+addIdAtDeparture.checkYourAnswersLabel = Add the name, registration or reference of the vehicle at departure
 addIdAtDeparture.error.required = Select yes if you need to add the name, registration or reference of the vehicle at departure
 
 addIdAtDepartureLater.title = Name, registration or reference of the vehicle at departure must be added later
@@ -414,18 +414,20 @@ nationalityCrossingBorder.error.length = The nationality crossing the border mus
 
 inlandMode.title = What is the inland mode?
 inlandMode.heading = What is the inland mode?
-inlandMode.checkYourAnswersLabel = What is the inland mode?
+inlandMode.checkYourAnswersLabel = Inland mode
 inlandMode.error.required = Enter the inland Mode
 inlandMode.error.length = The inland mode must be 100 characters or less
 
 modeCrossingBorder.title = What is the mode crossing the border?
 modeCrossingBorder.heading = What is the mode crossing the border?
-modeCrossingBorder.checkYourAnswersLabel = What is the mode crossing the border?
+modeCrossingBorder.checkYourAnswersLabel = Mode crossing the border
 modeCrossingBorder.error.required = Enter the mode crossing the border
 modeCrossingBorder.error.length = Mode crossing border must be 100 characters or less
 
 modeAtBorder.title = What is the mode at the border?
 modeAtBorder.heading = What is the mode at the border?
-modeAtBorder.checkYourAnswersLabel = What is the mode at the border?
+modeAtBorder.checkYourAnswersLabel = Mode at the border
 modeAtBorder.error.required = Enter the mode at the border
 modeAtBorder.error.length = The mode at the border must be 100 characters or less
+
+
