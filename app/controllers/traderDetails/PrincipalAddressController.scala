@@ -21,7 +21,6 @@ import controllers.{routes => mainRoutes}
 import forms.PrincipalAddressFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.Navigator
 import pages.{PrincipalAddressPage, PrincipalNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -30,13 +29,14 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import navigation.annotations.TraderDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class PrincipalAddressController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             sessionRepository: SessionRepository,
-                                            navigator: Navigator,
+                                            @TraderDetails navigator: Navigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalActionProvider,
                                             requireData: DataRequiredAction,

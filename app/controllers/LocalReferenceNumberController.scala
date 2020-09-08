@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.LocalReferenceNumberFormProvider
 import javax.inject.Inject
 import models.{EoriNumber, LocalReferenceNumber, NormalMode, UserAnswers}
-import navigation.Navigator
+import navigation.annotations.PreTaskListDetails
 import pages.LocalReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -33,14 +33,14 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 class LocalReferenceNumberController @Inject()(
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: Navigator,
-    identify: IdentifierAction,
-    formProvider: LocalReferenceNumberFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                                override val messagesApi: MessagesApi,
+                                                sessionRepository: SessionRepository,
+                                                @PreTaskListDetails navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                formProvider: LocalReferenceNumberFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                renderer: Renderer
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -67,8 +67,8 @@ class LocalReferenceNumberController @Inject()(
         value =>
           for {
             userAnswers <- getOrCreateUserAnswers(request.eoriNumber, value)
-            _           <- sessionRepository.set(userAnswers)
-          } yield  Redirect(navigator.nextPage(LocalReferenceNumberPage, NormalMode, userAnswers))
+            _ <- sessionRepository.set(userAnswers)
+          } yield Redirect(navigator.nextPage(LocalReferenceNumberPage, NormalMode, userAnswers))
       )
   }
 

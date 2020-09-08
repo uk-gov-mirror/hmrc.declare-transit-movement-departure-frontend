@@ -21,7 +21,7 @@ import controllers.{routes => mainRoutes}
 import forms.DeclarationTypeFormProvider
 import matchers.JsonMatchers
 import models.{DeclarationType, NormalMode}
-import navigation.{FakeNavigator, Navigator}
+import navigation.FakeNavigator
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -35,6 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import navigation.annotations.MovementDetails
 
 import scala.concurrent.Future
 
@@ -119,7 +120,7 @@ class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with Nunj
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[MovementDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

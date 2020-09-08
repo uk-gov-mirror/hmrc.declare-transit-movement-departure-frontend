@@ -19,7 +19,6 @@ package controllers.transportDetails
 import controllers.actions._
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.Navigator
 import pages.AddIdAtDepartureLaterPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -27,17 +26,18 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.nunjucks.NunjucksSupport
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import navigation.annotations.TransportDetails
 
 import scala.concurrent.ExecutionContext
 
 class AddIdAtDepartureLaterController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       navigator: Navigator,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
+                                                 override val messagesApi: MessagesApi,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalActionProvider,
+                                                 requireData: DataRequiredAction,
+                                                 @TransportDetails navigator: Navigator,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {

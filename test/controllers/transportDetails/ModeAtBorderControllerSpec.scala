@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.ModeAtBorderFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
-import navigation.{FakeNavigator, Navigator}
+import navigation.FakeNavigator
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -35,6 +35,7 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import navigation.annotations.TransportDetails
 
 import scala.concurrent.Future
 
@@ -117,7 +118,7 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

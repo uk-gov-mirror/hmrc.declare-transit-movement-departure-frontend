@@ -19,7 +19,8 @@ package controllers
 import base.SpecBase
 import forms.LocalReferenceNumberFormProvider
 import matchers.JsonMatchers
-import navigation.{FakeNavigator, Navigator}
+import navigation.annotations.PreTaskListDetails
+import navigation.FakeNavigator
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -36,7 +37,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 import scala.concurrent.Future
 
 class LocalReferenceNumberControllerSpec
-    extends SpecBase
+  extends SpecBase
     with MockitoSugar
     with NunjucksSupport
     with JsonMatchers {
@@ -88,7 +89,7 @@ class LocalReferenceNumberControllerSpec
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

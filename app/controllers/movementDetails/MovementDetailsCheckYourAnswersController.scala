@@ -55,7 +55,7 @@ class MovementDetailsCheckYourAnswersController @Inject()(
       Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
-  private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
+  private def createSections(userAnswers: UserAnswers): Seq[Section] = {
     val checkYourAnswersHelper = new MovementDetailsCheckYourAnswersHelper(userAnswers)
 
     Seq(Section(

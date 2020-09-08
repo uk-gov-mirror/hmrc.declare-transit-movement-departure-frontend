@@ -22,7 +22,7 @@ import forms.NationalityCrossingBorderFormProvider
 import javax.inject.Inject
 import models.reference.Country
 import models.{LocalReferenceNumber, Mode}
-import navigation.Navigator
+import navigation.annotations.TransportDetails
 import pages.NationalityCrossingBorderPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class NationalityCrossingBorderController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
-                                       navigator: Navigator,
+                                       @TransportDetails navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,

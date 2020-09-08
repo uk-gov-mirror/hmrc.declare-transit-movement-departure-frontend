@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.WhatIsPrincipalEoriFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.Navigator
 import pages.WhatIsPrincipalEoriPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -29,20 +28,21 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import navigation.annotations.TraderDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhatIsPrincipalEoriController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: WhatIsPrincipalEoriFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                               override val messagesApi: MessagesApi,
+                                               sessionRepository: SessionRepository,
+                                               @TraderDetails navigator: Navigator,
+                                               identify: IdentifierAction,
+                                               getData: DataRetrievalActionProvider,
+                                               requireData: DataRequiredAction,
+                                               formProvider: WhatIsPrincipalEoriFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               renderer: Renderer
+                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -56,7 +56,7 @@ class WhatIsPrincipalEoriController @Inject()(
 
       val json = Json.obj(
         "form" -> preparedForm,
-        "lrn"  -> lrn,
+        "lrn" -> lrn,
         "mode" -> mode
       )
 
@@ -71,7 +71,7 @@ class WhatIsPrincipalEoriController @Inject()(
 
           val json = Json.obj(
             "form" -> formWithErrors,
-            "lrn"  -> lrn,
+            "lrn" -> lrn,
             "mode" -> mode
           )
 
@@ -80,7 +80,7 @@ class WhatIsPrincipalEoriController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatIsPrincipalEoriPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(WhatIsPrincipalEoriPage, mode, updatedAnswers))
       )
   }

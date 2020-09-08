@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.AddIdAtDepartureFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.Navigator
 import pages.AddIdAtDeparturePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -29,19 +28,20 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import navigation.annotations.TransportDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddIdAtDepartureController @Inject()(
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    navigator: Navigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalActionProvider,
-    requireData: DataRequiredAction,
-    formProvider: AddIdAtDepartureFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    renderer: Renderer
+                                            override val messagesApi: MessagesApi,
+                                            sessionRepository: SessionRepository,
+                                            @TransportDetails navigator: Navigator,
+                                            identify: IdentifierAction,
+                                            getData: DataRetrievalActionProvider,
+                                            requireData: DataRequiredAction,
+                                            formProvider: AddIdAtDepartureFormProvider,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()

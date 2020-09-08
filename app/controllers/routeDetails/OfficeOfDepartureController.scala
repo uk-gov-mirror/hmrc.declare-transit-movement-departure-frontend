@@ -21,7 +21,6 @@ import controllers.actions._
 import forms.OfficeOfDepartureFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.Navigator
 import pages.OfficeOfDeparturePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -31,13 +30,14 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils._
+import navigation.annotations.RouteDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class OfficeOfDepartureController @Inject()(
                                              override val messagesApi: MessagesApi,
                                              sessionRepository: SessionRepository,
-                                             navigator: Navigator,
+                                             @RouteDetails navigator: Navigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalActionProvider,
                                              requireData: DataRequiredAction,
