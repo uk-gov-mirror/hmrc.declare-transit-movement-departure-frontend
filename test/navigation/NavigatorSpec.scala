@@ -510,6 +510,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers.set(AddIdAtDeparturePage, true).toOption.value
+                  .remove(IdAtDeparturePage).success.value
 
                 navigator.nextPage(AddIdAtDeparturePage, NormalMode, updatedAnswers)
                   .mustBe(transportDetailsRoute.IdAtDepartureController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -613,7 +614,45 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                   .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
             }
           }
-        }
+
+          "must go from AddIdAtDeparture page to IdAtDeparture page on selecting option 'Yes' and IdAtDeparture has no data " in {
+
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedUserAnswers = answers.set(AddIdAtDeparturePage, true).toOption.value
+                  .remove(IdAtDeparturePage).success.value
+
+                navigator.nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
+                  .mustBe(transportDetailsRoute.IdAtDepartureController.onPageLoad(answers.id, CheckMode))
+            }
+          }
+
+          "must go from AddIdAtDeparture page to CYA page on selecting option 'Yes' and IdAtDeparture has data" in {
+
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedUserAnswers = answers.set(AddIdAtDeparturePage, true).toOption.value
+                  .set(IdAtDeparturePage, "Bob").toOption.value
+
+                navigator.nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
+                  .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+            }
+          }
+
+
+          "must go from AddIdAtDeparture page to AddIdAtDepartureLater on selecting option 'No' and IdAtDeparture has data" in {
+
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedUserAnswers = answers.set(AddIdAtDeparturePage, false).toOption.value
+                  .set(IdAtDeparturePage, "Bob").toOption.value
+
+                navigator.nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
+                  .mustBe(transportDetailsRoute.AddIdAtDepartureLaterController.onPageLoad(answers.id))
+            }
+          }
+
+         }
       }
   }
 

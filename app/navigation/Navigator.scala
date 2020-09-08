@@ -100,9 +100,10 @@ class Navigator @Inject()() {
   }
 
   def addIdAtDepartureRoute (ua: UserAnswers, mode: Mode): Call = {
-    ua.get(AddIdAtDeparturePage) match {
-      case Some(true) => transportDetailsRoutes.IdAtDepartureController.onPageLoad(ua.id, mode)
-      case Some(false) => transportDetailsRoutes.AddIdAtDepartureLaterController.onPageLoad(ua.id)
+    (ua.get(AddIdAtDeparturePage), ua.get(IdAtDeparturePage), mode) match {
+      case (Some(true), None, _)=> transportDetailsRoutes.IdAtDepartureController.onPageLoad(ua.id, mode)
+      case (Some(true), Some(_), CheckMode )=> transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(false), _, _) => transportDetailsRoutes.AddIdAtDepartureLaterController.onPageLoad(ua.id)
       case _ => transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
