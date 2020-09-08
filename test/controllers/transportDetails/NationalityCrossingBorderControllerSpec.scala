@@ -18,15 +18,18 @@ package controllers.transportDetails
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import forms.{NationalityAtDepartureFormProvider, NationalityCrossingBorderFormProvider}
+import controllers.{routes => mainRoutes}
+import forms.NationalityCrossingBorderFormProvider
 import matchers.JsonMatchers
+import models.reference.{Country, CountryCode}
 import models.{CountryList, NormalMode}
+import navigation.annotations.TransportDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{NationalityAtDeparturePage, NationalityCrossingBorderPage}
+import pages.NationalityCrossingBorderPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -35,8 +38,6 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
-import models.reference.{Country, CountryCode}
 
 import scala.concurrent.Future
 
@@ -145,7 +146,7 @@ class NationalityCrossingBorderControllerSpec extends SpecBase with MockitoSugar
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
           .build()
