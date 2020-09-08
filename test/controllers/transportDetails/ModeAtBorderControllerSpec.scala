@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transportDetails
 
 import base.SpecBase
-import forms.AddSecurityDetailsFormProvider
+import forms.ModeAtBorderFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
-import navigation.annotations.PreTaskListDetails
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddSecurityDetailsPage
+import pages.ModeAtBorderPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -34,20 +33,21 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new AddSecurityDetailsFormProvider()
+  val formProvider = new ModeAtBorderFormProvider()
   val form = formProvider()
 
-  lazy val addSecurityDetailsRoute = routes.AddSecurityDetailsController.onPageLoad(lrn, NormalMode).url
+  lazy val modeAtBorderRoute = routes.ModeAtBorderController.onPageLoad(lrn, NormalMode).url
 
-  "AddSecurityDetails Controller" - {
+  "ModeAtBorder Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -55,7 +55,7 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, addSecurityDetailsRoute)
+      val request = FakeRequest(GET, modeAtBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -68,11 +68,10 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "lrn"    -> lrn
       )
 
-      templateCaptor.getValue mustEqual "addSecurityDetails.njk"
+      templateCaptor.getValue mustEqual "modeAtBorder.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -83,9 +82,9 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddSecurityDetailsPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(ModeAtBorderPage, "answer").success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, addSecurityDetailsRoute)
+      val request = FakeRequest(GET, modeAtBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -95,16 +94,15 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "addSecurityDetails.njk"
+      templateCaptor.getValue mustEqual "modeAtBorder.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -119,19 +117,18 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
       val request =
-        FakeRequest(POST, addSecurityDetailsRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, modeAtBorderRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -143,7 +140,7 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, addSecurityDetailsRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, modeAtBorderRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -155,13 +152,12 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "addSecurityDetails.njk"
+      templateCaptor.getValue mustEqual "modeAtBorder.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -171,13 +167,13 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, addSecurityDetailsRoute)
+      val request = FakeRequest(GET, modeAtBorderRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -187,14 +183,14 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockitoSugar with N
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, addSecurityDetailsRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, modeAtBorderRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

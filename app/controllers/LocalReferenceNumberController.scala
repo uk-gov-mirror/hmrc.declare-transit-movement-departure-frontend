@@ -21,7 +21,7 @@ import forms.LocalReferenceNumberFormProvider
 import javax.inject.Inject
 import models.{EoriNumber, LocalReferenceNumber, NormalMode, UserAnswers}
 import navigation.Navigator
-import navigation.annotations.CommonDetails
+import navigation.annotations.PreTaskListDetails
 import pages.LocalReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class LocalReferenceNumberController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 sessionRepository: SessionRepository,
-                                                @CommonDetails navigator: Navigator,
+                                                @PreTaskListDetails navigator: Navigator,
                                                 identify: IdentifierAction,
                                                 formProvider: LocalReferenceNumberFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,

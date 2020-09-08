@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.LocalReferenceNumberFormProvider
 import matchers.JsonMatchers
-import navigation.annotations.CommonDetails
+import navigation.annotations.PreTaskListDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -89,7 +89,7 @@ class LocalReferenceNumberControllerSpec
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[CommonDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()

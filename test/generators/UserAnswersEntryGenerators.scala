@@ -33,6 +33,39 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
+  implicit lazy val arbitraryModeAtBorderUserAnswersEntry: Arbitrary[(ModeAtBorderPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[ModeAtBorderPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryNationalityCrossingBorderUserAnswersEntry: Arbitrary[(NationalityCrossingBorderPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[NationalityCrossingBorderPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryModeCrossingBorderUserAnswersEntry: Arbitrary[(ModeCrossingBorderPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[ModeCrossingBorderPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+
+  implicit lazy val arbitraryInlandModeUserAnswersEntry: Arbitrary[(InlandModePage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[InlandModePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryAddIdAtDepartureUserAnswersEntry: Arbitrary[(AddIdAtDeparturePage.type, JsValue)] =
       Arbitrary {
       for {

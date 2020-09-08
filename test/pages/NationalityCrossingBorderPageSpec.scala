@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package navigation.annotations;
+package pages
 
-import com.google.inject.BindingAnnotation;
+import models.reference.CountryCode
+import pages.behaviours.PageBehaviours
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
-@BindingAnnotation
-public @interface CommonDetails {
+class NationalityCrossingBorderPageSpec extends PageBehaviours {
+
+  "NationalityCrossingBorderPage" - {
+
+    beRetrievable[CountryCode](NationalityCrossingBorderPage)
+
+    beSettable[CountryCode](NationalityCrossingBorderPage)
+
+    beRemovable[CountryCode](NationalityCrossingBorderPage)
+  }
 }
