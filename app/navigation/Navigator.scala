@@ -60,6 +60,10 @@ class Navigator @Inject()() {
     case AddIdAtDepartureLaterPage => ua => transportDetailsRoutes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode)
     case IdAtDeparturePage => ua => transportDetailsRoutes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode)
     case NationalityAtDeparturePage => ua => transportDetailsRoutes.ChangeAtBorderController.onPageLoad(ua.id, NormalMode)
+    case ModeAtBorderPage => ua => transportDetailsRoutes.IdCrossingBorderController.onPageLoad(ua.id, NormalMode)
+    case IdCrossingBorderPage => ua => transportDetailsRoutes.ModeCrossingBorderController.onPageLoad(ua.id, NormalMode)
+    case ModeCrossingBorderPage => ua => transportDetailsRoutes.NationalityCrossingBorderController.onPageLoad(ua.id, NormalMode) //TODO update when ref data available
+    case NationalityCrossingBorderPage => ua => transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case AddIdAtDeparturePage => ua => addIdAtDepartureRoute(ua, NormalMode)
     case ChangeAtBorderPage => ua => changeAtBorderRoute(ua, NormalMode)
     case _ => _ => routes.IndexController.onPageLoad()
@@ -82,6 +86,9 @@ class Navigator @Inject()() {
     case page if isTraderDetailsSectionPage(page) => ua => traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     case AddConsignorPage => ua => addConsignorRoute(ua, CheckMode)
     case AddConsigneePage => ua => addConsigneeRoute(ua, CheckMode)
+
+    case InlandModePage => ua => transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    case AddIdAtDeparturePage => ua => addIdAtDepartureRoute(ua, CheckMode)
     case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
   }
 
