@@ -23,7 +23,7 @@ import pages._
 import play.api.mvc.Call
 
 @Singleton
-class CommonNavigator @Inject()() extends Navigator {
+class PreTaskListNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case LocalReferenceNumberPage => ua => Some(routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode))

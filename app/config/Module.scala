@@ -26,7 +26,7 @@ class Module extends AbstractModule {
 
   override def configure(): Unit = {
 
-    bind(classOf[Navigator]).annotatedWith(classOf[CommonDetails]).to(classOf[CommonNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[PreTaskListDetails]).to(classOf[PreTaskListNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[MovementDetails]).to(classOf[MovementDetailsNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[RouteDetails]).to(classOf[RouteDetailsNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[TransportDetails]).to(classOf[TransportDetailsNavigator])

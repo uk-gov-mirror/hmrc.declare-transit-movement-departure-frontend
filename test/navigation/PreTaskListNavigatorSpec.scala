@@ -24,9 +24,9 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 
-class CommonNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class PreTaskListNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new CommonNavigator
+  val navigator = new PreTaskListNavigator
 
   "Navigator" - {
 
