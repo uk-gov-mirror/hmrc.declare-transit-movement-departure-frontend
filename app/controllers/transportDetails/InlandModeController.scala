@@ -21,6 +21,7 @@ import forms.InlandModeFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
+import navigation.annotations.TransportDetails
 import pages.InlandModePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -35,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class InlandModeController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
-                                       navigator: Navigator,
+                                       @TransportDetails navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
