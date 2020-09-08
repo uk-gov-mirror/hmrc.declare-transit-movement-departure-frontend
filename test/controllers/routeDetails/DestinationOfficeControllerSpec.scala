@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.DestinationOfficeFormProvider
+import generators.Generators
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode, CustomsOffice}
 import models.{CountryList, CustomsOfficeList, NormalMode}
@@ -42,7 +43,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach {
+class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach with Generators {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -51,7 +52,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
   private val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
   private val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
   private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
-  private val form = new DestinationOfficeFormProvider()(customsOffices)
+  private val form = new DestinationOfficeFormProvider()(customsOffices, "United Kingdom")
   private val mockReferenceDataConnector = mock[ReferenceDataConnector]
    lazy val destinationOfficeRoute = routes.DestinationOfficeController.onPageLoad(lrn, NormalMode).url
 
@@ -181,6 +182,8 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
       when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
         .thenReturn(Future.successful(customsOffices))
 
+      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
       val application =
@@ -214,7 +217,9 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
         .thenReturn(Future.successful(customsOffices))
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(POST, destinationOfficeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

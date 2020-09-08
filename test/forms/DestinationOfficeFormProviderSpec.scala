@@ -27,11 +27,12 @@ class DestinationOfficeFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "destinationOffice.error.length"
   val maxLength = 20
 
+  val countryName = "United Kingdom"
   val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
   val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
   val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
 
-  val form = new DestinationOfficeFormProvider()(customsOffices)
+  val form = new DestinationOfficeFormProvider()(customsOffices, countryName)
 
   ".value" - {
 
@@ -43,17 +44,24 @@ class DestinationOfficeFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(countryName))
     )
+
+    "not bind if customs office id does not exist in the customs office list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a customs office id which is in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "officeId"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
   }
 }

@@ -30,7 +30,7 @@ import pages.{DestinationCountryPage, DestinationOfficePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -50,31 +50,30 @@ class DestinationOfficeController @Inject()(
                                              formProvider: DestinationOfficeFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       request.userAnswers.get(DestinationCountryPage) match {
         case Some(countryCode) =>
-          referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
-            customsOffices =>
-              referenceDataConnector.getTransitCountryList() flatMap { countryList =>
-              val countryName = countryList.getCountry(countryCode).fold(countryCode.code)(_.description)
-              val form = formProvider(customsOffices, countryName)
+          getCustomsOfficeAndCountryName(countryCode) flatMap {
+            case (customsOffices, countryName) =>
+              val form: Form[CustomsOffice] = formProvider(customsOffices, countryName)
+
               val preparedForm: Form[CustomsOffice] = request.userAnswers.get(DestinationOfficePage)
                 .flatMap(customsOffices.getCustomsOffice)
                 .map(form.fill).getOrElse(form)
 
-                val json = Json.obj(
-                  "form" -> preparedForm,
-                  "lrn" -> lrn,
-                  "customsOffices" -> getCustomsOfficesAsJson(form.value, customsOffices.customsOffices),
-                  "countryName" -> countryName,
-                  "mode" -> mode
-                )
-                renderer.render("destinationOffice.njk", json).map(Ok(_))
-              }
+              val json = Json.obj(
+                "form" -> preparedForm,
+                "lrn" -> lrn,
+                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
+                "countryName" -> countryName,
+                "mode" -> mode
+              )
+              renderer.render("destinationOffice.njk", json).map(Ok(_))
           }
+
         case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
   }
@@ -83,34 +82,41 @@ class DestinationOfficeController @Inject()(
     implicit request =>
       request.userAnswers.get(DestinationCountryPage) match {
         case Some(countryCode) =>
-          referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
-            customsOffices =>
-              referenceDataConnector.getTransitCountryList() flatMap { countryList =>
+          getCustomsOfficeAndCountryName(countryCode) flatMap {
+            case (customsOffices, countryName) =>
 
-                val countryName = countryList.getCountry(countryCode).fold(countryCode.code)(_.description)
-                val form = formProvider(customsOffices, countryName)
-                form.bindFromRequest().fold(
-                  formWithErrors => {
-                    val json = Json.obj(
-                      "form" -> form,
-                      "lrn" -> lrn,
-                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.customsOffices),
-                      "countryName" -> countryName,
-                      "mode" -> mode
-                    )
-                    renderer.render("destinationOffice.njk", json).map(BadRequest(_))
-                  },
-                  value =>
-                    for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(DestinationOfficePage, value.id))
-                      _ <- sessionRepository.set(updatedAnswers)
-                    } yield Redirect(navigator.nextPage(DestinationOfficePage, mode, updatedAnswers))
-                )
-              }
+              val form = formProvider(customsOffices, countryName)
+
+              form.bindFromRequest().fold(
+                formWithErrors => {
+                  val json = Json.obj(
+                    "form" -> formWithErrors,
+                    "lrn" -> lrn,
+                    "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.customsOffices),
+                    "countryName" -> countryName,
+                    "mode" -> mode
+                  )
+                  renderer.render("destinationOffice.njk", json).map(BadRequest(_))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(DestinationOfficePage, value.id))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(DestinationOfficePage, mode, updatedAnswers))
+              )
           }
         case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
+  }
 
+  private def getCustomsOfficeAndCountryName(countryCode: CountryCode)(implicit request: DataRequest[AnyContent]): Future[(CustomsOfficeList, String)] = {
+    referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
+      customsOffices =>
+        referenceDataConnector.getTransitCountryList() map { countryList =>
+          val countryName = countryList.getCountry(countryCode).fold(countryCode.code)(_.description)
+          (customsOffices, countryName)
+        }
+    }
   }
 
 }

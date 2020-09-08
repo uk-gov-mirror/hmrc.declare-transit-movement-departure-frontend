@@ -410,7 +410,7 @@ destinationOffice.title = What is the office of destination in {0}?
 destinationOffice.heading = What is the office of destination in {0}?
 destinationOffice.label = This is the office in where the transit movement is ending.
 destinationOffice.checkYourAnswersLabel = destinationOffice
-destinationOffice.error.required = Select the office in [country of destination] that the are goods ending up
+destinationOffice.error.required = Select the office in {0} that the are goods ending up
 
 nationalityCrossingBorder.title = What is the nationality crossing the border?
 nationalityCrossingBorder.heading = What is the nationality crossing the border?
