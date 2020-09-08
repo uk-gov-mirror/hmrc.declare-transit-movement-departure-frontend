@@ -37,6 +37,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import navigation.annotations.TransportDetails
 
 import scala.concurrent.Future
 
@@ -145,7 +146,7 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
           .build()

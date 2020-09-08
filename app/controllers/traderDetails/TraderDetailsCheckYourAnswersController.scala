@@ -20,12 +20,12 @@ import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
 import models.{LocalReferenceNumber, UserAnswers}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.{CheckYourAnswersHelper, TraderDetailsCheckYourAnswersHelper}
+import utils.TraderDetailsCheckYourAnswersHelper
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,7 +54,7 @@ class TraderDetailsCheckYourAnswersController @Inject()(
       Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
-  private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
+  private def createSections(userAnswers: UserAnswers): Seq[Section] = {
     val checkYourAnswersHelper = new TraderDetailsCheckYourAnswersHelper(userAnswers)
 
     Seq(Section(
