@@ -23,7 +23,7 @@ import forms.OfficeOfDepartureFormProvider
 import matchers.JsonMatchers
 import models.reference.CustomsOffice
 import models.{CustomsOfficeList, NormalMode}
-import navigation.FakeNavigator
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}

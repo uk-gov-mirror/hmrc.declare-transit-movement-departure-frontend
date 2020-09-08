@@ -22,6 +22,7 @@ import forms.NationalityAtDepartureFormProvider
 import javax.inject.Inject
 import models.reference.Country
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import pages.NationalityAtDeparturePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

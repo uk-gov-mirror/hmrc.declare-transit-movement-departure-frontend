@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.DeclarationTypeFormProvider
 import javax.inject.Inject
 import models.{DeclarationType, LocalReferenceNumber, Mode}
+import navigation.Navigator
 import pages.DeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

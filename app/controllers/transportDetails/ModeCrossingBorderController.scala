@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.ModeCrossingBorderFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import navigation.annotations.TransportDetails
 import pages.ModeCrossingBorderPage
 import play.api.i18n.{I18nSupport, MessagesApi}

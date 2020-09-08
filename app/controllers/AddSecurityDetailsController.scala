@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.AddSecurityDetailsFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import navigation.annotations.PreTaskListDetails
 import pages.AddSecurityDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}

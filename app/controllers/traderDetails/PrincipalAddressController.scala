@@ -21,6 +21,7 @@ import controllers.{routes => mainRoutes}
 import forms.PrincipalAddressFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import pages.{PrincipalAddressPage, PrincipalNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

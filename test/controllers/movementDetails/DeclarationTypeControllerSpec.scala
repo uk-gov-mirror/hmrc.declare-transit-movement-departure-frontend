@@ -21,7 +21,7 @@ import controllers.{routes => mainRoutes}
 import forms.DeclarationTypeFormProvider
 import matchers.JsonMatchers
 import models.{DeclarationType, NormalMode}
-import navigation.FakeNavigator
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}

@@ -23,6 +23,7 @@ import forms.ConsignorAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import pages.{ConsignorAddressPage, ConsignorNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

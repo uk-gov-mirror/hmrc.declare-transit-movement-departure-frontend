@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.DeclarationForSomeoneElseFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import pages.DeclarationForSomeoneElsePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

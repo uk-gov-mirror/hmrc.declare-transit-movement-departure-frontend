@@ -24,7 +24,7 @@ import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
 import models.{CountryList, NormalMode}
 import navigation.annotations.TransportDetails
-import navigation.FakeNavigator
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}

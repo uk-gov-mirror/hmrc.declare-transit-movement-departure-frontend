@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.ModeAtBorderFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import navigation.annotations.TransportDetails
 import pages.ModeAtBorderPage
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -19,6 +19,7 @@ package controllers.transportDetails
 import controllers.actions._
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import pages.AddIdAtDepartureLaterPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

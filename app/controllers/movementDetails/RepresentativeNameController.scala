@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.RepresentativeNameFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import pages.RepresentativeNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

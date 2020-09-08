@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.WhatIsPrincipalEoriFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
 import pages.WhatIsPrincipalEoriPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

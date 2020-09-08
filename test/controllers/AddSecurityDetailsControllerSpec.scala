@@ -21,7 +21,7 @@ import forms.AddSecurityDetailsFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.PreTaskListDetails
-import navigation.FakeNavigator
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
