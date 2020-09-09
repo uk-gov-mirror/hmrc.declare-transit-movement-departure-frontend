@@ -46,6 +46,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     case NationalityAtDeparturePage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case ChangeAtBorderPage => ua => Some(changeAtBorderRoute(ua, CheckMode))
     case ModeAtBorderPage => ua => Some(modeAtBorderRoute(ua, CheckMode))
+    case IdCrossingBorderPage => ua => Some(idCrossingBorderRoute(ua, CheckMode))
 
   }
 
@@ -68,8 +69,14 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
 
   private def modeAtBorderRoute(ua: UserAnswers, mode: Mode): Call = {
     ua.get(IdCrossingBorderPage) match {
-      case Some(_) => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
       case None => routes.IdCrossingBorderController.onPageLoad(ua.id, CheckMode)
+      case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    }
+  }
+
+  private def idCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call = {
+    ua.get(ModeCrossingBorderPage) match {
+      case None => routes.ModeCrossingBorderController.onPageLoad(ua.id, CheckMode)
       case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
