@@ -16,7 +16,7 @@
 
 package navigation
 
-import controllers.routeDetails.{routes => routeDetailsRoutes}
+import controllers.routeDetails.routes
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
@@ -26,8 +26,9 @@ import play.api.mvc.Call
 class RouteDetailsNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case CountryOfDispatchPage => ua => Some(routeDetailsRoutes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode))
-    case OfficeOfDeparturePage => ua => Some(routeDetailsRoutes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
+    case CountryOfDispatchPage => ua => Some(routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode))
+    case OfficeOfDeparturePage => ua => Some(routes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
+    case DestinationCountryPage => ua => Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
   }
 
   override val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
