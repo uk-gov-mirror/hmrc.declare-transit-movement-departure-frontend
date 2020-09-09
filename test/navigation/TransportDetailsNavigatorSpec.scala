@@ -198,6 +198,91 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
+      "must go from IdAtDeparturePage to TransportDetailsCheckYourAnswers Page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator.nextPage(IdAtDeparturePage, CheckMode, answers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from AddIdAtDepatureLaterPage to TransportDetailsCheckYourAnswers Page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator.nextPage(AddIdAtDepartureLaterPage, CheckMode, answers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from NationalityAtDeparturePage to TransportDetailsCheckYourAnswers Page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator.nextPage(NationalityAtDeparturePage, CheckMode, answers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from ChangeAtBorderPage to TransportDetailsCheckYourAnswers on selecting option 'No' " in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedUserAnswers = answers.set(ChangeAtBorderPage, false).toOption.value
+
+            navigator.nextPage(ChangeAtBorderPage, CheckMode, updatedUserAnswers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from ChangeAtBorderPage to ModeAtBorderPage on selecting option 'Yes' and no answers exist" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedUserAnswers = answers.set(ChangeAtBorderPage, true).toOption.value
+              .remove(ModeAtBorderPage).success.value
+              .remove(IdCrossingBorderPage).success.value
+              .remove(ModeCrossingBorderPage).success.value
+              .remove(NationalityCrossingBorderPage).success.value
+
+            navigator.nextPage(ChangeAtBorderPage, CheckMode, updatedUserAnswers)
+              .mustBe(transportDetailsRoute.ModeAtBorderController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "must go from ChangeAtBorderPage to TransportDetailsCheckYourAnswers on selecting option 'Yes' and answers already exist for ModeAtBorder" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedUserAnswers = answers.set(ChangeAtBorderPage, true).toOption.value
+              .set(ModeAtBorderPage, "Bob").success.value
+
+            navigator.nextPage(ChangeAtBorderPage, CheckMode, updatedUserAnswers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from ModeAtBorderPage to TransportDetailsCheckYourAnswers Page when answer exists for IdCrossingBorder" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(IdCrossingBorderPage,"Foo").success.value
+            navigator.nextPage(ModeAtBorderPage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from ModeAtBorderPage to IdCrossingBorder Page when answer exists for IdCrossingBorder" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.remove(IdCrossingBorderPage).success.value
+            navigator.nextPage(ModeAtBorderPage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.IdCrossingBorderController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
     }
   }
 }
