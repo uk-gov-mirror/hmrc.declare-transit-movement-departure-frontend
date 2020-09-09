@@ -17,6 +17,7 @@
 package controllers.routeDetails
 
 import base.SpecBase
+import connectors.ReferenceDataConnector
 import forms.AddTransitOfficeFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -35,7 +36,7 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import controllers.{routes => mainRoutes}
-
+import navigation.annotations.RouteDetails
 
 import scala.concurrent.Future
 
@@ -67,9 +68,9 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn" -> lrn,
         "radios" -> Radios.yesNo(form("value"))
       )
 
@@ -89,7 +90,6 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       val request = FakeRequest(GET, addTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(application, request).value
 
       status(result) mustEqual OK
@@ -99,9 +99,9 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
+        "form" -> filledForm,
+        "mode" -> NormalMode,
+        "lrn" -> lrn,
         "radios" -> Radios.yesNo(filledForm("value"))
       )
 
@@ -120,10 +120,11 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+            bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+
+      )
+      .build()
 
       val request =
         FakeRequest(POST, addTransitOfficeRoute)
@@ -156,9 +157,9 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
+        "form" -> boundForm,
+        "mode" -> NormalMode,
+        "lrn" -> lrn,
         "radios" -> Radios.yesNo(boundForm("value"))
       )
 
