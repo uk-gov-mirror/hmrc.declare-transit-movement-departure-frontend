@@ -27,7 +27,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddIdAtDepartureLaterPage => ua => Some(routes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode))
     case InlandModePage => ua => Some(routes.AddIdAtDepartureController.onPageLoad(ua.id, NormalMode))
-    case AddIdAtDepartureLaterPage => ua => Some(routes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode))
+    case IdAtDeparturePage => ua => Some(routes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode))
     case NationalityAtDeparturePage => ua => Some(routes.ChangeAtBorderController.onPageLoad(ua.id, NormalMode))
     case ModeAtBorderPage => ua => Some(routes.IdCrossingBorderController.onPageLoad(ua.id, NormalMode))
     case IdCrossingBorderPage => ua => Some(routes.ModeCrossingBorderController.onPageLoad(ua.id, NormalMode))
