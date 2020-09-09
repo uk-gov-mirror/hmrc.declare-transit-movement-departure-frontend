@@ -68,8 +68,10 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(AddIdAtDepartureLaterPage, NormalMode, answers)
-              .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(answers.id, NormalMode))
+            val updatedAnswers = answers.remove(NationalityAtDeparturePage).success.value
+
+            navigator.nextPage(AddIdAtDepartureLaterPage, NormalMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
 

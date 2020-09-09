@@ -25,7 +25,7 @@ import play.api.mvc.Call
 @Singleton
 class TransportDetailsNavigator @Inject()() extends Navigator {
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddIdAtDepartureLaterPage => ua => Some(routes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode))
+    case AddIdAtDepartureLaterPage => ua => Some(addItAtDepartureLaterRoute(ua,NormalMode ))
     case InlandModePage => ua => Some(routes.AddIdAtDepartureController.onPageLoad(ua.id, NormalMode))
     case IdAtDeparturePage => ua => Some(routes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode))
     case NationalityAtDeparturePage => ua => Some(routes.ChangeAtBorderController.onPageLoad(ua.id, NormalMode))
@@ -42,7 +42,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     case InlandModePage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case AddIdAtDeparturePage => ua => Some(addIdAtDepartureRoute(ua, CheckMode))
     case IdAtDeparturePage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
-    case AddIdAtDepartureLaterPage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case AddIdAtDepartureLaterPage => ua => Some(addItAtDepartureLaterRoute(ua,NormalMode))
     case NationalityAtDeparturePage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case ChangeAtBorderPage => ua => Some(changeAtBorderRoute(ua, CheckMode))
     case ModeAtBorderPage => ua => Some(modeAtBorderRoute(ua, CheckMode))
@@ -56,7 +56,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
   private def addIdAtDepartureRoute(ua: UserAnswers, mode: Mode): Call = {
     (ua.get(AddIdAtDeparturePage), ua.get(IdAtDeparturePage), mode) match {
       case (Some(true), None, _) => routes.IdAtDepartureController.onPageLoad(ua.id, mode)
-      case (Some(false), None, NormalMode) => routes.AddIdAtDepartureLaterController.onPageLoad(ua.id)
+      case (Some(false), None, _) => routes.AddIdAtDepartureLaterController.onPageLoad(ua.id)
       case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
@@ -87,6 +87,13 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     ua.get(NationalityCrossingBorderPage) match {
       case None => routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
       case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    }
+  }
+
+  private def addItAtDepartureLaterRoute(ua: UserAnswers, mode: Mode): Call = {
+    ua.get(NationalityAtDeparturePage) match {
+      case None =>  routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case _ =>  routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 
