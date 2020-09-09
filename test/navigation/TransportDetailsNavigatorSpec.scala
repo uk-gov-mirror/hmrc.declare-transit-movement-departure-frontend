@@ -273,13 +273,33 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "must go from ModeAtBorderPage to IdCrossingBorder Page when answer exists for IdCrossingBorder" in {
+      "must go from ModeAtBorderPage to IdCrossingBorder Page when no answer exists for IdCrossingBorder" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers.remove(IdCrossingBorderPage).success.value
             navigator.nextPage(ModeAtBorderPage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.IdCrossingBorderController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "must go from IdCrossingBorder to TransportDetailsCheckYourAnswers Page when answer exists for ModeCrossingBorder" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(ModeCrossingBorderPage,"Foo").success.value
+            navigator.nextPage(IdCrossingBorderPage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from IdCrossingBorder to ModeCrossingBorder Page when no answer exists for ModeCrossingBorder" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.remove(ModeCrossingBorderPage).success.value
+            navigator.nextPage(IdCrossingBorderPage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.ModeCrossingBorderController.onPageLoad(answers.id, CheckMode))
         }
       }
 
