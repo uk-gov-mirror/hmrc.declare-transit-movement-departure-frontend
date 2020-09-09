@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.transportDetails.{routes => transportDetailsRoute}
 import generators.Generators
 import models._
+import models.reference.{Country, CountryCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -186,18 +187,6 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
       }
 
 
-      "must go from AddIdAtDeparture page to AddIdAtDepartureLater on selecting option 'No' and IdAtDeparture has data" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedUserAnswers = answers.set(AddIdAtDeparturePage, false).toOption.value
-              .set(IdAtDeparturePage, "Bob").toOption.value
-
-            navigator.nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
-              .mustBe(transportDetailsRoute.AddIdAtDepartureLaterController.onPageLoad(answers.id))
-        }
-      }
-
       "must go from IdAtDeparturePage to TransportDetailsCheckYourAnswers Page" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -207,14 +196,6 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "must go from AddIdAtDepatureLaterPage to TransportDetailsCheckYourAnswers Page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator.nextPage(AddIdAtDepartureLaterPage, CheckMode, answers)
-              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
-        }
-      }
 
       "must go from NationalityAtDeparturePage to TransportDetailsCheckYourAnswers Page" in {
 
@@ -303,6 +284,36 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
+      "must go from ModeCrossingBorder to TransportDetailsCheckYourAnswers Page when answer exists for NationalityCrossingBorder" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val country = arbitrary[CountryCode].sample.value
+            val updatedAnswers = answers.set(NationalityCrossingBorderPage, country).success.value
+
+            navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from ModeCrossingBorder to NationalityCrossingBorder Page when no answer exists for NationalityCrossingBorder" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.remove(NationalityCrossingBorderPage).success.value
+            navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.NationalityCrossingBorderController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "must go from NationalityCrossingBorderPage to TransportDetailsCheckYourAnswers Page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator.nextPage(NationalityCrossingBorderPage, CheckMode, answers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
     }
   }
 }

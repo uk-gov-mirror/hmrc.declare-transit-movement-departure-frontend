@@ -16,10 +16,11 @@
 
 package controllers.transportDetails
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.{LocalReferenceNumber, UserAnswers}
+import models.{CountryList, LocalReferenceNumber, UserAnswers}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,25 +37,28 @@ class TransportDetailsCheckYourAnswersController @Inject()(
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
+                                       referenceDataConnector: ReferenceDataConnector,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = createSections(request.userAnswers)
-      val json = Json.obj("lrn" -> lrn,
-        "sections" -> Json.toJson(sections)
-      )
+      referenceDataConnector.getCountryList flatMap {
+        countryList: CountryList =>
+        val sections: Seq[Section] = createSections(request.userAnswers, countryList)
+        val json = Json.obj("lrn" -> lrn,
+          "sections" -> Json.toJson(sections)
+        )
 
-      renderer.render("transportDetailsCheckYourAnswers.njk", json).map(Ok(_))
+        renderer.render("transportDetailsCheckYourAnswers.njk", json).map(Ok(_))
+      }
   }
-
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
-  private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
+  private def createSections(userAnswers: UserAnswers,  countryList: CountryList)(implicit messages: Messages): Seq[Section] = {
     val checkYourAnswersHelper = new TransportDetailsCheckYourAnswersHelper(userAnswers)
 
     Seq(Section(
@@ -62,12 +66,12 @@ class TransportDetailsCheckYourAnswersController @Inject()(
         checkYourAnswersHelper.inlandMode,
         checkYourAnswersHelper.addIdAtDeparture,
         checkYourAnswersHelper.idAtDeparture,
-        checkYourAnswersHelper.nationalityAtDeparture,
+        checkYourAnswersHelper.nationalityAtDeparture(countryList),
         checkYourAnswersHelper.changeAtBorder,
         checkYourAnswersHelper.modeAtBorder,
         checkYourAnswersHelper.idCrossingBorder,
         checkYourAnswersHelper.modeCrossingBorder,
-        checkYourAnswersHelper.nationalityCrossingBorder
+        checkYourAnswersHelper.nationalityCrossingBorder(countryList)
       ).flatten
     ))
   }

@@ -17,7 +17,7 @@
 package utils
 
 import controllers.transportDetails.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, LocalReferenceNumber, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
@@ -84,11 +84,13 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def nationalityAtDeparture: Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
+  def nationalityAtDeparture(codeList: CountryList): Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
     answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
       Row(
         key     = Key(msg"nationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -99,11 +101,13 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def nationalityCrossingBorder: Option[Row] = userAnswers.get(NationalityCrossingBorderPage) map {
+  def nationalityCrossingBorder(codeList: CountryList): Option[Row] = userAnswers.get(NationalityCrossingBorderPage) map {
     answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
       Row(
         key     = Key(msg"nationalityCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",
