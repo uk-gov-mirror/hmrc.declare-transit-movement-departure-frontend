@@ -221,5 +221,6 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
 
       application.stop()
     }
+
   }
 }
