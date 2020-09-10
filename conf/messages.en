@@ -445,10 +445,8 @@ addTransitOffice.error.required = Select yes if you want to add another transit 
 
 addAnotherTransitOffice.title = addAnotherTransitOffice
 addAnotherTransitOffice.heading = addAnotherTransitOffice
-addAnotherTransitOffice.Which transit office do you want to add? = Which transit office do you want to add?
-addAnotherTransitOffice.field2 = field2
+addAnotherTransitOffice.label = Which transit office do you want to add?
 addAnotherTransitOffice.checkYourAnswersLabel = addAnotherTransitOffice
+addAnotherTransitOffice.hintText = Give the office location or code. For example, Dover or GB000060.
 addAnotherTransitOffice.error.required = Enter Which transit office do you want to add?
-addAnotherTransitOffice.error.field2.required = Enter field2
-addAnotherTransitOffice.error.Which transit office do you want to add?.length = Which transit office do you want to add? must be 100 characters or less
-addAnotherTransitOffice.error.field2.length = field2 must be 100 characters or less
+addAnotherTransitOffice.error.length = Which transit office do you want to add? must be 100 characters or less

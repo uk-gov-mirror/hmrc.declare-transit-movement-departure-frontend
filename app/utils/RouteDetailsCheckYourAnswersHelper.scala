@@ -17,10 +17,8 @@
 package utils
 
 import controllers.routeDetails.routes
-import controllers.routes
 import models.{CheckMode, CountryList, CustomsOfficeList, LocalReferenceNumber, UserAnswers}
 import pages._
-import play.api.routing.Router.empty.routes
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 

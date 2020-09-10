@@ -10,6 +10,12 @@
   {{ title(messages("addAnotherTransitOffice.title"), form.errors) }}
 {% endblock %}
 
+{% block pageHead %}
+  <!--[if gt IE 8]><!-->
+  <link href="{{ routes.controllers.Assets.versioned("stylesheets/accessible-autocomplete.min.css").url }}" media="screen" rel="stylesheet" type="text/css" />
+  <!--<![endif]-->
+{% endblock %}
+
 {% block mainContent %}
 
   {{ govukBackLink({
@@ -27,32 +33,30 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.AddAnotherTransitOfficeController.onSubmit(lrn, mode).url }}" method="post">
-
-          {{ csrf() | safe }}
+        <span class="govuk-caption-xl">{{messages('routeDetails.preHeading')}}</span>
 
         <h1 class="govuk-heading-xl">
           {{ messages("addAnotherTransitOffice.heading") }}
         </h1>
 
-          {{ govukInput({
-            label: {
-              text: messages('addAnotherTransitOffice.Which transit office do you want to add?')
-            },
-            id: "Which transit office do you want to add?",
-            name: "Which transit office do you want to add?",
-            value: form.Which transit office do you want to add?.value,
-            errorMessage: form.Which transit office do you want to add?.error
-          }) }}
+        <form action="{{ routes.controllers.routeDetails.AddAnotherTransitOfficeController.onSubmit(lrn, mode).url }}" method="post">
 
-          {{ govukInput({
+          {{ csrf() | safe }}
+
+          {{ govukSelect({
+            classes: "govuk-input--width-20 autocomplete",
             label: {
-              text: messages('addAnotherTransitOffice.field2')
+              text: messages('addAnotherTransitOffice.label'),
+              isPageHeading: false,
+              classes: "govuk-body"
             },
-            id: "field2",
-            name: "field2",
-            value: form.field2.value,
-            errorMessage: form.field2.error
+            id: "value",
+            name: "value",
+            hint: {
+              text: messages('addAnotherTransitOffice.hintText')
+            },
+            errorMessage: form.value.error,
+            items: customsOffices
           }) }}
 
           {{ govukButton({
@@ -66,4 +70,6 @@
     </div>
   </div>
 
+{% block pageScripts %}
+  <script src="{{ routes.controllers.Assets.versioned("javascripts/accessible-autocomplete.js").url }}"></script>
 {% endblock %}
