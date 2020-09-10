@@ -23,6 +23,14 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryAddAnotherTransitOffice: Arbitrary[AddAnotherTransitOffice] =
+    Arbitrary {
+      for {
+        Which transit office do you want to add? <- arbitrary[String]
+        field2 <- arbitrary[String]
+      } yield AddAnotherTransitOffice(Which transit office do you want to add?, field2)
+    }
+
   self: Generators =>
 
   implicit lazy val arbitraryConsigneeAddress: Arbitrary[ConsigneeAddress] =

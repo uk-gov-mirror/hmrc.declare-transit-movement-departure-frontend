@@ -1,0 +1,69 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "macros/title.njk"                         import title %}
+
+{% block pageTitle %}
+  {{ title(messages("addAnotherTransitOffice.title"), form.errors) }}
+{% endblock %}
+
+{% block mainContent %}
+
+  {{ govukBackLink({
+    text: messages("site.back")
+  }) }}
+
+  <div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if form.errors.length > 0 %}
+          {{ govukErrorSummary({
+            "titleText": messages("error.summary.title"),
+            "errorList": form.errors
+          }) }}
+        {% endif %}
+
+        <form action="{{ routes.controllers.AddAnotherTransitOfficeController.onSubmit(lrn, mode).url }}" method="post">
+
+          {{ csrf() | safe }}
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("addAnotherTransitOffice.heading") }}
+        </h1>
+
+          {{ govukInput({
+            label: {
+              text: messages('addAnotherTransitOffice.Which transit office do you want to add?')
+            },
+            id: "Which transit office do you want to add?",
+            name: "Which transit office do you want to add?",
+            value: form.Which transit office do you want to add?.value,
+            errorMessage: form.Which transit office do you want to add?.error
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: messages('addAnotherTransitOffice.field2')
+            },
+            id: "field2",
+            name: "field2",
+            value: form.field2.value,
+            errorMessage: form.field2.error
+          }) }}
+
+          {{ govukButton({
+            text: messages("site.continue"),
+              attributes: {id:"submit"}
+          }) }}
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
