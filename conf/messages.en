@@ -436,4 +436,9 @@ modeAtBorder.checkYourAnswersLabel = Mode at the border
 modeAtBorder.error.required = Enter the mode at the border
 modeAtBorder.error.length = The mode at the border must be 100 characters or less
 
+addTransitOffice.title = You have added 1 transit office
+addTransitOffice.heading = You have added 1 transit office
+addTransitOffice.paragraph = Do you need to add another transit office?
+addTransitOffice.checkYourAnswersLabel = Add another transit office
+addTransitOffice.error.required = Select yes if you want to add another transit office
 
