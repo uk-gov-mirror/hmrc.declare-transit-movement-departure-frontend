@@ -10,7 +10,7 @@ class AddAnotherTransitOfficeFormProviderSpec extends StringFieldBehaviours {
   ".Which transit office do you want to add?" - {
 
     val fieldName = "Which transit office do you want to add?"
-    val requiredKey = "addAnotherTransitOffice.error.Which transit office do you want to add?.required"
+    val requiredKey = "addAnotherTransitOffice.error.required"
     val lengthKey = "addAnotherTransitOffice.error.Which transit office do you want to add?.length"
     val maxLength = 100
 

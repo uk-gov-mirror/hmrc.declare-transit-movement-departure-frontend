@@ -26,21 +26,6 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def addAnotherTransitOffice: Option[Row] = userAnswers.get(AddAnotherTransitOfficePage) map {
-    answer =>
-      Row(
-        key     = Key(msg"addAnotherTransitOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"${answer.Which transit office do you want to add?} ${answer.field2}"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddAnotherTransitOfficeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherTransitOffice.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(

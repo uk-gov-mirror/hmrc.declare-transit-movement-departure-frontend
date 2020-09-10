@@ -17,8 +17,10 @@
 package utils
 
 import controllers.routeDetails.routes
+import controllers.routes
 import models.{CheckMode, CountryList, CustomsOfficeList, LocalReferenceNumber, UserAnswers}
 import pages._
+import play.api.routing.Router.empty.routes
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
@@ -70,6 +72,23 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
       )
     }
+  }
+  def addAnotherTransitOffice(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(AddAnotherTransitOfficePage) flatMap  {
+    answer =>
+      customsOfficeList.getCustomsOffice(answer) map{
+        customsOffice =>
+          Row(
+            key     = Key(msg"addAnotherTransitOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value   = Value(lit"${customsOffice.name} ${customsOffice.id}"),
+            actions = List(
+              Action(
+                content            = msg"site.edit",
+                href               = routes.AddAnotherTransitOfficeController.onPageLoad(lrn, CheckMode).url,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherTransitOffice.checkYourAnswersLabel"))
+              )
+            )
+          )
+      }
   }
 
   def countryOfDispatch(codeList: CountryList): Option[Row] = userAnswers.get(CountryOfDispatchPage) map {

@@ -30,10 +30,9 @@ self: Generators =>
     Arbitrary {
       for {
         page  <- arbitrary[AddAnotherTransitOfficePage.type]
-        value <- arbitrary[AddAnotherTransitOffice].map(Json.toJson(_))
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
-  self: Generators =>
 
   implicit lazy val arbitraryDestinationOfficeUserAnswersEntry: Arbitrary[(DestinationOfficePage.type, JsValue)] =
     Arbitrary {

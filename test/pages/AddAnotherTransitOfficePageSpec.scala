@@ -1,16 +1,15 @@
 package pages
 
-import models.AddAnotherTransitOffice
 import pages.behaviours.PageBehaviours
 
 class AddAnotherTransitOfficePageSpec extends PageBehaviours {
 
   "AddAnotherTransitOfficePage" - {
 
-    beRetrievable[AddAnotherTransitOffice](AddAnotherTransitOfficePage)
+    beRetrievable[String](AddAnotherTransitOfficePage)
 
-    beSettable[AddAnotherTransitOffice](AddAnotherTransitOfficePage)
+    beSettable[String](AddAnotherTransitOfficePage)
 
-    beRemovable[AddAnotherTransitOffice](AddAnotherTransitOfficePage)
+    beRemovable[String](AddAnotherTransitOfficePage)
   }
 }
