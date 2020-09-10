@@ -16,73 +16,85 @@
 
 package controllers.transportDetails
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.ModeAtBorderFormProvider
 import javax.inject.Inject
+import models.reference.TransportMode
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TransportDetails
 import pages.ModeAtBorderPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.transportModesAsJson
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ModeAtBorderController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       @TransportDetails navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: ModeAtBorderFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                        override val messagesApi: MessagesApi,
+                                        sessionRepository: SessionRepository,
+                                        @TransportDetails navigator: Navigator,
+                                        identify: IdentifierAction,
+                                        getData: DataRetrievalActionProvider,
+                                        requireData: DataRequiredAction,
+                                        formProvider: ModeAtBorderFormProvider,
+                                        referenceDataConnector: ReferenceDataConnector,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        renderer: Renderer
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      referenceDataConnector.getTransportModes flatMap {
 
-      val preparedForm = request.userAnswers.get(ModeAtBorderPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        transportModes =>
+          val form = formProvider(transportModes)
+
+          val preparedForm = request.userAnswers
+            .get(ModeAtBorderPage).flatMap(transportModes.getTransportMode).map(form.fill).getOrElse(form)
+
+          renderPage(lrn, mode, preparedForm, transportModes.transportModes, Results.Ok)
       }
-
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("modeAtBorder.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      referenceDataConnector.getTransportModes flatMap {
+        transportModes =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+          formProvider(transportModes)
+            .bindFromRequest()
+            .fold(formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ModeAtBorderPage, value.code))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ModeAtBorderPage, mode, updatedAnswers))
+            )
+      }
+  }
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
-          )
+  def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[TransportMode], transportModes: Seq[TransportMode], status: Results.Status)(
 
-          renderer.render("modeAtBorder.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ModeAtBorderPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ModeAtBorderPage, mode, updatedAnswers))
-      )
+    implicit request: Request[AnyContent]): Future[Result] = {
+
+    val json = Json.obj(
+      "form" -> form,
+      "lrn" -> lrn,
+      "mode" -> mode,
+      "transportModes" -> transportModesAsJson(form.value, transportModes),
+      "onSubmitUrl" -> routes.ModeAtBorderController.onSubmit(lrn, mode).url
+    )
+    renderer.render("modeAtBorder.njk", json).map(status(_)
+    )
   }
 }
+
