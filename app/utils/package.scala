@@ -42,7 +42,7 @@ package object utils {
     defaultOption +: customsOfficeObjects
   }
 
-  def getTransportModesAsJson(value: Option[TransportMode], transportModes: Seq[TransportMode]): Seq[JsObject] = {
+  def transportModesAsJson(value: Option[TransportMode], transportModes: Seq[TransportMode]): Seq[JsObject] = {
     val transportModeObjects = transportModes.map {
       mode =>
         Json.obj(
