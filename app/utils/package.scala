@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import models.reference.{Country, CustomsOffice}
+import models.reference.{Country, CustomsOffice, TransportMode}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.viewmodels.{Content, MessageInterpolators}
 
@@ -40,6 +40,18 @@ package object utils {
         )
     }
     defaultOption +: customsOfficeObjects
+  }
+
+  def getTransportModesAsJson(value: Option[TransportMode], transportModes: Seq[TransportMode]): Seq[JsObject] = {
+    val transportModeObjects = transportModes.map {
+      mode =>
+        Json.obj(
+          "value" -> mode.code,
+          "text" -> s"(${mode.code}) ${mode.description}",
+          "selected" -> value.contains(mode)
+        )
+    }
+    defaultOption +: transportModeObjects
   }
 
   def yesOrNo(answer: Boolean): Content =
