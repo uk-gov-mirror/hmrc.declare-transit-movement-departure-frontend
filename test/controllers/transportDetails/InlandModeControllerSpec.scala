@@ -112,11 +112,6 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
-      //      val transportModeJson = Seq(
-      //        Json.obj("value" -> "", "text"         -> ""),
-      //        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> false),
-      //        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
-      //      )
 
       status(result) mustEqual OK
 
