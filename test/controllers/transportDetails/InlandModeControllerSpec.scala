@@ -17,13 +17,17 @@
 package controllers.transportDetails
 
 import base.SpecBase
+import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoutes}
 import forms.InlandModeFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.reference.TransportMode
+import models.{NormalMode, TransportModeList}
+import navigation.annotations.TransportDetails
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.InlandModePage
 import play.api.inject.bind
@@ -34,19 +38,32 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
-import navigation.annotations.TransportDetails
+import utils.transportModesAsJson
 
 import scala.concurrent.Future
 
 class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
+  val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new InlandModeFormProvider()
-  val form = formProvider()
+  val transportMode: TransportMode = TransportMode("1", "Sea transport")
+  val transportModes: TransportModeList = TransportModeList(
+    Seq(
+      transportMode
+    )
+  )
+
+  val form = formProvider(transportModes)
 
   lazy val inlandModeRoute = routes.InlandModeController.onPageLoad(lrn, NormalMode).url
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockReferenceDataConnector)
+  }
 
   "InlandMode Controller" - {
 
@@ -54,6 +71,8 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request = FakeRequest(GET, inlandModeRoute)
@@ -67,9 +86,9 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn" -> lrn
       )
 
       templateCaptor.getValue mustEqual "inlandMode.njk"
@@ -82,26 +101,36 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
 
-      val userAnswers = emptyUserAnswers.set(InlandModePage, "answer").success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val userAnswers = emptyUserAnswers.set(InlandModePage, "1").success.value
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(GET, inlandModeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
+      //      val transportModeJson = Seq(
+      //        Json.obj("value" -> "", "text"         -> ""),
+      //        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> false),
+      //        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
+      //      )
 
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "1"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
-        "lrn"  -> lrn,
+        "lrn" -> lrn,
+        "transportModes" -> transportModesAsJson(filledForm.value, transportModes.transportModes),
         "mode" -> NormalMode
       )
+
 
       templateCaptor.getValue mustEqual "inlandMode.njk"
       jsonCaptor.getValue must containJson(expectedJson)
@@ -114,18 +143,20 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
       val request =
         FakeRequest(POST, inlandModeRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "1"))
 
       val result = route(application, request).value
 
@@ -139,6 +170,8 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request = FakeRequest(POST, inlandModeRoute).withFormUrlEncodedBody(("value", ""))
@@ -154,7 +187,7 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
 
       val expectedJson = Json.obj(
         "form" -> boundForm,
-        "lrn"  -> lrn,
+        "lrn" -> lrn,
         "mode" -> NormalMode
       )
 
