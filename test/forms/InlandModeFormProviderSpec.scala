@@ -17,6 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.TransportModeList
+import models.reference.TransportMode
 import play.api.data.FormError
 
 class InlandModeFormProviderSpec extends StringFieldBehaviours {
@@ -24,8 +26,13 @@ class InlandModeFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "inlandMode.error.required"
   val lengthKey = "inlandMode.error.length"
   val maxLength = 100
-
-  val form = new InlandModeFormProvider()()
+  val transportModeList: TransportModeList = TransportModeList(
+    Seq(
+      TransportMode("1", "Sea transport"),
+      TransportMode("10", "Sea transport")
+    )
+  )
+  val form = new InlandModeFormProvider()(transportModeList)
 
   ".value" - {
 
@@ -37,17 +44,25 @@ class InlandModeFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind if  code does not exist in the transport mode list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a code which is in the transport mode list" in {
+
+      val boundForm = form.bind(Map("value" -> "1"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
+
   }
 }
