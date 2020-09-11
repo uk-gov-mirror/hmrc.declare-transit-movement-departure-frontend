@@ -16,73 +16,88 @@
 
 package controllers.transportDetails
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.ModeCrossingBorderFormProvider
 import javax.inject.Inject
+import models.reference.TransportMode
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TransportDetails
 import pages.ModeCrossingBorderPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.transportModesAsJson
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ModeCrossingBorderController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       @TransportDetails navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: ModeCrossingBorderFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
-
-  private val form = formProvider()
+                                              override val messagesApi: MessagesApi,
+                                              sessionRepository: SessionRepository,
+                                              @TransportDetails navigator: Navigator,
+                                              identify: IdentifierAction,
+                                              getData: DataRetrievalActionProvider,
+                                              requireData: DataRequiredAction,
+                                              formProvider: ModeCrossingBorderFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              renderer: Renderer,
+                                              referenceDataConnector: ReferenceDataConnector
+                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ModeCrossingBorderPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      referenceDataConnector.getTransportModes() flatMap {
+
+        transportModes =>
+          val form = formProvider(transportModes)
+
+          val preparedForm = request.userAnswers
+            .get(ModeCrossingBorderPage)
+            .flatMap(transportModes.getTransportMode)
+            .map(form.fill)
+            .getOrElse(form)
+
+          renderPage(lrn, mode, preparedForm, transportModes.transportModes, Results.Ok)
       }
-
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("modeCrossingBorder.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+      referenceDataConnector.getTransportModes() flatMap {
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
-          )
+        transportModes =>
 
-          renderer.render("modeCrossingBorder.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ModeCrossingBorderPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ModeCrossingBorderPage, mode, updatedAnswers))
-      )
+          formProvider(transportModes)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ModeCrossingBorderPage, value.code))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ModeCrossingBorderPage, mode, updatedAnswers))
+            )
+      }
+  }
+
+  def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[TransportMode], transportModes: Seq[TransportMode], status: Results.Status)(
+    implicit request: Request[AnyContent]): Future[Result] = {
+    val json = Json.obj(
+      "form" -> form,
+      "lrn" -> lrn,
+      "mode" -> mode,
+      "transportModes" -> transportModesAsJson(form.value, transportModes),
+      "onSubmitUrl" -> routes.ModeCrossingBorderController.onSubmit(lrn, mode).url
+    )
+    renderer.render("modeCrossingBorder.njk", json).map(status(_)
+    )
   }
 }

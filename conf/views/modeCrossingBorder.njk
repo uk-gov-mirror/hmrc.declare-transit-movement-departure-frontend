@@ -1,6 +1,7 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
 {% from "govuk/components/input/macro.njk"         import govukInput %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
@@ -8,6 +9,12 @@
 
 {% block pageTitle %}
   {{ title(messages("modeCrossingBorder.title"), form.errors) }}
+{% endblock %}
+
+{% block pageHead %}
+  <!--[if gt IE 8]><!-->
+  <link href="{{ routes.controllers.Assets.versioned("stylesheets/accessible-autocomplete.min.css").url }}" media="screen" rel="stylesheet" type="text/css" />
+  <!--<![endif]-->
 {% endblock %}
 
 {% block mainContent %}
@@ -32,16 +39,18 @@
 
           {{ csrf() | safe }}
 
-          {{ govukInput({
+          {{ govukSelect({
             label: {
               text: messages('modeCrossingBorder.heading'),
               isPageHeading: true,
               classes: "govuk-label--xl"
             },
+            classes: "govuk-input--width-20 autocomplete",
             id: "value",
             name: "value",
             value: form.value.value,
-            errorMessage: form.value.error
+            errorMessage: form.value.error,
+            items: transportModes
           }) }}
 
           {{ govukButton({
@@ -55,4 +64,8 @@
     </div>
   </div>
 
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="{{ routes.controllers.Assets.versioned("javascripts/accessible-autocomplete.js").url }}"></script>
 {% endblock %}
