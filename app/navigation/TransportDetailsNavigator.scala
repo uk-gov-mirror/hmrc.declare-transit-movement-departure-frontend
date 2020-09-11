@@ -87,9 +87,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
         case Some(x) if(x  != "2" && x != "5" && x != "7" )  => routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
         case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
 
-
     }
-
   }
   private def addItAtDepartureLaterRoute(ua: UserAnswers, mode: Mode): Call = {
     ua.get(NationalityAtDeparturePage) match {
@@ -97,6 +95,5 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
       case _ =>  routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
-
 }
 
