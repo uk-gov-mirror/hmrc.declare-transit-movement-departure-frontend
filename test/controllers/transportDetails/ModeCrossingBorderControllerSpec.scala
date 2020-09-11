@@ -17,9 +17,10 @@
 package controllers.transportDetails
 
 import base.SpecBase
+import connectors.ReferenceDataConnector
 import forms.ModeCrossingBorderFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{NormalMode, TransportModeList}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -35,7 +36,9 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import models.reference.TransportMode
 import navigation.annotations.TransportDetails
+import utils.transportModesAsJson
 
 import scala.concurrent.Future
 
@@ -44,7 +47,10 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new ModeCrossingBorderFormProvider()
-  val form = formProvider()
+  val transportMode = TransportMode("1", "Sea transport")
+  val transportModes = TransportModeList(Seq(transportMode))
+  val form = formProvider(transportModes)
+  val mockReferenceDataConnector = mock[ReferenceDataConnector]
 
   lazy val modeCrossingBorderRoute = routes.ModeCrossingBorderController.onPageLoad(lrn, NormalMode).url
 
@@ -55,7 +61,11 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(GET, modeCrossingBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -83,8 +93,12 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ModeCrossingBorderPage, "answer").success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+
+      val userAnswers = emptyUserAnswers.set(ModeCrossingBorderPage, "1").success.value
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(GET, modeCrossingBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -95,11 +109,12 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "1"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
         "lrn"  -> lrn,
+        "transportModes" -> transportModesAsJson(filledForm.value, transportModes.transportModes),
         "mode" -> NormalMode
       )
 
@@ -115,17 +130,20 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
           )
           .build()
 
       val request =
         FakeRequest(POST, modeCrossingBorderRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "1"))
 
       val result = route(application, request).value
 
@@ -140,7 +158,11 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(POST, modeCrossingBorderRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
