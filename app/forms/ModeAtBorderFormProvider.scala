@@ -17,15 +17,18 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.TransportModeList
+import models.reference.TransportMode
 import play.api.data.Form
 
 class ModeAtBorderFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(transportModeList: TransportModeList): Form[TransportMode] =
     Form(
       "value" -> text("modeAtBorder.error.required")
-        .verifying(maxLength(100, "modeAtBorder.error.length"))
+        .verifying(
+          "modeAtBorder.error.required", value => transportModeList.transportModes.exists(_.code == value))
+        .transform[TransportMode](value => transportModeList.transportModes.find(_.code == value).get, _.code)
     )
 }

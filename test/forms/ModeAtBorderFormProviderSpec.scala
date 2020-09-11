@@ -17,15 +17,22 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.TransportModeList
+import models.reference.TransportMode
 import play.api.data.FormError
+
 
 class ModeAtBorderFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "modeAtBorder.error.required"
   val lengthKey = "modeAtBorder.error.length"
   val maxLength = 100
+  val transportModeList = TransportModeList(Seq(
+    TransportMode("1", "Sea transport"),
+    TransportMode("10", "Sea transport")
+  ))
 
-  val form = new ModeAtBorderFormProvider()()
+  val form = new ModeAtBorderFormProvider()(transportModeList)
 
   ".value" - {
 
@@ -37,17 +44,24 @@ class ModeAtBorderFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+    "not bind if code which does not exit in the transport mode list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field = boundForm("value")
+      field.errors mustNot be (empty)
+    }
+
+    "bind if code which is in the transport mode list" in {
+
+      val boundForm = form.bind(Map("value" -> "1"))
+      val field = boundForm("value")
+      field.errors mustBe empty
+    }
+
   }
 }
