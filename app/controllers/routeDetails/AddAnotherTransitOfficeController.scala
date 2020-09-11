@@ -22,6 +22,7 @@ import forms.AddAnotherTransitOfficeFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
+import navigation.annotations.RouteDetails
 import pages.AddAnotherTransitOfficePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -37,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddAnotherTransitOfficeController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
-                                       navigator: Navigator,
+                                       @RouteDetails navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
@@ -76,7 +77,6 @@ class AddAnotherTransitOfficeController @Inject()(
           val form = formProvider(customsOffices)
           form.bindFromRequest().fold(
             formWithErrors => {
-
               val json = Json.obj(
                 "form" -> formWithErrors,
                 "lrn"  -> lrn,

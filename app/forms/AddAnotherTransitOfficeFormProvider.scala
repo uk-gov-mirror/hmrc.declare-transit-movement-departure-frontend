@@ -24,10 +24,10 @@ import play.api.data.Form
 
 class AddAnotherTransitOfficeFormProvider @Inject() extends Mappings {
 
-  def apply(customsOfficeList: CustomsOfficeList): Form[CustomsOffice] =
+  def apply(customsOffices: CustomsOfficeList): Form[CustomsOffice] =
     Form(
       "value" -> text("presentationOffice.error.required")
-        .verifying("presentationOffice.error.required", value => customsOfficeList.customsOffices.exists(_.id == value))
-        .transform[CustomsOffice](value => customsOfficeList.getCustomsOffice(value).get, _.id)
+        .verifying("presentationOffice.error.required", value => customsOffices.customsOffices.exists(_.id == value))
+        .transform[CustomsOffice](value => customsOffices.getCustomsOffice(value).get, _.id)
     )
 }

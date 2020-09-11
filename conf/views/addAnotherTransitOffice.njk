@@ -1,6 +1,7 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
 {% from "govuk/components/input/macro.njk"         import govukInput %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
@@ -8,12 +9,6 @@
 
 {% block pageTitle %}
   {{ title(messages("addAnotherTransitOffice.title"), form.errors) }}
-{% endblock %}
-
-{% block pageHead %}
-  <!--[if gt IE 8]><!-->
-  <link href="{{ routes.controllers.Assets.versioned("stylesheets/accessible-autocomplete.min.css").url }}" media="screen" rel="stylesheet" type="text/css" />
-  <!--<![endif]-->
 {% endblock %}
 
 {% block mainContent %}
@@ -70,6 +65,4 @@
     </div>
   </div>
 
-{% block pageScripts %}
-  <script src="{{ routes.controllers.Assets.versioned("javascripts/accessible-autocomplete.js").url }}"></script>
 {% endblock %}
