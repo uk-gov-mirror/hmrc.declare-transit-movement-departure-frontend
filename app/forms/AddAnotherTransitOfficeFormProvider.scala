@@ -26,8 +26,8 @@ class AddAnotherTransitOfficeFormProvider @Inject() extends Mappings {
 
   def apply(customsOffices: CustomsOfficeList): Form[CustomsOffice] =
     Form(
-      "value" -> text("presentationOffice.error.required")
-        .verifying("presentationOffice.error.required", value => customsOffices.customsOffices.exists(_.id == value))
+      "value" -> text("addAnotherTransitOffice.error.required")
+        .verifying("addAnotherTransitOffice.error.required", value => customsOffices.customsOffices.exists(_.id == value))
         .transform[CustomsOffice](value => customsOffices.getCustomsOffice(value).get, _.id)
     )
 }
