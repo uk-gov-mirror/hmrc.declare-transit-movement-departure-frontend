@@ -71,7 +71,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
     val cyaPageAndStatus: (String, Status) = (transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
     val (page, status) = getIncompletePage(startPage, transportDetailsPage).getOrElse(cyaPageAndStatus)
 
-    SectionDetails("declarationSummary.section.transportDetails", page, status)
+    SectionDetails("declarationSummary.section.transport", page, status)
   }
 
   private def tradersDetailsSection: SectionDetails = {

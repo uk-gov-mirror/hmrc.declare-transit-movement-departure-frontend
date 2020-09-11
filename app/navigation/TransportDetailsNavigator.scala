@@ -31,7 +31,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     case NationalityAtDeparturePage => ua => Some(routes.ChangeAtBorderController.onPageLoad(ua.id, NormalMode))
     case ModeAtBorderPage => ua => Some(routes.IdCrossingBorderController.onPageLoad(ua.id, NormalMode))
     case IdCrossingBorderPage => ua => Some(routes.ModeCrossingBorderController.onPageLoad(ua.id, NormalMode))
-    case ModeCrossingBorderPage => ua => Some(routes.NationalityCrossingBorderController.onPageLoad(ua.id, NormalMode)) //TODO update when ref data available
+    case ModeCrossingBorderPage => ua => Some(modeCrossingBorderRoute(ua, NormalMode)) //TODO update when ref data available
     case NationalityCrossingBorderPage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case AddIdAtDeparturePage => ua => Some(addIdAtDepartureRoute(ua, NormalMode))
     case ChangeAtBorderPage => ua => Some(changeAtBorderRoute(ua, NormalMode))
@@ -47,7 +47,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     case ChangeAtBorderPage => ua => Some(changeAtBorderRoute(ua, CheckMode))
     case ModeAtBorderPage => ua => Some(modeAtBorderRoute(ua, CheckMode))
     case IdCrossingBorderPage => ua => Some(idCrossingBorderRoute(ua, CheckMode))
-    case ModeCrossingBorderPage => ua => Some(modeCrossingBorderRoute(ua, CheckMode))
+    case ModeCrossingBorderPage => ua => Some(modeCrossingBorderRoute(ua,CheckMode))
     case NationalityCrossingBorderPage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
   }
@@ -75,7 +75,6 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
       case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
-
   private def idCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call = {
     ua.get(ModeCrossingBorderPage) match {
       case None => routes.ModeCrossingBorderController.onPageLoad(ua.id, CheckMode)
@@ -84,12 +83,14 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
   }
 
   private def modeCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call = {
-    ua.get(NationalityCrossingBorderPage) match {
-      case None => routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
-      case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    }
-  }
+    ua.get(ModeCrossingBorderPage) match {
+        case Some(x) if(x  != "2" && x != "5" && x != "7" )  => routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
+        case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
 
+
+    }
+
+  }
   private def addItAtDepartureLaterRoute(ua: UserAnswers, mode: Mode): Call = {
     ua.get(NationalityAtDeparturePage) match {
       case None =>  routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)

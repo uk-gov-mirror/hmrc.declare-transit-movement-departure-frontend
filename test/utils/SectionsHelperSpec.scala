@@ -132,7 +132,7 @@ class SectionsHelperSpec extends SpecBase {
         val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
         val url = transportDetailsRoutes.InlandModeController.onPageLoad(lrn, NormalMode).url
-        val sectionName = "declarationSummary.section.transportDetails"
+        val sectionName = "declarationSummary.section.transport"
         val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
         val result: Seq[SectionDetails] = sectionsHelper.getSections
@@ -146,7 +146,7 @@ class SectionsHelperSpec extends SpecBase {
         val userAnswers: UserAnswers = emptyUserAnswers.set(InlandModePage, transportMode.code).success.value
         val sectionsHelper = new SectionsHelper(userAnswers)
         val url = transportDetailsRoutes.AddIdAtDepartureController.onPageLoad(lrn, NormalMode).url
-        val sectionName = "declarationSummary.section.transportDetails"
+        val sectionName = "declarationSummary.section.transport"
 
         val result: Seq[SectionDetails] = sectionsHelper.getSections
         result must contain(SectionDetails(sectionName, url, InProgress))
@@ -170,7 +170,7 @@ class SectionsHelperSpec extends SpecBase {
         val sectionsHelper = new SectionsHelper(userAnswers)
 
         val url = transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
-        val sectionName = "declarationSummary.section.transportDetails"
+        val sectionName = "declarationSummary.section.transport"
         val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
 
         val result = sectionsHelper.getSections

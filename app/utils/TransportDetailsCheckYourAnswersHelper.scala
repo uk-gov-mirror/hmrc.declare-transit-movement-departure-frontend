@@ -17,7 +17,7 @@
 package utils
 
 import controllers.transportDetails.routes
-import models.{CheckMode, CountryList, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, LocalReferenceNumber, TransportModeList, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._

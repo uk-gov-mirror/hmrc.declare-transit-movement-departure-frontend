@@ -133,11 +133,25 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "must go from ModeCrossingBorder page to NationalityCrossingBorder Page" in { //TODO needs refactoring with reference data
+      "must go from ModeCrossingBorder to TransportDetailsCheckYourAnswers answer is  2, 5 or 7" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(ModeCrossingBorderPage, NormalMode, answers)
+            val updatedAnswers = answers.set(ModeCrossingBorderPage, "2").success.value
+
+            navigator.nextPage(ModeCrossingBorderPage, NormalMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from ModeCrossingBorder to NationalityCrossingBorder Page when answer  not 2, 5 or 7" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(ModeCrossingBorderPage, ("17")).success.value
+
+            navigator.nextPage(ModeCrossingBorderPage, NormalMode, updatedAnswers)
+
               .mustBe(transportDetailsRoute.NationalityCrossingBorderController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -286,24 +300,25 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "must go from ModeCrossingBorder to TransportDetailsCheckYourAnswers Page when answer exists for NationalityCrossingBorder" in {
+      "must go from ModeCrossingBorder to TransportDetailsCheckYourAnswers answer is  2, 5 or 7" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val country = arbitrary[CountryCode].sample.value
-            val updatedAnswers = answers.set(NationalityCrossingBorderPage, country).success.value
+            val updatedAnswers = answers.set(ModeCrossingBorderPage, "2").success.value
 
             navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
 
-      "must go from ModeCrossingBorder to NationalityCrossingBorder Page when no answer exists for NationalityCrossingBorder" in {
+      "must go from ModeCrossingBorder to NationalityCrossingBorder Page when answer not 2, 5 or 7" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.remove(NationalityCrossingBorderPage).success.value
+            val updatedAnswers = answers.set(ModeCrossingBorderPage, ("17")).success.value
+
             navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
+
               .mustBe(transportDetailsRoute.NationalityCrossingBorderController.onPageLoad(answers.id, CheckMode))
         }
       }
