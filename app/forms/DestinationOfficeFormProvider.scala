@@ -18,16 +18,16 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
-import models.TransportModeList
-import models.reference.TransportMode
+import models.CustomsOfficeList
+import models.reference.CustomsOffice
 import play.api.data.Form
 
-class InlandModeFormProvider @Inject() extends Mappings {
+class DestinationOfficeFormProvider @Inject() extends Mappings {
 
-  def apply(transportModeList: TransportModeList): Form[TransportMode] =
+  def apply(customsOffices: CustomsOfficeList, countryName: String): Form[CustomsOffice] =
     Form(
-      "value" -> text("inlandMode.error.required")
-        .verifying("inlandMode.error.required", value => transportModeList.transportModes.exists(_.code == value))
-        .transform[TransportMode](value => transportModeList.transportModes.find(_.code == value).get, _.code)
+      "value" -> text("destinationOffice.error.required", Seq(countryName))
+        .verifying("destinationOffice.error.required", value => customsOffices.customsOffices.exists(_.id == value))
+        .transform[CustomsOffice](value => customsOffices.getCustomsOffice(value).get, _.id)
     )
 }

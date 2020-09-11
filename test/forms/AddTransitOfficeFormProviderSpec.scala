@@ -16,18 +16,30 @@
 
 package forms
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import models.TransportModeList
-import models.reference.TransportMode
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class InlandModeFormProvider @Inject() extends Mappings {
+class AddTransitOfficeFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(transportModeList: TransportModeList): Form[TransportMode] =
-    Form(
-      "value" -> text("inlandMode.error.required")
-        .verifying("inlandMode.error.required", value => transportModeList.transportModes.exists(_.code == value))
-        .transform[TransportMode](value => transportModeList.transportModes.find(_.code == value).get, _.code)
+  val requiredKey = "addTransitOffice.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new AddTransitOfficeFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

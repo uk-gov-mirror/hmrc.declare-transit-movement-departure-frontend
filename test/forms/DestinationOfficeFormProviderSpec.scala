@@ -17,22 +17,22 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.TransportModeList
-import models.reference.TransportMode
+import models.CustomsOfficeList
+import models.reference.CustomsOffice
 import play.api.data.FormError
 
-class InlandModeFormProviderSpec extends StringFieldBehaviours {
+class DestinationOfficeFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "inlandMode.error.required"
-  val lengthKey = "inlandMode.error.length"
-  val maxLength = 100
-  val transportModeList: TransportModeList = TransportModeList(
-    Seq(
-      TransportMode("1", "Sea transport"),
-      TransportMode("10", "Sea transport")
-    )
-  )
-  val form = new InlandModeFormProvider()(transportModeList)
+  val requiredKey = "destinationOffice.error.required"
+  val lengthKey = "destinationOffice.error.length"
+  val maxLength = 20
+
+  val countryName = "United Kingdom"
+  val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
+  val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
+  val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+
+  val form = new DestinationOfficeFormProvider()(customsOffices, countryName)
 
   ".value" - {
 
@@ -47,22 +47,21 @@ class InlandModeFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(countryName))
     )
 
-    "not bind if  code does not exist in the transport mode list" in {
+    "not bind if customs office id does not exist in the customs office list" in {
 
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a code which is in the transport mode list" in {
+    "bind a customs office id which is in the list" in {
 
-      val boundForm = form.bind(Map("value" -> "1"))
+      val boundForm = form.bind(Map("value" -> "officeId"))
       val field     = boundForm("value")
       field.errors must be(empty)
     }
-
   }
 }

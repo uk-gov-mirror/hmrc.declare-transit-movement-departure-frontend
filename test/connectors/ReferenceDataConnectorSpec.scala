@@ -19,8 +19,8 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
-import models.reference.{Country, CountryCode, CustomsOffice}
-import models.{CountryList, CustomsOfficeList}
+import models.reference.{Country, CountryCode, CustomsOffice, TransportMode}
+import models.{CountryList, CustomsOfficeList, TransportModeList}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -75,6 +75,24 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |]
       |""".stripMargin
 
+  private val transportModeListResponseJson: String =
+    """
+      |[
+      |  {
+      |    "state": "valid",
+      |    "activeFrom": "2020-05-30",
+      |    "code": "1",
+      |    "description": "Sea transport"
+      |  },
+      |  {
+      |    "state": "valid",
+      |    "activeFrom": "2015-07-01",
+      |    "code": "10",
+      |    "description": "Sea transport"
+      |  }
+      |]
+      |""".stripMargin
+
   val errorResponses: Gen[Int] = Gen.chooseNum(400, 599)
 
   "Reference Data" - {
@@ -98,6 +116,28 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(s"/$startUrl/customs-offices", connector.getCustomsOffices)
+      }
+    }
+
+    "getCustomsOfficesOfTheCountry" - {
+      "must return a successful future response with a sequence of CustomsOffices" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/customs-offices/GB"))
+            .willReturn(okJson(customsOfficeResponseJson))
+        )
+
+        val expectedResult = {
+          CustomsOfficeList(Seq(
+            CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
+            CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
+          ))
+        }
+
+        connector.getCustomsOfficesOfTheCountry(CountryCode("GB")).futureValue mustBe expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$startUrl/customs-offices/GB", connector.getCustomsOfficesOfTheCountry(CountryCode("GB")))
       }
     }
 
@@ -146,6 +186,30 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return an exception when an error response is returned" in {
 
         checkErrorResponse(s"/$startUrl/transit-countries", connector.getTransitCountryList())
+      }
+    }
+
+    "getTransportModes" - {
+
+      "must return Seq of Transport modes when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/transport-modes"))
+            .willReturn(okJson(transportModeListResponseJson))
+        )
+
+        val expectedResult: TransportModeList = TransportModeList(
+          Seq(
+            TransportMode("1", "Sea transport"),
+            TransportMode("10", "Sea transport")
+          )
+        )
+
+        connector.getTransportModes().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/transport-modes", connector.getTransportModes())
       }
     }
   }

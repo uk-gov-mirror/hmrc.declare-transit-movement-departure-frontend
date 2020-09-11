@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryAddTransitOfficePage: Arbitrary[AddTransitOfficePage.type] =
+    Arbitrary(AddTransitOfficePage)
+
   implicit lazy val arbitraryModeAtBorderPage: Arbitrary[ModeAtBorderPage.type] =
     Arbitrary(ModeAtBorderPage)
 
@@ -32,6 +35,9 @@ trait PageGenerators {
 
   implicit lazy val arbitraryInlandModePage: Arbitrary[InlandModePage.type] =
     Arbitrary(InlandModePage)
+
+  implicit lazy val arbitraryDestinationOfficePage: Arbitrary[DestinationOfficePage.type] =
+    Arbitrary(DestinationOfficePage)
 
   implicit lazy val arbitraryAddIdAtDeparturePage: Arbitrary[AddIdAtDeparturePage.type] =
     Arbitrary(AddIdAtDeparturePage)

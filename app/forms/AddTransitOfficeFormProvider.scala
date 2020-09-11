@@ -17,17 +17,14 @@
 package forms
 
 import javax.inject.Inject
+
 import forms.mappings.Mappings
-import models.TransportModeList
-import models.reference.TransportMode
 import play.api.data.Form
 
-class InlandModeFormProvider @Inject() extends Mappings {
+class AddTransitOfficeFormProvider @Inject() extends Mappings {
 
-  def apply(transportModeList: TransportModeList): Form[TransportMode] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> text("inlandMode.error.required")
-        .verifying("inlandMode.error.required", value => transportModeList.transportModes.exists(_.code == value))
-        .transform[TransportMode](value => transportModeList.transportModes.find(_.code == value).get, _.code)
+      "value" -> boolean("addTransitOffice.error.required")
     )
 }

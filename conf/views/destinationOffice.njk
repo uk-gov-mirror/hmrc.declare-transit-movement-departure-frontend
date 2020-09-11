@@ -1,15 +1,13 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
-{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
-{% from "govuk/components/select/macro.njk"        import govukSelect %}
-
 
 {% block pageTitle %}
-  {{ title(messages("inlandMode.title"), form.errors) }}
+  {{ title(messages("officeOfDeparture.title"), form.errors) }}
 {% endblock %}
 
 {% block pageHead %}
@@ -35,23 +33,24 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.transportDetails.InlandModeController.onSubmit(lrn, mode).url }}" method="post">
-        <span class="govuk-caption-xl">{{messages('transportDetails.preHeading')}}</span>
+        <span class="govuk-caption-xl">{{messages('routeDetails.preHeading')}}</span>
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("destinationOffice.heading", countryName) }}
+        </h1>
+
+        <form action="{{ routes.controllers.routeDetails.DestinationOfficeController.onSubmit(lrn, mode).url }}" method="post">
+
+         <p class="govuk-body">{{messages('destinationOffice.label')}}</p>
 
           {{ csrf() | safe }}
 
           {{ govukSelect({
-            label: {
-              text: messages('inlandMode.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
-            },
             classes: "govuk-input--width-20 autocomplete",
             id: "value",
             name: "value",
-            value: form.value.value,
             errorMessage: form.value.error,
-            items: transportModes
+            items: customsOffices
           }) }}
 
           {{ govukButton({
@@ -64,7 +63,6 @@
       </div>
     </div>
   </div>
-
 {% endblock %}
 
 {% block pageScripts %}

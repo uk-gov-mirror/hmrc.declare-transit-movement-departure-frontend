@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import models.TransportModeList
-import models.reference.TransportMode
-import play.api.data.Form
+import pages.behaviours.PageBehaviours
 
-class InlandModeFormProvider @Inject() extends Mappings {
 
-  def apply(transportModeList: TransportModeList): Form[TransportMode] =
-    Form(
-      "value" -> text("inlandMode.error.required")
-        .verifying("inlandMode.error.required", value => transportModeList.transportModes.exists(_.code == value))
-        .transform[TransportMode](value => transportModeList.transportModes.find(_.code == value).get, _.code)
-    )
+class DestinationOfficePageSpec extends PageBehaviours {
+
+  "DestinationOfficePage" - {
+
+    beRetrievable[String](DestinationOfficePage)
+
+    beSettable[String](DestinationOfficePage)
+
+    beRemovable[String](DestinationOfficePage)
+  }
 }
