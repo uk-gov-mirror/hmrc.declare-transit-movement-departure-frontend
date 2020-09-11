@@ -20,8 +20,10 @@ import base.SpecBase
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
+import controllers.transportDetails.{routes => transportDetailsRoutes}
 import models.Status.{Completed, InProgress, NotStarted}
-import models.{DeclarationType, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails}
+import models.reference.{Country, CountryCode, TransportMode}
+import models.{DeclarationType, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails, UserAnswers}
 import pages._
 
 class SectionsHelperSpec extends SpecBase {
@@ -31,9 +33,9 @@ class SectionsHelperSpec extends SpecBase {
       "must return movement details section with status as NotStarted" in {
         val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
-      val url = movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
-      val sectionName = "declarationSummary.section.movementDetails"
-      val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+        val url = movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.movementDetails"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
         val result = sectionsHelper.getSections
 
@@ -45,9 +47,9 @@ class SectionsHelperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers.set(DeclarationTypePage, DeclarationType.values.head).toOption.value
           .set(ProcedureTypePage, ProcedureType.values.head).toOption.value
 
-      val url = movementDetailsRoutes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
-      val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, InProgress)
-      val expectedResult = updateSectionsWithExpectedValue(expectedSection)
+        val url = movementDetailsRoutes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
+        val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, InProgress)
+        val expectedResult = updateSectionsWithExpectedValue(expectedSection)
 
         val sectionsHelper = new SectionsHelper(userAnswers)
         val result = sectionsHelper.getSections
@@ -65,9 +67,9 @@ class SectionsHelperSpec extends SpecBase {
           .set(RepresentativeNamePage, "name").toOption.value
           .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct).toOption.value
 
-      val url = movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
-      val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, Completed)
-      val expectedResult = updateSectionsWithExpectedValue(expectedSection)
+        val url = movementDetailsRoutes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        val expectedSection = SectionDetails("declarationSummary.section.movementDetails", url, Completed)
+        val expectedResult = updateSectionsWithExpectedValue(expectedSection)
 
         val sectionsHelper = new SectionsHelper(userAnswers)
         val result = sectionsHelper.getSections
@@ -90,7 +92,7 @@ class SectionsHelperSpec extends SpecBase {
       }
 
       "must return trader's details section with status as In Progress" in {
-        val userAnswers = emptyUserAnswers.set(IsPrincipalEoriKnownPage,true).success.value
+        val userAnswers = emptyUserAnswers.set(IsPrincipalEoriKnownPage, true).success.value
         val sectionsHelper = new SectionsHelper(userAnswers)
 
         val url = traderDetailsRoutes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url
@@ -103,7 +105,7 @@ class SectionsHelperSpec extends SpecBase {
       }
       "must return trader's details section with status as Completed" in {
         val userAnswers = emptyUserAnswers
-          .set(IsPrincipalEoriKnownPage,true).success.value
+          .set(IsPrincipalEoriKnownPage, true).success.value
           .set(WhatIsPrincipalEoriPage, "GB123456").success.value
           .set(AddConsignorPage, true).success.value
           .set(IsConsignorEoriKnownPage, true).success.value
@@ -119,19 +121,72 @@ class SectionsHelperSpec extends SpecBase {
         val sectionName = "declarationSummary.section.tradersDetails"
         val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
 
-        val result = sectionsHelper.getSections
+        val result: Seq[SectionDetails] = sectionsHelper.getSections
 
         result mustBe expectedSections
       }
+    }
+
+    "Transport Details" - {
+      "must return transport details section with status as NotStarted" in {
+        val sectionsHelper = new SectionsHelper(emptyUserAnswers)
+
+        val url = transportDetailsRoutes.InlandModeController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.transportDetails"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+
+        val result: Seq[SectionDetails] = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
+
+      "must return transport details section with status as In Progress" in {
+
+        val transportMode: TransportMode = TransportMode("1", "Sea transport")
+        val userAnswers: UserAnswers = emptyUserAnswers.set(InlandModePage, transportMode.code).success.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+        val url = transportDetailsRoutes.AddIdAtDepartureController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.transportDetails"
+
+        val result: Seq[SectionDetails] = sectionsHelper.getSections
+        result must contain(SectionDetails(sectionName, url, InProgress))
+      }
+      "must return transport details section with status as Completed" in {
+
+        val country = Country(CountryCode("GB"), "United Kingdom")
+        val mode = TransportMode("1", "Sea transport")
+        val userAnswers: UserAnswers = emptyUserAnswers
+          .set(InlandModePage, mode.code).success.value
+          .set(AddIdAtDeparturePage, true).success.value
+          .set(IdAtDeparturePage, "Kev").success.value
+          .set(ChangeAtBorderPage, true).success.value
+          .set(NationalityAtDeparturePage, country.code).success.value
+          .set(ModeAtBorderPage, mode.code).success.value
+          .set(IdCrossingBorderPage, "1").success.value
+          .set(ModeCrossingBorderPage, mode.code).success.value
+          .set(NationalityCrossingBorderPage, country.code).success.value
+
+
+        val sectionsHelper = new SectionsHelper(userAnswers)
+
+        val url = transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        val sectionName = "declarationSummary.section.transportDetails"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
+
+        val result = sectionsHelper.getSections
+
+        result must contain (SectionDetails(sectionName, url, Completed))
+      }
+
     }
 
     "Routes Details" - {
       "must return routes section with status as NotStarted" in {
         val sectionsHelper = new SectionsHelper(emptyUserAnswers)
 
-      val url = routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
-      val sectionName = "declarationSummary.section.routes"
-      val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+        val url = routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.routes"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
 
         val result = sectionsHelper.getSections
 
@@ -141,11 +196,11 @@ class SectionsHelperSpec extends SpecBase {
   }
 
   private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
-     val sections: Seq[SectionDetails] = Seq(
-      SectionDetails("declarationSummary.section.movementDetails",movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url, NotStarted),
+    val sections: Seq[SectionDetails] = Seq(
+      SectionDetails("declarationSummary.section.movementDetails", movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.routes", routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.transport", "", NotStarted),
-      SectionDetails("declarationSummary.section.tradersDetails",traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url, NotStarted),
+      SectionDetails("declarationSummary.section.transportDetails", transportDetailsRoutes.InlandModeController.onPageLoad(lrn, NormalMode).url, NotStarted),
+      SectionDetails("declarationSummary.section.tradersDetails", traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted),
       SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
     )
