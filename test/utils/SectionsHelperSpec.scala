@@ -199,8 +199,7 @@ class SectionsHelperSpec extends SpecBase {
     val sections: Seq[SectionDetails] = Seq(
       SectionDetails("declarationSummary.section.movementDetails", movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.routes", routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.transportDetails", transportDetailsRoutes.InlandModeController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.tradersDetails", traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url, NotStarted),
+      SectionDetails("declarationSummary.section.transport", transportDetailsRoutes.InlandModeController.onPageLoad(lrn, NormalMode).url, NotStarted),      SectionDetails("declarationSummary.section.tradersDetails", traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted),
       SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
     )
