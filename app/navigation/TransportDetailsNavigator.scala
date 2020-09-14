@@ -31,7 +31,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     case NationalityAtDeparturePage => ua => Some(routes.ChangeAtBorderController.onPageLoad(ua.id, NormalMode))
     case ModeAtBorderPage => ua => Some(routes.IdCrossingBorderController.onPageLoad(ua.id, NormalMode))
     case IdCrossingBorderPage => ua => Some(routes.ModeCrossingBorderController.onPageLoad(ua.id, NormalMode))
-    case ModeCrossingBorderPage => ua => Some(modeCrossingBorderRoute(ua, NormalMode)) //TODO update when ref data available
+    case ModeCrossingBorderPage => ua => Some(modeCrossingBorderRoute(ua, NormalMode))
     case NationalityCrossingBorderPage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case AddIdAtDeparturePage => ua => Some(addIdAtDepartureRoute(ua, NormalMode))
     case ChangeAtBorderPage => ua => Some(changeAtBorderRoute(ua, NormalMode))
