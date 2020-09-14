@@ -24,11 +24,13 @@ import uk.gov.hmrc.viewmodels._
 
 class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def modeAtBorder: Option[Row] = userAnswers.get(ModeAtBorderPage) map {
+  def modeAtBorder(transportModeList: TransportModeList): Option[Row] = userAnswers.get(ModeAtBorderPage) map {
     answer =>
+      val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
+
       Row(
         key     = Key(msg"modeAtBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -39,11 +41,14 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def modeCrossingBorder: Option[Row] = userAnswers.get(ModeCrossingBorderPage) map {
+  def modeCrossingBorder(transportModeList: TransportModeList): Option[Row] = userAnswers.get(ModeCrossingBorderPage) map {
     answer =>
+
+      val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
+
       Row(
         key     = Key(msg"modeCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -54,11 +59,12 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def inlandMode: Option[Row] = userAnswers.get(InlandModePage) map {
+  def inlandMode(transportModeList: TransportModeList): Option[Row] = userAnswers.get(InlandModePage) map {
     answer =>
+      val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
       Row(
         key     = Key(msg"inlandMode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",

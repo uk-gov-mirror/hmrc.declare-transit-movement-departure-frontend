@@ -17,7 +17,6 @@
 package pages
 
 import models.UserAnswers
-import models.reference.TransportMode
 import play.api.libs.json.JsPath
 
 case object ModeCrossingBorderPage extends QuestionPage[String] {
