@@ -16,6 +16,8 @@
 
 package pages
 
+import models.UserAnswers
+import models.reference.TransportMode
 import play.api.libs.json.JsPath
 
 case object ModeCrossingBorderPage extends QuestionPage[String] {
@@ -23,4 +25,11 @@ case object ModeCrossingBorderPage extends QuestionPage[String] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "modeCrossingBorder"
+
+  override def  cleanup(value: Option[String], userAnswers: UserAnswers) = {
+    value match {
+      case Some(x) if x == "2" | x == "5" | x == "7" => userAnswers.remove(NationalityCrossingBorderPage)
+      case _ => super.cleanup(value, userAnswers)
+    }
+  }
 }

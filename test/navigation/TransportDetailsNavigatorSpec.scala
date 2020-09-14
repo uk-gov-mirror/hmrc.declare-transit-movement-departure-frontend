@@ -20,7 +20,8 @@ import base.SpecBase
 import controllers.transportDetails.{routes => transportDetailsRoute}
 import generators.Generators
 import models._
-import models.reference.CountryCode
+import models.reference.{Country, CountryCode}
+import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -296,30 +297,47 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val updatedAnswers = answers.remove(ModeCrossingBorderPage).success.value
             navigator.nextPage(IdCrossingBorderPage, CheckMode, updatedAnswers)
-              .mustBe(transportDetailsRoute.ModeCrossingBorderController.onPageLoad(answers.id, CheckMode))
+              .mustBe(transportDetailsRoute.ModeCrossingBorderController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
 
-      "must go from ModeCrossingBorder to TransportDetailsCheckYourAnswers answer is  2, 5 or 7" in {
+      "must go from ModeCrossingBorder to TransportDetailsCheckYourAnswers answer is  2, 5 or 7 when answer for NationalityCrossingBorder Exists" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val country = Country(CountryCode("GB"), "United Kingdom")
             val updatedAnswers = answers.set(ModeCrossingBorderPage, "2").success.value
+              .set(NationalityCrossingBorderPage, country.code).success.value
 
             navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
-              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
 
-      "must go from ModeCrossingBorder to NationalityCrossingBorder Page when answer not 2, 5 or 7" in {
+      "must go from ModeCrossingBorder to NationalityCrossingBorder when answer is  not 2, 5 or 7 when answer for NationalityCrossingBorder does not exist" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.set(ModeCrossingBorderPage, "17").success.value
+              .remove(NationalityCrossingBorderPage).success.value
+
+            navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.NationalityCrossingBorderController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+      }
+
+      "must go from ModeCrossingBorder to TransportDetailsCheckYourAnswers Page when answer not 2, 5 or 7 and answer for Nationality at Border exists" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val country = Country(CountryCode("GB"), "United Kingdom")
+
             val updatedAnswers = answers.set(ModeCrossingBorderPage, ("17")).success.value
+              .set(NationalityCrossingBorderPage, country.code).success.value
 
             navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
 
-              .mustBe(transportDetailsRoute.NationalityCrossingBorderController.onPageLoad(answers.id, CheckMode))
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
 

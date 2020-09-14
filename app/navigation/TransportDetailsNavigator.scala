@@ -83,8 +83,9 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
   }
 
   private def modeCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call = {
-    ua.get(ModeCrossingBorderPage) match {
-        case Some(x) if(x  != "2" && x != "5" && x != "7" )  => routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
+    (ua.get(ModeCrossingBorderPage), ua.get(NationalityCrossingBorderPage), mode) match {
+        case (Some(x), _, NormalMode) if(x  != "2" && x != "5" && x != "7" )  => routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
+        case (Some(x), None , CheckMode) if(x  != "2" && x != "5" && x != "7" )  => routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
         case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
 
     }
