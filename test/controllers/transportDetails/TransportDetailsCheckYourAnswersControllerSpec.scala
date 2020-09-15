@@ -43,10 +43,6 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
 
   def onwardRoute = Call("GET", "/foo")
 
-  val transportMode1: TransportMode = TransportMode("1", "test1")
-  val transportMode2: TransportMode = TransportMode("2", "test2")
-  val transportModes:TransportModeList = TransportModeList(Seq(transportMode1, transportMode2))
-
   private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   lazy val transportDetailsRoute: String = routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
@@ -62,7 +58,7 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+
       val updatedAnswers  = emptyUserAnswers.set(InlandModePage, "1").success.value
       val application = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
       val request = FakeRequest(GET, routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url)
@@ -75,8 +71,7 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn) ++ Json.obj("text" -> "Sea transport")
-println(s"\n\n\n88888${jsonCaptor.getValue}")
+      val expectedJson = Json.obj("lrn" -> lrn)
 
       templateCaptor.getValue mustEqual "transportDetailsCheckYourAnswers.njk"
       jsonCaptor.getValue must containJson(expectedJson)
@@ -90,10 +85,11 @@ println(s"\n\n\n88888${jsonCaptor.getValue}")
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+
+      val updatedAnswers  = emptyUserAnswers.set(InlandModePage, "1").success.value
 
       val application: Application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(updatedAnswers))
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
@@ -107,7 +103,6 @@ println(s"\n\n\n88888${jsonCaptor.getValue}")
       val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      println
 
       redirectLocation(result).value mustEqual onwardRoute.url
 

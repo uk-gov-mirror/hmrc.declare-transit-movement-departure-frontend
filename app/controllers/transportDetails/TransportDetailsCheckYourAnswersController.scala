@@ -27,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.TransportDetailsCheckYourAnswersHelper
+import viewModels.TransportDetailsCheckYourAnswersViewModel
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,14 +45,15 @@ class TransportDetailsCheckYourAnswersController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-
       referenceDataConnector.getCountryList().flatMap {
         countryList =>
           referenceDataConnector.getTransportModes().flatMap {
-
             transportModeList =>
 
-              val sections: Seq[Section] = createSections(request.userAnswers, countryList, transportModeList)
+              val sections: Seq[Section] = TransportDetailsCheckYourAnswersViewModel(request.userAnswers, countryList, transportModeList).sections
+
+              //val sections: Seq[Section] = createSections(request.userAnswers, countryList, transportModeList)
+
               val json = Json.obj("lrn" -> lrn,
                 "sections" -> Json.toJson(sections)
               )
@@ -64,26 +66,27 @@ class TransportDetailsCheckYourAnswersController @Inject()(
   }
 
 
-def onSubmit (lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData (lrn) andThen requireData).async {
-  implicit request =>
-  Future.successful (Redirect (mainRoutes.DeclarationSummaryController.onPageLoad (lrn) ) )
-}
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+    implicit request =>
+      Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
+  }
 
-  private def createSections (userAnswers: UserAnswers, countryList: CountryList, transportModeList: TransportModeList) (implicit messages: Messages): Seq[Section] = {
-  val checkYourAnswersHelper = new TransportDetailsCheckYourAnswersHelper (userAnswers)
+  //TODO: These can be built in TransportDetailsCheckYourAnswersViewModel
+  private def createSections(userAnswers: UserAnswers, countryList: CountryList, transportModeList: TransportModeList)(implicit messages: Messages): Seq[Section] = {
+    val checkYourAnswersHelper = new TransportDetailsCheckYourAnswersHelper(userAnswers)
 
-  Seq (Section (
-  Seq (
-  checkYourAnswersHelper.inlandMode(transportModeList),
-  checkYourAnswersHelper.addIdAtDeparture,
-  checkYourAnswersHelper.idAtDeparture,
-  checkYourAnswersHelper.nationalityAtDeparture (countryList),
-  checkYourAnswersHelper.changeAtBorder,
-  checkYourAnswersHelper.modeAtBorder(transportModeList),
-  checkYourAnswersHelper.idCrossingBorder,
-  checkYourAnswersHelper.modeCrossingBorder (transportModeList),
-  checkYourAnswersHelper.nationalityCrossingBorder (countryList)
-  ).flatten
-  ) )
-}
+    Seq(Section(
+      Seq(
+        checkYourAnswersHelper.inlandMode(transportModeList),
+        checkYourAnswersHelper.addIdAtDeparture,
+        checkYourAnswersHelper.idAtDeparture,
+        checkYourAnswersHelper.nationalityAtDeparture(countryList),
+        checkYourAnswersHelper.changeAtBorder,
+        checkYourAnswersHelper.modeAtBorder(transportModeList),
+        checkYourAnswersHelper.idCrossingBorder,
+        checkYourAnswersHelper.modeCrossingBorder(transportModeList),
+        checkYourAnswersHelper.nationalityCrossingBorder(countryList)
+      ).flatten
+    ))
+  }
 }
