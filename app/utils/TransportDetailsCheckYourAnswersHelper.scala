@@ -35,7 +35,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.ModeAtBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeAtBorder.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeAtBorder.checkYourAnswersLabel")),
+            attributes         = Map("id"-> "change-mode-at-border")
           )
         )
       )
@@ -54,7 +55,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.ModeCrossingBorderController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeCrossingBorder.checkYourAnswersLabel")),
-            attributes = Map("id"-> "change-mode-at-crossing-border")
+            attributes         = Map("id"-> "change-mode-crossing-border")
+
           )
         )
       )
@@ -71,7 +73,7 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.InlandModeController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"inlandMode.checkYourAnswersLabel")),
-            attributes = Map("id" -> "change-inland-mode")
+            attributes         = Map("id" -> "change-inland-mode")
           )
         )
       )
@@ -86,7 +88,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.IdCrossingBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idCrossingBorder.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idCrossingBorder.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-id-crossing-border")
           )
         )
       )
@@ -104,7 +107,7 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.NationalityAtDepartureController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityAtDeparture.checkYourAnswersLabel")),
-            attributes = Map("id" -> "change-nationality-at-departure")
+            attributes         = Map("id" -> "change-nationality-at-departure")
           )
         )
       )
@@ -121,7 +124,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.NationalityCrossingBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityCrossingBorder.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityCrossingBorder.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-nationality-crossing-border")
           )
         )
       )
@@ -153,7 +157,7 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.ChangeAtBorderController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeAtBorder.checkYourAnswersLabel")),
-            attributes = Map("id" -> "change-change-at-border")
+            attributes         = Map("id" -> "change-change-at-border")
           )
         )
       )
@@ -169,7 +173,7 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.AddIdAtDepartureController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addIdAtDeparture.checkYourAnswersLabel")),
-            attributes = Map("id" -> "change-add-id-at-departure")
+            attributes         = Map("id" -> "change-add-id-at-departure")
           )
         )
       )
