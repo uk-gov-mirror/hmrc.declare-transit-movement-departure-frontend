@@ -21,20 +21,21 @@
 
         </h1>
 
-           {{ csrf() | safe }}
+        {% for section in sections %}
+             {{ sectionMacro(section.sectionTitle, section.rows) }}
+        {% endfor %}
 
-                {% for section in sections %}
-                     {{ sectionMacro(section.sectionTitle, section.rows) }}
-                {% endfor %}
+        <form action="{{ routes.controllers.transportDetails.TransportDetailsCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
 
+             {{ csrf() | safe }}
 
+             {{ govukButton({
+                  text: messages("site.continue"),
+                  preventDoubleClick: true,
+                  attributes: {id:"submit"}
+                }) }}
 
-                 {{ govukButton({
-                      text: messages("site.continue"),
-                      preventDoubleClick: true,
-                      attributes: {id:"submit"}
-                    }) }}
-                 </form>
+         </form>
 
       </div>
     </div>

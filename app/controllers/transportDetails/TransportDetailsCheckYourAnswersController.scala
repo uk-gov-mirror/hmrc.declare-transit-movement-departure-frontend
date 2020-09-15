@@ -65,7 +65,6 @@ class TransportDetailsCheckYourAnswersController @Inject()(
 
   }
 
-
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
