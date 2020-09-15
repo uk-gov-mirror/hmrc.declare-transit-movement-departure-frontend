@@ -16,37 +16,48 @@
 
 package controllers.transportDetails
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.{LocalReferenceNumber, UserAnswers}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import models.LocalReferenceNumber
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.TransportDetailsCheckYourAnswersHelper
+import viewModels.TransportDetailsCheckYourAnswersViewModel
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportDetailsCheckYourAnswersController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                            override val messagesApi: MessagesApi,
+                                                            identify: IdentifierAction,
+                                                            getData: DataRetrievalActionProvider,
+                                                            requireData: DataRequiredAction,
+                                                            val controllerComponents: MessagesControllerComponents,
+                                                            referenceDataConnector: ReferenceDataConnector,
+                                                            renderer: Renderer
+                                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = createSections(request.userAnswers)
-      val json = Json.obj("lrn" -> lrn,
-        "sections" -> Json.toJson(sections)
-      )
 
-      renderer.render("transportDetailsCheckYourAnswers.njk", json).map(Ok(_))
+      referenceDataConnector.getCountryList().flatMap {
+        countryList =>
+          referenceDataConnector.getTransportModes().flatMap {
+            transportModeList =>
+
+              val sections: Seq[Section] = TransportDetailsCheckYourAnswersViewModel(request.userAnswers, countryList, transportModeList).sections
+              val json = Json.obj("lrn" -> lrn,
+                "sections" -> Json.toJson(sections)
+              )
+
+              renderer.render("transportDetailsCheckYourAnswers.njk", json).map(Ok(_))
+
+          }
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -54,21 +65,4 @@ class TransportDetailsCheckYourAnswersController @Inject()(
       Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
-  private def createSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
-    val checkYourAnswersHelper = new TransportDetailsCheckYourAnswersHelper(userAnswers)
-
-    Seq(Section(
-      Seq(
-        checkYourAnswersHelper.inlandMode,
-        checkYourAnswersHelper.addIdAtDeparture,
-        checkYourAnswersHelper.idAtDeparture,
-        checkYourAnswersHelper.nationalityAtDeparture,
-        checkYourAnswersHelper.changeAtBorder,
-        checkYourAnswersHelper.modeAtBorder,
-        checkYourAnswersHelper.idCrossingBorder,
-        checkYourAnswersHelper.modeCrossingBorder,
-        checkYourAnswersHelper.nationalityCrossingBorder
-      ).flatten
-    ))
-  }
 }

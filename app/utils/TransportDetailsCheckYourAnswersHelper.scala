@@ -17,18 +17,20 @@
 package utils
 
 import controllers.transportDetails.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, LocalReferenceNumber, TransportModeList, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def modeAtBorder: Option[Row] = userAnswers.get(ModeAtBorderPage) map {
+  def modeAtBorder(transportModeList: TransportModeList): Option[Row] = userAnswers.get(ModeAtBorderPage) map {
     answer =>
+      val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
+
       Row(
         key     = Key(msg"modeAtBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -39,11 +41,14 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def modeCrossingBorder: Option[Row] = userAnswers.get(ModeCrossingBorderPage) map {
+  def modeCrossingBorder(transportModeList: TransportModeList): Option[Row] = userAnswers.get(ModeCrossingBorderPage) map {
     answer =>
+
+      val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
+
       Row(
         key     = Key(msg"modeCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -54,11 +59,12 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def inlandMode: Option[Row] = userAnswers.get(InlandModePage) map {
+  def inlandMode(transportModeList: TransportModeList): Option[Row] = userAnswers.get(InlandModePage) map {
     answer =>
+      val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
       Row(
         key     = Key(msg"inlandMode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -84,11 +90,13 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def nationalityAtDeparture: Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
+  def nationalityAtDeparture(codeList: CountryList): Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
     answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
       Row(
         key     = Key(msg"nationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -99,11 +107,13 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def nationalityCrossingBorder: Option[Row] = userAnswers.get(NationalityCrossingBorderPage) map {
+  def nationalityCrossingBorder(codeList: CountryList): Option[Row] = userAnswers.get(NationalityCrossingBorderPage) map {
     answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
       Row(
         key     = Key(msg"nationalityCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",

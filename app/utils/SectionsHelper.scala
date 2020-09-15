@@ -20,6 +20,7 @@ package utils
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
+import controllers.transportDetails.{routes => transportDetailsRoutes}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
@@ -45,6 +46,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private def getIncompletePage(startPage: String, pages: Seq[(Option[_], String)]): Option[(String, Status)] = {
+
     pages.collectFirst {
       case (page, url) if page.isEmpty && url == startPage => (url, NotStarted)
       case (page, url) if page.isEmpty && url != startPage => (url, InProgress)
@@ -65,7 +67,11 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private def transportSection: SectionDetails = {
-    SectionDetails("declarationSummary.section.transport", "", NotStarted)
+    val startPage: String = transportDetailsRoutes.InlandModeController.onPageLoad(userAnswers.id, NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
+    val (page, status) = getIncompletePage(startPage, transportDetailsPage).getOrElse(cyaPageAndStatus)
+
+    SectionDetails("declarationSummary.section.transport", page, status)
   }
 
   private def tradersDetailsSection: SectionDetails = {
@@ -88,10 +94,42 @@ class SectionsHelper(userAnswers: UserAnswers) {
     SectionDetails("declarationSummary.section.safetyAndSecurity", "", NotStarted)
   }
 
+  private val transportDetailsPage: Seq[(Option[_], String)] = {
+    val lrn = userAnswers.id
+
+    val addIdAtDeparturePages: Seq[(Option[Object], String)] = if (userAnswers.get(AddIdAtDeparturePage).contains(true)) {
+      Seq(userAnswers.get(IdAtDeparturePage) -> transportDetailsRoutes.IdAtDepartureController.onPageLoad(lrn, NormalMode).url)
+    }
+    else {
+      Seq.empty
+    }
+
+    val changeAtBorderPages: Seq[(Option[Object], String)] = if (userAnswers.get(ChangeAtBorderPage).contains(true)) {
+
+      Seq(userAnswers.get(ModeAtBorderPage) -> transportDetailsRoutes.ModeAtBorderController.onPageLoad(lrn, NormalMode).url,
+        userAnswers.get(IdCrossingBorderPage) -> transportDetailsRoutes.IdCrossingBorderController.onPageLoad(lrn, NormalMode).url,
+        userAnswers.get(ModeCrossingBorderPage) -> transportDetailsRoutes.ModeCrossingBorderController.onPageLoad(lrn, NormalMode).url,
+        userAnswers.get(NationalityCrossingBorderPage) -> transportDetailsRoutes.NationalityCrossingBorderController.onPageLoad(lrn, NormalMode).url)
+
+    } else {
+      Seq.empty
+    }
+
+    Seq(
+      userAnswers.get(InlandModePage) -> transportDetailsRoutes.InlandModeController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(AddIdAtDeparturePage) -> transportDetailsRoutes.AddIdAtDepartureController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(ChangeAtBorderPage) -> transportDetailsRoutes.ChangeAtBorderController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(NationalityAtDeparturePage) -> transportDetailsRoutes.NationalityAtDepartureController.onPageLoad(lrn, NormalMode).url,
+
+    ) ++ addIdAtDeparturePages ++ changeAtBorderPages
+
+  }
+
+
   private val movementDetailsPages: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
 
-    val declareForSomeoneElseDiversionPages = if (userAnswers.get(DeclarationForSomeoneElsePage).contains(true)) {
+    val declareForSomeoneElseDiversionPages: Seq[(Option[Object], String)] = if (userAnswers.get(DeclarationForSomeoneElsePage).contains(true)) {
       Seq(userAnswers.get(RepresentativeNamePage) -> movementDetailsRoutes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url,
         userAnswers.get(RepresentativeCapacityPage) -> movementDetailsRoutes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url)
     } else {
