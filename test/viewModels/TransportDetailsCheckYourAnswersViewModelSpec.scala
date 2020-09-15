@@ -78,8 +78,8 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 1
-      val message: Message = data.sections.head.rows.head.value.asInstanceOf[Message]
-      message.key mustBe "site.Yes"
+      val message: Message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
+      message.key mustBe "site.yes"
     }
 
     "display addIdAdDeparture " in {
@@ -89,8 +89,8 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 1
-      val message: Message = data.sections.head.rows.head.value.asInstanceOf[Message]
-      message.key mustBe "site.Yes"
+      val message: Message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
+      message.key mustBe "site.yes"
     }
 
     "display idAtDeparture " in {
