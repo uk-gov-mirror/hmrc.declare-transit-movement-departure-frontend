@@ -56,6 +56,7 @@ movementDetails.preHeading = Movement details
 traderDetails.preHeading = Trader’s details
 routeDetails.preHeading = Route details
 transportDetails.preHeading = Transport details
+goodsSummary.preHeading = Goods summary
 
 postcode = Postcode
 postcodeExample = Like, AB1 1AB.
@@ -442,3 +443,8 @@ addTransitOffice.paragraph = Do you need to add another transit office?
 addTransitOffice.checkYourAnswersLabel = Add another transit office
 addTransitOffice.error.required = Select yes if you want to add another transit office
 
+
+declarePackages.title = Do you have any packages to declare?
+declarePackages.heading = Do you have any packages to declare?
+declarePackages.checkYourAnswersLabel = Do you have any packages to declare?
+declarePackages.error.required = Select yes if you have any packages to declare
