@@ -17,8 +17,10 @@
 package controllers.transportDetails
 
 import base.SpecBase
+import connectors.ReferenceDataConnector
 import matchers.JsonMatchers
-import models.LocalReferenceNumber
+import models.reference.{Country, CountryCode, TransportMode}
+import models.{CountryList, LocalReferenceNumber, TransportModeList}
 import navigation.annotations.TransportDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -42,6 +44,11 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
   def onwardRoute(lrn: LocalReferenceNumber) = Call("GET", s"/common-transit-convention-departure/$lrn/task-list")
 
   lazy val transportDetailsRoute: String = routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
+  val mockReferenceDataConnector = mock[ReferenceDataConnector]
+  val transportMode = TransportMode("1", "Sea transport")
+  val transportModes = TransportModeList(Seq(transportMode))
+  private val country = Country(CountryCode("GB"), "United Kingdom")
+  val countries = CountryList(Seq(country))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -53,9 +60,14 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
 
       val updatedAnswers  = emptyUserAnswers.set(InlandModePage, "1").success.value
-      val application = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(updatedAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(GET, routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])

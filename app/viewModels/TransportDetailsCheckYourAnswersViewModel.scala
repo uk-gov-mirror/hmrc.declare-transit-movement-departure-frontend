@@ -29,7 +29,6 @@ object TransportDetailsCheckYourAnswersViewModel {
 
     val checkYourAnswersHelper = new TransportDetailsCheckYourAnswersHelper(userAnswers)
 
-    //TODO: Need to add all rows here (see the createSections from TransportDetailsCheckYourAnswersController
     val modeCrossingBorder: Option[SummaryList.Row] = checkYourAnswersHelper.modeCrossingBorder(transportModeList)
     val inlandMode: Option[SummaryList.Row] = checkYourAnswersHelper.inlandMode(transportModeList)
     val modeAtBorder: Option[SummaryList.Row] = checkYourAnswersHelper.modeAtBorder(transportModeList)
