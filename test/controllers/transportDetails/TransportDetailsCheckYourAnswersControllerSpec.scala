@@ -17,15 +17,13 @@
 package controllers.transportDetails
 
 import base.SpecBase
-import connectors.ReferenceDataConnector
 import matchers.JsonMatchers
-import models.TransportModeList
-import models.reference.TransportMode
+import models.LocalReferenceNumber
 import navigation.annotations.TransportDetails
 import navigation.{FakeNavigator, Navigator}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.InlandModePage
 import play.api.Application
@@ -41,19 +39,12 @@ import scala.concurrent.Future
 
 class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
-
-  val transportMode1: TransportMode = TransportMode("1", "test1")
-  val transportMode2: TransportMode = TransportMode("2", "test2")
-  val transportModes:TransportModeList = TransportModeList(Seq(transportMode1, transportMode2))
-
-  private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  def onwardRoute(lrn: LocalReferenceNumber) = Call("GET", s"/common-transit-convention-departure/$lrn/task-list")
 
   lazy val transportDetailsRoute: String = routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    Mockito.reset(mockReferenceDataConnector)
   }
 
   "TransportDetailsCheckYourAnswers Controller" - {
@@ -62,7 +53,7 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+
       val updatedAnswers  = emptyUserAnswers.set(InlandModePage, "1").success.value
       val application = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
       val request = FakeRequest(GET, routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url)
@@ -75,8 +66,7 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn) ++ Json.obj("text" -> "Sea transport")
-println(s"\n\n\n88888${jsonCaptor.getValue}")
+      val expectedJson = Json.obj("lrn" -> lrn)
 
       templateCaptor.getValue mustEqual "transportDetailsCheckYourAnswers.njk"
       jsonCaptor.getValue must containJson(expectedJson)
@@ -84,20 +74,18 @@ println(s"\n\n\n88888${jsonCaptor.getValue}")
       application.stop()
     }
 
-    "must redirect to the next page when valid data is submitted" ignore {
+    "must redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
 
       val application: Application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute(lrn))),
+            bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -107,12 +95,12 @@ println(s"\n\n\n88888${jsonCaptor.getValue}")
       val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      println
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual onwardRoute(lrn).url
 
       application.stop()
     }
 
   }
+
 }
