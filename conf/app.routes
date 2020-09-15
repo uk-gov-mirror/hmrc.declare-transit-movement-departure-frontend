@@ -193,8 +193,8 @@ POST       /:lrn/transport-details/change-nationality-crossing-border           
 
 GET        /:lrn/transport-details/inland-mode                        controllers.transportDetails.InlandModeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/transport-details/inland-mode                          controllers.transportDetails.InlandModeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/change-transport-details/inland-mode                    controllers.transportDetails.InlandModeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/change-transport-details/inland-mode                    controllers.transportDetails.InlandModeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/transport-details/change-inland-mode                    controllers.transportDetails.InlandModeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/change-inland-mode                    controllers.transportDetails.InlandModeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/transport-details/mode-crossing-border                        controllers.transportDetails.ModeCrossingBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/transport-details/mode-crossing-border                        controllers.transportDetails.ModeCrossingBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
