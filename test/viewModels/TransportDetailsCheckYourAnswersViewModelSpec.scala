@@ -17,11 +17,11 @@
 package viewModels
 
 import base.SpecBase
-import models.{CountryList, TransportModeList}
 import models.reference.{Country, CountryCode, TransportMode}
+import models.{CountryList, TransportModeList}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{InlandModePage, ModeCrossingBorderPage}
-import uk.gov.hmrc.viewmodels.Text.Literal
+import pages._
+import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
 
 class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks {
 
@@ -29,28 +29,89 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
 
   val transportMode1: TransportMode = TransportMode("1", "crossing border")
   val transportMode2: TransportMode = TransportMode("2", "inland mode")
-  val transportModes:TransportModeList = TransportModeList(Seq(transportMode1, transportMode2))
+  val transportMode3: TransportMode = TransportMode("3", "mode at border")
+  val transportModes:TransportModeList = TransportModeList(Seq(transportMode1, transportMode2, transportMode3))
+
+
+  val country1 = Country(CountryCode("GB"), "United Kingdom")
+  val country2 = Country(CountryCode("AD"), "Andorra")
+  val countries = CountryList(Seq(country1, country2))
 
   "TransportDetailsCheckYourAnswersViewModel" - {
 
-    //TODO: Need to add tests to cover all potential rows
-
     "display modeCrossingBorder" in {
 
-      val updatedAnswers  = emptyUserAnswers.set(ModeCrossingBorderPage, "1").success.value
+      val updatedAnswers  = emptyUserAnswers
+        .set(ModeCrossingBorderPage, "1").success.value
         .set(InlandModePage, "2").success.value
+        .set(ModeAtBorderPage, "3").success.value
 
       val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
 
-      data.sections.length mustBe 1
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
-      data.sections.head.rows.length mustEqual 2
-      data.sections.head.rows(0).value.content mustEqual Literal("inland mode")
+      data.sections.head.rows.length mustEqual 3
+      data.sections.head.rows.head.value.content mustEqual Literal("inland mode")
       data.sections.head.rows(1).value.content mustEqual Literal("crossing border")
+      data.sections.head.rows(2).value.content mustEqual Literal("mode at border")
+    }
+
+   "display country" in {
+
+     val updatedAnswers =  emptyUserAnswers
+       .set(NationalityAtDeparturePage, country1.code).success.value
+       .set(NationalityCrossingBorderPage, country2.code).success.value
+     val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+
+     data.sections.head.sectionTitle must not be defined
+     data.sections.length mustEqual 1
+     data.sections.head.rows.length mustEqual 2
+     data.sections.head.rows.head.value.content mustEqual Literal("GB")
+     data.sections.head.rows(1).value.content mustEqual Literal("AD")
+
+   }
+    "display changeAtBorder " in {
+      val updatedAnswers = emptyUserAnswers.set(ChangeAtBorderPage, true).success.value
+      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+
+      data.sections.head.sectionTitle must not be defined
+      data.sections.length mustEqual 1
+      data.sections.head.rows.length mustEqual 1
+      val message: Message = data.sections.head.rows.head.value.asInstanceOf[Message]
+      message.key mustBe "site.Yes"
+    }
+
+    "display addIdAdDeparture " in {
+      val updatedAnswers = emptyUserAnswers.set(AddIdAtDeparturePage, true).success.value
+      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+
+      data.sections.head.sectionTitle must not be defined
+      data.sections.length mustEqual 1
+      data.sections.head.rows.length mustEqual 1
+      val message: Message = data.sections.head.rows.head.value.asInstanceOf[Message]
+      message.key mustBe "site.Yes"
+    }
+
+    "display idAtDeparture " in {
+      val updatedAnswers = emptyUserAnswers.set(IdAtDeparturePage, "test").success.value
+      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+
+      data.sections.head.sectionTitle must not be defined
+      data.sections.length mustEqual 1
+      data.sections.head.rows.length mustEqual 1
+      data.sections.head.rows.head.value.content mustEqual Literal("test")
+    }
+
+    "display idCrossingBorder " in {
+      val updatedAnswers = emptyUserAnswers.set(IdCrossingBorderPage, "test").success.value
+      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+
+      data.sections.head.sectionTitle must not be defined
+      data.sections.length mustEqual 1
+      data.sections.head.rows.length mustEqual 1
+      data.sections.head.rows.head.value.content mustEqual Literal("test")
     }
 
   }
-
 }

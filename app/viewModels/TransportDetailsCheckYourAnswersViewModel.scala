@@ -27,25 +27,30 @@ object TransportDetailsCheckYourAnswersViewModel {
 
   def apply(userAnswers: UserAnswers, countryList: CountryList, transportModeList: TransportModeList): TransportDetailsCheckYourAnswersViewModel = {
 
-    val checkYourAnswersHelper = new TransportDetailsCheckYourAnswersHelper (userAnswers)
+    val checkYourAnswersHelper = new TransportDetailsCheckYourAnswersHelper(userAnswers)
 
     //TODO: Need to add all rows here (see the createSections from TransportDetailsCheckYourAnswersController
     val modeCrossingBorder: Option[SummaryList.Row] = checkYourAnswersHelper.modeCrossingBorder(transportModeList)
-
-
-
     val inlandMode: Option[SummaryList.Row] = checkYourAnswersHelper.inlandMode(transportModeList)
+    val modeAtBorder: Option[SummaryList.Row] = checkYourAnswersHelper.modeAtBorder(transportModeList)
+    val nationalityAtDeparture: Option[SummaryList.Row] = checkYourAnswersHelper.nationalityAtDeparture(countryList)
+    val nationalityCrossingBorder: Option[SummaryList.Row] = checkYourAnswersHelper.nationalityCrossingBorder(countryList)
+    val addIdAtDeparture: Option[SummaryList.Row] = checkYourAnswersHelper.addIdAtDeparture
+    val idAtDeparture: Option[SummaryList.Row] = checkYourAnswersHelper.idAtDeparture
+    val changeAtBorder: Option[SummaryList.Row] = checkYourAnswersHelper.changeAtBorder
+    val idCrossingBorder: Option[SummaryList.Row] = checkYourAnswersHelper.idCrossingBorder
 
-//    checkYourAnswersHelper.inlandMode(transportModeList),
-//    checkYourAnswersHelper.addIdAtDeparture,
-//    checkYourAnswersHelper.idAtDeparture,
-//    checkYourAnswersHelper.nationalityAtDeparture(countryList),
-//    checkYourAnswersHelper.changeAtBorder,
-//    checkYourAnswersHelper.modeAtBorder(transportModeList),
-//    checkYourAnswersHelper.idCrossingBorder,
-//    checkYourAnswersHelper.modeCrossingBorder(transportModeList),
-//    checkYourAnswersHelper.nationalityCrossingBorder(countryList)
 
-    TransportDetailsCheckYourAnswersViewModel(Seq(Section(Seq(inlandMode, modeCrossingBorder).flatten)))
+    TransportDetailsCheckYourAnswersViewModel(Seq(Section(Seq(
+      inlandMode,
+      modeCrossingBorder,
+      modeAtBorder,
+      nationalityAtDeparture,
+      nationalityCrossingBorder,
+      addIdAtDeparture,
+      idAtDeparture,
+      changeAtBorder,
+      idCrossingBorder
+    ).flatten)))
   }
 }
