@@ -17,15 +17,13 @@
 package controllers.transportDetails
 
 import base.SpecBase
-import connectors.ReferenceDataConnector
 import matchers.JsonMatchers
-import models.TransportModeList
-import models.reference.TransportMode
+import models.LocalReferenceNumber
 import navigation.annotations.TransportDetails
 import navigation.{FakeNavigator, Navigator}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.InlandModePage
 import play.api.Application
@@ -41,15 +39,12 @@ import scala.concurrent.Future
 
 class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
-
-  private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  def onwardRoute(lrn: LocalReferenceNumber) = Call("GET", s"/common-transit-convention-departure/$lrn/task-list")
 
   lazy val transportDetailsRoute: String = routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    Mockito.reset(mockReferenceDataConnector)
   }
 
   "TransportDetailsCheckYourAnswers Controller" - {
@@ -79,21 +74,18 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
       application.stop()
     }
 
-    "must redirect to the next page when valid data is submitted" ignore {
+    "must redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val updatedAnswers  = emptyUserAnswers.set(InlandModePage, "1").success.value
-
       val application: Application =
-        applicationBuilder(userAnswers = Some(updatedAnswers))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute(lrn))),
+            bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -104,10 +96,11 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual onwardRoute(lrn).url
 
       application.stop()
     }
 
   }
+
 }
