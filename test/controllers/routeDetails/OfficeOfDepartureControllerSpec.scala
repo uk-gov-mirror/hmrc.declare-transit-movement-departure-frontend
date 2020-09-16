@@ -31,7 +31,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.OfficeOfDeparturePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Call
+import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -161,7 +161,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
         FakeRequest(POST, officeOfDepartureRoute)
           .withFormUrlEncodedBody(("value", "id"))
 
-      val result = route(application, request).value
+      val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 

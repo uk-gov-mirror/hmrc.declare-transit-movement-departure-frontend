@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package navigation
 
-import models.reference.TransportMode
-import play.api.libs.json.JsPath
+import base.SpecBase
+import controllers.transportDetails.{routes => transportDetailsRoute}
+import generators.Generators
+import models._
+import models.reference.{Country, CountryCode}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages._
 
-case object InlandModePage extends QuestionPage[String] {
+class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "inlandMode"
 }

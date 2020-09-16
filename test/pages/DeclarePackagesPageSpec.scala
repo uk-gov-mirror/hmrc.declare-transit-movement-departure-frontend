@@ -16,12 +16,16 @@
 
 package pages
 
-import models.reference.TransportMode
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object InlandModePage extends QuestionPage[String] {
+class DeclarePackagesPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "DeclarePackagesPage" - {
 
-  override def toString: String = "inlandMode"
+    beRetrievable[Boolean](DeclarePackagesPage)
+
+    beSettable[Boolean](DeclarePackagesPage)
+
+    beRemovable[Boolean](DeclarePackagesPage)
+  }
 }

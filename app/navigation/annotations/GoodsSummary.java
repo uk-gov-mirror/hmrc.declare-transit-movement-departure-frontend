@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package navigation.annotations;
 
-import models.reference.TransportMode
-import play.api.libs.json.JsPath
+import com.google.inject.BindingAnnotation;
 
-case object InlandModePage extends QuestionPage[String] {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "inlandMode"
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface GoodsSummary {
 }

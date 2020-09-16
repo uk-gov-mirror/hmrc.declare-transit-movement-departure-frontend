@@ -17,7 +17,6 @@
 package navigation
 
 import controllers.movementDetails.routes
-import controllers.{routes => mainRoutes}
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._

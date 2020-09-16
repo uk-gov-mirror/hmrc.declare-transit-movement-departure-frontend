@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.reference.TransportMode
-import play.api.libs.json.JsPath
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case object InlandModePage extends QuestionPage[String] {
+class TotalPackagesFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ toString
+  def apply(): Form[Int] = {
 
-  override def toString: String = "inlandMode"
+    val minimumNumberOfPackages = 1
+    val maximumNumberOfPackages = 99999
+    Form(
+      "value" -> int(
+        "totalPackages.error.required",
+        "totalPackages.error.wholeNumber",
+        "totalPackages.error.nonNumeric")
+          .verifying(inRange(minimumNumberOfPackages, maximumNumberOfPackages, "totalPackages.error.outOfRange"))
+    )
+  }
 }

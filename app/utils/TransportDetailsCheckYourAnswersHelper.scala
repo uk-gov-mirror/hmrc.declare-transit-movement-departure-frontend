@@ -17,53 +17,63 @@
 package utils
 
 import controllers.transportDetails.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, LocalReferenceNumber, TransportModeList, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def modeAtBorder: Option[Row] = userAnswers.get(ModeAtBorderPage) map {
+  def modeAtBorder(transportModeList: TransportModeList): Option[Row] = userAnswers.get(ModeAtBorderPage) map {
     answer =>
+      val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
+
       Row(
         key     = Key(msg"modeAtBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.ModeAtBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeAtBorder.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeAtBorder.checkYourAnswersLabel")),
+            attributes         = Map("id"-> "change-mode-at-border")
           )
         )
       )
   }
 
-  def modeCrossingBorder: Option[Row] = userAnswers.get(ModeCrossingBorderPage) map {
+  def modeCrossingBorder(transportModeList: TransportModeList): Option[Row] = userAnswers.get(ModeCrossingBorderPage) map {
     answer =>
+
+      val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
+
       Row(
         key     = Key(msg"modeCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.ModeCrossingBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeCrossingBorder.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeCrossingBorder.checkYourAnswersLabel")),
+            attributes         = Map("id"-> "change-mode-crossing-border")
+
           )
         )
       )
   }
 
-  def inlandMode: Option[Row] = userAnswers.get(InlandModePage) map {
+  def inlandMode(transportModeList: TransportModeList): Option[Row] = userAnswers.get(InlandModePage) map {
     answer =>
+      val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
       Row(
         key     = Key(msg"inlandMode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.InlandModeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"inlandMode.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"inlandMode.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-inland-mode")
           )
         )
       )
@@ -78,37 +88,44 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.IdCrossingBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idCrossingBorder.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idCrossingBorder.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-id-crossing-border")
           )
         )
       )
   }
 
-  def nationalityAtDeparture: Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
+  def nationalityAtDeparture(codeList: CountryList): Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
     answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
       Row(
         key     = Key(msg"nationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.NationalityAtDepartureController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityAtDeparture.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityAtDeparture.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-nationality-at-departure")
           )
         )
       )
   }
 
-  def nationalityCrossingBorder: Option[Row] = userAnswers.get(NationalityCrossingBorderPage) map {
+  def nationalityCrossingBorder(codeList: CountryList): Option[Row] = userAnswers.get(NationalityCrossingBorderPage) map {
     answer =>
+      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+
       Row(
         key     = Key(msg"nationalityCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        value   = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.NationalityCrossingBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityCrossingBorder.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityCrossingBorder.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-nationality-crossing-border")
           )
         )
       )
@@ -123,7 +140,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.IdAtDepartureController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idAtDeparture.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idAtDeparture.checkYourAnswersLabel")),
+
           )
         )
       )
@@ -138,7 +156,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.ChangeAtBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeAtBorder.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeAtBorder.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-change-at-border")
           )
         )
       )
@@ -153,7 +172,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.AddIdAtDepartureController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addIdAtDeparture.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addIdAtDeparture.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-add-id-at-departure")
           )
         )
       )

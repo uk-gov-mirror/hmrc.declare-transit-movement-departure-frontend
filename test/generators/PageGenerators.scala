@@ -24,6 +24,12 @@ trait PageGenerators {
   implicit lazy val arbitraryAddAnotherTransitOfficePage: Arbitrary[AddAnotherTransitOfficePage.type] =
     Arbitrary(AddAnotherTransitOfficePage)
 
+  implicit lazy val arbitraryTotalPackagesPage: Arbitrary[TotalPackagesPage.type] =
+    Arbitrary(TotalPackagesPage)
+
+  implicit lazy val arbitraryDeclarePackagesPage: Arbitrary[DeclarePackagesPage.type] =
+    Arbitrary(DeclarePackagesPage)
+
   implicit lazy val arbitraryAddTransitOfficePage: Arbitrary[AddTransitOfficePage.type] =
     Arbitrary(AddTransitOfficePage)
 

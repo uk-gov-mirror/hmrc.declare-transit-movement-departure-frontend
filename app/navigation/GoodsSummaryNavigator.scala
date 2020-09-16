@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package navigation
 
-import models.reference.TransportMode
-import play.api.libs.json.JsPath
+import controllers.goodsSummary.routes
+import javax.inject.{Inject, Singleton}
+import models._
+import pages._
+import play.api.mvc.Call
 
-case object InlandModePage extends QuestionPage[String] {
+@Singleton
+class GoodsSummaryNavigator @Inject()() extends Navigator {
 
-  override def path: JsPath = JsPath \ toString
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
-  override def toString: String = "inlandMode"
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
 }
+

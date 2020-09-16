@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.reference.TransportMode
-import play.api.libs.json.JsPath
+import javax.inject.Inject
 
-case object InlandModePage extends QuestionPage[String] {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override def path: JsPath = JsPath \ toString
+class DeclarePackagesFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "inlandMode"
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("declarePackages.error.required")
+    )
 }

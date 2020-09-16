@@ -26,6 +26,23 @@ trait UserAnswersEntryGenerators extends PageGenerators {
 
 self: Generators =>
 
+  self: Generators =>
+  implicit lazy val arbitraryTotalPackagesUserAnswersEntry: Arbitrary[(TotalPackagesPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[TotalPackagesPage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryDeclarePackagesUserAnswersEntry: Arbitrary[(DeclarePackagesPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[DeclarePackagesPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryAddAnotherTransitOfficeUserAnswersEntry: Arbitrary[(AddAnotherTransitOfficePage.type, JsValue)] =
     Arbitrary {
       for {
