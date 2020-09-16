@@ -16,15 +16,29 @@
 
 package utils
 
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
-import pages.{DeclarePackagesPage, TotalGrossMassPage, TotalPackagesPage}
-import pages.{AuthorisedLocationCodePage, DeclarePackagesPage, TotalPackagesPage}
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels._
 import controllers.goodsSummary.routes
+import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import pages.{AddCustomsApprovedLocationPage, AuthorisedLocationCodePage, DeclarePackagesPage, TotalGrossMassPage, TotalPackagesPage}
+import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
+import uk.gov.hmrc.viewmodels._
 
 class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def addCustomsApprovedLocation: Option[Row] = userAnswers.get(AddCustomsApprovedLocationPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addCustomsApprovedLocation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddCustomsApprovedLocationController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addCustomsApprovedLocation.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def totalGrossMass: Option[Row] = userAnswers.get(TotalGrossMassPage) map {
     answer =>

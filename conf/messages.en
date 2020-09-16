@@ -476,4 +476,4 @@ authorisedLocationCode.error.invalidCharacters = The authorised location code mu
 addCustomsApprovedLocation.title = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.heading = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.checkYourAnswersLabel = Do you need to add a Customs-approved location?
-addCustomsApprovedLocation.error.required = Select yes if need to add a Customs-approved location
+addCustomsApprovedLocation.error.required = Select yes if you need to add a Customs-approved location
