@@ -31,6 +31,6 @@ class PrincipalNameFormProvider @Inject() extends Mappings {
       "value" -> text("principalName.error.required")
         .verifying(StopOnFirstFail[String](
           maxLength(maxLengthPrincipalName, "principalName.error.length"),
-          regexp(principalNameRegex, "principalName.error.invalidCharacters"),
+          regexp(principalNameRegex, "principalName.error.invalidCharacters")
         )))
 }

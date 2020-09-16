@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
@@ -24,6 +25,9 @@ class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "totalGrossMass.error.required"
   val lengthKey = "totalGrossMass.error.length"
   val maxLength = 15
+  val invalidCharacters = "totalGrossMass.error.invalidCharacters"
+  val totalGrossMassregex: String = "^[0-9]{1,11}(?:\\.[0-9]{1,3})?$"
+
 
   val form = new TotalGrossMassFormProvider()()
 
@@ -49,5 +53,20 @@ class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the totalgross mass regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidCharacters, Seq(totalGrossMassregex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(totalGrossMassregex))
+      }
+
+      forAll(genInvalidString) { invalidString =>
+        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors mustBe expectedError
+      }
+    }
   }
 }
