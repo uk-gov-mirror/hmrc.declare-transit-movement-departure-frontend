@@ -30,19 +30,20 @@
         <form action="{{ routes.controllers.TotalGrossMassController.onSubmit(lrn, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
 
+        <h1 class="govuk-heading-xl"> {{messages('totalGrossMass.heading')}}<h1>
+
           {{ csrf() | safe }}
 
+        <span class="govuk-hint">{{messages('totalGrossMass.paragraph')}}</span>
+
           {{ govukInput({
-            label: {
-              text: messages('totalGrossMass.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
-            },
+
             id: "value",
             name: "value",
             value: form.value.value,
+            classes: "govuk-input--width-10",
             errorMessage: form.value.error
-          }) }}
+            }) }}
 
           {{ govukButton({
             text: messages("site.continue"),

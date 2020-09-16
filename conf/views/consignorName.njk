@@ -32,15 +32,16 @@
 
           {{ csrf() | safe }}
 
-          {{ govukInput({
+          {{ govukInput ({
             label: {
               text: messages('consignorName.heading'),
               isPageHeading: true,
-              classes: "govuk-label--xl"
+              classes: "govuk-label--xl "
             },
             id: "value",
             name: "value",
             value: form.value.value,
+            class: "govuk-input--width-10",
             errorMessage: form.value.error
           }) }}
 
