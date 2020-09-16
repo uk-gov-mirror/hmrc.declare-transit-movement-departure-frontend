@@ -228,3 +228,8 @@ GET        /:lrn/goods-summary/total-gross-mass                        controlle
 POST       /:lrn/goods-summary/total-gross-mass                        controllers.goodsSummary.TotalGrossMassController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-total-gross-mass              controllers.goodsSummary.TotalGrossMassController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/change-total-gross-mass                 controllers.goodsSummary.TotalGrossMassController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/goods-summary/authorised-location-code                        controllers.goodsSummary.AuthorisedLocationCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/goods-summary/authorised-location-code                        controllers.goodsSummary.AuthorisedLocationCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/goods-summary/change-authorised-location-code                  controllers.goodsSummary.AuthorisedLocationCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/goods-summary/change-authorised-location-code                  controllers.goodsSummary.AuthorisedLocationCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

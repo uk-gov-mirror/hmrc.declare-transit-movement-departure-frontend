@@ -18,6 +18,7 @@ package utils
 
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages.{DeclarePackagesPage, TotalGrossMassPage, TotalPackagesPage}
+import pages.{AuthorisedLocationCodePage, DeclarePackagesPage, TotalPackagesPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 import controllers.goodsSummary.routes
@@ -35,6 +36,21 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.TotalGrossMassController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalGrossMass.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def authorisedLocationCode: Option[Row] = userAnswers.get(AuthorisedLocationCodePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"authorisedLocationCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AuthorisedLocationCodeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"authorisedLocationCode.checkYourAnswersLabel"))
           )
         )
       )

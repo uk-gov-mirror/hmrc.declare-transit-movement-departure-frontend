@@ -33,6 +33,15 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
+
+  implicit lazy val arbitraryAuthorisedLocationCodeUserAnswersEntry: Arbitrary[(AuthorisedLocationCodePage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[AuthorisedLocationCodePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryTotalPackagesUserAnswersEntry: Arbitrary[(TotalPackagesPage.type, JsValue)] =
       Arbitrary {
       for {
