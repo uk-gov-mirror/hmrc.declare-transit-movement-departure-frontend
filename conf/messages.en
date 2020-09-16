@@ -456,3 +456,11 @@ totalPackages.error.nonNumeric = How many packages you are declaring must only i
 totalPackages.error.required =  Enter how many packages you are declaring
 totalPackages.error.wholeNumber = Enter how many packages you are declaring using whole numbers
 totalPackages.error.outOfRange = TotalPackages must be between {0} and {1}
+
+authorisedLocationCode.title = What is the authorised location code?
+authorisedLocationCode.heading = What is the authorised location code?
+authorisedLocationCode.checkYourAnswersLabel = What is the authorised location code?
+authorisedLocationCode.paragraph = The code can be found in the registration documents.
+authorisedLocationCode.error.required = Enter the authorised location code
+authorisedLocationCode.error.length = The authorised location code must be 17 characters or less
+authorisedLocationCode.error.invalidCharacters = The authorised location code must only include letters a to z, numbers 0 to 9
