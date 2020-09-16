@@ -17,12 +17,28 @@
 package utils
 
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
-import pages.DeclarePackagesPage
+import pages.{DeclarePackagesPage, TotalPackagesPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 import controllers.goodsSummary.routes
+import uk.gov.hmrc.viewmodels.Text.Literal
 
 class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def totalPackages: Option[Row] = userAnswers.get(TotalPackagesPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"totalPackages.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(Literal(answer.toString)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.TotalPackagesController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalPackages.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def declarePackages: Option[Row] = userAnswers.get(DeclarePackagesPage) map {
     answer =>

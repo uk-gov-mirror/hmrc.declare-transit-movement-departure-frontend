@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryTotalPackagesPage: Arbitrary[TotalPackagesPage.type] =
+    Arbitrary(TotalPackagesPage)
+
   implicit lazy val arbitraryDeclarePackagesPage: Arbitrary[DeclarePackagesPage.type] =
     Arbitrary(DeclarePackagesPage)
 

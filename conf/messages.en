@@ -448,3 +448,11 @@ declarePackages.title = Do you have any packages to declare?
 declarePackages.heading = Do you have any packages to declare?
 declarePackages.checkYourAnswersLabel = Do you have any packages to declare?
 declarePackages.error.required = Select yes if you have any packages to declare
+
+totalPackages.title = How many packages are you declaring?
+totalPackages.heading = How many packages are you declaring?
+totalPackages.checkYourAnswersLabel = How many packages are you declaring?
+totalPackages.error.nonNumeric = How many packages you are declaring must only include numbers 0 to 9
+totalPackages.error.required =  Enter how many packages you are declaring
+totalPackages.error.wholeNumber = Enter how many packages you are declaring using whole numbers
+totalPackages.error.outOfRange = TotalPackages must be between {0} and {1}
