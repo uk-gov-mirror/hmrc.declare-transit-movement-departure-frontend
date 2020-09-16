@@ -28,15 +28,16 @@
         {% endif %}
 
         <form action="{{ routes.controllers.TotalPackagesController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
 
           {{ csrf() | safe }}
 
+         <h1 class="govuk-heading-xl">
+          {{ messages("totalPackages.heading") }}
+        </h1>
+
           {{ govukInput({
-            label: {
-              text: messages('totalPackages.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
-            },
+
             id: "value",
             name: "value",
             type: "tel",

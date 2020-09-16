@@ -22,12 +22,16 @@ import play.api.data.Form
 
 class TotalPackagesFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Int] =
+  def apply(): Form[Int] = {
+
+    val minimumNumberOfPackages = 1
+    val maximumNumberOfPackages = 99999
     Form(
       "value" -> int(
         "totalPackages.error.required",
         "totalPackages.error.wholeNumber",
         "totalPackages.error.nonNumeric")
-          .verifying(inRange(1, 99999, "totalPackages.error.outOfRange"))
+          .verifying(inRange(minimumNumberOfPackages, maximumNumberOfPackages, "totalPackages.error.outOfRange"))
     )
+  }
 }
