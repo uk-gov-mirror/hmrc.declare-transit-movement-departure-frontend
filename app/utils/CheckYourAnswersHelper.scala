@@ -27,21 +27,6 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def totalPackages: Option[Row] = userAnswers.get(TotalPackagesPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"totalPackages.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(Literal(answer.toString)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.TotalPackagesController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalPackages.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(

@@ -27,7 +27,7 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.TotalPackagesController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.goodsSummary.TotalPackagesController.onSubmit(lrn, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
 
           {{ csrf() | safe }}

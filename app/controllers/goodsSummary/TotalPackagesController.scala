@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.goodsSummary
 
 import controllers.actions._
 import forms.TotalPackagesFormProvider
 import javax.inject.Inject
+import models.{LocalReferenceNumber, Mode}
+import navigation.Navigator
+import navigation.annotations.GoodsSummary
 import pages.TotalPackagesPage
-import models.{Mode, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,8 +30,6 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import navigation.Navigator
-import navigation.annotations.GoodsSummary
 
 import scala.concurrent.{ExecutionContext, Future}
 
