@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.goodsSummary
 
 import controllers.actions._
 import forms.AuthorisedLocationCodeFormProvider

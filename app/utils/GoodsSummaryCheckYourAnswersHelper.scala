@@ -17,13 +17,28 @@
 package utils
 
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
-import pages.{DeclarePackagesPage, TotalPackagesPage}
+import pages.{AuthorisedLocationCodePage, DeclarePackagesPage, TotalPackagesPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 import controllers.goodsSummary.routes
 import uk.gov.hmrc.viewmodels.Text.Literal
 
 class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def authorisedLocationCode: Option[Row] = userAnswers.get(AuthorisedLocationCodePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"authorisedLocationCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AuthorisedLocationCodeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"authorisedLocationCode.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def totalPackages: Option[Row] = userAnswers.get(TotalPackagesPage) map {
     answer =>

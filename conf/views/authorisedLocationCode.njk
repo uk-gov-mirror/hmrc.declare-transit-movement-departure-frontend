@@ -27,15 +27,20 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.AuthorisedLocationCodeController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.goodsSummary.AuthorisedLocationCodeController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("authorisedLocationCode.heading") }}
+        </h1>
 
           {{ csrf() | safe }}
 
           {{ govukInput({
             label: {
-              text: messages('authorisedLocationCode.heading'),
+              text: messages('authorisedLocationCode.paragraph'),
               isPageHeading: true,
-              classes: "govuk-label--xl"
+              classes: "govuk-body"
             },
             id: "value",
             name: "value",

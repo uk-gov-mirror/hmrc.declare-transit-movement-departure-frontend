@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class AuthorisedLocationCodeFormProviderSpec extends StringFieldBehaviours {
@@ -24,6 +25,8 @@ class AuthorisedLocationCodeFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "authorisedLocationCode.error.required"
   val lengthKey = "authorisedLocationCode.error.length"
   val maxLength = 17
+  val authorisedLocationCodeRegex: String = "^[a-zA-Z0-9]*$"
+  val invalidCharacters = "authorisedLocationCode.error.invalidCharacters"
 
   val form = new AuthorisedLocationCodeFormProvider()()
 
@@ -49,5 +52,20 @@ class AuthorisedLocationCodeFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the authorised location code regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidCharacters, Seq(authorisedLocationCodeRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(authorisedLocationCodeRegex))
+      }
+
+      forAll(genInvalidString) { invalidString =>
+        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors mustBe expectedError
+      }
+    }
   }
 }

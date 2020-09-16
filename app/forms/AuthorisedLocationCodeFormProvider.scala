@@ -17,15 +17,20 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class AuthorisedLocationCodeFormProvider @Inject() extends Mappings {
+
+  val authorisedLocationCodeRegex: String = "^[a-zA-Z0-9]*$"
+  val authorisedLocationCodeMaxLength = 17
 
   def apply(): Form[String] =
     Form(
       "value" -> text("authorisedLocationCode.error.required")
-        .verifying(maxLength(17, "authorisedLocationCode.error.length"))
-    )
+        .verifying(StopOnFirstFail[String](
+          maxLength(authorisedLocationCodeMaxLength, "authorisedLocationCode.error.length"),
+          regexp(authorisedLocationCodeRegex, "authorisedLocationCode.error.invalidCharacters")
+        )))
 }
