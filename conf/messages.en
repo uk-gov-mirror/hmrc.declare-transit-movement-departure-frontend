@@ -456,3 +456,11 @@ totalPackages.error.nonNumeric = How many packages you are declaring must only i
 totalPackages.error.required =  Enter how many packages you are declaring
 totalPackages.error.wholeNumber = Enter how many packages you are declaring using whole numbers
 totalPackages.error.outOfRange = TotalPackages must be between {0} and {1}
+
+totalGrossMass.title = What is the total gross mass in kilograms?
+totalGrossMass.heading = What is the total gross mass in kilograms?
+totalGrossMass.checkYourAnswersLabel = What is the total gross mass in kilograms?
+totalGrossMass.error.required = Enter the total gross mass in kilograms
+totalGrossMass.error.length = The total gross mass in kilograms must be 99999999999.999 or less
+totalGrossMass.paragraph = he total gross mass in kilograms must be 11 numbers or less and up to 3 decimal places, like 1000000.000
+
