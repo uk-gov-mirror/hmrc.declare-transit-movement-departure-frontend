@@ -233,3 +233,8 @@ GET        /:lrn/goods-summary/authorised-location-code                        c
 POST       /:lrn/goods-summary/authorised-location-code                        controllers.goodsSummary.AuthorisedLocationCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-authorised-location-code                  controllers.goodsSummary.AuthorisedLocationCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/change-authorised-location-code                  controllers.goodsSummary.AuthorisedLocationCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/goods-summary/add-customs-approved-location                        controllers.AddCustomsApprovedLocationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/goods-summary/add-customs-approved-location                        controllers.AddCustomsApprovedLocationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/goods-summary/change-add-customs-approved-location                  controllers.AddCustomsApprovedLocationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/goods-summary/change-add-customs-approved-location                  controllers.AddCustomsApprovedLocationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

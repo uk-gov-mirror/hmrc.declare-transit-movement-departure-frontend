@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryAddCustomsApprovedLocationPage: Arbitrary[AddCustomsApprovedLocationPage.type] =
+    Arbitrary(AddCustomsApprovedLocationPage)
+
   implicit lazy val arbitraryTotalGrossMassPage: Arbitrary[TotalGrossMassPage.type] =
     Arbitrary(TotalGrossMassPage)
 
