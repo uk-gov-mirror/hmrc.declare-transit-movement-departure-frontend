@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.goodsSummary
 
 import base.SpecBase
 import forms.TotalGrossMassFormProvider
@@ -35,6 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -82,7 +83,7 @@ class TotalGrossMassControllerSpec extends SpecBase with MockitoSugar with Nunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(TotalGrossMassPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(TotalGrossMassPage, "1000").success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, totalGrossMassRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -94,7 +95,7 @@ class TotalGrossMassControllerSpec extends SpecBase with MockitoSugar with Nunju
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "1000"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -124,7 +125,7 @@ class TotalGrossMassControllerSpec extends SpecBase with MockitoSugar with Nunju
 
       val request =
         FakeRequest(POST, totalGrossMassRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "1000"))
 
       val result = route(application, request).value
 
@@ -173,7 +174,7 @@ class TotalGrossMassControllerSpec extends SpecBase with MockitoSugar with Nunju
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -190,7 +191,7 @@ class TotalGrossMassControllerSpec extends SpecBase with MockitoSugar with Nunju
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
