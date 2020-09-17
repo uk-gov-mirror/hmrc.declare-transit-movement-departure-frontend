@@ -214,6 +214,9 @@ POST       /:lrn/route/add-transit-office                         controllers.ro
 GET        /:lrn/route/change-add-transit-office                  controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/route/change-add-transit-office                controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
+
 GET        /:lrn/goods-summary/declare-packages                        controllers.goodsSummary.DeclarePackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/goods-summary/declare-packages                       controllers.goodsSummary.DeclarePackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-declare-packages                  controllers.goodsSummary.DeclarePackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
@@ -248,3 +251,8 @@ GET        /:lrn/goods-summary/seal-id-details                        controller
 POST       /:lrn/goods-summary/seal-id-details                        controllers.goodsSummary.SealIdDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-seal-id-details               controllers.goodsSummary.SealIdDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/change-seal-id-details               controllers.goodsSummary.SealIdDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/goods-summary/add-seals                        controllers.goodsSummary.AddSealsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/goods-summary/add-seals                        controllers.goodsSummary.AddSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/goods-summary/change-add-seals                  controllers.goodsSummary.AddSealsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/goods-summary/change-add-seals                  controllers.goodsSummary.AddSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

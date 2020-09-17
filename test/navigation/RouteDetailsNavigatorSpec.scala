@@ -17,8 +17,8 @@
 package navigation
 
 import base.SpecBase
-import controllers.routeDetails.{routes => routeDetailsRoute}
-import controllers.routes
+import controllers.routeDetails.routes
+import controllers.{routes => mainRoutes}
 import generators.Generators
 import models._
 import org.scalacheck.Arbitrary.arbitrary
@@ -40,7 +40,7 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
             answers =>
 
               navigator.nextPage(CountryOfDispatchPage, NormalMode, answers)
-                .mustBe(routeDetailsRoute.OfficeOfDepartureController.onPageLoad(answers.id, NormalMode))
+                .mustBe(routes.OfficeOfDepartureController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -50,7 +50,17 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
             answers =>
 
               navigator.nextPage(OfficeOfDeparturePage, NormalMode, answers)
-                .mustBe(routeDetailsRoute.DestinationCountryController.onPageLoad(answers.id, NormalMode))
+                .mustBe(routes.DestinationCountryController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Destination Office Page to check your answers page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+
+              navigator.nextPage(DestinationOfficePage, NormalMode, answers)
+                .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
       }
@@ -67,10 +77,45 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
 
             navigator.nextPage(UnknownPage, CheckMode, answers)
-              .mustBe(routes.SessionExpiredController.onPageLoad())
+              .mustBe(mainRoutes.SessionExpiredController.onPageLoad())
         }
       }
 
+      "Must go from Country of dispatch to Router Details Check Your Answers" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(CountryOfDispatchPage, CheckMode, answers)
+              .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+        }
+
+      }
+
+      "Must go from Office Of Departure to Router Details Check Your Answers" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(OfficeOfDeparturePage, CheckMode, answers)
+              .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+        }
+
+      }
+
+      "Must go from Destination Country to Router Details Check Your Answers" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(DestinationCountryPage, CheckMode, answers)
+              .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+        }
+
+      }
     }
   }
 }

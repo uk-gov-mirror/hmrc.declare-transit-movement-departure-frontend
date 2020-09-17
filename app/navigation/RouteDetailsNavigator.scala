@@ -29,10 +29,19 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     case CountryOfDispatchPage => ua => Some(routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode))
     case OfficeOfDeparturePage => ua => Some(routes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
     case DestinationCountryPage => ua => Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
+    case DestinationOfficePage => ua => Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
 
   override val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case page if isRouteDetailsSectionPage(page) => ua => Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case _ => _ => None
+  }
+
+  private def isRouteDetailsSectionPage(page: Page): Boolean = {
+    page match {
+      case CountryOfDispatchPage| OfficeOfDeparturePage | DestinationCountryPage => true
+      case _ => false
+    }
   }
 
 }

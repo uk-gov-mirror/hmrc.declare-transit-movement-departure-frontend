@@ -23,6 +23,7 @@ import pages._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
+
   self: Generators =>
 
   implicit lazy val arbitrarySealIdDetailsUserAnswersEntry: Arbitrary[(SealIdDetailsPage.type, JsValue)] =
@@ -30,6 +31,15 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       for {
         page  <- arbitrary[SealIdDetailsPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+
+  implicit lazy val arbitraryAddSealsUserAnswersEntry: Arbitrary[(AddSealsPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[AddSealsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
 
