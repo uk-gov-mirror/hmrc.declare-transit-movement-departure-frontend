@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-
-import forms.mappings.Mappings
-import play.api.data.Form
-import models.RepresentativeCapacity
-
-class RepresentativeCapacityFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[RepresentativeCapacity] =
+import pages.behaviours.PageBehaviours
 
 
-    Form(
-      "value" -> enumerable[RepresentativeCapacity]("representativeCapacity.error.required")
-    )
+class CustomsApprovedLocationPageSpec extends PageBehaviours {
+
+  "CustomsApprovedLocationPage" - {
+
+    beRetrievable[String](CustomsApprovedLocationPage)
+
+    beSettable[String](CustomsApprovedLocationPage)
+
+    beRemovable[String](CustomsApprovedLocationPage)
+  }
 }

@@ -17,17 +17,20 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.RepresentativeCapacity
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class RepresentativeCapacityFormProvider @Inject() extends Mappings {
+class CustomsApprovedLocationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[RepresentativeCapacity] =
+  val customsApprovedLocationRegex: String = "^[a-zA-Z0-9 ]*$"
+  val maxLengthCustomsApprovedLocation = 17
 
-
+  def apply(): Form[String] =
     Form(
-      "value" -> enumerable[RepresentativeCapacity]("representativeCapacity.error.required")
-    )
+      "value" -> text("customsApprovedLocation.error.required")
+        .verifying(StopOnFirstFail[String](
+          maxLength(maxLengthCustomsApprovedLocation, "customsApprovedLocation.error.length"),
+          regexp(customsApprovedLocationRegex, "customsApprovedLocation.error.invalidCharacters")
+        )))
 }

@@ -171,7 +171,6 @@ class SectionsHelperSpec extends SpecBase {
 
         val url = transportDetailsRoutes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
         val sectionName = "declarationSummary.section.transport"
-        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
 
         val result = sectionsHelper.getSections
 

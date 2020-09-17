@@ -17,13 +17,8 @@
 package navigation
 
 import base.SpecBase
-import controllers.transportDetails.{routes => transportDetailsRoute}
 import generators.Generators
-import models._
-import models.reference.{Country, CountryCode}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
 
 class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

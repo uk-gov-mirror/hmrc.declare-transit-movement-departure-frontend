@@ -473,6 +473,13 @@ authorisedLocationCode.error.required = Enter the authorised location code
 authorisedLocationCode.error.length = The authorised location code must be 17 characters or less
 authorisedLocationCode.error.invalidCharacters = The authorised location code must only include letters a to z, numbers 0 to 9
 
+customsApprovedLocation.title = Where is the Customs-approved location?
+customsApprovedLocation.heading = Where is the Customs-approved location?
+customsApprovedLocation.checkYourAnswersLabel = Where is the Customs-approved location?
+customsApprovedLocation.error.required = Enter the Customs-approved location
+customsApprovedLocation.error.length = The Customs-approved location must be 17 characters or less
+customsApprovedLocation.error.invalidCharacters = The Customs-approved location must only include letters a to z, numbers 0 to 9 or blank spaces
+
 addCustomsApprovedLocation.title = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.heading = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.checkYourAnswersLabel = Do you need to add a Customs-approved location?

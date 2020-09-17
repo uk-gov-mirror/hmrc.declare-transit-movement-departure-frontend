@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryCustomsApprovedLocationPage: Arbitrary[CustomsApprovedLocationPage.type] =
+    Arbitrary(CustomsApprovedLocationPage)
+
   implicit lazy val arbitraryAddCustomsApprovedLocationPage: Arbitrary[AddCustomsApprovedLocationPage.type] =
     Arbitrary(AddCustomsApprovedLocationPage)
 
