@@ -490,3 +490,6 @@ addSeals.title = Do you need to add Customs seals numbers?
 addSeals.heading = Do you need to add Customs seals numbers?
 addSeals.checkYourAnswersLabel = Do you need to add Customs seals numbers?
 addSeals.error.required = Select yes if you need to add seals
+
+addSealsLater.title = Custom seals may be added later
+addSealsLater.heading = Custom seals may be added later
