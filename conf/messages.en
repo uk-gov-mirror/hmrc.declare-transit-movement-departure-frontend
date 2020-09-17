@@ -479,3 +479,8 @@ customsApprovedLocation.checkYourAnswersLabel = Where is the Customs-approved lo
 customsApprovedLocation.error.required = Enter the Customs-approved location
 customsApprovedLocation.error.length = The Customs-approved location must be 17 characters or less
 customsApprovedLocation.error.invalidCharacters = The Customs-approved location must only include letters a to z, numbers 0 to 9 or blank spaces
+
+addCustomsApprovedLocation.title = Do you need to add a Customs-approved location?
+addCustomsApprovedLocation.heading = Do you need to add a Customs-approved location?
+addCustomsApprovedLocation.checkYourAnswersLabel = Do you need to add a Customs-approved location?
+addCustomsApprovedLocation.error.required = Select yes if you need to add a Customs-approved location

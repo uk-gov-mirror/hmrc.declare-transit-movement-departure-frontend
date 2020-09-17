@@ -34,6 +34,15 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
+
+  implicit lazy val arbitraryAddCustomsApprovedLocationUserAnswersEntry: Arbitrary[(AddCustomsApprovedLocationPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[AddCustomsApprovedLocationPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryTotalGrossMassUserAnswersEntry: Arbitrary[(TotalGrossMassPage.type, JsValue)] =
       Arbitrary {
       for {
