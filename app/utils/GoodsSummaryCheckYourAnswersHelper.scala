@@ -26,6 +26,8 @@ import uk.gov.hmrc.viewmodels._
 
 class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+
+
   def customsApprovedLocation: Option[Row] = userAnswers.get(CustomsApprovedLocationPage) map {
     answer =>
       Row(

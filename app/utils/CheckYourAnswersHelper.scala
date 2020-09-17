@@ -26,21 +26,6 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def sealIdDetails: Option[Row] = userAnswers.get(SealIdDetailsPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"sealIdDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.SealIdDetailsController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"sealIdDetails.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
    def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(

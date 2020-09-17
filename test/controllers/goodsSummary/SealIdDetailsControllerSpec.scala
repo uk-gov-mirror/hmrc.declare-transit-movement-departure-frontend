@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.goodsSummary
 
 import base.SpecBase
 import controllers.{routes => mainRoutes}
