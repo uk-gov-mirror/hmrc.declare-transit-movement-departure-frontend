@@ -247,6 +247,11 @@ POST       /:lrn/goods-summary/add-customs-approved-location                    
 GET        /:lrn/goods-summary/change-add-customs-approved-location                  controllers.goodsSummary.AddCustomsApprovedLocationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/change-add-customs-approved-location                  controllers.goodsSummary.AddCustomsApprovedLocationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /:lrn/goods-summary/seal-id-details                        controllers.goodsSummary.SealIdDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/goods-summary/seal-id-details                        controllers.goodsSummary.SealIdDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/goods-summary/change-seal-id-details               controllers.goodsSummary.SealIdDetailsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/goods-summary/change-seal-id-details               controllers.goodsSummary.SealIdDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /:lrn/goods-summary/add-seals                        controllers.goodsSummary.AddSealsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/goods-summary/add-seals                        controllers.goodsSummary.AddSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-add-seals                  controllers.goodsSummary.AddSealsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

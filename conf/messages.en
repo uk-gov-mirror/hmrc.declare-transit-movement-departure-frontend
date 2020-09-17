@@ -464,7 +464,7 @@ totalGrossMass.checkYourAnswersLabel = What is the total gross mass in kilograms
 totalGrossMass.error.required = Enter the total gross mass in kilograms
 totalGrossMass.error.length = The total gross mass in kilograms must be 99999999999.999 or less
 totalGrossMass.paragraph = Amount must have 3 decimal places, like 1000.985.
-
+totalGrossMass.error.invalidCharacters = The total gross mass in kilograms must be 11 numbers or less and up to 3 decimal places, like 1000000.000
 
 authorisedLocationCode.title = What is the authorised location code?
 authorisedLocationCode.heading = What is the authorised location code?
@@ -485,6 +485,14 @@ addCustomsApprovedLocation.title = Do you need to add a Customs-approved locatio
 addCustomsApprovedLocation.heading = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.checkYourAnswersLabel = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.error.required = Select yes if you need to add a Customs-approved location
+
+sealIdDetails.title = What is the Customs seal number?
+sealIdDetails.heading = What is the Customs seal number?
+sealIdDetails.checkYourAnswersLabel = Customs seal number
+sealIdDetails.error.required = Enter the seal number
+sealIdDetails.error.length = The seal number must be 20 characters or less
+sealIdDetails.error.invalidCharacters = The authorised location code must only include letters a to z, numbers 0 to 9
+
 
 addSeals.title = Do you need to add Customs seals numbers?
 addSeals.heading = Do you need to add Customs seals numbers?

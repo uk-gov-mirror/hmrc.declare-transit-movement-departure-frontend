@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitrarySealIdDetailsPage: Arbitrary[SealIdDetailsPage.type] =
+    Arbitrary(SealIdDetailsPage)
+
   implicit lazy val arbitraryAddSealsPage: Arbitrary[AddSealsPage.type] =
     Arbitrary(AddSealsPage)
 
