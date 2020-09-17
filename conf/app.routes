@@ -248,3 +248,5 @@ GET        /:lrn/goods-summary/add-seals                        controllers.good
 POST       /:lrn/goods-summary/add-seals                        controllers.goodsSummary.AddSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-add-seals                  controllers.goodsSummary.AddSealsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/change-add-seals                  controllers.goodsSummary.AddSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/goods-summary/add-seals-later                       controllers.goodsSummary.AddSealsLaterController.onPageLoad(lrn: LocalReferenceNumber)
