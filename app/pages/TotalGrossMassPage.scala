@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import play.api.libs.json.JsPath
 
-class PrincipalNameFormProvider @Inject() extends Mappings {
+case object TotalGrossMassPage extends QuestionPage[String] {
 
-  val principalNameRegex: String = "^[a-zA-Z0-9 ]*$"
-  val maxLengthPrincipalName = 35
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("principalName.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLengthPrincipalName, "principalName.error.length"),
-          regexp(principalNameRegex, "principalName.error.invalidCharacters")
-        )))
+  override def toString: String = "totalGrossMass"
 }

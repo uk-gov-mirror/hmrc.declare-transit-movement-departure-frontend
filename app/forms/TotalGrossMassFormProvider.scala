@@ -16,21 +16,30 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class PrincipalNameFormProvider @Inject() extends Mappings {
+class TotalGrossMassFormProvider @Inject() extends Mappings {
 
-  val principalNameRegex: String = "^[a-zA-Z0-9 ]*$"
-  val maxLengthPrincipalName = 35
+  def apply(): Form[String] = {
 
-  def apply(): Form[String] =
+    val totalGrossMassregex: String = "^[0-9]{1,11}(?:\\.[0-9]{1,3})?$"
+
+
+
     Form(
-      "value" -> text("principalName.error.required")
+      "value" -> text("totalGrossMass.error.required")
         .verifying(StopOnFirstFail[String](
-          maxLength(maxLengthPrincipalName, "principalName.error.length"),
-          regexp(principalNameRegex, "principalName.error.invalidCharacters")
-        )))
+
+          maxLength(15, "totalGrossMass.error.length"),
+          regexp(totalGrossMassregex, "totalGrossMass.error.invalidCharacters")
+
+        )
+        )
+
+    )
+  }
 }
+

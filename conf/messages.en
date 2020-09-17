@@ -458,3 +458,18 @@ totalPackages.error.required =  Enter how many packages you are declaring
 totalPackages.error.wholeNumber = Enter how many packages you are declaring using whole numbers
 totalPackages.error.outOfRange = TotalPackages must be between {0} and {1}
 
+totalGrossMass.title = What is the total gross mass in kilograms?
+totalGrossMass.heading = What is the total gross mass in kilograms?
+totalGrossMass.checkYourAnswersLabel = What is the total gross mass in kilograms?
+totalGrossMass.error.required = Enter the total gross mass in kilograms
+totalGrossMass.error.length = The total gross mass in kilograms must be 99999999999.999 or less
+totalGrossMass.paragraph = Amount must have 3 decimal places, like 1000.985.
+
+
+authorisedLocationCode.title = What is the authorised location code?
+authorisedLocationCode.heading = What is the authorised location code?
+authorisedLocationCode.checkYourAnswersLabel = What is the authorised location code?
+authorisedLocationCode.paragraph = The code can be found in the registration documents.
+authorisedLocationCode.error.required = Enter the authorised location code
+authorisedLocationCode.error.length = The authorised location code must be 17 characters or less
+authorisedLocationCode.error.invalidCharacters = The authorised location code must only include letters a to z, numbers 0 to 9
