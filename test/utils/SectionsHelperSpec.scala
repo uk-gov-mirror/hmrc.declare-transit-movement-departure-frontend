@@ -103,6 +103,7 @@ class SectionsHelperSpec extends SpecBase {
 
         result mustBe expectedSections
       }
+
       "must return trader's details section with status as Completed" in {
         val userAnswers = emptyUserAnswers
           .set(IsPrincipalEoriKnownPage, true).success.value
@@ -186,6 +187,35 @@ class SectionsHelperSpec extends SpecBase {
         val url = routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
         val sectionName = "declarationSummary.section.routes"
         val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
+
+      "must return routes section with status as InProgress" in {
+        val userAnswers = emptyUserAnswers.set(CountryOfDispatchPage, CountryCode("GB")).toOption.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+
+        val url = routeDetailsRoutes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.routes"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, InProgress))
+
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
+
+      "must return routes section with status as Completed" in {
+        val userAnswers = emptyUserAnswers.set(CountryOfDispatchPage, CountryCode("GB")).toOption.value
+          .set(OfficeOfDeparturePage, "GB00010").toOption.value
+          .set(DestinationCountryPage, CountryCode("GB")).toOption.value
+          .set(DestinationOfficePage, "GB00010").toOption.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+
+        val url = routeDetailsRoutes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        val sectionName = "declarationSummary.section.routes"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
 
         val result = sectionsHelper.getSections
 
