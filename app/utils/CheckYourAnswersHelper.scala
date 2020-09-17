@@ -22,27 +22,11 @@ import controllers.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def addSeals: Option[Row] = userAnswers.get(AddSealsPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"addSeals.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddSealsController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSeals.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
+  def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(
         key = Key(msg"addSecurityDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
