@@ -16,13 +16,35 @@
 
 package utils
 
+import java.time.format.DateTimeFormatter
+
 import controllers.routeDetails.routes
 import models.{CheckMode, CountryList, CustomsOfficeList, LocalReferenceNumber, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels._
 
 class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+
+  def lrn: LocalReferenceNumber = userAnswers.id
+
+  def arrivalTimesAtOffice: Option[Row] = userAnswers.get(ArrivalTimesAtOfficePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"arrivalTimesAtOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(Literal(answer.format(dateFormatter))),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"arrivalTimesAtOffice.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def destinationOffice(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(DestinationOfficePage) flatMap {
     answer =>
@@ -109,7 +131,6 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def lrn: LocalReferenceNumber = userAnswers.id
 }
 
 

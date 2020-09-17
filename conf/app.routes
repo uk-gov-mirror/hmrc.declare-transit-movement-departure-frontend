@@ -258,3 +258,8 @@ GET        /:lrn/goods-summary/change-add-seals                  controllers.goo
 POST       /:lrn/goods-summary/change-add-seals                  controllers.goodsSummary.AddSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/goods-summary/add-seals-later                       controllers.goodsSummary.AddSealsLaterController.onPageLoad(lrn: LocalReferenceNumber)
+
+GET        /:lrn/arrivalTimesAtOffice                  controllers.routeDetails.ArrivalTimesAtOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/arrivalTimesAtOffice                  controllers.routeDetails.ArrivalTimesAtOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeArrivalTimesAtOffice                        controllers.routeDetails.ArrivalTimesAtOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeArrivalTimesAtOffice                        controllers.routeDetails.ArrivalTimesAtOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

@@ -501,3 +501,12 @@ addSeals.error.required = Select yes if you need to add seals
 
 addSealsLater.title = Custom seals may be added later
 addSealsLater.heading = Custom seals may be added later
+
+arrivalTimesAtOffice.title = When do you expect the transit to arrive at the office of transit?
+arrivalTimesAtOffice.heading = When do you expect the transit to arrive at the office of transit?
+arrivalTimesAtOffice.hint = For example, 14 1 2020 12:59am.
+arrivalTimesAtOffice.checkYourAnswersLabel = ArrivalTimesAtOffice
+arrivalTimesAtOffice.error.required.all = Enter the arrivalTimesAtOffice
+arrivalTimesAtOffice.error.required.two = The arrivalTimesAtOffice must include {0} and {1}
+arrivalTimesAtOffice.error.required = The arrivalTimesAtOffice must include {0}
+arrivalTimesAtOffice.error.invalid = Enter a real ArrivalTimesAtOffice
