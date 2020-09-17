@@ -19,13 +19,14 @@ package controllers.routeDetails
 import base.SpecBase
 import connectors.ReferenceDataConnector
 import matchers.JsonMatchers
-import models.{CountryList, CustomsOfficeList}
 import models.reference.{Country, CountryCode, CustomsOffice}
+import models.{CountryList, CustomsOfficeList}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DestinationCountryPage
+import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -53,7 +54,9 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
 
       val userAnswers = emptyUserAnswers.set(DestinationCountryPage, CountryCode("GB")).toOption.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides( bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .build()
       val request = FakeRequest(GET, routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
