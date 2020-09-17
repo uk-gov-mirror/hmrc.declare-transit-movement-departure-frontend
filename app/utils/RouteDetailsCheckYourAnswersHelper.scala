@@ -24,22 +24,25 @@ import uk.gov.hmrc.viewmodels._
 
 class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def destinationOffice: Option[Row] = userAnswers.get(DestinationOfficePage) map {
+  def destinationOffice(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(DestinationOfficePage) flatMap {
     answer =>
-      Row(
-        key     = Key(msg"destinationOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.DestinationOfficeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"destinationOffice.checkYourAnswersLabel"))
+      customsOfficeList.getCustomsOffice(answer) map {
+        customsOffice =>
+          Row(
+            key = Key(msg"destinationOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value = Value(lit"${customsOffice.name} (${customsOffice.id})"),
+            actions = List(
+              Action(
+                content = msg"site.edit",
+                href = routes.DestinationOfficeController.onPageLoad(lrn, CheckMode).url,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"destinationOffice.checkYourAnswersLabel"))
+              )
+            )
           )
-        )
-      )
+      }
   }
 
-  def addTransitOffice: Option[Row] = userAnswers.get(AddTransitOfficePage) map {
+  def addTransitOffice(): Option[Row] = userAnswers.get(AddTransitOfficePage) map {
     answer =>
       Row(
         key     = Key(msg"addTransitOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),

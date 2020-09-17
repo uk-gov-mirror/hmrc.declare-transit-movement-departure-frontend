@@ -63,7 +63,10 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
   private def routesSection: SectionDetails = {
     val startPage: String = routeDetailsRoutes.CountryOfDispatchController.onPageLoad(userAnswers.id, NormalMode).url
-    SectionDetails("declarationSummary.section.routes", startPage, NotStarted)
+    val cyaPageAndStatus: (String, Status) = (routeDetailsRoutes.RouteDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
+    val (page, status) = getIncompletePage(startPage, routeDetailsPages).getOrElse(cyaPageAndStatus)
+
+    SectionDetails("declarationSummary.section.routes", page, status)
   }
 
   private def transportSection: SectionDetails = {
@@ -143,6 +146,18 @@ class SectionsHelper(userAnswers: UserAnswers) {
       userAnswers.get(DeclarationPlacePage) -> movementDetailsRoutes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(DeclarationForSomeoneElsePage) -> movementDetailsRoutes.DeclarationForSomeoneElseController.onPageLoad(lrn, NormalMode).url
     ) ++ declareForSomeoneElseDiversionPages
+
+  }
+
+  private val routeDetailsPages: Seq[(Option[_], String)] = {
+    val lrn = userAnswers.id
+
+    Seq(
+      userAnswers.get(CountryOfDispatchPage) -> routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(OfficeOfDeparturePage) -> routeDetailsRoutes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(DestinationCountryPage) -> routeDetailsRoutes.DestinationCountryController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(DestinationOfficePage) -> routeDetailsRoutes.DestinationOfficeController.onPageLoad(lrn, NormalMode).url,
+    )
 
   }
 

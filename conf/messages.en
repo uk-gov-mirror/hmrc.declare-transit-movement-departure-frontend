@@ -341,6 +341,7 @@ consignorAddress.error.line3.invalid= The third line of the consignor’s addres
 countryOfDispatch.title = What is the country of dispatch?
 countryOfDispatch.heading = What is the country of dispatch?
 countryOfDispatch.checkYourAnswersLabel = Country of dispatch
+countryOfDispatch.label = This is the country where the goods started. This may not be where the transit movement started.
 countryOfDispatch.error.required = Select the country of dispatch
 
 officeOfDeparture.title = Where is the office of departure?
@@ -410,7 +411,7 @@ addIdAtDepartureLater.paragraph = This must be manually recorded on the transit 
 destinationOffice.title = What is the office of destination in {0}?
 destinationOffice.heading = What is the office of destination in {0}?
 destinationOffice.label = This is the office in where the transit movement is ending.
-destinationOffice.checkYourAnswersLabel = destinationOffice
+destinationOffice.checkYourAnswersLabel = Destination office
 destinationOffice.error.required = Select the office in {0} that the are goods ending up
 
 nationalityCrossingBorder.title = What is the nationality crossing the border?
@@ -456,3 +457,4 @@ totalPackages.error.nonNumeric = How many packages you are declaring must only i
 totalPackages.error.required =  Enter how many packages you are declaring
 totalPackages.error.wholeNumber = Enter how many packages you are declaring using whole numbers
 totalPackages.error.outOfRange = TotalPackages must be between {0} and {1}
+

@@ -156,25 +156,25 @@ POST       /:lrn/transport-details/change-id-crossing-border                 con
 
 GET        /:lrn/transport-details/add-id-at-departure-later                       controllers.transportDetails.AddIdAtDepartureLaterController.onPageLoad(lrn: LocalReferenceNumber, mode:Mode = NormalMode)
 
-GET        /:lrn/route/dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/route/dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/route/dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/route/dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/route/dispatch-country                                 controllers.routeDetails.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/route/dispatch-country                                 controllers.routeDetails.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/route/dispatch-country                                 controllers.routeDetails.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/route/dispatch-country                                 controllers.routeDetails.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/route/office-of-departure                         controllers.routeDetails.OfficeOfDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/route/office-of-departure                         controllers.routeDetails.OfficeOfDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/route/change-office-of-departure                  controllers.routeDetails.OfficeOfDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/route/change-office-of-departure                  controllers.routeDetails.OfficeOfDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/route/office-of-departure                              controllers.routeDetails.OfficeOfDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/route/office-of-departure                              controllers.routeDetails.OfficeOfDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/route/change-office-of-departure                       controllers.routeDetails.OfficeOfDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/route/change-office-of-departure                       controllers.routeDetails.OfficeOfDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/route/destination-country                         controllers.routeDetails.DestinationCountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/route/destination-country                         controllers.routeDetails.DestinationCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/route/change-destination-country                  controllers.routeDetails.DestinationCountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/route/change-destination-country                  controllers.routeDetails.DestinationCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/route/destination-country                              controllers.routeDetails.DestinationCountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/route/destination-country                              controllers.routeDetails.DestinationCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/route/change-destination-country                       controllers.routeDetails.DestinationCountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/route/change-destination-country                       controllers.routeDetails.DestinationCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/route/destination-office                           controllers.routeDetails.DestinationOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/route/destination-office                           controllers.routeDetails.DestinationOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/route/change-destination-office                     controllers.routeDetails.DestinationOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/route/change-destination-office                     controllers.routeDetails.DestinationOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/route/destination-office                                controllers.routeDetails.DestinationOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/route/destination-office                                controllers.routeDetails.DestinationOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/route/change-destination-office                         controllers.routeDetails.DestinationOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/route/change-destination-office                         controllers.routeDetails.DestinationOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/transport-details/change-at-border                        controllers.transportDetails.ChangeAtBorderController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/transport-details/change-at-border                        controllers.transportDetails.ChangeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -214,6 +214,9 @@ POST       /:lrn/route/add-transit-office                         controllers.ro
 GET        /:lrn/route/change-add-transit-office                  controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/route/change-add-transit-office                controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
+
 GET        /:lrn/goods-summary/declare-packages                        controllers.goodsSummary.DeclarePackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/goods-summary/declare-packages                       controllers.goodsSummary.DeclarePackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-declare-packages                  controllers.goodsSummary.DeclarePackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
@@ -223,3 +226,4 @@ GET        /:lrn/goods-summary/total-packages                  controllers.goods
 POST       /:lrn/goods-summary/total-packages                  controllers.goodsSummary.TotalPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-total-packages                        controllers.goodsSummary.TotalPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/change-total-packages                        controllers.goodsSummary.TotalPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
