@@ -17,14 +17,28 @@
 package utils
 
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
-import pages.{DeclarePackagesPage, TotalGrossMassPage, TotalPackagesPage}
-import pages.{AuthorisedLocationCodePage, DeclarePackagesPage, TotalPackagesPage}
+import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 import controllers.goodsSummary.routes
 import uk.gov.hmrc.viewmodels.Text.Literal
 
 class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def customsApprovedLocation: Option[Row] = userAnswers.get(CustomsApprovedLocationPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"customsApprovedLocation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CustomsApprovedLocationController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"customsApprovedLocation.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def totalGrossMass: Option[Row] = userAnswers.get(TotalGrossMassPage) map {
     answer =>
