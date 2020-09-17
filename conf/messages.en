@@ -484,3 +484,8 @@ addCustomsApprovedLocation.title = Do you need to add a Customs-approved locatio
 addCustomsApprovedLocation.heading = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.checkYourAnswersLabel = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.error.required = Select yes if you need to add a Customs-approved location
+
+addSeals.title = Do you need to add Customs seals numbers?
+addSeals.heading = Do you need to add Customs seals numbers?
+addSeals.checkYourAnswersLabel = Do you need to add Customs seals numbers?
+addSeals.error.required = Select yes if you need to add seals
