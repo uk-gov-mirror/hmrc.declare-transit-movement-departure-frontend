@@ -14,41 +14,56 @@
  * limitations under the License.
  */
 
-package controllers.routeDetails
+package controllers.goodsSummary
+
+import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
-import controllers.{routes => mainRoutes}
-import forms.AddTransitOfficeFormProvider
+import forms.ControlResultDateLimitFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
-import navigation.annotations.RouteDetails
+import models.NormalMode
+import navigation.annotations.GoodsSummary
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddTransitOfficePage
+import pages.ControlResultDateLimitPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ControlResultDateLimitControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+
+  val formProvider = new ControlResultDateLimitFormProvider()
+  private def form = formProvider()
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new AddTransitOfficeFormProvider()
-  val form = formProvider()
+  val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  lazy val addTransitOfficeRoute = routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url
+  lazy val controlResultDateLimitRoute = routes.ControlResultDateLimitController.onPageLoad(lrn, NormalMode).url
 
-  "AddTransitOffice Controller" - {
+  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest(GET, controlResultDateLimitRoute)
+
+  def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
+    FakeRequest(POST, controlResultDateLimitRoute)
+      .withFormUrlEncodedBody(
+        "value.day"   -> validAnswer.getDayOfMonth.toString,
+        "value.month" -> validAnswer.getMonthValue.toString,
+        "value.year"  -> validAnswer.getYear.toString
+      )
+
+  "ControlResultDateLimit Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -56,24 +71,25 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, addTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val viewModel = DateInput.localDate(form("value"))
+
       val expectedJson = Json.obj(
         "form" -> form,
         "mode" -> NormalMode,
-        "lrn" -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "lrn"  -> lrn,
+        "date" -> viewModel
       )
 
-      templateCaptor.getValue mustEqual "addTransitOffice.njk"
+      templateCaptor.getValue mustEqual "controlResultDateLimit.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -84,27 +100,35 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddTransitOfficePage, true).success.value
+      val userAnswers = emptyUserAnswers.set(ControlResultDateLimitPage, validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, addTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-      val result = route(application, request).value
+
+      val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(
+        Map(
+          "value.day"   -> validAnswer.getDayOfMonth.toString,
+          "value.month" -> validAnswer.getMonthValue.toString,
+          "value.year"  -> validAnswer.getYear.toString
+        )
+      )
+
+      val viewModel = DateInput.localDate(filledForm("value"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
         "mode" -> NormalMode,
-        "lrn" -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "lrn"  -> lrn,
+        "date" -> viewModel
       )
 
-      templateCaptor.getValue mustEqual "addTransitOffice.njk"
+      templateCaptor.getValue mustEqual "controlResultDateLimit.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -119,17 +143,12 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind(classOf[Navigator]).qualifiedWith(classOf[GoodsSummary]).toInstance(new FakeNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
 
-      )
-      .build()
-
-      val request =
-        FakeRequest(POST, addTransitOfficeRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(application, request).value
+      val result = route(application, postRequest).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -144,8 +163,8 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, addTransitOfficeRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request = FakeRequest(POST, controlResultDateLimitRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -155,14 +174,16 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val viewModel = DateInput.localDate(boundForm("value"))
+
       val expectedJson = Json.obj(
         "form" -> boundForm,
         "mode" -> NormalMode,
-        "lrn" -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "lrn"  -> lrn,
+        "date" -> viewModel
       )
 
-      templateCaptor.getValue mustEqual "addTransitOffice.njk"
+      templateCaptor.getValue mustEqual "controlResultDateLimit.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -172,12 +193,9 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, addTransitOfficeRoute)
-
-      val result = route(application, request).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -187,11 +205,7 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, addTransitOfficeRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(application, request).value
+      val result = route(application, postRequest).value
 
       status(result) mustEqual SEE_OTHER
 

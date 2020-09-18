@@ -16,15 +16,33 @@
 
 package utils
 
+import java.time.format.DateTimeFormatter
+
 import controllers.goodsSummary.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.{AddCustomsApprovedLocationPage, AuthorisedLocationCodePage, DeclarePackagesPage, TotalGrossMassPage, TotalPackagesPage}
+import utils.GoodsSummaryCheckYourAnswersHelper.dateFormatter
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels._
 
 class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def controlResultDateLimit: Option[Row] = userAnswers.get(ControlResultDateLimitPage) map {
+    answer =>
+      Row(
+        key = Key(msg"controlResultDateLimit.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(Literal(answer.format(dateFormatter))),
+        actions = List(
+          Action(
+            content = msg"site.edit",
+            href = routes.ControlResultDateLimitController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"controlResultDateLimit.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def addSeals: Option[Row] = userAnswers.get(AddSealsPage) map {
     answer =>
@@ -132,4 +150,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
   }
 
   def lrn: LocalReferenceNumber = userAnswers.id
+}
+object GoodsSummaryCheckYourAnswersHelper {
+
+  private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 }
