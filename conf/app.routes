@@ -263,3 +263,8 @@ GET        /:lrn/goods-summary/control-result-date-limit             controllers
 POST       /:lrn/goods-summary/control-result-date-limit             controllers.goodsSummary.ControlResultDateLimitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-control-result-date-limit      controllers.goodsSummary.ControlResultDateLimitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/change-control-result-date-limit      controllers.goodsSummary.ControlResultDateLimitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/goods-summary/seals-information                        controllers.SealsInformationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/goods-summary/seals-information                        controllers.SealsInformationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/goods-summary/change-seals-information                  controllers.SealsInformationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/goods-summary/change-seals-information                  controllers.SealsInformationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
