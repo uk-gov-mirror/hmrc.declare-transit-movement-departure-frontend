@@ -28,19 +28,19 @@
         {% endif %}
 
         <form action="{{ routes.controllers.SealsInformationController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
 
           {{ csrf() | safe }}
+
+          <h1 class="govuk-heading-xl">{{messages('sealsInformation.heading')}}</h1>
+
+          <h1 class="govuk-heading-m">
+            {{messages('sealsInformation.subHeading')}}
+          </h1>
 
           {{ govukRadios({
             classes: "govuk-radios--inline",
             name: 'value',
-            fieldset: {
-              legend: {
-                text: messages('sealsInformation.heading'),
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--xl"
-              }
-            },
             items: radios,
             errorMessage: form.value.error
           }) }}
