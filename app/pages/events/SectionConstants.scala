@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package pages
+package pages.events
 
-import models.Index
-import models.domain.SealDomain
-import pages.events.SectionConstants
-import play.api.libs.json.JsPath
+object SectionConstants {
 
-case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {
-
-  override def path: JsPath = JsPath \ SectionConstants.seals \ sealIndex.position
+  val seals      = "seals"
 
 }

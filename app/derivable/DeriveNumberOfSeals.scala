@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import models.Index
 import models.domain.SealDomain
 import pages.events.SectionConstants
 import play.api.libs.json.JsPath
 
-case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {
+final case class DeriveNumberOfSeals() extends Derivable[List[SealDomain], Int] {
 
-  override def path: JsPath = JsPath \ SectionConstants.seals \ sealIndex.position
+  override val derive: List[SealDomain] => Int = _.size
 
+  override def path: JsPath = JsPath \ SectionConstants.seals
 }

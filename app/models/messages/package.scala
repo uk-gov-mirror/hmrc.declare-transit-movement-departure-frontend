@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.Index
-import models.domain.SealDomain
-import pages.events.SectionConstants
-import play.api.libs.json.JsPath
+import play.twirl.api.utils.StringEscapeUtils
 
-case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {
+package object messages {
 
-  override def path: JsPath = JsPath \ SectionConstants.seals \ sealIndex.position
+  def escapeXml(xml: String): String = StringEscapeUtils.escapeXml11(xml)
 
+  def booleanToInt(flag: Boolean): Int = if (flag) 1 else 0
 }

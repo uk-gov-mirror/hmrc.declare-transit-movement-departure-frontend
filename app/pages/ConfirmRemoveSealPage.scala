@@ -16,13 +16,6 @@
 
 package pages
 
-import models.Index
-import models.domain.SealDomain
-import pages.events.SectionConstants
-import play.api.libs.json.JsPath
+import pages.Page
 
-case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {
-
-  override def path: JsPath = JsPath \ SectionConstants.seals \ sealIndex.position
-
-}
+final case class ConfirmRemoveSealPage() extends Page

@@ -19,10 +19,13 @@ package controllers.goodsSummary
 import controllers.actions._
 import forms.SealIdDetailsFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.domain.SealDomain
+import models.requests.DataRequest
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GoodsSummary
 import pages.SealIdDetailsPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,24 +50,13 @@ class SealIdDetailsController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(SealIdDetailsPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("sealIdDetails.njk", json).map(Ok(_))
+      renderView(lrn, sealIndex, mode, form).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -80,9 +72,21 @@ class SealIdDetailsController @Inject()(
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage(sealIndex), SealDomain(value)))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SealIdDetailsPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(SealIdDetailsPage(sealIndex), mode, updatedAnswers))
       )
+  }
+
+  private def renderView(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode, preparedForm: Form[String])(
+    implicit request: DataRequest[AnyContent]) = {
+    val json = Json.obj(
+      "form"        -> preparedForm,
+      "lrn"         -> lrn,
+      "mode"        -> mode,
+      "onSubmitUrl" -> routes.SealIdDetailsController.onSubmit(lrn, sealIndex, mode).url
+    )
+
+    renderer.render("events/seals/sealIdentity.njk", json)
   }
 }

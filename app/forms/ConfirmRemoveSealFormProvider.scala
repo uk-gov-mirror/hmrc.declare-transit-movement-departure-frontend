@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.Index
+import forms.mappings.Mappings
+import javax.inject.Inject
 import models.domain.SealDomain
-import pages.events.SectionConstants
-import play.api.libs.json.JsPath
+import models.messages.Seal
+import play.api.data.Form
 
-case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {
+class ConfirmRemoveSealFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ SectionConstants.seals \ sealIndex.position
-
+  def apply(seal: SealDomain): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmRemoveSeal.error.required", seal.numberOrMark)
+    )
 }

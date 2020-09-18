@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.Index
-import models.domain.SealDomain
-import pages.events.SectionConstants
-import play.api.libs.json.JsPath
+sealed trait LanguageCode {
+  val code: String
+}
 
-case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {
-
-  override def path: JsPath = JsPath \ SectionConstants.seals \ sealIndex.position
-
+object LanguageCodeEnglish extends LanguageCode {
+  override val code: String = "EN"
 }
