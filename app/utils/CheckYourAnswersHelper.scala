@@ -22,9 +22,26 @@ import controllers.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels._
+import utils.CheckYourAnswersHelper.dateFormatter
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def controlResultDateLimit: Option[Row] = userAnswers.get(ControlResultDateLimitPage) map {
+    answer =>
+      Row(
+        key = Key(msg"controlResultDateLimit.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(Literal(answer.format(dateFormatter))),
+        actions = List(
+          Action(
+            content = msg"site.edit",
+            href = routes.ControlResultDateLimitController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"controlResultDateLimit.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
@@ -43,9 +60,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
   }
 
   def lrn: LocalReferenceNumber = userAnswers.id
-}
 
-object CheckYourAnswersHelper {
+}
+  object CheckYourAnswersHelper {
 
   private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 }

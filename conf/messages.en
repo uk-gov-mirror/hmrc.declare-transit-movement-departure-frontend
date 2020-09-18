@@ -501,3 +501,15 @@ addSeals.error.required = Select yes if you need to add seals
 
 addSealsLater.title = Custom seals may be added later
 addSealsLater.heading = Custom seals may be added later
+
+controlResultDateLimit.title = What is the control result date limit?
+controlResultDateLimit.heading = What is the control result date limit?
+controlResultDateLimit.hint = For example, 12 11 2007
+controlResultDateLimit.checkYourAnswersLabel = Control result date limit
+controlResultDateLimit.error.required.all = Enter the control result date limit
+controlResultDateLimit.error.required.two = The control result date limit must include {0} and {1}
+controlResultDateLimit.error.required = The control result date limit must include {0}
+controlResultDateLimit.error.invalid = Enter a real control result date limit
+controlResultDateLimit.paragraph1 = This is the date the transit movement is expected to be processed by the office of destination.
+controlResultDateLimit.paragraph2 = You cannot enter a date that is more than 14 days in advance. You must {0}
+controlResultDateLimit.linkText = contact the New Computerised Transit System helpdesk if you need a date later than 14 days (opens in a new tab).
