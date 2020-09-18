@@ -504,7 +504,7 @@ addSealsLater.heading = Custom seals may be added later
 
 controlResultDateLimit.title = What is the control result date limit?
 controlResultDateLimit.heading = What is the control result date limit?
-controlResultDateLimit.hint = For example, 12 11 2007
+controlResultDateLimit.hint = For example, 14 1 2020
 controlResultDateLimit.checkYourAnswersLabel = Control result date limit
 controlResultDateLimit.error.required.all = Enter the control result date limit
 controlResultDateLimit.error.required.two = The control result date limit must include {0} and {1}

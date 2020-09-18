@@ -259,7 +259,7 @@ POST       /:lrn/goods-summary/change-add-seals                  controllers.goo
 
 GET        /:lrn/goods-summary/add-seals-later                       controllers.goodsSummary.AddSealsLaterController.onPageLoad(lrn: LocalReferenceNumber)
 
-GET        /:lrn/goods-summary/control-result-date-limit             controllers.ControlResultDateLimitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/goods-summary/control-result-date-limit             controllers.ControlResultDateLimitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/goods-summary/change-control-result-date-limit      controllers.ControlResultDateLimitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/goods-summary/change-control-result-date-limit      controllers.ControlResultDateLimitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/goods-summary/control-result-date-limit             controllers.goodsSummary.ControlResultDateLimitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/goods-summary/control-result-date-limit             controllers.goodsSummary.ControlResultDateLimitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/goods-summary/change-control-result-date-limit      controllers.goodsSummary.ControlResultDateLimitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/goods-summary/change-control-result-date-limit      controllers.goodsSummary.ControlResultDateLimitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
