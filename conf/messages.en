@@ -512,3 +512,5 @@ controlResultDateLimit.error.required = The control result date limit must inclu
 controlResultDateLimit.error.invalid = Enter a real control result date limit
 controlResultDateLimit.paragraph1 = This is the date the transit movement is expected to be processed by the office of destination.
 controlResultDateLimit.paragraph2 = You cannot enter a date that is more than 14 days in advance. You must
+controlResultDateLimit.error.max.date = The control result date limit must be before {0}
+controlResultDateLimit.error.min.date = The control result date limit must be today or in the future
