@@ -16,24 +16,29 @@
 
 package forms
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.{LocalDateTime, ZoneOffset}
 
-import forms.behaviours.DateBehaviours
-import play.api.data.FormError
+import forms.behaviours.DateTimeWithAMPMBehaviours
+import forms.mappings.LocalDateTimeWithAMPM
 
-class ArrivalTimesAtOfficeFormProviderSpec extends DateBehaviours {
+class ArrivalTimesAtOfficeFormProviderSpec extends DateTimeWithAMPMBehaviours {
 
-  val form = new ArrivalTimesAtOfficeFormProvider()()
+  val officeOfTransit = "office"
+  val form = new ArrivalTimesAtOfficeFormProvider()(officeOfTransit)
 
   ".value" - {
 
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
-    )
+    val validData = dateTimesBetween(
+      min = LocalDateTime.of(2000, 1, 1, 12, 0),
+      max = LocalDateTime.now(ZoneOffset.UTC)
+    ).sample.value
 
-    behave like dateField(form, "value", validData)
+    val localDateTimeWithAMPM = LocalDateTimeWithAMPM(validData, "am")
 
-    behave like mandatoryDateField(form, "value", "arrivalTimesAtOffice.error.required.all")
+    behave like dateTimeField(form, "value", localDateTimeWithAMPM)
+
+    behave like mandatoryDateField(form, "value", "arrivalTimesAtOffice.error.required.all", Seq(officeOfTransit))
+
+
   }
 }

@@ -16,10 +16,9 @@
 
 package controllers.routeDetails
 
-import java.time.LocalDate
-
 import controllers.actions._
 import forms.ArrivalTimesAtOfficeFormProvider
+import forms.mappings.LocalDateTimeWithAMPM
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
@@ -32,7 +31,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils._
+import viewModels.DateTimeInput
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,22 +49,22 @@ class ArrivalTimesAtOfficeController @Inject()(
                                                 renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  val form: Form[LocalDate] = formProvider()
+  val form: Form[LocalDateTimeWithAMPM] = formProvider("") //TODO
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(ArrivalTimesAtOfficePage) match {
         case Some(value) => form.fill(value)
         case None        => form
       }
 
-      val viewModel = DateInput.localDate(preparedForm("value"))
+      val viewModel = DateTimeInput.localDateTime(preparedForm("value"))
 
       val json = Json.obj(
         "form" -> preparedForm,
         "mode" -> mode,
         "lrn"  -> lrn,
+        "amPmList" -> amPmAsJson(None),
         "date" -> viewModel
       )
 
@@ -76,7 +77,7 @@ class ArrivalTimesAtOfficeController @Inject()(
       form.bindFromRequest().fold(
         formWithErrors =>  {
 
-          val viewModel = DateInput.localDate(formWithErrors("value"))
+          val viewModel = DateTimeInput.localDateTime(formWithErrors("value"))
 
           val json = Json.obj(
             "form" -> formWithErrors,

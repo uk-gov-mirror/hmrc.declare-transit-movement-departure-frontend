@@ -54,6 +54,20 @@ package object utils {
     defaultOption +: transportModeObjects
   }
 
+  def amPmAsJson(value: Option[String]): Seq[JsObject] = {
+    val amPms = Seq("am","pm")
+    val jsObjects: Seq[JsObject] = amPms map (
+      amOrPm =>
+        Json.obj(
+          "value" -> s"$amOrPm",
+          "text" -> s"$amOrPm",
+          "selected" -> value.contains(amOrPm)
+        )
+    )
+
+    defaultOption +: jsObjects
+  }
+
   def yesOrNo(answer: Boolean): Content =
     if (answer) {
       msg"site.yes"

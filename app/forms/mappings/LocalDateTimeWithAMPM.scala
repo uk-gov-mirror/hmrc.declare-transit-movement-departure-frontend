@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package forms.mappings
 
-import forms.mappings.LocalDateTimeWithAMPM
-import play.api.libs.json.JsPath
+import java.time.LocalDateTime
 
-case object ArrivalTimesAtOfficePage extends QuestionPage[LocalDateTimeWithAMPM] {
+import play.api.libs.json.{Json, OFormat}
 
-  override def path: JsPath = JsPath \ toString
+case class LocalDateTimeWithAMPM(dateTime: LocalDateTime, amOrPm: String)
 
-  override def toString: String = "arrivalTimesAtOffice"
+object LocalDateTimeWithAMPM {
+  implicit val format: OFormat[LocalDateTimeWithAMPM] = Json.format[LocalDateTimeWithAMPM]
 }

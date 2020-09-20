@@ -16,21 +16,21 @@
 
 package forms
 
-import java.time.LocalDate
-
-import forms.mappings.Mappings
+import forms.mappings.{LocalDateTimeWithAMPM, Mappings}
 import javax.inject.Inject
 import play.api.data.Form
 
 class ArrivalTimesAtOfficeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def apply(officeOfTransit: String): Form[LocalDateTimeWithAMPM] =
     Form(
-      "value" -> localDate(
+      "value" -> localDateTime(
         invalidKey     = "arrivalTimesAtOffice.error.invalid",
         allRequiredKey = "arrivalTimesAtOffice.error.required.all",
-        twoRequiredKey = "arrivalTimesAtOffice.error.required.two",
-        requiredKey    = "arrivalTimesAtOffice.error.required"
+        timeRequiredKey = "arrivalTimesAtOffice.error.required.time",
+        dateRequiredKey    = "arrivalTimesAtOffice.error.required.date",
+        amOrPmRequired = "arrivalTimesAtOffice.amOrPm.error.required",
+        args = Seq(officeOfTransit)
       )
     )
 }

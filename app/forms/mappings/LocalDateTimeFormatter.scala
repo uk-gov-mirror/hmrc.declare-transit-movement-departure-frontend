@@ -16,8 +16,7 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
+import java.time.LocalDateTime
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -26,22 +25,24 @@ import scala.util.{Failure, Success, Try}
 private[mappings] class LocalDateTimeFormatter(
                                             invalidKey: String,
                                             allRequiredKey: String,
-                                            twoRequiredKey: String,
-                                            requiredKey: String,
+                                            timeRequiredKey: String,
+                                            dateRequiredKey: String,
+                                            amOrPmRequired : String,
                                             args: Seq[String] = Seq.empty
-                                          ) extends Formatter[LocalDate] with Formatters {
+                                          ) extends Formatter[LocalDateTimeWithAMPM] with Formatters {
 
-  private val fieldKeys: List[String] = List("day", "month", "year")
+  private val fieldTimeKeys = List("hour", "minute", "amOrPm")
+  private val fieldDateKeys = List("day", "month", "year")
 
-  private def toDate(key: String, day: Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] =
-    Try(LocalDate.of(year, month, day)) match {
-      case Success(date) =>
-        Right(date)
+  private def toDateTime(key: String, day: Int, month: Int, year: Int, hour: Int, minute: Int, amOrPm: String): Either[Seq[FormError], LocalDateTimeWithAMPM] =
+    Try(LocalDateTime.of(year, month, day, hour, minute)) match {
+      case Success(dateTime) =>
+        Right(LocalDateTimeWithAMPM(dateTime, amOrPm))
       case Failure(_) =>
         Left(Seq(FormError(key, invalidKey, args)))
     }
 
-  private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+  private def formatDateTime(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
 
     val int = intFormatter(
       requiredKey = invalidKey,
@@ -49,45 +50,70 @@ private[mappings] class LocalDateTimeFormatter(
       nonNumericKey = invalidKey,
       args
     )
+    val string = stringFormatter (
+      errorKey = amOrPmRequired,
+      args
+    )
 
     for {
       day   <- int.bind(s"$key.day", data).right
       month <- int.bind(s"$key.month", data).right
       year  <- int.bind(s"$key.year", data).right
-      date  <- toDate(key, day, month, year).right
-    } yield date
+      hour  <- int.bind(s"$key.hour", data).right
+      minute  <- int.bind(s"$key.minute", data).right
+      amOrPm  <- string.bind(s"$key.amOrPm", data).right
+      dateTime  <- toDateTime(key, day, month, year, hour, minute, amOrPm).right
+    } yield dateTime
   }
 
-  override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+  //noinspection ScalaStyle
+  override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
 
-    val fields = fieldKeys.map {
+    val fields1: Map[String, Option[String]] = fieldTimeKeys.map {
       field =>
         field -> data.get(s"$key.$field").filter(_.nonEmpty)
     }.toMap
 
-    lazy val missingFields = fields
+    lazy val missingTimeFields = fields1
       .withFilter(_._2.isEmpty)
       .map(_._1)
       .toList
 
-    fields.count(_._2.isDefined) match {
-      case 3 =>
-        formatDate(key, data).left.map {
+    val fields2: Map[String, Option[String]] = fieldDateKeys.map {
+      field =>
+        field -> data.get(s"$key.$field").filter(_.nonEmpty)
+    }.toMap
+
+    lazy val missingDateFields: Seq[String] = fields2
+      .withFilter(_._2.isEmpty)
+      .map(_._1)
+      .toList
+
+    (missingDateFields.nonEmpty, missingTimeFields.nonEmpty) match {
+      case (false, false) =>
+        formatDateTime(key, data).left.map {
           _.map(_.copy(key = key, args = args))
         }
-      case 2 =>
-        Left(List(FormError(key, requiredKey, missingFields ++ args)))
-      case 1 =>
-        Left(List(FormError(key, twoRequiredKey, missingFields ++ args)))
+      case (true, false)  =>
+        Left(List(FormError(key, dateRequiredKey, missingDateFields ++ args)))
+      case (false, true) =>
+        if(missingTimeFields.contains(s"$key.amOrPm")) {
+          Left(List(FormError(key, amOrPmRequired, missingTimeFields ++ args)))
+        } else {
+          Left(List(FormError(key, timeRequiredKey, missingTimeFields ++ args)))
+         }
       case _ =>
         Left(List(FormError(key, allRequiredKey, args)))
     }
   }
 
-  override def unbind(key: String, value: LocalDate): Map[String, String] =
+  override def unbind(key: String, value: LocalDateTimeWithAMPM): Map[String, String] =
     Map(
-      s"$key.day" -> value.getDayOfMonth.toString,
-      s"$key.month" -> value.getMonthValue.toString,
-      s"$key.year" -> value.getYear.toString
+      s"$key.day" -> value.dateTime.getDayOfMonth.toString,
+      s"$key.month" -> value.dateTime.getMonthValue.toString,
+      s"$key.year" -> value.dateTime.getMonthValue.toString,
+      s"$key.hour" -> value.dateTime.getHour.toString,
+      s"$key.minute" -> value.dateTime.getMinute.toString,
+      s"$key.amOrPm" -> value.amOrPm
     )
 }

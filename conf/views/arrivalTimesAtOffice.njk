@@ -2,8 +2,10 @@
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
 {% from "govuk/components/date-input/macro.njk"    import govukDateInput %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "macros/dateTime.njk"                      import dateTime as dateTimeMacro %}
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
@@ -45,6 +47,11 @@
             errorMessage: date.error,
             items: date.items
           }) }}
+
+         {{ dateTimeMacro({
+          hint: messages('arrivalTimesAtOffice.hint'),
+          items: date.items,
+          errorMessage: date.error}) }}
 
           {{ govukButton({
             text: messages("site.continue"),

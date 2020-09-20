@@ -1,6 +1,9 @@
 site.day.capitalized = Day
 site.month.capitalized = Month
 site.year.capitalized = Year
+site.hour.capitalized = Hour
+site.minute.capitalized = Minute
+site.minute.amOrPm = am or pm
 
 site.back = Back
 site.delete = Remove
@@ -506,7 +509,8 @@ arrivalTimesAtOffice.title = When do you expect the transit to arrive at the off
 arrivalTimesAtOffice.heading = When do you expect the transit to arrive at the office of transit?
 arrivalTimesAtOffice.hint = For example, 14 1 2020 12:59am.
 arrivalTimesAtOffice.checkYourAnswersLabel = ArrivalTimesAtOffice
-arrivalTimesAtOffice.error.required.all = Enter the arrivalTimesAtOffice
-arrivalTimesAtOffice.error.required.two = The arrivalTimesAtOffice must include {0} and {1}
-arrivalTimesAtOffice.error.required = The arrivalTimesAtOffice must include {0}
+arrivalTimesAtOffice.error.required.all = Enter the date and time you expect the transit to arrive at {0}
+arrivalTimesAtOffice.error.required.time = Enter the time you expect the transit to arrive at {0}
+arrivalTimesAtOffice.error.required.date = Enter the date you expect the transit to arrive at {0}
 arrivalTimesAtOffice.error.invalid = Enter a real ArrivalTimesAtOffice
+arrivalTimesAtOffice.amOrPm.error.required = Select if you expect the transit to arrive at the {0} in the morning (am) or the evening (pm)

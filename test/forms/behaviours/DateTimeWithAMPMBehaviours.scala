@@ -1,0 +1,112 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package forms.behaviours
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+import forms.mappings.LocalDateTimeWithAMPM
+import org.scalacheck.Gen
+import play.api.data.{Form, FormError}
+
+class DateTimeWithAMPMBehaviours extends FieldBehaviours {
+
+  def dateTimeField(form: Form[_], key: String, validData: Gen[LocalDateTimeWithAMPM]): Unit = {
+
+    "must bind valid data" in {
+
+      forAll(validData -> "valid date") {
+        date =>
+
+          val data = Map(
+            s"$key.day"   -> date.dateTime.getDayOfMonth.toString,
+            s"$key.month" -> date.dateTime.getMonthValue.toString,
+            s"$key.year"  -> date.dateTime.getYear.toString,
+            s"$key.hour"  -> date.dateTime.getHour.toString,
+            s"$key.minute"  -> date.dateTime.getMinute.toString,
+            s"$key.amOrPm"  -> date.amOrPm
+
+          )
+
+          val result = form.bind(data)
+
+          result.value.value mustEqual date.copy(dateTime = date.dateTime.withSecond(0).withNano(0))
+      }
+    }
+  }
+
+  def dateFieldWithMax(form: Form[_], key: String, max: LocalDateTime, formError: FormError): Unit = {
+
+    s"must fail to bind a date greater than ${max.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
+
+      val generator: Gen[LocalDateTime] = dateTimesBetween(max.plusDays(1), max.plusYears(10))
+
+      forAll(generator -> "invalid dates") {
+        dateTime =>
+          val dateTimeWithAmPm = LocalDateTimeWithAMPM(dateTime, "am")
+
+          val data = Map(
+            s"$key.day"   -> dateTimeWithAmPm.dateTime.getDayOfMonth.toString,
+            s"$key.month" -> dateTimeWithAmPm.dateTime.getMonthValue.toString,
+            s"$key.year"  -> dateTimeWithAmPm.dateTime.getYear.toString,
+            s"$key.hour"  -> dateTimeWithAmPm.dateTime.getYear.toString,
+            s"$key.minute"  -> dateTimeWithAmPm.dateTime.getYear.toString,
+            s"$key.amOrPm"  -> dateTimeWithAmPm.amOrPm
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain only formError
+      }
+    }
+  }
+
+  def dateFieldWithMin(form: Form[_], key: String, min: LocalDateTime, formError: FormError): Unit = {
+
+    s"must fail to bind a date earlier than ${min.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
+
+      val generator = dateTimesBetween(min.minusYears(10), min.minusDays(1))
+
+      forAll(generator -> "invalid dates") {
+        dateTime =>
+          val dateTimeWithAmPm = LocalDateTimeWithAMPM(dateTime, "am")
+          val data = Map(
+            s"$key.day"   -> dateTimeWithAmPm.dateTime.getDayOfMonth.toString,
+            s"$key.month" -> dateTimeWithAmPm.dateTime.getMonthValue.toString,
+            s"$key.year"  -> dateTimeWithAmPm.dateTime.getYear.toString,
+            s"$key.hour"  -> dateTimeWithAmPm.dateTime.getYear.toString,
+            s"$key.minute"  -> dateTimeWithAmPm.dateTime.getYear.toString,
+            s"$key.amOrPm"  -> dateTimeWithAmPm.amOrPm
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain only formError
+      }
+    }
+  }
+
+  def mandatoryDateField(form: Form[_], key: String, requiredAllKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
+
+    "must fail to bind an empty date" in {
+
+      val result = form.bind(Map.empty[String, String])
+
+      result.errors must contain only FormError(key, requiredAllKey, errorArgs)
+    }
+  }
+}

@@ -16,10 +16,12 @@
 
 package controllers.routeDetails
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.{LocalDateTime, ZoneOffset}
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import forms.ArrivalTimesAtOfficeFormProvider
+import forms.mappings.LocalDateTimeWithAMPM
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.RouteDetails
@@ -37,17 +39,18 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import viewModels.DateTimeInput
 
 import scala.concurrent.Future
 
 class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val formProvider = new ArrivalTimesAtOfficeFormProvider()
-  private def form = formProvider()
+  private def form = formProvider("") //TODO
 
   def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC), "am")
 
   lazy val arrivalTimesAtOfficeRoute = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, NormalMode).url
 
@@ -57,9 +60,12 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, arrivalTimesAtOfficeRoute)
       .withFormUrlEncodedBody(
-        "value.day"   -> validAnswer.getDayOfMonth.toString,
-        "value.month" -> validAnswer.getMonthValue.toString,
-        "value.year"  -> validAnswer.getYear.toString
+        "value.day"   -> validAnswer.dateTime.getDayOfMonth.toString,
+        "value.month" -> validAnswer.dateTime.getMonthValue.toString,
+        "value.year"  -> validAnswer.dateTime.getYear.toString,
+        "value.hour"  -> validAnswer.dateTime.getYear.toString,
+        "value.minute"  -> validAnswer.dateTime.getYear.toString,
+        "value.amOrPm"  -> validAnswer.amOrPm
       )
 
   "ArrivalTimesAtOffice Controller" - {
@@ -79,7 +85,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val viewModel = DateInput.localDate(form("value"))
+      val viewModel = DateTimeInput.localDateTime(form("value"))
 
       val expectedJson = Json.obj(
         "form" -> form,
@@ -112,13 +118,16 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
       val filledForm = form.bind(
         Map(
-          "value.day"   -> validAnswer.getDayOfMonth.toString,
-          "value.month" -> validAnswer.getMonthValue.toString,
-          "value.year"  -> validAnswer.getYear.toString
+          "value.day"   -> validAnswer.dateTime.getDayOfMonth.toString,
+          "value.month" -> validAnswer.dateTime.getMonthValue.toString,
+          "value.year"  -> validAnswer.dateTime.getYear.toString,
+          "value.hour"  -> validAnswer.dateTime.getHour.toString,
+          "value.minute"  -> validAnswer.dateTime.getMinute.toString,
+          "value.amOrPm"  -> validAnswer.amOrPm
         )
       )
 
-      val viewModel = DateInput.localDate(filledForm("value"))
+      val viewModel = DateTimeInput.localDateTime(filledForm("value"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -126,7 +135,8 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
         "lrn"  -> lrn,
         "date" -> viewModel
       )
-
+println("-----------------------"+expectedJson)
+println("-----------------------"+jsonCaptor.getValue)
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
@@ -195,7 +205,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
       val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -208,7 +218,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

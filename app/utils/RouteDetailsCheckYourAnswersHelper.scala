@@ -33,9 +33,10 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def arrivalTimesAtOffice: Option[Row] = userAnswers.get(ArrivalTimesAtOfficePage) map {
     answer =>
+      val dateTime: String = s"${answer.dateTime.format(dateFormatter)}${answer.amOrPm}"
       Row(
         key     = Key(msg"arrivalTimesAtOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(Literal(answer.format(dateFormatter))),
+        value   = Value(Literal(dateTime)),
         actions = List(
           Action(
             content            = msg"site.edit",
