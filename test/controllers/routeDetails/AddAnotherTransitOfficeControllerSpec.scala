@@ -19,7 +19,7 @@ package controllers.routeDetails
 import base.SpecBase
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
-import forms.OfficeOfDepartureFormProvider
+import forms.AddAnotherTransitOfficeFormProvider
 import matchers.JsonMatchers
 import models.reference.CustomsOffice
 import models.{CustomsOfficeList, NormalMode}
@@ -28,10 +28,10 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.OfficeOfDeparturePage
+import pages.AddAnotherTransitOfficePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Call, Result}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -41,25 +41,25 @@ import navigation.annotations.RouteDetails
 
 import scala.concurrent.Future
 
-class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
   val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
   val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
   val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
-  val form = new OfficeOfDepartureFormProvider()(customsOffices)
+  val form = new AddAnotherTransitOfficeFormProvider()(customsOffices)
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  lazy val officeOfDepartureRoute: String = routes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url
+  lazy val addAnotherTransitOfficeRoute: String = routes.AddAnotherTransitOfficeController.onPageLoad(lrn, NormalMode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     Mockito.reset(mockRefDataConnector)
   }
 
-  "OfficeOfDeparture Controller" - {
+  "AddAnotherTransitOffice Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -71,7 +71,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
-      val request = FakeRequest(GET, officeOfDepartureRoute)
+      val request = FakeRequest(GET, addAnotherTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -94,7 +94,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
         "customsOffices" -> expectedCustomsOfficeJson
       )
 
-      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
+      templateCaptor.getValue mustEqual "addAnotherTransitOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -106,11 +106,11 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
         .thenReturn(Future.successful(Html("")))
       when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, customsOffice1.id).success.value
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage, customsOffice1.id).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
-      val request = FakeRequest(GET, officeOfDepartureRoute)
+      val request = FakeRequest(GET, addAnotherTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -135,7 +135,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
         "customsOffices" -> expectedCustomsOfficeJson
       )
 
-      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
+      templateCaptor.getValue mustEqual "addAnotherTransitOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -158,10 +158,10 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
           .build()
 
       val request =
-        FakeRequest(POST, officeOfDepartureRoute)
+        FakeRequest(POST, addAnotherTransitOfficeRoute)
           .withFormUrlEncodedBody(("value", "id"))
 
-      val result: Future[Result] = route(application, request).value
+      val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -179,7 +179,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
-      val request = FakeRequest(POST, officeOfDepartureRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, addAnotherTransitOfficeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -196,7 +196,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "officeOfDeparture.njk"
+      templateCaptor.getValue mustEqual "addAnotherTransitOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -206,7 +206,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, officeOfDepartureRoute)
+      val request = FakeRequest(GET, addAnotherTransitOfficeRoute)
 
       val result = route(application, request).value
 
@@ -222,7 +222,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, officeOfDepartureRoute)
+        FakeRequest(POST, addAnotherTransitOfficeRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value

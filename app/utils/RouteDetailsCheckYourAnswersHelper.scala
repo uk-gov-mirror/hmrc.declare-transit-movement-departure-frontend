@@ -95,6 +95,23 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
     }
   }
+  def addAnotherTransitOffice(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(AddAnotherTransitOfficePage) flatMap  {
+    answer =>
+      customsOfficeList.getCustomsOffice(answer) map{
+        customsOffice =>
+          Row(
+            key     = Key(msg"addAnotherTransitOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value   = Value(lit"${customsOffice.name} ${customsOffice.id}"),
+            actions = List(
+              Action(
+                content            = msg"site.edit",
+                href               = routes.AddAnotherTransitOfficeController.onPageLoad(lrn, CheckMode).url,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherTransitOffice.checkYourAnswersLabel"))
+              )
+            )
+          )
+      }
+  }
 
   def countryOfDispatch(codeList: CountryList): Option[Row] = userAnswers.get(CountryOfDispatchPage) map {
     answer =>

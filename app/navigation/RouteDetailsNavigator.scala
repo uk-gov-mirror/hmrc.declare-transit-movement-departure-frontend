@@ -28,6 +28,7 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
   override val normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case CountryOfDispatchPage => ua => Some(routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode))
     case OfficeOfDeparturePage => ua => Some(routes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
+    case AddAnotherTransitOfficePage => ua => Some(routes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
     case DestinationCountryPage => ua => Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
     case DestinationOfficePage => ua => Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
