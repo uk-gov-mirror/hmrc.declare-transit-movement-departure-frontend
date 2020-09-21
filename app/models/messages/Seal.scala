@@ -16,9 +16,9 @@
 
 package models.messages
 
-import com.lucidchart.open.xtract.{XmlReader, __}
-import models.{LanguageCode, LanguageCodeEnglish, XMLWrites}
+import com.lucidchart.open.xtract.{__, XmlReader}
 import models.domain.SealDomain
+import models.{LanguageCode, LanguageCodeEnglish, XMLWrites}
 
 case class Seal(numberOrMark: String)
 

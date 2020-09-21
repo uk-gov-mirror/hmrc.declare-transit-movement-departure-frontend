@@ -25,6 +25,7 @@ import models.domain.SealDomain
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
+import navigation.annotations.GoodsSummary
 import pages.{ConfirmRemoveSealPage, SealIdDetailsPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,14 +36,13 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.goodsSummary.ConfirmRemoveSealController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveSealController @Inject()(
                                              override val messagesApi: MessagesApi,
                                              sessionRepository: SessionRepository,
-                                             navigator: Navigator,
+                                             @GoodsSummary navigator: Navigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalActionProvider,
                                              requireData: DataRequiredAction,
@@ -83,9 +83,9 @@ class ConfirmRemoveSealController @Inject()(
                     for {
                       updatedAnswers <- Future.fromTry(request.userAnswers.remove(SealIdDetailsPage(sealIndex)))
                       _              <- sessionRepository.set(updatedAnswers)
-                    } yield Redirect(navigator.nextPage(ConfirmRemoveSealPage, mode, updatedAnswers))
+                    } yield Redirect(navigator.nextPage(ConfirmRemoveSealPage(), mode, updatedAnswers))
                   } else {
-                    Future.successful(Redirect(navigator.nextPage(ConfirmRemoveSealPage, mode, request.userAnswers)))
+                    Future.successful(Redirect(navigator.nextPage(ConfirmRemoveSealPage(), mode, request.userAnswers)))
                   }
               )
           case _ =>

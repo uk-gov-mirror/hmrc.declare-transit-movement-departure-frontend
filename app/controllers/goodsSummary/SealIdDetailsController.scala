@@ -53,7 +53,7 @@ class SealIdDetailsController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      renderView(lrn, sealIndex, mode, form).map(Ok(_))
+      renderView(lrn, sealIndex, mode, form(sealIndex)).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {

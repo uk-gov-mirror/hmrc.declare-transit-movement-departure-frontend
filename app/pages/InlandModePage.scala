@@ -16,7 +16,6 @@
 
 package pages
 
-import models.reference.TransportMode
 import play.api.libs.json.JsPath
 
 case object InlandModePage extends QuestionPage[String] {

@@ -45,7 +45,7 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
   val formProvider = new SealsInformationFormProvider()
   val form = formProvider()
 
-  lazy val sealsInformationRoute = routes.SealsInformationController.onPageLoad(lrn, NormalMode).url
+  lazy val sealsInformationRoute = routes.SealsInformationController.onPageLoad(lrn, sealIndex,  NormalMode).url
 
   "SealsInformation Controller" - {
 

@@ -16,6 +16,4 @@
 
 package pages
 
-import pages.Page
-
 final case class ConfirmRemoveSealPage() extends Page
