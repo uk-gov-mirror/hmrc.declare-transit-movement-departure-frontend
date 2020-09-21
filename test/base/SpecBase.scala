@@ -57,7 +57,7 @@ trait SpecBase
   val userAnswersId             = "id"
   val eoriNumber: EoriNumber    = EoriNumber("EoriNumber")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
-  val sealIndex = Index(1)
+  val sealIndex = Index(0)
   val sealDomain: SealDomain           = SealDomain("sealNumber")
 
 

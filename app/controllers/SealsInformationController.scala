@@ -40,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SealsInformationController @Inject()(
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     @GoodsSummary navigator: Navigator,
     identify: IdentifierAction,
     getData: DataRetrievalActionProvider,
@@ -66,7 +65,7 @@ class SealsInformationController @Inject()(
           formWithErrors =>
             renderPage(lrn, sealIndex, mode, formWithErrors)
               .map(BadRequest(_)),
-          value =>
+          value  =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(SealsInformationPage, value))
             } yield Redirect(navigator.nextPage(SealsInformationPage, mode, updatedAnswers))
