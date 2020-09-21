@@ -63,8 +63,8 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
             s"$key.day"   -> dateTimeWithAmPm.dateTime.getDayOfMonth.toString,
             s"$key.month" -> dateTimeWithAmPm.dateTime.getMonthValue.toString,
             s"$key.year"  -> dateTimeWithAmPm.dateTime.getYear.toString,
-            s"$key.hour"  -> dateTimeWithAmPm.dateTime.getYear.toString,
-            s"$key.minute"  -> dateTimeWithAmPm.dateTime.getYear.toString,
+            s"$key.hour"  -> dateTimeWithAmPm.dateTime.getHour.toString,
+            s"$key.minute"  -> dateTimeWithAmPm.dateTime.getMinute.toString,
             s"$key.amOrPm"  -> dateTimeWithAmPm.amOrPm
           )
 
@@ -75,7 +75,7 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
     }
   }
 
-  def dateFieldWithMin(form: Form[_], key: String, min: LocalDateTime, formError: FormError): Unit = {
+  def dateTimeFieldWithMin(form: Form[_], key: String, min: LocalDateTime, formError: FormError): Unit = {
 
     s"must fail to bind a date earlier than ${min.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
 
@@ -88,8 +88,8 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
             s"$key.day"   -> dateTimeWithAmPm.dateTime.getDayOfMonth.toString,
             s"$key.month" -> dateTimeWithAmPm.dateTime.getMonthValue.toString,
             s"$key.year"  -> dateTimeWithAmPm.dateTime.getYear.toString,
-            s"$key.hour"  -> dateTimeWithAmPm.dateTime.getYear.toString,
-            s"$key.minute"  -> dateTimeWithAmPm.dateTime.getYear.toString,
+            s"$key.hour"  -> dateTimeWithAmPm.dateTime.getHour.toString,
+            s"$key.minute"  -> dateTimeWithAmPm.dateTime.getMinute.toString,
             s"$key.amOrPm"  -> dateTimeWithAmPm.amOrPm
           )
 
@@ -100,7 +100,7 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
     }
   }
 
-  def mandatoryDateField(form: Form[_], key: String, requiredAllKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
+  def mandatoryDateTimeField(form: Form[_], key: String, requiredAllKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
 
     "must fail to bind an empty date" in {
 
@@ -109,4 +109,74 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
       result.errors must contain only FormError(key, requiredAllKey, errorArgs)
     }
   }
+
+  def invalidDateField(form: Form[_], key: String, invalidDateKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
+
+      val dateTime =  LocalDateTime.now()
+    "must fail to bind invalid date data" in {
+
+          val data = Map(
+            s"$key.day"   -> dateTime.getDayOfMonth.toString,
+            s"$key.month" -> s"${dateTime.getMonthValue.toString}111",
+            s"$key.year"  -> dateTime.getYear.toString,
+            s"$key.hour"  -> dateTime.getHour.toString,
+            s"$key.minute"  -> dateTime.getMinute.toString,
+            s"$key.amOrPm"  -> "am"
+
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain only FormError(key, invalidDateKey, errorArgs)
+
+    }
+  }
+
+  def invalidHourField(form: Form[_], key: String, invalidHourKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
+
+      val dateTime =  LocalDateTime.now()
+      val invalidHour: Int = dateTime.withHour(14).getHour
+
+    "must fail to bind invalid hour" in {
+
+          val data = Map(
+            s"$key.day"   -> dateTime.getDayOfMonth.toString,
+            s"$key.month" -> dateTime.getMonthValue.toString,
+            s"$key.year"  -> dateTime.getYear.toString,
+            s"$key.hour"  -> invalidHour.toString,
+            s"$key.minute"  -> dateTime.getMinute.toString,
+            s"$key.amOrPm"  -> "am"
+
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain only FormError(key, invalidHourKey, errorArgs)
+
+    }
+  }
+
+  def invalidTimeField(form: Form[_], key: String, invalidTimeKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
+
+      val dateTime =  LocalDateTime.now()
+      val invalidHour: Int = dateTime.withHour(0).getHour
+
+    "must fail to bind invalid time data" in {
+
+          val data = Map(
+            s"$key.day"   -> dateTime.getDayOfMonth.toString,
+            s"$key.month" -> dateTime.getMonthValue.toString,
+            s"$key.year"  -> dateTime.getYear.toString,
+            s"$key.hour"  -> invalidHour.toString,
+            s"$key.minute"  -> dateTime.getMinute.toString,
+            s"$key.amOrPm"  -> "am"
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain only FormError(key, invalidTimeKey, errorArgs)
+
+    }
+  }
+
 }

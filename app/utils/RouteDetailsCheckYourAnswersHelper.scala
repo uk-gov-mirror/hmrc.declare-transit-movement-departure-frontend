@@ -27,13 +27,11 @@ import uk.gov.hmrc.viewmodels._
 
 class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
   def lrn: LocalReferenceNumber = userAnswers.id
 
   def arrivalTimesAtOffice: Option[Row] = userAnswers.get(ArrivalTimesAtOfficePage) map {
     answer =>
-      val dateTime: String = s"${answer.dateTime.format(dateFormatter)}${answer.amOrPm}"
+      val dateTime: String = s"${answer.dateTime.format(Format.dateFormatter)}${answer.amOrPm}"
       Row(
         key     = Key(msg"arrivalTimesAtOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value   = Value(Literal(dateTime)),

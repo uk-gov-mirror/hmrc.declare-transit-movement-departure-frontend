@@ -21,6 +21,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{Json, OWrites}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, Text}
 
+//noinspection ScalaStyle
 object DateTimeInput {
 
   final case class ViewModel(items: Seq[Item], error: Option[Text])
@@ -53,6 +54,11 @@ object DateTimeInput {
 
     def classes(classes: String*): String = {
       val allClasses = if (error.isDefined) "govuk-input--error" :: classes.toList else classes.toList
+      allClasses.mkString(" ")
+    }
+
+    def classesAMPM(classes: String*): String = {
+      val allClasses = if (error.isDefined) "govuk-select--error" :: classes.toList else classes.toList
       allClasses.mkString(" ")
     }
 
@@ -97,7 +103,7 @@ object DateTimeInput {
         name = field("amOrPm").name,
         id = field("amOrPm").id,
         value = field("amOrPm").value.getOrElse(""),
-        classes = classes("govuk-select"),
+        classes = classesAMPM("govuk-select"),
         isDropDown = true
       )
     )

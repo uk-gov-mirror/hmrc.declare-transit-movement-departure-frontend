@@ -20,24 +20,40 @@ import java.time.{LocalDateTime, ZoneOffset}
 
 import forms.behaviours.DateTimeWithAMPMBehaviours
 import forms.mappings.LocalDateTimeWithAMPM
+import play.api.data.FormError
+import utils.Format
 
 class ArrivalTimesAtOfficeFormProviderSpec extends DateTimeWithAMPMBehaviours {
 
   val officeOfTransit = "office"
   val form = new ArrivalTimesAtOfficeFormProvider()(officeOfTransit)
+  val dateTime = LocalDateTime.now(ZoneOffset.UTC).withHour(1)
+  val pastDateTime = dateTime.minusDays(1)
+  val futureDateTime = dateTime.plusWeeks(2)
+  val formattedPastDateTime: String = s"${Format.dateFormattedWithMonthName(pastDateTime)}"
+  val formattedFutureDateTime: String = s"${Format.dateFormattedWithMonthName(futureDateTime)}"
+  val formPastError = FormError("value", "arrivalTimesAtOffice.error.past.date", Seq(officeOfTransit, formattedPastDateTime))
+  val formFutureError = FormError("value", "arrivalTimesAtOffice.error.future.date", Seq(officeOfTransit, formattedFutureDateTime))
 
   ".value" - {
 
-    val validData = dateTimesBetween(
-      min = LocalDateTime.of(2000, 1, 1, 12, 0),
-      max = LocalDateTime.now(ZoneOffset.UTC)
-    ).sample.value
-
-    val localDateTimeWithAMPM = LocalDateTimeWithAMPM(validData, "am")
+    val localDateTimeWithAMPM = LocalDateTimeWithAMPM(dateTime, "am")
 
     behave like dateTimeField(form, "value", localDateTimeWithAMPM)
 
-    behave like mandatoryDateField(form, "value", "arrivalTimesAtOffice.error.required.all", Seq(officeOfTransit))
+    behave like mandatoryDateTimeField(form, "value", "arrivalTimesAtOffice.error.required.all", Seq(officeOfTransit))
+
+    behave like dateTimeFieldWithMin(form, "value", dateTime ,formPastError)
+
+    behave like dateFieldWithMax(form, "value", futureDateTime ,formFutureError)
+
+    behave like invalidDateField(form, "value", "arrivalTimesAtOffice.error.invalid.date" , Seq(officeOfTransit))
+
+    behave like invalidHourField(form, "value", "arrivalTimesAtOffice.error.invalid.hour" , Seq(officeOfTransit))
+
+    behave like invalidTimeField(form, "value", "arrivalTimesAtOffice.error.invalid.time" , Seq(officeOfTransit))
+
+    behave like mandatoryDateField(form, "value", "arrivalTimesAtOffice.error.required.date" , Seq(officeOfTransit))
 
 
   }

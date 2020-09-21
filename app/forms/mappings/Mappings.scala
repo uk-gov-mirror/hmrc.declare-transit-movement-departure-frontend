@@ -49,14 +49,19 @@ trait Mappings extends Formatters with Constraints {
                            args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
+  //noinspection ScalaStyle
   protected def localDateTime(
-                               invalidKey: String,
+                               invalidDateKey: String,
+                               invalidTimeKey: String,
+                               invalidHourKey:String,
                                allRequiredKey: String,
                                timeRequiredKey: String,
                                dateRequiredKey: String,
                                amOrPmRequired: String,
+                               pastDateErrorKey: String,
+                               futureDateErrorKey: String,
                                args: Seq[String] = Seq.empty): FieldMapping[LocalDateTimeWithAMPM] =
-    of(new LocalDateTimeFormatter(invalidKey, allRequiredKey, timeRequiredKey, dateRequiredKey, amOrPmRequired, args))
+    of(new LocalDateTimeFormatter(invalidDateKey, invalidTimeKey, invalidHourKey, allRequiredKey, timeRequiredKey, dateRequiredKey, amOrPmRequired, pastDateErrorKey, futureDateErrorKey,  args))
 
   protected def lrn(requiredKey: String, lengthKey: String, invalidKey: String): FieldMapping[LocalReferenceNumber] =
     of(lrnFormatter(requiredKey, lengthKey, invalidKey))

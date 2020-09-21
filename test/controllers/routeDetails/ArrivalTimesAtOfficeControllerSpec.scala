@@ -135,8 +135,6 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
         "lrn"  -> lrn,
         "date" -> viewModel
       )
-println("-----------------------"+expectedJson)
-println("-----------------------"+jsonCaptor.getValue)
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 

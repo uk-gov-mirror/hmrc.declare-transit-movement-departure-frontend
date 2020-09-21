@@ -16,38 +16,60 @@
 
 package forms.mappings
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
+
 import play.api.data.FormError
 import play.api.data.format.Formatter
+import utils.Format
 
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateTimeFormatter(
-                                            invalidKey: String,
+                                            invalidDateKey: String,
+                                            invalidTimeKey: String,
+                                            invalidHourKey: String,
                                             allRequiredKey: String,
                                             timeRequiredKey: String,
                                             dateRequiredKey: String,
                                             amOrPmRequired : String,
+                                            pastDateErrorKey: String,
+                                            futureDateErrorKey: String,
                                             args: Seq[String] = Seq.empty
                                           ) extends Formatter[LocalDateTimeWithAMPM] with Formatters {
 
   private val fieldTimeKeys = List("hour", "minute", "amOrPm")
   private val fieldDateKeys = List("day", "month", "year")
 
-  private def toDateTime(key: String, day: Int, month: Int, year: Int, hour: Int, minute: Int, amOrPm: String): Either[Seq[FormError], LocalDateTimeWithAMPM] =
+  private def toDateTime(key: String, day: Int, month: Int, year: Int,
+                         hour: Int, minute: Int, amOrPm: String): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
+    val currentDate = LocalDate.now()
+    val pastDateTimeArgs: Seq[String] = args :+ s"${Format.dateFormattedWithMonthName(currentDate.minusDays(1))}"
+    val futureDateTimeArgs: Seq[String] = args :+ s"${Format.dateFormattedWithMonthName(currentDate.plusWeeks(2))}"
+
     Try(LocalDateTime.of(year, month, day, hour, minute)) match {
       case Success(dateTime) =>
-        Right(LocalDateTimeWithAMPM(dateTime, amOrPm))
+        if(dateTime.toLocalDate.isBefore(currentDate)) {
+          Left(Seq(FormError(key, pastDateErrorKey, pastDateTimeArgs)))
+        } else if(dateTime.toLocalDate.isAfter(currentDate.plusWeeks(2))) {
+          Left(Seq(FormError(key, futureDateErrorKey, futureDateTimeArgs)))
+        } else if(hour > 12) {
+          Left(Seq(FormError(key, invalidHourKey, args)))
+        }  else if(hour == 0) {
+          Left(Seq(FormError(key, invalidTimeKey, args)))
+        } else {
+          Right(LocalDateTimeWithAMPM(dateTime, amOrPm))
+        }
       case Failure(_) =>
-        Left(Seq(FormError(key, invalidKey, args)))
+        Left(Seq(FormError(key, invalidDateKey, args)))
     }
+  }
 
   private def formatDateTime(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
 
     val int = intFormatter(
-      requiredKey = invalidKey,
-      wholeNumberKey = invalidKey,
-      nonNumericKey = invalidKey,
+      requiredKey = invalidDateKey,
+      wholeNumberKey = invalidDateKey,
+      nonNumericKey = invalidDateKey,
       args
     )
     val string = stringFormatter (
@@ -92,7 +114,7 @@ private[mappings] class LocalDateTimeFormatter(
     (missingDateFields.nonEmpty, missingTimeFields.nonEmpty) match {
       case (false, false) =>
         formatDateTime(key, data).left.map {
-          _.map(_.copy(key = key, args = args))
+          _.map(_.copy(key = key))
         }
       case (true, false)  =>
         Left(List(FormError(key, dateRequiredKey, missingDateFields ++ args)))
@@ -111,7 +133,7 @@ private[mappings] class LocalDateTimeFormatter(
     Map(
       s"$key.day" -> value.dateTime.getDayOfMonth.toString,
       s"$key.month" -> value.dateTime.getMonthValue.toString,
-      s"$key.year" -> value.dateTime.getMonthValue.toString,
+      s"$key.year" -> value.dateTime.getYear.toString,
       s"$key.hour" -> value.dateTime.getHour.toString,
       s"$key.minute" -> value.dateTime.getMinute.toString,
       s"$key.amOrPm" -> value.amOrPm

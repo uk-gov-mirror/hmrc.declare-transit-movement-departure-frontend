@@ -64,7 +64,7 @@ class ArrivalTimesAtOfficeController @Inject()(
         "form" -> preparedForm,
         "mode" -> mode,
         "lrn"  -> lrn,
-        "amPmList" -> amPmAsJson(None),
+        "amPmList" -> amPmAsJson(preparedForm.value.map(_.amOrPm)),
         "date" -> viewModel
       )
 

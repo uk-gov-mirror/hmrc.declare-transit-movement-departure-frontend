@@ -29,29 +29,22 @@
           }) }}
         {% endif %}
 
+        <span class="govuk-caption-xl">{{messages('routeDetails.preHeading')}}</span>
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("arrivalTimesAtOffice.heading") }}
+        </h1>
+
         <form action="{{ routes.controllers.routeDetails.ArrivalTimesAtOfficeController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
-          {{ govukDateInput({
-            fieldset: {
-              legend: {
-                text: messages('arrivalTimesAtOffice.heading'),
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--xl"
-              }
-            },
-            hint: {
-              text: messages('arrivalTimesAtOffice.hint')
-            },
-            errorMessage: date.error,
-            items: date.items
-          }) }}
-
          {{ dateTimeMacro({
           hint: messages('arrivalTimesAtOffice.hint'),
           items: date.items,
-          errorMessage: date.error}) }}
+          errorMessage: date.error,
+          amPmList: amPmList
+          }) }}
 
           {{ govukButton({
             text: messages("site.continue"),
