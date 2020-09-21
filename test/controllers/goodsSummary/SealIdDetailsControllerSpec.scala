@@ -102,7 +102,7 @@ class SealIdDetailsControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "lrn"  -> lrn,
         "mode" -> NormalMode
       )
-
+=
       templateCaptor.getValue mustEqual "sealIdDetails.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
