@@ -16,7 +16,6 @@
 
 package navigation
 
-import controllers.goodsSummary.routes
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._

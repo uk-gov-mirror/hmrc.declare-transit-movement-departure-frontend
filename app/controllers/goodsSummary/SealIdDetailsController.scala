@@ -52,8 +52,12 @@ class SealIdDetailsController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      val preparedForm = request.userAnswers.get(SealIdDetailsPage(sealIndex)) match {
+        case Some(value) => form.fill(value.numberOrMark)
+        case _ => form
+      }
 
-      renderView(lrn, sealIndex, mode, form).map(Ok(_))
+      renderView(lrn, sealIndex, mode, preparedForm).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
