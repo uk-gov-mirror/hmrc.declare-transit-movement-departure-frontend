@@ -38,7 +38,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 import viewModels.DateTimeInput
 
 import scala.concurrent.Future
@@ -50,7 +50,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
   def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC), "am")
+  val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC).withHour(10), "am")
 
   lazy val arrivalTimesAtOfficeRoute = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, NormalMode).url
 
@@ -63,8 +63,8 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
         "value.day"   -> validAnswer.dateTime.getDayOfMonth.toString,
         "value.month" -> validAnswer.dateTime.getMonthValue.toString,
         "value.year"  -> validAnswer.dateTime.getYear.toString,
-        "value.hour"  -> validAnswer.dateTime.getYear.toString,
-        "value.minute"  -> validAnswer.dateTime.getYear.toString,
+        "value.hour"  -> validAnswer.dateTime.getHour.toString,
+        "value.minute"  -> validAnswer.dateTime.getMinute.toString,
         "value.amOrPm"  -> validAnswer.amOrPm
       )
 
@@ -91,7 +91,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
         "form" -> form,
         "mode" -> NormalMode,
         "lrn"  -> lrn,
-        "date" -> viewModel
+        "dateTime" -> viewModel
       )
 
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
@@ -133,7 +133,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
         "form" -> filledForm,
         "mode" -> NormalMode,
         "lrn"  -> lrn,
-        "date" -> viewModel
+        "dateTime" -> viewModel
       )
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
@@ -181,13 +181,13 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val viewModel = DateInput.localDate(boundForm("value"))
+      val viewModel = DateTimeInput.localDateTime(boundForm("value"))
 
       val expectedJson = Json.obj(
         "form" -> boundForm,
         "mode" -> NormalMode,
         "lrn"  -> lrn,
-        "date" -> viewModel
+        "dateTime" -> viewModel
       )
 
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"

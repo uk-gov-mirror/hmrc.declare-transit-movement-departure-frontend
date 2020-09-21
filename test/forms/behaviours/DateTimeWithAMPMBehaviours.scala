@@ -16,7 +16,7 @@
 
 package forms.behaviours
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneOffset}
 import java.time.format.DateTimeFormatter
 
 import forms.mappings.LocalDateTimeWithAMPM
@@ -24,6 +24,8 @@ import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
 class DateTimeWithAMPMBehaviours extends FieldBehaviours {
+
+  val dateTime =  LocalDateTime.now(ZoneOffset.UTC)
 
   def dateTimeField(form: Form[_], key: String, validData: Gen[LocalDateTimeWithAMPM]): Unit = {
 
@@ -112,7 +114,6 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
 
   def invalidDateField(form: Form[_], key: String, invalidDateKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
 
-      val dateTime =  LocalDateTime.now()
     "must fail to bind invalid date data" in {
 
           val data = Map(
@@ -134,7 +135,6 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
 
   def invalidHourField(form: Form[_], key: String, invalidHourKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
 
-      val dateTime =  LocalDateTime.now()
       val invalidHour: Int = dateTime.withHour(14).getHour
 
     "must fail to bind invalid hour" in {
@@ -158,7 +158,6 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
 
   def invalidTimeField(form: Form[_], key: String, invalidTimeKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
 
-      val dateTime =  LocalDateTime.now()
       val invalidHour: Int = dateTime.withHour(0).getHour
 
     "must fail to bind invalid time data" in {
@@ -179,4 +178,63 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
     }
   }
 
+  def mandatoryDateField(form: Form[_], key: String, requiredDateKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
+
+    "must fail to bind missing date data" in {
+
+
+          val data = Map(
+            s"$key.day"   -> "",
+            s"$key.month" -> "",
+            s"$key.year"  -> "",
+            s"$key.hour"  -> "11",
+            s"$key.minute"  -> "40",
+            s"$key.amOrPm"  -> "pm"
+          )
+
+          val result = form.bind(data)
+
+
+      result.errors must contain only FormError(key, requiredDateKey, List("day", "month", "year") ++ errorArgs)
+    }
+  }
+
+  def mandatoryTimeField(form: Form[_], key: String, requiredTimeKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
+
+    "must fail to bind missing time data" in {
+
+          val data = Map(
+            s"$key.day"   -> dateTime.getDayOfMonth.toString,
+            s"$key.month" -> dateTime.getMonthValue.toString,
+            s"$key.year"  -> dateTime.getYear.toString,
+            s"$key.hour"  -> "",
+            s"$key.minute"  -> "",
+            s"$key.amOrPm"  -> "am"
+
+          )
+
+          val result = form.bind(data)
+
+      result.errors must contain only FormError(key, requiredTimeKey, List("hour", "minute") ++ errorArgs)
+    }
+  }
+
+  def mandatoryAMPMField(form: Form[_], key: String, requiredTimeKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
+
+    "must fail to bind missing am/pm data" in {
+
+          val data = Map(
+            s"$key.day"   -> dateTime.getDayOfMonth.toString,
+            s"$key.month" -> dateTime.getMonthValue.toString,
+            s"$key.year"  -> dateTime.getYear.toString,
+            s"$key.hour"  -> dateTime.getHour.toString,
+            s"$key.minute"  -> dateTime.getMinute.toString,
+            s"$key.amOrPm"  -> ""
+          )
+
+          val result = form.bind(data)
+
+      result.errors must contain only FormError(key, requiredTimeKey, List("amOrPm") ++ errorArgs)
+    }
+  }
 }

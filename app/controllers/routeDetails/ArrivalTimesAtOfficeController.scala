@@ -65,7 +65,7 @@ class ArrivalTimesAtOfficeController @Inject()(
         "mode" -> mode,
         "lrn"  -> lrn,
         "amPmList" -> amPmAsJson(preparedForm.value.map(_.amOrPm)),
-        "date" -> viewModel
+        "dateTime" -> viewModel
       )
 
       renderer.render("arrivalTimesAtOffice.njk", json).map(Ok(_))
@@ -83,7 +83,7 @@ class ArrivalTimesAtOfficeController @Inject()(
             "form" -> formWithErrors,
             "mode" -> mode,
             "lrn"  -> lrn,
-            "date" -> viewModel
+            "dateTime" -> viewModel
           )
 
           renderer.render("arrivalTimesAtOffice.njk", json).map(BadRequest(_))

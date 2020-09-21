@@ -119,7 +119,7 @@ private[mappings] class LocalDateTimeFormatter(
       case (true, false)  =>
         Left(List(FormError(key, dateRequiredKey, missingDateFields ++ args)))
       case (false, true) =>
-        if(missingTimeFields.contains(s"$key.amOrPm")) {
+        if(missingTimeFields.contains("amOrPm")) {
           Left(List(FormError(key, amOrPmRequired, missingTimeFields ++ args)))
         } else {
           Left(List(FormError(key, timeRequiredKey, missingTimeFields ++ args)))

@@ -16,8 +16,6 @@
 
 package forms
 
-import java.time.{LocalDateTime, ZoneOffset}
-
 import forms.behaviours.DateTimeWithAMPMBehaviours
 import forms.mappings.LocalDateTimeWithAMPM
 import play.api.data.FormError
@@ -27,9 +25,9 @@ class ArrivalTimesAtOfficeFormProviderSpec extends DateTimeWithAMPMBehaviours {
 
   val officeOfTransit = "office"
   val form = new ArrivalTimesAtOfficeFormProvider()(officeOfTransit)
-  val dateTime = LocalDateTime.now(ZoneOffset.UTC).withHour(1)
-  val pastDateTime = dateTime.minusDays(1)
-  val futureDateTime = dateTime.plusWeeks(2)
+  val localDateTime = dateTime.withHour(1)
+  val pastDateTime = localDateTime.minusDays(1)
+  val futureDateTime = localDateTime.plusWeeks(2)
   val formattedPastDateTime: String = s"${Format.dateFormattedWithMonthName(pastDateTime)}"
   val formattedFutureDateTime: String = s"${Format.dateFormattedWithMonthName(futureDateTime)}"
   val formPastError = FormError("value", "arrivalTimesAtOffice.error.past.date", Seq(officeOfTransit, formattedPastDateTime))
@@ -37,13 +35,13 @@ class ArrivalTimesAtOfficeFormProviderSpec extends DateTimeWithAMPMBehaviours {
 
   ".value" - {
 
-    val localDateTimeWithAMPM = LocalDateTimeWithAMPM(dateTime, "am")
+    val localDateTimeWithAMPM = LocalDateTimeWithAMPM(localDateTime, "am")
 
     behave like dateTimeField(form, "value", localDateTimeWithAMPM)
 
     behave like mandatoryDateTimeField(form, "value", "arrivalTimesAtOffice.error.required.all", Seq(officeOfTransit))
 
-    behave like dateTimeFieldWithMin(form, "value", dateTime ,formPastError)
+    behave like dateTimeFieldWithMin(form, "value", localDateTime ,formPastError)
 
     behave like dateFieldWithMax(form, "value", futureDateTime ,formFutureError)
 
@@ -55,6 +53,9 @@ class ArrivalTimesAtOfficeFormProviderSpec extends DateTimeWithAMPMBehaviours {
 
     behave like mandatoryDateField(form, "value", "arrivalTimesAtOffice.error.required.date" , Seq(officeOfTransit))
 
+    behave like mandatoryTimeField(form, "value", "arrivalTimesAtOffice.error.required.time" , Seq(officeOfTransit))
+
+    behave like mandatoryAMPMField(form, "value", "arrivalTimesAtOffice.amOrPm.error.required" , Seq(officeOfTransit))
 
   }
 }
