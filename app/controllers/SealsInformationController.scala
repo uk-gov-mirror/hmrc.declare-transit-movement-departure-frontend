@@ -97,6 +97,6 @@ class SealsInformationController @Inject()(
       "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, sealIndex, mode).url
     )
 
-    renderer.render("events/seals/addSeal.njk", json)
+    renderer.render("sealsInformation.njk", json)
   }
 }

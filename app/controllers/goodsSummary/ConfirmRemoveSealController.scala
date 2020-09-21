@@ -55,7 +55,7 @@ class ConfirmRemoveSealController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val confirmRemoveSealTemplate = "events/seals/confirmRemoveSeal.njk"
+  private val confirmRemoveSealTemplate = "/confirmRemoveSeal.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {

@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("sealsInformation.title"), form.errors) }}
+  {{ title(pageTitle, form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -32,7 +32,7 @@
 
           {{ csrf() | safe }}
 
-          <h1 class="govuk-heading-xl">{{messages('sealsInformation.heading')}}</h1>
+          <h1 class="govuk-heading-xl">{{ heading }}</h1>
 
           <h1 class="govuk-heading-m">
             {{messages('sealsInformation.subHeading')}}
