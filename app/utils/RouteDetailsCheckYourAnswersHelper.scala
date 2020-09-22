@@ -17,7 +17,7 @@
 package utils
 
 import controllers.routeDetails.routes
-import models.{CheckMode, CountryList, CustomsOfficeList, Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{CheckMode, CountryList, CustomsOfficeList, Index, LocalReferenceNumber, Mode, OfficeOfTransitList, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
@@ -146,28 +146,33 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def officeOfTransitRow(index: Index, mode: Mode): Option[Row] =
-    userAnswers.get(AddAnotherTransitOfficePage(index)).map {
+  def officeOfTransitRow(index: Index, officeOfTransitList: OfficeOfTransitList, mode: Mode): Option[Row] =
+    userAnswers.get(AddAnotherTransitOfficePage(index)).flatMap {
       answer =>
-        val arrivalTime = userAnswers.get(ArrivalTimesAtOfficePage(index)).getOrElse("")
-        Row(
-          key   = Key(lit"$answer"),
-          value = Value(lit"$arrivalTime"),
-          actions = List(
-            Action(
-              content            = msg"site.change",
-              href               = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
-              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""change-officeOfTransit-${index.display}""")
-            ),
-            Action(
-              content            = msg"site.delete",
-              href               = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
-              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""remove-officeOfTransit-${index.display}""")
+        officeOfTransitList.getOfficeOfTransit(answer).map { office =>
+          val arrivalTime = userAnswers.get(ArrivalTimesAtOfficePage(index)).map(time =>
+            s"${time.dateTime.format(Format.dateFormatter)} ${time.amOrPm}"
+          ).getOrElse("")
+
+          Row(
+            key = Key(lit"${office.name} (${office.id})"),
+            value = Value(lit"$arrivalTime"),
+            actions = List(
+              Action(
+                content = msg"site.change",
+                href = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
+                visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
+                attributes = Map("id" -> s"""change-officeOfTransit-${index.display}""")
+              ),
+              Action(
+                content = msg"site.delete",
+                href = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
+                visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
+                attributes = Map("id" -> s"""remove-officeOfTransit-${index.display}""")
+              )
             )
           )
-        )
+        }
     }
 }
 

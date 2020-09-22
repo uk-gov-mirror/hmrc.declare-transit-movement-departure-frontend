@@ -107,6 +107,14 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |]
       |""".stripMargin
 
+  private val officeOfTransitJson: String =
+    """
+      |  {
+      |    "ID": "1",
+      |    "NAME": "Data1"
+      |  }
+      |""".stripMargin
+
 
   val errorResponses: Gen[Int] = Gen.chooseNum(400, 599)
 
@@ -249,6 +257,26 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return an exception when an error response is returned" in {
 
         checkErrorResponse(s"/$startUrl/office-transit", connector.getOfficeOfTransitList())
+      }
+    }
+
+    "getOfficeOfTransit" - {
+
+      "must return Offices of transit when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/office-transit/1"))
+            .willReturn(okJson(officeOfTransitJson))
+        )
+
+        val expectedResult: OfficeOfTransit = OfficeOfTransit("1", "Data1")
+
+
+        connector.getOfficeOfTransit("1").futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/office-transit/1", connector.getOfficeOfTransitList())
       }
     }
   }

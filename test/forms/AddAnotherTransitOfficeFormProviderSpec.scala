@@ -17,8 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.CustomsOfficeList
-import models.reference.CustomsOffice
+import models.OfficeOfTransitList
+import models.reference.OfficeOfTransit
 import play.api.data.FormError
 
 class AddAnotherTransitOfficeFormProviderSpec extends StringFieldBehaviours {
@@ -26,8 +26,8 @@ class AddAnotherTransitOfficeFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "addAnotherTransitOffice.error.required"
   val maxLength   = 8
 
-  val customsOffices = CustomsOfficeList(Seq(CustomsOffice("id", "name", Seq.empty, None), CustomsOffice("officeId", "someName", Seq.empty, None)))
-  val form = new AddAnotherTransitOfficeFormProvider()(customsOffices)
+  val officeOfTransitList = OfficeOfTransitList(Seq(OfficeOfTransit("id", "name"), OfficeOfTransit("officeId", "someName")))
+  val form = new AddAnotherTransitOfficeFormProvider()(officeOfTransitList)
 
   ".value" - {
 

@@ -21,8 +21,9 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
 import forms.AddAnotherTransitOfficeFormProvider
 import matchers.JsonMatchers
-import models.reference.CustomsOffice
-import models.{CustomsOfficeList, NormalMode}
+import models.reference.OfficeOfTransit
+import models.{NormalMode, OfficeOfTransitList}
+import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -37,7 +38,6 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import navigation.annotations.RouteDetails
 
 import scala.concurrent.Future
 
@@ -45,10 +45,10 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
 
   def onwardRoute = Call("GET", "/foo")
 
-  val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
-  val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
-  val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
-  val form = new AddAnotherTransitOfficeFormProvider()(customsOffices)
+  val officeOfTransit1: OfficeOfTransit = OfficeOfTransit("1", "Transit1")
+  val officeOfTransit2: OfficeOfTransit = OfficeOfTransit("2", "Transit2")
+  val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit1, officeOfTransit2))
+  val form = new AddAnotherTransitOfficeFormProvider()(officeOfTransitList)
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
@@ -66,7 +66,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
@@ -83,15 +83,15 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
 
       val expectedCustomsOfficeJson = Seq(
         Json.obj("value" -> "", "text"         -> ""),
-        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> false),
-        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
+        Json.obj("value" -> "1", "text" -> "Transit1 (1)", "selected" -> false),
+        Json.obj("value" -> "2", "text"       -> "Transit2 (2)", "selected" -> false)
       )
 
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
-        "customsOffices" -> expectedCustomsOfficeJson
+        "officeOfTransitList" -> expectedCustomsOfficeJson
       )
 
       templateCaptor.getValue mustEqual "addAnotherTransitOffice.njk"
@@ -104,9 +104,9 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), customsOffice1.id).success.value
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit1.id).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
@@ -120,19 +120,19 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "officeId"))
+      val filledForm = form.bind(Map("value" -> "1"))
 
       val expectedCustomsOfficeJson = Seq(
         Json.obj("value" -> "", "text"         -> ""),
-        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> true),
-        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
+        Json.obj("value" -> "1", "text" -> "Transit1 (1)", "selected" -> true),
+        Json.obj("value" -> "2", "text"       -> "Transit2 (2)", "selected" -> false)
       )
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
         "lrn"  -> lrn,
         "mode" -> NormalMode,
-        "customsOffices" -> expectedCustomsOfficeJson
+        "officeOfTransitList" -> expectedCustomsOfficeJson
       )
 
       templateCaptor.getValue mustEqual "addAnotherTransitOffice.njk"
@@ -146,7 +146,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -159,7 +159,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
 
       val request =
         FakeRequest(POST, addAnotherTransitOfficeRoute)
-          .withFormUrlEncodedBody(("value", "id"))
+          .withFormUrlEncodedBody(("value", "1"))
 
       val result = route(application, request).value
 
@@ -174,7 +174,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))

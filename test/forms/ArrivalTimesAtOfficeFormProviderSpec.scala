@@ -39,8 +39,6 @@ class ArrivalTimesAtOfficeFormProviderSpec extends DateTimeWithAMPMBehaviours {
 
     behave like dateTimeField(form, "value", localDateTimeWithAMPM)
 
-    behave like mandatoryDateTimeField(form, "value", "arrivalTimesAtOffice.error.required.all", Seq(officeOfTransit))
-
     behave like dateTimeFieldWithMin(form, "value", localDateTime ,formPastError)
 
     behave like dateFieldWithMax(form, "value", futureDateTime ,formFutureError)

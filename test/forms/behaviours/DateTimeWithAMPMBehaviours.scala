@@ -102,16 +102,6 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
     }
   }
 
-  def mandatoryDateTimeField(form: Form[_], key: String, requiredAllKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
-
-    "must fail to bind an empty date" in {
-
-      val result = form.bind(Map.empty[String, String])
-
-      result.errors must contain only FormError(key, requiredAllKey, errorArgs)
-    }
-  }
-
   def invalidDateField(form: Form[_], key: String, invalidDateKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
 
     "must fail to bind invalid date data" in {
@@ -234,7 +224,7 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
 
           val result = form.bind(data)
 
-      result.errors must contain only FormError(key, requiredTimeKey, List("amOrPm") ++ errorArgs)
+      result.errors must contain only FormError(key, requiredTimeKey, errorArgs)
     }
   }
 }

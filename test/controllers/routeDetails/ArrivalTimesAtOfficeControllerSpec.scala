@@ -19,17 +19,20 @@ package controllers.routeDetails
 import java.time.{LocalDateTime, ZoneOffset}
 
 import base.SpecBase
+import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.ArrivalTimesAtOfficeFormProvider
 import matchers.JsonMatchers
+import models.reference.OfficeOfTransit
 import models.{LocalDateTimeWithAMPM, NormalMode}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ArrivalTimesAtOfficePage
+import pages.{AddAnotherTransitOfficePage, ArrivalTimesAtOfficePage}
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
@@ -42,16 +45,23 @@ import viewModels.DateTimeInput
 
 import scala.concurrent.Future
 
-class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach {
 
   val formProvider = new ArrivalTimesAtOfficeFormProvider()
-  private def form = formProvider("") //TODO
+  private val officeOfTransit = OfficeOfTransit("1", "name")
+  private def form = formProvider(officeOfTransit.name)
+  private val mockRefDataConnector = mock[ReferenceDataConnector]
 
   def onwardRoute = Call("GET", "/foo")
 
   val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC).withHour(10), "am")
 
   lazy val arrivalTimesAtOfficeRoute = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn,index, NormalMode).url
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockRefDataConnector)
+  }
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, arrivalTimesAtOfficeRoute)
@@ -73,8 +83,12 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -103,9 +117,12 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = emptyUserAnswers.set(ArrivalTimesAtOfficePage(index), validAnswer).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
+                      .set(ArrivalTimesAtOfficePage(index), validAnswer).success.value
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -145,11 +162,14 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind[ReferenceDataConnector].toInstance(mockRefDataConnector),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
@@ -167,8 +187,12 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
       val request = FakeRequest(POST, arrivalTimesAtOfficeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

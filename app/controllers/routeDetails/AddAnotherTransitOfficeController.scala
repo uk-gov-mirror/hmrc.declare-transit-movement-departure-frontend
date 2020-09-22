@@ -31,7 +31,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.getCustomsOfficesAsJson
+import utils.getOfficeOfTransitAsJson
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,21 +48,19 @@ class AddAnotherTransitOfficeController @Inject()(
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-
-
   def onPageLoad(lrn: LocalReferenceNumber, index:Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
- referenceDataConnector.getCustomsOffices() flatMap {
-   customsOffices =>
-     val form = formProvider(customsOffices)
+ referenceDataConnector.getOfficeOfTransitList() flatMap {
+   officeOfTransitList =>
+     val form = formProvider(officeOfTransitList)
      val preparedForm = request.userAnswers.get(AddAnotherTransitOfficePage(index))
-       .flatMap(customsOffices.getCustomsOffice)
+       .flatMap(officeOfTransitList.getOfficeOfTransit)
        .map(form.fill).getOrElse(form)
 
      val json = Json.obj(
        "form" -> preparedForm,
        "lrn"  -> lrn,
-       "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
+       "officeOfTransitList" -> getOfficeOfTransitAsJson(preparedForm.value, officeOfTransitList.officeOfTransits),
        "mode" -> mode
      )
 
@@ -72,15 +70,15 @@ class AddAnotherTransitOfficeController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index:Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getCustomsOffices() flatMap {
-        customsOffices =>
-          val form = formProvider(customsOffices)
+      referenceDataConnector.getOfficeOfTransitList() flatMap {
+        officeOfTransitList =>
+          val form = formProvider(officeOfTransitList)
           form.bindFromRequest().fold(
             formWithErrors => {
               val json = Json.obj(
                 "form" -> formWithErrors,
                 "lrn"  -> lrn,
-                "customsOffices" -> getCustomsOfficesAsJson(form.value, customsOffices.customsOffices),
+                "officeOfTransitList" -> getOfficeOfTransitAsJson(form.value, officeOfTransitList.officeOfTransits),
                 "mode" -> mode
               )
 

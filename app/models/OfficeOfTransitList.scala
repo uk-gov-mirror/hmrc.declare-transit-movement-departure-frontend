@@ -18,10 +18,10 @@ package models
 
 import models.reference.OfficeOfTransit
 
-case class OfficeOfTransitList(offices: Seq[OfficeOfTransit]) {
+case class OfficeOfTransitList(officeOfTransits: Seq[OfficeOfTransit]) {
 
   def getOfficeOfTransit(id: String): Option[OfficeOfTransit] = {
-    offices.find(_.id == id)
+    officeOfTransits.find(_.id == id)
   }
 
 }
