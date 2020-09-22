@@ -28,17 +28,16 @@
           }) }}
         {% endif %}
 
+        <span class="govuk-caption-xl">{{messages('routeDetails.preHeading')}}</span>
+        <h1 class="govuk-heading-xl"> {{ heading }} </h1>
+
           {{ govukSummaryList({
                 classes: 'govuk-!-margin-bottom-9 ctc-add-to-a-list',
                 rows: officeOfTransitRows
             }) }}
 
         <form action="{{ routes.controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn, mode).url }}" method="post">
-        <span class="govuk-caption-xl">{{messages('routeDetails.preHeading')}}</span>
 
-            <h1 class="govuk-heading-xl">
-              {{ heading }}
-            </h1>
 
           {{ csrf() | safe }}
 

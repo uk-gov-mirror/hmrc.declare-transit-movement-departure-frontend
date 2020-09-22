@@ -155,7 +155,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           value = Value(lit"$arrivalTime"),
           actions = List(
             Action(
-              content            = msg"site.edit",
+              content            = msg"site.change",
               href               = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
               visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
               attributes         = Map("id" -> s"""change-officeOfTransit-${index.display}""")

@@ -7,7 +7,7 @@ site.minute.amOrPm = am or pm
 
 site.back = Back
 site.delete = Remove
-site.edit = Change
+site.change = Change
 site.delete.hidden = Change {0}
 site.edit.hidden = Change {0}
 site.no = No

@@ -20,10 +20,12 @@ import controllers.actions._
 import derivable.DeriveNumberTransitOffices
 import forms.AddTransitOfficeFormProvider
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
 import pages.AddTransitOfficePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -57,43 +59,15 @@ class AddTransitOfficeController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "mode" -> mode,
-        "lrn" -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render("addTransitOffice.njk", json).map(Ok(_))
+      renderPage(lrn, mode, preparedForm).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val routesCYAHelper = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
-      val numberOfTransitOffices    = request.userAnswers.get(DeriveNumberTransitOffices).getOrElse(0)
-      val index: Seq[Index] = List.range(0, numberOfTransitOffices).map(Index(_))
-      val officeOfTransitRows = index.map {
-        index =>
-          routesCYAHelper.officeOfTransitRow(index, mode)
-      }
-
-      val singularOrPlural = if (numberOfTransitOffices == 1) "singular" else "plural"
-
       form.bindFromRequest().fold(
         formWithErrors => {
-
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "mode" -> mode,
-            "pageTitle"   -> msg"addTransitOffice.title.$singularOrPlural".withArgs(numberOfTransitOffices),
-            "heading"     -> msg"addTransitOffice.heading.$singularOrPlural".withArgs(numberOfTransitOffices),
-            "lrn" -> lrn,
-            "officeOfTransitRows" -> officeOfTransitRows,
-            "radios" -> Radios.yesNo(formWithErrors("value"))
-          )
-
-          renderer.render("addTransitOffice.njk", json).map(BadRequest(_))
+          renderPage(lrn, mode, formWithErrors) .map(BadRequest(_))
         },
         value =>
           for {
@@ -101,5 +75,30 @@ class AddTransitOfficeController @Inject()(
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AddTransitOfficePage, mode, updatedAnswers))
       )
+  }
+
+  private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Boolean])(implicit  request: DataRequest[AnyContent]) = {
+
+    val routesCYAHelper = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
+    val numberOfTransitOffices = request.userAnswers.get(DeriveNumberTransitOffices).getOrElse(0)
+    val index: Seq[Index] = List.range(0, numberOfTransitOffices).map(Index(_))
+    val officeOfTransitRows = index.map {
+      index =>
+        routesCYAHelper.officeOfTransitRow(index, mode)
+    }
+
+    val singularOrPlural = if (numberOfTransitOffices == 1) "singular" else "plural"
+    val json = Json.obj(
+      "form" -> form,
+      "mode" -> mode,
+      "pageTitle" -> msg"addTransitOffice.title.$singularOrPlural".withArgs(numberOfTransitOffices),
+      "heading" -> msg"addTransitOffice.heading.$singularOrPlural".withArgs(numberOfTransitOffices),
+      "lrn" -> lrn,
+      "officeOfTransitRows" -> officeOfTransitRows,
+      "radios" -> Radios.yesNo(form("value"))
+    )
+
+    renderer.render("addTransitOffice.njk", json)
+
   }
 }

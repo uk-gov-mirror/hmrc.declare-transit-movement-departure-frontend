@@ -209,10 +209,10 @@ POST       /:lrn/transport-details/change-mode-at-border                  contro
 GET        /:lrn/transport-details/check-your-answers                       controllers.transportDetails.TransportDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /:lrn/transport-details/check-your-answers                       controllers.transportDetails.TransportDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
 
-GET        /:lrn/route/add-transit-office                        controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/route/add-transit-office                         controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/route/change-add-transit-office                  controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/route/change-add-transit-office                controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/route/added-transit-offices                          controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/route/added-transit-offices                          controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/route/change-added-transit-offices                   controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/route/change-added-transit-offices                   controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)

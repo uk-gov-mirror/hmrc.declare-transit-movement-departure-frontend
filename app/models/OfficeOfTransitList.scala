@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package derivable
+package models
 
-import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.RouteDetailsTransitOffices
+import models.reference.OfficeOfTransit
 
-case object DeriveNumberTransitOffices extends Derivable[List[JsObject], Int] {
+case class OfficeOfTransitList(offices: Seq[OfficeOfTransit]) {
 
-  override val derive: List[JsObject] => Int = _.size
+  def getOfficeOfTransit(id: String): Option[OfficeOfTransit] = {
+    offices.find(_.id == id)
+  }
 
-  override def path: JsPath = JsPath \ RouteDetailsTransitOffices
 }

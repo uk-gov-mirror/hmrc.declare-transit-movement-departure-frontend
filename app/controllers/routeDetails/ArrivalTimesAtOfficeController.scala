@@ -27,6 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.twirl.api.Html
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -57,15 +58,14 @@ class ArrivalTimesAtOfficeController @Inject()(
         case None => form
       }
 
-      loadPage(lrn, mode, preparedForm.value.map(_.amOrPm), preparedForm, Ok)
+      loadPage(lrn, mode, preparedForm.value.map(_.amOrPm), preparedForm).map(Ok(_))
   }
 
   private def loadPage(lrn: LocalReferenceNumber,
                        mode: Mode,
                        selectAMPMValue: Option[String],
                        form: Form[LocalDateTimeWithAMPM],
-                       status: Status
-                      )(implicit request: Request[AnyContent]): Future[Result] = {
+                      )(implicit request: Request[AnyContent]): Future[Html] = {
     val viewModel = DateTimeInput.localDateTime(form("value"))
 
     val json = Json.obj(
@@ -76,7 +76,7 @@ class ArrivalTimesAtOfficeController @Inject()(
       "dateTime" -> viewModel
     )
 
-    renderer.render("arrivalTimesAtOffice.njk", json).map(status(_))
+    renderer.render("arrivalTimesAtOffice.njk", json)
   }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -84,7 +84,7 @@ class ArrivalTimesAtOfficeController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors => {
-          loadPage(lrn, mode, formWithErrors.data.get("value.amOrPm"), formWithErrors, BadRequest)
+          loadPage(lrn, mode, formWithErrors.data.get("value.amOrPm"), formWithErrors).map(BadRequest(_))
         },
         value =>
           for {
