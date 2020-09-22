@@ -19,10 +19,11 @@ package controllers.goodsSummary
 import base.SpecBase
 import controllers.{routes => mainRoutes}
 import forms.SealIdDetailsFormProvider
+import generators.ModelGenerators
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
-import navigation.annotations.GoodsSummary
 import navigation.{FakeNavigator, Navigator}
+import navigation.annotations.GoodsSummary
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -100,9 +101,11 @@ class SealIdDetailsControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val expectedJson = Json.obj(
         "form" -> filledForm,
         "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "mode" -> NormalMode,
+        "onSubmitUrl" -> routes.SealIdDetailsController.onSubmit(lrn, sealIndex, NormalMode).url
+
       )
-=
+
       templateCaptor.getValue mustEqual "sealIdDetails.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 

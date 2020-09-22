@@ -25,6 +25,7 @@ import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GoodsSummary
 import pages.SealIdDetailsPage
+import pages.events.SectionConstants.seals
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -60,26 +61,19 @@ class SealIdDetailsController @Inject()(
       renderView(lrn, sealIndex, mode, preparedForm).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
-
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
-          )
-
-          renderer.render("sealIdDetails.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage(sealIndex), SealDomain(value)))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SealIdDetailsPage(sealIndex), mode, updatedAnswers))
-      )
+      form.bindFromRequest()
+        .fold(
+          formWithErrors => renderView(lrn, sealIndex,  mode, formWithErrors).map(BadRequest(_)),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage( sealIndex), SealDomain(value)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(SealIdDetailsPage( sealIndex), mode, updatedAnswers))
+        )
   }
 
   private def renderView(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode, preparedForm: Form[String])(
