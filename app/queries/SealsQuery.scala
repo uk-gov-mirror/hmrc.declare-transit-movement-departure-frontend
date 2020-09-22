@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package derivable
+package queries
 
 import models.domain.SealDomain
-import pages.SectionConstants
+import pages.{QuestionPage, SectionConstants}
 import play.api.libs.json.JsPath
 
-final case class DeriveNumberOfSeals() extends Derivable[List[SealDomain], Int] {
+final case class SealsQuery() extends QuestionPage[Seq[SealDomain]] {
 
-  override val derive: List[SealDomain] => Int = _.size
+  override def path: JsPath = JsPath \  SectionConstants.seals
 
-  override def path: JsPath = JsPath \ SectionConstants.seals
 }

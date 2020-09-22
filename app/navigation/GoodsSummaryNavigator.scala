@@ -50,8 +50,8 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
   }
 
   private def removeSeal(mode: Mode)(ua: UserAnswers) = {
-    ua.get(DeriveNumberOfSeals()) match {
-      case None | Some(0) => Some(routes.AddSealsController.onPageLoad(ua.id, mode))
+    ua.get(DeriveNumberOfSeals()).getOrElse(0) match {
+      case  0 => Some(routes.AddSealsController.onPageLoad(ua.id, mode))
       case _ => Some(routes.SealsInformationController.onPageLoad(ua.id, mode))
     }
   }
@@ -62,4 +62,5 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
       case _ => ???
     }
   }
+
 }

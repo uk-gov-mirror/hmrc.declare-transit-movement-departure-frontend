@@ -18,7 +18,6 @@ package pages
 
 import models.Index
 import models.domain.SealDomain
-import pages.events.SectionConstants
 import play.api.libs.json.JsPath
 
 case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {

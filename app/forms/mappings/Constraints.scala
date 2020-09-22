@@ -18,7 +18,9 @@ package forms.mappings
 
 import java.time.LocalDate
 
+import models.Index
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import com.google.common.base.CharMatcher
 
 trait Constraints {
 
@@ -117,4 +119,22 @@ trait Constraints {
       case _ =>
         Invalid(errorKey)
     }
+
+  protected def doesNotExistIn[A](values: Seq[A], index: Index, errorKey: String, args: Any*)(implicit ev: StringEquivalence[A]): Constraint[String] = {
+    import StringEquivalence._
+
+    val valuesFilterWithoutCurrentIndex: Seq[A] = {
+      values.zipWithIndex.filterNot(_._2 == index.position).map(_._1)
+    }
+println(s"\n\n\n\n${values} ")
+    Constraint {
+      x =>
+        if (valuesFilterWithoutCurrentIndex.exists(_.equalsString(x))) {
+          Invalid(errorKey, args: _*)
+        } else {
+          Valid
+        }
+
+    }
+  }
 }

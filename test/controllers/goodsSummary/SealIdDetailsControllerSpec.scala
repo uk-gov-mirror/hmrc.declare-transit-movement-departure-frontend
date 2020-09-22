@@ -45,7 +45,7 @@ class SealIdDetailsControllerSpec extends SpecBase with MockitoSugar with Nunjuc
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new SealIdDetailsFormProvider()
-  val form = formProvider()
+  val form = formProvider(sealIndex)
 
   lazy val sealIdDetailsRoute = routes.SealIdDetailsController.onPageLoad(lrn, sealIndex,  NormalMode).url
 

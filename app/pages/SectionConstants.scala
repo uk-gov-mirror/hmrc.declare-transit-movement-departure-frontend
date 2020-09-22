@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package pages.events
+package pages
 
 object SectionConstants {
 
-  val seals      = "seals"
+  val seals = "seals"
 
 }

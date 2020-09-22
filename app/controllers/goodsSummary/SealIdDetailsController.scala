@@ -25,11 +25,11 @@ import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GoodsSummary
 import pages.SealIdDetailsPage
-import pages.events.SectionConstants.seals
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.SealsQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -49,13 +49,13 @@ class SealIdDetailsController @Inject()(
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  private val form = formProvider()
+  private val form = formProvider
 
   def onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(SealIdDetailsPage(sealIndex)) match {
-        case Some(value) => form.fill(value.numberOrMark)
-        case _ => form
+        case Some(value) => form(sealIndex).fill(value.numberOrMark)
+        case _ => form(sealIndex)
       }
 
       renderView(lrn, sealIndex, mode, preparedForm).map(Ok(_))
@@ -64,8 +64,9 @@ class SealIdDetailsController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      val seals = request.userAnswers.get(SealsQuery()).getOrElse(Seq.empty)
 
-      form.bindFromRequest()
+      form(sealIndex, seals).bindFromRequest()
         .fold(
           formWithErrors => renderView(lrn, sealIndex,  mode, formWithErrors).map(BadRequest(_)),
           value =>
