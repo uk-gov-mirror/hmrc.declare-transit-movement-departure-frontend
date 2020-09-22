@@ -50,19 +50,19 @@ class SealsInformationController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber,  mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      renderPage(lrn, sealIndex, mode, form)
+      renderPage(lrn, mode, form)
         .map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber,  mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            renderPage(lrn, sealIndex, mode, formWithErrors)
+            renderPage(lrn,  mode, formWithErrors)
               .map(BadRequest(_)),
           value  =>
             for {
@@ -71,14 +71,14 @@ class SealsInformationController @Inject()(
         )
   }
 
-  private def renderPage(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode, form: Form[Boolean])(
+  private def renderPage(lrn: LocalReferenceNumber,  mode: Mode, form: Form[Boolean])(
     implicit request: DataRequest[AnyContent]): Future[Html] = {
 
     val numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
     val listOfSealsIndex = List.range(0, numberOfSeals).map(Index(_))
     val sealsRows = listOfSealsIndex.flatMap {
       index =>
-        AddSealHelper.apply(request.userAnswers).sealRow(lrn, sealIndex, mode)
+        AddSealHelper.apply(request.userAnswers).sealRow(lrn, index, mode)
 
     }
 
@@ -92,7 +92,7 @@ class SealsInformationController @Inject()(
       "heading"     -> msg"addSeal.heading.$singularOrPlural".withArgs(numberOfSeals),
       "seals"       -> sealsRows,
       "radios"      -> Radios.yesNo(form("value")),
-      "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, sealIndex, mode).url
+      "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  mode).url
     )
 
     renderer.render("sealsInformation.njk", json)

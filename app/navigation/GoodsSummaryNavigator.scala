@@ -17,6 +17,8 @@
 package navigation
 
 
+import controllers.goodsSummary.routes
+import derivable.DeriveNumberOfSeals
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
@@ -25,8 +27,25 @@ import play.api.mvc.Call
 @Singleton
 class GoodsSummaryNavigator @Inject()() extends Navigator {
 
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case AddSealsPage =>ua => Some(routes.SealIdDetailsController.onPageLoad(ua.id, Index(0), NormalMode))
+    case SealIdDetailsPage(_) => ua => Some(routes.SealsInformationController.onPageLoad(ua.id,  NormalMode))
+    case SealsInformationPage => ua => Some(sealsInformationRoute(ua, NormalMode))
+
+  }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
-}
 
+
+  private def sealsInformationRoute(ua: UserAnswers, mode: Mode): Call = {
+    ua.get(SealsInformationPage) match {
+      case Some(true) =>
+        val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
+        val sealIndex = Index(sealCount)
+        routes.SealIdDetailsController.onPageLoad(ua.id ,sealIndex, mode)
+      case Some(false) => ???
+     // case _ => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)//TODO not built yet
+    }
+  }
+
+}

@@ -37,7 +37,7 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.SealsInformationController.onPageLoad(lrn, sealIndex, CheckMode).url,
+            href               = routes.SealsInformationController.onPageLoad(lrn,  CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"sealsInformation.checkYourAnswersLabel"))
           )
         )
