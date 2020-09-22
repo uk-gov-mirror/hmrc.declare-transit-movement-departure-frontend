@@ -28,9 +28,10 @@ import play.api.mvc.Call
 class GoodsSummaryNavigator @Inject()() extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddSealsPage =>ua => Some(routes.SealIdDetailsController.onPageLoad(ua.id, Index(0), NormalMode))
-    case SealIdDetailsPage(_) => ua => Some(routes.SealsInformationController.onPageLoad(ua.id,  NormalMode))
+    case AddSealsPage => ua => addSealsRoute(ua, NormalMode)
+    case SealIdDetailsPage(_) => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, NormalMode))
     case SealsInformationPage => ua => Some(sealsInformationRoute(ua, NormalMode))
+    case ConfirmRemoveSealPage() => removeSeal(NormalMode)
 
   }
 
@@ -42,10 +43,23 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
       case Some(true) =>
         val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
         val sealIndex = Index(sealCount)
-        routes.SealIdDetailsController.onPageLoad(ua.id ,sealIndex, mode)
+        routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
       case Some(false) => ???
-     // case _ => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)//TODO not built yet
+      // case _ => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)//TODO not built yet
     }
   }
 
+  private def removeSeal(mode: Mode)(ua: UserAnswers) = {
+    ua.get(DeriveNumberOfSeals()) match {
+      case None | Some(0) => Some(routes.AddSealsController.onPageLoad(ua.id, mode))
+      case _ => Some(routes.SealsInformationController.onPageLoad(ua.id, mode))
+    }
+  }
+
+  private def addSealsRoute(ua: UserAnswers, mode:Mode) = {
+    ua.get(AddSealsPage) match {
+      case Some(true) => Some(routes.SealIdDetailsController.onPageLoad(ua.id, Index(0), NormalMode))
+      case _ => ???
+    }
+  }
 }
