@@ -126,7 +126,6 @@ trait Constraints {
     val valuesFilterWithoutCurrentIndex: Seq[A] = {
       values.zipWithIndex.filterNot(_._2 == index.position).map(_._1)
     }
-println(s"\n\n\n\n${values} ")
     Constraint {
       x =>
         if (valuesFilterWithoutCurrentIndex.exists(_.equalsString(x))) {
