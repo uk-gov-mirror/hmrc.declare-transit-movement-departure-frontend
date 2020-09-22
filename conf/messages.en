@@ -514,3 +514,6 @@ controlResultDateLimit.paragraph1 = This is the date the transit movement is exp
 controlResultDateLimit.paragraph2 = You cannot enter a date that is more than 14 days in advance. You must
 controlResultDateLimit.error.max.date = The control result date limit must be before {0}
 controlResultDateLimit.error.min.date = The control result date limit must be today or in the future
+
+goodsSummaryCheckYourAnswers.title = Check your answers
+goodsSummaryCheckYourAnswers.heading = Check your answers
