@@ -54,13 +54,45 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
 
-        "must go from Destination Office Page to check your answers page" in {
+        "must go from Destination Office Page to Add another transit office page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
 
               navigator.nextPage(DestinationOfficePage, NormalMode, answers)
-                .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(answers.id, index, NormalMode))
+          }
+        }
+
+        "must go from Add another transit office to arrival times at office of transit page when AddSecurityDetailsPage value is true" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedUserAnswers = answers.set(AddSecurityDetailsPage, true).toOption.value
+
+              navigator.nextPage(AddAnotherTransitOfficePage(index), NormalMode, updatedUserAnswers)
+                .mustBe(routes.ArrivalTimesAtOfficeController.onPageLoad(answers.id, index, NormalMode))
+          }
+        }
+
+        "must go from Add another transit office to Added transit office page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedUserAnswers = answers.set(AddSecurityDetailsPage, false).toOption.value
+
+              navigator.nextPage(AddAnotherTransitOfficePage(index), NormalMode, updatedUserAnswers)
+                .mustBe(routes.AddTransitOfficeController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Arrival times at office of transit page to Added transit office page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+
+              navigator.nextPage(ArrivalTimesAtOfficePage(index), NormalMode, answers)
+                .mustBe(routes.AddTransitOfficeController.onPageLoad(answers.id, NormalMode))
           }
         }
       }

@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import models.{Index, LocalDateTimeWithAMPM}
-import play.api.libs.json.JsPath
-import queries.Constants.RouteDetailsTransitOffices
+import play.api.libs.json.{JsObject, JsPath}
+import queries.RouteDetailsTransitOfficeQuery
 
-case class ArrivalTimesAtOfficePage(index: Index) extends QuestionPage[LocalDateTimeWithAMPM] {
+case object DeriveNumberTransitOffices extends Derivable[List[JsObject], Int] {
 
-  override def path: JsPath = JsPath \ RouteDetailsTransitOffices \ index.position \ toString
+  override val derive: List[JsObject] => Int = _.size
 
-  override def toString: String = "arrivalTimesAtOffice"
+  override def path: JsPath = JsPath \ RouteDetailsTransitOfficeQuery
 }

@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.{Index, LocalDateTimeWithAMPM}
-import play.api.libs.json.JsPath
-import queries.Constants.RouteDetailsTransitOffices
+import play.api.mvc.PathBindable
 
-case class ArrivalTimesAtOfficePage(index: Index) extends QuestionPage[LocalDateTimeWithAMPM] {
+case class Index(position: Int) {
+  val display: Int = position + 1
+}
 
-  override def path: JsPath = JsPath \ RouteDetailsTransitOffices \ index.position \ toString
+object Index {
 
-  override def toString: String = "arrivalTimesAtOffice"
+  implicit def indexPathBindable(implicit intBinder: PathBindable[Int]): PathBindable[Index] = new PathBindable[Index] {
+
+    override def bind(key: String, value: String): Either[String, Index] =
+      intBinder.bind(key, value) match {
+        case Right(x) if x > 0 => Right(Index(x - 1))
+        case _                 => Left("Index binding failed")
+      }
+
+    override def unbind(key: String, value: Index): String =
+      intBinder.unbind(key, value.position + 1)
+  }
+
 }

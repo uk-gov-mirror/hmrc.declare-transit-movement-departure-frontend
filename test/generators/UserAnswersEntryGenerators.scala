@@ -25,10 +25,10 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators extends PageGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryArrivalTimesAtOfficeUserAnswersEntry: Arbitrary[(ArrivalTimesAtOfficePage.type, JsValue)] =
+  implicit lazy val arbitraryArrivalTimesAtOfficeUserAnswersEntry: Arbitrary[(ArrivalTimesAtOfficePage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ArrivalTimesAtOfficePage.type]
+        page  <- arbitrary[ArrivalTimesAtOfficePage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -102,10 +102,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddAnotherTransitOfficeUserAnswersEntry: Arbitrary[(AddAnotherTransitOfficePage.type, JsValue)] =
+  implicit lazy val arbitraryAddAnotherTransitOfficeUserAnswersEntry: Arbitrary[(AddAnotherTransitOfficePage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[AddAnotherTransitOfficePage.type]
+        page  <- arbitrary[AddAnotherTransitOfficePage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }

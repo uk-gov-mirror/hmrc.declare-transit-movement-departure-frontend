@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
-import models.{Index, LocalDateTimeWithAMPM}
-import play.api.libs.json.JsPath
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 import queries.Constants.RouteDetailsTransitOffices
 
-case class ArrivalTimesAtOfficePage(index: Index) extends QuestionPage[LocalDateTimeWithAMPM] {
+case object RouteDetailsTransitOfficeQuery extends QuestionPage[Seq[JsObject]] {
 
-  override def path: JsPath = JsPath \ RouteDetailsTransitOffices \ index.position \ toString
+  override def path: JsPath = JsPath \ RouteDetailsTransitOffices
 
-  override def toString: String = "arrivalTimesAtOffice"
 }

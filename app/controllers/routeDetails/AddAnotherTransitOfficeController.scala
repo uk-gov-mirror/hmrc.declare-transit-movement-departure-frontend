@@ -20,7 +20,7 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.AddAnotherTransitOfficeFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
 import pages.AddAnotherTransitOfficePage
@@ -50,12 +50,12 @@ class AddAnotherTransitOfficeController @Inject()(
 
 
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index:Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
  referenceDataConnector.getCustomsOffices() flatMap {
    customsOffices =>
      val form = formProvider(customsOffices)
-     val preparedForm = request.userAnswers.get(AddAnotherTransitOfficePage)
+     val preparedForm = request.userAnswers.get(AddAnotherTransitOfficePage(index))
        .flatMap(customsOffices.getCustomsOffice)
        .map(form.fill).getOrElse(form)
 
@@ -70,7 +70,7 @@ class AddAnotherTransitOfficeController @Inject()(
  }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, index:Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       referenceDataConnector.getCustomsOffices() flatMap {
         customsOffices =>
@@ -88,9 +88,9 @@ class AddAnotherTransitOfficeController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransitOfficePage, value.id))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransitOfficePage(index), value.id))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAnotherTransitOfficePage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddAnotherTransitOfficePage(index), mode, updatedAnswers))
           )
       }
 

@@ -49,16 +49,11 @@ object DateTimeInput {
 
   def localDateTime(field: Field): ViewModel = {
 
-    val error = (field.error orElse field("day").error orElse field("month").error orElse field("year").error orElse field("hour").error orElse field("minute").error)
+    val error = (field.error orElse field("day").error orElse field("month").error orElse field("year").error orElse field("hour").error orElse field("minute").error orElse field("amOrPm").error)
       .map(formError => Text.Message(formError.message, formError.args: _*))
 
     def classes(classes: String*): String = {
       val allClasses = if (error.isDefined) "govuk-input--error" :: classes.toList else classes.toList
-      allClasses.mkString(" ")
-    }
-
-    def classesAMPM(classes: String*): String = {
-      val allClasses = if (error.isDefined) "govuk-select--error" :: classes.toList else classes.toList
       allClasses.mkString(" ")
     }
 
@@ -103,7 +98,7 @@ object DateTimeInput {
         name = field("amOrPm").name,
         id = field("amOrPm").id,
         value = field("amOrPm").value.getOrElse(""),
-        classes = classesAMPM("govuk-select"),
+        classes = if (error.isDefined) "govuk-select--error" else "",
         isDropDown = true
       )
     )

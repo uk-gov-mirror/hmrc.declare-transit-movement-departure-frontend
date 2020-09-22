@@ -16,16 +16,17 @@
 
 package generators
 
+import models.Index
 import org.scalacheck.Arbitrary
 import pages._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryAddAnotherTransitOfficePage: Arbitrary[AddAnotherTransitOfficePage.type] =
-    Arbitrary(AddAnotherTransitOfficePage)
+  implicit lazy val arbitraryAddAnotherTransitOfficePage: Arbitrary[AddAnotherTransitOfficePage] =
+    Arbitrary(AddAnotherTransitOfficePage(Index(0)))
 
-  implicit lazy val arbitraryArrivalTimesAtOfficePage: Arbitrary[ArrivalTimesAtOfficePage.type] =
-    Arbitrary(ArrivalTimesAtOfficePage)
+  implicit lazy val arbitraryArrivalTimesAtOfficePage: Arbitrary[ArrivalTimesAtOfficePage] =
+    Arbitrary(ArrivalTimesAtOfficePage(Index(0)))
 
   implicit lazy val arbitrarySealIdDetailsPage: Arbitrary[SealIdDetailsPage.type] =
     Arbitrary(SealIdDetailsPage)

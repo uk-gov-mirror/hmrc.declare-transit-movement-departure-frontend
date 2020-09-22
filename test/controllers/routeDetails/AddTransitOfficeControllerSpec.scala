@@ -17,10 +17,11 @@
 package controllers.routeDetails
 
 import base.SpecBase
-import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoutes}
 import forms.AddTransitOfficeFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
+import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -35,8 +36,6 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
-import navigation.annotations.RouteDetails
 
 import scala.concurrent.Future
 

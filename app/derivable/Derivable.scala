@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import models.{Index, LocalDateTimeWithAMPM}
-import play.api.libs.json.JsPath
-import queries.Constants.RouteDetailsTransitOffices
+import queries.Gettable
 
-case class ArrivalTimesAtOfficePage(index: Index) extends QuestionPage[LocalDateTimeWithAMPM] {
+trait Derivable[A, B] extends Gettable[A] {
 
-  override def path: JsPath = JsPath \ RouteDetailsTransitOffices \ index.position \ toString
+  val derive: A => B
 
-  override def toString: String = "arrivalTimesAtOffice"
 }

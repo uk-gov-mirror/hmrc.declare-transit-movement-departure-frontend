@@ -34,6 +34,7 @@
                     text: messages("site.minute.amOrPm") | capitalize
                   },
               id: item.id,
+              classes: (item.classes if item.classes),
               name: item.name,
               value: item.value,
               errorMessage: form.value.error,

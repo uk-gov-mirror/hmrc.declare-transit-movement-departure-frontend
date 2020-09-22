@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package models
 
 import java.time.LocalDateTime
 

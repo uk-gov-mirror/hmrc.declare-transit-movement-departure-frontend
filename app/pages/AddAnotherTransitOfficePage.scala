@@ -16,11 +16,13 @@
 
 package pages
 
+import models.Index
 import play.api.libs.json.JsPath
+import queries.Constants.RouteDetailsTransitOffices
 
-case object AddAnotherTransitOfficePage extends QuestionPage[String] {
+case class AddAnotherTransitOfficePage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ RouteDetailsTransitOffices \ index.position \ toString
 
   override def toString: String = "addAnotherTransitOffice"
 }

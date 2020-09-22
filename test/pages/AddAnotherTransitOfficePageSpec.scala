@@ -16,16 +16,19 @@
 
 package pages
 
+import models.Index
 import pages.behaviours.PageBehaviours
 
 class AddAnotherTransitOfficePageSpec extends PageBehaviours {
 
   "AddAnotherTransitOfficePage" - {
 
-    beRetrievable[String](AddAnotherTransitOfficePage)
+    val index = Index(0)
 
-    beSettable[String](AddAnotherTransitOfficePage)
+    beRetrievable[String](AddAnotherTransitOfficePage(index))
 
-    beRemovable[String](AddAnotherTransitOfficePage)
+    beSettable[String](AddAnotherTransitOfficePage(index))
+
+    beRemovable[String](AddAnotherTransitOfficePage(index))
   }
 }

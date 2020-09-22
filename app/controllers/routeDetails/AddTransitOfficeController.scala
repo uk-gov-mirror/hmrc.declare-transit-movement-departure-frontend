@@ -17,9 +17,10 @@
 package controllers.routeDetails
 
 import controllers.actions._
+import derivable.DeriveNumberTransitOffices
 import forms.AddTransitOfficeFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
 import pages.AddTransitOfficePage
@@ -30,6 +31,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import utils.RouteDetailsCheckYourAnswersHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -68,13 +70,26 @@ class AddTransitOfficeController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
+      val routesCYAHelper = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
+      val numberOfTransitOffices    = request.userAnswers.get(DeriveNumberTransitOffices).getOrElse(0)
+      val index: Seq[Index] = List.range(0, numberOfTransitOffices).map(Index(_))
+      val officeOfTransitRows = index.map {
+        index =>
+          routesCYAHelper.officeOfTransitRow(index, mode)
+      }
+
+      val singularOrPlural = if (numberOfTransitOffices == 1) "singular" else "plural"
+
       form.bindFromRequest().fold(
         formWithErrors => {
 
           val json = Json.obj(
             "form" -> formWithErrors,
             "mode" -> mode,
+            "pageTitle"   -> msg"addTransitOffice.title.$singularOrPlural".withArgs(numberOfTransitOffices),
+            "heading"     -> msg"addTransitOffice.heading.$singularOrPlural".withArgs(numberOfTransitOffices),
             "lrn" -> lrn,
+            "officeOfTransitRows" -> officeOfTransitRows,
             "radios" -> Radios.yesNo(formWithErrors("value"))
           )
 

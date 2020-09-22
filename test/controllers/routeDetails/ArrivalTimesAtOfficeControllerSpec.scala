@@ -21,9 +21,8 @@ import java.time.{LocalDateTime, ZoneOffset}
 import base.SpecBase
 import controllers.{routes => mainRoutes}
 import forms.ArrivalTimesAtOfficeFormProvider
-import forms.mappings.LocalDateTimeWithAMPM
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{LocalDateTimeWithAMPM, NormalMode}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -52,7 +51,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
   val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC).withHour(10), "am")
 
-  lazy val arrivalTimesAtOfficeRoute = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, NormalMode).url
+  lazy val arrivalTimesAtOfficeRoute = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn,index, NormalMode).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, arrivalTimesAtOfficeRoute)
@@ -105,7 +104,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ArrivalTimesAtOfficePage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(ArrivalTimesAtOfficePage(index), validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])

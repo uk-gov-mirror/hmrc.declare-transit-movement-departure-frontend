@@ -16,10 +16,8 @@
 
 package utils
 
-import java.time.format.DateTimeFormatter
-
 import controllers.routeDetails.routes
-import models.{CheckMode, CountryList, CustomsOfficeList, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, CustomsOfficeList, Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
@@ -29,7 +27,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def lrn: LocalReferenceNumber = userAnswers.id
 
-  def arrivalTimesAtOffice: Option[Row] = userAnswers.get(ArrivalTimesAtOfficePage) map {
+  def arrivalTimesAtOffice(index: Index): Option[Row] = userAnswers.get(ArrivalTimesAtOfficePage(index)) map {
     answer =>
       val dateTime: String = s"${answer.dateTime.format(Format.dateFormatter)}${answer.amOrPm}"
       Row(
@@ -38,7 +36,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, CheckMode).url,
+            href               = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, index, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"arrivalTimesAtOffice.checkYourAnswersLabel"))
           )
         )
@@ -95,7 +93,8 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
     }
   }
-  def addAnotherTransitOffice(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(AddAnotherTransitOfficePage) flatMap  {
+
+  def addAnotherTransitOffice(index: Index, customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(AddAnotherTransitOfficePage(index)) flatMap  {
     answer =>
       customsOfficeList.getCustomsOffice(answer) map{
         customsOffice =>
@@ -105,7 +104,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             actions = List(
               Action(
                 content            = msg"site.edit",
-                href               = routes.AddAnotherTransitOfficeController.onPageLoad(lrn, CheckMode).url,
+                href               = routes.AddAnotherTransitOfficeController.onPageLoad(lrn = lrn, index = index, mode = CheckMode).url,
                 visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherTransitOffice.checkYourAnswersLabel"))
               )
             )
@@ -147,6 +146,29 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
+  def officeOfTransitRow(index: Index, mode: Mode): Option[Row] =
+    userAnswers.get(AddAnotherTransitOfficePage(index)).map {
+      answer =>
+        val arrivalTime = userAnswers.get(ArrivalTimesAtOfficePage(index)).getOrElse("")
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit"$arrivalTime"),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-officeOfTransit-${index.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-officeOfTransit-${index.display}""")
+            )
+          )
+        )
+    }
 }
 
 

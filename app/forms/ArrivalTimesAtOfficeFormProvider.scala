@@ -16,12 +16,10 @@
 
 package forms
 
-import java.time.LocalDate
-
-import forms.mappings.{LocalDateTimeWithAMPM, Mappings}
+import forms.mappings.Mappings
 import javax.inject.Inject
+import models.LocalDateTimeWithAMPM
 import play.api.data.Form
-import utils.Format
 
 class ArrivalTimesAtOfficeFormProvider @Inject() extends Mappings {
 

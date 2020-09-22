@@ -19,7 +19,7 @@ package forms.behaviours
 import java.time.{LocalDateTime, ZoneOffset}
 import java.time.format.DateTimeFormatter
 
-import forms.mappings.LocalDateTimeWithAMPM
+import models.LocalDateTimeWithAMPM
 import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 

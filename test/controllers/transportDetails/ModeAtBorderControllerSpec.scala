@@ -18,11 +18,14 @@ package controllers.transportDetails
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoutes}
 import forms.ModeAtBorderFormProvider
 import matchers.JsonMatchers
+import models.reference.TransportMode
 import models.{NormalMode, TransportModeList}
+import navigation.annotations.TransportDetails
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.{ArgumentCaptor, Mock}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -35,9 +38,6 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
-import models.reference.TransportMode
-import navigation.annotations.TransportDetails
 import utils.transportModesAsJson
 
 import scala.concurrent.Future

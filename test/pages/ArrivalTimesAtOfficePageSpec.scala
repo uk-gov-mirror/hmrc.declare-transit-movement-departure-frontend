@@ -16,9 +16,9 @@
 
 package pages
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDateTime
 
-import forms.mappings.LocalDateTimeWithAMPM
+import models.{Index, LocalDateTimeWithAMPM}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
@@ -31,6 +31,7 @@ class ArrivalTimesAtOfficePageSpec extends PageBehaviours {
         LocalDateTime.of(1900, 1, 1, 12, 0, 0)
     }
 
+    val index = Index(0)
     implicit lazy val arbitraryDateTimeWithAMPM: Arbitrary[LocalDateTimeWithAMPM] = {
       Arbitrary {
         for {
@@ -41,10 +42,10 @@ class ArrivalTimesAtOfficePageSpec extends PageBehaviours {
     }
 
 
-    beRetrievable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage)
+    beRetrievable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
 
-    beSettable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage)
+    beSettable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
 
-    beRemovable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage)
+    beRemovable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
   }
 }

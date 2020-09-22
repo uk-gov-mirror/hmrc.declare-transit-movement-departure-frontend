@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.DateTimeWithAMPMBehaviours
-import forms.mappings.LocalDateTimeWithAMPM
+import models.LocalDateTimeWithAMPM
 import play.api.data.FormError
 import utils.Format
 

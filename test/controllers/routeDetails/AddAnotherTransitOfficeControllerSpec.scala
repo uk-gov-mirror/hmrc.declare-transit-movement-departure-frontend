@@ -52,7 +52,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  lazy val addAnotherTransitOfficeRoute: String = routes.AddAnotherTransitOfficeController.onPageLoad(lrn, NormalMode).url
+  lazy val addAnotherTransitOfficeRoute: String = routes.AddAnotherTransitOfficeController.onPageLoad(lrn, index, NormalMode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -106,7 +106,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar w
         .thenReturn(Future.successful(Html("")))
       when(mockRefDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
 
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage, customsOffice1.id).success.value
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), customsOffice1.id).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
