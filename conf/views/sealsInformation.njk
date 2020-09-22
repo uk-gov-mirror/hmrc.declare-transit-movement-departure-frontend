@@ -39,6 +39,9 @@
                       rows: seals
                   }) }}
 
+             {% if (numberOfSeals) < 10 %}
+
+
           <h1 class="govuk-heading-m">
             {{messages('sealsInformation.subHeading')}}
           </h1>
@@ -50,6 +53,8 @@
             items: radios,
             errorMessage: form.value.error
           }) }}
+
+        {% endif %}
 
           {{ govukButton({
             text: messages("site.continue"),

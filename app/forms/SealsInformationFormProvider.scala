@@ -22,8 +22,10 @@ import play.api.data.Form
 
 class SealsInformationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(): Form[Boolean] = {
     Form(
       "value" -> boolean("sealsInformation.error.required")
     )
+
+  }
 }
