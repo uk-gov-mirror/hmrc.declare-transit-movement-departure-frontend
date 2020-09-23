@@ -46,7 +46,7 @@ class GoodsSummaryCheckYourAnswersController @Inject()(
       val sections: Seq[Section] = GoodsSummaryCheckYourAnswersViewModel(request.userAnswers).sections
 
       val json = Json.obj("lrn" -> lrn,
-      "section" ->Json.toJson(sections)
+      "sections" ->Json.toJson(sections)
       )
 
       renderer.render("goodsSummaryCheckYourAnswers.njk", json).map(Ok(_))
