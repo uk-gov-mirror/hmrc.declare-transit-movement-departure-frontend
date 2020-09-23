@@ -97,12 +97,12 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
     """
       |[
       |  {
-      |    "ID": "1",
-      |    "NAME": "Data1"
+      |    "id": "1",
+      |    "name": "Data1"
       |  },
       |  {
-      |    "ID": "2",
-      |    "NAME": "Data2"
+      |    "id": "2",
+      |    "name": "Data2"
       |  }
       |]
       |""".stripMargin
@@ -110,8 +110,8 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
   private val officeOfTransitJson: String =
     """
       |  {
-      |    "ID": "1",
-      |    "NAME": "Data1"
+      |    "id": "1",
+      |    "name": "Data1"
       |  }
       |""".stripMargin
 
