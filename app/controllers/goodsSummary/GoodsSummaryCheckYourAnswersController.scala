@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.goodsSummary
 
 import controllers.actions._
 import javax.inject.Inject
@@ -24,6 +24,8 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import viewModels.GoodsSummaryCheckYourAnswersViewModel
+import viewModels.sections.Section
 
 import scala.concurrent.ExecutionContext
 
@@ -39,7 +41,11 @@ class GoodsSummaryCheckYourAnswersController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val json = Json.obj("lrn" -> lrn)
+      val sections: Seq[Section] = GoodsSummaryCheckYourAnswersViewModel(request.userAnswers).sections
+
+      val json = Json.obj("lrn" -> lrn,
+      "section" -> sections
+      )
 
       renderer.render("goodsSummaryCheckYourAnswers.njk", json).map(Ok(_))
   }

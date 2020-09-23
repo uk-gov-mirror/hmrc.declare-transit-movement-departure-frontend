@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.goodsSummary
 
 import base.SpecBase
 import matchers.JsonMatchers
@@ -56,5 +56,7 @@ class GoodsSummaryCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
 
       application.stop()
     }
+
+
   }
 }
