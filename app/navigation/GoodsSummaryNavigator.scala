@@ -18,15 +18,48 @@ package navigation
 
 import controllers.goodsSummary.routes
 import javax.inject.{Inject, Singleton}
+import models.ProcedureType.{Normal, Simplified}
 import models._
+import navigation.annotations.MovementDetails
 import pages._
 import play.api.mvc.Call
 
 @Singleton
 class GoodsSummaryNavigator @Inject()() extends Navigator {
 
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+    case DeclarePackagesPage => ua => Some(declarePackageRoute(ua))
+    case TotalPackagesPage => ua => Some(routes.TotalGrossMassController.onPageLoad(ua.id, NormalMode))
+    case TotalGrossMassPage => ua => Some(totalGrossMassRoute(ua))
+    case AuthorisedLocationCodePage => ua => Some(routes.ControlResultDateLimitController.onPageLoad(ua.id, NormalMode))
+    case AddCustomsApprovedLocationPage => ua => Some(addCustomsApprovedLocationRoute(ua))
+    case ControlResultDateLimitPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
+    case CustomsApprovedLocationPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
+  }
+
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {???}
+
+
+  def declarePackageRoute(ua: UserAnswers): Call = {
+    ua.get(DeclarePackagesPage) match {
+      case Some(true) => routes.TotalPackagesController.onPageLoad(ua.id, NormalMode)
+      case Some(false) => routes.TotalGrossMassController.onPageLoad(ua.id, NormalMode)
+    }
+  }
+
+  def totalGrossMassRoute(ua: UserAnswers): Call = {
+    ua.get(ProcedureTypePage) match {
+      case Some(Normal) => routes.AddCustomsApprovedLocationController.onPageLoad(ua.id, NormalMode)
+      case Some(Simplified) => routes.AuthorisedLocationCodeController.onPageLoad(ua.id, NormalMode)
+    }
+  }
+
+  def addCustomsApprovedLocationRoute(ua: UserAnswers): Call = {
+    ua.get(AddCustomsApprovedLocationPage) match {
+      case Some(true) => routes.CustomsApprovedLocationController.onPageLoad(ua.id, NormalMode)
+      case Some(false) => routes.AddSealsController.onPageLoad(ua.id, NormalMode)
+    }
+  }
 }
 
