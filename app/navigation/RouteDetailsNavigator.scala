@@ -17,6 +17,7 @@
 package navigation
 
 import controllers.routeDetails.routes
+import derivable.DeriveNumberOfOfficeOfTransits
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
@@ -29,12 +30,23 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     case CountryOfDispatchPage => ua => Some(routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode))
     case OfficeOfDeparturePage => ua => Some(routes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
     case DestinationCountryPage => ua => Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
-    case DestinationOfficePage => ua => Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case DestinationOfficePage => ua => Some(routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(0), NormalMode))
+    case AddAnotherTransitOfficePage(index) => ua =>  Some(redirectToAddTransitOfficeNextPage(ua, index, NormalMode))
+    case AddTransitOfficePage => ua => addOfficeOfTransit(NormalMode, ua)
+    case ArrivalTimesAtOfficePage(_) => ua => Some(routes.AddTransitOfficeController.onPageLoad(ua.id, NormalMode))
+
   }
 
   override val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case page if isRouteDetailsSectionPage(page) => ua => Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case _ => _ => None
+  }
+
+  def redirectToAddTransitOfficeNextPage(ua: UserAnswers, index: Index, mode: Mode): Call = {
+    ua.get(AddSecurityDetailsPage) match {
+      case Some(addSecurityDetails) if addSecurityDetails => routes.ArrivalTimesAtOfficeController.onPageLoad(ua.id, index, mode)
+      case _ =>  routes.AddTransitOfficeController.onPageLoad(ua.id, mode)
+    }
   }
 
   private def isRouteDetailsSectionPage(page: Page): Boolean = {
@@ -44,5 +56,14 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     }
   }
 
+  private def addOfficeOfTransit(mode: Mode, userAnswers: UserAnswers): Option[Call] =
+    userAnswers.get(AddTransitOfficePage).map {
+      case true =>
+        val count = userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+        val index = Index(count)
+        routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode)
+      case false =>
+        routes.RouteDetailsCheckYourAnswersController.onPageLoad(userAnswers.id)
+    }
 }
 

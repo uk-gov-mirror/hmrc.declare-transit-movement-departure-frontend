@@ -164,6 +164,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockitoSugar with Nu
       val result: Future[Result] = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()

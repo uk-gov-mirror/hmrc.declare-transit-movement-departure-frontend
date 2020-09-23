@@ -209,10 +209,10 @@ POST       /:lrn/transport-details/change-mode-at-border                  contro
 GET        /:lrn/transport-details/check-your-answers                       controllers.transportDetails.TransportDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /:lrn/transport-details/check-your-answers                       controllers.transportDetails.TransportDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
 
-GET        /:lrn/route/add-transit-office                        controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/route/add-transit-office                         controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/route/change-add-transit-office                  controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/route/change-add-transit-office                controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/route/added-transit-offices                          controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/route/added-transit-offices                          controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/route/change-added-transit-offices                   controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/route/change-added-transit-offices                   controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
@@ -226,6 +226,16 @@ GET        /:lrn/goods-summary/total-packages                  controllers.goods
 POST       /:lrn/goods-summary/total-packages                  controllers.goodsSummary.TotalPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/change-total-packages                        controllers.goodsSummary.TotalPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/change-total-packages                        controllers.goodsSummary.TotalPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/route/:index/add-another-transit-office                        controllers.routeDetails.AddAnotherTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:lrn/route/:index/add-another-transit-office                        controllers.routeDetails.AddAnotherTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:lrn/route/:index/change-add-another-transit-office                  controllers.routeDetails.AddAnotherTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:lrn/route/:index/change-add-another-transit-office                  controllers.routeDetails.AddAnotherTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/route/:index/arrival-times-at-office-of-transit                  controllers.routeDetails.ArrivalTimesAtOfficeController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:lrn/route/:index/arrival-times-at-office-of-transit                  controllers.routeDetails.ArrivalTimesAtOfficeController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:lrn/route/:index/change-arrival-times-at-office-of-transit           controllers.routeDetails.ArrivalTimesAtOfficeController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:lrn/route/:index/change-arrival-times-at-office-of-transit           controllers.routeDetails.ArrivalTimesAtOfficeController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 
 GET        /:lrn/goods-summary/total-gross-mass                        controllers.goodsSummary.TotalGrossMassController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/goods-summary/total-gross-mass                        controllers.goodsSummary.TotalGrossMassController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

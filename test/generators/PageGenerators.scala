@@ -25,6 +25,12 @@ trait PageGenerators {
   implicit lazy val arbitrarySealsInformationPage: Arbitrary[SealsInformationPage.type] =
     Arbitrary(SealsInformationPage)
 
+  implicit lazy val arbitraryAddAnotherTransitOfficePage: Arbitrary[AddAnotherTransitOfficePage] =
+    Arbitrary(AddAnotherTransitOfficePage(Index(0)))
+
+  implicit lazy val arbitraryArrivalTimesAtOfficePage: Arbitrary[ArrivalTimesAtOfficePage] =
+    Arbitrary(ArrivalTimesAtOfficePage(Index(0)))
+
   implicit lazy val arbitraryControlResultDateLimitPage: Arbitrary[ControlResultDateLimitPage.type] =
     Arbitrary(ControlResultDateLimitPage)
 
