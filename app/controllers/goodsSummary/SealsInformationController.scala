@@ -92,8 +92,7 @@ class SealsInformationController @Inject()(
       "heading"     -> msg"addSeal.heading.$singularOrPlural".withArgs(numberOfSeals),
       "seals"       -> sealsRows,
       "radios"      -> Radios.yesNo(form("value")),
-      "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  mode).url,
-      "numberOfSeals"-> numberOfSeals
+      "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  mode).url
     )
 
     renderer.render("sealsInformation.njk", json)

@@ -43,12 +43,9 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
       case Some(true) =>
         val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
         val sealIndex = Index(sealCount)
-        sealCount match {
-          case x if x < 10 => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
-          case _ => ???
-        }
+        routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
       case Some(false) => ???
-//         routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)//TODO not built yet
+      // case _ => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)//TODO not built yet
     }
   }
 
