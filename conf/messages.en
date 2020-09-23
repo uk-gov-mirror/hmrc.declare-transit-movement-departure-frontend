@@ -441,13 +441,13 @@ modeAtBorder.checkYourAnswersLabel = Mode at the border
 modeAtBorder.error.required = Enter the mode at the border
 modeAtBorder.error.length = The mode at the border must be 100 characters or less
 
-addTransitOffice.title.singular = You have added {0} transit office
-addTransitOffice.title.plural = You have added {0} transit offices
-addTransitOffice.heading.singular = You have added {0} transit office
-addTransitOffice.heading.plural = You have added {0} transit offices
-addTransitOffice.paragraph = Do you need to add another transit office?
-addTransitOffice.checkYourAnswersLabel = Add another transit office
-addTransitOffice.error.required = Select yes if you want to add another transit office
+addTransitOffice.title.singular = You have added {0} office of transit
+addTransitOffice.title.plural = You have added {0} offices of transit
+addTransitOffice.heading.singular = You have added {0} office of transit
+addTransitOffice.heading.plural = You have added {0} offices of transit
+addTransitOffice.paragraph = Do you need to add another office of transit?
+addTransitOffice.checkYourAnswersLabel = Add another office of transit
+addTransitOffice.error.required = Select yes if you want to add another office of transit
 
 addAnotherTransitOffice.title = Which office of transit do you want to add?
 addAnotherTransitOffice.heading = Which office of transit do you want to add?
