@@ -75,6 +75,7 @@ trait ModelGenerators {
       Gen.oneOf(RepresentativeCapacity.values)
     }
 
+
   implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType] =
     Arbitrary {
       Gen.oneOf(ProcedureType.values)

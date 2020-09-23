@@ -18,7 +18,7 @@ package base
 
 import config.FrontendAppConfig
 import controllers.actions._
-import models.{EoriNumber, LocalReferenceNumber, PrincipalAddress, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, PrincipalAddress, UserAnswers}
 import org.mockito.Mockito
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.OptionValues
@@ -56,6 +56,7 @@ trait SpecBase
   val userAnswersId             = "id"
   val eoriNumber: EoriNumber    = EoriNumber("EoriNumber")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
+  val index = Index(0)
 
   val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())
 

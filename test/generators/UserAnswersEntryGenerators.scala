@@ -23,13 +23,21 @@ import pages._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
-
   self: Generators =>
 
   implicit lazy val arbitraryControlResultDateLimitUserAnswersEntry: Arbitrary[(ControlResultDateLimitPage.type, JsValue)] =
       Arbitrary {
       for {
         page  <- arbitrary[ControlResultDateLimitPage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+
+  implicit lazy val arbitraryArrivalTimesAtOfficeUserAnswersEntry: Arbitrary[(ArrivalTimesAtOfficePage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ArrivalTimesAtOfficePage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -100,6 +108,14 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       for {
         page  <- arbitrary[DeclarePackagesPage.type]
         value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddAnotherTransitOfficeUserAnswersEntry: Arbitrary[(AddAnotherTransitOfficePage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddAnotherTransitOfficePage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 

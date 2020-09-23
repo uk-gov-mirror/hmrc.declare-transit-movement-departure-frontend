@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.transportDetails
+package controllers.routeDetails
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import controllers.{routes => mainRoutes}
-import forms.ModeAtBorderFormProvider
+import controllers.{routes => mainRoute}
+import forms.AddAnotherTransitOfficeFormProvider
 import matchers.JsonMatchers
-import models.reference.TransportMode
-import models.{NormalMode, TransportModeList}
-import navigation.annotations.TransportDetails
+import models.reference.OfficeOfTransit
+import models.{NormalMode, OfficeOfTransitList}
+import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ModeAtBorderPage
+import pages.AddAnotherTransitOfficePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -38,42 +38,40 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.transportModesAsJson
 
 import scala.concurrent.Future
 
-class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new ModeAtBorderFormProvider()
-  val transportMode = TransportMode("1", "Sea transport")
-  val transportModes = TransportModeList(Seq(transportMode))
-  val form = formProvider(transportModes)
+  val officeOfTransit1: OfficeOfTransit = OfficeOfTransit("1", "Transit1")
+  val officeOfTransit2: OfficeOfTransit = OfficeOfTransit("2", "Transit2")
+  val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit1, officeOfTransit2))
+  val form = new AddAnotherTransitOfficeFormProvider()(officeOfTransitList)
 
-  val mockReferenceDataConnector = mock[ReferenceDataConnector]
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  lazy val modeAtBorderRoute = routes.ModeAtBorderController.onPageLoad(lrn, NormalMode).url
+  lazy val addAnotherTransitOfficeRoute: String = routes.AddAnotherTransitOfficeController.onPageLoad(lrn, index, NormalMode).url
 
-  override def beforeEach: Unit = {
-    reset(mockReferenceDataConnector)
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockRefDataConnector)
   }
 
-
-  "ModeAtBorder Controller" - {
+  "AddAnotherTransitOffice Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
 
+      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
-      val request = FakeRequest(GET, modeAtBorderRoute)
+      val request = FakeRequest(GET, addAnotherTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -83,13 +81,20 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val expectedCustomsOfficeJson = Seq(
+        Json.obj("value" -> "", "text"         -> ""),
+        Json.obj("value" -> "1", "text" -> "Transit1 (1)", "selected" -> false),
+        Json.obj("value" -> "2", "text"       -> "Transit2 (2)", "selected" -> false)
+      )
+
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "lrn"    -> lrn,
+        "officeOfTransitList" -> expectedCustomsOfficeJson
       )
 
-      templateCaptor.getValue mustEqual "modeAtBorder.njk"
+      templateCaptor.getValue mustEqual "addAnotherTransitOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -99,13 +104,13 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
-      val userAnswers = emptyUserAnswers.set(ModeAtBorderPage, "1").success.value
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit1.id).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
-      val request = FakeRequest(GET, modeAtBorderRoute)
+      val request = FakeRequest(GET, addAnotherTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -117,14 +122,20 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
 
       val filledForm = form.bind(Map("value" -> "1"))
 
+      val expectedCustomsOfficeJson = Seq(
+        Json.obj("value" -> "", "text"         -> ""),
+        Json.obj("value" -> "1", "text" -> "Transit1 (1)", "selected" -> true),
+        Json.obj("value" -> "2", "text"       -> "Transit2 (2)", "selected" -> false)
+      )
+
       val expectedJson = Json.obj(
         "form" -> filledForm,
         "lrn"  -> lrn,
-        "transportModes" -> transportModesAsJson(filledForm.value, transportModes.transportModes),
-        "mode" -> NormalMode
+        "mode" -> NormalMode,
+        "officeOfTransitList" -> expectedCustomsOfficeJson
       )
 
-      templateCaptor.getValue mustEqual "modeAtBorder.njk"
+      templateCaptor.getValue mustEqual "addAnotherTransitOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -135,24 +146,25 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
-      )
+            bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
+          )
           .build()
 
       val request =
-        FakeRequest(POST, modeAtBorderRoute)
+        FakeRequest(POST, addAnotherTransitOfficeRoute)
           .withFormUrlEncodedBody(("value", "1"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -162,12 +174,12 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
+      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
-      val request = FakeRequest(POST, modeAtBorderRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, addAnotherTransitOfficeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -184,7 +196,7 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "modeAtBorder.njk"
+      templateCaptor.getValue mustEqual "addAnotherTransitOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -194,13 +206,13 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, modeAtBorderRoute)
+      val request = FakeRequest(GET, addAnotherTransitOfficeRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -210,14 +222,14 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, modeAtBorderRoute)
+        FakeRequest(POST, addAnotherTransitOfficeRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
