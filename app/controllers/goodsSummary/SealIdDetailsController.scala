@@ -68,12 +68,12 @@ class SealIdDetailsController @Inject()(
 
       form(sealIndex, seals).bindFromRequest()
         .fold(
-          formWithErrors => renderView(lrn, sealIndex,  mode, formWithErrors).map(BadRequest(_)),
+          formWithErrors => renderView(lrn, sealIndex, mode, formWithErrors).map(BadRequest(_)),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage( sealIndex), SealDomain(value)))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage(sealIndex), SealDomain(value)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(SealIdDetailsPage( sealIndex), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(SealIdDetailsPage(sealIndex), mode, updatedAnswers))
         )
   }
 

@@ -55,6 +55,7 @@ trait SpecBase
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
   val sealIndex = Index(0)
   val sealDomain: SealDomain           = SealDomain("sealNumber")
+  val sealDomain2: SealDomain           = SealDomain("sealNumber2")
 
   val index = Index(0)
 
@@ -65,6 +66,8 @@ trait SpecBase
   val principalAddress: PrincipalAddress = PrincipalAddress("numberAndStreet", "town", "SW1A 1AA")
 
   val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
+
+  val configKey = "config"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

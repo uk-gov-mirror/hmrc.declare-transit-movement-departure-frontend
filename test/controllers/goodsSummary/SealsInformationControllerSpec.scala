@@ -19,7 +19,7 @@ package controllers.goodsSummary
 import base.SpecBase
 import forms.SealsInformationFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{Index, NormalMode}
 import navigation.annotations.GoodsSummary
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -35,6 +35,7 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import controllers.{routes => mainRoutes}
+import pages.{AddSealsPage, SealIdDetailsPage}
 
 import scala.concurrent.Future
 
@@ -49,12 +50,15 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
 
   "SealsInformation Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET with a single seal" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val updatedAnswers = emptyUserAnswers
+        .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
+
+      val application = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
       val request = FakeRequest(GET, sealsInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -69,7 +73,10 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
         "form"   -> form,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "radios" -> Radios.yesNo(form("value")),
+        "pageTitle"   -> "addSeal.title.singular",
+        "heading"     -> "addSeal.heading.singular",
+        "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  NormalMode).url
       )
 
       templateCaptor.getValue mustEqual "sealsInformation.njk"
@@ -78,7 +85,42 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
       application.stop()
     }
 
-  "must redirect to the next page when valid data is submitted" in {
+    "must return OK and the correct view for a GET with multiple seals" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+
+      val updatedAnswers = emptyUserAnswers
+        .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
+        .set(SealIdDetailsPage(Index(1)), sealDomain2).success.value
+      val application = applicationBuilder(userAnswers = Some(updatedAnswers))
+        .build()
+      val request = FakeRequest(GET, sealsInformationRoute)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val expectedJson = Json.obj(
+      "form"   -> form,
+      "mode"   -> NormalMode,
+      "lrn"    -> lrn,
+      "radios" -> Radios.yesNo(form("value")),
+      "pageTitle"   -> "addSeal.title.plural",
+      "heading"     -> "addSeal.heading.plural",
+      "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  NormalMode).url
+      )
+
+      templateCaptor.getValue mustEqual "sealsInformation.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
+
+      application.stop()
+    }
+
+
+    "must redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
