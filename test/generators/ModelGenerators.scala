@@ -30,7 +30,7 @@ trait ModelGenerators {
   implicit lazy val arbitrarySealDomain: Arbitrary[SealDomain] =
     Arbitrary {
       for {
-        sealNumber <- stringsWithMaxLength(Constants.sealNumberOrMarkLength).suchThat(_.length > 0)
+        sealNumber <- stringsWithMaxLength(Constants.sealNumberOrMarkLength)
       } yield SealDomain(sealNumber)
     }
 

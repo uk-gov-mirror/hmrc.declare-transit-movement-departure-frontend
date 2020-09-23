@@ -84,7 +84,7 @@ class SealIdDetailsControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(SealIdDetailsPage (Index(0)), sealDomain).success.value
+      val userAnswers = emptyUserAnswers.set(SealIdDetailsPage (sealIndex), sealDomain).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, sealIdDetailsRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

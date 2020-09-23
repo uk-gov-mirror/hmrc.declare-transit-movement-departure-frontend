@@ -17,12 +17,12 @@
 package derivable
 
 import models.domain.SealDomain
-import pages.SectionConstants
 import play.api.libs.json.JsPath
+import queries.Constants
 
 final case class DeriveNumberOfSeals() extends Derivable[List[SealDomain], Int] {
 
   override val derive: List[SealDomain] => Int = _.size
 
-  override def path: JsPath = JsPath \ SectionConstants.seals
+  override def path: JsPath = JsPath \ Constants.seals
 }
