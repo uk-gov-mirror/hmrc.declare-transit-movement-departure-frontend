@@ -22,22 +22,20 @@ import controllers.{routes => mainRoutes}
 import forms.AddTransitOfficeFormProvider
 import matchers.JsonMatchers
 import models.reference.OfficeOfTransit
-import models.{NormalMode, OfficeOfTransitList, UserAnswers}
+import models.{NormalMode, OfficeOfTransitList}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddTransitOfficePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
@@ -94,8 +92,6 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
 
       when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 

@@ -523,7 +523,7 @@ arrivalTimesAtOffice.error.past.date = The date you expect the transit to arrive
 arrivalTimesAtOffice.error.future.date = The date you expect the transit to arrive at {0} must be before {1}
 arrivalTimesAtOffice.error.required.date = Enter the date you expect the transit to arrive at {0}
 arrivalTimesAtOffice.error.invalid.date = Enter a real Date
-arrivalTimesAtOffice.error.invalid.time = Enter a real Date
+arrivalTimesAtOffice.error.invalid.time = Enter a real Time
 arrivalTimesAtOffice.amOrPm.error.required = Select if you expect the transit to arrive at the {0} in the morning (am) or the evening (pm)
 
 controlResultDateLimit.title = What is the control result date limit?
