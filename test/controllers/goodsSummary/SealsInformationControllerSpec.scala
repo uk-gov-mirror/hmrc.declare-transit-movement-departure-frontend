@@ -151,8 +151,10 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      val updatedAnswers = emptyUserAnswers
+        .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
       val request = FakeRequest(POST, sealsInformationRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -168,7 +170,10 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
         "form"   -> boundForm,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "radios" -> Radios.yesNo(boundForm("value")),
+        "pageTitle"   -> "addSeal.title.singular",
+        "heading"     -> "addSeal.heading.singular",
+        "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  NormalMode).url
       )
 
       templateCaptor.getValue mustEqual "sealsInformation.njk"
