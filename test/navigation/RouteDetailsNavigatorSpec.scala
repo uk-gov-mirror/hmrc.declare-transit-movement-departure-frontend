@@ -95,6 +95,30 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .mustBe(routes.AddTransitOfficeController.onPageLoad(answers.id, NormalMode))
           }
         }
+
+        "must go from Added transit office page to Add another transit office page when selected option 'Yes'" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers.set(AddTransitOfficePage, true).toOption.value
+                .set(AddAnotherTransitOfficePage(index), "id1").toOption.value
+                .set(AddAnotherTransitOfficePage(Index(1)), "id2").toOption.value
+
+              navigator.nextPage(AddTransitOfficePage, NormalMode, userAnswers)
+                .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(answers.id, Index(2), NormalMode))
+          }
+        }
+
+        "must go from Added transit office page to router details check your answers page when selected option 'No'" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers.set(AddTransitOfficePage, false).toOption.value
+
+              navigator.nextPage(AddTransitOfficePage, NormalMode, userAnswers)
+                .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
       }
 
     }

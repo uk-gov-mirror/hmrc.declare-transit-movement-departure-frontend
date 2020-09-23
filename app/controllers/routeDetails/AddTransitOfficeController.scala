@@ -18,7 +18,7 @@ package controllers.routeDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import derivable.DeriveNumberTransitOffices
+import derivable.DeriveNumberOfOfficeOfTransits
 import forms.AddTransitOfficeFormProvider
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -77,7 +77,7 @@ class AddTransitOfficeController @Inject()(
 
     referenceDataConnector.getOfficeOfTransitList() flatMap { officeOfTransitList =>
       val routesCYAHelper = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
-      val numberOfTransitOffices = request.userAnswers.get(DeriveNumberTransitOffices).getOrElse(0)
+      val numberOfTransitOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
       val index: Seq[Index] = List.range(0, numberOfTransitOffices).map(Index(_))
       val officeOfTransitRows = index.map {
         index =>

@@ -17,6 +17,7 @@
 package navigation
 
 import controllers.routeDetails.routes
+import derivable.DeriveNumberOfOfficeOfTransits
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
@@ -31,8 +32,8 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     case DestinationCountryPage => ua => Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
     case DestinationOfficePage => ua => Some(routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(0), NormalMode))
     case AddAnotherTransitOfficePage(index) => ua =>  Some(redirectToAddTransitOfficeNextPage(ua, index, NormalMode))
-    case AddTransitOfficePage => ua => Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
-    case ArrivalTimesAtOfficePage(index) => ua => Some(routes.AddTransitOfficeController.onPageLoad(ua.id, NormalMode))
+    case AddTransitOfficePage => ua => addOfficeOfTransit(NormalMode, ua)
+    case ArrivalTimesAtOfficePage(_) => ua => Some(routes.AddTransitOfficeController.onPageLoad(ua.id, NormalMode))
 
   }
 
@@ -55,5 +56,14 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     }
   }
 
+  private def addOfficeOfTransit(mode: Mode, userAnswers: UserAnswers): Option[Call] =
+    userAnswers.get(AddTransitOfficePage).map {
+      case true =>
+        val count = userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+        val index = Index(count)
+        routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode)
+      case false =>
+        routes.RouteDetailsCheckYourAnswersController.onPageLoad(userAnswers.id)
+    }
 }
 
