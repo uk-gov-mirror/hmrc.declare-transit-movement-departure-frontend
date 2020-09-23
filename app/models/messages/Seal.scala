@@ -17,8 +17,7 @@
 package models.messages
 
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.domain.SealDomain
-import models.{LanguageCode, LanguageCodeEnglish, XMLWrites}
+import models.{LanguageCode, LanguageCodeEnglish}
 
 case class Seal(numberOrMark: String)
 
@@ -28,19 +27,7 @@ object Seal {
     val sealNumberOrMarkLength     = 20
     val languageCode: LanguageCode = LanguageCodeEnglish
   }
-
-  def sealToDomain(seal: Seal): SealDomain = Seal.unapply(seal).map(SealDomain.apply).get
-
-  implicit def writes: XMLWrites[Seal] = XMLWrites[Seal] {
-    seal =>
-      <SEAIDSI1>
-        {
-        <SeaIdeSI11>{ escapeXml(seal.numberOrMark) }</SeaIdeSI11> ++
-          <SeaIdeSI11LNG>{ Seal.Constants.languageCode.code }</SeaIdeSI11LNG>
-        }
-      </SEAIDSI1>
-  }
-
+  
   implicit lazy val xmlReader: XmlReader[Seal] = (__ \ "SeaIdeSI11").read[String] map apply
 
 }
