@@ -33,7 +33,7 @@ object Format {
   def timeFormatted(time: LocalTime): String         = time.format(timeFormatter)
   def timeFormatted(dateTime: LocalDateTime): String = dateTime.format(timeFormatter)
 
-  val dateTimeFormatter: DateTimeFormatter               = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm")
+  val dateTimeFormatter: DateTimeFormatter               = DateTimeFormatter.ofPattern("dd mm yyyy HH:mm")
   def dateTimeFormatted(dateTime: LocalDateTime): String = dateTime.format(dateTimeFormatter)
 
   def dateFormattedForHeader(dateTime: OffsetDateTime): String =

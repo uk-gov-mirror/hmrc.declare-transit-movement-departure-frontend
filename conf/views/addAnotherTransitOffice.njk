@@ -46,16 +46,8 @@
 
           {{ govukSelect({
             classes: "govuk-input--width-20 autocomplete",
-            label: {
-              text: messages('addAnotherTransitOffice.label'),
-              isPageHeading: false,
-              classes: "govuk-body"
-            },
             id: "value",
             name: "value",
-            hint: {
-              text: messages('addAnotherTransitOffice.hintText')
-            },
             errorMessage: form.value.error,
             items: officeOfTransitList
           }) }}

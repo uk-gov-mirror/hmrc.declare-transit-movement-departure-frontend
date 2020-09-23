@@ -151,7 +151,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       answer =>
         officeOfTransitList.getOfficeOfTransit(answer).map { office =>
           val arrivalTime = userAnswers.get(ArrivalTimesAtOfficePage(index)).map(time =>
-            s"${time.dateTime.format(Format.dateFormatter)} ${time.amOrPm}"
+            s"${time.dateTime.format(Format.dateTimeFormatter)} ${time.amOrPm}"
           ).getOrElse("")
 
           Row(

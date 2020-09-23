@@ -16,15 +16,13 @@
 
 package models.reference
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Reads, __}
+import play.api.libs.json.{Json, Reads}
 
 case class OfficeOfTransit(id: String, name: String)
 
 object OfficeOfTransit {
 
-  implicit def reads: Reads[OfficeOfTransit] =
-    ((__ \ "ID").read[String] and
-      (__ \ "NAME").read[String])(OfficeOfTransit.apply _)
+  implicit def reads: Reads[OfficeOfTransit] = Json.reads[OfficeOfTransit]
+
 
 }

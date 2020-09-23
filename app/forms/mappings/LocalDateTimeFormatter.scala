@@ -103,11 +103,11 @@ private[mappings] class LocalDateTimeFormatter(
           _.map(_.copy(key = key))
         }
       case (true, _, _) =>
-        Left(List(FormError(key, dateRequiredKey, missingDateFields ++ args)))
+        Left(List(FormError(key, dateRequiredKey, args)))
       case (false, _, _) =>
-        Left(List(FormError(key, timeRequiredKey, missingTimeFields ++ args)))
+        Left(List(FormError(key, timeRequiredKey, args)))
       case (_, _, true) =>
-        Left(List(FormError(key, amOrPmRequired, missingTimeFields ++ args)))
+        Left(List(FormError(key, amOrPmRequired, args)))
       case _ =>
         Left(List(FormError(key, allRequiredKey, args)))
     }

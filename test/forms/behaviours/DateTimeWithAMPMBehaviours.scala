@@ -185,7 +185,7 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
           val result = form.bind(data)
 
 
-      result.errors must contain only FormError(key, requiredDateKey, List("day", "month", "year") ++ errorArgs)
+      result.errors must contain only FormError(key, requiredDateKey, errorArgs)
     }
   }
 
@@ -205,7 +205,7 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
 
           val result = form.bind(data)
 
-      result.errors must contain only FormError(key, requiredTimeKey, List("hour", "minute") ++ errorArgs)
+      result.errors must contain only FormError(key, requiredTimeKey, errorArgs)
     }
   }
 
