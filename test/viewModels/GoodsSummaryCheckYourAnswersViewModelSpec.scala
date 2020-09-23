@@ -130,26 +130,26 @@ class GoodsSummaryCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheck
 
     }
 
-//    "display Control result date limit" in {
-//
-//      val date = LocalDate.now
-//      val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-//      val todaysDate: String = dateFormatter.format(date)
-//
-//      val updatedAnswers =  emptyUserAnswers
-//        .set(DeclarePackagesPage, true).success.value
-//        .set(TotalPackagesPage, 1000).success.value
-//        .set(TotalGrossMassPage, "1000.123").success.value
-//        .set(AuthorisedLocationCodePage, "AuthCode").success.value
-//        .set(ControlResultDateLimitPage, todaysDate).success.value
-//      val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
-//
-//      data.sections.head.sectionTitle must not be defined
-//      data.sections.length mustEqual 1
-//      data.sections.head.rows.length mustEqual 4
-//      data.sections.head.rows(3).value.content mustEqual Literal("AuthCode")
-//
-//    }
+    "display Control result date limit" in {
+
+      val date = LocalDate.now
+      val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+      val todaysDate: String = dateFormatter.format(date)
+
+      val updatedAnswers =  emptyUserAnswers
+        .set(DeclarePackagesPage, true).success.value
+        .set(TotalPackagesPage, 1000).success.value
+        .set(TotalGrossMassPage, "1000.123").success.value
+        .set(AuthorisedLocationCodePage, "AuthCode").success.value
+        .set(ControlResultDateLimitPage, date).success.value
+      val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
+
+      data.sections.head.sectionTitle must not be defined
+      data.sections.length mustEqual 1
+      data.sections.head.rows.length mustEqual 5
+      data.sections.head.rows(4).value.content mustEqual Literal(todaysDate)
+
+    }
 
   }
 }
