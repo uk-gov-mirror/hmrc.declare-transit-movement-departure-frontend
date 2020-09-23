@@ -449,12 +449,13 @@ addTransitOffice.paragraph = Do you need to add another transit office?
 addTransitOffice.checkYourAnswersLabel = Add another transit office
 addTransitOffice.error.required = Select yes if you want to add another transit office
 
-addAnotherTransitOffice.title = Which transit office do you want to add?
-addAnotherTransitOffice.heading = Which transit office do you want to add?
-addAnotherTransitOffice.label = Which transit office do you want to add?
-addAnotherTransitOffice.checkYourAnswersLabel = Transit offices
+addAnotherTransitOffice.title = Which office of transit do you want to add?
+addAnotherTransitOffice.heading = Which office of transit do you want to add?
+addAnotherTransitOffice.label = Which office of transit do you want to add?
+addAnotherTransitOffice.checkYourAnswersLabel = Offices of Transit
 addAnotherTransitOffice.hintText = Give the office location or code. For example, Dover or GB000060.
-addAnotherTransitOffice.error.required = Select the transit office you want to add
+addAnotherTransitOffice.error.required = Select the office of transit you want to add
+
 declarePackages.title = Do you have any packages to declare?
 declarePackages.heading = Do you have any packages to declare?
 declarePackages.checkYourAnswersLabel = Do you have any packages to declare?
