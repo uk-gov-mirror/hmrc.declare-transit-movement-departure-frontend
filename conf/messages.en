@@ -525,3 +525,16 @@ arrivalTimesAtOffice.error.required.date = Enter the date you expect the transit
 arrivalTimesAtOffice.error.invalid.date = Enter a real Date
 arrivalTimesAtOffice.error.invalid.time = Enter a real Date
 arrivalTimesAtOffice.amOrPm.error.required = Select if you expect the transit to arrive at the {0} in the morning (am) or the evening (pm)
+
+controlResultDateLimit.title = What is the control result date limit?
+controlResultDateLimit.heading = What is the control result date limit?
+controlResultDateLimit.hint = For example, 14 1 2020
+controlResultDateLimit.checkYourAnswersLabel = Control result date limit
+controlResultDateLimit.error.required.all = Enter the control result date limit
+controlResultDateLimit.error.required.two = The control result date limit must include {0} and {1}
+controlResultDateLimit.error.required = The control result date limit must include {0}
+controlResultDateLimit.error.invalid = Enter a real control result date limit
+controlResultDateLimit.paragraph1 = This is the date the transit movement is expected to be processed by the office of destination.
+controlResultDateLimit.paragraph2 = You cannot enter a date that is more than 14 days in advance. You must
+controlResultDateLimit.error.max.date = The control result date limit must be before {0}
+controlResultDateLimit.error.min.date = The control result date limit must be today or in the future

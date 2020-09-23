@@ -1,0 +1,62 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
+{% from "govuk/components/date-input/macro.njk"    import govukDateInput %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "macros/title.njk"                         import title %}
+
+{% block pageTitle %}
+  {{ title(messages("controlResultDateLimit.title"), form.errors) }}
+{% endblock %}
+
+{% block mainContent %}
+
+  {{ govukBackLink({
+    text: messages("site.back")
+  }) }}
+
+  <div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if form.errors.length > 0 %}
+          {{ govukErrorSummary({
+            "titleText": messages("error.summary.title"),
+            "errorList": form.errors
+          }) }}
+        {% endif %}
+
+        <form action="{{ routes.controllers.goodsSummary.ControlResultDateLimitController.onSubmit(lrn, mode).url }}" method="post">
+
+        <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
+
+        <h1 class="govuk-heading-xl"> {{messages('controlResultDateLimit.heading')}}<h1>
+
+        <p class = "govuk-body"> {{messages('controlResultDateLimit.paragraph1')}}</p>
+        <p class = "govuk-body"> {{messages('controlResultDateLimit.paragraph2')}}
+           <a  href= "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/tax-credits-enquiries" target="_blank"> {{ messages("technicalDifficulties.contact.link") }}</a>.
+        </p>
+
+          {{ csrf() | safe }}
+
+          {{ govukDateInput({
+            hint: {
+              text: messages('controlResultDateLimit.hint')
+            },
+            errorMessage: date.error,
+            items: date.items
+          }) }}
+
+          {{ govukButton({
+            text: messages("site.continue"),
+            attributes: {id:"submit"}
+          }) }}
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -43,9 +43,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
   }
 
   def lrn: LocalReferenceNumber = userAnswers.id
-}
 
-object CheckYourAnswersHelper {
+}
+  object CheckYourAnswersHelper {
 
   private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 }
