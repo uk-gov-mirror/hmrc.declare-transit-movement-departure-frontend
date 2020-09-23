@@ -19,8 +19,8 @@ package controllers.routeDetails
 import base.SpecBase
 import connectors.ReferenceDataConnector
 import matchers.JsonMatchers
-import models.reference.{Country, CountryCode, CustomsOffice}
-import models.{CountryList, CustomsOfficeList}
+import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit}
+import models.{CountryList, CustomsOfficeList, OfficeOfTransitList}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -39,6 +39,8 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
   private val countries = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
   private val customsOffice: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
   private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice))
+  private val officeOfTransit = OfficeOfTransit("1", "name")
+  private val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))
 
   "RouteDetailsCheckYourAnswers Controller" - {
 
@@ -48,6 +50,7 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
       when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any())).thenReturn(Future.successful(customsOffices))
       when(mockReferenceDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+      when(mockReferenceDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
