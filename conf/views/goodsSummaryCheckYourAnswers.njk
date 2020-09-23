@@ -1,9 +1,11 @@
-{% extends "includes/layout.njk" %}
+    {% extends "includes/layout.njk" %}
 
+{% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "macros/title.njk"                         import title %}
+{% from "macros/section.njk"                       import section as sectionMacro %}
 
 {% block pageTitle %}
-  {{ title(messages("goodsSummaryCheckYourAnswers.title")) }}
+  {{ title(messages("checkYourAnswers.title")) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -13,8 +15,27 @@
       <div class="govuk-grid-column-two-thirds">
 
         <h1 class="govuk-heading-xl">
-          {{ messages("goodsSummaryCheckYourAnswers.heading") }}
+
+          <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
+          {{ messages("checkYourAnswers.heading") }}
+
         </h1>
+
+        {% for section in sections %}
+             {{ sectionMacro(section.sectionTitle, section.rows) }}
+        {% endfor %}
+
+        <form action="{{ routes.controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
+
+             {{ csrf() | safe }}
+
+             {{ govukButton({
+                  text: messages("site.continue"),
+                  preventDoubleClick: true,
+                  attributes: {id:"submit"}
+                }) }}
+
+         </form>
 
       </div>
     </div>
