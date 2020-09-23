@@ -29,7 +29,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case DeclarePackagesPage => ua => Some(declarePackageRoute(ua))
+    case DeclarePackagesPage => ua => Some(declarePackageRoute(ua, NormalMode))
     case TotalPackagesPage => ua => Some(routes.TotalGrossMassController.onPageLoad(ua.id, NormalMode))
     case TotalGrossMassPage => ua => Some(totalGrossMassRoute(ua))
     case AuthorisedLocationCodePage => ua => Some(routes.ControlResultDateLimitController.onPageLoad(ua.id, NormalMode))
@@ -38,13 +38,19 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case CustomsApprovedLocationPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
   }
 
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {???}
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+
+    case DeclarePackagesPage => ua => Some(declarePackageRoute(ua, CheckMode))
+  }
 
 
-  def declarePackageRoute(ua: UserAnswers): Call = {
-    ua.get(DeclarePackagesPage) match {
-      case Some(true) => routes.TotalPackagesController.onPageLoad(ua.id, NormalMode)
-      case Some(false) => routes.TotalGrossMassController.onPageLoad(ua.id, NormalMode)
+  def declarePackageRoute(ua: UserAnswers, mode: Mode): Call = {
+    (ua.get(DeclarePackagesPage), ua.get(TotalPackagesPage), mode) match {
+      case (Some(true), _, NormalMode) => routes.TotalPackagesController.onPageLoad(ua.id, NormalMode)
+      case (Some(false), _, NormalMode) => routes.TotalGrossMassController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), Some(_), CheckMode) => ??? //TODO direct to check your answers
+      case (Some(true), None, CheckMode) => routes.TotalPackagesController.onPageLoad(ua.id, CheckMode)
+      case (Some(false), _, CheckMode) => ??? //TODO direct to check your answers
     }
   }
 

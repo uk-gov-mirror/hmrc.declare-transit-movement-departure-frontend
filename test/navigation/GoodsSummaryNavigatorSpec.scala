@@ -22,7 +22,7 @@ import base.SpecBase
 import controllers.goodsSummary.{routes => goodsSummaryRoute}
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -135,6 +135,43 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
               .mustBe(goodsSummaryRoute.AddSealsController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
+    }
+
+    "in Check Mode" - {
+
+      "must go from DeclarePackagesPage to TotalPackagesPage when selecting Yes and TotalPackages has no data" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(DeclarePackagesPage, true).toOption.value
+              .remove(TotalPackagesPage).success.value
+
+            navigator.nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.TotalPackagesController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+      }
+
+      //TODO uncomment tests when check your answers is merged
+//      "must go from DeclarePackagesPage to CheckYourAnswersPage when selecting Yes and TotalPackages has data" in {
+//        forAll(arbitrary[UserAnswers]) {
+//          answers =>
+//            val updatedAnswers = answers.set(DeclarePackagesPage, true).toOption.value
+//              .set(TotalPackagesPage, 1).success.value
+//
+//            navigator.nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
+//              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+//        }
+//      }
+
+//      "must go from DeclarePackagesPage to CheckYourAnswersPage when selecting No" in {
+//        forAll(arbitrary[UserAnswers]) {
+//          answers =>
+//            val updatedAnswers = answers.set(DeclarePackagesPage, false).toOption.value
+//              .remove(TotalPackagesPage).success.value
+//
+//            navigator.nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
+//              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+//        }
+//      }
     }
   }
 }
