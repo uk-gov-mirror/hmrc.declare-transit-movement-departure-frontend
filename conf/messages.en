@@ -450,7 +450,7 @@ addTransitOffice.checkYourAnswersLabel = Add another office of transit
 addTransitOffice.error.required = Select yes if you want to add another office of transit
 
 officesOfTransit.checkYourAnswersLabel = Offices of transit
-AddOrRemoveOfficesOfTransit.checkYourAnswersLabel = Add or remove transit offices
+AddOrRemoveOfficesOfTransit.checkYourAnswersLabel = Add or remove offices of transit
 
 addAnotherTransitOffice.title = Which office of transit do you want to add?
 addAnotherTransitOffice.heading = Which office of transit do you want to add?
