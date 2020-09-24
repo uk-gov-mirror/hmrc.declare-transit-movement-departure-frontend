@@ -22,7 +22,7 @@ import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
 import models.Status.{Completed, InProgress, NotStarted}
-import models.{NormalMode, SectionDetails, Status, UserAnswers}
+import models.{Index, NormalMode, SectionDetails, Status, UserAnswers}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
 
 class SectionsHelper(userAnswers: UserAnswers) {
@@ -151,13 +151,20 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
   private val routeDetailsPages: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
+    val index = Index(0)
+    val arrivalTimeAtTransit: Seq[(Option[Object], String)] = if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
+      Seq(userAnswers.get(ArrivalTimesAtOfficePage(index)) -> routeDetailsRoutes.ArrivalTimesAtOfficeController.onPageLoad(lrn, index, NormalMode).url)
+    } else {
+      Seq.empty
+    }
 
     Seq(
       userAnswers.get(CountryOfDispatchPage) -> routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(OfficeOfDeparturePage) -> routeDetailsRoutes.OfficeOfDepartureController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(DestinationCountryPage) -> routeDetailsRoutes.DestinationCountryController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(DestinationOfficePage) -> routeDetailsRoutes.DestinationOfficeController.onPageLoad(lrn, NormalMode).url,
-    )
+      userAnswers.get(AddAnotherTransitOfficePage(index)) -> routeDetailsRoutes.AddAnotherTransitOfficeController.onPageLoad(lrn, index, NormalMode).url,
+    ) ++ arrivalTimeAtTransit
 
   }
 
