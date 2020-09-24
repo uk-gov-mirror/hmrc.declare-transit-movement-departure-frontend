@@ -16,8 +16,9 @@
 
 package viewModels
 
-import models.UserAnswers
-import utils.GoodsSummaryCheckYourAnswersHelper
+import derivable.DeriveNumberOfSeals
+import models.{Index, NormalMode, UserAnswers}
+import utils.{AddSealHelper, GoodsSummaryCheckYourAnswersHelper}
 import viewModels.sections.Section
 import uk.gov.hmrc.viewmodels.SummaryList
 
@@ -30,6 +31,7 @@ object GoodsSummaryCheckYourAnswersViewModel {
   def apply(userAnswers: UserAnswers): GoodsSummaryCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper = new GoodsSummaryCheckYourAnswersHelper(userAnswers)
+    val addSealHelper = new AddSealHelper(userAnswers)
 
     val declarePackages: Option[SummaryList.Row] = checkYourAnswersHelper.declarePackages
     val totalPackages: Option[SummaryList.Row] = checkYourAnswersHelper.totalPackages
@@ -39,9 +41,14 @@ object GoodsSummaryCheckYourAnswersViewModel {
     val addCustomsApprovedLocation: Option[SummaryList.Row] = checkYourAnswersHelper.addCustomsApprovedLocation
     val customsApprovedLocation: Option[SummaryList.Row] = checkYourAnswersHelper.customsApprovedLocation
     val addSeals: Option[SummaryList.Row] = checkYourAnswersHelper.addSeals
-//    TODO add these in when branch 806 merged:
-//    val sealIdDetails: Option[SummaryList.Row] = checkYourAnswersHelper.sealIdDetails
-//    val sealsInformation: Option[SummaryList.Row] = checkYourAnswersHelper.sealsInformation
+
+    val sealCount1 = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
+    val sealCount = 1
+    val sealIndex = Index(sealCount)
+
+    val sealIdDetails: Option[SummaryList.Row] = addSealHelper.sealRow(userAnswers.id,sealIndex, NormalMode )
+    val sealsInformation: Option[SummaryList.Row] = checkYourAnswersHelper.sealsInformation
+
 
      GoodsSummaryCheckYourAnswersViewModel(Seq(Section(Seq(
        declarePackages,
@@ -51,10 +58,9 @@ object GoodsSummaryCheckYourAnswersViewModel {
        controlResultDateLimit,
        addCustomsApprovedLocation,
        customsApprovedLocation,
-       addSeals
-//    TODO add these in when branch 806 merged:
-//         sealIdDetails,
-//       sealsInformation
+       addSeals,
+       sealIdDetails,
+       sealsInformation
      ).flatten)))
   }
 }

@@ -29,7 +29,7 @@ import uk.gov.hmrc.viewmodels._
 
 class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
 
-  def sealsInformation(sealIndex: Index): Option[Row] = userAnswers.get(SealsInformationPage) map {
+  def sealsInformation: Option[Row] = userAnswers.get(SealsInformationPage) map {
     answer =>
       Row(
         key     = Key(msg"sealsInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
