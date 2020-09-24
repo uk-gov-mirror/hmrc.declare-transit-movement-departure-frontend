@@ -21,6 +21,7 @@ import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
+import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
@@ -86,7 +87,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private def goodsSummarySection: SectionDetails = {
-    SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted)
+    SectionDetails("declarationSummary.section.goodsSummary", goodsSummaryRoutes.DeclarePackagesController.onPageLoad(userAnswers.id, NormalMode).url, NotStarted)
   }
 
   private def guaranteeSection: SectionDetails = {
