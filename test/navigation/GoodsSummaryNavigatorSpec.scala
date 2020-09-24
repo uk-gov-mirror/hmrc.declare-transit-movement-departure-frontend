@@ -172,6 +172,73 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 //              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
 //        }
 //      }
+
+//            "must go from TotalGrossMage to CheckYourAnswersPage " in {
+//              forAll(arbitrary[UserAnswers]) {
+//                answers =>
+//                  val updatedAnswers = answers.set(TotalGrossMassPage, 100).success.value
+//
+//                  navigator.nextPage(TotalGrossMassPage, CheckMode, updatedAnswers)
+//                    .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+//              }
+//            }
+
+//            "must go from AuthLocationCodePage to CheckYourAnswersPage " in {
+//              forAll(arbitrary[UserAnswers]) {
+//                answers =>
+//                  val updatedAnswers = answers.set(AuthorisedLocationCodePage, "test code").success.value
+//
+//                  navigator.nextPage(AuthorisedLocationCodePage, CheckMode, updatedAnswers)
+//                    .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+//              }
+//            }
+
+
+//      "must go from AddCustomsApprovedLocation to CheckYourAnswers page when selecting No" in {
+//        forAll(arbitrary[UserAnswers]) {
+//          answers =>
+//            val updatedAnswers = answers.set(AddCustomsApprovedLocationPage, false).toOption.value
+//
+//            navigator.nextPage(AddCustomsApprovedLocationPage, CheckMode, updatedAnswers)
+//              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+//        }
+//      }
+
+
+      "must go from AddCustomsApprovedLocation to CustomsApprovedLocation when selecting Yes and CustomsApprovedLocation has data" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(AddCustomsApprovedLocationPage, true).toOption.value
+              .remove(CustomsApprovedLocationPage).success.value
+
+            navigator.nextPage(AddCustomsApprovedLocationPage, CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.CustomsApprovedLocationController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+      }
+
+//            "must go from ControlResultDateLimitPage to CheckYourAnswersPage " in {
+//              forAll(arbitrary[UserAnswers]) {
+//                answers =>
+//                val date = LocalDate.now
+//                val updatedAnswers = answers.set(ControlResultDateLimitPage, date).success.value
+//
+//                  navigator.nextPage(ControlResultDateLimitPage, CheckMode, updatedAnswers)
+//                    .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+//              }
+//            }
+
+//
+//            "must go from CustomsApprovedLocation page to CheckYourAnswersPage " in {
+//              forAll(arbitrary[UserAnswers]) {
+//                answers =>
+//                  val updatedAnswers = answers.set(CustomsApprovedLocationPage, "test data").success.value
+//
+//                  navigator.nextPage(CustomsApprovedLocationPage, CheckMode, updatedAnswers)
+//                    .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+//              }
+//            }
+
+
     }
   }
 }
