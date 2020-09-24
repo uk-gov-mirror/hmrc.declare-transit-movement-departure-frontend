@@ -26,21 +26,6 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def confirmRemoveOfficeOfTransit: Option[Row] = userAnswers.get(ConfirmRemoveOfficeOfTransitPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"confirmRemoveOfficeOfTransit.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveOfficeOfTransit.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
    def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(

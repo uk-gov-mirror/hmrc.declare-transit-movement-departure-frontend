@@ -284,7 +284,7 @@ POST       /:lrn/goods-summary/:sealIndex/confirm-remove-seal                   
 GET        /:lrn/goods-summary/:sealIndex/change-confirm-remove-seal                   controllers.goodsSummary.ConfirmRemoveSealController.onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/:sealIndex/change-confirm-remove-seal                   controllers.goodsSummary.ConfirmRemoveSealController.onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode = CheckMode)
 
-GET        /:lrn/confirmRemoveOfficeOfTransit                        controllers.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/confirmRemoveOfficeOfTransit                        controllers.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeConfirmRemoveOfficeOfTransit                  controllers.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeConfirmRemoveOfficeOfTransit                  controllers.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/:index/confirm-remove-office-of-transit                         controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:lrn/:index/confirm-remove-office-of-transit                         controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:lrn/:index/change-confirm-remove-office-of-transit                  controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:lrn/:index/change-confirm-remove-office-of-transit                  controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)

@@ -27,20 +27,30 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn, mode).url }}" method="post">
+
+        <span class="govuk-caption-xl">{{messages('routeDetails.preHeading')}}</span>
+
+       <h1 class="govuk-heading-xl"> {{ messages("confirmRemoveOfficeOfTransit.heading") }} </h1>
+
+          <dl class="govuk-summary-list">
+                 <div class="govuk-summary-list__row">
+                     <dt class="govuk-summary-list__key">
+                    {{ messages("confirmRemoveOfficeOfTransit.Label") }}
+                     </dt>
+                     <dd class="govuk-summary-list__value">
+                     {{ officeOfTransit }}
+                     </dd>
+                 </div>
+          </dl>
+
+
+        <form action="{{ routes.controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
           {{ govukRadios({
             classes: "govuk-radios--inline",
             name: 'value',
-            fieldset: {
-              legend: {
-                text: messages('confirmRemoveOfficeOfTransit.heading'),
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--xl"
-              }
-            },
             items: radios,
             errorMessage: form.value.error
           }) }}
