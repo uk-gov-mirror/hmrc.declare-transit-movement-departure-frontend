@@ -38,6 +38,9 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case AddCustomsApprovedLocationPage => ua => Some(addCustomsApprovedLocationRoute(ua, NormalMode))
     case ControlResultDateLimitPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
     case CustomsApprovedLocationPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
+    //case AddSealsPage => ua => Some(addSealsRoute(ua, NormalMode))
+    case SealIdDetailsPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
+    //case AddSealsLaterPage => ua => Some(routes.GoodsSummaryCheckYourAnswers.onPageLoad(ua.id))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -49,8 +52,6 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case ControlResultDateLimitPage => ua =>  ??? //TODO direct to check your answers
     case AddCustomsApprovedLocationPage => ua => Some(addCustomsApprovedLocationRoute(ua, CheckMode))
     case CustomsApprovedLocationPage => ua =>  ??? //TODO direct to check your answers
-
-
   }
 
 
@@ -78,8 +79,17 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
       case (Some(true), None, CheckMode) => routes.CustomsApprovedLocationController.onPageLoad(ua.id, CheckMode)
       case (Some(true), Some(_), CheckMode)  => ??? //TODO direct to check your answers
       case(Some(false), _, CheckMode)  => ??? //TODO direct to check your answers
-
     }
   }
+
+//  def addSealsRoute(ua: UserAnswers, mode: Mode): Call = {
+//    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
+//    val sealIndex = Index(sealCount)
+//
+//    ua.get(AddSealsPage) match {
+//      case Some(true) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
+//      case Some(false) => routes.AddSealsLaterController.onPageLoad(ua.id)
+//    }
+//  }
 }
 
