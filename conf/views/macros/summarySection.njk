@@ -10,11 +10,11 @@
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__value govuk-!-width-one-half">
                         {% if section.status == "completed" %}
-                           <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.edit")) }}
-                            <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.edit")) }}</span></a>
+                           <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.taskList.edit")) }}
+                            <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.taskList.edit")) }}</span></a>
                         {% else %}
-                           <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.add")) }}
-                            <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.add")) }}</span></a>
+                           <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.taskList.add")) }}
+                            <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.taskList.add")) }}</span></a>
                         {% endif %}
                   </dt>
                   <dd class="govuk-summary-list__value">
