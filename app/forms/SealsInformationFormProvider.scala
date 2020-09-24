@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import play.api.libs.json.JsPath
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case object InlandModePage extends QuestionPage[String] {
+class SealsInformationFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ toString
+  def apply(): Form[Boolean] = {
+    Form(
+      "value" -> boolean("sealsInformation.error.required")
+    )
 
-  override def toString: String = "inlandMode"
+  }
 }

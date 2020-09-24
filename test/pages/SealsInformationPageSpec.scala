@@ -16,11 +16,16 @@
 
 package pages
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object InlandModePage extends QuestionPage[String] {
+class SealsInformationPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "SealsInformationPage" - {
 
-  override def toString: String = "inlandMode"
+    beRetrievable[Boolean](SealsInformationPage)
+
+    beSettable[Boolean](SealsInformationPage)
+
+    beRemovable[Boolean](SealsInformationPage)
+  }
 }

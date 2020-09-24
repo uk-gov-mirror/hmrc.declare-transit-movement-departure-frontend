@@ -17,6 +17,8 @@
 package generators
 
 import models._
+import models.domain.SealDomain
+import models.domain.SealDomain.Constants
 import models.reference.{Country, CountryCode, CustomsOffice}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -24,6 +26,13 @@ import org.scalacheck.{Arbitrary, Gen}
 trait ModelGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitrarySealDomain: Arbitrary[SealDomain] =
+    Arbitrary {
+      for {
+        sealNumber <- stringsWithMaxLength(Constants.sealNumberOrMarkLength)
+      } yield SealDomain(sealNumber)
+    }
 
   implicit lazy val arbitraryConsigneeAddress: Arbitrary[ConsigneeAddress] =
     Arbitrary {

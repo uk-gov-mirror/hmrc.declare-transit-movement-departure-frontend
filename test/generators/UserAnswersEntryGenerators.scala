@@ -25,6 +25,15 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators extends PageGenerators {
   self: Generators =>
 
+  implicit lazy val arbitrarySealsInformationUserAnswersEntry: Arbitrary[(SealsInformationPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[SealsInformationPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+
   implicit lazy val arbitraryControlResultDateLimitUserAnswersEntry: Arbitrary[(ControlResultDateLimitPage.type, JsValue)] =
       Arbitrary {
       for {
@@ -43,10 +52,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
     }
 
 
-  implicit lazy val arbitrarySealIdDetailsUserAnswersEntry: Arbitrary[(SealIdDetailsPage.type, JsValue)] =
+  implicit lazy val arbitrarySealIdDetailsUserAnswersEntry: Arbitrary[(SealIdDetailsPage, JsValue)] =
       Arbitrary {
       for {
-        page  <- arbitrary[SealIdDetailsPage.type]
+        page  <- arbitrary[SealIdDetailsPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }

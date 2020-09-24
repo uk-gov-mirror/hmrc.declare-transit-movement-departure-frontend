@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import play.api.libs.json.JsPath
+sealed trait LanguageCode {
+  val code: String
+}
 
-case object InlandModePage extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "inlandMode"
+object LanguageCodeEnglish extends LanguageCode {
+  override val code: String = "EN"
 }

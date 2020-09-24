@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
+import models.domain.SealDomain
+import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants
 
-case object InlandModePage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+final case class SealsQuery() extends QuestionPage[Seq[SealDomain]] {
 
-  override def toString: String = "inlandMode"
+  override def path: JsPath = JsPath \  Constants.seals
+
 }
