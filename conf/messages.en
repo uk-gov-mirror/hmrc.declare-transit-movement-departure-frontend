@@ -441,23 +441,23 @@ modeAtBorder.checkYourAnswersLabel = Mode at the border
 modeAtBorder.error.required = Enter the mode at the border
 modeAtBorder.error.length = The mode at the border must be 100 characters or less
 
-addTransitOffice.title.singular = You have added {0} transit office
-addTransitOffice.title.plural = You have added {0} transit offices
-addTransitOffice.heading.singular = You have added {0} transit office
-addTransitOffice.heading.plural = You have added {0} transit offices
-addTransitOffice.paragraph = Do you need to add another transit office?
-addTransitOffice.checkYourAnswersLabel = Add another transit office
-addTransitOffice.error.required = Select yes if you want to add another transit office
+addTransitOffice.title.singular = You have added {0} office of transit
+addTransitOffice.title.plural = You have added {0} offices of transit
+addTransitOffice.heading.singular = You have added {0} office of transit
+addTransitOffice.heading.plural = You have added {0} offices of transit
+addTransitOffice.paragraph = Do you need to add another office of transit?
+addTransitOffice.checkYourAnswersLabel = Add another office of transit
+addTransitOffice.error.required = Select yes if you want to add another office of transit
 
 officesOfTransit.checkYourAnswersLabel = Offices of transit
 AddOrRemoveOfficesOfTransit.checkYourAnswersLabel = Add or remove transit offices
 
-addAnotherTransitOffice.title = Which transit office do you want to add?
-addAnotherTransitOffice.heading = Which transit office do you want to add?
-addAnotherTransitOffice.label = Which transit office do you want to add?
+addAnotherTransitOffice.title = Which office of transit do you want to add?
+addAnotherTransitOffice.heading = Which office of transit do you want to add?
+addAnotherTransitOffice.label = Which office of transit do you want to add?
 addAnotherTransitOffice.checkYourAnswersLabel = Office of transit {0}
 addAnotherTransitOffice.hintText = Give the office location or code. For example, Dover or GB000060.
-addAnotherTransitOffice.error.required = Select the transit office you want to add
+addAnotherTransitOffice.error.required = Select the office of transit you want to add
 
 declarePackages.title = Do you have any packages to declare?
 declarePackages.heading = Do you have any packages to declare?
