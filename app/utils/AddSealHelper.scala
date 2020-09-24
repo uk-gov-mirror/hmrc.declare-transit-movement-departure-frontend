@@ -17,6 +17,7 @@
 package utils
 
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
+import queries.SealsQuery
 import pages.SealIdDetailsPage
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
@@ -46,6 +47,23 @@ class AddSealHelper(userAnswers: UserAnswers) {
           )
         )
     }
+
+  def sealsRow(lrn: LocalReferenceNumber, mode: Mode): Option[Row] = userAnswers.get(SealsQuery()).map {
+    answer =>
+      val html = Html(answer.map(_.numberOrMark).mkString("<br>"))
+      Row(
+        key   = Key(msg"addSeal.sealList.label"), //correct keys
+        value = Value(lit"${html}"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = "frank", //todo: point to correct place
+            visuallyHiddenText = Some(msg"addSeal.sealList.change.hidden"),
+            attributes         = Map("id" -> s"""change-seal-""")
+          )
+        )
+      )
+  }
 }
 
 object AddSealHelper {
