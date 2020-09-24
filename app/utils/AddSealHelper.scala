@@ -16,11 +16,13 @@
 
 package utils
 
+import controllers.goodsSummary.routes.{ConfirmRemoveSealController, SealIdDetailsController}
+import derivable.DeriveNumberOfSeals
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages.SealIdDetailsPage
+import queries.SealsQuery
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
-import controllers.goodsSummary.routes.{SealIdDetailsController, ConfirmRemoveSealController}
 
 class AddSealHelper(userAnswers: UserAnswers) {
 
@@ -46,6 +48,26 @@ class AddSealHelper(userAnswers: UserAnswers) {
           )
         )
     }
+
+  def sealsRow(lrn: LocalReferenceNumber, mode: Mode): Option[Row] = userAnswers.get(SealsQuery()).map {
+    answer =>
+      val numberOfSeals = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
+
+      val singularOrPlural = if (numberOfSeals == 1) "singular" else "plural"
+      val html = Html((answer.map(_.numberOrMark)).mkString("<br>"))
+      Row(
+        key   = Key(msg"sealIdDetails.checkYourAnswersLabel.$singularOrPlural" ),
+        value = Value(html),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = "SealsInformationController.onPageLoad(lrn, NormalMode )",
+            visuallyHiddenText = Some(msg"change-sealIdDetails.checkYourAnswersLabel$singularOrPlural"),
+            attributes         = Map("id" -> s"""change-seal-""")
+          )
+        )
+      )
+  }
 }
 
 object AddSealHelper {

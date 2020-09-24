@@ -41,26 +41,38 @@ object GoodsSummaryCheckYourAnswersViewModel {
     val addCustomsApprovedLocation: Option[SummaryList.Row] = checkYourAnswersHelper.addCustomsApprovedLocation
     val customsApprovedLocation: Option[SummaryList.Row] = checkYourAnswersHelper.customsApprovedLocation
     val addSeals: Option[SummaryList.Row] = checkYourAnswersHelper.addSeals
-
-    val sealCount1 = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
     val sealCount = 1
     val sealIndex = Index(sealCount)
+    val sealIdDetails: Option[SummaryList.Row] = addSealHelper.sealRow(userAnswers.id, sealIndex, NormalMode)
+    val seals = addSealHelper.sealsRow(userAnswers.id, NormalMode)
 
-    val sealIdDetails: Option[SummaryList.Row] = addSealHelper.sealRow(userAnswers.id,sealIndex, NormalMode )
+    GoodsSummaryCheckYourAnswersViewModel(Seq(Section(Seq(
+      declarePackages,
+      totalPackages,
+      totalGrossMass,
+      authorisedLocationCode,
+      controlResultDateLimit,
+      addCustomsApprovedLocation,
+      customsApprovedLocation,
+      addSeals,
+      sealIdDetails
+    ).flatten)))
+
     val sealsInformation: Option[SummaryList.Row] = checkYourAnswersHelper.sealsInformation
 
+    val checkYourAnswersData = Seq(
+      declarePackages,
+      totalPackages,
+      totalGrossMass,
+      authorisedLocationCode,
+      controlResultDateLimit,
+      addCustomsApprovedLocation,
+      customsApprovedLocation,
+      addSeals,
+      seals,
+      sealsInformation
+    ).flatten
 
-     GoodsSummaryCheckYourAnswersViewModel(Seq(Section(Seq(
-       declarePackages,
-       totalPackages,
-       totalGrossMass,
-       authorisedLocationCode,
-       controlResultDateLimit,
-       addCustomsApprovedLocation,
-       customsApprovedLocation,
-       addSeals,
-       sealIdDetails,
-       sealsInformation
-     ).flatten)))
+    GoodsSummaryCheckYourAnswersViewModel(Seq(Section(checkYourAnswersData)))
   }
 }
