@@ -5,6 +5,7 @@ site.hour.capitalized = Hour
 site.minute.capitalized = Minute
 site.minute.amOrPm = am or pm
 
+site.edit = Change
 site.back = Back
 site.delete = Remove
 site.change = Change
@@ -503,7 +504,8 @@ addCustomsApprovedLocation.error.required = Select yes if you need to add a Cust
 
 sealIdDetails.title = What is the Customs seal number?
 sealIdDetails.heading = What is the Customs seal number?
-sealIdDetails.checkYourAnswersLabel = Customs seal number
+sealIdDetails.checkYourAnswersLabel.singular = Customs seal number
+sealIdDetails.checkYourAnswersLabel.plural = Customs seal numbers
 sealIdDetails.error.required = Enter the seal number
 sealIdDetails.error.length = The seal number must be 20 characters or less
 sealIdDetails.error.invalidCharacters = The authorised location code must only include letters a to z, numbers 0 to 9
@@ -543,6 +545,9 @@ controlResultDateLimit.paragraph1 = This is the date the transit movement is exp
 controlResultDateLimit.paragraph2 = You cannot enter a date that is more than 14 days in advance. You must
 controlResultDateLimit.error.max.date = The control result date limit must be before {0}
 controlResultDateLimit.error.min.date = The control result date limit must be today or in the future
+
+goodsSummaryCheckYourAnswers.title = Check your answers
+goodsSummaryCheckYourAnswers.heading = Check your answers
 
 sealsInformation.title = You have added {0} Customs seal number
 sealsInformation.heading = You have added {0} Customs seal number

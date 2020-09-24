@@ -16,7 +16,7 @@
 
         <h1 class="govuk-heading-xl">
 
-          <span class="govuk-caption-xl">{{messages('transportDetails.preHeading')}}</span>
+          <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
           {{ messages("checkYourAnswers.heading") }}
 
         </h1>
@@ -25,7 +25,7 @@
              {{ sectionMacro(section.sectionTitle, section.rows) }}
         {% endfor %}
 
-        <form action="{{ routes.controllers.transportDetails.TransportDetailsCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
+        <form action="{{ routes.controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
 
              {{ csrf() | safe }}
 

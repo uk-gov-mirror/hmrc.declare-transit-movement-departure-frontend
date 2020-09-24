@@ -16,7 +16,6 @@
 
 package models.messages
 
-import com.lucidchart.open.xtract.{__, XmlReader}
 import models.{LanguageCode, LanguageCodeEnglish}
 
 case class Seal(numberOrMark: String)
@@ -28,6 +27,5 @@ object Seal {
     val languageCode: LanguageCode = LanguageCodeEnglish
   }
   
-  implicit lazy val xmlReader: XmlReader[Seal] = (__ \ "SeaIdeSI11").read[String] map apply
 
 }
