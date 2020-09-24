@@ -38,20 +38,20 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case AddCustomsApprovedLocationPage => ua => Some(addCustomsApprovedLocationRoute(ua, NormalMode))
     case ControlResultDateLimitPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
     case CustomsApprovedLocationPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
-    //case AddSealsPage => ua => Some(addSealsRoute(ua, NormalMode))
-    case SealIdDetailsPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
-    //case AddSealsLaterPage => ua => Some(routes.GoodsSummaryCheckYourAnswers.onPageLoad(ua.id))
+    case AddSealsPage => ua => Some(addSealsRoute(ua, NormalMode))
+    case SealIdDetailsPage(sealIndex) => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
+    case AddSealsLaterPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
     case DeclarePackagesPage => ua => Some(declarePackageRoute(ua, CheckMode))
-    case TotalPackagesPage => ua =>  ??? //TODO direct to check your answers
-    case TotalGrossMassPage => ua =>  ??? //TODO direct to check your answers
-    case AuthorisedLocationCodePage => ua =>  ??? //TODO direct to check your answers
-    case ControlResultDateLimitPage => ua =>  ??? //TODO direct to check your answers
+    case TotalPackagesPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case TotalGrossMassPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case AuthorisedLocationCodePage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case ControlResultDateLimitPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case AddCustomsApprovedLocationPage => ua => Some(addCustomsApprovedLocationRoute(ua, CheckMode))
-    case CustomsApprovedLocationPage => ua =>  ??? //TODO direct to check your answers
+    case CustomsApprovedLocationPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
   }
 
 
@@ -60,8 +60,8 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
       case (Some(true), _, NormalMode) => routes.TotalPackagesController.onPageLoad(ua.id, NormalMode)
       case (Some(false), _, NormalMode) => routes.TotalGrossMassController.onPageLoad(ua.id, NormalMode)
       case (Some(true), None, CheckMode) => routes.TotalPackagesController.onPageLoad(ua.id, CheckMode)
-      case (Some(true), Some(_), CheckMode) => ??? //TODO direct to check your answers
-      case (Some(false), _, CheckMode) => ??? //TODO direct to check your answers
+      case (Some(true), Some(_), CheckMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(false), _, CheckMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 
@@ -77,19 +77,19 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
       case (Some(true), _, NormalMode) => routes.CustomsApprovedLocationController.onPageLoad(ua.id, NormalMode)
       case (Some(false), _, NormalMode) => routes.AddSealsController.onPageLoad(ua.id, NormalMode)
       case (Some(true), None, CheckMode) => routes.CustomsApprovedLocationController.onPageLoad(ua.id, CheckMode)
-      case (Some(true), Some(_), CheckMode)  => ??? //TODO direct to check your answers
-      case(Some(false), _, CheckMode)  => ??? //TODO direct to check your answers
+      case (Some(true), Some(_), CheckMode)  => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case(Some(false), _, CheckMode)  => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 
-//  def addSealsRoute(ua: UserAnswers, mode: Mode): Call = {
-//    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
-//    val sealIndex = Index(sealCount)
-//
-//    ua.get(AddSealsPage) match {
-//      case Some(true) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
-//      case Some(false) => routes.AddSealsLaterController.onPageLoad(ua.id)
-//    }
-//  }
+  def addSealsRoute(ua: UserAnswers, mode: Mode): Call = {
+    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
+    val sealIndex = Index(sealCount)
+
+    ua.get(AddSealsPage) match {
+      case Some(true) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
+      case Some(false) => routes.AddSealsLaterController.onPageLoad(ua.id)
+    }
+  }
 }
 

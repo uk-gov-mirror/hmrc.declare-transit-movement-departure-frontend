@@ -26,4 +26,6 @@ case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] 
 
   override def path: JsPath = JsPath \ Constants.seals \ sealIndex.position
 
+  override def toString: String = "sealIdDetails"
+
 }
