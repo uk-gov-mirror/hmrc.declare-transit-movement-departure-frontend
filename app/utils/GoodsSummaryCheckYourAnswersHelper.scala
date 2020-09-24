@@ -19,7 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.goodsSummary.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.{AddCustomsApprovedLocationPage, AuthorisedLocationCodePage, DeclarePackagesPage, TotalGrossMassPage, TotalPackagesPage}
 import utils.GoodsSummaryCheckYourAnswersHelper.dateFormatter
@@ -27,7 +27,22 @@ import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels._
 
-class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
+class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
+
+  def sealsInformation: Option[Row] = userAnswers.get(SealsInformationPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"sealsInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.SealsInformationController.onPageLoad(lrn,  CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"sealsInformation.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def controlResultDateLimit: Option[Row] = userAnswers.get(ControlResultDateLimitPage) map {
     answer =>

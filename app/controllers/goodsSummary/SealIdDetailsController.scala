@@ -19,13 +19,17 @@ package controllers.goodsSummary
 import controllers.actions._
 import forms.SealIdDetailsFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.domain.SealDomain
+import models.requests.DataRequest
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GoodsSummary
 import pages.SealIdDetailsPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.SealsQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -45,44 +49,43 @@ class SealIdDetailsController @Inject()(
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  private val form = formProvider()
+  private val form = formProvider
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(SealIdDetailsPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(SealIdDetailsPage(sealIndex)) match {
+        case Some(value) => form(sealIndex).fill(value.numberOrMark)
+        case _ => form(sealIndex)
       }
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("sealIdDetails.njk", json).map(Ok(_))
+      renderView(lrn, sealIndex, mode, preparedForm).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      val seals = request.userAnswers.get(SealsQuery()).getOrElse(Seq.empty)
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+      form(sealIndex, seals).bindFromRequest()
+        .fold(
+          formWithErrors => renderView(lrn, sealIndex, mode, formWithErrors).map(BadRequest(_)),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage(sealIndex), SealDomain(value)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(SealIdDetailsPage(sealIndex), mode, updatedAnswers))
+        )
+  }
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
-          )
+  private def renderView(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode, preparedForm: Form[String])(
+    implicit request: DataRequest[AnyContent]) = {
+    val json = Json.obj(
+      "form"        -> preparedForm,
+      "lrn"         -> lrn,
+      "mode"        -> mode,
+      "onSubmitUrl" -> routes.SealIdDetailsController.onSubmit(lrn, sealIndex, mode).url
+    )
 
-          renderer.render("sealIdDetails.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SealIdDetailsPage, mode, updatedAnswers))
-      )
+    renderer.render("sealIdDetails.njk", json)
   }
 }

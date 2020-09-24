@@ -19,10 +19,11 @@ package controllers.routeDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
+import derivable.DeriveNumberOfOfficeOfTransits
 import javax.inject.Inject
-import models.LocalReferenceNumber
 import models.reference.CountryCode
 import models.requests.DataRequest
+import models.{Index, LocalReferenceNumber, NormalMode}
 import pages.DestinationCountryPage
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -31,8 +32,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.SummaryList.Row
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.RouteDetailsCheckYourAnswersHelper
+import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,10 +53,11 @@ class RouteDetailsCheckYourAnswersController @Inject()(
 
       request.userAnswers.get(DestinationCountryPage) match {
         case Some(countryCode) =>
-          createSections(lrn, countryCode) flatMap { sections =>
+          createSections(countryCode) flatMap { sections =>
 
             val json = Json.obj("lrn" -> lrn,
               "sections" -> Json.toJson(sections),
+              "addOfficesOfTransitUrl" -> routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url,
               "submitUrl" -> routes.RouteDetailsCheckYourAnswersController.onSubmit(lrn).url
             )
             renderer.render("routeDetailsCheckYourAnswers.njk", json).map(Ok(_))
@@ -69,24 +72,43 @@ class RouteDetailsCheckYourAnswersController @Inject()(
       Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
-  private def createSections(lrn: LocalReferenceNumber, countryCode: CountryCode)
-                            (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Seq[Row]] = {
+  private def createSections(countryCode: CountryCode)
+                            (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Seq[Section]] = {
     val checkYourAnswersHelper = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
 
     referenceDataConnector.getCountryList() flatMap { countryList =>
       referenceDataConnector.getCustomsOffices() flatMap { customsOfficeList =>
         referenceDataConnector.getTransitCountryList() flatMap { destCountryList =>
-          referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) map { destOfficeList =>
+          referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap { destOfficeList =>
+            officeOfTransitSections(checkYourAnswersHelper) map {officeOfTransitSection =>
+              val section: Section = Section(Seq(checkYourAnswersHelper.countryOfDispatch(countryList),
+                checkYourAnswersHelper.officeOfDeparture(customsOfficeList),
+                checkYourAnswersHelper.destinationCountry(destCountryList),
+                checkYourAnswersHelper.destinationOffice(destOfficeList)
+              ).flatten)
 
-            Seq(checkYourAnswersHelper.countryOfDispatch(countryList),
-              checkYourAnswersHelper.officeOfDeparture(customsOfficeList),
-              checkYourAnswersHelper.destinationCountry(destCountryList),
-              checkYourAnswersHelper.destinationOffice(destOfficeList)
-            ).flatten
+              Seq(section, officeOfTransitSection)
+            }
 
           }
         }
       }
+    }
+  }
+
+  private def officeOfTransitSections(routesCYAHelper: RouteDetailsCheckYourAnswersHelper)
+                                     (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Section] = {
+    referenceDataConnector.getOfficeOfTransitList() map { officeOfTransitList =>
+      val numberOfTransitOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+      val index: Seq[Index] = List.range(0, numberOfTransitOffices).map(Index(_))
+      val rows = index.flatMap {
+        index =>
+          Seq(
+            routesCYAHelper.addAnotherTransitOffice(index, officeOfTransitList),
+            routesCYAHelper.arrivalTimesAtOffice(index)
+          ).flatten
+      }
+      Section(msg"officesOfTransit.checkYourAnswersLabel", rows)
     }
   }
 

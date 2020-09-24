@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import models.reference.{Country, CustomsOffice, TransportMode}
+import models.reference.{Country, CustomsOffice, OfficeOfTransit, TransportMode}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.viewmodels.{Content, MessageInterpolators}
 
@@ -52,6 +52,32 @@ package object utils {
         )
     }
     defaultOption +: transportModeObjects
+  }
+
+  def amPmAsJson(value: Option[String]): Seq[JsObject] = {
+    val amPms = Seq("am","pm")
+    val jsObjects: Seq[JsObject] = amPms map (
+      amOrPm =>
+        Json.obj(
+          "value" -> s"$amOrPm",
+          "text" -> s"$amOrPm",
+          "selected" -> value.contains(amOrPm)
+        )
+    )
+
+    defaultOption +: jsObjects
+  }
+
+  def getOfficeOfTransitAsJson(value: Option[OfficeOfTransit], officeOfTransitList: Seq[OfficeOfTransit]): Seq[JsObject] = {
+    val officeOfTransitObjects = officeOfTransitList.map {
+      office =>
+        Json.obj(
+          "value" -> office.id,
+          "text" -> s"${office.name} (${office.id})",
+          "selected" -> value.contains(office)
+        )
+    }
+    defaultOption +: officeOfTransitObjects
   }
 
   def yesOrNo(answer: Boolean): Content =

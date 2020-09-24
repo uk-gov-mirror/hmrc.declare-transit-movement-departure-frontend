@@ -16,7 +16,9 @@
 
 package navigation
 
+
 import controllers.goodsSummary.routes
+import derivable.DeriveNumberOfSeals
 import javax.inject.{Inject, Singleton}
 import models.ProcedureType.{Normal, Simplified}
 import models._
