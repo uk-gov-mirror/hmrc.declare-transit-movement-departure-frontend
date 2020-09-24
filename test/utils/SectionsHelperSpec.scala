@@ -211,6 +211,7 @@ class SectionsHelperSpec extends SpecBase {
           .set(OfficeOfDeparturePage, "GB00010").toOption.value
           .set(DestinationCountryPage, CountryCode("GB")).toOption.value
           .set(DestinationOfficePage, "GB00010").toOption.value
+          .set(AddAnotherTransitOfficePage(index), "1").toOption.value
         val sectionsHelper = new SectionsHelper(userAnswers)
 
         val url = routeDetailsRoutes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url

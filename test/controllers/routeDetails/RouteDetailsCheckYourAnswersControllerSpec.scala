@@ -18,9 +18,10 @@ package controllers.routeDetails
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
-import models.reference.{Country, CountryCode, CustomsOffice}
-import models.{CountryList, CustomsOfficeList}
+import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit}
+import models.{CountryList, CustomsOfficeList, OfficeOfTransitList}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -39,6 +40,9 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
   private val countries = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
   private val customsOffice: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
   private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice))
+  private val officeOfTransit = OfficeOfTransit("1", "name")
+  private val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))
+  lazy val routeDetailsCheckYourAnswersRoute = routes.RouteDetailsCheckYourAnswersController.onSubmit(lrn).url
 
   "RouteDetailsCheckYourAnswers Controller" - {
 
@@ -48,6 +52,7 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
       when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any())).thenReturn(Future.successful(customsOffices))
       when(mockReferenceDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
+      when(mockReferenceDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -73,6 +78,33 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
+    }
+
+    "must redirect to session reset page if DestinationCountry data is empty" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .build()
+      val request = FakeRequest(GET, routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "must redirect to task-list page on POST" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request =
+        FakeRequest(POST, routeDetailsCheckYourAnswersRoute)
+          .withFormUrlEncodedBody(("value", "id"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
     }
   }
 }

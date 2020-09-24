@@ -44,14 +44,14 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
 
   def redirectToAddTransitOfficeNextPage(ua: UserAnswers, index: Index, mode: Mode): Call = {
     ua.get(AddSecurityDetailsPage) match {
-      case Some(addSecurityDetails) if addSecurityDetails => routes.ArrivalTimesAtOfficeController.onPageLoad(ua.id, index, mode)
+      case Some(isSelected) if isSelected => routes.ArrivalTimesAtOfficeController.onPageLoad(ua.id, index, mode)
       case _ =>  routes.AddTransitOfficeController.onPageLoad(ua.id, mode)
     }
   }
 
   private def isRouteDetailsSectionPage(page: Page): Boolean = {
     page match {
-      case CountryOfDispatchPage| OfficeOfDeparturePage | DestinationCountryPage => true
+      case CountryOfDispatchPage| OfficeOfDeparturePage | DestinationCountryPage | AddAnotherTransitOfficePage(_) | ArrivalTimesAtOfficePage(_) => true
       case _ => false
     }
   }

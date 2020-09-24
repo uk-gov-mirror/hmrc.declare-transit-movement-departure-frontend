@@ -29,9 +29,9 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def arrivalTimesAtOffice(index: Index): Option[Row] = userAnswers.get(ArrivalTimesAtOfficePage(index)) map {
     answer =>
-      val dateTime: String = s"${answer.dateTime.format(Format.dateFormatter)}${answer.amOrPm}"
+      val dateTime: String = s"${answer.dateTime.format(Format.dateTimeFormatter)}${answer.amOrPm}"
       Row(
-        key     = Key(msg"arrivalTimesAtOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key     = Key(msg"arrivalTimesAtOffice.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
         value   = Value(Literal(dateTime)),
         actions = List(
           Action(
@@ -94,12 +94,13 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     }
   }
 
-  def addAnotherTransitOffice(index: Index, customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(AddAnotherTransitOfficePage(index)) flatMap  {
+  def addAnotherTransitOffice(index: Index,
+                              officeOfTransitList: OfficeOfTransitList): Option[Row] = userAnswers.get(AddAnotherTransitOfficePage(index)) flatMap  {
     answer =>
-      customsOfficeList.getCustomsOffice(answer) map{
+      officeOfTransitList.getOfficeOfTransit(answer) map{
         customsOffice =>
           Row(
-            key     = Key(msg"addAnotherTransitOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            key     = Key(msg"addAnotherTransitOffice.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
             value   = Value(lit"${customsOffice.name} ${customsOffice.id}"),
             actions = List(
               Action(
@@ -151,7 +152,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       answer =>
         officeOfTransitList.getOfficeOfTransit(answer).map { office =>
           val arrivalTime = userAnswers.get(ArrivalTimesAtOfficePage(index)).map(time =>
-            s"${time.dateTime.format(Format.dateTimeFormatter)} ${time.amOrPm}"
+            s"${time.dateTime.format(Format.dateTimeFormatter)}${time.amOrPm}"
           ).getOrElse("")
 
           Row(

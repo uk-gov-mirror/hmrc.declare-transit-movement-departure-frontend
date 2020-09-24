@@ -13,6 +13,7 @@ site.edit.hidden = Change {0}
 site.no = No
 site.yes = Yes
 site.add = Add
+site.edit = Change
 site.continue = Save and continue
 site.notStarted = Not started
 site.inProgress = In Progress
@@ -448,10 +449,13 @@ addTransitOffice.paragraph = Do you need to add another office of transit?
 addTransitOffice.checkYourAnswersLabel = Add another office of transit
 addTransitOffice.error.required = Select yes if you want to add another office of transit
 
+officesOfTransit.checkYourAnswersLabel = Offices of transit
+addOrRemoveOfficesOfTransit.checkYourAnswersLabel = Add or remove offices of transit
+
 addAnotherTransitOffice.title = Which office of transit do you want to add?
 addAnotherTransitOffice.heading = Which office of transit do you want to add?
 addAnotherTransitOffice.label = Which office of transit do you want to add?
-addAnotherTransitOffice.checkYourAnswersLabel = Offices of Transit
+addAnotherTransitOffice.checkYourAnswersLabel = Office of transit {0}
 addAnotherTransitOffice.hintText = Give the office location or code. For example, Dover or GB000060.
 addAnotherTransitOffice.error.required = Select the office of transit you want to add
 
@@ -514,8 +518,8 @@ addSealsLater.heading = Custom seals may be added later
 
 arrivalTimesAtOffice.title = When do you expect the transit to arrive at the office of transit?
 arrivalTimesAtOffice.heading = When do you expect the transit to arrive at the office of transit?
-arrivalTimesAtOffice.hint = For example, 14 1 2020 12:59am.
-arrivalTimesAtOffice.checkYourAnswersLabel = ArrivalTimesAtOffice
+arrivalTimesAtOffice.hint = Like, 14 1 2020 12:59am.
+arrivalTimesAtOffice.checkYourAnswersLabel = Office of transit {0} arrival time
 arrivalTimesAtOffice.error.required.all = Enter the date and time you expect the transit to arrive at {0}
 arrivalTimesAtOffice.error.required.time = Enter the time you expect the transit to arrive at {0}
 arrivalTimesAtOffice.error.invalid.hour = Enter the time you expect the transit around at {0} using a 12-hour clock
