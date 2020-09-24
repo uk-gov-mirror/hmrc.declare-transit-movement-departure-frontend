@@ -16,39 +16,39 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class SealIdDetailsFormProviderSpec extends StringFieldBehaviours {
+class SealIdDetailsFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
   val requiredKey = "sealIdDetails.error.required"
   val lengthKey = "sealIdDetails.error.length"
   val maxLength = 20
   val invalidCharacters = "sealIdDetails.error.invalidCharacters"
   val sealNumberRegex: String = "^[a-zA-Z0-9]*$"
-
-  val form = new SealIdDetailsFormProvider()()
+  val form = new SealIdDetailsFormProvider()
 
   ".value" - {
 
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
-      form,
+      form(sealIndex),
       fieldName,
       stringsWithMaxLength(maxLength)
     )
 
     behave like fieldWithMaxLength(
-      form,
+      form(sealIndex),
       fieldName,
       maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
-      form,
+      form(sealIndex),
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
@@ -63,9 +63,10 @@ class SealIdDetailsFormProviderSpec extends StringFieldBehaviours {
       }
 
       forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        val result = form(sealIndex).bind(Map(fieldName -> invalidString)).apply(fieldName)
         result.errors mustBe expectedError
       }
     }
+
   }
 }

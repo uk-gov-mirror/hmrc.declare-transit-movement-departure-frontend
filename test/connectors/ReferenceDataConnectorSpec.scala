@@ -19,8 +19,8 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
-import models.reference.{Country, CountryCode, CustomsOffice, TransportMode}
-import models.{CountryList, CustomsOfficeList, TransportModeList}
+import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit, TransportMode}
+import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, TransportModeList}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -92,6 +92,29 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |  }
       |]
       |""".stripMargin
+
+  private val officeOfTransitResponseJson: String =
+    """
+      |[
+      |  {
+      |    "id": "1",
+      |    "name": "Data1"
+      |  },
+      |  {
+      |    "id": "2",
+      |    "name": "Data2"
+      |  }
+      |]
+      |""".stripMargin
+
+  private val officeOfTransitJson: String =
+    """
+      |  {
+      |    "id": "1",
+      |    "name": "Data1"
+      |  }
+      |""".stripMargin
+
 
   val errorResponses: Gen[Int] = Gen.chooseNum(400, 599)
 
@@ -210,6 +233,50 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return an exception when an error response is returned" in {
 
         checkErrorResponse(s"/$startUrl/transport-modes", connector.getTransportModes())
+      }
+    }
+
+    "getOfficeOfTransitList" - {
+
+      "must return Seq of Offices of transit when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/office-transit"))
+            .willReturn(okJson(officeOfTransitResponseJson))
+        )
+
+        val expectedResult: OfficeOfTransitList = OfficeOfTransitList(
+          Seq(
+            OfficeOfTransit("1", "Data1"),
+            OfficeOfTransit("2", "Data2")
+          )
+        )
+
+        connector.getOfficeOfTransitList().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/office-transit", connector.getOfficeOfTransitList())
+      }
+    }
+
+    "getOfficeOfTransit" - {
+
+      "must return Offices of transit when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/office-transit/1"))
+            .willReturn(okJson(officeOfTransitJson))
+        )
+
+        val expectedResult: OfficeOfTransit = OfficeOfTransit("1", "Data1")
+
+
+        connector.getOfficeOfTransit("1").futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/office-transit/1", connector.getOfficeOfTransitList())
       }
     }
   }

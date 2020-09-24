@@ -19,10 +19,11 @@ package controllers.goodsSummary
 import base.SpecBase
 import controllers.{routes => mainRoutes}
 import forms.SealIdDetailsFormProvider
+import generators.ModelGenerators
 import matchers.JsonMatchers
-import models.NormalMode
-import navigation.annotations.GoodsSummary
+import models.{Index, NormalMode}
 import navigation.{FakeNavigator, Navigator}
+import navigation.annotations.GoodsSummary
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -44,9 +45,9 @@ class SealIdDetailsControllerSpec extends SpecBase with MockitoSugar with Nunjuc
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new SealIdDetailsFormProvider()
-  val form = formProvider()
+  val form = formProvider(sealIndex)
 
-  lazy val sealIdDetailsRoute = routes.SealIdDetailsController.onPageLoad(lrn, NormalMode).url
+  lazy val sealIdDetailsRoute = routes.SealIdDetailsController.onPageLoad(lrn, sealIndex,  NormalMode).url
 
   "SealIdDetails Controller" - {
 
@@ -83,7 +84,7 @@ class SealIdDetailsControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(SealIdDetailsPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(SealIdDetailsPage (sealIndex), sealDomain).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request = FakeRequest(GET, sealIdDetailsRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -95,12 +96,14 @@ class SealIdDetailsControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "sealNumber"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
         "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "mode" -> NormalMode,
+        "onSubmitUrl" -> routes.SealIdDetailsController.onSubmit(lrn, sealIndex, NormalMode).url
+
       )
 
       templateCaptor.getValue mustEqual "sealIdDetails.njk"

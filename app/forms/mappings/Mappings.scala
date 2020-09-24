@@ -18,9 +18,9 @@ package forms.mappings
 
 import java.time.LocalDate
 
+import models.{Enumerable, LocalDateTimeWithAMPM, LocalReferenceNumber}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import models.{Enumerable, LocalReferenceNumber}
 
 trait Mappings extends Formatters with Constraints {
 
@@ -48,6 +48,20 @@ trait Mappings extends Formatters with Constraints {
                            requiredKey: String,
                            args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+
+  //noinspection ScalaStyle
+  protected def localDateTime(
+                               invalidDateKey: String,
+                               invalidTimeKey: String,
+                               invalidHourKey:String,
+                               allRequiredKey: String,
+                               timeRequiredKey: String,
+                               dateRequiredKey: String,
+                               amOrPmRequired: String,
+                               pastDateErrorKey: String,
+                               futureDateErrorKey: String,
+                               args: Seq[String] = Seq.empty): FieldMapping[LocalDateTimeWithAMPM] =
+    of(new LocalDateTimeFormatter(invalidDateKey, invalidTimeKey, invalidHourKey, allRequiredKey, timeRequiredKey, dateRequiredKey, amOrPmRequired, pastDateErrorKey, futureDateErrorKey,  args))
 
   protected def lrn(requiredKey: String, lengthKey: String, invalidKey: String): FieldMapping[LocalReferenceNumber] =
     of(lrnFormatter(requiredKey, lengthKey, invalidKey))
