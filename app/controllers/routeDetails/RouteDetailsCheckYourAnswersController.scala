@@ -21,9 +21,9 @@ import controllers.actions._
 import controllers.{routes => mainRoutes}
 import derivable.DeriveNumberOfOfficeOfTransits
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, NormalMode}
 import models.reference.CountryCode
 import models.requests.DataRequest
+import models.{Index, LocalReferenceNumber, NormalMode}
 import pages.DestinationCountryPage
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,8 +32,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
-import uk.gov.hmrc.viewmodels.SummaryList.Row
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.RouteDetailsCheckYourAnswersHelper
 import viewModels.sections.Section
 
@@ -96,7 +95,6 @@ class RouteDetailsCheckYourAnswersController @Inject()(
       }
     }
   }
-
 
   private def officeOfTransitSections(routesCYAHelper: RouteDetailsCheckYourAnswersHelper)
                                      (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Section] = {

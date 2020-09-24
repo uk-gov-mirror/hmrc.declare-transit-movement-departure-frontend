@@ -17,7 +17,6 @@
 package pages
 
 import base.SpecBase
-import models.Index
 import models.domain.SealDomain
 import pages.behaviours.PageBehaviours
 

@@ -18,6 +18,7 @@ package controllers.routeDetails
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit}
 import models.{CountryList, CustomsOfficeList, OfficeOfTransitList}
@@ -41,6 +42,7 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
   private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice))
   private val officeOfTransit = OfficeOfTransit("1", "name")
   private val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))
+  lazy val routeDetailsCheckYourAnswersRoute = routes.RouteDetailsCheckYourAnswersController.onSubmit(lrn).url
 
   "RouteDetailsCheckYourAnswers Controller" - {
 
@@ -76,6 +78,33 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
+    }
+
+    "must redirect to session reset page if DestinationCountry data is empty" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .build()
+      val request = FakeRequest(GET, routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "must redirect to task-list page on POST" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request =
+        FakeRequest(POST, routeDetailsCheckYourAnswersRoute)
+          .withFormUrlEncodedBody(("value", "id"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
     }
   }
 }
