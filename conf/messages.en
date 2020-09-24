@@ -566,3 +566,7 @@ confirmRemoveSeal.title = Are you sure you want to remove the seal {0}?
 confirmRemoveSeal.heading = Are you sure you want to remove the seal {0}?
 confirmRemoveSeal.error.required = Select yes if you are sure you want to remove the seal {0}
 sealIdentity.error.duplicate = Enter a seal number or mark you have not given before
+confirmRemoveOfficeOfTransit.title = confirmRemoveOfficeOfTransit
+confirmRemoveOfficeOfTransit.heading = confirmRemoveOfficeOfTransit
+confirmRemoveOfficeOfTransit.checkYourAnswersLabel = confirmRemoveOfficeOfTransit
+confirmRemoveOfficeOfTransit.error.required = Select yes if confirmRemoveOfficeOfTransit

@@ -283,3 +283,8 @@ GET        /:lrn/goods-summary/:sealIndex/confirm-remove-seal                   
 POST       /:lrn/goods-summary/:sealIndex/confirm-remove-seal                          controllers.goodsSummary.ConfirmRemoveSealController.onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode = NormalMode)
 GET        /:lrn/goods-summary/:sealIndex/change-confirm-remove-seal                   controllers.goodsSummary.ConfirmRemoveSealController.onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/goods-summary/:sealIndex/change-confirm-remove-seal                   controllers.goodsSummary.ConfirmRemoveSealController.onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/confirmRemoveOfficeOfTransit                        controllers.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/confirmRemoveOfficeOfTransit                        controllers.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeConfirmRemoveOfficeOfTransit                  controllers.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeConfirmRemoveOfficeOfTransit                  controllers.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
