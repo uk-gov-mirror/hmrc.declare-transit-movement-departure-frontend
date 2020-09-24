@@ -18,5 +18,6 @@ package queries
 
 object Constants {
    val RouteDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
+   val seals = "seals"
 
 }

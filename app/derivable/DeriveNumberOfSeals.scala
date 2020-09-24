@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
+import models.domain.SealDomain
 import play.api.libs.json.JsPath
+import queries.Constants
 
-case object InlandModePage extends QuestionPage[String] {
+final case class DeriveNumberOfSeals() extends Derivable[List[SealDomain], Int] {
 
-  override def path: JsPath = JsPath \ toString
+  override val derive: List[SealDomain] => Int = _.size
 
-  override def toString: String = "inlandMode"
+  override def path: JsPath = JsPath \ Constants.seals
 }

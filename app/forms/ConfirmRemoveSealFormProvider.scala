@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import play.api.libs.json.JsPath
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.domain.SealDomain
+import play.api.data.Form
 
-case object InlandModePage extends QuestionPage[String] {
+class ConfirmRemoveSealFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "inlandMode"
+  def apply(seal: SealDomain): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmRemoveSeal.error.required", seal.numberOrMark)
+    )
 }

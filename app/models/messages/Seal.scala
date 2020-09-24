@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package models.messages
 
-import play.api.libs.json.JsPath
+import com.lucidchart.open.xtract.{__, XmlReader}
+import models.{LanguageCode, LanguageCodeEnglish}
 
-case object InlandModePage extends QuestionPage[String] {
+case class Seal(numberOrMark: String)
 
-  override def path: JsPath = JsPath \ toString
+object Seal {
 
-  override def toString: String = "inlandMode"
+  object Constants {
+    val sealNumberOrMarkLength     = 20
+    val languageCode: LanguageCode = LanguageCodeEnglish
+  }
+  
+  implicit lazy val xmlReader: XmlReader[Seal] = (__ \ "SeaIdeSI11").read[String] map apply
+
 }

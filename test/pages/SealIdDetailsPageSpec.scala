@@ -16,17 +16,20 @@
 
 package pages
 
+import base.SpecBase
+import models.Index
+import models.domain.SealDomain
 import pages.behaviours.PageBehaviours
 
 
-class SealIdDetailsPageSpec extends PageBehaviours {
+class SealIdDetailsPageSpec extends PageBehaviours with SpecBase {
 
   "SealIdDetailsPage" - {
 
-    beRetrievable[String](SealIdDetailsPage)
+    beRetrievable[SealDomain](SealIdDetailsPage(sealIndex))
 
-    beSettable[String](SealIdDetailsPage)
+    beSettable[SealDomain](SealIdDetailsPage(sealIndex))
 
-    beRemovable[String](SealIdDetailsPage)
+    beRemovable[SealDomain](SealIdDetailsPage(sealIndex))
   }
 }
