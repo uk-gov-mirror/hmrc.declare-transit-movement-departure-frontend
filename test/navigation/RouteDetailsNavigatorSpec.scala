@@ -24,6 +24,7 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import queries.OfficeOfTransitQuery
 
 class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -118,6 +119,29 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
               navigator.nextPage(AddTransitOfficePage, NormalMode, userAnswers)
                 .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
+        }
+
+        "must go from Confirm Remove OfficeOfTransit Page to Added office of transit page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers.set(AddTransitOfficePage, true).toOption.value
+                .set(AddAnotherTransitOfficePage(index), "id1").toOption.value
+                .set(AddAnotherTransitOfficePage(Index(1)), "id2").toOption.value
+                .set(ConfirmRemoveOfficeOfTransitPage, true).toOption.value
+
+              navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, NormalMode, userAnswers)
+                .mustBe(routes.AddTransitOfficeController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Confirm Remove OfficeOfTransit Page to Add another offices of transit when all records are removed" in {
+            val userAnswers = emptyUserAnswers.remove(OfficeOfTransitQuery(index)).toOption.value
+              .set(ConfirmRemoveOfficeOfTransitPage, true).toOption.value
+
+            navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, NormalMode, userAnswers)
+              .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
+
         }
       }
 

@@ -98,10 +98,10 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
                               officeOfTransitList: OfficeOfTransitList): Option[Row] = userAnswers.get(AddAnotherTransitOfficePage(index)) flatMap  {
     answer =>
       officeOfTransitList.getOfficeOfTransit(answer) map{
-        customsOffice =>
+        officeOfTransit =>
           Row(
             key     = Key(msg"addAnotherTransitOffice.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
-            value   = Value(lit"${customsOffice.name} ${customsOffice.id}"),
+            value   = Value(lit"${officeOfTransit.name} (${officeOfTransit.id})"),
             actions = List(
               Action(
                 content            = msg"site.edit",
@@ -167,7 +167,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               ),
               Action(
                 content = msg"site.delete",
-                href = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
+                href = routes.ConfirmRemoveOfficeOfTransitController.onPageLoad(userAnswers.id, index, mode).url,
                 visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
                 attributes = Map("id" -> s"""remove-officeOfTransit-${index.display}""")
               )
