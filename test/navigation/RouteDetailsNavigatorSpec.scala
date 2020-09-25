@@ -121,6 +121,22 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
 
+        "must go from Added transit office page to router details check your answers page when number of offices added exceeds 5" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers.remove(AddTransitOfficePage).toOption.value
+                .set(AddAnotherTransitOfficePage(index), "id").toOption.value
+                .set(AddAnotherTransitOfficePage(Index(1)), "id1").toOption.value
+                .set(AddAnotherTransitOfficePage(Index(2)), "id1").toOption.value
+                .set(AddAnotherTransitOfficePage(Index(3)), "id1").toOption.value
+                .set(AddAnotherTransitOfficePage(Index(4)), "id1").toOption.value
+
+              navigator.nextPage(AddTransitOfficePage, NormalMode, userAnswers)
+                .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+
         "must go from Confirm Remove OfficeOfTransit Page to Added office of transit page" in {
 
           forAll(arbitrary[UserAnswers]) {
