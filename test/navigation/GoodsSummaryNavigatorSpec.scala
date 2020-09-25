@@ -213,25 +213,25 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         }
       }
 
-            "must go from TotalGrossMage to CheckYourAnswersPage " in {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                  val updatedAnswers = answers.set(TotalGrossMassPage, "100").success.value
+      "must go from TotalGrossMage to CheckYourAnswersPage " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(TotalGrossMassPage, "100").success.value
 
-                  navigator.nextPage(TotalGrossMassPage, CheckMode, updatedAnswers)
-                    .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
-              }
-            }
+            navigator.nextPage(TotalGrossMassPage, CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
 
-            "must go from AuthLocationCodePage to CheckYourAnswersPage " in {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                  val updatedAnswers = answers.set(AuthorisedLocationCodePage, "test code").success.value
+      "must go from AuthLocationCodePage to CheckYourAnswersPage " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(AuthorisedLocationCodePage, "test code").success.value
 
-                  navigator.nextPage(AuthorisedLocationCodePage, CheckMode, updatedAnswers)
-                    .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
-              }
-            }
+            navigator.nextPage(AuthorisedLocationCodePage, CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
 
 
       "must go from AddCustomsApprovedLocation to CheckYourAnswers page when selecting No" in {
@@ -256,30 +256,66 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         }
       }
 
-            "must go from ControlResultDateLimitPage to CheckYourAnswersPage " in {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                val date = LocalDate.now
-                val updatedAnswers = answers.set(ControlResultDateLimitPage, date).success.value
+      "must go from ControlResultDateLimitPage to CheckYourAnswersPage " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val date = LocalDate.now
+            val updatedAnswers = answers.set(ControlResultDateLimitPage, date).success.value
 
-                  navigator.nextPage(ControlResultDateLimitPage, CheckMode, updatedAnswers)
-                    .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
-              }
-            }
-
-
-            "must go from CustomsApprovedLocation page to CheckYourAnswersPage " in {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                  val updatedAnswers = answers.set(CustomsApprovedLocationPage, "test data").success.value
-
-                  navigator.nextPage(CustomsApprovedLocationPage, CheckMode, updatedAnswers)
-                    .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
-              }
-            }
+            navigator.nextPage(ControlResultDateLimitPage, CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
 
 
+      "must go from CustomsApprovedLocation page to CheckYourAnswersPage " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(CustomsApprovedLocationPage, "test data").success.value
 
+            navigator.nextPage(CustomsApprovedLocationPage, CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+
+      "must go from AddSealsLaterPage to CheckYourAnswersPage " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(AddSealsLaterPage, CheckMode, answers)
+              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from SealIdDetailsPage to SealsInformationPage when submitted" in {
+        forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+          (answers, seal) =>
+            val updatedAnswers = answers.set(SealIdDetailsPage(sealIndex), seal).success.value
+
+            navigator.nextPage(SealIdDetailsPage(sealIndex), CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+      }
+
+      "must go from SealsInformationPage to SealsIdDetails when answer is Yes" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(SealsInformationPage, true).toOption.value
+
+            navigator.nextPage(SealsInformationPage, CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedAnswers.id, sealIndex, CheckMode))
+        }
+      }
+
+      "must go from SealsInformationPage to GoodsSummaryCheckYourAnswersPage when answer is No" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(SealsInformationPage, false).toOption.value
+
+            navigator.nextPage(SealsInformationPage, CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
     }
   }
 }
