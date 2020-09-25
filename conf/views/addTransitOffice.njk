@@ -38,13 +38,14 @@
 
           {% if maxLimitReached %}
 
-              <h2 class="govuk-fieldset__legend--m"> {{ messages('addTransitOffice.maxLimit.label') }} </h2>
+              <p class="govuk-body"> {{ messages('addTransitOffice.maxLimit.label') }} </p>
 
                 {{ govukButton({
                     text: messages("site.continue"),
                     href: redirectUrlOnReachingMaxLimit,
                     attributes: {id:"submit"}
                   }) }}
+
           {% else %}
             <form action="{{ routes.controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn, mode).url }}" method="post">
 
@@ -72,11 +73,6 @@
 
               </form>
           {% endif %}
-
-
-
-
-
       </div>
     </div>
   </div>
