@@ -41,7 +41,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddTransitOfficeController @Inject()(
                                             override val messagesApi: MessagesApi,
-                                            sessionRepository: SessionRepository,
                                             @RouteDetails navigator: Navigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalActionProvider,
@@ -64,7 +63,7 @@ class AddTransitOfficeController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors => {
-          renderPage(lrn, mode, formWithErrors) .map(BadRequest(_))
+          renderPage(lrn, mode, formWithErrors).map(BadRequest(_))
         },
         value =>
           for {
@@ -79,6 +78,7 @@ class AddTransitOfficeController @Inject()(
       val routesCYAHelper = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
       val numberOfTransitOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
       val index: Seq[Index] = List.range(0, numberOfTransitOffices).map(Index(_))
+      val maxLimitReached: Boolean = if(numberOfTransitOffices == 5) true else false
       val officeOfTransitRows = index.map {
         index =>
           routesCYAHelper.officeOfTransitRow(index, officeOfTransitList, mode)
@@ -91,6 +91,8 @@ class AddTransitOfficeController @Inject()(
         "pageTitle" -> msg"addTransitOffice.title.$singularOrPlural".withArgs(numberOfTransitOffices),
         "heading" -> msg"addTransitOffice.heading.$singularOrPlural".withArgs(numberOfTransitOffices),
         "lrn" -> lrn,
+        "maxLimitReached" -> maxLimitReached,
+        "redirectUrlOnReachingMaxLimit" -> routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url,
         "officeOfTransitRows" -> officeOfTransitRows,
         "radios" -> Radios.yesNo(form("value"))
       )
