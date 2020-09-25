@@ -22,7 +22,6 @@ import derivable.DeriveNumberOfSeals
 import javax.inject.{Inject, Singleton}
 import models.ProcedureType.{Normal, Simplified}
 import models._
-import navigation.annotations.MovementDetails
 import pages._
 import play.api.mvc.Call
 
@@ -54,6 +53,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case ControlResultDateLimitPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case AddCustomsApprovedLocationPage => ua => Some(addCustomsApprovedLocationRoute(ua, CheckMode))
     case CustomsApprovedLocationPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case AddSealsPage => ua => Some(addSealsRoute(ua, CheckMode))
   }
 
 
@@ -80,17 +80,20 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
       case (Some(false), _, NormalMode) => routes.AddSealsController.onPageLoad(ua.id, NormalMode)
       case (Some(true), None, CheckMode) => routes.CustomsApprovedLocationController.onPageLoad(ua.id, CheckMode)
       case (Some(true), Some(_), CheckMode)  => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
-      case(Some(false), _, CheckMode)  => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(false), _, CheckMode)  => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 
   def addSealsRoute(ua: UserAnswers, mode: Mode): Call = {
-    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(1)
+    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
     val sealIndex = Index(sealCount)
 
-    ua.get(AddSealsPage) match {
-      case Some(true) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
-      case Some(false) => routes.AddSealsLaterController.onPageLoad(ua.id)
+    (ua.get(AddSealsPage), ua.get(SealIdDetailsPage(sealIndex)), mode) match {
+      case (Some(true), _, NormalMode) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, NormalMode)
+      case (Some(false), _, NormalMode) => routes.AddSealsLaterController.onPageLoad(ua.id)
+      case (Some(true), Some(_), CheckMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(true), None, CheckMode) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, CheckMode)
+      case (Some(false), _, CheckMode) => routes.AddSealsLaterController.onPageLoad(ua.id)
     }
   }
 
