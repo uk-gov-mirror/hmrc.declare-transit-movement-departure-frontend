@@ -129,10 +129,20 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must go from CustomsApprovedLocationPage to AddSealsPage when submitted" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.set(CustomsApprovedLocationPage, "test").toOption.value
+            val updatedAnswers = answers.set(CustomsApprovedLocationPage, "test").success.value
 
             navigator.nextPage(CustomsApprovedLocationPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.AddSealsController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+      "must go from SealsInformationPage to SealsIdDetails when customer answers Yes" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(SealsInformationPage, true).toOption.value
+
+            navigator.nextPage(SealsInformationPage, NormalMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedAnswers.id, sealIndex, NormalMode))
         }
       }
     }
