@@ -288,3 +288,6 @@ GET        /:lrn/:index/confirm-remove-office-of-transit                        
 POST       /:lrn/:index/confirm-remove-office-of-transit                         controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:lrn/:index/change-confirm-remove-office-of-transit                  controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/:index/change-confirm-remove-office-of-transit                  controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/goods-summary/check-your-answers                       controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/goods-summary/check-your-answers                       controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
