@@ -39,9 +39,10 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case ControlResultDateLimitPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
     case CustomsApprovedLocationPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
     case AddSealsPage => ua => Some(addSealsRoute(ua, NormalMode))
-    case SealIdDetailsPage(sealIndex) => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
+    case SealIdDetailsPage(sealIndex) => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, NormalMode))
     case AddSealsLaterPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case SealsInformationPage => ua => Some(sealsInformationRoute(ua, NormalMode))
+    case ConfirmRemoveSealPage() => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, NormalMode))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -84,7 +85,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
   }
 
   def addSealsRoute(ua: UserAnswers, mode: Mode): Call = {
-    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
+    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(1)
     val sealIndex = Index(sealCount)
 
     ua.get(AddSealsPage) match {

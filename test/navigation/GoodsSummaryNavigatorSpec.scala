@@ -22,6 +22,7 @@ import base.SpecBase
 import controllers.goodsSummary.{routes => goodsSummaryRoute}
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
+import models.domain.SealDomain
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -136,13 +137,43 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         }
       }
 
-      "must go from SealsInformationPage to SealsIdDetails when customer answers Yes" in {
+      "must go from SealsInformationPage to SealsIdDetails when answer is Yes" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers.set(SealsInformationPage, true).toOption.value
 
             navigator.nextPage(SealsInformationPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedAnswers.id, sealIndex, NormalMode))
+        }
+      }
+
+      "must go from SealsInformationPage to GoodsSummaryCheckYourAnswersPage when answer is No" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(SealsInformationPage, false).toOption.value
+
+            navigator.nextPage(SealsInformationPage, NormalMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+
+      "must go from SealIdDetailsPage to SealsInformationPage when submitted" in {
+        forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+          (answers, seal) =>
+            val updatedAnswers = answers.set(SealIdDetailsPage(sealIndex), seal).success.value
+
+            navigator.nextPage(SealIdDetailsPage(sealIndex), NormalMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+      "must go from ConfirmRemoveSealPage to SealsInformationPage when submitted" in {
+        forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+          case (userAnswers, seal) =>
+            val updatedAnswers = userAnswers.set(SealIdDetailsPage(sealIndex), seal).success.value
+
+            navigator.nextPage(ConfirmRemoveSealPage(), NormalMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
     }
