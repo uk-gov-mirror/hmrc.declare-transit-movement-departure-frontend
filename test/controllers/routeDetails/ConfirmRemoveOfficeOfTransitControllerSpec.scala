@@ -37,6 +37,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import queries.OfficeOfTransitQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
@@ -105,7 +106,9 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
 
       when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), "id").toOption.value
+        .remove(OfficeOfTransitQuery(index)).toOption.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
       val request        = FakeRequest(GET, confirmRemoveOfficeOfTransitRoute)
@@ -201,7 +204,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
       val newUserAnswers = UserAnswers(
         id         = userAnswers.id,
         eoriNumber = userAnswers.eoriNumber,
-        userAnswers.remove(AddAnotherTransitOfficePage(index)).success.value.data,
+        userAnswers.remove(OfficeOfTransitQuery(index)).success.value.data,
         userAnswers.lastUpdated
       )
 
