@@ -55,6 +55,16 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
 
+        "must go from Destination country page to destination office page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+
+              navigator.nextPage(DestinationCountryPage, NormalMode, answers)
+                .mustBe(routes.DestinationOfficeController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
         "must go from Destination Office Page to Add another transit office page" in {
 
           forAll(arbitrary[UserAnswers]) {
@@ -207,6 +217,18 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
 
             navigator.nextPage(DestinationCountryPage, CheckMode, answers)
+              .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+        }
+
+      }
+
+      "Must go from Destination Office to Router Details Check Your Answers" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator.nextPage(DestinationOfficePage, CheckMode, answers)
               .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
         }
