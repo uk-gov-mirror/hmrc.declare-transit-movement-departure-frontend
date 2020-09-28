@@ -17,12 +17,16 @@
 package utils
 
 
+import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
+import derivable.DeriveNumberOfSeals
+import models.ProcedureType.Simplified
 import models.Status.{Completed, InProgress, NotStarted}
-import models.{Index, NormalMode, SectionDetails, Status, UserAnswers}
+import models.domain.SealDomain
+import models.{Index, NormalMode, ProcedureType, SectionDetails, Status, UserAnswers}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
 
 class SectionsHelper(userAnswers: UserAnswers) {
@@ -86,7 +90,11 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private def goodsSummarySection: SectionDetails = {
-    SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted)
+    val startPage: String = goodsSummaryRoutes.DeclarePackagesController.onPageLoad(userAnswers.id, NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (goodsSummaryRoutes.GoodsSummaryCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
+    val (page, status) = getIncompletePage(startPage, goodsSummaryPages).getOrElse(cyaPageAndStatus)
+
+    SectionDetails("declarationSummary.section.goodsSummary", page, status)
   }
 
   private def guaranteeSection: SectionDetails = {
@@ -218,4 +226,59 @@ class SectionsHelper(userAnswers: UserAnswers) {
     ) ++ isPrincipalEoriKnowDiversionPages ++ addConsignorPage ++ addConsignorPageDiversionPage ++ isConsignorEoriKnownPage ++ addConsigneePage ++ addConsigneeDiversionPage ++ isConsigneeEoriKnownPage
   }
 
+  private val goodsSummaryPages: Seq[(Option[_], String)] = {
+    val lrn = userAnswers.id
+    val sealIndex = Index(0)
+
+    val declarePackagesDiversionPages: Seq[(Option[Int], String)] = if (userAnswers.get(DeclarePackagesPage).contains(true)) {
+      Seq(userAnswers.get(TotalPackagesPage) -> goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url)
+    } else {
+      Seq.empty
+    }
+
+    val addCustomsApprovedLocationDiversionPages: Seq[(Option[String], String)] = if (userAnswers.get(AddCustomsApprovedLocationPage).contains(true)) {
+      Seq(userAnswers.get(CustomsApprovedLocationPage) -> goodsSummaryRoutes.CustomsApprovedLocationController.onPageLoad(lrn, NormalMode).url)
+    } else {
+      Seq.empty
+    }
+
+    val sealsInformationDiversionPages: Seq[(Option[SealDomain], String)] = if (userAnswers.get(SealsInformationPage).contains(true)) {
+      Seq(userAnswers.get(SealIdDetailsPage(sealIndex)) -> goodsSummaryRoutes.SealIdDetailsController.onPageLoad(lrn, sealIndex, NormalMode).url)
+    } else {
+      Seq.empty
+    }
+
+    val addSealsPages: Seq[(Option[SealDomain], String)] = if (userAnswers.get(AddSealsPage).contains(true)){
+      Seq(userAnswers.get(SealIdDetailsPage(sealIndex)) -> goodsSummaryRoutes.SealIdDetailsController.onPageLoad(lrn, sealIndex, NormalMode).url)
+    } else {
+      Seq.empty
+    }
+
+    val procedureTypePage: Option[ProcedureType] = userAnswers.get(ProcedureTypePage)
+
+    val simplifiedPages = {
+      if (procedureTypePage == Option(Simplified)) {
+        Seq(
+          userAnswers.get(AuthorisedLocationCodePage) -> goodsSummaryRoutes.AuthorisedLocationCodeController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(ControlResultDateLimitPage) -> goodsSummaryRoutes.ControlResultDateLimitController.onPageLoad(lrn, NormalMode).url
+        )
+      } else {
+        Seq(
+          userAnswers.get(AddCustomsApprovedLocationPage) -> goodsSummaryRoutes.AddCustomsApprovedLocationController.onPageLoad(lrn, NormalMode),
+          userAnswers.get(CustomsApprovedLocationPage) -> goodsSummaryRoutes.CustomsApprovedLocationController.onPageLoad(lrn, NormalMode)
+        )
+        Seq.empty
+      }
+    }
+
+    Seq(
+      userAnswers.get(DeclarePackagesPage) -> goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(TotalPackagesPage) -> goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(TotalGrossMassPage) -> goodsSummaryRoutes.TotalGrossMassController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(AddSealsPage) -> goodsSummaryRoutes.AddSealsController.onPageLoad(lrn, NormalMode).url,
+      userAnswers.get(SealIdDetailsPage(sealIndex)) -> goodsSummaryRoutes.SealIdDetailsController.onPageLoad(lrn, sealIndex, NormalMode).url,
+      userAnswers.get(SealsInformationPage) -> goodsSummaryRoutes.SealsInformationController.onPageLoad(lrn, NormalMode).url,
+    ) ++ declarePackagesDiversionPages ++ addCustomsApprovedLocationDiversionPages ++ addSealsPages ++ simplifiedPages ++ sealsInformationDiversionPages
+
+  }
 }
