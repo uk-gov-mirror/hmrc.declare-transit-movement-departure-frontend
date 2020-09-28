@@ -158,8 +158,8 @@ GET        /:lrn/transport-details/add-id-at-departure-later                    
 
 GET        /:lrn/route/dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/route/dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/route/dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/route/dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/route/change-dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/route/change-dispatch-country                            controllers.routeDetails.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/route/office-of-departure                         controllers.routeDetails.OfficeOfDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/route/office-of-departure                         controllers.routeDetails.OfficeOfDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

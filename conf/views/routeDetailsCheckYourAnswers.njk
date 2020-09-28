@@ -21,7 +21,7 @@
              {{ sectionMacro(section.sectionTitle, section.rows) }}
         {% endfor %}
 
-        <p class="govuk-body"><a href="{{ addOfficesOfTransitUrl }}">{{ messages("addOrRemoveOfficesOfTransit.checkYourAnswersLabel") }}</a><p>
+        <p class="govuk-body"><a id="add-or-remove-office-of-transit" href="{{ addOfficesOfTransitUrl }}">{{ messages("addOrRemoveOfficesOfTransit.checkYourAnswersLabel") }}</a><p>
 
         <form action="{{ submitUrl }}" method="post">
 

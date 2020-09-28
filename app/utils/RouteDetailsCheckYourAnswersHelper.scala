@@ -37,7 +37,8 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"arrivalTimesAtOffice.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"arrivalTimesAtOffice.checkYourAnswersLabel")),
+            attributes = Map("id"-> "change-arrival-times-at-office-of-transit")
           )
         )
       )
@@ -54,7 +55,8 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               Action(
                 content = msg"site.edit",
                 href = routes.DestinationOfficeController.onPageLoad(lrn, CheckMode).url,
-                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"destinationOffice.checkYourAnswersLabel"))
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"destinationOffice.checkYourAnswersLabel")),
+                attributes = Map("id" -> "change-destination-office")
               )
             )
           )
@@ -87,7 +89,8 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content = msg"site.edit",
             href = routes.OfficeOfDepartureController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"officeOfDeparture.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"officeOfDeparture.checkYourAnswersLabel")),
+            attributes = Map("id"-> "change-office-of-departure")
           )
         )
       )
@@ -106,7 +109,8 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               Action(
                 content            = msg"site.edit",
                 href               = routes.AddAnotherTransitOfficeController.onPageLoad(lrn = lrn, index = index, mode = CheckMode).url,
-                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherTransitOffice.checkYourAnswersLabel"))
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherTransitOffice.checkYourAnswersLabel")),
+                attributes = Map("id" -> "change-office-of-transit")
               )
             )
           )
@@ -124,7 +128,8 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.CountryOfDispatchController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"countryOfDispatch.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"countryOfDispatch.checkYourAnswersLabel")),
+            attributes = Map("id" -> "change-country-of-dispatch")
           )
         )
       )
@@ -141,7 +146,8 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.DestinationCountryController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"destinationCountry.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"destinationCountry.checkYourAnswersLabel")),
+            attributes = Map("id" -> "change-destination-country")
           )
         )
       )
@@ -163,13 +169,13 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
                 content = msg"site.change",
                 href = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
                 visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
-                attributes = Map("id" -> s"""change-officeOfTransit-${index.display}""")
+                attributes = Map("id" -> s"""change-office-of-transit-${index.display}""")
               ),
               Action(
                 content = msg"site.delete",
                 href = routes.ConfirmRemoveOfficeOfTransitController.onPageLoad(userAnswers.id, index, mode).url,
                 visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
-                attributes = Map("id" -> s"""remove-officeOfTransit-${index.display}""")
+                attributes = Map("id" -> s"""remove-office-of-transit-${index.display}""")
               )
             )
           )
