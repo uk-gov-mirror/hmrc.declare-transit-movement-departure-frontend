@@ -16,11 +16,10 @@
 
 package viewModels
 
-import derivable.DeriveNumberOfSeals
-import models.{Index, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.viewmodels.SummaryList
 import utils.{AddSealHelper, GoodsSummaryCheckYourAnswersHelper}
 import viewModels.sections.Section
-import uk.gov.hmrc.viewmodels.SummaryList
 
 
 case class GoodsSummaryCheckYourAnswersViewModel(sections: Seq[Section])

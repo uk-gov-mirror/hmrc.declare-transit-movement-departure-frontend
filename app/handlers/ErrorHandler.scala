@@ -76,7 +76,7 @@ class ErrorHandler @Inject()(
   def onConcurrentError(message: String, redirectLink: String, journey: String)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val json = Json.obj(
       "pageTitle"    -> msg"concurrent.remove.error.title".withArgs(msg"$journey"),
-      "pageHeading"  -> msg"concurrent.remove.error.title".withArgs(msg"$journey"),
+      "pageHeading"  -> msg"concurrent.remove.error.heading".withArgs(msg"$journey"),
       "linkText"     -> msg"concurrent.remove.error.$message.link.text",
       "redirectLink" -> redirectLink
     )

@@ -36,34 +36,43 @@
                 rows: officeOfTransitRows
             }) }}
 
-        <form action="{{ routes.controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn, mode).url }}" method="post">
+          {% if maxLimitReached %}
 
+              <p class="govuk-body"> {{ messages('addTransitOffice.maxLimit.label') }} </p>
 
-          {{ csrf() | safe }}
+                {{ govukButton({
+                    text: messages("site.continue"),
+                    href: redirectUrlOnReachingMaxLimit,
+                    attributes: {id:"submit"}
+                  }) }}
 
-          {{ govukRadios({
-            classes: "govuk-radios--inline",
-            idPrefix: "foo",
-            name: 'value',
-            fieldset: {
-              legend: {
-                text: messages('addTransitOffice.paragraph'),
-                isPageHeading: true,
+          {% else %}
+            <form action="{{ routes.controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn, mode).url }}" method="post">
 
-                classes: "govuk-fieldset__legend--m"
-              }
-            },
-            items: radios,
-            errorMessage: form.value.error
-          }) }}
+              {{ csrf() | safe }}
 
-          {{ govukButton({
-            text: messages("site.continue"),
-            attributes: {id:"submit"}
-          }) }}
+              {{ govukRadios({
+                classes: "govuk-radios--inline",
+                idPrefix: "foo",
+                name: 'value',
+                fieldset: {
+                  legend: {
+                    text: messages('addTransitOffice.paragraph'),
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--m"
+                  }
+                },
+                items: radios,
+                errorMessage: form.value.error
+              }) }}
 
-        </form>
+              {{ govukButton({
+                  text: messages("site.continue"),
+                  attributes: {id:"submit"}
+                }) }}
 
+              </form>
+          {% endif %}
       </div>
     </div>
   </div>

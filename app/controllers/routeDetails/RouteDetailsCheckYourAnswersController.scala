@@ -89,7 +89,6 @@ class RouteDetailsCheckYourAnswersController @Inject()(
 
               Seq(section, officeOfTransitSection)
             }
-
           }
         }
       }

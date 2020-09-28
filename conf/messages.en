@@ -80,6 +80,13 @@ technicalDifficulties.savedAnswers = We saved your answers. They will be availab
 technicalDifficulties.contact = You can
 technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement(opens in a new tab)
 
+concurrent.officeOfTransit = office of transit
+concurrent.remove.error.title = Sorry, there is a problem with this {0}
+concurrent.remove.error.heading = Sorry, there is a problem with this {0}
+concurrent.remove.error.paragraph = You will need to answer some questions again.
+concurrent.remove.error.noOfficeOfTransit.link.text = Go back to did any events happen on the journey?
+concurrent.remove.error.multipleOfficeOfTransit.link.text = Go back to you have added office of transit
+
 #### Compliance statement
 
 ## section one
@@ -450,6 +457,7 @@ addTransitOffice.heading.plural = You have added {0} offices of transit
 addTransitOffice.paragraph = Do you need to add another office of transit?
 addTransitOffice.checkYourAnswersLabel = Add another office of transit
 addTransitOffice.error.required = Select yes if you want to add another office of transit
+addTransitOffice.maxLimit.label = You cannot add any more offices of transit.
 
 officesOfTransit.checkYourAnswersLabel = Offices of transit
 addOrRemoveOfficesOfTransit.checkYourAnswersLabel = Add or remove offices of transit
@@ -571,3 +579,8 @@ confirmRemoveSeal.title = Are you sure you want to remove the seal {0}?
 confirmRemoveSeal.heading = Are you sure you want to remove the seal {0}?
 confirmRemoveSeal.error.required = Select yes if you are sure you want to remove the seal {0}
 sealIdentity.error.duplicate = Enter a seal number or mark you have not given before
+
+confirmRemoveOfficeOfTransit.title = Are you sure you want to remove this office of transit?
+confirmRemoveOfficeOfTransit.heading = Are you sure you want to remove this office of transit?
+confirmRemoveOfficeOfTransit.Label = Office of transit
+confirmRemoveOfficeOfTransit.error.required = Select yes if you are sure you want to remove this office of transit

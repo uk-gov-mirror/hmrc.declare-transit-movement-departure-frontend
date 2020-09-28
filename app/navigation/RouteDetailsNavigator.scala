@@ -32,8 +32,9 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     case DestinationCountryPage => ua => Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
     case DestinationOfficePage => ua => Some(routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(0), NormalMode))
     case AddAnotherTransitOfficePage(index) => ua =>  Some(redirectToAddTransitOfficeNextPage(ua, index, NormalMode))
-    case AddTransitOfficePage => ua => addOfficeOfTransit(NormalMode, ua)
+    case AddTransitOfficePage => ua => Some(addOfficeOfTransit(NormalMode, ua))
     case ArrivalTimesAtOfficePage(_) => ua => Some(routes.AddTransitOfficeController.onPageLoad(ua.id, NormalMode))
+    case ConfirmRemoveOfficeOfTransitPage => ua => Some(removeOfficeOfTransit(NormalMode)(ua))
 
   }
 
@@ -56,14 +57,22 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     }
   }
 
-  private def addOfficeOfTransit(mode: Mode, userAnswers: UserAnswers): Option[Call] =
-    userAnswers.get(AddTransitOfficePage).map {
-      case true =>
-        val count = userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+  private def addOfficeOfTransit(mode: Mode, userAnswers: UserAnswers): Call = {
+    val count = userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+    val maxNumberOfOfficesAllowed = 5
+    userAnswers.get(AddTransitOfficePage) match {
+      case Some(true) if count <= maxNumberOfOfficesAllowed =>
         val index = Index(count)
         routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode)
-      case false =>
+      case _ =>
         routes.RouteDetailsCheckYourAnswersController.onPageLoad(userAnswers.id)
+    }
+  }
+
+  private def removeOfficeOfTransit(mode: Mode)(ua: UserAnswers) =
+    ua.get(DeriveNumberOfOfficeOfTransits) match {
+      case None | Some(0) => routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(0), mode)
+      case _              => routes.AddTransitOfficeController.onPageLoad(ua.id, mode)
     }
 }
 
