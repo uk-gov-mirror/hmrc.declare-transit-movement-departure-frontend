@@ -38,40 +38,40 @@ import utils.AddSealHelper
 import scala.concurrent.{ExecutionContext, Future}
 
 class SealsInformationController @Inject()(
-    override val messagesApi: MessagesApi,
-    @GoodsSummary navigator: Navigator,
-    identify: IdentifierAction,
-    getData: DataRetrievalActionProvider,
-    requireData: DataRequiredAction,
-    formProvider: SealsInformationFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+                                            override val messagesApi: MessagesApi,
+                                            @GoodsSummary navigator: Navigator,
+                                            identify: IdentifierAction,
+                                            getData: DataRetrievalActionProvider,
+                                            requireData: DataRequiredAction,
+                                            formProvider: SealsInformationFormProvider,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            renderer: Renderer
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber,  mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       renderPage(lrn, mode, form)
         .map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber,  mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            renderPage(lrn,  mode, formWithErrors)
+            renderPage(lrn, mode, formWithErrors)
               .map(BadRequest(_)),
-          value  =>
+          value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(SealsInformationPage, value))
             } yield Redirect(navigator.nextPage(SealsInformationPage, mode, updatedAnswers))
         )
   }
 
-  private def renderPage(lrn: LocalReferenceNumber,  mode: Mode, form: Form[Boolean])(
+  private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Boolean])(
     implicit request: DataRequest[AnyContent]): Future[Html] = {
 
     val numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
@@ -85,16 +85,21 @@ class SealsInformationController @Inject()(
     val singularOrPlural = if (numberOfSeals == 1) "singular" else "plural"
 
     val json = Json.obj(
-      "form"        -> form,
-      "mode"        -> mode,
-      "lrn"         -> lrn,
-      "pageTitle"   -> msg"addSeal.title.$singularOrPlural".withArgs(numberOfSeals),
-      "heading"     -> msg"addSeal.heading.$singularOrPlural".withArgs(numberOfSeals),
-      "seals"       -> sealsRows,
-      "radios"      -> Radios.yesNo(form("value")),
-      "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  mode).url
+      "form" -> form,
+      "mode" -> mode,
+      "lrn" -> lrn,
+      "pageTitle" -> msg"addSeal.title.$singularOrPlural".withArgs(numberOfSeals),
+      "heading" -> msg"addSeal.heading.$singularOrPlural".withArgs(numberOfSeals),
+      "seals" -> sealsRows,
+      "radios" -> Radios.yesNo(form("value")),
+      "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, mode).url
     )
 
-    renderer.render("sealsInformation.njk", json)
+    if (numberOfSeals < 10) {
+      renderer.render("sealsInformation.njk", json)
+    } else {
+      renderer.render("maximumSealsInformation.njk", json)
+
+    }
   }
 }
