@@ -110,7 +110,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
                 content            = msg"site.edit",
                 href               = routes.AddAnotherTransitOfficeController.onPageLoad(lrn = lrn, index = index, mode = CheckMode).url,
                 visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherTransitOffice.checkYourAnswersLabel")),
-                attributes = Map("id" -> "change-add-another-office-of-transit")
+                attributes = Map("id" -> "change-office-of-transit")
               )
             )
           )
