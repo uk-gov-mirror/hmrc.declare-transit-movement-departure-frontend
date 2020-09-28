@@ -228,7 +228,6 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
   private val goodsSummaryPages: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
-    val sealCount = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
     val sealIndex = Index(0)
 
     val declarePackagesDiversionPages: Seq[(Option[Int], String)] = if (userAnswers.get(DeclarePackagesPage).contains(true)) {
@@ -249,10 +248,16 @@ class SectionsHelper(userAnswers: UserAnswers) {
       Seq.empty
     }
 
+    val addSealsPages: Seq[(Option[SealDomain], String)] = if (userAnswers.get(AddSealsPage).contains(true)){
+      Seq(userAnswers.get(SealIdDetailsPage(sealIndex)) -> goodsSummaryRoutes.SealIdDetailsController.onPageLoad(lrn, sealIndex, NormalMode).url)
+    } else {
+      Seq.empty
+    }
+
     val procedureTypePage: Option[ProcedureType] = userAnswers.get(ProcedureTypePage)
 
     val simplifiedPages = {
-      if(procedureTypePage == Option(Simplified)) {
+      if (procedureTypePage == Option(Simplified)) {
         Seq(
           userAnswers.get(AuthorisedLocationCodePage) -> goodsSummaryRoutes.AuthorisedLocationCodeController.onPageLoad(lrn, NormalMode).url,
           userAnswers.get(ControlResultDateLimitPage) -> goodsSummaryRoutes.ControlResultDateLimitController.onPageLoad(lrn, NormalMode).url
@@ -272,7 +277,8 @@ class SectionsHelper(userAnswers: UserAnswers) {
       userAnswers.get(TotalGrossMassPage) -> goodsSummaryRoutes.TotalGrossMassController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(AddSealsPage) -> goodsSummaryRoutes.AddSealsController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(SealIdDetailsPage(sealIndex)) -> goodsSummaryRoutes.SealIdDetailsController.onPageLoad(lrn, sealIndex, NormalMode).url,
-    ) ++ declarePackagesDiversionPages ++ addCustomsApprovedLocationDiversionPages  ++ simplifiedPages ++ sealsInformationDiversionPages
+      userAnswers.get(SealsInformationPage) -> goodsSummaryRoutes.SealsInformationController.onPageLoad(lrn, NormalMode).url,
+    ) ++ declarePackagesDiversionPages ++ addCustomsApprovedLocationDiversionPages ++ addSealsPages ++ simplifiedPages ++ sealsInformationDiversionPages
 
   }
 }

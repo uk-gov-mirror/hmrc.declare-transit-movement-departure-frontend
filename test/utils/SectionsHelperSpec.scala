@@ -22,9 +22,10 @@ import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
 import controllers.goodsSummary.{routes => goodsSummaryRoutes}
+import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.reference.{Country, CountryCode, TransportMode}
-import models.{DeclarationType, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails, UserAnswers}
+import models.{DeclarationType, Index, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails, UserAnswers}
 import pages._
 
 class SectionsHelperSpec extends SpecBase {
@@ -176,7 +177,7 @@ class SectionsHelperSpec extends SpecBase {
 
         val result = sectionsHelper.getSections
 
-        result must contain (SectionDetails(sectionName, url, Completed))
+        result must contain(SectionDetails(sectionName, url, Completed))
       }
 
     }
@@ -224,6 +225,57 @@ class SectionsHelperSpec extends SpecBase {
         result mustBe expectedSections
       }
     }
+
+    "Goods Summary" - {
+      "must Goods Summary section with status as NotStarted" in {
+        val sectionsHelper = new SectionsHelper(emptyUserAnswers)
+
+        val url = goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "goodsSummary.section.routes"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
+      "must return goodssummary section with status as In Progress" in {
+        val userAnswers = emptyUserAnswers.set(DeclarePackagesPage, true).success.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+
+        val url = goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.goodsSummary"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, InProgress))
+
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
+
+      "must goods summary section with status as Completed" in {
+        val userAnswers = emptyUserAnswers
+          .set(DeclarePackagesPage, true).toOption.value
+          .set(TotalPackagesPage, 100).success.value
+          .set(TotalGrossMassPage, "100.123").success.value
+          .set(ProcedureTypePage, Normal).toOption.value
+          .set(AddCustomsApprovedLocationPage, true).success.value
+          .set(CustomsApprovedLocationPage, "testlocation").success.value
+          .set(AddSealsPage, true).toOption.value
+          .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
+          .set(SealsInformationPage ,false).toOption.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+
+        val url = goodsSummaryRoutes.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn).url
+        val sectionName = "declarationSummary.section.goodsSummary"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
+
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
+
+
+
+    }
   }
 
   private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
@@ -232,7 +284,7 @@ class SectionsHelperSpec extends SpecBase {
       SectionDetails("declarationSummary.section.routes", routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.transport", transportDetailsRoutes.InlandModeController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.tradersDetails", traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.goodsSummary", "", NotStarted),
+      SectionDetails("declarationSummary.section.goodsSummary", goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url, NotStarted),
       SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
     )
     sections.map {
