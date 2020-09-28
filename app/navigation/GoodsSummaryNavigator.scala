@@ -39,7 +39,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case CustomsApprovedLocationPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
     case AddSealsPage => ua => Some(addSealsRoute(ua, NormalMode))
     case SealIdDetailsPage(sealIndex) => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, NormalMode))
-    case AddSealsLaterPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case AddSealsLaterPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case SealsInformationPage => ua => Some(sealsInformationRoute(ua, NormalMode))
     case ConfirmRemoveSealPage() => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, NormalMode))
   }
@@ -54,6 +54,9 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case AddCustomsApprovedLocationPage => ua => Some(addCustomsApprovedLocationRoute(ua, CheckMode))
     case CustomsApprovedLocationPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case AddSealsPage => ua => Some(addSealsRoute(ua, CheckMode))
+    case AddSealsLaterPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case SealIdDetailsPage(sealIndex) => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, CheckMode))
+    case SealsInformationPage => ua => Some(sealsInformationRoute(ua, CheckMode))
   }
 
 
@@ -101,9 +104,11 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
     val sealIndex = Index(sealCount)
 
-    ua.get(SealsInformationPage) match {
-      case Some(true) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, NormalMode)
-      case Some(false) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+    (ua.get(SealsInformationPage), mode) match {
+      case (Some(true), NormalMode) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, NormalMode)
+      case (Some(false), NormalMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(true), CheckMode) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, CheckMode)
+      case (Some(false), CheckMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 }

@@ -21,6 +21,7 @@ import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
+import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.reference.{Country, CountryCode, TransportMode}
 import models.{DeclarationType, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails, UserAnswers}
