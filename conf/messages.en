@@ -563,6 +563,8 @@ sealsInformation.subHeading = Do you need to add another Customs seal number?
 sealsInformation.checkYourAnswersLabel = Customs seal numbers
 sealsInformation.error.required = Select yes if you need to add another seal
 
+maximumSealsInformation.paragraph = You cannot add any more customs seals.
+
 addSeal.title.singular = You have added {0} seal
 addSeal.title.plural = You have added {0} seals
 addSeal.heading.singular = You have added {0} seal
