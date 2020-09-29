@@ -22,6 +22,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryConfirmRemoveSealsPage: Arbitrary[ConfirmRemoveSealsPage.type] =
+    Arbitrary(ConfirmRemoveSealsPage)
+
   implicit lazy val arbitraryConfirmRemoveOfficeOfTransitPage: Arbitrary[ConfirmRemoveOfficeOfTransitPage.type] =
     Arbitrary(ConfirmRemoveOfficeOfTransitPage)
 

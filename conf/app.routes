@@ -291,3 +291,8 @@ POST       /:lrn/:index/change-confirm-remove-office-of-transit                 
 
 GET        /:lrn/goods-summary/check-your-answers                       controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /:lrn/goods-summary/check-your-answers                       controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
+
+GET        /:lrn/goods-summary/confirm-remove-seals                        controllers.goodsSummary.ConfirmRemoveSealsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/goods-summary/confirm-remove-seals                        controllers.goodsSummary.ConfirmRemoveSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/goods-summary/change-confirm-remove-seals                  controllers.goodsSummary.ConfirmRemoveSealsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/goods-summary/change-confirm-remove-seals                  controllers.goodsSummary.ConfirmRemoveSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
