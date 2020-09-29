@@ -62,10 +62,9 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
 
   def declarePackageRoute(ua: UserAnswers, mode: Mode): Call = {
     (ua.get(DeclarePackagesPage), ua.get(TotalPackagesPage), mode) match {
-      case (Some(true), _, NormalMode) => routes.TotalPackagesController.onPageLoad(ua.id, NormalMode)
-      case (Some(false), _, NormalMode) => routes.TotalGrossMassController.onPageLoad(ua.id, NormalMode)
-      case (Some(true), None, CheckMode) => routes.TotalPackagesController.onPageLoad(ua.id, CheckMode)
       case (Some(true), Some(_), CheckMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(true), _, _) => routes.TotalPackagesController.onPageLoad(ua.id, mode)
+      case (Some(false), _, NormalMode) => routes.TotalGrossMassController.onPageLoad(ua.id, mode)
       case (Some(false), _, CheckMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
@@ -92,12 +91,10 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     val sealIndex = Index(sealCount)
 
     (ua.get(AddSealsPage), sealCount, mode) match {
-      case (Some(true), _, NormalMode) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
-      case (Some(false), _, NormalMode) => routes.AddSealsLaterController.onPageLoad(ua.id, mode)
-      case (Some(true), 0, CheckMode) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
-      case (Some(false), 0, CheckMode) => routes.AddSealsLaterController.onPageLoad(ua.id, mode)
-      case (Some(true), _, CheckMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
-      case (Some(false), _, CheckMode) => routes.ConfirmRemoveSealsController.onPageLoad(ua.id, mode)
+      case (Some(false), 0, _) => routes.AddSealsLaterController.onPageLoad(ua.id, mode)
+      case (Some(false), _, _) => routes.ConfirmRemoveSealsController.onPageLoad(ua.id, mode)
+      case (Some(true), _, CheckMode) if sealCount > 0 => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(true), _, _) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
     }
   }
 
@@ -106,10 +103,8 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     val sealIndex = Index(sealCount)
 
     (ua.get(SealsInformationPage), mode) match {
-      case (Some(true), NormalMode) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, NormalMode)
-      case (Some(false), NormalMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
-      case (Some(true), CheckMode) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, CheckMode)
-      case (Some(false), CheckMode) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(true), _) => routes.SealIdDetailsController.onPageLoad(ua.id, sealIndex, mode)
+      case (Some(false), _) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 }
