@@ -16,7 +16,7 @@
 
 package utils
 
-import controllers.goodsSummary.routes.{ConfirmRemoveSealController, SealIdDetailsController}
+import controllers.goodsSummary.routes.{ConfirmRemoveSealController, SealIdDetailsController, SealsInformationController}
 import derivable.DeriveNumberOfSeals
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages.SealIdDetailsPage
@@ -61,7 +61,7 @@ class AddSealHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = "SealsInformationController.onPageLoad(lrn, NormalMode )",
+            href               = SealsInformationController.onPageLoad(lrn, mode ).url,
             visuallyHiddenText = Some(msg"change-sealIdDetails.checkYourAnswersLabel$singularOrPlural"),
             attributes         = Map("id" -> s"""change-seal-""")
           )
