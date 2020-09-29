@@ -48,7 +48,7 @@ class SealsInformationController @Inject()(
                                             renderer: Renderer
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
-  private val form = formProvider()
+  val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -83,6 +83,9 @@ class SealsInformationController @Inject()(
     }
 
     val singularOrPlural = if (numberOfSeals == 1) "singular" else "plural"
+    val onSubmit =  if (numberOfSeals < 10) {
+      routes.SealsInformationController.onSubmit(lrn, mode).url
+    } else { routes.GoodsSummaryCheckYourAnswersController.onSubmit(lrn).url }
 
     val json = Json.obj(
       "form" -> form,
@@ -92,7 +95,7 @@ class SealsInformationController @Inject()(
       "heading" -> msg"addSeal.heading.$singularOrPlural".withArgs(numberOfSeals),
       "seals" -> sealsRows,
       "radios" -> Radios.yesNo(form("value")),
-      "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, mode).url
+      "onSubmitUrl" -> onSubmit
     )
 
     if (numberOfSeals < 10) {

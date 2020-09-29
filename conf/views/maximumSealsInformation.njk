@@ -27,7 +27,7 @@
             "errorList": form.errors
           }) }}
         {% endif %}
-        <form action="{{ routes.controllers.goodsSummary.SealsInformationController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ onSubmitUrl }}" method="post">
         <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
 
           {{ csrf() | safe }}

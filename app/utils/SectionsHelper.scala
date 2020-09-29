@@ -28,6 +28,7 @@ import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
 import models.{Index, NormalMode, ProcedureType, SectionDetails, Status, UserAnswers}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
+import play.api.mvc.Call
 
 class SectionsHelper(userAnswers: UserAnswers) {
 
@@ -270,6 +271,13 @@ class SectionsHelper(userAnswers: UserAnswers) {
         Seq.empty
       }
     }
+    val sealCount = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
+
+    val simplifiedDiversionPage: Seq[(Option[Boolean], String)] = if(sealCount < 10){
+      Seq(userAnswers.get(SealsInformationPage) -> goodsSummaryRoutes.SealsInformationController.onPageLoad(lrn, NormalMode).url)
+    } else {
+      Seq.empty
+    }
 
     Seq(
       userAnswers.get(DeclarePackagesPage) -> goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url,
@@ -277,8 +285,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
       userAnswers.get(TotalGrossMassPage) -> goodsSummaryRoutes.TotalGrossMassController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(AddSealsPage) -> goodsSummaryRoutes.AddSealsController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(SealIdDetailsPage(sealIndex)) -> goodsSummaryRoutes.SealIdDetailsController.onPageLoad(lrn, sealIndex, NormalMode).url,
-      userAnswers.get(SealsInformationPage) -> goodsSummaryRoutes.SealsInformationController.onPageLoad(lrn, NormalMode).url,
-    ) ++ declarePackagesDiversionPages ++ addCustomsApprovedLocationDiversionPages ++ addSealsPages ++ simplifiedPages ++ sealsInformationDiversionPages
+    ) ++ declarePackagesDiversionPages ++ addCustomsApprovedLocationDiversionPages ++ addSealsPages ++ simplifiedPages ++ sealsInformationDiversionPages ++ simplifiedDiversionPage
 
   }
 }
