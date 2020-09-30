@@ -17,13 +17,15 @@
 package utils
 
 
+import java.io
+
 import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
 import derivable.DeriveNumberOfSeals
-import models.ProcedureType.Simplified
+import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
 import models.{Index, NormalMode, ProcedureType, SectionDetails, Status, UserAnswers}
@@ -44,7 +46,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
     )
 
     if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
-      mandatorySections :+ safetyAnsSecuritySection
+      mandatorySections :+ safetyAndSecuritySection
     } else {
       mandatorySections
     }
@@ -102,7 +104,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
     SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
   }
 
-  private def safetyAnsSecuritySection: SectionDetails = {
+  private def safetyAndSecuritySection: SectionDetails = {
     SectionDetails("declarationSummary.section.safetyAndSecurity", "", NotStarted)
   }
 
@@ -255,28 +257,20 @@ class SectionsHelper(userAnswers: UserAnswers) {
       Seq.empty
     }
 
-    val procedureTypePage: Option[ProcedureType] = userAnswers.get(ProcedureTypePage)
-
-    val simplifiedPages = {
-      if (procedureTypePage == Option(Simplified)) {
-        Seq(
-          userAnswers.get(AuthorisedLocationCodePage) -> goodsSummaryRoutes.AuthorisedLocationCodeController.onPageLoad(lrn, NormalMode).url,
-          userAnswers.get(ControlResultDateLimitPage) -> goodsSummaryRoutes.ControlResultDateLimitController.onPageLoad(lrn, NormalMode).url
-        )
-      } else {
-        Seq(
-          userAnswers.get(AddCustomsApprovedLocationPage) -> goodsSummaryRoutes.AddCustomsApprovedLocationController.onPageLoad(lrn, NormalMode),
-          userAnswers.get(CustomsApprovedLocationPage) -> goodsSummaryRoutes.CustomsApprovedLocationController.onPageLoad(lrn, NormalMode)
-        )
-        Seq.empty
+    val simplifiedPages: Seq[(Option[Any], String)]= {
+      userAnswers.get(ProcedureTypePage) match {
+        case Some(Simplified) =>
+              Seq (
+              userAnswers.get (AuthorisedLocationCodePage) -> goodsSummaryRoutes.AuthorisedLocationCodeController.onPageLoad (lrn, NormalMode).url,
+              userAnswers.get (ControlResultDateLimitPage) -> goodsSummaryRoutes.ControlResultDateLimitController.onPageLoad (lrn, NormalMode).url
+              )
+        case  Some(Normal) =>
+              Seq (
+              userAnswers.get (AddCustomsApprovedLocationPage) -> goodsSummaryRoutes.AddCustomsApprovedLocationController.onPageLoad (lrn, NormalMode).url,
+              userAnswers.get (CustomsApprovedLocationPage) -> goodsSummaryRoutes.CustomsApprovedLocationController.onPageLoad (lrn, NormalMode).url
+              )
+        case _ => Seq.empty
       }
-    }
-    val sealCount = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
-
-    val simplifiedDiversionPage: Seq[(Option[Boolean], String)] = if(sealCount < 10){
-      Seq(userAnswers.get(SealsInformationPage) -> goodsSummaryRoutes.SealsInformationController.onPageLoad(lrn, NormalMode).url)
-    } else {
-      Seq.empty
     }
 
     Seq(
@@ -284,8 +278,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
       userAnswers.get(TotalPackagesPage) -> goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(TotalGrossMassPage) -> goodsSummaryRoutes.TotalGrossMassController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(AddSealsPage) -> goodsSummaryRoutes.AddSealsController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(SealIdDetailsPage(sealIndex)) -> goodsSummaryRoutes.SealIdDetailsController.onPageLoad(lrn, sealIndex, NormalMode).url,
-    ) ++ declarePackagesDiversionPages ++ addCustomsApprovedLocationDiversionPages ++ addSealsPages ++ simplifiedPages ++ sealsInformationDiversionPages ++ simplifiedDiversionPage
+    ) ++ declarePackagesDiversionPages ++ addCustomsApprovedLocationDiversionPages ++ addSealsPages ++ simplifiedPages ++ sealsInformationDiversionPages
 
   }
 }

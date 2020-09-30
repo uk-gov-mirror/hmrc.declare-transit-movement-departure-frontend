@@ -26,11 +26,28 @@ import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.reference.{Country, CountryCode, TransportMode}
 import models.{DeclarationType, Index, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails, UserAnswers}
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 
 class SectionsHelperSpec extends SpecBase {
 
   "SectionsHelper" - {
+    "GetSections" - {
+      "must include SafetyAndSecurity section when answer Yes to AddSecurityDetailsPage" in {
+
+        val userAnswers = emptyUserAnswers.set(AddSecurityDetailsPage, true).toOption.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+        val url = movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.movementDetails"
+        val safetyAndSecuritySection = "declarationSummary.section.safetyAndSecurity"
+        val expectedSections: Seq[SectionDetails] = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted)) :+
+          SectionDetails(safetyAndSecuritySection, "", NotStarted)
+
+        sectionsHelper.getSections mustBe  expectedSections
+
+      }
+    }
+
     "MovementDetails" - {
       "must return movement details section with status as NotStarted" in {
         val sectionsHelper = new SectionsHelper(emptyUserAnswers)

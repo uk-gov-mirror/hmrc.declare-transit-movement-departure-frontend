@@ -79,10 +79,9 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
   def addCustomsApprovedLocationRoute(ua: UserAnswers, mode:Mode): Call = {
     (ua.get(AddCustomsApprovedLocationPage), ua.get(CustomsApprovedLocationPage), mode) match {
       case (Some(true), _, NormalMode) => routes.CustomsApprovedLocationController.onPageLoad(ua.id, NormalMode)
-      case (Some(false), _, NormalMode) => routes.AddSealsController.onPageLoad(ua.id, NormalMode)
       case (Some(true), None, CheckMode) => routes.CustomsApprovedLocationController.onPageLoad(ua.id, CheckMode)
-      case (Some(true), Some(_), CheckMode)  => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
-      case (Some(false), _, CheckMode)  => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(false), _, NormalMode) => routes.AddSealsController.onPageLoad(ua.id, NormalMode)
+      case _  => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
     }
   }
 
