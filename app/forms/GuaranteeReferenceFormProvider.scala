@@ -17,15 +17,20 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class GuaranteeReferenceFormProvider @Inject() extends Mappings {
+
+  val exactLength = 24 //TODO implement logic for different lengths when guarantee type page built
+  val guaranteeReferenceRegex: String = "^[a-zA-Z0-9]{24}$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("guaranteeReference.error.required")
-        .verifying(maxLength(24, "guaranteeReference.error.length"))
-    )
+        .verifying(StopOnFirstFail[String](
+        exactLength(exactLength, "guaranteeReference.error.length2"),
+        regexp(guaranteeReferenceRegex, "guaranteeReference.error.invalid")
+    )))
 }

@@ -292,7 +292,7 @@ POST       /:lrn/:index/change-confirm-remove-office-of-transit                 
 GET        /:lrn/goods-summary/check-your-answers                       controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /:lrn/goods-summary/check-your-answers                       controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
 
-GET        /:lrn/guarantee-details/guarantee-reference                        controllers.GuaranteeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/guarantee-details/guarantee-reference                       controllers.GuaranteeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/guarantee-details/change-guarantee-reference                  controllers.GuaranteeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/guarantee-details/change-guarantee-reference               controllers.GuaranteeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/guarantee-details/guarantee-reference                        controllers.guaranteeDetails.GuaranteeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/guarantee-details/guarantee-reference                       controllers.guaranteeDetails.GuaranteeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/guarantee-details/change-guarantee-reference                  controllers.guaranteeDetails.GuaranteeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/guarantee-details/change-guarantee-reference               controllers.guaranteeDetails.GuaranteeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

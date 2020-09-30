@@ -16,36 +16,29 @@
 
 package utils
 
-import java.time.format.DateTimeFormatter
-
-import controllers.routes
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
+import controllers.guaranteeDetails.routes
+import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers)  {
 
-   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
+  def guaranteeReference: Option[Row] = userAnswers.get(GuaranteeReferencePage) map {
     answer =>
       Row(
-        key = Key(msg"addSecurityDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
+        key     = Key(msg"guaranteeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
         actions = List(
           Action(
-            content = msg"site.edit",
-            href = routes.AddSecurityDetailsController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSecurityDetails.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-add-security-details""")
+            content            = msg"site.edit",
+            href               = routes.GuaranteeReferenceController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"guaranteeReference.checkYourAnswersLabel"))
           )
         )
       )
   }
 
   def lrn: LocalReferenceNumber = userAnswers.id
-
 }
-  object CheckYourAnswersHelper {
 
-  private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-}
