@@ -17,13 +17,16 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "guaranteeReference.error.required"
   val lengthKey = "guaranteeReference.error.length"
-  val maxLength = 24
+  val exactLength = 24
+  val invalidKey = "guaranteeReference.error.invalid"
+  val representativeNameRegex: String = "^[a-zA-Z0-9]{24}$"
 
   val form = new GuaranteeReferenceFormProvider()()
 
@@ -34,14 +37,7 @@ class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      stringsWithMaxLength(exactLength)
     )
 
     behave like mandatoryField(
@@ -49,5 +45,19 @@ class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match regex" in {
+
+      val expectedError = List(FormError(fieldName, invalidKey, Seq(representativeNameRegex)))
+      val genInvalidString: Gen[String] = {
+        stringsWithLength(exactLength) suchThat (!_.matches(representativeNameRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }
