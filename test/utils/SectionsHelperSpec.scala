@@ -27,7 +27,7 @@ import controllers.transportDetails.{routes => transportDetailsRoutes}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.reference.{Country, CountryCode, TransportMode}
-import models.{DeclarationType, Index, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails, UserAnswers}
+import models._
 import pages._
 
 class SectionsHelperSpec extends SpecBase {
@@ -302,7 +302,7 @@ class SectionsHelperSpec extends SpecBase {
           .set(AuthorisedLocationCodePage, "testcode").success.value
           .set(ControlResultDateLimitPage, date).success.value
           .set(AddSealsPage, true).toOption.value
-          .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
+          .set(SealIdDetailsPage(sealIndex), sealDomain).success.value
           .set(SealsInformationPage ,false).toOption.value
         val sectionsHelper = new SectionsHelper(userAnswers)
 
