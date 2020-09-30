@@ -17,20 +17,16 @@
 package utils
 
 
-import java.io
-
 import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
-import derivable.DeriveNumberOfSeals
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
-import models.{Index, NormalMode, ProcedureType, SectionDetails, Status, UserAnswers}
+import models.{Index, NormalMode, SectionDetails, Status, UserAnswers}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
-import play.api.mvc.Call
 
 class SectionsHelper(userAnswers: UserAnswers) {
 

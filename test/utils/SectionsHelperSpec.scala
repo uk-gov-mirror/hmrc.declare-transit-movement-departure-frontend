@@ -17,16 +17,15 @@
 package utils
 
 import base.SpecBase
+import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
-import controllers.goodsSummary.{routes => goodsSummaryRoutes}
-import models.ProcedureType.{Normal, Simplified}
+import models.ProcedureType.Normal
 import models.Status.{Completed, InProgress, NotStarted}
 import models.reference.{Country, CountryCode, TransportMode}
 import models.{DeclarationType, Index, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails, UserAnswers}
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import pages._
 
 class SectionsHelperSpec extends SpecBase {
