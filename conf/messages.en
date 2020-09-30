@@ -62,6 +62,7 @@ traderDetails.preHeading = Trader’s details
 routeDetails.preHeading = Route details
 transportDetails.preHeading = Transport details
 goodsSummary.preHeading = Goods summary
+guaranteeDetails.preHeading = Guarantee details
 
 postcode = Postcode
 postcodeExample = Like, AB1 1AB.
@@ -586,3 +587,11 @@ confirmRemoveOfficeOfTransit.title = Are you sure you want to remove this office
 confirmRemoveOfficeOfTransit.heading = Are you sure you want to remove this office of transit?
 confirmRemoveOfficeOfTransit.Label = Office of transit
 confirmRemoveOfficeOfTransit.error.required = Select yes if you are sure you want to remove this office of transit
+
+guaranteeReference.title = What is the guarantee reference number?
+guaranteeReference.heading = What is the guarantee reference number?
+guaranteeReference.checkYourAnswersLabel = Guarantee reference number
+guaranteeReference.paragraph = You must make sure this reference is up to date.
+guaranteeReference.error.required = Enter the guarantee reference number
+guaranteeReference.error.length1 = Guarantee reference number must be 17 characters
+guaranteeReference.error.length2 = Guarantee reference number must be 24 characters
