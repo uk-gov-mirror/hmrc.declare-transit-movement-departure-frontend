@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import org.scalacheck.Gen
 import play.api.data.FormError
 

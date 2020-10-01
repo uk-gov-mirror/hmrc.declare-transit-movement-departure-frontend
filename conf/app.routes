@@ -296,3 +296,8 @@ GET        /:lrn/guarantee-details/guarantee-reference                        co
 POST       /:lrn/guarantee-details/guarantee-reference                       controllers.guaranteeDetails.GuaranteeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/guarantee-details/change-guarantee-reference                  controllers.guaranteeDetails.GuaranteeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/guarantee-details/change-guarantee-reference               controllers.guaranteeDetails.GuaranteeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/guarantee-type                                              controllers.guaranteeDetails.GuaranteeTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/guarantee-type                                              controllers.guaranteeDetails.GuaranteeTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-guarantee-type                                       controllers.guaranteeDetails.GuaranteeTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-guarantee-type                                       controllers.guaranteeDetails.GuaranteeTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

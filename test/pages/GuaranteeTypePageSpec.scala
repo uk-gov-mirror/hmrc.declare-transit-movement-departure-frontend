@@ -16,18 +16,18 @@
 
 package pages
 
+import models.GuaranteeType
 import pages.behaviours.PageBehaviours
-import pages.guaranteeDetails.GuaranteeReferencePage
+import pages.guaranteeDetails.GuaranteeTypePage
 
+class GuaranteeTypeSpec extends PageBehaviours {
 
-class GuaranteeReferencePageSpec extends PageBehaviours {
+  "GuaranteeTypePage" - {
 
-  "GuaranteeReferencePage" - {
+    beRetrievable[GuaranteeType](GuaranteeTypePage)
 
-    beRetrievable[String](GuaranteeReferencePage)
+    beSettable[GuaranteeType](GuaranteeTypePage)
 
-    beSettable[String](GuaranteeReferencePage)
-
-    beRemovable[String](GuaranteeReferencePage)
+    beRemovable[GuaranteeType](GuaranteeTypePage)
   }
 }

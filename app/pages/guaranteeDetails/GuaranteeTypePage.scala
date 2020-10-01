@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
-import pages.behaviours.PageBehaviours
-import pages.guaranteeDetails.GuaranteeReferencePage
+import models.GuaranteeType
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
+case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
 
-class GuaranteeReferencePageSpec extends PageBehaviours {
+  override def path: JsPath = JsPath \ toString
 
-  "GuaranteeReferencePage" - {
-
-    beRetrievable[String](GuaranteeReferencePage)
-
-    beSettable[String](GuaranteeReferencePage)
-
-    beRemovable[String](GuaranteeReferencePage)
-  }
+  override def toString: String = "guaranteeType"
 }

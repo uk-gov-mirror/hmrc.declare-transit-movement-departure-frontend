@@ -17,12 +17,12 @@
 package controllers.guaranteeDetails
 
 import controllers.actions._
-import forms.guaranteeDetails.GuaranteeReferenceFormProvider
+import forms.guaranteeDetails.GuaranteeTypeFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{GuaranteeType, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
-import pages.guaranteeDetails.GuaranteeReferencePage
+import pages.guaranteeDetails.GuaranteeTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,14 +33,14 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GuaranteeReferenceController @Inject()(
+class GuaranteeTypeController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
                                        @GuaranteeDetails navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
-                                       formProvider: GuaranteeReferenceFormProvider,
+                                       formProvider: GuaranteeTypeFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
@@ -50,18 +50,19 @@ class GuaranteeReferenceController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
+      val preparedForm = request.userAnswers.get(GuaranteeTypePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
+        "form"   -> preparedForm,
+        "mode"   -> mode,
+        "lrn"    -> lrn,
+        "radios"  -> GuaranteeType.radios(preparedForm)
       )
 
-      renderer.render("guaranteeDetails/guaranteeReference.njk", json).map(Ok(_))
+      renderer.render("guaranteeDetails/guaranteeType.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -71,18 +72,19 @@ class GuaranteeReferenceController @Inject()(
         formWithErrors => {
 
           val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
+            "form"   -> formWithErrors,
+            "mode"   -> mode,
+            "lrn"    -> lrn,
+            "radios" -> GuaranteeType.radios(formWithErrors)
           )
 
-          renderer.render("guaranteeDetails/guaranteeReference.njk", json).map(BadRequest(_))
+          renderer.render("guaranteeDetails/guaranteeType.njk", json).map(BadRequest(_))
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(GuaranteeReferencePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(GuaranteeTypePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(GuaranteeReferencePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(GuaranteeTypePage, mode, updatedAnswers))
       )
   }
 }
