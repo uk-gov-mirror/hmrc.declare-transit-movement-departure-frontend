@@ -6,6 +6,7 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
 
+
 {% block pageTitle %}
   {{ title(messages("liabilityAmount.title"), form.errors) }}
 {% endblock %}
@@ -15,6 +16,7 @@
   {{ govukBackLink({
     text: messages("site.back")
   }) }}
+
 
   <div class="govuk-main-wrapper">
     <div class="govuk-grid-row">
