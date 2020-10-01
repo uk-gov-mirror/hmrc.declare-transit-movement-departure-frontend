@@ -22,6 +22,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryOtherReferencePage: Arbitrary[OtherReferencePage.type] =
+    Arbitrary(OtherReferencePage)
+
   implicit lazy val arbitraryGuaranteeReferencePage: Arbitrary[GuaranteeReferencePage.type] =
     Arbitrary(GuaranteeReferencePage)
 
