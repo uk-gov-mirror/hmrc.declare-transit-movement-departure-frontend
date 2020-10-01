@@ -596,3 +596,12 @@ guaranteeReference.error.required = Enter the guarantee reference number
 guaranteeReference.error.invalid = The guarantee reference number must only include letters a to z and numbers 0 to 9
 guaranteeReference.error.length1 = Guarantee reference number must be 17 characters
 guaranteeReference.error.length2 = Guarantee reference number must be 24 characters
+
+liabilityAmount.title = How much is the liability amount?
+liabilityAmount.heading = How much is the liability amount?
+liabilityAmount.checkYourAnswersLabel = Liability amount
+liabilityAmount.error.required = Enter the liability amount
+liabilityAmount.error.length = Liability amount must be 100 characters or less
+liabilityAmount.error.characters = Liability amount must only include numbers 0 to 9 and a decimal place
+liabilityAmount.paragraph = Amount must include a decimal place, like 230.00. Enter 0 to use the default amount of EUR 10,000
+liabilityAmount.error.invalidFormat = Enter an amount with 2 decimal places
