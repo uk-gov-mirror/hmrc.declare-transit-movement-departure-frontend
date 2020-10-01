@@ -28,28 +28,24 @@
         {% endif %}
 
         <form action="{{ routes.controllers.LiabilityAmountController.onSubmit(lrn, mode).url }}" method="post">
-
         <span class="govuk-caption-xl">{{messages('guaranteeDetails.preHeading')}}</span>
 
 
           {{ csrf() | safe }}
 
           <h1 class="govuk-heading-xl"> {{messages('liabilityAmount.heading')}}<h1>
-          <span id="changed-name-hint" class="govuk-hint"> {{messages('liabilityAmount.paragraph')}} </span>
 
-
-     {{ govukInput({
-       id: "cost",
-       name: "cost",
-           idPrefix: {
-         text: "£"
-       },
-       classes: "govuk-input--width-5",
-       spellcheck: false
-     }) }}
-
-      {% from "govuk/components/button/macro.njk" import govukButton %}
-
+          {{ govukInput({
+            label: {
+              text: messages('liabilityAmount.paragraph'),
+              isPageHeading: true,
+              classes: "govuk-body"
+            },
+            id: "value",
+            name: "value",
+            value: form.value.value,
+            errorMessage: form.value.error
+          }) }}
 
           {{ govukButton({
             text: messages("site.continue"),
