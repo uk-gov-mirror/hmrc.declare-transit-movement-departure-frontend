@@ -419,6 +419,29 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         }
       }
 
+      "Must go from ConfirmRemoveSeals page" - {
+
+        "to CYA when answer is Yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(ConfirmRemoveSealsPage, true).toOption.value
+
+              navigator.nextPage(ConfirmRemoveSealsPage, CheckMode, updatedAnswers)
+                .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+          }
+        }
+
+        "to CYA when answer is No" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(ConfirmRemoveSealsPage, false).toOption.value
+
+              navigator.nextPage(ConfirmRemoveSealsPage, CheckMode, updatedAnswers)
+                .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+          }
+        }
+      }
+
     }
   }
 }
