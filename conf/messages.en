@@ -516,8 +516,7 @@ sealIdDetails.checkYourAnswersLabel.singular = Customs seal number
 sealIdDetails.checkYourAnswersLabel.plural = Customs seal numbers
 sealIdDetails.error.required = Enter the seal number
 sealIdDetails.error.length = The seal number must be 20 characters or less
-sealIdDetails.error.invalidCharacters = The authorised location code must only include letters a to z, numbers 0 to 9
-
+sealIdDetails.error.invalidCharacters = The seal number must only include letters a to z, numbers 0 to 9
 
 addSeals.title = Do you need to add Customs seals numbers?
 addSeals.heading = Do you need to add Customs seals numbers?

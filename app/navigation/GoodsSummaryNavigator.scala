@@ -39,7 +39,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case CustomsApprovedLocationPage => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
     case AddSealsPage => ua => Some(addSealsRoute(ua, NormalMode))
     case SealIdDetailsPage(sealIndex) => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, NormalMode))
-    case AddSealsLaterPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case AddSealsLaterPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case SealsInformationPage => ua => Some(sealsInformationRoute(ua, NormalMode))
     case ConfirmRemoveSealPage() => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, NormalMode))
   }
@@ -47,18 +47,27 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
     case DeclarePackagesPage => ua => Some(declarePackageRoute(ua, CheckMode))
-    case TotalPackagesPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case TotalPackagesPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case TotalGrossMassPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case AuthorisedLocationCodePage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
-    case ControlResultDateLimitPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case ControlResultDateLimitPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case AddCustomsApprovedLocationPage => ua => Some(addCustomsApprovedLocationRoute(ua, CheckMode))
-    case CustomsApprovedLocationPage => ua =>  Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case CustomsApprovedLocationPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case AddSealsPage => ua => Some(addSealsRoute(ua, CheckMode))
     case AddSealsLaterPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case SealIdDetailsPage(sealIndex) => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, CheckMode))
     case SealsInformationPage => ua => Some(sealsInformationRoute(ua, CheckMode))
-    case ConfirmRemoveSealsPage => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+    case ConfirmRemoveSealsPage => ua => Some(confirmRemoveSealsRoute(ua, CheckMode))
   }
+
+  def confirmRemoveSealsRoute(ua: UserAnswers, mode: Mode) = {
+    ua.get(ConfirmRemoveSealsPage) match {
+      case Some(true) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
+      case _ => routes.AddSealsController.onPageLoad(ua.id, mode)
+
+    }
+  }
+
 
   def declarePackageRoute(ua: UserAnswers, mode: Mode): Call = {
     (ua.get(DeclarePackagesPage), ua.get(TotalPackagesPage), mode) match {
