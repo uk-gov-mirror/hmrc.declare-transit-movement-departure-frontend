@@ -431,13 +431,13 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
 
-        "to CYA when answer is No" in {
+        "to Add Seals Page when answer is No" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers.set(ConfirmRemoveSealsPage, false).toOption.value
 
               navigator.nextPage(ConfirmRemoveSealsPage, CheckMode, updatedAnswers)
-                .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+                .mustBe(goodsSummaryRoute.AddSealsController.onPageLoad(updatedAnswers.id, CheckMode))
           }
         }
       }
