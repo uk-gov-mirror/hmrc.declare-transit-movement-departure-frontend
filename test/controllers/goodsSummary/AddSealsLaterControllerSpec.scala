@@ -40,7 +40,7 @@ class AddSealsLaterControllerSpec extends SpecBase with MockitoSugar with JsonMa
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, routes.AddSealsLaterController.onPageLoad(lrn).url)
+      val request        = FakeRequest(GET, routes.AddSealsLaterController.onPageLoad(lrn, NormalMode).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
