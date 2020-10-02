@@ -19,6 +19,7 @@ package utils
 import controllers.guaranteeDetails.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.guaranteeDetails.GuaranteeReferencePage
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 

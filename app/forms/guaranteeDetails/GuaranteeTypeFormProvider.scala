@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms.guaranteeDetails
 
-import play.api.libs.json.JsPath
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.GuaranteeType
+import play.api.data.Form
 
-case object GuaranteeReferencePage extends QuestionPage[String] {
+class GuaranteeTypeFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "guaranteeReference"
+  def apply(): Form[GuaranteeType] =
+    Form(
+      "value" -> enumerable[GuaranteeType]("guaranteeType.error.required")
+    )
 }

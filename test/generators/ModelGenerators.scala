@@ -27,6 +27,11 @@ trait ModelGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryGuaranteeType: Arbitrary[GuaranteeType] =
+    Arbitrary {
+      Gen.oneOf(GuaranteeType.values.toSeq)
+    }
+
   implicit lazy val arbitrarySealDomain: Arbitrary[SealDomain] =
     Arbitrary {
       for {
