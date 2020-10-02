@@ -89,7 +89,7 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
 
   def stringsWithLength(length: Int): Gen[String] =
     for {
-        chars <- listOfN(length, arbitrary[Char])
+      chars <- listOfN(length, arbitrary[Char])
     } yield chars.mkString
 
   def alphaNumericWithMaxLength(maxLength: Int): Gen[String] =

@@ -19,7 +19,6 @@ package pages
 import pages.behaviours.PageBehaviours
 import pages.guaranteeDetails.GuaranteeReferencePage
 
-
 class GuaranteeReferencePageSpec extends PageBehaviours {
 
   "GuaranteeReferencePage" - {

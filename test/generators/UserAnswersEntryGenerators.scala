@@ -36,16 +36,15 @@ trait UserAnswersEntryGenerators extends PageGenerators {
     }
 
   implicit lazy val arbitraryOtherReferenceUserAnswersEntry: Arbitrary[(OtherReferencePage.type, JsValue)] =
-      Arbitrary {
+    Arbitrary {
       for {
         page  <- arbitrary[OtherReferencePage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-
   implicit lazy val arbitraryGuaranteeReferenceUserAnswersEntry: Arbitrary[(GuaranteeReferencePage.type, JsValue)] =
-      Arbitrary {
+    Arbitrary {
       for {
         page  <- arbitrary[GuaranteeReferencePage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))

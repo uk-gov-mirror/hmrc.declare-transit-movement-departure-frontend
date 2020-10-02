@@ -23,14 +23,15 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class OtherReferenceFormProvider @Inject() extends Mappings {
 
-  val exactLength: Int = 35
+  val exactLength: Int                = 35
   val guaranteeReferenceRegex: String = "^[a-zA-Z0-9]{35}$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("otherReference.error.required")
-        .verifying(StopOnFirstFail[String](
-        exactLength(exactLength, "otherReference.error.length"),
-        regexp(guaranteeReferenceRegex, "otherReference.error.invalid")
-        )))
+        .verifying(
+          StopOnFirstFail[String](
+            exactLength(exactLength, "otherReference.error.length"),
+            regexp(guaranteeReferenceRegex, "otherReference.error.invalid")
+          )))
 }

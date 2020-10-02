@@ -22,10 +22,10 @@ import play.api.data.FormError
 
 class OtherReferenceFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "otherReference.error.required"
-  val lengthKey = "otherReference.error.length"
-  val exactLength = 35
-  val invalidKey = "otherReference.error.invalid"
+  val requiredKey                       = "otherReference.error.required"
+  val lengthKey                         = "otherReference.error.length"
+  val exactLength                       = 35
+  val invalidKey                        = "otherReference.error.invalid"
   val otherReferenceNumberRegex: String = "^[a-zA-Z0-9]{35}$"
 
   val form = new OtherReferenceFormProvider()()

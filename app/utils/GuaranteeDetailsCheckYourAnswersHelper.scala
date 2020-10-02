@@ -23,13 +23,13 @@ import pages.guaranteeDetails.GuaranteeReferencePage
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
-class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers)  {
+class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def otherReference: Option[Row] = userAnswers.get(OtherReferencePage) map {
     answer =>
       Row(
-        key     = Key(msg"otherReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"otherReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -43,8 +43,8 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def guaranteeReference: Option[Row] = userAnswers.get(GuaranteeReferencePage) map {
     answer =>
       Row(
-        key     = Key(msg"guaranteeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"guaranteeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -57,4 +57,3 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers)  {
 
   def lrn: LocalReferenceNumber = userAnswers.id
 }
-
