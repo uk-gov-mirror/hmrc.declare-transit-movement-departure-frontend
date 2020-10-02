@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
@@ -28,6 +29,9 @@ trait UserAnswersGenerator extends TryValues {
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(ConfirmRemoveSealsPage.type, JsValue)] ::
+    arbitrary[(GuaranteeTypePage.type, JsValue)] ::
+    arbitrary[(OtherReferencePage.type, JsValue)] ::
+    arbitrary[(GuaranteeReferencePage.type, JsValue)] ::
     arbitrary[(ConfirmRemoveOfficeOfTransitPage.type, JsValue)] ::
     arbitrary[(SealsInformationPage.type, JsValue)] ::
     arbitrary[(AddAnotherTransitOfficePage, JsValue)] ::
