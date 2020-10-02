@@ -26,7 +26,7 @@ class RepresentativeCapacityFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "representativeCapacity.error.required"
 
     behave like optionsField[RepresentativeCapacity](

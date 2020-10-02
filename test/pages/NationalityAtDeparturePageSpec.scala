@@ -19,7 +19,6 @@ package pages
 import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
-
 class NationalityAtDeparturePageSpec extends PageBehaviours {
 
   "NationalityAtDeparturePage" - {

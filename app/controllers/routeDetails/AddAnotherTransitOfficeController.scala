@@ -36,60 +36,67 @@ import utils.getOfficeOfTransitAsJson
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherTransitOfficeController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       @RouteDetails navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AddAnotherTransitOfficeFormProvider,
-                                       referenceDataConnector: ReferenceDataConnector,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @RouteDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: AddAnotherTransitOfficeFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index:Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
- referenceDataConnector.getOfficeOfTransitList() flatMap {
-   officeOfTransitList =>
-     val form = formProvider(officeOfTransitList)
-     val preparedForm = request.userAnswers.get(AddAnotherTransitOfficePage(index))
-       .flatMap(officeOfTransitList.getOfficeOfTransit)
-       .map(form.fill).getOrElse(form)
-
-     val json = Json.obj(
-       "form" -> preparedForm,
-       "lrn"  -> lrn,
-       "officeOfTransitList" -> getOfficeOfTransitAsJson(preparedForm.value, officeOfTransitList.officeOfTransits),
-       "mode" -> mode
-     )
-
-     renderer.render("addAnotherTransitOffice.njk", json).map(Ok(_))
- }
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index:Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       referenceDataConnector.getOfficeOfTransitList() flatMap {
         officeOfTransitList =>
           val form = formProvider(officeOfTransitList)
-          form.bindFromRequest().fold(
-            formWithErrors => {
-              val json = Json.obj(
-                "form" -> formWithErrors,
-                "lrn"  -> lrn,
-                "officeOfTransitList" -> getOfficeOfTransitAsJson(form.value, officeOfTransitList.officeOfTransits),
-                "mode" -> mode
-              )
+          val preparedForm = request.userAnswers
+            .get(AddAnotherTransitOfficePage(index))
+            .flatMap(officeOfTransitList.getOfficeOfTransit)
+            .map(form.fill)
+            .getOrElse(form)
 
-              renderer.render("addAnotherTransitOffice.njk", json).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransitOfficePage(index), value.id))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAnotherTransitOfficePage(index), mode, updatedAnswers))
+          val json = Json.obj(
+            "form"                -> preparedForm,
+            "lrn"                 -> lrn,
+            "officeOfTransitList" -> getOfficeOfTransitAsJson(preparedForm.value, officeOfTransitList.officeOfTransits),
+            "mode"                -> mode
           )
+
+          renderer.render("addAnotherTransitOffice.njk", json).map(Ok(_))
+      }
+  }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+    implicit request =>
+      referenceDataConnector.getOfficeOfTransitList() flatMap {
+        officeOfTransitList =>
+          val form = formProvider(officeOfTransitList)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                val json = Json.obj(
+                  "form"                -> formWithErrors,
+                  "lrn"                 -> lrn,
+                  "officeOfTransitList" -> getOfficeOfTransitAsJson(form.value, officeOfTransitList.officeOfTransits),
+                  "mode"                -> mode
+                )
+
+                renderer.render("addAnotherTransitOffice.njk", json).map(BadRequest(_))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransitOfficePage(index), value.id))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(AddAnotherTransitOfficePage(index), mode, updatedAnswers))
+            )
       }
 
   }

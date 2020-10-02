@@ -24,8 +24,9 @@ import play.api.data.FormError
 class ModeCrossingBorderFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "modeCrossingBorder.error.required"
-  val lengthKey = "modeCrossingBorder.error.length"
-  val maxLength = 100
+  val lengthKey   = "modeCrossingBorder.error.length"
+  val maxLength   = 100
+
   val transportModeList = TransportModeList(
     Seq(
       TransportMode("1", "Sea transport"),
@@ -54,7 +55,7 @@ class ModeCrossingBorderFormProviderSpec extends StringFieldBehaviours {
     "Not bind if code does not exist in the TransportModeList" in {
 
       val boundForm = form.bind(Map("value" -> "foobar"))
-      val field = boundForm("value")
+      val field     = boundForm("value")
 
       field.errors mustNot be(empty)
     }
@@ -62,9 +63,9 @@ class ModeCrossingBorderFormProviderSpec extends StringFieldBehaviours {
     "Bind code which is in the TransportModeList" in {
 
       val boundForm = form.bind(Map("value" -> "1"))
-      val field = boundForm("value")
+      val field     = boundForm("value")
 
-      field.errors mustBe(empty)
+      field.errors mustBe (empty)
     }
   }
 }

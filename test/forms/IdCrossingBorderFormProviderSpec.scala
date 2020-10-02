@@ -22,12 +22,12 @@ import play.api.data.FormError
 
 class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "idCrossingBorder.error.required"
-  val lengthKey = "idCrossingBorder.error.length"
-  val maxLength = 27
+  val requiredKey       = "idCrossingBorder.error.required"
+  val lengthKey         = "idCrossingBorder.error.length"
+  val maxLength         = 27
   val invalidCharacters = "idCrossingBorder.error.invalidCharacters"
-  val idRegex: String = "^[a-zA-Z0-9]*$"
-  val form = new IdCrossingBorderFormProvider()()
+  val idRegex: String   = "^[a-zA-Z0-9]*$"
+  val form              = new IdCrossingBorderFormProvider()()
 
   ".value" - {
 
@@ -42,7 +42,7 @@ class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -61,9 +61,10 @@ class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(idRegex))
       }
 
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
   }

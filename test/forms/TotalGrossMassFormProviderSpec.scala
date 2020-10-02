@@ -22,12 +22,11 @@ import play.api.data.FormError
 
 class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "totalGrossMass.error.required"
-  val lengthKey = "totalGrossMass.error.length"
-  val maxLength = 15
-  val invalidCharacters = "totalGrossMass.error.invalidCharacters"
+  val requiredKey                 = "totalGrossMass.error.required"
+  val lengthKey                   = "totalGrossMass.error.length"
+  val maxLength                   = 15
+  val invalidCharacters           = "totalGrossMass.error.invalidCharacters"
   val totalGrossMassregex: String = "^[0-9]{1,11}(?:\\.[0-9]{1,3})?$"
-
 
   val form = new TotalGrossMassFormProvider()()
 
@@ -44,7 +43,7 @@ class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -63,9 +62,10 @@ class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(totalGrossMassregex))
       }
 
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
   }

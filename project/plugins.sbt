@@ -16,6 +16,8 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.24")
 
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 
+addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.16")
+
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
 
 addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.11")

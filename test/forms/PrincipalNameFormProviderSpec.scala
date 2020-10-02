@@ -22,10 +22,10 @@ import play.api.data.FormError
 
 class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "principalName.error.required"
-  val lengthKey = "principalName.error.length"
-  val maxLength = 35
-  val invalidCharacters = "principalName.error.invalidCharacters"
+  val requiredKey                = "principalName.error.required"
+  val lengthKey                  = "principalName.error.length"
+  val maxLength                  = 35
+  val invalidCharacters          = "principalName.error.invalidCharacters"
   val principalNameRegex: String = "^[a-zA-Z0-9 ]*$"
 
   val form = new PrincipalNameFormProvider()()
@@ -43,7 +43,7 @@ class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -62,9 +62,10 @@ class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(principalNameRegex))
       }
 
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
 

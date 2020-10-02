@@ -34,24 +34,26 @@ import navigation.annotations.MovementDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationTypeController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       @MovementDetails navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: DeclarationTypeFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @MovementDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: DeclarationTypeFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(DeclarationTypePage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -59,7 +61,7 @@ class DeclarationTypeController @Inject()(
         "form"   -> preparedForm,
         "mode"   -> mode,
         "lrn"    -> lrn,
-        "radios"  -> DeclarationType.radios(preparedForm)
+        "radios" -> DeclarationType.radios(preparedForm)
       )
 
       renderer.render("declarationType.njk", json).map(Ok(_))
@@ -67,24 +69,25 @@ class DeclarationTypeController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+            val json = Json.obj(
+              "form"   -> formWithErrors,
+              "mode"   -> mode,
+              "lrn"    -> lrn,
+              "radios" -> DeclarationType.radios(formWithErrors)
+            )
 
-          val json = Json.obj(
-            "form"   -> formWithErrors,
-            "mode"   -> mode,
-            "lrn"    -> lrn,
-            "radios" -> DeclarationType.radios(formWithErrors)
-          )
-
-          renderer.render("declarationType.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclarationTypePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DeclarationTypePage, mode, updatedAnswers))
-      )
+            renderer.render("declarationType.njk", json).map(BadRequest(_))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclarationTypePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DeclarationTypePage, mode, updatedAnswers))
+        )
   }
 }

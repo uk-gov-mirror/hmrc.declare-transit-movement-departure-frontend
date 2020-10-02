@@ -22,8 +22,8 @@ import play.api.data.Form
 
 class ContainersUsedPageFormProvider @Inject() extends Mappings {
 
-   def apply(): Form[Boolean] =
-     Form(
-     "value" -> boolean("containersUsed.error.required")
-     )
- }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("containersUsed.error.required")
+    )
+}

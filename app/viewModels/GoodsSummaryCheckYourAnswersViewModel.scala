@@ -21,27 +21,25 @@ import uk.gov.hmrc.viewmodels.SummaryList
 import utils.{AddSealHelper, GoodsSummaryCheckYourAnswersHelper}
 import viewModels.sections.Section
 
-
 case class GoodsSummaryCheckYourAnswersViewModel(sections: Seq[Section])
 
 object GoodsSummaryCheckYourAnswersViewModel {
 
-
   def apply(userAnswers: UserAnswers): GoodsSummaryCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper = new GoodsSummaryCheckYourAnswersHelper(userAnswers)
-    val addSealHelper = new AddSealHelper(userAnswers)
+    val addSealHelper          = new AddSealHelper(userAnswers)
 
-    val declarePackages: Option[SummaryList.Row] = checkYourAnswersHelper.declarePackages
-    val totalPackages: Option[SummaryList.Row] = checkYourAnswersHelper.totalPackages
-    val totalGrossMass: Option[SummaryList.Row] = checkYourAnswersHelper.totalGrossMass
-    val authorisedLocationCode: Option[SummaryList.Row] = checkYourAnswersHelper.authorisedLocationCode
-    val controlResultDateLimit: Option[SummaryList.Row] = checkYourAnswersHelper.controlResultDateLimit
+    val declarePackages: Option[SummaryList.Row]            = checkYourAnswersHelper.declarePackages
+    val totalPackages: Option[SummaryList.Row]              = checkYourAnswersHelper.totalPackages
+    val totalGrossMass: Option[SummaryList.Row]             = checkYourAnswersHelper.totalGrossMass
+    val authorisedLocationCode: Option[SummaryList.Row]     = checkYourAnswersHelper.authorisedLocationCode
+    val controlResultDateLimit: Option[SummaryList.Row]     = checkYourAnswersHelper.controlResultDateLimit
     val addCustomsApprovedLocation: Option[SummaryList.Row] = checkYourAnswersHelper.addCustomsApprovedLocation
-    val customsApprovedLocation: Option[SummaryList.Row] = checkYourAnswersHelper.customsApprovedLocation
-    val addSeals: Option[SummaryList.Row] = checkYourAnswersHelper.addSeals
-    val seals = addSealHelper.sealsRow(userAnswers.id, NormalMode)
-    val sealsInformation: Option[SummaryList.Row] = checkYourAnswersHelper.sealsInformation
+    val customsApprovedLocation: Option[SummaryList.Row]    = checkYourAnswersHelper.customsApprovedLocation
+    val addSeals: Option[SummaryList.Row]                   = checkYourAnswersHelper.addSeals
+    val seals                                               = addSealHelper.sealsRow(userAnswers.id, NormalMode)
+    val sealsInformation: Option[SummaryList.Row]           = checkYourAnswersHelper.sealsInformation
 
     val checkYourAnswersData = Seq(
       declarePackages,

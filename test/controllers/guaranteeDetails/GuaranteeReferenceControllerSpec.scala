@@ -18,7 +18,6 @@ package controllers.guaranteeDetails
 
 import base.SpecBase
 import controllers.routes
-import forms.GuaranteeReferenceFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.GuaranteeDetails
@@ -27,7 +26,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.GuaranteeReferencePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,6 +35,8 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import forms.guaranteeDetails.GuaranteeReferenceFormProvider
+import pages.guaranteeDetails.GuaranteeReferencePage
 
 import scala.concurrent.Future
 
@@ -45,7 +45,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new GuaranteeReferenceFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val guaranteeReferenceRoute = routes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url
 
@@ -56,10 +56,10 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, guaranteeReferenceRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, guaranteeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -68,12 +68,12 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
-      templateCaptor.getValue mustEqual "guaranteeReference.njk"
+      templateCaptor.getValue mustEqual "guaranteeDetails/guaranteeReference.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -84,11 +84,11 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(GuaranteeReferencePage, "123456789012345678901234").success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, guaranteeReferenceRoute)
+      val userAnswers    = emptyUserAnswers.set(GuaranteeReferencePage, "123456789012345678901234").success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, guaranteeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -104,7 +104,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "guaranteeReference.njk"
+      templateCaptor.getValue mustEqual "guaranteeDetails/guaranteeReference.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -141,11 +141,11 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, guaranteeReferenceRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, guaranteeReferenceRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -159,7 +159,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "guaranteeReference.njk"
+      templateCaptor.getValue mustEqual "guaranteeDetails/guaranteeReference.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()

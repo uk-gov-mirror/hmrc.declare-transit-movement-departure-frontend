@@ -23,11 +23,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.Json
 
-class MongoDateTimeFormatsSpec
-    extends AnyFreeSpec
-    with Matchers
-    with OptionValues
-    with MongoDateTimeFormats {
+class MongoDateTimeFormatsSpec extends AnyFreeSpec with Matchers with OptionValues with MongoDateTimeFormats {
 
   "a LocalDateTime" - {
 

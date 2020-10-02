@@ -44,7 +44,7 @@ class ContainersUsedControllerSpec extends SpecBase with MockitoSugar with Nunju
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new ContainersUsedPageFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val containersUsedPageRoute = routes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url
 
@@ -55,10 +55,10 @@ class ContainersUsedControllerSpec extends SpecBase with MockitoSugar with Nunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, containersUsedPageRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, containersUsedPageRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -83,11 +83,11 @@ class ContainersUsedControllerSpec extends SpecBase with MockitoSugar with Nunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(ContainersUsedPage, true).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, containersUsedPageRoute)
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(ContainersUsedPage, true).success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, containersUsedPageRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -98,9 +98,9 @@ class ContainersUsedControllerSpec extends SpecBase with MockitoSugar with Nunju
       val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode,
+        "form"   -> filledForm,
+        "lrn"    -> lrn,
+        "mode"   -> NormalMode,
         "radios" -> Radios.yesNo(filledForm("value"))
       )
 
@@ -142,11 +142,11 @@ class ContainersUsedControllerSpec extends SpecBase with MockitoSugar with Nunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, containersUsedPageRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, containersUsedPageRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -163,7 +163,7 @@ class ContainersUsedControllerSpec extends SpecBase with MockitoSugar with Nunju
       templateCaptor.getValue mustEqual "containersUsed.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
-       application.stop()
+      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

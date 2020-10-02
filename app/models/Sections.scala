@@ -16,4 +16,4 @@
 
 package models
 
-case class Sections (sections: Seq[SectionDetails])
+case class Sections(sections: Seq[SectionDetails])

@@ -22,12 +22,11 @@ import play.api.data.FormError
 
 class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "idAtDeparture.error.required"
-  val lengthKey = "idAtDeparture.error.length"
-  val maxLength = 27
-  val idRegex: String = "^[a-zA-Z0-9]*$"
+  val requiredKey       = "idAtDeparture.error.required"
+  val lengthKey         = "idAtDeparture.error.length"
+  val maxLength         = 27
+  val idRegex: String   = "^[a-zA-Z0-9]*$"
   val invalidCharacters = "idAtDeparture.error.invalidCharacters"
-
 
   val form = new IdAtDepartureFormProvider()()
 
@@ -44,7 +43,7 @@ class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -63,9 +62,10 @@ class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(idRegex))
       }
 
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
 

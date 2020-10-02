@@ -17,7 +17,7 @@ object AppDependencies {
     "org.webjars.npm"   %  "govuk-frontend"                   % "3.3.0",
     "com.typesafe.play" %% "play-iteratees"                   % "2.6.1",
     "com.typesafe.play" %% "play-iteratees-reactive-streams"  % "2.6.1",
-    "com.lucidchart"    %% "xtract"                        % "2.2.1"
+    "com.lucidchart"    %% "xtract"                           % "2.2.1"
   )
 
   val test = Seq(

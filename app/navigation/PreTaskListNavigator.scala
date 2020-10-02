@@ -26,13 +26,18 @@ import play.api.mvc.Call
 class PreTaskListNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case LocalReferenceNumberPage => ua => Some(routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode))
-    case AddSecurityDetailsPage => ua => Some(routes.DeclarationSummaryController.onPageLoad(ua.id))
+    case LocalReferenceNumberPage =>
+      ua =>
+        Some(routes.AddSecurityDetailsController.onPageLoad(ua.id, NormalMode))
+    case AddSecurityDetailsPage =>
+      ua =>
+        Some(routes.DeclarationSummaryController.onPageLoad(ua.id))
   }
 
   override val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => None
+    case _ =>
+      _ =>
+        None
   }
 
 }
-

@@ -24,5 +24,4 @@ object OfficeOfTransit {
 
   implicit def reads: Reads[OfficeOfTransit] = Json.reads[OfficeOfTransit]
 
-
 }

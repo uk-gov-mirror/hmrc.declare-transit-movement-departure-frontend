@@ -17,15 +17,16 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import org.scalacheck.Gen
 import play.api.data.FormError
 
 class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "guaranteeReference.error.required"
-  val lengthKey = "guaranteeReference.error.length"
-  val exactLength = 24
-  val invalidKey = "guaranteeReference.error.invalid"
+  val requiredKey                     = "guaranteeReference.error.required"
+  val lengthKey                       = "guaranteeReference.error.length"
+  val exactLength                     = 24
+  val invalidKey                      = "guaranteeReference.error.invalid"
   val representativeNameRegex: String = "^[a-zA-Z0-9]{24}$"
 
   val form = new GuaranteeReferenceFormProvider()()

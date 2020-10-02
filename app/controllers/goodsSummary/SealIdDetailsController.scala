@@ -38,16 +38,19 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 class SealIdDetailsController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       @GoodsSummary navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: SealIdDetailsFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @GoodsSummary navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: SealIdDetailsFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   private val form = formProvider
 
@@ -55,7 +58,7 @@ class SealIdDetailsController @Inject()(
     implicit request =>
       val preparedForm = request.userAnswers.get(SealIdDetailsPage(sealIndex)) match {
         case Some(value) => form(sealIndex).fill(value.numberOrMark)
-        case _ => form(sealIndex)
+        case _           => form(sealIndex)
       }
 
       renderView(lrn, sealIndex, mode, preparedForm).map(Ok(_))
@@ -63,22 +66,22 @@ class SealIdDetailsController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val seals = request.userAnswers.get(SealsQuery()).getOrElse(Seq.empty)
+      implicit request =>
+        val seals = request.userAnswers.get(SealsQuery()).getOrElse(Seq.empty)
 
-      form(sealIndex, seals).bindFromRequest()
-        .fold(
-          formWithErrors => renderView(lrn, sealIndex, mode, formWithErrors).map(BadRequest(_)),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage(sealIndex), SealDomain(value)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(SealIdDetailsPage(sealIndex), mode, updatedAnswers))
-        )
-  }
+        form(sealIndex, seals)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => renderView(lrn, sealIndex, mode, formWithErrors).map(BadRequest(_)),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage(sealIndex), SealDomain(value)))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(SealIdDetailsPage(sealIndex), mode, updatedAnswers))
+          )
+    }
 
-  private def renderView(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode, preparedForm: Form[String])(
-    implicit request: DataRequest[AnyContent]) = {
+  private def renderView(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode, preparedForm: Form[String])(implicit request: DataRequest[AnyContent]) = {
     val json = Json.obj(
       "form"        -> preparedForm,
       "lrn"         -> lrn,

@@ -18,7 +18,6 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-
 class LiabilityAmountPageSpec extends PageBehaviours {
 
   "LiabilityAmountPage" - {

@@ -23,8 +23,8 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class WhatIsConsigneeEoriFormProvider @Inject() extends Mappings {
 
-  val eoriNumberRegex: String = "^[a-zA-Z]{2}[0-9]{1,15}"
-  val maxLengthEoriNumber: Int = 17
+  val eoriNumberRegex: String          = "^[a-zA-Z]{2}[0-9]{1,15}"
+  val maxLengthEoriNumber: Int         = 17
   val validEoriCharactersRegex: String = "^[a-zA-Z0-9]*$"
 
   def apply(): Form[String] =

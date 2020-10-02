@@ -34,14 +34,12 @@ import uk.gov.hmrc.nunjucks.NunjucksRenderer
 
 import scala.concurrent.Future
 
-class RendererSpec extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with MockitoSugar
-  with ScalaFutures with BeforeAndAfterEach {
+class RendererSpec extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   val mockNunjucksRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     Mockito.reset(mockNunjucksRenderer)
-  }
 
   private val applicationBuilder =
     new GuiceApplicationBuilder()
@@ -61,7 +59,7 @@ class RendererSpec extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite wi
           .thenReturn(Future.successful(Html("")))
 
         val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+        val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
         val application = applicationBuilder.build()
 
@@ -87,7 +85,7 @@ class RendererSpec extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite wi
           .thenReturn(Future.successful(Html("")))
 
         val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+        val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
         val application = applicationBuilder.build()
 
@@ -113,7 +111,7 @@ class RendererSpec extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite wi
           .thenReturn(Future.successful(Html("")))
 
         val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+        val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
         val application = applicationBuilder.build()
 

@@ -21,7 +21,6 @@ import models.domain.SealDomain
 import play.api.libs.json.JsPath
 import queries.Constants
 
-
 case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {
 
   override def path: JsPath = JsPath \ Constants.seals \ sealIndex.position

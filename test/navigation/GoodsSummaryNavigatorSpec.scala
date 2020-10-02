@@ -23,7 +23,7 @@ import controllers.goodsSummary.{routes => goodsSummaryRoute}
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
 import models.domain.SealDomain
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -41,7 +41,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(DeclarePackagesPage, true).toOption.value
 
-            navigator.nextPage(DeclarePackagesPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(DeclarePackagesPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.TotalPackagesController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -51,7 +52,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(DeclarePackagesPage, false).toOption.value
 
-            navigator.nextPage(DeclarePackagesPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(DeclarePackagesPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.TotalGrossMassController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -61,7 +63,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(TotalPackagesPage, 1).toOption.value
 
-            navigator.nextPage(TotalPackagesPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(TotalPackagesPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.TotalGrossMassController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -71,7 +74,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(ProcedureTypePage, Simplified).toOption.value
 
-            navigator.nextPage(TotalGrossMassPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(TotalGrossMassPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.AuthorisedLocationCodeController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -81,7 +85,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(ProcedureTypePage, Normal).toOption.value
 
-            navigator.nextPage(TotalGrossMassPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(TotalGrossMassPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.AddCustomsApprovedLocationController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -91,7 +96,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(AuthorisedLocationCodePage, "test").toOption.value
 
-            navigator.nextPage(AuthorisedLocationCodePage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(AuthorisedLocationCodePage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.ControlResultDateLimitController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -101,7 +107,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(AddCustomsApprovedLocationPage, true).toOption.value
 
-            navigator.nextPage(AddCustomsApprovedLocationPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(AddCustomsApprovedLocationPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.CustomsApprovedLocationController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -111,7 +118,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(AddCustomsApprovedLocationPage, false).toOption.value
 
-            navigator.nextPage(AddCustomsApprovedLocationPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(AddCustomsApprovedLocationPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.AddSealsController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -119,10 +127,11 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must go from CustomsResultDateLimitPage to AddSealsPage when submitted" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val date = LocalDate.now
+            val date           = LocalDate.now
             val updatedAnswers = answers.set(ControlResultDateLimitPage, date).toOption.value
 
-            navigator.nextPage(ControlResultDateLimitPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(ControlResultDateLimitPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.AddSealsController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -132,7 +141,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(CustomsApprovedLocationPage, "test").success.value
 
-            navigator.nextPage(CustomsApprovedLocationPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(CustomsApprovedLocationPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.AddSealsController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -142,7 +152,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(SealsInformationPage, true).toOption.value
 
-            navigator.nextPage(SealsInformationPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(SealsInformationPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedAnswers.id, sealIndex, NormalMode))
         }
       }
@@ -152,7 +163,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(SealsInformationPage, false).toOption.value
 
-            navigator.nextPage(SealsInformationPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(SealsInformationPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
@@ -162,18 +174,91 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           (answers, seal) =>
             val updatedAnswers = answers.set(SealIdDetailsPage(sealIndex), seal).success.value
 
-            navigator.nextPage(SealIdDetailsPage(sealIndex), NormalMode, updatedAnswers)
+            navigator
+              .nextPage(SealIdDetailsPage(sealIndex), NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
 
       "must go from ConfirmRemoveSealPage to SealsInformationPage when submitted" in {
         forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
-          case (userAnswers, seal) =>
+          (userAnswers, seal) =>
             val updatedAnswers = userAnswers.set(SealIdDetailsPage(sealIndex), seal).success.value
 
-            navigator.nextPage(ConfirmRemoveSealPage(), NormalMode, updatedAnswers)
+            navigator
+              .nextPage(ConfirmRemoveSealPage(), NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+      "must go from AddSealsPage to " - {
+        "SealIdDetailsController(1) when 'true' is selected and they have no seals" in {
+          forAll(arbitrary[UserAnswers]) {
+            userAnswers =>
+              val updatedUserAnswers = userAnswers
+                .remove(SealIdDetailsPage(sealIndex))
+                .success
+                .value
+                .set(AddSealsPage, true)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedUserAnswers.id, sealIndex, NormalMode))
+          }
+        }
+
+        "SealIdDetailsController(2) when 'true' is selected and they already have a seal" in {
+          val seal2 = Index(1)
+          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+            (userAnswers, seal) =>
+              val updatedUserAnswers = userAnswers
+                .set(SealIdDetailsPage(sealIndex), seal)
+                .success
+                .value
+                .set(AddSealsPage, true)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedUserAnswers.id, seal2, NormalMode))
+          }
+        }
+
+        "AddSealsLaterController when 'false' is selected and they don't have existing seals" in {
+          forAll(arbitrary[UserAnswers]) {
+            userAnswers =>
+              val updatedUserAnswers = userAnswers
+                .remove(SealIdDetailsPage(sealIndex))
+                .success
+                .value
+                .set(AddSealsPage, false)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.AddSealsLaterController.onPageLoad(updatedUserAnswers.id, NormalMode))
+          }
+        }
+
+        "ConfirmRemoveSealsController when 'false' is selected and they have existing seals" in {
+          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+            (userAnswers, seal) =>
+              val updatedUserAnswers = userAnswers
+                .set(SealIdDetailsPage(sealIndex), seal)
+                .success
+                .value
+                .set(AddSealsPage, false)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.ConfirmRemoveSealsController.onPageLoad(updatedUserAnswers.id, NormalMode))
+          }
         }
       }
     }
@@ -183,10 +268,16 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must go from DeclarePackagesPage to TotalPackagesPage when selecting Yes and TotalPackages has no data" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.set(DeclarePackagesPage, true).toOption.value
-              .remove(TotalPackagesPage).success.value
+            val updatedAnswers = answers
+              .set(DeclarePackagesPage, true)
+              .toOption
+              .value
+              .remove(TotalPackagesPage)
+              .success
+              .value
 
-            navigator.nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.TotalPackagesController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
@@ -194,10 +285,16 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must go from DeclarePackagesPage to CheckYourAnswersPage when selecting Yes and TotalPackages has data" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.set(DeclarePackagesPage, true).toOption.value
-              .set(TotalPackagesPage, 1).success.value
+            val updatedAnswers = answers
+              .set(DeclarePackagesPage, true)
+              .toOption
+              .value
+              .set(TotalPackagesPage, 1)
+              .success
+              .value
 
-            navigator.nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
@@ -205,10 +302,16 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must go from DeclarePackagesPage to CheckYourAnswersPage when selecting No" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.set(DeclarePackagesPage, false).toOption.value
-              .remove(TotalPackagesPage).success.value
+            val updatedAnswers = answers
+              .set(DeclarePackagesPage, false)
+              .toOption
+              .value
+              .remove(TotalPackagesPage)
+              .success
+              .value
 
-            navigator.nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
@@ -218,7 +321,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(TotalGrossMassPage, "100").success.value
 
-            navigator.nextPage(TotalGrossMassPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(TotalGrossMassPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
@@ -228,30 +332,36 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(AuthorisedLocationCodePage, "test code").success.value
 
-            navigator.nextPage(AuthorisedLocationCodePage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(AuthorisedLocationCodePage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
-
 
       "must go from AddCustomsApprovedLocation to CheckYourAnswers page when selecting No" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers.set(AddCustomsApprovedLocationPage, false).toOption.value
 
-            navigator.nextPage(AddCustomsApprovedLocationPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(AddCustomsApprovedLocationPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
 
-
       "must go from AddCustomsApprovedLocation to CustomsApprovedLocation when selecting Yes and CustomsApprovedLocation has data" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.set(AddCustomsApprovedLocationPage, true).toOption.value
-              .remove(CustomsApprovedLocationPage).success.value
+            val updatedAnswers = answers
+              .set(AddCustomsApprovedLocationPage, true)
+              .toOption
+              .value
+              .remove(CustomsApprovedLocationPage)
+              .success
+              .value
 
-            navigator.nextPage(AddCustomsApprovedLocationPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(AddCustomsApprovedLocationPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.CustomsApprovedLocationController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
@@ -259,21 +369,22 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must go from ControlResultDateLimitPage to CheckYourAnswersPage " in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val date = LocalDate.now
+            val date           = LocalDate.now
             val updatedAnswers = answers.set(ControlResultDateLimitPage, date).success.value
 
-            navigator.nextPage(ControlResultDateLimitPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(ControlResultDateLimitPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
-
 
       "must go from CustomsApprovedLocation page to CheckYourAnswersPage " in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers.set(CustomsApprovedLocationPage, "test data").success.value
 
-            navigator.nextPage(CustomsApprovedLocationPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(CustomsApprovedLocationPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
@@ -281,8 +392,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must go from AddSealsLaterPage to CheckYourAnswersPage " in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(AddSealsLaterPage, CheckMode, answers)
+            navigator
+              .nextPage(AddSealsLaterPage, CheckMode, answers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -292,7 +403,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           (answers, seal) =>
             val updatedAnswers = answers.set(SealIdDetailsPage(sealIndex), seal).success.value
 
-            navigator.nextPage(SealIdDetailsPage(sealIndex), CheckMode, updatedAnswers)
+            navigator
+              .nextPage(SealIdDetailsPage(sealIndex), CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
@@ -302,7 +414,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(SealsInformationPage, true).toOption.value
 
-            navigator.nextPage(SealsInformationPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(SealsInformationPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedAnswers.id, sealIndex, CheckMode))
         }
       }
@@ -312,10 +425,108 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           answers =>
             val updatedAnswers = answers.set(SealsInformationPage, false).toOption.value
 
-            navigator.nextPage(SealsInformationPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(SealsInformationPage, CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
+
+      "go from AddSealsPage to " - {
+        "SealIdDetailsController(1) when 'true' is selected and they have no seals" in {
+          forAll(arbitrary[UserAnswers]) {
+            userAnswers =>
+              val updatedUserAnswers = userAnswers
+                .remove(SealIdDetailsPage(sealIndex))
+                .success
+                .value
+                .set(AddSealsPage, true)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddSealsPage, CheckMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedUserAnswers.id, sealIndex, CheckMode))
+          }
+        }
+
+        "GoodsSummaryCheckYourAnswersController when 'true' is selected and they already have a seal" in {
+          val seal2 = Index(1)
+          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+            (userAnswers, seal) =>
+              val updatedUserAnswers = userAnswers
+                .set(SealIdDetailsPage(sealIndex), seal)
+                .success
+                .value
+                .set(AddSealsPage, true)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddSealsPage, CheckMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedUserAnswers.id))
+          }
+        }
+
+        "AddSealsLaterController when 'false' is selected and they don't have existing seals" in {
+          forAll(arbitrary[UserAnswers]) {
+            userAnswers =>
+              val updatedUserAnswers = userAnswers
+                .remove(SealIdDetailsPage(sealIndex))
+                .success
+                .value
+                .set(AddSealsPage, false)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddSealsPage, CheckMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.AddSealsLaterController.onPageLoad(updatedUserAnswers.id, CheckMode))
+          }
+        }
+
+        "ConfirmRemoveSealsController when 'false' is selected and they have existing seals" in {
+          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+            (userAnswers, seal) =>
+              val updatedUserAnswers = userAnswers
+                .set(SealIdDetailsPage(sealIndex), seal)
+                .success
+                .value
+                .set(AddSealsPage, false)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddSealsPage, CheckMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.ConfirmRemoveSealsController.onPageLoad(updatedUserAnswers.id, CheckMode))
+          }
+        }
+      }
+
+      "Must go from ConfirmRemoveSeals page" - {
+
+        "to CYA when answer is Yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(ConfirmRemoveSealsPage, true).toOption.value
+
+              navigator
+                .nextPage(ConfirmRemoveSealsPage, CheckMode, updatedAnswers)
+                .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+          }
+        }
+
+        "to Add Seals Page when answer is No" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(ConfirmRemoveSealsPage, false).toOption.value
+
+              navigator
+                .nextPage(ConfirmRemoveSealsPage, CheckMode, updatedAnswers)
+                .mustBe(goodsSummaryRoute.AddSealsController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+      }
+
     }
   }
 }

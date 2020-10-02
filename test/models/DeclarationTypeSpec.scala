@@ -34,7 +34,6 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
 
       forAll(gen) {
         declarationType =>
-
           JsString(declarationType.toString).validate[DeclarationType].asOpt.value mustEqual declarationType
       }
     }
@@ -45,7 +44,6 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
 
       forAll(gen) {
         invalidValue =>
-
           JsString(invalidValue).validate[DeclarationType] mustEqual JsError("error.invalid")
       }
     }
@@ -56,7 +54,6 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
 
       forAll(gen) {
         declarationType =>
-
           Json.toJson(declarationType) mustEqual JsString(declarationType.toString)
       }
     }

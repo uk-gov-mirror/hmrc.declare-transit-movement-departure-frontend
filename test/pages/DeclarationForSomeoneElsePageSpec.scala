@@ -36,9 +36,16 @@ class DeclarationForSomeoneElsePageSpec extends PageBehaviours with UserAnswersG
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
-            val result = userAnswers.set(RepresentativeNamePage, "answer").success.value
-              .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct).success.value
-              .set(DeclarationForSomeoneElsePage, false).success.value
+            val result = userAnswers
+              .set(RepresentativeNamePage, "answer")
+              .success
+              .value
+              .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct)
+              .success
+              .value
+              .set(DeclarationForSomeoneElsePage, false)
+              .success
+              .value
 
             result.get(RepresentativeCapacityPage) must not be defined
             result.get(RepresentativeNamePage) must not be defined
@@ -49,9 +56,16 @@ class DeclarationForSomeoneElsePageSpec extends PageBehaviours with UserAnswersG
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
-            val result = userAnswers.set(RepresentativeNamePage, "answer").success.value
-              .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct).success.value
-              .set(DeclarationForSomeoneElsePage, true).success.value
+            val result = userAnswers
+              .set(RepresentativeNamePage, "answer")
+              .success
+              .value
+              .set(RepresentativeCapacityPage, RepresentativeCapacity.Direct)
+              .success
+              .value
+              .set(DeclarationForSomeoneElsePage, true)
+              .success
+              .value
 
             result.get(RepresentativeCapacityPage) mustBe defined
             result.get(RepresentativeNamePage) mustBe defined

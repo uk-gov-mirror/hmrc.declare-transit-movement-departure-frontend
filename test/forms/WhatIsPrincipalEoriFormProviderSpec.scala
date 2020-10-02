@@ -22,12 +22,12 @@ import org.scalacheck.Gen
 
 class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "whatIsPrincipalEori.error.required"
-  val lengthKey = "whatIsPrincipalEori.error.length"
-  val invalidCharactersKey = "whatIsPrincipalEori.error.invalidCharacters"
-  val invalidFormatKey = "whatIsPrincipalEori.error.invalidFormat"
-  val maxLength = 17
-  val eoriNumberRegex: String = "^[A-Z]{2}[0-9]{1,15}"
+  val requiredKey                      = "whatIsPrincipalEori.error.required"
+  val lengthKey                        = "whatIsPrincipalEori.error.length"
+  val invalidCharactersKey             = "whatIsPrincipalEori.error.invalidCharacters"
+  val invalidFormatKey                 = "whatIsPrincipalEori.error.invalidFormat"
+  val maxLength                        = 17
+  val eoriNumberRegex: String          = "^[A-Z]{2}[0-9]{1,15}"
   val validEoriCharactersRegex: String = "^[A-Z0-9]*$"
 
   val form = new WhatIsPrincipalEoriFormProvider()()
@@ -45,7 +45,7 @@ class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -64,9 +64,10 @@ class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(validEoriCharactersRegex))
       }
 
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
 
@@ -79,9 +80,10 @@ class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
         alphaNumericWithMaxLength(maxLength).map(_.toUpperCase) suchThat (!_.matches(eoriNumberRegex))
       }
 
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
   }

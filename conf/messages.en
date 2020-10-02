@@ -517,8 +517,7 @@ sealIdDetails.checkYourAnswersLabel.singular = Customs seal number
 sealIdDetails.checkYourAnswersLabel.plural = Customs seal numbers
 sealIdDetails.error.required = Enter the seal number
 sealIdDetails.error.length = The seal number must be 20 characters or less
-sealIdDetails.error.invalidCharacters = The authorised location code must only include letters a to z, numbers 0 to 9
-
+sealIdDetails.error.invalidCharacters = The seal number must only include letters a to z, numbers 0 to 9
 
 addSeals.title = Do you need to add Customs seals numbers?
 addSeals.heading = Do you need to add Customs seals numbers?
@@ -588,6 +587,12 @@ confirmRemoveOfficeOfTransit.heading = Are you sure you want to remove this offi
 confirmRemoveOfficeOfTransit.Label = Office of transit
 confirmRemoveOfficeOfTransit.error.required = Select yes if you are sure you want to remove this office of transit
 
+confirmRemoveSeals.title = Are you sure you want to remove the customs seals you have added?
+confirmRemoveSeals.heading = Are you sure you want to remove the customs seals you have added?
+confirmRemoveSeals.checkYourAnswersLabel = Are you sure you want to remove the customs seals you have added?
+confirmRemoveSeals.paragraph = Any customs seals you have entered will be deleted.
+confirmRemoveSeals.error.required = Select yes if you are sure you want to remove the customs seals you have added
+
 guaranteeReference.title = What is the guarantee reference number?
 guaranteeReference.heading = What is the guarantee reference number?
 guaranteeReference.checkYourAnswersLabel = Guarantee reference number
@@ -605,3 +610,33 @@ liabilityAmount.error.length = Liability amount must be 100 characters or less
 liabilityAmount.error.characters = Liability amount must only include numbers 0 to 9 and a decimal place
 liabilityAmount.paragraph = Amount must include a decimal place, like 230.00. Enter 0 to use the default amount of EUR 10,000
 liabilityAmount.error.invalidFormat = Enter an amount with 2 decimal places
+
+otherReference.title = What is the reference for the guarantee?
+otherReference.heading = What is the reference for the guarantee?
+otherReference.checkYourAnswersLabel = Reference for the guarantee
+otherReference.paragraph = You must make sure this reference is up to date.
+otherReference.error.required = Enter the reference for the guarantee
+otherReference.error.length = The reference for the guarantee must be 35 characters
+otherReference.error.invalid = The reference for the guarantee must only include letters a to z and numbers 0 to 9
+
+guaranteeType.title = Which type of guarantee is being used?
+guaranteeType.heading = Which type of guarantee is being used?
+guaranteeType.GuaranteeWaiver = (0) Guarantee waiver
+guaranteeType.ComprehensiveGuarantee = (1) Comprehensive guarantee
+guaranteeType.IndividualGuarantee = (2) Individual guarantee
+guaranteeType.FlatRateVoucher = (4) Flat-rate voucher
+guaranteeType.CashDepositGuarantee = (3) Cash deposit guarantee
+guaranteeType.GuaranteeNotRequired = (7) Guarantee not required for the journey between the office of departure and the office of transit
+guaranteeType.GuaranteeWaivedRedirect = (6) Guarantee waived redirect
+guaranteeType.GuaranteeWaiverByAgreement = (A) Guarantee waiver by agreement
+guaranteeType.GuaranteeWaiverSecured = (5) Guarantee waiver, secured amount not greater than 500 Euros
+guaranteeType.IndividualGuaranteeMultiple = (9) Individual guarantee with multiple usage
+guaranteeType.checkYourAnswersLabel = Which type of guarantee is being used?
+guaranteeType.error.required = Select which type of guarantee is being used
+
+accessCode.title = What is the access code?
+accessCode.heading = What is the access code?
+accessCode.checkYourAnswersLabel = Access code
+accessCode.error.required = Enter the access code
+accessCode.error.length = Access code is 4 numbers, like 1234
+accessCode.error.invalidCharacters = Access code must only include numbers 0 to 9

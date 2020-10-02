@@ -27,38 +27,58 @@ import play.api.mvc.Call
 class RouteDetailsNavigator @Inject()() extends Navigator {
 
   override val normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case CountryOfDispatchPage => ua => Some(routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode))
-    case OfficeOfDeparturePage => ua => Some(routes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
-    case DestinationCountryPage => ua => Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
-    case DestinationOfficePage => ua => Some(routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(0), NormalMode))
-    case AddAnotherTransitOfficePage(index) => ua =>  Some(redirectToAddTransitOfficeNextPage(ua, index, NormalMode))
-    case AddTransitOfficePage => ua => Some(addOfficeOfTransit(NormalMode, ua))
-    case ArrivalTimesAtOfficePage(_) => ua => Some(routes.AddTransitOfficeController.onPageLoad(ua.id, NormalMode))
-    case ConfirmRemoveOfficeOfTransitPage => ua => Some(removeOfficeOfTransit(NormalMode)(ua))
+    case CountryOfDispatchPage =>
+      ua =>
+        Some(routes.OfficeOfDepartureController.onPageLoad(ua.id, NormalMode))
+    case OfficeOfDeparturePage =>
+      ua =>
+        Some(routes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
+    case DestinationCountryPage =>
+      ua =>
+        Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
+    case DestinationOfficePage =>
+      ua =>
+        Some(routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(0), NormalMode))
+    case AddAnotherTransitOfficePage(index) =>
+      ua =>
+        Some(redirectToAddTransitOfficeNextPage(ua, index, NormalMode))
+    case AddTransitOfficePage =>
+      ua =>
+        Some(addOfficeOfTransit(NormalMode, ua))
+    case ArrivalTimesAtOfficePage(_) =>
+      ua =>
+        Some(routes.AddTransitOfficeController.onPageLoad(ua.id, NormalMode))
+    case ConfirmRemoveOfficeOfTransitPage =>
+      ua =>
+        Some(removeOfficeOfTransit(NormalMode)(ua))
 
   }
 
   override val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case page if isRouteDetailsSectionPage(page) => ua => Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
-    case _ => _ => None
+    case page if isRouteDetailsSectionPage(page) =>
+      ua =>
+        Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case _ =>
+      _ =>
+        None
   }
 
-  def redirectToAddTransitOfficeNextPage(ua: UserAnswers, index: Index, mode: Mode): Call = {
+  def redirectToAddTransitOfficeNextPage(ua: UserAnswers, index: Index, mode: Mode): Call =
     ua.get(AddSecurityDetailsPage) match {
       case Some(isSelected) if isSelected => routes.ArrivalTimesAtOfficeController.onPageLoad(ua.id, index, mode)
-      case _ =>  routes.AddTransitOfficeController.onPageLoad(ua.id, mode)
+      case _                              => routes.AddTransitOfficeController.onPageLoad(ua.id, mode)
     }
-  }
 
-  private def isRouteDetailsSectionPage(page: Page): Boolean = {
+  private def isRouteDetailsSectionPage(page: Page): Boolean =
     page match {
-      case CountryOfDispatchPage| OfficeOfDeparturePage | DestinationCountryPage | DestinationOfficePage | AddAnotherTransitOfficePage(_) | ArrivalTimesAtOfficePage(_) => true
+      case CountryOfDispatchPage | OfficeOfDeparturePage | DestinationCountryPage | DestinationOfficePage | AddAnotherTransitOfficePage(_) |
+          ArrivalTimesAtOfficePage(_) =>
+        true
       case _ => false
     }
-  }
 
   private def addOfficeOfTransit(mode: Mode, userAnswers: UserAnswers): Call = {
-    val count = userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+    val count                     = userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
     val maxNumberOfOfficesAllowed = 5
     userAnswers.get(AddTransitOfficePage) match {
       case Some(true) if count <= maxNumberOfOfficesAllowed =>
@@ -75,4 +95,3 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
       case _              => routes.AddTransitOfficeController.onPageLoad(ua.id, mode)
     }
 }
-

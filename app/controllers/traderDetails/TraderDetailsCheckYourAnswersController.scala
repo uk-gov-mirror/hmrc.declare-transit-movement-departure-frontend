@@ -31,20 +31,20 @@ import viewModels.sections.Section
 import scala.concurrent.{ExecutionContext, Future}
 
 class TraderDetailsCheckYourAnswersController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val sections: Seq[Section] = createSections(request.userAnswers)
-      val json = Json.obj("lrn" -> lrn,
-        "sections" -> Json.toJson(sections)
-      )
+      val json                   = Json.obj("lrn" -> lrn, "sections" -> Json.toJson(sections))
 
       renderer.render("traderDetailsCheckYourAnswers.njk", json).map(Ok(_))
   }
@@ -57,22 +57,24 @@ class TraderDetailsCheckYourAnswersController @Inject()(
   private def createSections(userAnswers: UserAnswers): Seq[Section] = {
     val checkYourAnswersHelper = new TraderDetailsCheckYourAnswersHelper(userAnswers)
 
-    Seq(Section(
-      Seq(checkYourAnswersHelper.isPrincipalEoriKnown,
-        checkYourAnswersHelper.whatIsPrincipalEori,
-        checkYourAnswersHelper.principalName,
-        checkYourAnswersHelper.principalAddress,
-        checkYourAnswersHelper.addConsignor,
-        checkYourAnswersHelper.isConsignorEoriKnown,
-        checkYourAnswersHelper.consignorName,
-        checkYourAnswersHelper.consignorAddress,
-        checkYourAnswersHelper.consignorEori,
-        checkYourAnswersHelper.addConsignee,
-        checkYourAnswersHelper.isConsigneeEoriKnown,
-        checkYourAnswersHelper.consigneeName,
-        checkYourAnswersHelper.consigneeAddress,
-        checkYourAnswersHelper.whatIsConsigneeEori,
-      ).flatten
-    ))
+    Seq(
+      Section(
+        Seq(
+          checkYourAnswersHelper.isPrincipalEoriKnown,
+          checkYourAnswersHelper.whatIsPrincipalEori,
+          checkYourAnswersHelper.principalName,
+          checkYourAnswersHelper.principalAddress,
+          checkYourAnswersHelper.addConsignor,
+          checkYourAnswersHelper.isConsignorEoriKnown,
+          checkYourAnswersHelper.consignorName,
+          checkYourAnswersHelper.consignorAddress,
+          checkYourAnswersHelper.consignorEori,
+          checkYourAnswersHelper.addConsignee,
+          checkYourAnswersHelper.isConsigneeEoriKnown,
+          checkYourAnswersHelper.consigneeName,
+          checkYourAnswersHelper.consigneeAddress,
+          checkYourAnswersHelper.whatIsConsigneeEori,
+        ).flatten
+      ))
   }
 }

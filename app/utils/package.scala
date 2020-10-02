@@ -21,21 +21,21 @@ import uk.gov.hmrc.viewmodels.{Content, MessageInterpolators}
 package object utils {
   val defaultOption: JsObject = Json.obj("value" -> "", "text" -> "")
 
-   def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {
+  def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {
     val countryJsonList = countries.map {
       country =>
         Json.obj("text" -> country.description, "value" -> country.code, "selected" -> value.contains(country))
     }
 
-     defaultOption +: countryJsonList
+    defaultOption +: countryJsonList
   }
 
   def getCustomsOfficesAsJson(value: Option[CustomsOffice], customsOffices: Seq[CustomsOffice]): Seq[JsObject] = {
     val customsOfficeObjects = customsOffices.map {
       office =>
         Json.obj(
-          "value" -> office.id,
-          "text" -> s"${office.name} (${office.id})",
+          "value"    -> office.id,
+          "text"     -> s"${office.name} (${office.id})",
           "selected" -> value.contains(office)
         )
     }
@@ -46,8 +46,8 @@ package object utils {
     val transportModeObjects = transportModes.map {
       mode =>
         Json.obj(
-          "value" -> mode.code,
-          "text" -> s"(${mode.code}) ${mode.description}",
+          "value"    -> mode.code,
+          "text"     -> s"(${mode.code}) ${mode.description}",
           "selected" -> value.contains(mode)
         )
     }
@@ -55,12 +55,12 @@ package object utils {
   }
 
   def amPmAsJson(value: Option[String]): Seq[JsObject] = {
-    val amPms = Seq("am","pm")
+    val amPms = Seq("am", "pm")
     val jsObjects: Seq[JsObject] = amPms map (
       amOrPm =>
         Json.obj(
-          "value" -> s"$amOrPm",
-          "text" -> s"$amOrPm",
+          "value"    -> s"$amOrPm",
+          "text"     -> s"$amOrPm",
           "selected" -> value.contains(amOrPm)
         )
     )
@@ -72,8 +72,8 @@ package object utils {
     val officeOfTransitObjects = officeOfTransitList.map {
       office =>
         Json.obj(
-          "value" -> office.id,
-          "text" -> s"${office.name} (${office.id})",
+          "value"    -> office.id,
+          "text"     -> s"${office.name} (${office.id})",
           "selected" -> value.contains(office)
         )
     }
@@ -86,6 +86,5 @@ package object utils {
     } else {
       msg"site.no"
     }
-
 
 }

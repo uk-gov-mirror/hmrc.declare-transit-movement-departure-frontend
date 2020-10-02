@@ -31,22 +31,21 @@ import viewModels.sections.Section
 import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsSummaryCheckYourAnswersController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       val sections: Seq[Section] = GoodsSummaryCheckYourAnswersViewModel(request.userAnswers).sections
 
-      val json = Json.obj("lrn" -> lrn,
-      "sections" ->Json.toJson(sections)
-      )
+      val json = Json.obj("lrn" -> lrn, "sections" -> Json.toJson(sections))
 
       renderer.render("goodsSummaryCheckYourAnswers.njk", json).map(Ok(_))
   }

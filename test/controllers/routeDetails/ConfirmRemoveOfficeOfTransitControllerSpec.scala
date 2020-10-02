@@ -43,18 +43,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
-  with MockitoSugar
-  with NunjucksSupport
-  with JsonMatchers
-  with BeforeAndAfterEach {
+class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new ConfirmRemoveOfficeOfTransitFormProvider()
-  val form = formProvider()
-  private val mockReferenceDataConnector = mock[ReferenceDataConnector]
-  private val officeOfTransit = OfficeOfTransit("id", "name")
+  val formProvider                                   = new ConfirmRemoveOfficeOfTransitFormProvider()
+  val form                                           = formProvider()
+  private val mockReferenceDataConnector             = mock[ReferenceDataConnector]
+  private val officeOfTransit                        = OfficeOfTransit("id", "name")
   lazy val confirmRemoveOfficeOfTransitRoute: String = routes.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn, index, NormalMode).url
 
   override def beforeEach: Unit = {
@@ -75,9 +71,9 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, confirmRemoveOfficeOfTransitRoute)
+      val request        = FakeRequest(GET, confirmRemoveOfficeOfTransitRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -86,11 +82,11 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
+        "form"            -> form,
+        "mode"            -> NormalMode,
         "officeOfTransit" -> s"${officeOfTransit.name} (${officeOfTransit.id})",
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "lrn"             -> lrn,
+        "radios"          -> Radios.yesNo(form("value"))
       )
 
       templateCaptor.getValue mustEqual "confirmRemoveOfficeOfTransit.njk"
@@ -106,9 +102,14 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
 
       when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
 
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), "id").toOption.value
-        .remove(OfficeOfTransitQuery(index)).toOption.value
-      val application    = applicationBuilder(userAnswers = Some(userAnswers))
+      val userAnswers = emptyUserAnswers
+        .set(AddAnotherTransitOfficePage(index), "id")
+        .toOption
+        .value
+        .remove(OfficeOfTransitQuery(index))
+        .toOption
+        .value
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
       val request        = FakeRequest(GET, confirmRemoveOfficeOfTransitRoute)
@@ -151,7 +152,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
         .value
 
       val confirmRemoveRoute = routes.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn, Index(1), NormalMode).url
-      val application    = applicationBuilder(userAnswers = Some(updatedAnswer))
+      val application = applicationBuilder(userAnswers = Some(updatedAnswer))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
       val request        = FakeRequest(GET, confirmRemoveRoute)
@@ -189,7 +190,8 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
-          ).build()
+          )
+          .build()
 
       val request =
         FakeRequest(POST, confirmRemoveOfficeOfTransitRoute)
@@ -210,7 +212,6 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
 
       verify(mockSessionRepository, times(1)).set(newUserAnswers)
 
-
       application.stop()
     }
 
@@ -225,10 +226,10 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
 
-      val request = FakeRequest(POST, confirmRemoveOfficeOfTransitRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, confirmRemoveOfficeOfTransitRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -237,11 +238,11 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
+        "form"            -> boundForm,
+        "mode"            -> NormalMode,
         "officeOfTransit" -> s"${officeOfTransit.name} (${officeOfTransit.id})",
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "lrn"             -> lrn,
+        "radios"          -> Radios.yesNo(boundForm("value"))
       )
 
       templateCaptor.getValue mustEqual "confirmRemoveOfficeOfTransit.njk"

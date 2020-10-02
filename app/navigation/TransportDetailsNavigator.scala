@@ -25,76 +25,110 @@ import play.api.mvc.Call
 @Singleton
 class TransportDetailsNavigator @Inject()() extends Navigator {
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddIdAtDepartureLaterPage => ua => Some(addItAtDepartureLaterRoute(ua,NormalMode ))
-    case InlandModePage => ua => Some(routes.AddIdAtDepartureController.onPageLoad(ua.id, NormalMode))
-    case IdAtDeparturePage => ua => Some(routes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode))
-    case NationalityAtDeparturePage => ua => Some(routes.ChangeAtBorderController.onPageLoad(ua.id, NormalMode))
-    case ModeAtBorderPage => ua => Some(routes.IdCrossingBorderController.onPageLoad(ua.id, NormalMode))
-    case IdCrossingBorderPage => ua => Some(routes.ModeCrossingBorderController.onPageLoad(ua.id, NormalMode))
-    case ModeCrossingBorderPage => ua => Some(modeCrossingBorderRoute(ua, NormalMode))
-    case NationalityCrossingBorderPage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
-    case AddIdAtDeparturePage => ua => Some(addIdAtDepartureRoute(ua, NormalMode))
-    case ChangeAtBorderPage => ua => Some(changeAtBorderRoute(ua, NormalMode))
-    case _ => _ => None
+    case AddIdAtDepartureLaterPage =>
+      ua =>
+        Some(addItAtDepartureLaterRoute(ua, NormalMode))
+    case InlandModePage =>
+      ua =>
+        Some(routes.AddIdAtDepartureController.onPageLoad(ua.id, NormalMode))
+    case IdAtDeparturePage =>
+      ua =>
+        Some(routes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode))
+    case NationalityAtDeparturePage =>
+      ua =>
+        Some(routes.ChangeAtBorderController.onPageLoad(ua.id, NormalMode))
+    case ModeAtBorderPage =>
+      ua =>
+        Some(routes.IdCrossingBorderController.onPageLoad(ua.id, NormalMode))
+    case IdCrossingBorderPage =>
+      ua =>
+        Some(routes.ModeCrossingBorderController.onPageLoad(ua.id, NormalMode))
+    case ModeCrossingBorderPage =>
+      ua =>
+        Some(modeCrossingBorderRoute(ua, NormalMode))
+    case NationalityCrossingBorderPage =>
+      ua =>
+        Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case AddIdAtDeparturePage =>
+      ua =>
+        Some(addIdAtDepartureRoute(ua, NormalMode))
+    case ChangeAtBorderPage =>
+      ua =>
+        Some(changeAtBorderRoute(ua, NormalMode))
+    case _ =>
+      _ =>
+        None
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case InlandModePage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
-    case AddIdAtDeparturePage => ua => Some(addIdAtDepartureRoute(ua, CheckMode))
-    case IdAtDeparturePage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
-    case AddIdAtDepartureLaterPage => ua => Some(addItAtDepartureLaterRoute(ua,NormalMode))
-    case NationalityAtDeparturePage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
-    case ChangeAtBorderPage => ua => Some(changeAtBorderRoute(ua, CheckMode))
-    case ModeAtBorderPage => ua => Some(modeAtBorderRoute(ua, CheckMode))
-    case IdCrossingBorderPage => ua => Some(idCrossingBorderRoute(ua, CheckMode))
-    case ModeCrossingBorderPage => ua => Some(modeCrossingBorderRoute(ua,CheckMode))
-    case NationalityCrossingBorderPage => ua => Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case InlandModePage =>
+      ua =>
+        Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case AddIdAtDeparturePage =>
+      ua =>
+        Some(addIdAtDepartureRoute(ua, CheckMode))
+    case IdAtDeparturePage =>
+      ua =>
+        Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case AddIdAtDepartureLaterPage =>
+      ua =>
+        Some(addItAtDepartureLaterRoute(ua, NormalMode))
+    case NationalityAtDeparturePage =>
+      ua =>
+        Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case ChangeAtBorderPage =>
+      ua =>
+        Some(changeAtBorderRoute(ua, CheckMode))
+    case ModeAtBorderPage =>
+      ua =>
+        Some(modeAtBorderRoute(ua, CheckMode))
+    case IdCrossingBorderPage =>
+      ua =>
+        Some(idCrossingBorderRoute(ua, CheckMode))
+    case ModeCrossingBorderPage =>
+      ua =>
+        Some(modeCrossingBorderRoute(ua, CheckMode))
+    case NationalityCrossingBorderPage =>
+      ua =>
+        Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
   }
 
-
-  private def addIdAtDepartureRoute(ua: UserAnswers, mode: Mode): Call = {
+  private def addIdAtDepartureRoute(ua: UserAnswers, mode: Mode): Call =
     (ua.get(AddIdAtDeparturePage), ua.get(IdAtDeparturePage), mode) match {
-      case (Some(true), None, _) => routes.IdAtDepartureController.onPageLoad(ua.id, mode)
+      case (Some(true), None, _)  => routes.IdAtDepartureController.onPageLoad(ua.id, mode)
       case (Some(false), None, _) => routes.AddIdAtDepartureLaterController.onPageLoad(ua.id)
-      case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _                      => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
-  }
 
-  private def changeAtBorderRoute(ua: UserAnswers, mode: Mode): Call = {
+  private def changeAtBorderRoute(ua: UserAnswers, mode: Mode): Call =
     (ua.get(ChangeAtBorderPage), ua.get(ModeAtBorderPage), mode) match {
-      case (Some(true), _, NormalMode) => routes.ModeAtBorderController.onPageLoad(ua.id, NormalMode)
+      case (Some(true), _, NormalMode)   => routes.ModeAtBorderController.onPageLoad(ua.id, NormalMode)
       case (Some(true), None, CheckMode) => routes.ModeAtBorderController.onPageLoad(ua.id, CheckMode)
-      case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _                             => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
-  }
 
-  private def modeAtBorderRoute(ua: UserAnswers, mode: Mode): Call = {
+  private def modeAtBorderRoute(ua: UserAnswers, mode: Mode): Call =
     ua.get(IdCrossingBorderPage) match {
       case None => routes.IdCrossingBorderController.onPageLoad(ua.id, CheckMode)
-      case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _    => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
-  }
-  private def idCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call = {
+  private def idCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call =
     ua.get(ModeCrossingBorderPage) match {
       case None => routes.ModeCrossingBorderController.onPageLoad(ua.id, CheckMode)
-      case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _    => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
-  }
 
-  private def modeCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call = {
+  private def modeCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call =
     (ua.get(ModeCrossingBorderPage), ua.get(NationalityCrossingBorderPage), mode) match {
-        case (Some(x), _, NormalMode) if(x  != "2" && x != "5" && x != "7" )  => routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
-        case (Some(x), None , CheckMode) if(x  != "2" && x != "5" && x != "7" )  => routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
-        case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(x), _, NormalMode) if (x != "2" && x != "5" && x != "7")   => routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
+      case (Some(x), None, CheckMode) if (x != "2" && x != "5" && x != "7") => routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
+      case _                                                                => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
 
     }
-  }
-  private def addItAtDepartureLaterRoute(ua: UserAnswers, mode: Mode): Call = {
+  private def addItAtDepartureLaterRoute(ua: UserAnswers, mode: Mode): Call =
     ua.get(NationalityAtDeparturePage) match {
-      case None =>  routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
-      case _ =>  routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case None => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case _    => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
-  }
 }
-

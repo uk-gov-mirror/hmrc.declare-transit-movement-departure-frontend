@@ -26,14 +26,14 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def consigneeAddress: Option[Row] = userAnswers.get(ConsigneeAddressPage) map {
     answer =>
-      val address =   Html(Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
-        .mkString("<br>"))
+      val address = Html(
+        Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+          .mkString("<br>"))
       Row(
-        key     = Key(msg"consigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(address),
+        key   = Key(msg"consigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(address),
         actions = List(
           Action(
-
             content            = msg"site.edit",
             href               = routes.ConsigneeAddressController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consigneeAddress.checkYourAnswersLabel"))
@@ -44,11 +44,12 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def principalAddress: Option[Row] = userAnswers.get(PrincipalAddressPage) map {
     answer =>
-      val address =   Html(Seq(answer.numberAndStreet, answer.town, answer.postcode)
-        .mkString("<br>"))
+      val address = Html(
+        Seq(answer.numberAndStreet, answer.town, answer.postcode)
+          .mkString("<br>"))
       Row(
-        key     = Key(msg"principalAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(address),
+        key   = Key(msg"principalAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -62,8 +63,8 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def consigneeName: Option[Row] = userAnswers.get(ConsigneeNamePage) map {
     answer =>
       Row(
-        key     = Key(msg"consigneeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"consigneeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -77,8 +78,8 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def whatIsConsigneeEori: Option[Row] = userAnswers.get(WhatIsConsigneeEoriPage) map {
     answer =>
       Row(
-        key     = Key(msg"whatIsConsigneeEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"whatIsConsigneeEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -92,8 +93,8 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def isConsigneeEoriKnown: Option[Row] = userAnswers.get(IsConsigneeEoriKnownPage) map {
     answer =>
       Row(
-        key     = Key(msg"isConsigneeEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"isConsigneeEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -107,8 +108,8 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def consignorName: Option[Row] = userAnswers.get(ConsignorNamePage) map {
     answer =>
       Row(
-        key     = Key(msg"consignorName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"consignorName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -122,14 +123,14 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def addConsignee: Option[Row] = userAnswers.get(AddConsigneePage) map {
     answer =>
       Row(
-        key     = Key(msg"addConsignee.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"addConsignee.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.AddConsigneeController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignee.checkYourAnswersLabel")),
-            attributes = Map("id" -> "change-add-consignee")
+            attributes         = Map("id" -> "change-add-consignee")
           )
         )
       )
@@ -137,12 +138,13 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def consignorAddress: Option[Row] = userAnswers.get(ConsignorAddressPage) map {
     answer =>
-   val address =   Html(Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
-        .mkString("<br>"))
+      val address = Html(
+        Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+          .mkString("<br>"))
 
       Row(
-        key     = Key(msg"consignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(address),
+        key   = Key(msg"consignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -156,8 +158,8 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def consignorEori: Option[Row] = userAnswers.get(ConsignorEoriPage) map {
     answer =>
       Row(
-        key     = Key(msg"consignorEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"consignorEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -171,14 +173,14 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def addConsignor: Option[Row] = userAnswers.get(AddConsignorPage) map {
     answer =>
       Row(
-        key     = Key(msg"addConsignor.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"addConsignor.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.AddConsignorController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignor.checkYourAnswersLabel")),
-            attributes         = Map("id"-> "change-add-consignor")
+            attributes         = Map("id" -> "change-add-consignor")
           )
         )
       )
@@ -187,8 +189,8 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def isConsignorEoriKnown: Option[Row] = userAnswers.get(IsConsignorEoriKnownPage) map {
     answer =>
       Row(
-        key     = Key(msg"isConsignorEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"isConsignorEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -202,8 +204,8 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def principalName: Option[Row] = userAnswers.get(PrincipalNamePage) map {
     answer =>
       Row(
-        key     = Key(msg"principalName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"principalName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -217,8 +219,8 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def isPrincipalEoriKnown: Option[Row] = userAnswers.get(IsPrincipalEoriKnownPage) map {
     answer =>
       Row(
-        key     = Key(msg"isPrincipalEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"isPrincipalEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -233,8 +235,8 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def whatIsPrincipalEori: Option[Row] = userAnswers.get(WhatIsPrincipalEoriPage) map {
     answer =>
       Row(
-        key     = Key(msg"whatIsPrincipalEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"whatIsPrincipalEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -247,5 +249,3 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def lrn: LocalReferenceNumber = userAnswers.id
 }
-
-

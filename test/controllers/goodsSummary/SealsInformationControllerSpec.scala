@@ -44,9 +44,9 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new SealsInformationFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
-  lazy val sealsInformationRoute = routes.SealsInformationController.onPageLoad(lrn,  NormalMode).url
+  lazy val sealsInformationRoute = routes.SealsInformationController.onPageLoad(lrn, NormalMode).url
 
   "SealsInformation Controller" - {
 
@@ -56,12 +56,14 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
         .thenReturn(Future.successful(Html("")))
 
       val updatedAnswers = emptyUserAnswers
-        .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
+        .set(SealIdDetailsPage(Index(0)), sealDomain)
+        .success
+        .value
 
-      val application = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
-      val request = FakeRequest(GET, sealsInformationRoute)
+      val application    = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
+      val request        = FakeRequest(GET, sealsInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -70,13 +72,13 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value")),
+        "form"        -> form,
+        "mode"        -> NormalMode,
+        "lrn"         -> lrn,
+        "radios"      -> Radios.yesNo(form("value")),
         "pageTitle"   -> "addSeal.title.singular",
         "heading"     -> "addSeal.heading.singular",
-        "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  NormalMode).url
+        "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, NormalMode).url
       )
 
       templateCaptor.getValue mustEqual "sealsInformation.njk"
@@ -91,26 +93,30 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
         .thenReturn(Future.successful(Html("")))
 
       val updatedAnswers = emptyUserAnswers
-        .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
-        .set(SealIdDetailsPage(Index(1)), sealDomain2).success.value
+        .set(SealIdDetailsPage(Index(0)), sealDomain)
+        .success
+        .value
+        .set(SealIdDetailsPage(Index(1)), sealDomain2)
+        .success
+        .value
       val application = applicationBuilder(userAnswers = Some(updatedAnswers))
         .build()
-      val request = FakeRequest(GET, sealsInformationRoute)
+      val request        = FakeRequest(GET, sealsInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-      val result = route(application, request).value
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val result         = route(application, request).value
 
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       val expectedJson = Json.obj(
-      "form"   -> form,
-      "mode"   -> NormalMode,
-      "lrn"    -> lrn,
-      "radios" -> Radios.yesNo(form("value")),
-      "pageTitle"   -> "addSeal.title.plural",
-      "heading"     -> "addSeal.heading.plural",
-      "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  NormalMode).url
+        "form"        -> form,
+        "mode"        -> NormalMode,
+        "lrn"         -> lrn,
+        "radios"      -> Radios.yesNo(form("value")),
+        "pageTitle"   -> "addSeal.title.plural",
+        "heading"     -> "addSeal.heading.plural",
+        "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, NormalMode).url
       )
 
       templateCaptor.getValue mustEqual "sealsInformation.njk"
@@ -118,7 +124,6 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
 
       application.stop()
     }
-
 
     "must redirect to the next page when valid data is submitted" in {
 
@@ -152,13 +157,15 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
       val updatedAnswers = emptyUserAnswers
-        .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
+        .set(SealIdDetailsPage(Index(0)), sealDomain)
+        .success
+        .value
 
-      val application = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
-      val request = FakeRequest(POST, sealsInformationRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val application    = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
+      val request        = FakeRequest(POST, sealsInformationRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -167,13 +174,13 @@ class SealsInformationControllerSpec extends SpecBase with MockitoSugar with Nun
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value")),
+        "form"        -> boundForm,
+        "mode"        -> NormalMode,
+        "lrn"         -> lrn,
+        "radios"      -> Radios.yesNo(boundForm("value")),
         "pageTitle"   -> "addSeal.title.singular",
         "heading"     -> "addSeal.heading.singular",
-        "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn,  NormalMode).url
+        "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, NormalMode).url
       )
 
       templateCaptor.getValue mustEqual "sealsInformation.njk"

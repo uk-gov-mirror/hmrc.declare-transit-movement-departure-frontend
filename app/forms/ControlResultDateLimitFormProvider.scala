@@ -25,19 +25,19 @@ import play.api.data.Form
 
 class ControlResultDateLimitFormProvider @Inject() extends Mappings {
 
-  val dateIn14Days: LocalDate = LocalDate.now.plusDays(14)
+  val dateIn14Days: LocalDate          = LocalDate.now.plusDays(14)
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
-
   def apply(): Form[LocalDate] =
-  Form(
-
-  "value" -> localDate(
-  invalidKey     = "controlResultDateLimit.error.invalid",
+    Form(
+      "value" -> localDate(
+        invalidKey     = "controlResultDateLimit.error.invalid",
         allRequiredKey = "controlResultDateLimit.error.required.all",
         twoRequiredKey = "controlResultDateLimit.error.required.two",
         requiredKey    = "controlResultDateLimit.error.required"
-      ).verifying(maxDate(LocalDate.now.plusDays(14), "controlResultDateLimit.error.max.date",dateFormatter.format(dateIn14Days) ), minDate(LocalDate.now, "controlResultDateLimit.error.min.date"))
-
+      ).verifying(
+        maxDate(LocalDate.now.plusDays(14), "controlResultDateLimit.error.max.date", dateFormatter.format(dateIn14Days)),
+        minDate(LocalDate.now, "controlResultDateLimit.error.min.date")
+      )
     )
 }

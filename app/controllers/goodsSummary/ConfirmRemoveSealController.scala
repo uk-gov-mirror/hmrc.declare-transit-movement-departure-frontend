@@ -40,18 +40,18 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveSealController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             sessionRepository: SessionRepository,
-                                             @GoodsSummary navigator: Navigator,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalActionProvider,
-                                             requireData: DataRequiredAction,
-                                             formProvider: ConfirmRemoveSealFormProvider,
-                                             errorHandler: ErrorHandler,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             renderer: Renderer
-                                           )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @GoodsSummary navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: ConfirmRemoveSealFormProvider,
+  errorHandler: ErrorHandler,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
 
@@ -86,7 +86,7 @@ class ConfirmRemoveSealController @Inject()(
                     } yield Redirect(navigator.nextPage(ConfirmRemoveSealPage(), mode, updatedAnswers))
                   } else {
                     Future.successful(Redirect(navigator.nextPage(ConfirmRemoveSealPage(), mode, request.userAnswers)))
-                  }
+                }
               )
           case _ =>
             renderErrorPage(mode)

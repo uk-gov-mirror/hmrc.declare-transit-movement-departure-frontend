@@ -36,32 +36,37 @@ import navigation.annotations.RouteDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class OfficeOfDepartureController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             sessionRepository: SessionRepository,
-                                             @RouteDetails navigator: Navigator,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalActionProvider,
-                                             requireData: DataRequiredAction,
-                                             formProvider: OfficeOfDepartureFormProvider,
-                                             referenceDataConnector: ReferenceDataConnector,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             renderer: Renderer
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @RouteDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: OfficeOfDepartureFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       referenceDataConnector.getCustomsOffices flatMap {
         customsOffices =>
           val form = formProvider(customsOffices)
-          val preparedForm = request.userAnswers.get(OfficeOfDeparturePage)
+          val preparedForm = request.userAnswers
+            .get(OfficeOfDeparturePage)
             .flatMap(customsOffices.getCustomsOffice)
-            .map(form.fill).getOrElse(form)
+            .map(form.fill)
+            .getOrElse(form)
 
           val json = Json.obj(
-            "form" -> preparedForm,
-            "lrn" -> lrn,
+            "form"           -> preparedForm,
+            "lrn"            -> lrn,
             "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
-            "mode" -> mode
+            "mode"           -> mode
           )
 
           renderer.render("officeOfDeparture.njk", json).map(Ok(_))
@@ -73,25 +78,26 @@ class OfficeOfDepartureController @Inject()(
       referenceDataConnector.getCustomsOffices flatMap {
         customsOffices =>
           val form = formProvider(customsOffices)
-          form.bindFromRequest().fold(
-            formWithErrors => {
-              val json = Json.obj(
-                "form" -> formWithErrors,
-                "lrn" -> lrn,
-                "customsOffices" -> getCustomsOfficesAsJson(form.value, customsOffices.customsOffices),
-                "mode" -> mode
-              )
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                val json = Json.obj(
+                  "form"           -> formWithErrors,
+                  "lrn"            -> lrn,
+                  "customsOffices" -> getCustomsOfficesAsJson(form.value, customsOffices.customsOffices),
+                  "mode"           -> mode
+                )
 
-              renderer.render("officeOfDeparture.njk", json).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfDeparturePage, value.id))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(OfficeOfDeparturePage, mode, updatedAnswers))
-          )
+                renderer.render("officeOfDeparture.njk", json).map(BadRequest(_))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfDeparturePage, value.id))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(OfficeOfDeparturePage, mode, updatedAnswers))
+            )
       }
   }
-
 
 }

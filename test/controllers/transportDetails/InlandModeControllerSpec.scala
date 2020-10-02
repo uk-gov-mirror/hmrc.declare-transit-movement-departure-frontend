@@ -48,8 +48,9 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new InlandModeFormProvider()
+  val formProvider                 = new InlandModeFormProvider()
   val transportMode: TransportMode = TransportMode("1", "Sea transport")
+
   val transportModes: TransportModeList = TransportModeList(
     Seq(
       transportMode
@@ -73,13 +74,12 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
         .thenReturn(Future.successful(Html("")))
       when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
 
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, inlandModeRoute)
+      val request        = FakeRequest(GET, inlandModeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -90,7 +90,7 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
       val expectedJson = Json.obj(
         "form" -> form,
         "mode" -> NormalMode,
-        "lrn" -> lrn
+        "lrn"  -> lrn
       )
 
       templateCaptor.getValue mustEqual "inlandMode.njk"
@@ -109,9 +109,9 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, inlandModeRoute)
+      val request        = FakeRequest(GET, inlandModeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -122,12 +122,11 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
       val filledForm = form.bind(Map("value" -> "1"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn" -> lrn,
+        "form"           -> filledForm,
+        "lrn"            -> lrn,
         "transportModes" -> transportModesAsJson(filledForm.value, transportModes.transportModes),
-        "mode" -> NormalMode
+        "mode"           -> NormalMode
       )
-
 
       templateCaptor.getValue mustEqual "inlandMode.njk"
       jsonCaptor.getValue must containJson(expectedJson)
@@ -169,14 +168,13 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
         .thenReturn(Future.successful(Html("")))
       when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
 
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(POST, inlandModeRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, inlandModeRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -186,7 +184,7 @@ class InlandModeControllerSpec extends SpecBase with MockitoSugar with NunjucksS
 
       val expectedJson = Json.obj(
         "form" -> boundForm,
-        "lrn" -> lrn,
+        "lrn"  -> lrn,
         "mode" -> NormalMode
       )
 

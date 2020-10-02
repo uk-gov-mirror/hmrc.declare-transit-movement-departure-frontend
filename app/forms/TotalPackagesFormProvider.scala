@@ -27,11 +27,8 @@ class TotalPackagesFormProvider @Inject() extends Mappings {
     val minimumNumberOfPackages = 1
     val maximumNumberOfPackages = 99999
     Form(
-      "value" -> int(
-        "totalPackages.error.required",
-        "totalPackages.error.wholeNumber",
-        "totalPackages.error.nonNumeric")
-          .verifying(inRange(minimumNumberOfPackages, maximumNumberOfPackages, "totalPackages.error.outOfRange"))
+      "value" -> int("totalPackages.error.required", "totalPackages.error.wholeNumber", "totalPackages.error.nonNumeric")
+        .verifying(inRange(minimumNumberOfPackages, maximumNumberOfPackages, "totalPackages.error.outOfRange"))
     )
   }
 }

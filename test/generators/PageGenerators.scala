@@ -19,8 +19,21 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import pages._
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryConfirmRemoveSealsPage: Arbitrary[ConfirmRemoveSealsPage.type] =
+    Arbitrary(ConfirmRemoveSealsPage)
+
+  implicit lazy val arbitraryAccessCodePage: Arbitrary[AccessCodePage.type] =
+    Arbitrary(AccessCodePage)
+
+  implicit lazy val arbitraryOtherReferencePage: Arbitrary[OtherReferencePage.type] =
+    Arbitrary(OtherReferencePage)
+
+  implicit lazy val arbitraryGuaranteeTypePage: Arbitrary[GuaranteeTypePage.type] =
+    Arbitrary(GuaranteeTypePage)
 
   implicit lazy val arbitraryLiabilityAmountPage: Arbitrary[LiabilityAmountPage.type] =
     Arbitrary(LiabilityAmountPage)

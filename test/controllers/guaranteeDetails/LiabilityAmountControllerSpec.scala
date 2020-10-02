@@ -44,7 +44,7 @@ class LiabilityAmountControllerSpec extends SpecBase with MockitoSugar with Nunj
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new LiabilityAmountFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val liabilityAmountRoute = routes.LiabilityAmountController.onPageLoad(lrn, NormalMode).url
 
@@ -55,10 +55,10 @@ class LiabilityAmountControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, liabilityAmountRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, liabilityAmountRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -67,9 +67,9 @@ class LiabilityAmountControllerSpec extends SpecBase with MockitoSugar with Nunj
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
       templateCaptor.getValue mustEqual "liabilityAmount.njk"
@@ -83,11 +83,11 @@ class LiabilityAmountControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(LiabilityAmountPage, "answer").success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, liabilityAmountRoute)
+      val userAnswers    = emptyUserAnswers.set(LiabilityAmountPage, "1.00").success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, liabilityAmountRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -95,7 +95,7 @@ class LiabilityAmountControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "1.00"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -125,7 +125,7 @@ class LiabilityAmountControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       val request =
         FakeRequest(POST, liabilityAmountRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "1.00"))
 
       val result = route(application, request).value
 
@@ -140,11 +140,11 @@ class LiabilityAmountControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, liabilityAmountRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, liabilityAmountRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

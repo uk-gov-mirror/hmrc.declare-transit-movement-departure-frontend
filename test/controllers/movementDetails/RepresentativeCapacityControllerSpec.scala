@@ -39,11 +39,7 @@ import navigation.annotations.MovementDetails
 
 import scala.concurrent.Future
 
-class RepresentativeCapacityControllerSpec
-    extends SpecBase
-    with MockitoSugar
-    with NunjucksSupport
-    with JsonMatchers {
+class RepresentativeCapacityControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -51,7 +47,7 @@ class RepresentativeCapacityControllerSpec
     routes.RepresentativeCapacityController.onPageLoad(lrn, NormalMode).url
 
   val formProvider = new RepresentativeCapacityFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   "RepresentativeCapacity Controller" - {
 
@@ -62,9 +58,9 @@ class RepresentativeCapacityControllerSpec
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, representativeCapacityRoute)
+      val request        = FakeRequest(GET, representativeCapacityRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -74,9 +70,9 @@ class RepresentativeCapacityControllerSpec
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
+        "form"   -> form,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> RepresentativeCapacity.radios(form)
       )
 
@@ -97,9 +93,9 @@ class RepresentativeCapacityControllerSpec
         .value
       val application =
         applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, representativeCapacityRoute)
+      val request        = FakeRequest(GET, representativeCapacityRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -112,9 +108,9 @@ class RepresentativeCapacityControllerSpec
         form.bind(Map("value" -> RepresentativeCapacity.values.head.toString))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
+        "form"   -> filledForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> RepresentativeCapacity.radios(filledForm)
       )
 
@@ -162,9 +158,9 @@ class RepresentativeCapacityControllerSpec
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request = FakeRequest(POST, representativeCapacityRoute)
         .withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -174,9 +170,9 @@ class RepresentativeCapacityControllerSpec
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
+        "form"   -> boundForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> RepresentativeCapacity.radios(boundForm)
       )
 

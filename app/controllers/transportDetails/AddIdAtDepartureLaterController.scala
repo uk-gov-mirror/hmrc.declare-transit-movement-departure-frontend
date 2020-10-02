@@ -32,22 +32,21 @@ import navigation.annotations.TransportDetails
 import scala.concurrent.ExecutionContext
 
 class AddIdAtDepartureLaterController @Inject()(
-                                                 override val messagesApi: MessagesApi,
-                                                 identify: IdentifierAction,
-                                                 getData: DataRetrievalActionProvider,
-                                                 requireData: DataRequiredAction,
-                                                 @TransportDetails navigator: Navigator,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  @TransportDetails navigator: Navigator,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
-      val json = Json.obj("lrn" -> lrn,
-        "nextPageUrl" -> navigator.nextPage(AddIdAtDepartureLaterPage, mode, request.userAnswers).url,
-        "mode" -> mode
-      )
+      val json = Json.obj("lrn" -> lrn, "nextPageUrl" -> navigator.nextPage(AddIdAtDepartureLaterPage, mode, request.userAnswers).url, "mode" -> mode)
 
       renderer.render("addIdAtDepartureLater.njk", json).map(Ok(_))
   }

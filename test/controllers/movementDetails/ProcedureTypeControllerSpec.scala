@@ -39,11 +39,7 @@ import navigation.annotations.MovementDetails
 
 import scala.concurrent.Future
 
-class ProcedureTypeControllerSpec
-    extends SpecBase
-    with MockitoSugar
-    with NunjucksSupport
-    with JsonMatchers {
+class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -51,7 +47,7 @@ class ProcedureTypeControllerSpec
     routes.ProcedureTypeController.onPageLoad(lrn, NormalMode).url
 
   val formProvider = new ProcedureTypeFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   "ProcedureType Controller" - {
 
@@ -62,9 +58,9 @@ class ProcedureTypeControllerSpec
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, procedureTypeRoute)
+      val request        = FakeRequest(GET, procedureTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -74,9 +70,9 @@ class ProcedureTypeControllerSpec
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
+        "form"   -> form,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> ProcedureType.radios(form)
       )
 
@@ -97,9 +93,9 @@ class ProcedureTypeControllerSpec
         .value
       val application =
         applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, procedureTypeRoute)
+      val request        = FakeRequest(GET, procedureTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -112,9 +108,9 @@ class ProcedureTypeControllerSpec
         form.bind(Map("value" -> ProcedureType.values.head.toString))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
+        "form"   -> filledForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> ProcedureType.radios(filledForm)
       )
 
@@ -160,9 +156,9 @@ class ProcedureTypeControllerSpec
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request = FakeRequest(POST, procedureTypeRoute)
         .withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -172,9 +168,9 @@ class ProcedureTypeControllerSpec
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
+        "form"   -> boundForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> ProcedureType.radios(boundForm)
       )
 

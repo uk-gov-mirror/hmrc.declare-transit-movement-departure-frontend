@@ -47,14 +47,14 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val countryCode = CountryCode("GB")
-  private val countries = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
-  private val customsOffice1: CustomsOffice = CustomsOffice("officeId", "someName", Seq.empty, None)
-  private val customsOffice2: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
+  private val countryCode                       = CountryCode("GB")
+  private val countries                         = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
+  private val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", Seq.empty, None)
+  private val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", Seq.empty, None)
   private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
-  private val form = new DestinationOfficeFormProvider()(customsOffices, "United Kingdom")
-  private val mockReferenceDataConnector = mock[ReferenceDataConnector]
-   lazy val destinationOfficeRoute = routes.DestinationOfficeController.onPageLoad(lrn, NormalMode).url
+  private val form                              = new DestinationOfficeFormProvider()(customsOffices, "United Kingdom")
+  private val mockReferenceDataConnector        = mock[ReferenceDataConnector]
+  lazy val destinationOfficeRoute               = routes.DestinationOfficeController.onPageLoad(lrn, NormalMode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -68,7 +68,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
         .thenReturn(Future.successful(customsOffices))
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
@@ -77,9 +77,9 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, destinationOfficeRoute)
+      val request        = FakeRequest(GET, destinationOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -94,10 +94,10 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
       )
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "countryName" -> "United Kingdom",
+        "form"           -> form,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "countryName"    -> "United Kingdom",
         "customsOffices" -> expectedCustomsOfficeJson
       )
 
@@ -112,7 +112,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
         .thenReturn(Future.successful(customsOffices))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -133,19 +133,24 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
         .thenReturn(Future.successful(customsOffices))
 
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val userAnswers = emptyUserAnswers.set(DestinationOfficePage, "officeId").success.value
-        .set(DestinationCountryPage, countryCode).success.value
+      val userAnswers = emptyUserAnswers
+        .set(DestinationOfficePage, "officeId")
+        .success
+        .value
+        .set(DestinationCountryPage, countryCode)
+        .success
+        .value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, destinationOfficeRoute)
+      val request        = FakeRequest(GET, destinationOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -162,10 +167,10 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
       )
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode,
-        "countryName" -> "United Kingdom",
+        "form"           -> filledForm,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode,
+        "countryName"    -> "United Kingdom",
         "customsOffices" -> expectedCustomsOfficeJson
       )
 
@@ -179,7 +184,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
 
       val mockSessionRepository = mock[SessionRepository]
 
-      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
         .thenReturn(Future.successful(customsOffices))
 
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
@@ -189,7 +194,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
       val application =
         applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
-           bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector),
+            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector),
             bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -213,17 +218,17 @@ class DestinationOfficeControllerSpec extends SpecBase with MockitoSugar with Nu
         .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
-      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(),any()))
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
         .thenReturn(Future.successful(customsOffices))
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(POST, destinationOfficeRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, destinationOfficeRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

@@ -20,8 +20,7 @@ import models.reference.OfficeOfTransit
 
 case class OfficeOfTransitList(officeOfTransits: Seq[OfficeOfTransit]) {
 
-  def getOfficeOfTransit(id: String): Option[OfficeOfTransit] = {
+  def getOfficeOfTransit(id: String): Option[OfficeOfTransit] =
     officeOfTransits.find(_.id == id)
-  }
 
 }

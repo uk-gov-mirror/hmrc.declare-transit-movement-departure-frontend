@@ -22,12 +22,11 @@ import play.api.data.FormError
 
 class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "liabilityAmount.error.required"
-  val lengthKey = "liabilityAmount.error.length"
-  val maxLength = 100
+  val requiredKey          = "liabilityAmount.error.required"
+  val lengthKey            = "liabilityAmount.error.length"
+  val maxLength            = 100
   val liabilityAmountRegex = "^[0-9.]*$"
-  val invalidKey = "liabilityAmount.error.characters"
-
+  val invalidKey           = "liabilityAmount.error.characters"
 
   val form = new LiabilityAmountFormProvider()()
 
@@ -46,7 +45,6 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-
 
     "must not bind strings that do not match regex" in {
 

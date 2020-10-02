@@ -27,7 +27,7 @@ class OfficeOfDepartureFormProviderSpec extends StringFieldBehaviours {
   val maxLength   = 8
 
   val customsOffices = CustomsOfficeList(Seq(CustomsOffice("id", "name", Seq.empty, None), CustomsOffice("officeId", "someName", Seq.empty, None)))
-  val form = new OfficeOfDepartureFormProvider()(customsOffices)
+  val form           = new OfficeOfDepartureFormProvider()(customsOffices)
 
   ".value" - {
 

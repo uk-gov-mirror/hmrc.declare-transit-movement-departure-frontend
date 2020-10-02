@@ -37,12 +37,12 @@ import scala.concurrent.Future
 
 class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
 
-  private val countries = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
-  private val customsOffice: CustomsOffice = CustomsOffice("id", "name", Seq.empty, None)
-  private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice))
-  private val officeOfTransit = OfficeOfTransit("1", "name")
+  private val countries                                = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
+  private val customsOffice: CustomsOffice             = CustomsOffice("id", "name", Seq.empty, None)
+  private val customsOffices: CustomsOfficeList        = CustomsOfficeList(Seq(customsOffice))
+  private val officeOfTransit                          = OfficeOfTransit("1", "name")
   private val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))
-  lazy val routeDetailsCheckYourAnswersRoute = routes.RouteDetailsCheckYourAnswersController.onSubmit(lrn).url
+  lazy val routeDetailsCheckYourAnswersRoute           = routes.RouteDetailsCheckYourAnswersController.onSubmit(lrn).url
 
   "RouteDetailsCheckYourAnswers Controller" - {
 
@@ -60,11 +60,11 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
       val userAnswers = emptyUserAnswers.set(DestinationCountryPage, CountryCode("GB")).toOption.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides( bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+      val request        = FakeRequest(GET, routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

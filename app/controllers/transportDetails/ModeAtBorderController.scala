@@ -38,18 +38,20 @@ import utils.transportModesAsJson
 import scala.concurrent.{ExecutionContext, Future}
 
 class ModeAtBorderController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        @TransportDetails navigator: Navigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalActionProvider,
-                                        requireData: DataRequiredAction,
-                                        formProvider: ModeAtBorderFormProvider,
-                                        referenceDataConnector: ReferenceDataConnector,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        renderer: Renderer
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
-
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @TransportDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: ModeAtBorderFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -59,7 +61,10 @@ class ModeAtBorderController @Inject()(
           val form = formProvider(transportModes)
 
           val preparedForm = request.userAnswers
-            .get(ModeAtBorderPage).flatMap(transportModes.getTransportMode).map(form.fill).getOrElse(form)
+            .get(ModeAtBorderPage)
+            .flatMap(transportModes.getTransportMode)
+            .map(form.fill)
+            .getOrElse(form)
 
           renderPage(lrn, mode, preparedForm, transportModes.transportModes, Results.Ok)
       }
@@ -69,32 +74,29 @@ class ModeAtBorderController @Inject()(
     implicit request =>
       referenceDataConnector.getTransportModes flatMap {
         transportModes =>
-
           formProvider(transportModes)
             .bindFromRequest()
-            .fold(formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
+            .fold(
+              formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(ModeAtBorderPage, value.code))
-                  _ <- sessionRepository.set(updatedAnswers)
+                  _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ModeAtBorderPage, mode, updatedAnswers))
             )
       }
   }
 
   def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[TransportMode], transportModes: Seq[TransportMode], status: Results.Status)(
-
     implicit request: Request[AnyContent]): Future[Result] = {
 
     val json = Json.obj(
-      "form" -> form,
-      "lrn" -> lrn,
-      "mode" -> mode,
+      "form"           -> form,
+      "lrn"            -> lrn,
+      "mode"           -> mode,
       "transportModes" -> transportModesAsJson(form.value, transportModes),
-      "onSubmitUrl" -> routes.ModeAtBorderController.onSubmit(lrn, mode).url
+      "onSubmitUrl"    -> routes.ModeAtBorderController.onSubmit(lrn, mode).url
     )
-    renderer.render("modeAtBorder.njk", json).map(status(_)
-    )
+    renderer.render("modeAtBorder.njk", json).map(status(_))
   }
 }
-

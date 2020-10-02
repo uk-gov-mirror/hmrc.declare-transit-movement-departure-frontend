@@ -29,14 +29,14 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
 
       Row(
-        key     = Key(msg"modeAtBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$modeList"),
+        key   = Key(msg"modeAtBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.ModeAtBorderController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeAtBorder.checkYourAnswersLabel")),
-            attributes         = Map("id"-> "change-mode-at-border")
+            attributes         = Map("id" -> "change-mode-at-border")
           )
         )
       )
@@ -44,19 +44,17 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def modeCrossingBorder(transportModeList: TransportModeList): Option[Row] = userAnswers.get(ModeCrossingBorderPage) map {
     answer =>
-
       val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
 
       Row(
-        key     = Key(msg"modeCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$modeList"),
+        key   = Key(msg"modeCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.ModeCrossingBorderController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"modeCrossingBorder.checkYourAnswersLabel")),
-            attributes         = Map("id"-> "change-mode-crossing-border")
-
+            attributes         = Map("id" -> "change-mode-crossing-border")
           )
         )
       )
@@ -66,8 +64,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     answer =>
       val modeList = transportModeList.getTransportMode(answer).map(_.description).getOrElse(answer)
       Row(
-        key     = Key(msg"inlandMode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$modeList"),
+        key   = Key(msg"inlandMode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$modeList"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -82,8 +80,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def idCrossingBorder: Option[Row] = userAnswers.get(IdCrossingBorderPage) map {
     answer =>
       Row(
-        key     = Key(msg"idCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"idCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -100,8 +98,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
 
       Row(
-        key     = Key(msg"nationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$countryName"),
+        key   = Key(msg"nationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -118,8 +116,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
 
       Row(
-        key     = Key(msg"nationalityCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$countryName"),
+        key   = Key(msg"nationalityCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -134,14 +132,13 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def idAtDeparture: Option[Row] = userAnswers.get(IdAtDeparturePage) map {
     answer =>
       Row(
-        key     = Key(msg"idAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"idAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.IdAtDepartureController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idAtDeparture.checkYourAnswersLabel")),
-
           )
         )
       )
@@ -150,8 +147,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def changeAtBorder: Option[Row] = userAnswers.get(ChangeAtBorderPage) map {
     answer =>
       Row(
-        key     = Key(msg"changeAtBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"changeAtBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -166,8 +163,8 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def addIdAtDeparture: Option[Row] = userAnswers.get(AddIdAtDeparturePage) map {
     answer =>
       Row(
-        key     = Key(msg"addIdAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"addIdAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -181,5 +178,3 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def lrn: LocalReferenceNumber = userAnswers.id
 }
-
-

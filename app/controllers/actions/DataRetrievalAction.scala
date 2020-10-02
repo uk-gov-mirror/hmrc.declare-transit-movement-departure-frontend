@@ -36,10 +36,10 @@ trait DataRetrievalActionProvider {
 }
 
 class DataRetrievalAction(
-                           lrn: LocalReferenceNumber,
-                           implicit protected val executionContext: ExecutionContext,
-                           sessionRepository: SessionRepository
-                         ) extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
+  lrn: LocalReferenceNumber,
+  implicit protected val executionContext: ExecutionContext,
+  sessionRepository: SessionRepository
+) extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
     sessionRepository.get(lrn, request.eoriNumber).map {

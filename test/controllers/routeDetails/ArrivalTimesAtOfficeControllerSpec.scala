@@ -47,16 +47,16 @@ import scala.concurrent.Future
 
 class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach {
 
-  val formProvider = new ArrivalTimesAtOfficeFormProvider()
-  private val officeOfTransit = OfficeOfTransit("1", "name")
-  private def form = formProvider(officeOfTransit.name)
+  val formProvider                 = new ArrivalTimesAtOfficeFormProvider()
+  private val officeOfTransit      = OfficeOfTransit("1", "name")
+  private def form                 = formProvider(officeOfTransit.name)
   private val mockRefDataConnector = mock[ReferenceDataConnector]
 
   def onwardRoute = Call("GET", "/foo")
 
   val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC).withHour(10), "am")
 
-  lazy val arrivalTimesAtOfficeRoute = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn,index, NormalMode).url
+  lazy val arrivalTimesAtOfficeRoute = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, index, NormalMode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -69,12 +69,12 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, arrivalTimesAtOfficeRoute)
       .withFormUrlEncodedBody(
-        "value.day"   -> validAnswer.dateTime.getDayOfMonth.toString,
-        "value.month" -> validAnswer.dateTime.getMonthValue.toString,
-        "value.year"  -> validAnswer.dateTime.getYear.toString,
-        "value.hour"  -> validAnswer.dateTime.getHour.toString,
-        "value.minute"  -> validAnswer.dateTime.getMinute.toString,
-        "value.amOrPm"  -> validAnswer.amOrPm
+        "value.day"    -> validAnswer.dateTime.getDayOfMonth.toString,
+        "value.month"  -> validAnswer.dateTime.getMonthValue.toString,
+        "value.year"   -> validAnswer.dateTime.getYear.toString,
+        "value.hour"   -> validAnswer.dateTime.getHour.toString,
+        "value.minute" -> validAnswer.dateTime.getMinute.toString,
+        "value.amOrPm" -> validAnswer.amOrPm
       )
 
   "ArrivalTimesAtOffice Controller" - {
@@ -90,7 +90,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, getRequest).value
 
@@ -101,9 +101,9 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
       val viewModel = DateTimeInput.localDateTime(form("value"))
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn,
+        "form"     -> form,
+        "mode"     -> NormalMode,
+        "lrn"      -> lrn,
         "dateTime" -> viewModel
       )
 
@@ -118,13 +118,18 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
       when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
-                      .set(ArrivalTimesAtOfficePage(index), validAnswer).success.value
+      val userAnswers = emptyUserAnswers
+        .set(AddAnotherTransitOfficePage(index), officeOfTransit.id)
+        .toOption
+        .value
+        .set(ArrivalTimesAtOfficePage(index), validAnswer)
+        .success
+        .value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, getRequest).value
 
@@ -134,21 +139,21 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
 
       val filledForm = form.bind(
         Map(
-          "value.day"   -> validAnswer.dateTime.getDayOfMonth.toString,
-          "value.month" -> validAnswer.dateTime.getMonthValue.toString,
-          "value.year"  -> validAnswer.dateTime.getYear.toString,
-          "value.hour"  -> validAnswer.dateTime.getHour.toString,
-          "value.minute"  -> validAnswer.dateTime.getMinute.toString,
-          "value.amOrPm"  -> validAnswer.amOrPm
+          "value.day"    -> validAnswer.dateTime.getDayOfMonth.toString,
+          "value.month"  -> validAnswer.dateTime.getMonthValue.toString,
+          "value.year"   -> validAnswer.dateTime.getYear.toString,
+          "value.hour"   -> validAnswer.dateTime.getHour.toString,
+          "value.minute" -> validAnswer.dateTime.getMinute.toString,
+          "value.amOrPm" -> validAnswer.amOrPm
         )
       )
 
       val viewModel = DateTimeInput.localDateTime(filledForm("value"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn,
+        "form"     -> filledForm,
+        "mode"     -> NormalMode,
+        "lrn"      -> lrn,
         "dateTime" -> viewModel
       )
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
@@ -193,10 +198,10 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
-      val request = FakeRequest(POST, arrivalTimesAtOfficeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request        = FakeRequest(POST, arrivalTimesAtOfficeRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -207,9 +212,9 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with
       val viewModel = DateTimeInput.localDateTime(boundForm("value"))
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn,
+        "form"     -> boundForm,
+        "mode"     -> NormalMode,
+        "lrn"      -> lrn,
         "dateTime" -> viewModel
       )
 

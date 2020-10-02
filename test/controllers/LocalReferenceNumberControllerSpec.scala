@@ -36,16 +36,12 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class LocalReferenceNumberControllerSpec
-  extends SpecBase
-    with MockitoSugar
-    with NunjucksSupport
-    with JsonMatchers {
+class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
   val formProvider = new LocalReferenceNumberFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val localReferenceNumberRoute: String =
     routes.LocalReferenceNumberController.onPageLoad.url
@@ -59,9 +55,9 @@ class LocalReferenceNumberControllerSpec
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, localReferenceNumberRoute)
+      val request        = FakeRequest(GET, localReferenceNumberRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -115,9 +111,9 @@ class LocalReferenceNumberControllerSpec
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request = FakeRequest(POST, localReferenceNumberRoute)
         .withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

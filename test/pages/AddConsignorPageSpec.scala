@@ -29,7 +29,7 @@ class AddConsignorPageSpec extends PageBehaviours {
     beSettable[Boolean](AddConsignorPage)
 
     beRemovable[Boolean](AddConsignorPage)
-      }
+  }
 
   "cleanup" - {
 
@@ -39,10 +39,18 @@ class AddConsignorPageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers
-            .set(ConsignorNamePage, "answer").success.value
-            .set(ConsignorAddressPage, consignorAddress).success.value
-            .set(ConsignorEoriPage, "GB123456").success.value
-            .set(AddConsignorPage, true).success.value
+            .set(ConsignorNamePage, "answer")
+            .success
+            .value
+            .set(ConsignorAddressPage, consignorAddress)
+            .success
+            .value
+            .set(ConsignorEoriPage, "GB123456")
+            .success
+            .value
+            .set(AddConsignorPage, true)
+            .success
+            .value
 
           result.get(ConsignorNamePage) must not be defined
           result.get(ConsignorAddressPage) must not be defined
@@ -50,7 +58,6 @@ class AddConsignorPageSpec extends PageBehaviours {
 
       }
     }
-
 
   }
 

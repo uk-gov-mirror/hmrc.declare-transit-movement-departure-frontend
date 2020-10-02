@@ -28,6 +28,7 @@
         {% endif %}
 
         <form action="{{ onSubmitUrl }}" method="post">
+        <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
 
           {{ csrf() | safe }}
 

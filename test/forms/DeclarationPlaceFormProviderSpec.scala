@@ -22,10 +22,10 @@ import play.api.data.FormError
 
 class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "declarationPlace.error.required"
-  val lengthKey = "declarationPlace.error.length"
-  val invalidKey = "declarationPlace.error.invalid"
-  val maxLength = 9
+  val requiredKey           = "declarationPlace.error.required"
+  val lengthKey             = "declarationPlace.error.length"
+  val invalidKey            = "declarationPlace.error.invalid"
+  val maxLength             = 9
   val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
 
   val form = new DeclarationPlaceFormProvider()()
@@ -50,9 +50,10 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
 
       val expectedError = List(FormError(fieldName, lengthKey, Seq(maxLength)))
 
-      forAll(stringsLongerThan(maxLength + 1)) { string =>
-        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(stringsLongerThan(maxLength + 1)) {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
 
@@ -65,9 +66,10 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
       }
 
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
   }
