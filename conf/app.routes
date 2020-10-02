@@ -302,7 +302,7 @@ POST       /:lrn/guarantee-details/other-reference                        contro
 GET        /:lrn/guarantee-details/change-other-reference                  controllers.guaranteeDetails.OtherReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/guarantee-details/change-other-reference                 controllers.guaranteeDetails.OtherReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/guarantee-type                                              controllers.guaranteeDetails.GuaranteeTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/guarantee-type                                              controllers.guaranteeDetails.GuaranteeTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/change-guarantee-type                                       controllers.guaranteeDetails.GuaranteeTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/change-guarantee-type                                       controllers.guaranteeDetails.GuaranteeTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/guarantee-details/guarantee-type                                              controllers.guaranteeDetails.GuaranteeTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/guarantee-details/guarantee-type                                              controllers.guaranteeDetails.GuaranteeTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/guarantee-details/change-guarantee-type                                       controllers.guaranteeDetails.GuaranteeTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/guarantee-details/change-guarantee-type                                       controllers.guaranteeDetails.GuaranteeTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
