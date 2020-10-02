@@ -26,6 +26,9 @@ trait PageGenerators {
   implicit lazy val arbitraryConfirmRemoveSealsPage: Arbitrary[ConfirmRemoveSealsPage.type] =
     Arbitrary(ConfirmRemoveSealsPage)
 
+  implicit lazy val arbitraryAccessCodePage: Arbitrary[AccessCodePage.type] =
+    Arbitrary(AccessCodePage)
+
   implicit lazy val arbitraryOtherReferencePage: Arbitrary[OtherReferencePage.type] =
     Arbitrary(OtherReferencePage)
 

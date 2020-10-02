@@ -624,3 +624,10 @@ guaranteeType.GuaranteeWaiverSecured = (5) Guarantee waiver, secured amount not 
 guaranteeType.IndividualGuaranteeMultiple = (9) Individual guarantee with multiple usage
 guaranteeType.checkYourAnswersLabel = Which type of guarantee is being used?
 guaranteeType.error.required = Select which type of guarantee is being used
+
+accessCode.title = What is the access code?
+accessCode.heading = What is the access code?
+accessCode.checkYourAnswersLabel = Access code
+accessCode.error.required = Enter the access code
+accessCode.error.length = Access code is 4 numbers, like 1234
+accessCode.error.invalidCharacters = Access code must only include numbers 0 to 9
