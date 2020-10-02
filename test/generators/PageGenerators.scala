@@ -35,6 +35,9 @@ trait PageGenerators {
   implicit lazy val arbitraryGuaranteeTypePage: Arbitrary[GuaranteeTypePage.type] =
     Arbitrary(GuaranteeTypePage)
 
+  implicit lazy val arbitraryLiabilityAmountPage: Arbitrary[LiabilityAmountPage.type] =
+    Arbitrary(LiabilityAmountPage)
+
   implicit lazy val arbitraryGuaranteeReferencePage: Arbitrary[GuaranteeReferencePage.type] =
     Arbitrary(GuaranteeReferencePage)
 

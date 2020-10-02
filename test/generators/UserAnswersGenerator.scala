@@ -84,6 +84,7 @@ trait UserAnswersGenerator extends TryValues {
       Nil
   arbitrary[(AccessCodePage.type, JsValue)] ::
     arbitrary[(OtherReferencePage.type, JsValue)] ::
+    arbitrary[(LiabilityAmountPage.type, JsValue)] ::
     arbitrary[(GuaranteeReferencePage.type, JsValue)] ::
     arbitrary[(ConfirmRemoveOfficeOfTransitPage.type, JsValue)] ::
     arbitrary[(SealsInformationPage.type, JsValue)] ::
