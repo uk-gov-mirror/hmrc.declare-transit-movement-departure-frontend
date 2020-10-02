@@ -18,6 +18,8 @@ lazy val root = (project in file("."))
     SbtArtifactory
   )
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .configs(IntegrationTest)
+  .settings(inConfig(IntegrationTest)(itSettings): _*)
   .settings(DefaultBuildSettings.scalaSettings: _*)
   .settings(DefaultBuildSettings.defaultSettings(): _*)
   .settings(SbtDistributablesPlugin.publishingSettings: _*)
@@ -77,6 +79,22 @@ lazy val root = (project in file("."))
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   fork := true,
   javaOptions ++= Seq("-Dconfig.resource=test.application.conf")
+)
+
+lazy val itSettings = Defaults.itSettings ++ Seq(
+  unmanagedSourceDirectories := Seq(
+    baseDirectory.value / "it",
+    baseDirectory.value / "test" / "generators"
+  ),
+  unmanagedResourceDirectories := Seq(
+    baseDirectory.value / "it" / "resources"
+  ),
+  parallelExecution := false,
+  fork              := true,
+  javaOptions ++= Seq(
+    "-Dconfig.resource=it.application.conf",
+    "-Dlogger.resource=it.logback.xml"
+  )
 )
 
 dependencyOverrides ++= AppDependencies.overrides
