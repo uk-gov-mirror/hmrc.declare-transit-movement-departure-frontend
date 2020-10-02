@@ -68,7 +68,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.ControlResultDateLimitController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"controlResultDateLimit.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"controlResultDateLimit.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-control-result-date-limit")
           )
         )
       )
@@ -83,7 +84,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.AddSealsController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSeals.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSeals.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-add-seals")
           )
         )
       )
@@ -98,7 +100,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.CustomsApprovedLocationController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"customsApprovedLocation.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"customsApprovedLocation.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-customs-approved-location")
           )
         )
       )
@@ -113,7 +116,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.AddCustomsApprovedLocationController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addCustomsApprovedLocation.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addCustomsApprovedLocation.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-add-customs-approved-location")
           )
         )
       )
@@ -128,7 +132,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.TotalGrossMassController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalGrossMass.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalGrossMass.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-total-gross-mass")
           )
         )
       )
@@ -143,7 +148,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.AuthorisedLocationCodeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"authorisedLocationCode.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"authorisedLocationCode.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-authorised-location-code")
           )
         )
       )
@@ -158,7 +164,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.TotalPackagesController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalPackages.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalPackages.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-total-packages")
           )
         )
       )
@@ -173,7 +180,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.DeclarePackagesController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarePackages.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"declarePackages.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-declare-packages")
           )
         )
       )
