@@ -38,10 +38,11 @@
           {{ csrf() | safe }}
 
           <h1 class="govuk-heading-xl"> {{messages('liabilityAmount.heading')}}<h1>
+          <p class="govuk-body"> {{messages('liabilityAmount.paragraph')}}<p>
 
                {{ hmrcInputCurrency({
-                      name: "liability-amount",
-                      id: "liability-amount",
+                      name: "value",
+                      id: "value",
                       classes: "govuk-input--width-10",
                       autocomplete: "off",
                       type: "tel"
