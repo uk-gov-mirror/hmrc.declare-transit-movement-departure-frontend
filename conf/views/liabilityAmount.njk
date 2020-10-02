@@ -1,5 +1,7 @@
 {% extends "includes/layout.njk" %}
 
+{% from "macros/hmrc-input--currency/macro.njk" import hmrcInputCurrency with context %}
+
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
 {% from "govuk/components/input/macro.njk"         import govukInput %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
@@ -37,17 +39,14 @@
 
           <h1 class="govuk-heading-xl"> {{messages('liabilityAmount.heading')}}<h1>
 
-          {{ govukInput({
-            label: {
-              text: messages('liabilityAmount.paragraph'),
-              isPageHeading: true,
-              classes: "govuk-body"
-            },
-            id: "value",
-            name: "value",
-            value: form.value.value,
-            errorMessage: form.value.error
-          }) }}
+               {{ hmrcInputCurrency({
+                      name: "liability-amount",
+                      id: "liability-amount",
+                      classes: "govuk-input--width-10",
+                      autocomplete: "off",
+                      type: "tel"
+                    })
+                  }}
 
           {{ govukButton({
             text: messages("site.continue"),
