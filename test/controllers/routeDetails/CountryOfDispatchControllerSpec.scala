@@ -49,8 +49,8 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new CountryOfDispatchFormProvider()
-  val countries = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
-  val form = formProvider(countries)
+  val countries    = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
+  val form         = formProvider(countries)
 
   lazy val countryOfDispatchRoute = routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
 
@@ -76,9 +76,9 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
 
-      val request = FakeRequest(GET, countryOfDispatchRoute)
+      val request        = FakeRequest(GET, countryOfDispatchRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -87,9 +87,9 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode,
+        "form"        -> form,
+        "lrn"         -> lrn,
+        "mode"        -> NormalMode,
         "countries"   -> jsonCountryList(preSelected = false),
         "onSubmitUrl" -> routes.CountryOfDispatchController.onSubmit(lrn, NormalMode).url
       )
@@ -110,9 +110,9 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
       val application = applicationBuilder(userAnswers = emptyUserAnswers.set(CountryOfDispatchPage, CountryCode("GB")).toOption)
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, countryOfDispatchRoute)
+      val request        = FakeRequest(GET, countryOfDispatchRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -127,10 +127,10 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
       )
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "countries" -> jsonCountryList(true),
-        "mode" -> NormalMode,
+        "form"        -> filledForm,
+        "lrn"         -> lrn,
+        "countries"   -> jsonCountryList(true),
+        "mode"        -> NormalMode,
         "onSubmitUrl" -> routes.CountryOfDispatchController.onSubmit(lrn, NormalMode).url
       )
 
@@ -152,7 +152,8 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+          )
           .build()
 
       val request =
@@ -177,10 +178,10 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(POST, countryOfDispatchRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request        = FakeRequest(POST, countryOfDispatchRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -197,7 +198,7 @@ class CountryOfDispatchControllerSpec extends SpecBase with MockitoSugar with Nu
       templateCaptor.getValue mustEqual "countryOfDispatch.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
-       application.stop()
+      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

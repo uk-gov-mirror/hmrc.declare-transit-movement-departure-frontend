@@ -34,24 +34,26 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 class TotalGrossMassController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       @GoodsSummary navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: TotalGrossMassFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @GoodsSummary navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: TotalGrossMassFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(TotalGrossMassPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -66,23 +68,24 @@ class TotalGrossMassController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+            val json = Json.obj(
+              "form" -> formWithErrors,
+              "lrn"  -> lrn,
+              "mode" -> mode
+            )
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn"  -> lrn,
-            "mode" -> mode
-          )
-
-          renderer.render("totalGrossMass.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalGrossMassPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TotalGrossMassPage, mode, updatedAnswers))
-      )
+            renderer.render("totalGrossMass.njk", json).map(BadRequest(_))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalGrossMassPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(TotalGrossMassPage, mode, updatedAnswers))
+        )
   }
 }

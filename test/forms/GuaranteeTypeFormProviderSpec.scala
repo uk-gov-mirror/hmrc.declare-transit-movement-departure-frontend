@@ -27,7 +27,7 @@ class GuaranteeTypeFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "guaranteeType.error.required"
 
     behave like optionsField[GuaranteeType](

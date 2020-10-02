@@ -27,8 +27,7 @@ class ModeAtBorderFormProvider @Inject() extends Mappings {
   def apply(transportModeList: TransportModeList): Form[TransportMode] =
     Form(
       "value" -> text("modeAtBorder.error.required")
-        .verifying(
-          "modeAtBorder.error.required", value => transportModeList.transportModes.exists(_.code == value))
+        .verifying("modeAtBorder.error.required", value => transportModeList.transportModes.exists(_.code == value))
         .transform[TransportMode](value => transportModeList.transportModes.find(_.code == value).get, _.code)
     )
 }

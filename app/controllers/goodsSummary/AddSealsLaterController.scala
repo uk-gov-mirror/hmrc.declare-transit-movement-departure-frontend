@@ -16,7 +16,6 @@
 
 package controllers.goodsSummary
 
-
 import controllers.actions._
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
@@ -32,22 +31,20 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import scala.concurrent.ExecutionContext
 
 class AddSealsLaterController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       @GoodsSummary navigator: Navigator,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  @GoodsSummary navigator: Navigator,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode:Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
-      val json = Json.obj("lrn" -> lrn,
-        "nextPageUrl" -> navigator.nextPage(AddSealsLaterPage, mode, request.userAnswers).url,
-        "mode" -> mode
-      )
+      val json = Json.obj("lrn" -> lrn, "nextPageUrl" -> navigator.nextPage(AddSealsLaterPage, mode, request.userAnswers).url, "mode" -> mode)
       renderer.render("addSealsLater.njk", json).map(Ok(_))
   }
 }

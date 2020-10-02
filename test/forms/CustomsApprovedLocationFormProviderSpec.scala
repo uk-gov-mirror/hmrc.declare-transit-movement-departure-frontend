@@ -22,10 +22,10 @@ import play.api.data.FormError
 
 class CustomsApprovedLocationFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "customsApprovedLocation.error.required"
-  val lengthKey = "customsApprovedLocation.error.length"
-  val maxLength = 17
-  val invalidCharacters = "customsApprovedLocation.error.invalidCharacters"
+  val requiredKey                          = "customsApprovedLocation.error.required"
+  val lengthKey                            = "customsApprovedLocation.error.length"
+  val maxLength                            = 17
+  val invalidCharacters                    = "customsApprovedLocation.error.invalidCharacters"
   val customsApprovedLocationRegex: String = "^[a-zA-Z0-9 ]*$"
 
   val form = new CustomsApprovedLocationFormProvider()()
@@ -43,7 +43,7 @@ class CustomsApprovedLocationFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -62,9 +62,10 @@ class CustomsApprovedLocationFormProviderSpec extends StringFieldBehaviours {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(customsApprovedLocationRegex))
       }
 
-      forAll(genInvalidString) { invalidString =>
-        val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
   }

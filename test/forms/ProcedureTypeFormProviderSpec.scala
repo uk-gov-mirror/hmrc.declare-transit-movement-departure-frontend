@@ -26,7 +26,7 @@ class ProcedureTypeFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "procedureType.error.required"
 
     behave like optionsField[ProcedureType](

@@ -38,21 +38,23 @@ import utils.transportModesAsJson
 import scala.concurrent.{ExecutionContext, Future}
 
 class ModeCrossingBorderController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              sessionRepository: SessionRepository,
-                                              @TransportDetails navigator: Navigator,
-                                              identify: IdentifierAction,
-                                              getData: DataRetrievalActionProvider,
-                                              requireData: DataRequiredAction,
-                                              formProvider: ModeCrossingBorderFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              renderer: Renderer,
-                                              referenceDataConnector: ReferenceDataConnector
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @TransportDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: ModeCrossingBorderFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer,
+  referenceDataConnector: ReferenceDataConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       referenceDataConnector.getTransportModes() flatMap {
 
         transportModes =>
@@ -70,11 +72,9 @@ class ModeCrossingBorderController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       referenceDataConnector.getTransportModes() flatMap {
 
         transportModes =>
-
           formProvider(transportModes)
             .bindFromRequest()
             .fold(
@@ -82,7 +82,7 @@ class ModeCrossingBorderController @Inject()(
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(ModeCrossingBorderPage, value.code))
-                  _ <- sessionRepository.set(updatedAnswers)
+                  _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ModeCrossingBorderPage, mode, updatedAnswers))
             )
       }
@@ -91,13 +91,12 @@ class ModeCrossingBorderController @Inject()(
   def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[TransportMode], transportModes: Seq[TransportMode], status: Results.Status)(
     implicit request: Request[AnyContent]): Future[Result] = {
     val json = Json.obj(
-      "form" -> form,
-      "lrn" -> lrn,
-      "mode" -> mode,
+      "form"           -> form,
+      "lrn"            -> lrn,
+      "mode"           -> mode,
       "transportModes" -> transportModesAsJson(form.value, transportModes),
-      "onSubmitUrl" -> routes.ModeCrossingBorderController.onSubmit(lrn, mode).url
+      "onSubmitUrl"    -> routes.ModeCrossingBorderController.onSubmit(lrn, mode).url
     )
-    renderer.render("modeCrossingBorder.njk", json).map(status(_)
-    )
+    renderer.render("modeCrossingBorder.njk", json).map(status(_))
   }
 }

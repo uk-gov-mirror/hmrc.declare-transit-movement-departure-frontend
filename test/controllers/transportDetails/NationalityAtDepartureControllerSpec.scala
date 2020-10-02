@@ -47,15 +47,15 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new NationalityAtDepartureFormProvider()
+  val formProvider    = new NationalityAtDepartureFormProvider()
   private val country = Country(CountryCode("GB"), "United Kingdom")
-  val countries = CountryList(Seq(country))
-  val form = formProvider(countries)
+  val countries       = CountryList(Seq(country))
+  val form            = formProvider(countries)
 
   lazy val nationalityAtDepartureRoute = routes.NationalityAtDepartureController.onPageLoad(lrn, NormalMode).url
 
   def jsonCountryList(preSelected: Boolean): Seq[JsObject] = Seq(
-    Json.obj("text" -> "", "value" -> ""),
+    Json.obj("text" -> "", "value"               -> ""),
     Json.obj("text" -> "United Kingdom", "value" -> "GB", "selected" -> preSelected)
   )
 
@@ -76,9 +76,9 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
 
-      val request = FakeRequest(GET, nationalityAtDepartureRoute)
+      val request        = FakeRequest(GET, nationalityAtDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -87,10 +87,10 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "lrn" -> lrn,
-        "mode" -> NormalMode,
-        "countries" -> jsonCountryList(preSelected = false),
+        "form"        -> form,
+        "lrn"         -> lrn,
+        "mode"        -> NormalMode,
+        "countries"   -> jsonCountryList(preSelected = false),
         "onSubmitUrl" -> routes.NationalityAtDepartureController.onSubmit(lrn, NormalMode).url
       )
 
@@ -110,9 +110,9 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
       val application = applicationBuilder(userAnswers = emptyUserAnswers.set(NationalityAtDeparturePage, CountryCode("GB")).toOption)
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, nationalityAtDepartureRoute)
+      val request        = FakeRequest(GET, nationalityAtDepartureRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -123,10 +123,10 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
       val filledForm = form.bind(Map("value" -> "GB"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn" -> lrn,
-        "mode" -> NormalMode,
-        "countries" -> jsonCountryList(true),
+        "form"        -> filledForm,
+        "lrn"         -> lrn,
+        "mode"        -> NormalMode,
+        "countries"   -> jsonCountryList(true),
         "onSubmitUrl" -> routes.NationalityAtDepartureController.onSubmit(lrn, NormalMode).url
       )
 
@@ -148,7 +148,8 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
+            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+          )
           .build()
 
       val request =
@@ -176,12 +177,12 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
           bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
-      )
+        )
         .build()
-      val request = FakeRequest(POST, nationalityAtDepartureRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, nationalityAtDepartureRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -191,7 +192,7 @@ class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar wi
 
       val expectedJson = Json.obj(
         "form" -> boundForm,
-        "lrn" -> lrn,
+        "lrn"  -> lrn,
         "mode" -> NormalMode
       )
 

@@ -26,12 +26,13 @@ case object IsConsigneeEoriKnownPage extends QuestionPage[Boolean] {
 
   override def toString: String = "isConsigneeEoriKnown"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(false) => userAnswers.remove(WhatIsConsigneeEoriPage)
-      case Some(true) => userAnswers.remove(ConsigneeNamePage)
-        .flatMap(_.remove(ConsigneeAddressPage))
+      case Some(true) =>
+        userAnswers
+          .remove(ConsigneeNamePage)
+          .flatMap(_.remove(ConsigneeAddressPage))
       case _ => super.cleanup(value, userAnswers)
     }
-  }
 }

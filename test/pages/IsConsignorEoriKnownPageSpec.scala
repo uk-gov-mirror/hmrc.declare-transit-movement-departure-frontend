@@ -38,9 +38,16 @@ class IsConsignorEoriKnownPageSpec extends PageBehaviours {
       val consigneeAddress = arbitrary[ConsignorAddress].sample.value
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          val result = userAnswers.set(ConsignorNamePage, "answer").success.value
-            .set(ConsignorAddressPage, consigneeAddress).success.value
-            .set(IsConsignorEoriKnownPage, true).success.value
+          val result = userAnswers
+            .set(ConsignorNamePage, "answer")
+            .success
+            .value
+            .set(ConsignorAddressPage, consigneeAddress)
+            .success
+            .value
+            .set(IsConsignorEoriKnownPage, true)
+            .success
+            .value
 
           result.get(ConsignorNamePage) must not be defined
           result.get(ConsignorAddressPage) must not be defined
@@ -51,8 +58,13 @@ class IsConsignorEoriKnownPageSpec extends PageBehaviours {
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          val result = userAnswers.set(ConsignorEoriPage, "GB123456").success.value
-            .set(IsConsignorEoriKnownPage, false).success.value
+          val result = userAnswers
+            .set(ConsignorEoriPage, "GB123456")
+            .success
+            .value
+            .set(IsConsignorEoriKnownPage, false)
+            .success
+            .value
 
           result.get(ConsignorEoriPage) must not be defined
       }

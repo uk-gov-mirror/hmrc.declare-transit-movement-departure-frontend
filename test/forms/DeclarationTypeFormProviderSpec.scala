@@ -26,7 +26,7 @@ class DeclarationTypeFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "declarationType.error.required"
 
     behave like optionsField[DeclarationType](

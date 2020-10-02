@@ -53,11 +53,10 @@ trait ModelGenerators {
     Arbitrary {
       for {
         numberAndStreet <- stringsWithMaxLength(PrincipalAddress.Constants.numberAndStreetLength)
-        town <- stringsWithMaxLength(PrincipalAddress.Constants.townLength)
-        postcode <- stringsWithMaxLength(PrincipalAddress.Constants.postcodeLength)
+        town            <- stringsWithMaxLength(PrincipalAddress.Constants.townLength)
+        postcode        <- stringsWithMaxLength(PrincipalAddress.Constants.postcodeLength)
       } yield PrincipalAddress(numberAndStreet, town, postcode)
     }
-
 
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
     Arbitrary {
@@ -83,12 +82,10 @@ trait ModelGenerators {
       } yield ConsignorAddress(addressLine1, addressLine2, addressLine3, addressLine4)
     }
 
-
   implicit lazy val arbitraryRepresentativeCapacity: Arbitrary[RepresentativeCapacity] =
     Arbitrary {
       Gen.oneOf(RepresentativeCapacity.values)
     }
-
 
   implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType] =
     Arbitrary {

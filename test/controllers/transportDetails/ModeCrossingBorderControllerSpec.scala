@@ -46,10 +46,10 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new ModeCrossingBorderFormProvider()
-  val transportMode = TransportMode("1", "Sea transport")
-  val transportModes = TransportModeList(Seq(transportMode))
-  val form = formProvider(transportModes)
+  val formProvider               = new ModeCrossingBorderFormProvider()
+  val transportMode              = TransportMode("1", "Sea transport")
+  val transportModes             = TransportModeList(Seq(transportMode))
+  val form                       = formProvider(transportModes)
   val mockReferenceDataConnector = mock[ReferenceDataConnector]
 
   lazy val modeCrossingBorderRoute = routes.ModeCrossingBorderController.onPageLoad(lrn, NormalMode).url
@@ -66,9 +66,9 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, modeCrossingBorderRoute)
+      val request        = FakeRequest(GET, modeCrossingBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -77,9 +77,9 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
       templateCaptor.getValue mustEqual "modeCrossingBorder.njk"
@@ -99,9 +99,9 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, modeCrossingBorderRoute)
+      val request        = FakeRequest(GET, modeCrossingBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -112,10 +112,10 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
       val filledForm = form.bind(Map("value" -> "1"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
+        "form"           -> filledForm,
+        "lrn"            -> lrn,
         "transportModes" -> transportModesAsJson(filledForm.value, transportModes.transportModes),
-        "mode" -> NormalMode
+        "mode"           -> NormalMode
       )
 
       templateCaptor.getValue mustEqual "modeCrossingBorder.njk"
@@ -163,10 +163,10 @@ class ModeCrossingBorderControllerSpec extends SpecBase with MockitoSugar with N
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(POST, modeCrossingBorderRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, modeCrossingBorderRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

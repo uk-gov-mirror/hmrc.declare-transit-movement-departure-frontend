@@ -26,26 +26,32 @@ import utils.Format
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateTimeFormatter(
-                                                invalidDateKey: String,
-                                                invalidTimeKey: String,
-                                                invalidHourKey: String,
-                                                allRequiredKey: String,
-                                                timeRequiredKey: String,
-                                                dateRequiredKey: String,
-                                                amOrPmRequired: String,
-                                                pastDateErrorKey: String,
-                                                futureDateErrorKey: String,
-                                                args: Seq[String] = Seq.empty
-                                              ) extends Formatter[LocalDateTimeWithAMPM] with Formatters {
+  invalidDateKey: String,
+  invalidTimeKey: String,
+  invalidHourKey: String,
+  allRequiredKey: String,
+  timeRequiredKey: String,
+  dateRequiredKey: String,
+  amOrPmRequired: String,
+  pastDateErrorKey: String,
+  futureDateErrorKey: String,
+  args: Seq[String] = Seq.empty
+) extends Formatter[LocalDateTimeWithAMPM]
+    with Formatters {
 
   private val fieldAmOrPmKeys = List("amOrPm")
-  private val fieldTimeKeys = List("hour", "minute")
-  private val fieldDateKeys = List("day", "month", "year")
+  private val fieldTimeKeys   = List("hour", "minute")
+  private val fieldDateKeys   = List("day", "month", "year")
 
-  private def toDateTime(key: String, day: Int, month: Int, year: Int,
-                         hour: Int, minute: Int, amOrPm: String): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
-    val currentDate = LocalDate.now()
-    val pastDateTimeArgs: Seq[String] = args :+ s"${Format.dateFormattedWithMonthName(currentDate.minusDays(1))}"
+  private def toDateTime(key: String,
+                         day: Int,
+                         month: Int,
+                         year: Int,
+                         hour: Int,
+                         minute: Int,
+                         amOrPm: String): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
+    val currentDate                     = LocalDate.now()
+    val pastDateTimeArgs: Seq[String]   = args :+ s"${Format.dateFormattedWithMonthName(currentDate.minusDays(1))}"
     val futureDateTimeArgs: Seq[String] = args :+ s"${Format.dateFormattedWithMonthName(currentDate.plusWeeks(2))}"
 
     Try(LocalDateTime.of(year, month, day, hour, minute)) match {
@@ -69,9 +75,9 @@ private[mappings] class LocalDateTimeFormatter(
   private def formatDateTime(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
 
     val int = intFormatter(
-      requiredKey = invalidDateKey,
+      requiredKey    = invalidDateKey,
       wholeNumberKey = invalidDateKey,
-      nonNumericKey = invalidDateKey,
+      nonNumericKey  = invalidDateKey,
       args
     )
     val string = stringFormatter(
@@ -80,12 +86,12 @@ private[mappings] class LocalDateTimeFormatter(
     )
 
     for {
-      day <- int.bind(s"$key.day", data).right
-      month <- int.bind(s"$key.month", data).right
-      year <- int.bind(s"$key.year", data).right
-      hour <- int.bind(s"$key.hour", data).right
-      minute <- int.bind(s"$key.minute", data).right
-      amOrPm <- string.bind(s"$key.amOrPm", data).right
+      day      <- int.bind(s"$key.day", data).right
+      month    <- int.bind(s"$key.month", data).right
+      year     <- int.bind(s"$key.year", data).right
+      hour     <- int.bind(s"$key.hour", data).right
+      minute   <- int.bind(s"$key.minute", data).right
+      amOrPm   <- string.bind(s"$key.amOrPm", data).right
       dateTime <- toDateTime(key, day, month, year, hour, minute, amOrPm).right
     } yield dateTime
   }
@@ -128,10 +134,10 @@ private[mappings] class LocalDateTimeFormatter(
 
   override def unbind(key: String, value: LocalDateTimeWithAMPM): Map[String, String] =
     Map(
-      s"$key.day" -> value.dateTime.getDayOfMonth.toString,
-      s"$key.month" -> value.dateTime.getMonthValue.toString,
-      s"$key.year" -> value.dateTime.getYear.toString,
-      s"$key.hour" -> value.dateTime.getHour.toString,
+      s"$key.day"    -> value.dateTime.getDayOfMonth.toString,
+      s"$key.month"  -> value.dateTime.getMonthValue.toString,
+      s"$key.year"   -> value.dateTime.getYear.toString,
+      s"$key.hour"   -> value.dateTime.getHour.toString,
       s"$key.minute" -> value.dateTime.getMinute.toString,
       s"$key.amOrPm" -> value.amOrPm
     )

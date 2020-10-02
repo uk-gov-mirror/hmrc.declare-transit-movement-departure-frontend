@@ -38,8 +38,8 @@ class PreTaskListNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(UnknownPage, NormalMode, answers)
+            navigator
+              .nextPage(UnknownPage, NormalMode, answers)
               .mustBe(routes.IndexController.onPageLoad())
         }
       }
@@ -48,8 +48,8 @@ class PreTaskListNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(LocalReferenceNumberPage, NormalMode, answers)
+            navigator
+              .nextPage(LocalReferenceNumberPage, NormalMode, answers)
               .mustBe(routes.AddSecurityDetailsController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -64,8 +64,8 @@ class PreTaskListNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(UnknownPage, CheckMode, answers)
+            navigator
+              .nextPage(UnknownPage, CheckMode, answers)
               .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }

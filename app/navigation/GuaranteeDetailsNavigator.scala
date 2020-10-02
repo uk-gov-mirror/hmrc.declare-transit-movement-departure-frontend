@@ -31,4 +31,3 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
 }
-

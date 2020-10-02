@@ -44,7 +44,7 @@ class DeclarePackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new DeclarePackagesFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val declarePackagesRoute = routes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url
 
@@ -55,10 +55,10 @@ class DeclarePackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, declarePackagesRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, declarePackagesRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -84,11 +84,11 @@ class DeclarePackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(DeclarePackagesPage, true).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, declarePackagesRoute)
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(DeclarePackagesPage, true).success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, declarePackagesRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -143,11 +143,11 @@ class DeclarePackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, declarePackagesRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, declarePackagesRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

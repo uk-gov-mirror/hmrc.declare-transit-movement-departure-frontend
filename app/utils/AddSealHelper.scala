@@ -54,14 +54,14 @@ class AddSealHelper(userAnswers: UserAnswers) {
       val numberOfSeals = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
 
       val singularOrPlural = if (numberOfSeals == 1) "singular" else "plural"
-      val html = Html((answer.map(_.numberOrMark)).mkString("<br>"))
+      val html             = Html((answer.map(_.numberOrMark)).mkString("<br>"))
       Row(
-        key   = Key(msg"sealIdDetails.checkYourAnswersLabel.$singularOrPlural" ),
+        key   = Key(msg"sealIdDetails.checkYourAnswersLabel.$singularOrPlural"),
         value = Value(html),
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = SealsInformationController.onPageLoad(lrn, mode ).url,
+            href               = SealsInformationController.onPageLoad(lrn, mode).url,
             visuallyHiddenText = Some(msg"change-sealIdDetails.checkYourAnswersLabel$singularOrPlural"),
             attributes         = Map("id" -> s"""change-seal-""")
           )

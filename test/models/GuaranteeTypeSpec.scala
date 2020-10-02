@@ -34,7 +34,6 @@ class GuaranteeTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
       forAll(gen) {
         guaranteeType =>
-
           JsString(guaranteeType.toString).validate[GuaranteeType].asOpt.value mustEqual guaranteeType
       }
     }
@@ -45,7 +44,6 @@ class GuaranteeTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
       forAll(gen) {
         invalidValue =>
-
           JsString(invalidValue).validate[GuaranteeType] mustEqual JsError("error.invalid")
       }
     }
@@ -56,7 +54,6 @@ class GuaranteeTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
       forAll(gen) {
         guaranteeType =>
-
           Json.toJson(guaranteeType) mustEqual JsString(guaranteeType.toString)
       }
     }

@@ -41,18 +41,21 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveOfficeOfTransitController @Inject()(
-                                                        override val messagesApi: MessagesApi,
-                                                        sessionRepository: SessionRepository,
-                                                        @RouteDetails navigator: Navigator,
-                                                        identify: IdentifierAction,
-                                                        getData: DataRetrievalActionProvider,
-                                                        requireData: DataRequiredAction,
-                                                        errorHandler: ErrorHandler,
-                                                        referenceDataConnector: ReferenceDataConnector,
-                                                        formProvider: ConfirmRemoveOfficeOfTransitFormProvider,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        renderer: Renderer
-                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @RouteDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  errorHandler: ErrorHandler,
+  referenceDataConnector: ReferenceDataConnector,
+  formProvider: ConfirmRemoveOfficeOfTransitFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -61,7 +64,7 @@ class ConfirmRemoveOfficeOfTransitController @Inject()(
       request.userAnswers.get(AddAnotherTransitOfficePage(index)) match {
         case Some(officeOfTransitId) =>
           val preparedForm = request.userAnswers.get(ConfirmRemoveOfficeOfTransitPage) match {
-            case None => form
+            case None        => form
             case Some(value) => form.fill(value)
           }
           renderPage(lrn, officeOfTransitId, mode, preparedForm).map(Ok(_))
@@ -73,43 +76,41 @@ class ConfirmRemoveOfficeOfTransitController @Inject()(
     implicit request =>
       request.userAnswers.get(AddAnotherTransitOfficePage(index)) match {
         case Some(officeOfTransitId) =>
-          form.bindFromRequest().fold(
-            formWithErrors =>
-              renderPage(lrn, officeOfTransitId, mode, formWithErrors).map(BadRequest(_)),
-            value =>
-              if(value) {
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(OfficeOfTransitQuery(index)))
-                  _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, mode, updatedAnswers))
-              } else {
-                Future.successful(Redirect(navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, mode, request.userAnswers)))
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => renderPage(lrn, officeOfTransitId, mode, formWithErrors).map(BadRequest(_)),
+              value =>
+                if (value) {
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.remove(OfficeOfTransitQuery(index)))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, mode, updatedAnswers))
+                } else {
+                  Future.successful(Redirect(navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, mode, request.userAnswers)))
               }
-          )
+            )
         case _ => renderErrorPage(mode)
       }
   }
 
-  private def renderPage(lrn: LocalReferenceNumber,
-                         officeOfTransitId: String,
-                         mode: Mode,
-                         form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
+  private def renderPage(lrn: LocalReferenceNumber, officeOfTransitId: String, mode: Mode, form: Form[Boolean])(
+    implicit request: DataRequest[AnyContent]): Future[Html] =
     referenceDataConnector.getOfficeOfTransit(officeOfTransitId) flatMap {
       officeOfTransit =>
         val json = Json.obj(
-          "form" -> form,
-          "mode" -> mode,
+          "form"            -> form,
+          "mode"            -> mode,
           "officeOfTransit" -> s"${officeOfTransit.name} (${officeOfTransit.id})",
-          "lrn" -> lrn,
-          "radios" -> Radios.yesNo(form("value"))
+          "lrn"             -> lrn,
+          "radios"          -> Radios.yesNo(form("value"))
         )
         renderer.render("confirmRemoveOfficeOfTransit.njk", json)
     }
-  }
 
   private def renderErrorPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfOfficeOfTransits).contains(0)) "noOfficeOfTransit" else "multipleOfficeOfTransit"
-    val redirectLink = ""//navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, mode, request.userAnswers).url
+    val redirectLink     = "" //navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, mode, request.userAnswers).url
 
     errorHandler.onConcurrentError(redirectLinkText, redirectLink, "concurrent.officeOfTransit")
   }

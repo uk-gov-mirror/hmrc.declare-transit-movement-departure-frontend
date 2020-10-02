@@ -30,22 +30,21 @@ import utils.SectionsHelper
 import scala.concurrent.ExecutionContext
 
 class DeclarationSummaryController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              identify: IdentifierAction,
-                                              getData: DataRetrievalActionProvider,
-                                              requireData: DataRequiredAction,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              renderer: Renderer,
-                                              appConfig: FrontendAppConfig,
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer,
+  appConfig: FrontendAppConfig,
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val sectionHelper = new SectionsHelper(request.userAnswers)
-      val json = Json.obj("lrn" -> lrn,
-        "sections" -> sectionHelper.getSections,
-        "backToTransitMovements" -> appConfig.manageTransitMovementsUrl
-      )
+      val json          = Json.obj("lrn" -> lrn, "sections" -> sectionHelper.getSections, "backToTransitMovements" -> appConfig.manageTransitMovementsUrl)
 
       renderer.render("declarationSummary.njk", json).map(Ok(_))
   }

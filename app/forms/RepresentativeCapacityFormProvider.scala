@@ -25,8 +25,6 @@ import models.RepresentativeCapacity
 class RepresentativeCapacityFormProvider @Inject() extends Mappings {
 
   def apply(): Form[RepresentativeCapacity] =
-
-
     Form(
       "value" -> enumerable[RepresentativeCapacity]("representativeCapacity.error.required")
     )

@@ -31,23 +31,22 @@ import viewModels.sections.Section
 import scala.concurrent.{ExecutionContext, Future}
 
 class MovementDetailsCheckYourAnswersController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-      implicit request =>
-        val sections: Seq[Section] = createSections(request.userAnswers)
-        val json = Json.obj("lrn" -> lrn,
-          "sections" -> Json.toJson(sections)
-        )
+    implicit request =>
+      val sections: Seq[Section] = createSections(request.userAnswers)
+      val json                   = Json.obj("lrn" -> lrn, "sections" -> Json.toJson(sections))
 
-        renderer.render("movementDetailsCheckYourAnswers.njk", json).map(Ok(_))
+      renderer.render("movementDetailsCheckYourAnswers.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -58,16 +57,17 @@ class MovementDetailsCheckYourAnswersController @Inject()(
   private def createSections(userAnswers: UserAnswers): Seq[Section] = {
     val checkYourAnswersHelper = new MovementDetailsCheckYourAnswersHelper(userAnswers)
 
-    Seq(Section(
-      Seq(checkYourAnswersHelper.declarationType,
-        checkYourAnswersHelper.procedureType,
-        checkYourAnswersHelper.containersUsedPage,
-        checkYourAnswersHelper.declarationPlace,
-        checkYourAnswersHelper.declarationForSomeoneElse,
-        checkYourAnswersHelper.representativeName,
-        checkYourAnswersHelper.representativeCapacity
-      ).flatten
-    ))
+    Seq(
+      Section(
+        Seq(
+          checkYourAnswersHelper.declarationType,
+          checkYourAnswersHelper.procedureType,
+          checkYourAnswersHelper.containersUsedPage,
+          checkYourAnswersHelper.declarationPlace,
+          checkYourAnswersHelper.declarationForSomeoneElse,
+          checkYourAnswersHelper.representativeName,
+          checkYourAnswersHelper.representativeCapacity
+        ).flatten
+      ))
   }
 }
-

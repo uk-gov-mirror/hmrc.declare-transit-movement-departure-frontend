@@ -27,13 +27,14 @@ case object ChangeAtBorderPage extends QuestionPage[Boolean] {
 
   override def toString: String = "changeAtBorder"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(ModeAtBorderPage)
-        .flatMap(_.remove(IdCrossingBorderPage))
-        .flatMap(_.remove(ModeCrossingBorderPage))
-        .flatMap(_.remove(NationalityCrossingBorderPage))
+      case Some(false) =>
+        userAnswers
+          .remove(ModeAtBorderPage)
+          .flatMap(_.remove(IdCrossingBorderPage))
+          .flatMap(_.remove(ModeCrossingBorderPage))
+          .flatMap(_.remove(NationalityCrossingBorderPage))
       case _ => super.cleanup(value, userAnswers)
     }
-  }
 }

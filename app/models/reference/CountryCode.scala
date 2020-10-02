@@ -16,7 +16,6 @@
 
 package models.reference
 
-
 import play.api.libs.json._
 
 case class CountryCode(code: String)

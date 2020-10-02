@@ -27,27 +27,31 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
 
   val countryList = new CountryList(Seq(Country(CountryCode("FR"), "France")))
 
-  val transportMode1: TransportMode = TransportMode("1", "crossing border")
-  val transportMode2: TransportMode = TransportMode("2", "inland mode")
-  val transportMode3: TransportMode = TransportMode("3", "mode at border")
-  val transportModes:TransportModeList = TransportModeList(Seq(transportMode1, transportMode2, transportMode3))
+  val transportMode1: TransportMode     = TransportMode("1", "crossing border")
+  val transportMode2: TransportMode     = TransportMode("2", "inland mode")
+  val transportMode3: TransportMode     = TransportMode("3", "mode at border")
+  val transportModes: TransportModeList = TransportModeList(Seq(transportMode1, transportMode2, transportMode3))
 
-
-  val country1 = Country(CountryCode("GB"), "United Kingdom")
-  val country2 = Country(CountryCode("AD"), "Andorra")
+  val country1  = Country(CountryCode("GB"), "United Kingdom")
+  val country2  = Country(CountryCode("AD"), "Andorra")
   val countries = CountryList(Seq(country1, country2))
 
   "TransportDetailsCheckYourAnswersViewModel" - {
 
     "display modeCrossingBorder" in {
 
-      val updatedAnswers  = emptyUserAnswers
-        .set(ModeCrossingBorderPage, "1").success.value
-        .set(InlandModePage, "2").success.value
-        .set(ModeAtBorderPage, "3").success.value
+      val updatedAnswers = emptyUserAnswers
+        .set(ModeCrossingBorderPage, "1")
+        .success
+        .value
+        .set(InlandModePage, "2")
+        .success
+        .value
+        .set(ModeAtBorderPage, "3")
+        .success
+        .value
 
       val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
-
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -57,23 +61,27 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
       data.sections.head.rows(2).value.content mustEqual Literal("crossing border")
     }
 
-   "display country" in {
+    "display country" in {
 
-     val updatedAnswers =  emptyUserAnswers
-       .set(NationalityAtDeparturePage, country1.code).success.value
-       .set(NationalityCrossingBorderPage, country2.code).success.value
-     val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+      val updatedAnswers = emptyUserAnswers
+        .set(NationalityAtDeparturePage, country1.code)
+        .success
+        .value
+        .set(NationalityCrossingBorderPage, country2.code)
+        .success
+        .value
+      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
 
-     data.sections.head.sectionTitle must not be defined
-     data.sections.length mustEqual 1
-     data.sections.head.rows.length mustEqual 2
-     data.sections.head.rows.head.value.content mustEqual Literal("GB")
-     data.sections.head.rows(1).value.content mustEqual Literal("AD")
+      data.sections.head.sectionTitle must not be defined
+      data.sections.length mustEqual 1
+      data.sections.head.rows.length mustEqual 2
+      data.sections.head.rows.head.value.content mustEqual Literal("GB")
+      data.sections.head.rows(1).value.content mustEqual Literal("AD")
 
-   }
+    }
     "display changeAtBorder " in {
       val updatedAnswers = emptyUserAnswers.set(ChangeAtBorderPage, true).success.value
-      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+      val data           = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -84,7 +92,7 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
 
     "display addIdAdDeparture " in {
       val updatedAnswers = emptyUserAnswers.set(AddIdAtDeparturePage, true).success.value
-      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+      val data           = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -95,7 +103,7 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
 
     "display idAtDeparture " in {
       val updatedAnswers = emptyUserAnswers.set(IdAtDeparturePage, "test").success.value
-      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+      val data           = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -105,7 +113,7 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
 
     "display idCrossingBorder " in {
       val updatedAnswers = emptyUserAnswers.set(IdCrossingBorderPage, "test").success.value
-      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+      val data           = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1

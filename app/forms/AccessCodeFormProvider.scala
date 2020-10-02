@@ -24,15 +24,12 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class AccessCodeFormProvider @Inject() extends Mappings {
 
   val accessCodeLength = 4
-  val accessCodeRegex = "^[0-9]{4}$"
+  val accessCodeRegex  = "^[0-9]{4}$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("accessCode.error.required")
-        .verifying(StopOnFirstFail[String](
-          exactLength(accessCodeLength, "accessCode.error.length"),
-          regexp(accessCodeRegex, "accessCode.error.invalidCharacters")))
+        .verifying(
+          StopOnFirstFail[String](exactLength(accessCodeLength, "accessCode.error.length"), regexp(accessCodeRegex, "accessCode.error.invalidCharacters")))
     )
 }
-
-

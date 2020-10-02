@@ -34,7 +34,6 @@ class RepresentativeCapacitySpec extends AnyFreeSpec with Matchers with ScalaChe
 
       forAll(gen) {
         representativeCapacity =>
-
           JsString(representativeCapacity.toString).validate[RepresentativeCapacity].asOpt.value mustEqual representativeCapacity
       }
     }
@@ -45,7 +44,6 @@ class RepresentativeCapacitySpec extends AnyFreeSpec with Matchers with ScalaChe
 
       forAll(gen) {
         invalidValue =>
-
           JsString(invalidValue).validate[RepresentativeCapacity] mustEqual JsError("error.invalid")
       }
     }
@@ -56,7 +54,6 @@ class RepresentativeCapacitySpec extends AnyFreeSpec with Matchers with ScalaChe
 
       forAll(gen) {
         representativeCapacity =>
-
           Json.toJson(representativeCapacity) mustEqual JsString(representativeCapacity.toString)
       }
     }

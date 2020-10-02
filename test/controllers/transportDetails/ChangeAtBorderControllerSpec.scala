@@ -44,7 +44,7 @@ class ChangeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunju
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new ChangeAtBorderFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val changeAtBorderRoute = routes.ChangeAtBorderController.onPageLoad(lrn, NormalMode).url
 
@@ -55,10 +55,10 @@ class ChangeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, changeAtBorderRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, changeAtBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -84,11 +84,11 @@ class ChangeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(ChangeAtBorderPage, true).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, changeAtBorderRoute)
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(ChangeAtBorderPage, true).success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, changeAtBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -143,11 +143,11 @@ class ChangeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, changeAtBorderRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, changeAtBorderRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

@@ -22,12 +22,12 @@ import play.api.data.FormError
 
 class RepresentativeNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "representativeName.error.required"
-  val lengthKey = "representativeName.error.length"
-  val invalidKey = "representativeName.error.invalid"
-  val maxLength = 35
-  val representativeNameRegex: String =  "^[a-zA-Z0-9 ]*$"
-  val form = new RepresentativeNameFormProvider()()
+  val requiredKey                     = "representativeName.error.required"
+  val lengthKey                       = "representativeName.error.length"
+  val invalidKey                      = "representativeName.error.invalid"
+  val maxLength                       = 35
+  val representativeNameRegex: String = "^[a-zA-Z0-9 ]*$"
+  val form                            = new RepresentativeNameFormProvider()()
 
   ".value" - {
 

@@ -34,30 +34,32 @@ import navigation.annotations.TraderDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class PrincipalNameController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         @TraderDetails navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
-                                         formProvider: PrincipalNameFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         renderer: Renderer
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @TraderDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: PrincipalNameFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(PrincipalNamePage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
         "form" -> preparedForm,
-        "lrn" -> lrn,
+        "lrn"  -> lrn,
         "mode" -> mode
       )
 
@@ -66,23 +68,24 @@ class PrincipalNameController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+            val json = Json.obj(
+              "form" -> formWithErrors,
+              "lrn"  -> lrn,
+              "mode" -> mode
+            )
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "lrn" -> lrn,
-            "mode" -> mode
-          )
-
-          renderer.render("principalName.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PrincipalNamePage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PrincipalNamePage, mode, updatedAnswers))
-      )
+            renderer.render("principalName.njk", json).map(BadRequest(_))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PrincipalNamePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(PrincipalNamePage, mode, updatedAnswers))
+        )
   }
 }

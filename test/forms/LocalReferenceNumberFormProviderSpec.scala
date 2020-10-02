@@ -25,7 +25,7 @@ import play.api.data.FormError
 class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "localReferenceNumber.error.required"
-  val lengthKey = "localReferenceNumber.error.length"
+  val lengthKey   = "localReferenceNumber.error.length"
   val invalidKey  = "localReferenceNumber.error.invalidCharacters"
 
   val form = new LocalReferenceNumberFormProvider()()
@@ -55,15 +55,12 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
             val result = form.bind(Map("value" -> value))
             if (value.length > maxLength) {
               result.errors must contain(FormError("value", lengthKey))
+            } else {
+              result.errors must contain(FormError("value", invalidKey))
             }
-              else
-              {
-                result.errors must contain(FormError("value", invalidKey))
-              }
           }
       }
     }
 
   }
 }
-

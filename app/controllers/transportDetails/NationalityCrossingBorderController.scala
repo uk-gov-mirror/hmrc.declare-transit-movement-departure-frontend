@@ -38,18 +38,20 @@ import utils.countryJsonList
 import scala.concurrent.{ExecutionContext, Future}
 
 class NationalityCrossingBorderController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       @TransportDetails navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       referenceDataConnector: ReferenceDataConnector,
-                                       formProvider: NationalityCrossingBorderFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
-
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @TransportDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
+  formProvider: NationalityCrossingBorderFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

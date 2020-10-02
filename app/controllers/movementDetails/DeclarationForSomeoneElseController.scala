@@ -34,31 +34,33 @@ import navigation.annotations.MovementDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationForSomeoneElseController @Inject()(
-                                                     override val messagesApi: MessagesApi,
-                                                     sessionRepository: SessionRepository,
-                                                     @MovementDetails navigator: Navigator,
-                                                     identify: IdentifierAction,
-                                                     getData: DataRetrievalActionProvider,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: DeclarationForSomeoneElseFormProvider,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     renderer: Renderer
-                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @MovementDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: DeclarationForSomeoneElseFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(DeclarationForSomeoneElsePage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
-        "form" -> preparedForm,
-        "mode" -> mode,
-        "lrn" -> lrn,
+        "form"   -> preparedForm,
+        "mode"   -> mode,
+        "lrn"    -> lrn,
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
@@ -67,24 +69,25 @@ class DeclarationForSomeoneElseController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+            val json = Json.obj(
+              "form"   -> formWithErrors,
+              "mode"   -> mode,
+              "lrn"    -> lrn,
+              "radios" -> Radios.yesNo(formWithErrors("value"))
+            )
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "mode" -> mode,
-            "lrn" -> lrn,
-            "radios" -> Radios.yesNo(formWithErrors("value"))
-          )
-
-          renderer.render("declarationForSomeoneElse.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclarationForSomeoneElsePage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DeclarationForSomeoneElsePage, mode, updatedAnswers))
-      )
+            renderer.render("declarationForSomeoneElse.njk", json).map(BadRequest(_))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclarationForSomeoneElsePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DeclarationForSomeoneElsePage, mode, updatedAnswers))
+        )
   }
 }

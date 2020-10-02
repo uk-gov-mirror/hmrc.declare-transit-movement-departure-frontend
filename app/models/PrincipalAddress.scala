@@ -24,8 +24,8 @@ object PrincipalAddress {
 
   object Constants {
     val numberAndStreetLength = 35
-    val townLength = 35
-    val postcodeLength = 9
+    val townLength            = 35
+    val postcodeLength        = 9
   }
 
   implicit val format = Json.format[PrincipalAddress]

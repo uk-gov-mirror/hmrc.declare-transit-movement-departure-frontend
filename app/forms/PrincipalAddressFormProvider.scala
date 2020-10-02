@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class PrincipalAddressFormProvider @Inject() extends Mappings {
 
   val validPostcodeCharactersRegex: String = "^[a-zA-Z\\s*0-9]*$"
-  val postCodeRegex: String = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
+  val postCodeRegex: String                = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
 
   def apply(principalName: String): Form[PrincipalAddress] = Form(
     mapping(

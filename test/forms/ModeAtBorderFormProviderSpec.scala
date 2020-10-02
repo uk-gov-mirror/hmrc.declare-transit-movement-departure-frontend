@@ -21,16 +21,17 @@ import models.TransportModeList
 import models.reference.TransportMode
 import play.api.data.FormError
 
-
 class ModeAtBorderFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "modeAtBorder.error.required"
-  val lengthKey = "modeAtBorder.error.length"
-  val maxLength = 100
-  val transportModeList = TransportModeList(Seq(
-    TransportMode("1", "Sea transport"),
-    TransportMode("10", "Sea transport")
-  ))
+  val lengthKey   = "modeAtBorder.error.length"
+  val maxLength   = 100
+
+  val transportModeList = TransportModeList(
+    Seq(
+      TransportMode("1", "Sea transport"),
+      TransportMode("10", "Sea transport")
+    ))
 
   val form = new ModeAtBorderFormProvider()(transportModeList)
 
@@ -52,14 +53,14 @@ class ModeAtBorderFormProviderSpec extends StringFieldBehaviours {
     "not bind if code which does not exit in the transport mode list" in {
 
       val boundForm = form.bind(Map("value" -> "foobar"))
-      val field = boundForm("value")
-      field.errors mustNot be (empty)
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
     }
 
     "bind if code which is in the transport mode list" in {
 
       val boundForm = form.bind(Map("value" -> "1"))
-      val field = boundForm("value")
+      val field     = boundForm("value")
       field.errors mustBe empty
     }
 

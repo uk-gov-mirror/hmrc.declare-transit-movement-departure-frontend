@@ -31,7 +31,7 @@ class LocalReferenceNumberSpec extends AnyFreeSpec with Generators with Matchers
     val pathBindable = implicitly[PathBindable[LocalReferenceNumber]]
 
     "must bind from a url" in {
-      val lrn = new LocalReferenceNumber("12345ABC")
+      val lrn                                          = new LocalReferenceNumber("12345ABC")
       val result: Either[String, LocalReferenceNumber] = pathBindable.bind("lrn", "12345ABC")
 
       result.right.value mustEqual lrn

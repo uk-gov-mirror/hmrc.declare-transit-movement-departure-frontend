@@ -26,16 +26,16 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class SealIdDetailsFormProvider @Inject() extends Mappings {
 
   val maxSealsNumberLength = 20
-  val sealNumberRegex = "^[a-zA-Z0-9]*$"
+  val sealNumberRegex      = "^[a-zA-Z0-9]*$"
 
   def apply(index: Index, seals: Seq[SealDomain] = Seq.empty[SealDomain]): Form[String] =
     Form(
       "value" -> text("sealIdDetails.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxSealsNumberLength, "sealIdDetails.error.length"),
-          regexp(sealNumberRegex, "sealIdDetails.error.invalidCharacters"),
-          doesNotExistIn(seals, index, "sealIdentity.error.duplicate"))
-
-        )
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxSealsNumberLength, "sealIdDetails.error.length"),
+            regexp(sealNumberRegex, "sealIdDetails.error.invalidCharacters"),
+            doesNotExistIn(seals, index, "sealIdentity.error.duplicate")
+          ))
     )
 }

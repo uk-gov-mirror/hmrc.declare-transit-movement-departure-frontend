@@ -27,13 +27,13 @@ import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
 import uk.gov.hmrc.viewmodels._
 
-class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
+class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def confirmRemoveSeals: Option[Row] = userAnswers.get(ConfirmRemoveSealsPage) map {
     answer =>
       Row(
-        key     = Key(msg"confirmRemoveSeals.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"confirmRemoveSeals.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -47,12 +47,12 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def sealsInformation: Option[Row] = userAnswers.get(SealsInformationPage) map {
     answer =>
       Row(
-        key     = Key(msg"sealsInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"sealsInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.SealsInformationController.onPageLoad(lrn,  CheckMode).url,
+            href               = routes.SealsInformationController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"sealsInformation.checkYourAnswersLabel"))
           )
         )
@@ -62,12 +62,12 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def controlResultDateLimit: Option[Row] = userAnswers.get(ControlResultDateLimitPage) map {
     answer =>
       Row(
-        key = Key(msg"controlResultDateLimit.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"controlResultDateLimit.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal(answer.format(dateFormatter))),
         actions = List(
           Action(
-            content = msg"site.edit",
-            href = routes.ControlResultDateLimitController.onPageLoad(lrn, CheckMode).url,
+            content            = msg"site.edit",
+            href               = routes.ControlResultDateLimitController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"controlResultDateLimit.checkYourAnswersLabel"))
           )
         )
@@ -77,8 +77,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def addSeals: Option[Row] = userAnswers.get(AddSealsPage) map {
     answer =>
       Row(
-        key     = Key(msg"addSeals.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"addSeals.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -92,8 +92,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def customsApprovedLocation: Option[Row] = userAnswers.get(CustomsApprovedLocationPage) map {
     answer =>
       Row(
-        key     = Key(msg"customsApprovedLocation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"customsApprovedLocation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -107,8 +107,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def addCustomsApprovedLocation: Option[Row] = userAnswers.get(AddCustomsApprovedLocationPage) map {
     answer =>
       Row(
-        key     = Key(msg"addCustomsApprovedLocation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"addCustomsApprovedLocation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -122,8 +122,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def totalGrossMass: Option[Row] = userAnswers.get(TotalGrossMassPage) map {
     answer =>
       Row(
-        key     = Key(msg"totalGrossMass.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"totalGrossMass.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -137,8 +137,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def authorisedLocationCode: Option[Row] = userAnswers.get(AuthorisedLocationCodePage) map {
     answer =>
       Row(
-        key     = Key(msg"authorisedLocationCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
+        key   = Key(msg"authorisedLocationCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -152,8 +152,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def totalPackages: Option[Row] = userAnswers.get(TotalPackagesPage) map {
     answer =>
       Row(
-        key     = Key(msg"totalPackages.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(Literal(answer.toString)),
+        key   = Key(msg"totalPackages.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(Literal(answer.toString)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -167,8 +167,8 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
   def declarePackages: Option[Row] = userAnswers.get(DeclarePackagesPage) map {
     answer =>
       Row(
-        key     = Key(msg"declarePackages.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"declarePackages.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -181,6 +181,7 @@ class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers)  {
 
   def lrn: LocalReferenceNumber = userAnswers.id
 }
+
 object GoodsSummaryCheckYourAnswersHelper {
 
   private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")

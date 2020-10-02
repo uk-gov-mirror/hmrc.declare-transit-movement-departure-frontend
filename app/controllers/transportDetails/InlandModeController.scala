@@ -38,23 +38,25 @@ import utils.transportModesAsJson
 import scala.concurrent.{ExecutionContext, Future}
 
 class InlandModeController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      sessionRepository: SessionRepository,
-                                      @TransportDetails navigator: Navigator,
-                                      identify: IdentifierAction,
-                                      getData: DataRetrievalActionProvider,
-                                      requireData: DataRequiredAction,
-                                      formProvider: InlandModeFormProvider,
-                                      referenceDataConnector: ReferenceDataConnector,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @TransportDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: InlandModeFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       referenceDataConnector.getTransportModes() flatMap {
         transportModes =>
-
           val form = formProvider(transportModes)
 
           val preparedForm = request.userAnswers
@@ -74,12 +76,11 @@ class InlandModeController @Inject()(
           formProvider(transportModes)
             .bindFromRequest()
             .fold(
-                formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
-
+              formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(InlandModePage, value.code))
-                  _ <- sessionRepository.set(updatedAnswers)
+                  _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(InlandModePage, mode, updatedAnswers))
             )
       }
@@ -88,11 +89,11 @@ class InlandModeController @Inject()(
   private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[TransportMode], transportModes: Seq[TransportMode], status: Results.Status)(
     implicit request: Request[AnyContent]): Future[Result] = {
     val json = Json.obj(
-      "form" -> form,
-      "lrn" -> lrn,
-      "mode" -> mode,
+      "form"           -> form,
+      "lrn"            -> lrn,
+      "mode"           -> mode,
       "transportModes" -> transportModesAsJson(form.value, transportModes),
-      "onSubmitUrl" -> routes.InlandModeController.onSubmit(lrn, mode).url
+      "onSubmitUrl"    -> routes.InlandModeController.onSubmit(lrn, mode).url
     )
 
     renderer.render("inlandMode.njk", json).map(status(_))

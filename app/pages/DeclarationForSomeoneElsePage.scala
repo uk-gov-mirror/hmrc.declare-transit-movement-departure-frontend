@@ -27,11 +27,12 @@ case object DeclarationForSomeoneElsePage extends QuestionPage[Boolean] {
 
   override def toString: String = "declarationForSomeoneElse"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(RepresentativeNamePage)
-        .flatMap (_.remove(RepresentativeCapacityPage))
+      case Some(false) =>
+        userAnswers
+          .remove(RepresentativeNamePage)
+          .flatMap(_.remove(RepresentativeCapacityPage))
       case _ => super.cleanup(value, userAnswers)
     }
-  }
 }

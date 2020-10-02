@@ -24,13 +24,14 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class PrincipalNameFormProvider @Inject() extends Mappings {
 
   val principalNameRegex: String = "^[a-zA-Z0-9 ]*$"
-  val maxLengthPrincipalName = 35
+  val maxLengthPrincipalName     = 35
 
   def apply(): Form[String] =
     Form(
       "value" -> text("principalName.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLengthPrincipalName, "principalName.error.length"),
-          regexp(principalNameRegex, "principalName.error.invalidCharacters")
-        )))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLengthPrincipalName, "principalName.error.length"),
+            regexp(principalNameRegex, "principalName.error.invalidCharacters")
+          )))
 }

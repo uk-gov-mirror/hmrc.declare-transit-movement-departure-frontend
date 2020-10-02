@@ -23,18 +23,18 @@ import play.api.data.FormError
 
 class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val country = Country(CountryCode("GB"), "United Kingdom")
+  val country   = Country(CountryCode("GB"), "United Kingdom")
   val countries = CountryList(Seq(country))
 
   val formProvider = new ConsignorAddressFormProvider()
-  val form = formProvider(countries)
+  val form         = formProvider(countries)
 
   ".AddressLine1" - {
 
-    val fieldName = "AddressLine1"
+    val fieldName   = "AddressLine1"
     val requiredKey = "consignorAddress.error.AddressLine1.required"
-    val lengthKey = "consignorAddress.error.AddressLine1.length"
-    val maxLength = 35
+    val lengthKey   = "consignorAddress.error.AddressLine1.length"
+    val maxLength   = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -45,7 +45,7 @@ class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -58,10 +58,10 @@ class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
   ".AddressLine2" - {
 
-    val fieldName = "AddressLine2"
+    val fieldName   = "AddressLine2"
     val requiredKey = "consignorAddress.error.AddressLine2.required"
-    val lengthKey = "consignorAddress.error.AddressLine2.length"
-    val maxLength = 35
+    val lengthKey   = "consignorAddress.error.AddressLine2.length"
+    val maxLength   = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -72,7 +72,7 @@ class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -85,10 +85,10 @@ class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
   ".AddressLine3" - {
 
-    val fieldName = "AddressLine3"
+    val fieldName   = "AddressLine3"
     val requiredKey = "consignorAddress.error.AddressLine3.required"
-    val lengthKey = "consignorAddress.error.AddressLine3.length"
-    val maxLength = 35
+    val lengthKey   = "consignorAddress.error.AddressLine3.length"
+    val maxLength   = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -99,7 +99,7 @@ class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

@@ -115,7 +115,6 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |  }
       |""".stripMargin
 
-
   val errorResponses: Gen[Int] = Gen.chooseNum(400, 599)
 
   "Reference Data" - {
@@ -128,10 +127,11 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         )
 
         val expectedResult = {
-          CustomsOfficeList(Seq(
-            CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
-            CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
-          ))
+          CustomsOfficeList(
+            Seq(
+              CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
+              CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
+            ))
         }
 
         connector.getCustomsOffices.futureValue mustBe expectedResult
@@ -150,10 +150,11 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         )
 
         val expectedResult = {
-          CustomsOfficeList(Seq(
-            CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
-            CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
-          ))
+          CustomsOfficeList(
+            Seq(
+              CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
+              CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
+            ))
         }
 
         connector.getCustomsOfficesOfTheCountry(CountryCode("GB")).futureValue mustBe expectedResult
@@ -269,7 +270,6 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         )
 
         val expectedResult: OfficeOfTransit = OfficeOfTransit("1", "Data1")
-
 
         connector.getOfficeOfTransit("1").futureValue mustEqual expectedResult
       }

@@ -24,12 +24,11 @@ import play.api.data.FormError
 
 class ControlResultDateLimitFormProviderSpec extends DateBehaviours {
 
-  val form = new ControlResultDateLimitFormProvider()()
-  val dateIn15Days: LocalDate = LocalDate.now.plusDays(15)
-  val dateIn14Days: LocalDate = LocalDate.now.plusDays(14)
-  val yesterday: LocalDate = LocalDate.now.minusDays(1)
+  val form                             = new ControlResultDateLimitFormProvider()()
+  val dateIn15Days: LocalDate          = LocalDate.now.plusDays(15)
+  val dateIn14Days: LocalDate          = LocalDate.now.plusDays(14)
+  val yesterday: LocalDate             = LocalDate.now.minusDays(1)
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
 
   ".value" - {
 
@@ -42,7 +41,10 @@ class ControlResultDateLimitFormProviderSpec extends DateBehaviours {
 
     behave like mandatoryDateField(form, "value", "controlResultDateLimit.error.required.all")
 
-    behave like dateFieldWithMax(form, "value", max = dateIn15Days, FormError("value", "controlResultDateLimit.error.max.date", Seq( dateFormatter.format(dateIn14Days))))
+    behave like dateFieldWithMax(form,
+                                 "value",
+                                 max = dateIn15Days,
+                                 FormError("value", "controlResultDateLimit.error.max.date", Seq(dateFormatter.format(dateIn14Days))))
 
     behave like dateFieldWithMin(form, "value", min = LocalDate.now.minusDays(1), FormError("value", "controlResultDateLimit.error.min.date"))
 

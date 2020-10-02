@@ -39,10 +39,10 @@ class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with Mockit
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -64,7 +64,7 @@ class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with Mockit
         .thenReturn(Future.successful(Html("")))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+      val request     = FakeRequest(POST, routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url)
 
       val result = route(application, request).value
 

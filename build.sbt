@@ -39,14 +39,14 @@ lazy val root = (project in file("."))
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*LanguageSwitchController",
-    ScoverageKeys.coverageMinimum := 80,
+    ScoverageKeys.coverageMinimum       := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
-    useSuperShell in ThisBuild := false,
+    ScoverageKeys.coverageHighlighting  := true,
+    useSuperShell in ThisBuild          := false,
     scalacOptions ++= Seq("-feature"),
     libraryDependencies ++= AppDependencies(),
     dependencyOverrides += "commons-codec" % "commons-codec" % "1.12", //added for reactive mongo issues
-    retrieveManaged := true,
+    retrieveManaged                        := true,
     evictionWarningOptions in update :=
       EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     resolvers ++= Seq(
@@ -58,8 +58,10 @@ lazy val root = (project in file("."))
         Seq("lib/govuk-frontend/govuk/all.js", "javascripts/ctc.js")
       )
     ),
-    uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
-    pipelineStages in Assets := Seq(concat, uglify)
+    uglifyCompressOptions          := Seq("unused=false", "dead_code=false"),
+    pipelineStages in Assets       := Seq(concat, uglify),
+    useSuperShell in ThisBuild     := false,
+    scalafmtOnCompile in ThisBuild := true
   )
   .settings(
     // ***************

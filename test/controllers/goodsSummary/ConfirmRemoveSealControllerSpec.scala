@@ -44,12 +44,12 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with Nu
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new ConfirmRemoveSealFormProvider()
-  val form = formProvider(sealDomain)
+  val form         = formProvider(sealDomain)
 
-  lazy val confirmRemoveSealRoute = routes.ConfirmRemoveSealController.onPageLoad(lrn, sealIndex,  NormalMode).url
+  lazy val confirmRemoveSealRoute = routes.ConfirmRemoveSealController.onPageLoad(lrn, sealIndex, NormalMode).url
 
-  private val removeSealRoute: String   = routes.ConfirmRemoveSealController.onPageLoad(lrn,  sealIndex, NormalMode).url
-  private val userAnswersWithSeal       = emptyUserAnswers.set(SealIdDetailsPage( sealIndex), sealDomain).success.value
+  private val removeSealRoute: String   = routes.ConfirmRemoveSealController.onPageLoad(lrn, sealIndex, NormalMode).url
+  private val userAnswersWithSeal       = emptyUserAnswers.set(SealIdDetailsPage(sealIndex), sealDomain).success.value
   private val confirmRemoveSealTemplate = "/confirmRemoveSeals.njk"
 
   "ConfirmRemoveSeals Controller" - {
@@ -59,11 +59,11 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with Nu
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithSeal)).build()
-      val request = FakeRequest(GET, confirmRemoveSealRoute)
+      val application    = applicationBuilder(userAnswers = Some(userAnswersWithSeal)).build()
+      val request        = FakeRequest(GET, confirmRemoveSealRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
-      val result = route(application, request).value
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val result         = route(application, request).value
 
       status(result) mustEqual OK
 
@@ -109,7 +109,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with Nu
       val newUserAnswers = UserAnswers(
         id         = userAnswersWithSeal.id,
         eoriNumber = userAnswersWithSeal.eoriNumber,
-        userAnswersWithSeal.remove(SealIdDetailsPage (sealIndex)).success.value.data,
+        userAnswersWithSeal.remove(SealIdDetailsPage(sealIndex)).success.value.data,
         userAnswersWithSeal.lastUpdated
       )
 
@@ -123,11 +123,11 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with Nu
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithSeal)).build()
-      val request = FakeRequest(POST, confirmRemoveSealRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val application    = applicationBuilder(userAnswers = Some(userAnswersWithSeal)).build()
+      val request        = FakeRequest(POST, confirmRemoveSealRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

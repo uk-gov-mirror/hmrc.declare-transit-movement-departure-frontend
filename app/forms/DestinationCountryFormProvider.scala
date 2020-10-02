@@ -30,4 +30,4 @@ class DestinationCountryFormProvider @Inject() extends Mappings {
         .verifying("destinationCountry.error.required", value => countryList.fullList.exists(_.code.code == value))
         .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
     )
- }
+}
