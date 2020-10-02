@@ -25,7 +25,7 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours {
   val requiredKey      = "accessCode.error.required"
   val lengthKey        = "accessCode.error.length"
   val accessCodeLength = 4
-  val accessCodeRegex  = "^[0-9]{4}$"
+  val accessCodeRegex  = "^[0-9A-Za-z]{4}$"
   val form             = new AccessCodeFormProvider()()
   val invalidKey       = "accessCode.error.invalidCharacters"
 

@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class AccessCodeFormProvider @Inject() extends Mappings {
 
   val accessCodeLength = 4
-  val accessCodeRegex  = "^[0-9]{4}$"
+  val accessCodeRegex  = "^[0-9A-Za-z]{4}$"
 
   def apply(): Form[String] =
     Form(
