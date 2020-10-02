@@ -25,6 +25,21 @@ import uk.gov.hmrc.viewmodels._
 
 class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def accessCode: Option[Row] = userAnswers.get(AccessCodePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"accessCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AccessCodeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"accessCode.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def otherReference: Option[Row] = userAnswers.get(OtherReferencePage) map {
     answer =>
       Row(

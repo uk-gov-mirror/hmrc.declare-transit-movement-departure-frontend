@@ -81,6 +81,59 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(DeclarationTypePage.type, JsValue)] ::
       arbitrary[(AddSecurityDetailsPage.type, JsValue)] ::
       Nil
+    arbitrary[(AccessCodePage.type, JsValue)] ::
+    arbitrary[(OtherReferencePage.type, JsValue)] ::
+    arbitrary[(GuaranteeReferencePage.type, JsValue)] ::
+    arbitrary[(ConfirmRemoveOfficeOfTransitPage.type, JsValue)] ::
+    arbitrary[(SealsInformationPage.type, JsValue)] ::
+    arbitrary[(AddAnotherTransitOfficePage, JsValue)] ::
+    arbitrary[(ArrivalTimesAtOfficePage, JsValue)] ::
+    arbitrary[(ControlResultDateLimitPage.type, JsValue)] ::
+    arbitrary[(SealIdDetailsPage, JsValue)] ::
+    arbitrary[(AddSealsPage.type, JsValue)] ::
+    arbitrary[(CustomsApprovedLocationPage.type, JsValue)] ::
+    arbitrary[(AddCustomsApprovedLocationPage.type, JsValue)] ::
+    arbitrary[(TotalGrossMassPage.type, JsValue)] ::
+    arbitrary[(AuthorisedLocationCodePage.type, JsValue)] ::
+    arbitrary[(TotalPackagesPage.type, JsValue)] ::
+    arbitrary[(DeclarePackagesPage.type, JsValue)] ::
+    arbitrary[(AddTransitOfficePage.type, JsValue)] ::
+    arbitrary[(ModeAtBorderPage.type, JsValue)] ::
+    arbitrary[(NationalityCrossingBorderPage.type, JsValue)] ::
+    arbitrary[(ModeCrossingBorderPage.type, JsValue)] ::
+    arbitrary[(InlandModePage.type, JsValue)] ::
+    arbitrary[(DestinationOfficePage.type, JsValue)] ::
+    arbitrary[(AddIdAtDeparturePage.type, JsValue)] ::
+    arbitrary[(IdCrossingBorderPage.type, JsValue)] ::
+    arbitrary[(DestinationCountryPage.type, JsValue)] ::
+    arbitrary[(ChangeAtBorderPage.type, JsValue)] ::
+    arbitrary[(NationalityAtDeparturePage.type, JsValue)] ::
+    arbitrary[(IdAtDeparturePage.type, JsValue)] ::
+    arbitrary[(ConsigneeAddressPage.type, JsValue)] ::
+    arbitrary[(PrincipalAddressPage.type, JsValue)] ::
+    arbitrary[(ConsignorAddressPage.type, JsValue)] ::
+    arbitrary[(OfficeOfDeparturePage.type, JsValue)] ::
+    arbitrary[(ConsigneeNamePage.type, JsValue)] ::
+    arbitrary[(WhatIsConsigneeEoriPage.type, JsValue)] ::
+    arbitrary[(CountryOfDispatchPage.type, JsValue)] ::
+    arbitrary[(ConsignorNamePage.type, JsValue)] ::
+    arbitrary[(AddConsigneePage.type, JsValue)] ::
+    arbitrary[(IsConsigneeEoriKnownPage.type, JsValue)] ::
+    arbitrary[(ConsignorEoriPage.type, JsValue)] ::
+    arbitrary[(AddConsignorPage.type, JsValue)] ::
+    arbitrary[(IsConsignorEoriKnownPage.type, JsValue)] ::
+    arbitrary[(PrincipalNamePage.type, JsValue)] ::
+    arbitrary[(IsPrincipalEoriKnownPage.type, JsValue)] ::
+    arbitrary[(WhatIsPrincipalEoriPage.type, JsValue)] ::
+    arbitrary[(RepresentativeCapacityPage.type, JsValue)] ::
+    arbitrary[(RepresentativeNamePage.type, JsValue)] ::
+    arbitrary[(ContainersUsedPage.type, JsValue)] ::
+    arbitrary[(DeclarationForSomeoneElsePage.type, JsValue)] ::
+    arbitrary[(DeclarationPlacePage.type, JsValue)] ::
+    arbitrary[(ProcedureTypePage.type, JsValue)] ::
+    arbitrary[(DeclarationTypePage.type, JsValue)] ::
+    arbitrary[(AddSecurityDetailsPage.type, JsValue)] ::
+    Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 
