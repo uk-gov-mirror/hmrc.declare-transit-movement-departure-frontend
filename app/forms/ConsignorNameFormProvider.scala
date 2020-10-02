@@ -24,14 +24,15 @@ import play.api.data.Form
 class ConsignorNameFormProvider @Inject() extends Mappings {
 
   val consignorNameRegex: String = "^[a-zA-Z0-9 ]*$"
-  val maxLengthConsignorName = 35
+  val maxLengthConsignorName     = 35
 
   def apply(): Form[String] =
     Form(
       "value" -> text("consignorName.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLengthConsignorName, "consignorName.error.length"),
-          regexp(consignorNameRegex, "consignorName.error.invalid")
-        ))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLengthConsignorName, "consignorName.error.length"),
+            regexp(consignorNameRegex, "consignorName.error.invalid")
+          ))
     )
-  }
+}

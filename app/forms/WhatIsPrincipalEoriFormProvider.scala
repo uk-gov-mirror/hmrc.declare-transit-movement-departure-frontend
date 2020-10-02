@@ -23,8 +23,8 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class WhatIsPrincipalEoriFormProvider @Inject() extends Mappings {
 
-  val eoriNumberRegex: String = "^[A-Z]{2}[0-9]{1,15}"
-  val maxLengthEoriNumber: Int = 17
+  val eoriNumberRegex: String          = "^[A-Z]{2}[0-9]{1,15}"
+  val maxLengthEoriNumber: Int         = 17
   val validEoriCharactersRegex: String = "^[A-Z0-9]*$"
 
   def apply(): Form[String] =
@@ -34,5 +34,5 @@ class WhatIsPrincipalEoriFormProvider @Inject() extends Mappings {
           maxLength(maxLengthEoriNumber, "whatIsPrincipalEori.error.length"),
           regexp(validEoriCharactersRegex, "whatIsPrincipalEori.error.invalidCharacters"),
           regexp(eoriNumberRegex, "whatIsPrincipalEori.error.invalidFormat")
-    )))
+        )))
 }

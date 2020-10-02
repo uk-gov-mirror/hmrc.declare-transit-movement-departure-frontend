@@ -24,14 +24,14 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class IdCrossingBorderFormProvider @Inject() extends Mappings {
 
   val idRegex: String = "^[a-zA-Z0-9]*$"
-  val idMaxLength = 27
+  val idMaxLength     = 27
 
   def apply(): Form[String] =
     Form(
       "value" -> text("idCrossingBorder.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(idMaxLength, "idCrossingBorder.error.length"),
-          regexp(idRegex, "idCrossingBorder.error.invalidCharacters"),
-        )))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(idMaxLength, "idCrossingBorder.error.length"),
+            regexp(idRegex, "idCrossingBorder.error.invalidCharacters"),
+          )))
 }
-

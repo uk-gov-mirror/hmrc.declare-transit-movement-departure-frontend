@@ -21,9 +21,8 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants
 
-
 final case class SealsQuery() extends QuestionPage[Seq[SealDomain]] {
 
-  override def path: JsPath = JsPath \  Constants.seals
+  override def path: JsPath = JsPath \ Constants.seals
 
 }

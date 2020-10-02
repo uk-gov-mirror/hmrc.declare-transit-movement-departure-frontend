@@ -36,7 +36,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(InlandModePage, NormalMode, answers)
+            navigator
+              .nextPage(InlandModePage, NormalMode, answers)
               .mustBe(transportDetailsRoute.AddIdAtDepartureController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -47,7 +48,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val updatedAnswers = answers.set(AddIdAtDeparturePage, false).toOption.value
 
-            navigator.nextPage(AddIdAtDeparturePage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(AddIdAtDeparturePage, NormalMode, updatedAnswers)
               .mustBe(transportDetailsRoute.AddIdAtDepartureLaterController.onPageLoad(updatedAnswers.id))
         }
       }
@@ -56,10 +58,16 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.set(AddIdAtDeparturePage, true).toOption.value
-              .remove(IdAtDeparturePage).success.value
+            val updatedAnswers = answers
+              .set(AddIdAtDeparturePage, true)
+              .toOption
+              .value
+              .remove(IdAtDeparturePage)
+              .success
+              .value
 
-            navigator.nextPage(AddIdAtDeparturePage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(AddIdAtDeparturePage, NormalMode, updatedAnswers)
               .mustBe(transportDetailsRoute.IdAtDepartureController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -70,7 +78,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val updatedAnswers = answers.remove(NationalityAtDeparturePage).success.value
 
-            navigator.nextPage(AddIdAtDepartureLaterPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(AddIdAtDepartureLaterPage, NormalMode, updatedAnswers)
               .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -79,7 +88,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(IdAtDeparturePage, NormalMode, answers)
+            navigator
+              .nextPage(IdAtDeparturePage, NormalMode, answers)
               .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -88,7 +98,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(NationalityAtDeparturePage, NormalMode, answers)
+            navigator
+              .nextPage(NationalityAtDeparturePage, NormalMode, answers)
               .mustBe(transportDetailsRoute.ChangeAtBorderController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -99,7 +110,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val updatedAnswers = answers.set(ChangeAtBorderPage, false).toOption.value
 
-            navigator.nextPage(ChangeAtBorderPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(ChangeAtBorderPage, NormalMode, updatedAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
@@ -110,7 +122,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val updatedAnswers = answers.set(ChangeAtBorderPage, true).toOption.value
 
-            navigator.nextPage(ChangeAtBorderPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(ChangeAtBorderPage, NormalMode, updatedAnswers)
               .mustBe(transportDetailsRoute.ModeAtBorderController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -119,7 +132,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(ModeAtBorderPage, NormalMode, answers)
+            navigator
+              .nextPage(ModeAtBorderPage, NormalMode, answers)
               .mustBe(transportDetailsRoute.IdCrossingBorderController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -128,7 +142,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(IdCrossingBorderPage, NormalMode, answers)
+            navigator
+              .nextPage(IdCrossingBorderPage, NormalMode, answers)
               .mustBe(transportDetailsRoute.ModeCrossingBorderController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -139,7 +154,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val updatedAnswers = answers.set(ModeCrossingBorderPage, "2").success.value
 
-            navigator.nextPage(ModeCrossingBorderPage, NormalMode, updatedAnswers)
+            navigator
+              .nextPage(ModeCrossingBorderPage, NormalMode, updatedAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -150,8 +166,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val updatedAnswers = answers.set(ModeCrossingBorderPage, ("17")).success.value
 
-            navigator.nextPage(ModeCrossingBorderPage, NormalMode, updatedAnswers)
-
+            navigator
+              .nextPage(ModeCrossingBorderPage, NormalMode, updatedAnswers)
               .mustBe(transportDetailsRoute.NationalityCrossingBorderController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -160,7 +176,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(NationalityCrossingBorderPage, NormalMode, answers)
+            navigator
+              .nextPage(NationalityCrossingBorderPage, NormalMode, answers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -173,7 +190,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(InlandModePage, CheckMode, answers)
+            navigator
+              .nextPage(InlandModePage, CheckMode, answers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -182,10 +200,16 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedUserAnswers = answers.set(AddIdAtDeparturePage, true).toOption.value
-              .remove(IdAtDeparturePage).success.value
+            val updatedUserAnswers = answers
+              .set(AddIdAtDeparturePage, true)
+              .toOption
+              .value
+              .remove(IdAtDeparturePage)
+              .success
+              .value
 
-            navigator.nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
+            navigator
+              .nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
               .mustBe(transportDetailsRoute.IdAtDepartureController.onPageLoad(answers.id, CheckMode))
         }
       }
@@ -194,30 +218,36 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedUserAnswers = answers.set(AddIdAtDeparturePage, true).toOption.value
-              .set(IdAtDeparturePage, "Bob").toOption.value
+            val updatedUserAnswers = answers
+              .set(AddIdAtDeparturePage, true)
+              .toOption
+              .value
+              .set(IdAtDeparturePage, "Bob")
+              .toOption
+              .value
 
-            navigator.nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
+            navigator
+              .nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
-
 
       "must go from IdAtDeparturePage to TransportDetailsCheckYourAnswers Page" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(IdAtDeparturePage, CheckMode, answers)
+            navigator
+              .nextPage(IdAtDeparturePage, CheckMode, answers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
-
 
       "must go from NationalityAtDeparturePage to TransportDetailsCheckYourAnswers Page" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(NationalityAtDeparturePage, CheckMode, answers)
+            navigator
+              .nextPage(NationalityAtDeparturePage, CheckMode, answers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -228,7 +258,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val updatedUserAnswers = answers.set(ChangeAtBorderPage, false).toOption.value
 
-            navigator.nextPage(ChangeAtBorderPage, CheckMode, updatedUserAnswers)
+            navigator
+              .nextPage(ChangeAtBorderPage, CheckMode, updatedUserAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -237,13 +268,25 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedUserAnswers = answers.set(ChangeAtBorderPage, true).toOption.value
-              .remove(ModeAtBorderPage).success.value
-              .remove(IdCrossingBorderPage).success.value
-              .remove(ModeCrossingBorderPage).success.value
-              .remove(NationalityCrossingBorderPage).success.value
+            val updatedUserAnswers = answers
+              .set(ChangeAtBorderPage, true)
+              .toOption
+              .value
+              .remove(ModeAtBorderPage)
+              .success
+              .value
+              .remove(IdCrossingBorderPage)
+              .success
+              .value
+              .remove(ModeCrossingBorderPage)
+              .success
+              .value
+              .remove(NationalityCrossingBorderPage)
+              .success
+              .value
 
-            navigator.nextPage(ChangeAtBorderPage, CheckMode, updatedUserAnswers)
+            navigator
+              .nextPage(ChangeAtBorderPage, CheckMode, updatedUserAnswers)
               .mustBe(transportDetailsRoute.ModeAtBorderController.onPageLoad(answers.id, CheckMode))
         }
       }
@@ -252,10 +295,16 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedUserAnswers = answers.set(ChangeAtBorderPage, true).toOption.value
-              .set(ModeAtBorderPage, "Bob").success.value
+            val updatedUserAnswers = answers
+              .set(ChangeAtBorderPage, true)
+              .toOption
+              .value
+              .set(ModeAtBorderPage, "Bob")
+              .success
+              .value
 
-            navigator.nextPage(ChangeAtBorderPage, CheckMode, updatedUserAnswers)
+            navigator
+              .nextPage(ChangeAtBorderPage, CheckMode, updatedUserAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -264,8 +313,9 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.set(IdCrossingBorderPage,"Foo").success.value
-            navigator.nextPage(ModeAtBorderPage, CheckMode, updatedAnswers)
+            val updatedAnswers = answers.set(IdCrossingBorderPage, "Foo").success.value
+            navigator
+              .nextPage(ModeAtBorderPage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -275,7 +325,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers.remove(IdCrossingBorderPage).success.value
-            navigator.nextPage(ModeAtBorderPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(ModeAtBorderPage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.IdCrossingBorderController.onPageLoad(answers.id, CheckMode))
         }
       }
@@ -284,8 +335,9 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.set(ModeCrossingBorderPage,"Foo").success.value
-            navigator.nextPage(IdCrossingBorderPage, CheckMode, updatedAnswers)
+            val updatedAnswers = answers.set(ModeCrossingBorderPage, "Foo").success.value
+            navigator
+              .nextPage(IdCrossingBorderPage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -295,7 +347,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers.remove(ModeCrossingBorderPage).success.value
-            navigator.nextPage(IdCrossingBorderPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(IdCrossingBorderPage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.ModeCrossingBorderController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
@@ -305,10 +358,16 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val country = Country(CountryCode("GB"), "United Kingdom")
-            val updatedAnswers = answers.set(ModeCrossingBorderPage, "2").success.value
-              .set(NationalityCrossingBorderPage, country.code).success.value
+            val updatedAnswers = answers
+              .set(ModeCrossingBorderPage, "2")
+              .success
+              .value
+              .set(NationalityCrossingBorderPage, country.code)
+              .success
+              .value
 
-            navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
@@ -317,10 +376,16 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.set(ModeCrossingBorderPage, "17").success.value
-              .remove(NationalityCrossingBorderPage).success.value
+            val updatedAnswers = answers
+              .set(ModeCrossingBorderPage, "17")
+              .success
+              .value
+              .remove(NationalityCrossingBorderPage)
+              .success
+              .value
 
-            navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
+            navigator
+              .nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.NationalityCrossingBorderController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
@@ -331,11 +396,16 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val country = Country(CountryCode("GB"), "United Kingdom")
 
-            val updatedAnswers = answers.set(ModeCrossingBorderPage, ("17")).success.value
-              .set(NationalityCrossingBorderPage, country.code).success.value
+            val updatedAnswers = answers
+              .set(ModeCrossingBorderPage, ("17"))
+              .success
+              .value
+              .set(NationalityCrossingBorderPage, country.code)
+              .success
+              .value
 
-            navigator.nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
-
+            navigator
+              .nextPage(ModeCrossingBorderPage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
@@ -344,7 +414,8 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            navigator.nextPage(NationalityCrossingBorderPage, CheckMode, answers)
+            navigator
+              .nextPage(NationalityCrossingBorderPage, CheckMode, answers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }

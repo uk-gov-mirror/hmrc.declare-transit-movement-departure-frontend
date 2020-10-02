@@ -25,10 +25,9 @@ case object ModeCrossingBorderPage extends QuestionPage[String] {
 
   override def toString: String = "modeCrossingBorder"
 
-  override def  cleanup(value: Option[String], userAnswers: UserAnswers) = {
+  override def cleanup(value: Option[String], userAnswers: UserAnswers) =
     value match {
       case Some(x) if x == "2" | x == "5" | x == "7" => userAnswers.remove(NationalityCrossingBorderPage)
-      case _ => super.cleanup(value, userAnswers)
+      case _                                         => super.cleanup(value, userAnswers)
     }
-  }
 }

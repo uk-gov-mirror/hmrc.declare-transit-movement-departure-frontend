@@ -27,12 +27,12 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import scala.concurrent.ExecutionContext
 
 class TechnicalDifficultiesController @Inject()(
-                                                 override val messagesApi: MessagesApi,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 appConfig: FrontendAppConfig,
-                                                 renderer: Renderer
-                                               )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+  override val messagesApi: MessagesApi,
+  val controllerComponents: MessagesControllerComponents,
+  appConfig: FrontendAppConfig,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action.async {

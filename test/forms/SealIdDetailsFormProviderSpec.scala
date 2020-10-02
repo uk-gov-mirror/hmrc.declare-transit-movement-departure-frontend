@@ -23,12 +23,12 @@ import play.api.data.FormError
 
 class SealIdDetailsFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
-  val requiredKey = "sealIdDetails.error.required"
-  val lengthKey = "sealIdDetails.error.length"
-  val maxLength = 20
-  val invalidCharacters = "sealIdDetails.error.invalidCharacters"
+  val requiredKey             = "sealIdDetails.error.required"
+  val lengthKey               = "sealIdDetails.error.length"
+  val maxLength               = 20
+  val invalidCharacters       = "sealIdDetails.error.invalidCharacters"
   val sealNumberRegex: String = "^[a-zA-Z0-9]*$"
-  val form = new SealIdDetailsFormProvider()
+  val form                    = new SealIdDetailsFormProvider()
 
   ".value" - {
 
@@ -43,7 +43,7 @@ class SealIdDetailsFormProviderSpec extends StringFieldBehaviours with SpecBase 
     behave like fieldWithMaxLength(
       form(sealIndex),
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -62,9 +62,10 @@ class SealIdDetailsFormProviderSpec extends StringFieldBehaviours with SpecBase 
         stringsWithMaxLength(maxLength) suchThat (!_.matches(sealNumberRegex))
       }
 
-      forAll(genInvalidString) { invalidString =>
-        val result = form(sealIndex).bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors mustBe expectedError
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form(sealIndex).bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
       }
     }
 

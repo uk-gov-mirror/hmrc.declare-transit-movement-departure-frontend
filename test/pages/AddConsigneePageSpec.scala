@@ -39,11 +39,21 @@ class AddConsigneePageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers
-            .set(ConsigneeNamePage, "answer").success.value
-            .set(ConsigneeAddressPage, consigneeAddress).success.value
-            .set(WhatIsConsigneeEoriPage, "GB123456").success.value
-            .set(IsConsigneeEoriKnownPage, true).success.value
-            .set(AddConsigneePage, false).success.value
+            .set(ConsigneeNamePage, "answer")
+            .success
+            .value
+            .set(ConsigneeAddressPage, consigneeAddress)
+            .success
+            .value
+            .set(WhatIsConsigneeEoriPage, "GB123456")
+            .success
+            .value
+            .set(IsConsigneeEoriKnownPage, true)
+            .success
+            .value
+            .set(AddConsigneePage, false)
+            .success
+            .value
 
           result.get(ConsigneeNamePage) must not be defined
           result.get(ConsigneeAddressPage) must not be defined

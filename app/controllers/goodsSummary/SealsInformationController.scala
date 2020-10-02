@@ -38,15 +38,18 @@ import utils.AddSealHelper
 import scala.concurrent.{ExecutionContext, Future}
 
 class SealsInformationController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            @GoodsSummary navigator: Navigator,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalActionProvider,
-                                            requireData: DataRequiredAction,
-                                            formProvider: SealsInformationFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  @GoodsSummary navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: SealsInformationFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   val form = formProvider()
 
@@ -71,10 +74,9 @@ class SealsInformationController @Inject()(
         )
   }
 
-  private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Boolean])(
-    implicit request: DataRequest[AnyContent]): Future[Html] = {
+  private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
 
-    val numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
+    val numberOfSeals    = request.userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
     val listOfSealsIndex = List.range(0, numberOfSeals).map(Index(_))
     val sealsRows = listOfSealsIndex.flatMap {
       index =>
@@ -83,18 +85,18 @@ class SealsInformationController @Inject()(
     }
 
     val singularOrPlural = if (numberOfSeals == 1) "singular" else "plural"
-    val onSubmit =  if (numberOfSeals < 10) {
+    val onSubmit = if (numberOfSeals < 10) {
       routes.SealsInformationController.onSubmit(lrn, mode).url
     } else { routes.GoodsSummaryCheckYourAnswersController.onSubmit(lrn).url }
 
     val json = Json.obj(
-      "form" -> form,
-      "mode" -> mode,
-      "lrn" -> lrn,
-      "pageTitle" -> msg"addSeal.title.$singularOrPlural".withArgs(numberOfSeals),
-      "heading" -> msg"addSeal.heading.$singularOrPlural".withArgs(numberOfSeals),
-      "seals" -> sealsRows,
-      "radios" -> Radios.yesNo(form("value")),
+      "form"        -> form,
+      "mode"        -> mode,
+      "lrn"         -> lrn,
+      "pageTitle"   -> msg"addSeal.title.$singularOrPlural".withArgs(numberOfSeals),
+      "heading"     -> msg"addSeal.heading.$singularOrPlural".withArgs(numberOfSeals),
+      "seals"       -> sealsRows,
+      "radios"      -> Radios.yesNo(form("value")),
       "onSubmitUrl" -> onSubmit
     )
 

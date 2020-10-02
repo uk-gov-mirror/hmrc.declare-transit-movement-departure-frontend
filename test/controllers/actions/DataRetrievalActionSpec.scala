@@ -37,17 +37,10 @@ import repositories.SessionRepository
 
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec
-  extends AnyFreeSpec
-    with Matchers
-    with GuiceOneAppPerSuite
-    with ScalaFutures
-    with MockitoSugar
-    with Generators
-    with OptionValues {
+class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with ScalaFutures with MockitoSugar with Generators with OptionValues {
 
   val sessionRepository: SessionRepository = mock[SessionRepository]
-  val lrn: LocalReferenceNumber         = arbitrary[LocalReferenceNumber].sample.value
+  val lrn: LocalReferenceNumber            = arbitrary[LocalReferenceNumber].sample.value
   val eoriNumber: EoriNumber               = arbitrary[EoriNumber].sample.value
 
   override lazy val app: Application = {

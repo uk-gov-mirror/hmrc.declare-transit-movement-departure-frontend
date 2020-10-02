@@ -24,13 +24,13 @@ import play.api.data.FormError
 class NationalityAtDepartureFormProviderSpec extends StringFieldBehaviours {
 
   val countries = CountryList(Seq(Country(CountryCode("AD"), "Andorra")))
-  val form = new NationalityAtDepartureFormProvider()(countries)
+  val form      = new NationalityAtDepartureFormProvider()(countries)
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "nationalityAtDeparture.error.required"
-    val maxLength = 2
+    val maxLength   = 2
 
     behave like fieldThatBindsValidData(
       form,

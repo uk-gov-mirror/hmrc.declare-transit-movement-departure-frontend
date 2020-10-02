@@ -34,22 +34,24 @@ import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
 import scala.concurrent.{ExecutionContext, Future}
 
 class ControlResultDateLimitController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       @GoodsSummary navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: ControlResultDateLimitFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @GoodsSummary navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: ControlResultDateLimitFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(ControlResultDateLimitPage) match {
         case Some(value) => form.fill(value)
         case None        => form
@@ -69,26 +71,27 @@ class ControlResultDateLimitController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
 
-      form.bindFromRequest().fold(
-        formWithErrors =>  {
+            val viewModel = DateInput.localDate(formWithErrors("value"))
 
-          val viewModel = DateInput.localDate(formWithErrors("value"))
+            val json = Json.obj(
+              "form" -> formWithErrors,
+              "mode" -> mode,
+              "lrn"  -> lrn,
+              "date" -> viewModel
+            )
 
-          val json = Json.obj(
-            "form" -> formWithErrors,
-            "mode" -> mode,
-            "lrn"  -> lrn,
-            "date" -> viewModel
-          )
-
-          renderer.render("controlResultDateLimit.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ControlResultDateLimitPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ControlResultDateLimitPage, mode, updatedAnswers))
-      )
+            renderer.render("controlResultDateLimit.njk", json).map(BadRequest(_))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ControlResultDateLimitPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(ControlResultDateLimitPage, mode, updatedAnswers))
+        )
   }
 }

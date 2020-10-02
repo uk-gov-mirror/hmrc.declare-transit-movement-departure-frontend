@@ -26,6 +26,5 @@ object Seal {
     val sealNumberOrMarkLength     = 20
     val languageCode: LanguageCode = LanguageCodeEnglish
   }
-  
 
 }

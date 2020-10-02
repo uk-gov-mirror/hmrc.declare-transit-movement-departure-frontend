@@ -24,13 +24,13 @@ import play.api.data.FormError
 class CountryOfDispatchFormProviderSpec extends StringFieldBehaviours {
 
   val countries: CountryList = CountryList(Seq(Country(CountryCode("AD"), "Andorra")))
-  val form = new CountryOfDispatchFormProvider()(countries)
+  val form                   = new CountryOfDispatchFormProvider()(countries)
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "countryOfDispatch.error.required"
-    val maxLength = 2
+    val maxLength   = 2
 
     behave like fieldThatBindsValidData(
       form,

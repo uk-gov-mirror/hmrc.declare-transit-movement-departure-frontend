@@ -26,11 +26,11 @@ import queries.Gettable
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-                              id: LocalReferenceNumber,
-                              eoriNumber: EoriNumber,
-                              data: JsObject = Json.obj(),
-                              lastUpdated: LocalDateTime = LocalDateTime.now
-                            ) {
+  id: LocalReferenceNumber,
+  eoriNumber: EoriNumber,
+  data: JsObject             = Json.obj(),
+  lastUpdated: LocalDateTime = LocalDateTime.now
+) {
 
   def get[A](gettable: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(gettable.path)).reads(data).getOrElse(None)
@@ -49,7 +49,7 @@ final case class UserAnswers(
 
     updatedData.flatMap {
       d =>
-        val updatedAnswers = copy (data = d)
+        val updatedAnswers = copy(data = d)
         page.cleanup(Some(value), updatedAnswers)
     }
   }
@@ -79,10 +79,10 @@ object UserAnswers {
 
     (
       (__ \ "_id").read[LocalReferenceNumber] and
-      (__ \ "eoriNumber").read[EoriNumber] and
-      (__ \ "data").read[JsObject] and
-      (__ \ "lastUpdated").read(MongoDateTimeFormats.localDateTimeRead)
-    ) (UserAnswers.apply _)
+        (__ \ "eoriNumber").read[EoriNumber] and
+        (__ \ "data").read[JsObject] and
+        (__ \ "lastUpdated").read(MongoDateTimeFormats.localDateTimeRead)
+    )(UserAnswers.apply _)
   }
 
   implicit lazy val writes: OWrites[UserAnswers] = {
@@ -91,9 +91,9 @@ object UserAnswers {
 
     (
       (__ \ "_id").write[LocalReferenceNumber] and
-      (__ \ "eoriNumber").write[EoriNumber] and
-      (__ \ "data").write[JsObject] and
-      (__ \ "lastUpdated").write(MongoDateTimeFormats.localDateTimeWrite)
-    ) (unlift(UserAnswers.unapply))
+        (__ \ "eoriNumber").write[EoriNumber] and
+        (__ \ "data").write[JsObject] and
+        (__ \ "lastUpdated").write(MongoDateTimeFormats.localDateTimeWrite)
+    )(unlift(UserAnswers.unapply))
   }
 }

@@ -46,10 +46,10 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new ModeAtBorderFormProvider()
-  val transportMode = TransportMode("1", "Sea transport")
+  val formProvider   = new ModeAtBorderFormProvider()
+  val transportMode  = TransportMode("1", "Sea transport")
   val transportModes = TransportModeList(Seq(transportMode))
-  val form = formProvider(transportModes)
+  val form           = formProvider(transportModes)
 
   val mockReferenceDataConnector = mock[ReferenceDataConnector]
 
@@ -60,7 +60,6 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
     super.beforeEach
   }
 
-
   "ModeAtBorder Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -69,13 +68,12 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
         .thenReturn(Future.successful(Html("")))
       when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
 
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, modeAtBorderRoute)
+      val request        = FakeRequest(GET, modeAtBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -84,9 +82,9 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
       templateCaptor.getValue mustEqual "modeAtBorder.njk"
@@ -105,9 +103,9 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, modeAtBorderRoute)
+      val request        = FakeRequest(GET, modeAtBorderRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -118,10 +116,10 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
       val filledForm = form.bind(Map("value" -> "1"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
+        "form"           -> filledForm,
+        "lrn"            -> lrn,
         "transportModes" -> transportModesAsJson(filledForm.value, transportModes.transportModes),
-        "mode" -> NormalMode
+        "mode"           -> NormalMode
       )
 
       templateCaptor.getValue mustEqual "modeAtBorder.njk"
@@ -143,7 +141,7 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
             bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
-      )
+          )
           .build()
 
       val request =
@@ -167,10 +165,10 @@ class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with Nunjuck
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(POST, modeAtBorderRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, modeAtBorderRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

@@ -46,11 +46,11 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new AddTransitOfficeFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
-  lazy val addTransitOfficeRoute = routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url
-  private val mockRefDataConnector = mock[ReferenceDataConnector]
-  val officeOfTransit: OfficeOfTransit = OfficeOfTransit("1", "Transit1")
+  lazy val addTransitOfficeRoute               = routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url
+  private val mockRefDataConnector             = mock[ReferenceDataConnector]
+  val officeOfTransit: OfficeOfTransit         = OfficeOfTransit("1", "Transit1")
   val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))
 
   override def beforeEach(): Unit = {
@@ -69,9 +69,9 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
-      val request = FakeRequest(GET, addTransitOfficeRoute)
+      val request        = FakeRequest(GET, addTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -80,9 +80,9 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
+        "form"   -> form,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> Radios.yesNo(form("value"))
       )
 
@@ -126,10 +126,10 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
-      val request = FakeRequest(POST, addTransitOfficeRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, addTransitOfficeRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -138,9 +138,9 @@ class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with Nun
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "mode" -> NormalMode,
-        "lrn" -> lrn,
+        "form"   -> boundForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
         "radios" -> Radios.yesNo(boundForm("value"))
       )
 

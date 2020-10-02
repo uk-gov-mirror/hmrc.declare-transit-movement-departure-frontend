@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class CustomsApprovedLocationFormProvider @Inject() extends Mappings {
 
   val customsApprovedLocationRegex: String = "^[a-zA-Z0-9 ]*$"
-  val maxLengthCustomsApprovedLocation = 17
+  val maxLengthCustomsApprovedLocation     = 17
 
   def apply(): Form[String] =
     Form(

@@ -39,8 +39,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-
-              navigator.nextPage(CountryOfDispatchPage, NormalMode, answers)
+              navigator
+                .nextPage(CountryOfDispatchPage, NormalMode, answers)
                 .mustBe(routes.OfficeOfDepartureController.onPageLoad(answers.id, NormalMode))
           }
         }
@@ -49,8 +49,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-
-              navigator.nextPage(OfficeOfDeparturePage, NormalMode, answers)
+              navigator
+                .nextPage(OfficeOfDeparturePage, NormalMode, answers)
                 .mustBe(routes.DestinationCountryController.onPageLoad(answers.id, NormalMode))
           }
         }
@@ -59,8 +59,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-
-              navigator.nextPage(DestinationCountryPage, NormalMode, answers)
+              navigator
+                .nextPage(DestinationCountryPage, NormalMode, answers)
                 .mustBe(routes.DestinationOfficeController.onPageLoad(answers.id, NormalMode))
           }
         }
@@ -69,8 +69,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-
-              navigator.nextPage(DestinationOfficePage, NormalMode, answers)
+              navigator
+                .nextPage(DestinationOfficePage, NormalMode, answers)
                 .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(answers.id, index, NormalMode))
           }
         }
@@ -81,7 +81,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
             answers =>
               val updatedUserAnswers = answers.set(AddSecurityDetailsPage, true).toOption.value
 
-              navigator.nextPage(AddAnotherTransitOfficePage(index), NormalMode, updatedUserAnswers)
+              navigator
+                .nextPage(AddAnotherTransitOfficePage(index), NormalMode, updatedUserAnswers)
                 .mustBe(routes.ArrivalTimesAtOfficeController.onPageLoad(answers.id, index, NormalMode))
           }
         }
@@ -92,7 +93,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
             answers =>
               val updatedUserAnswers = answers.set(AddSecurityDetailsPage, false).toOption.value
 
-              navigator.nextPage(AddAnotherTransitOfficePage(index), NormalMode, updatedUserAnswers)
+              navigator
+                .nextPage(AddAnotherTransitOfficePage(index), NormalMode, updatedUserAnswers)
                 .mustBe(routes.AddTransitOfficeController.onPageLoad(answers.id, NormalMode))
           }
         }
@@ -101,8 +103,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-
-              navigator.nextPage(ArrivalTimesAtOfficePage(index), NormalMode, answers)
+              navigator
+                .nextPage(ArrivalTimesAtOfficePage(index), NormalMode, answers)
                 .mustBe(routes.AddTransitOfficeController.onPageLoad(answers.id, NormalMode))
           }
         }
@@ -111,11 +113,19 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val userAnswers = answers.set(AddTransitOfficePage, true).toOption.value
-                .set(AddAnotherTransitOfficePage(index), "id1").toOption.value
-                .set(AddAnotherTransitOfficePage(Index(1)), "id2").toOption.value
+              val userAnswers = answers
+                .set(AddTransitOfficePage, true)
+                .toOption
+                .value
+                .set(AddAnotherTransitOfficePage(index), "id1")
+                .toOption
+                .value
+                .set(AddAnotherTransitOfficePage(Index(1)), "id2")
+                .toOption
+                .value
 
-              navigator.nextPage(AddTransitOfficePage, NormalMode, userAnswers)
+              navigator
+                .nextPage(AddTransitOfficePage, NormalMode, userAnswers)
                 .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(answers.id, Index(2), NormalMode))
           }
         }
@@ -126,7 +136,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
             answers =>
               val userAnswers = answers.set(AddTransitOfficePage, false).toOption.value
 
-              navigator.nextPage(AddTransitOfficePage, NormalMode, userAnswers)
+              navigator
+                .nextPage(AddTransitOfficePage, NormalMode, userAnswers)
                 .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
@@ -135,14 +146,28 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val userAnswers = answers.remove(AddTransitOfficePage).toOption.value
-                .set(AddAnotherTransitOfficePage(index), "id").toOption.value
-                .set(AddAnotherTransitOfficePage(Index(1)), "id1").toOption.value
-                .set(AddAnotherTransitOfficePage(Index(2)), "id1").toOption.value
-                .set(AddAnotherTransitOfficePage(Index(3)), "id1").toOption.value
-                .set(AddAnotherTransitOfficePage(Index(4)), "id1").toOption.value
+              val userAnswers = answers
+                .remove(AddTransitOfficePage)
+                .toOption
+                .value
+                .set(AddAnotherTransitOfficePage(index), "id")
+                .toOption
+                .value
+                .set(AddAnotherTransitOfficePage(Index(1)), "id1")
+                .toOption
+                .value
+                .set(AddAnotherTransitOfficePage(Index(2)), "id1")
+                .toOption
+                .value
+                .set(AddAnotherTransitOfficePage(Index(3)), "id1")
+                .toOption
+                .value
+                .set(AddAnotherTransitOfficePage(Index(4)), "id1")
+                .toOption
+                .value
 
-              navigator.nextPage(AddTransitOfficePage, NormalMode, userAnswers)
+              navigator
+                .nextPage(AddTransitOfficePage, NormalMode, userAnswers)
                 .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
@@ -151,22 +176,38 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val userAnswers = answers.set(AddTransitOfficePage, true).toOption.value
-                .set(AddAnotherTransitOfficePage(index), "id1").toOption.value
-                .set(AddAnotherTransitOfficePage(Index(1)), "id2").toOption.value
-                .set(ConfirmRemoveOfficeOfTransitPage, true).toOption.value
+              val userAnswers = answers
+                .set(AddTransitOfficePage, true)
+                .toOption
+                .value
+                .set(AddAnotherTransitOfficePage(index), "id1")
+                .toOption
+                .value
+                .set(AddAnotherTransitOfficePage(Index(1)), "id2")
+                .toOption
+                .value
+                .set(ConfirmRemoveOfficeOfTransitPage, true)
+                .toOption
+                .value
 
-              navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, NormalMode, userAnswers)
+              navigator
+                .nextPage(ConfirmRemoveOfficeOfTransitPage, NormalMode, userAnswers)
                 .mustBe(routes.AddTransitOfficeController.onPageLoad(answers.id, NormalMode))
           }
         }
 
         "must go from Confirm Remove OfficeOfTransit Page to Add another offices of transit when all records are removed" in {
-            val userAnswers = emptyUserAnswers.remove(OfficeOfTransitQuery(index)).toOption.value
-              .set(ConfirmRemoveOfficeOfTransitPage, true).toOption.value
+          val userAnswers = emptyUserAnswers
+            .remove(OfficeOfTransitQuery(index))
+            .toOption
+            .value
+            .set(ConfirmRemoveOfficeOfTransitPage, true)
+            .toOption
+            .value
 
-            navigator.nextPage(ConfirmRemoveOfficeOfTransitPage, NormalMode, userAnswers)
-              .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
+          navigator
+            .nextPage(ConfirmRemoveOfficeOfTransitPage, NormalMode, userAnswers)
+            .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
 
         }
       }
@@ -181,8 +222,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(UnknownPage, CheckMode, answers)
+            navigator
+              .nextPage(UnknownPage, CheckMode, answers)
               .mustBe(mainRoutes.SessionExpiredController.onPageLoad())
         }
       }
@@ -191,8 +232,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(CountryOfDispatchPage, CheckMode, answers)
+            navigator
+              .nextPage(CountryOfDispatchPage, CheckMode, answers)
               .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
         }
@@ -203,8 +244,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(OfficeOfDeparturePage, CheckMode, answers)
+            navigator
+              .nextPage(OfficeOfDeparturePage, CheckMode, answers)
               .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
         }
@@ -215,8 +256,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(DestinationCountryPage, CheckMode, answers)
+            navigator
+              .nextPage(DestinationCountryPage, CheckMode, answers)
               .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
         }
@@ -227,8 +268,8 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(DestinationOfficePage, CheckMode, answers)
+            navigator
+              .nextPage(DestinationOfficePage, CheckMode, answers)
               .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
         }

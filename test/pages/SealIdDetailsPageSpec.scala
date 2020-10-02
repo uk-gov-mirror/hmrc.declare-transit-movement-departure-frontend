@@ -20,7 +20,6 @@ import base.SpecBase
 import models.domain.SealDomain
 import pages.behaviours.PageBehaviours
 
-
 class SealIdDetailsPageSpec extends PageBehaviours with SpecBase {
 
   "SealIdDetailsPage" - {

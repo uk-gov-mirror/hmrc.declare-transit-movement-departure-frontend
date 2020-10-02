@@ -35,17 +35,19 @@ import navigation.annotations.TraderDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class PrincipalAddressController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            sessionRepository: SessionRepository,
-                                            @TraderDetails navigator: Navigator,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalActionProvider,
-                                            requireData: DataRequiredAction,
-                                            formProvider: PrincipalAddressFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
-
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @TraderDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: PrincipalAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -53,13 +55,13 @@ class PrincipalAddressController @Inject()(
         case Some(principalName) =>
           val preparedForm = request.userAnswers.get(PrincipalAddressPage) match {
             case Some(value) => formProvider(principalName).fill(value)
-            case None => formProvider(principalName)
+            case None        => formProvider(principalName)
           }
 
           val json = Json.obj(
-            "form" -> preparedForm,
-            "lrn" -> lrn,
-            "mode" -> mode,
+            "form"          -> preparedForm,
+            "lrn"           -> lrn,
+            "mode"          -> mode,
             "principalName" -> principalName
           )
 
@@ -78,9 +80,9 @@ class PrincipalAddressController @Inject()(
               formWithErrors => {
 
                 val json = Json.obj(
-                  "form" -> formWithErrors,
-                  "lrn" -> lrn,
-                  "mode" -> mode,
+                  "form"          -> formWithErrors,
+                  "lrn"           -> lrn,
+                  "mode"          -> mode,
                   "principalName" -> principalName
                 )
 
@@ -89,7 +91,7 @@ class PrincipalAddressController @Inject()(
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(PrincipalAddressPage, value))
-                  _ <- sessionRepository.set(updatedAnswers)
+                  _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(PrincipalAddressPage, mode, updatedAnswers))
             )
         case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))

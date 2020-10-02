@@ -19,7 +19,7 @@ package pages
 import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
-class DestinationCountryPageSpec  extends PageBehaviours {
+class DestinationCountryPageSpec extends PageBehaviours {
 
   "DestinationCountryPage" - {
 

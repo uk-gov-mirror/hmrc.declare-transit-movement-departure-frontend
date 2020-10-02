@@ -29,7 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.inject.{Injector, bind}
+import play.api.inject.{bind, Injector}
 import play.api.libs.json.Json
 import play.api.test.Helpers
 import uk.gov.hmrc.http.HeaderCarrier
@@ -53,9 +53,9 @@ trait SpecBase
   val userAnswersId             = "id"
   val eoriNumber: EoriNumber    = EoriNumber("EoriNumber")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
-  val sealIndex = Index(0)
-  val sealDomain: SealDomain           = SealDomain("sealNumber")
-  val sealDomain2: SealDomain           = SealDomain("sealNumber2")
+  val sealIndex                 = Index(0)
+  val sealDomain: SealDomain    = SealDomain("sealNumber")
+  val sealDomain2: SealDomain   = SealDomain("sealNumber2")
 
   val index = Index(0)
 

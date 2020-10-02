@@ -30,9 +30,8 @@ class GoodsSummaryCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheck
 
     "display Yes when selected for packages to declare" in {
 
-      val updatedAnswers  = emptyUserAnswers.set(DeclarePackagesPage, true).success.value
-      val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
-
+      val updatedAnswers = emptyUserAnswers.set(DeclarePackagesPage, true).success.value
+      val data           = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -43,10 +42,11 @@ class GoodsSummaryCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheck
     }
     "display Yes when selected for customs approved location" in {
 
-      val updatedAnswers  = emptyUserAnswers
-        .set(AddCustomsApprovedLocationPage, true).success.value
+      val updatedAnswers = emptyUserAnswers
+        .set(AddCustomsApprovedLocationPage, true)
+        .success
+        .value
       val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
-
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -58,10 +58,11 @@ class GoodsSummaryCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheck
 
     "display Yes when selected foradd seal" in {
 
-      val updatedAnswers  = emptyUserAnswers
-        .set(AddSealsPage, true).success.value
+      val updatedAnswers = emptyUserAnswers
+        .set(AddSealsPage, true)
+        .success
+        .value
       val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
-
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -71,25 +72,35 @@ class GoodsSummaryCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheck
 
     }
 
-   "display Number of packages declared" in {
+    "display Number of packages declared" in {
 
-     val updatedAnswers =  emptyUserAnswers
-       .set(DeclarePackagesPage, true).success.value
-       .set(TotalPackagesPage, 1000).success.value
-     val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
+      val updatedAnswers = emptyUserAnswers
+        .set(DeclarePackagesPage, true)
+        .success
+        .value
+        .set(TotalPackagesPage, 1000)
+        .success
+        .value
+      val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
 
-     data.sections.head.sectionTitle must not be defined
-     data.sections.length mustEqual 1
-     data.sections.head.rows.length mustEqual 2
-     data.sections.head.rows(1).value.content mustEqual Literal("1000")
+      data.sections.head.sectionTitle must not be defined
+      data.sections.length mustEqual 1
+      data.sections.head.rows.length mustEqual 2
+      data.sections.head.rows(1).value.content mustEqual Literal("1000")
 
-   }
+    }
     "display Total gross mass declared" in {
 
-      val updatedAnswers =  emptyUserAnswers
-        .set(DeclarePackagesPage, true).success.value
-        .set(TotalPackagesPage, 1000).success.value
-        .set(TotalGrossMassPage, "1000.123").success.value
+      val updatedAnswers = emptyUserAnswers
+        .set(DeclarePackagesPage, true)
+        .success
+        .value
+        .set(TotalPackagesPage, 1000)
+        .success
+        .value
+        .set(TotalGrossMassPage, "1000.123")
+        .success
+        .value
       val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
 
       data.sections.head.sectionTitle must not be defined
@@ -101,11 +112,19 @@ class GoodsSummaryCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheck
 
     "display Authorised location" in {
 
-      val updatedAnswers =  emptyUserAnswers
-        .set(DeclarePackagesPage, true).success.value
-        .set(TotalPackagesPage, 1000).success.value
-        .set(TotalGrossMassPage, "1000.123").success.value
-        .set(AuthorisedLocationCodePage, "AuthCode").success.value
+      val updatedAnswers = emptyUserAnswers
+        .set(DeclarePackagesPage, true)
+        .success
+        .value
+        .set(TotalPackagesPage, 1000)
+        .success
+        .value
+        .set(TotalGrossMassPage, "1000.123")
+        .success
+        .value
+        .set(AuthorisedLocationCodePage, "AuthCode")
+        .success
+        .value
       val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
 
       data.sections.head.sectionTitle must not be defined
@@ -116,11 +135,19 @@ class GoodsSummaryCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheck
     }
     "display Customs approve location" in {
 
-      val updatedAnswers =  emptyUserAnswers
-        .set(DeclarePackagesPage, true).success.value
-        .set(TotalPackagesPage, 1000).success.value
-        .set(TotalGrossMassPage, "1000.123").success.value
-        .set(CustomsApprovedLocationPage, "ApprovedCode").success.value
+      val updatedAnswers = emptyUserAnswers
+        .set(DeclarePackagesPage, true)
+        .success
+        .value
+        .set(TotalPackagesPage, 1000)
+        .success
+        .value
+        .set(TotalGrossMassPage, "1000.123")
+        .success
+        .value
+        .set(CustomsApprovedLocationPage, "ApprovedCode")
+        .success
+        .value
       val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
 
       data.sections.head.sectionTitle must not be defined
@@ -132,16 +159,26 @@ class GoodsSummaryCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheck
 
     "display Control result date limit" in {
 
-      val date = LocalDate.now
+      val date                             = LocalDate.now
       val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-      val todaysDate: String = dateFormatter.format(date)
+      val todaysDate: String               = dateFormatter.format(date)
 
-      val updatedAnswers =  emptyUserAnswers
-        .set(DeclarePackagesPage, true).success.value
-        .set(TotalPackagesPage, 1000).success.value
-        .set(TotalGrossMassPage, "1000.123").success.value
-        .set(AuthorisedLocationCodePage, "AuthCode").success.value
-        .set(ControlResultDateLimitPage, date).success.value
+      val updatedAnswers = emptyUserAnswers
+        .set(DeclarePackagesPage, true)
+        .success
+        .value
+        .set(TotalPackagesPage, 1000)
+        .success
+        .value
+        .set(TotalGrossMassPage, "1000.123")
+        .success
+        .value
+        .set(AuthorisedLocationCodePage, "AuthCode")
+        .success
+        .value
+        .set(ControlResultDateLimitPage, date)
+        .success
+        .value
       val data = GoodsSummaryCheckYourAnswersViewModel(updatedAnswers)
 
       data.sections.head.sectionTitle must not be defined

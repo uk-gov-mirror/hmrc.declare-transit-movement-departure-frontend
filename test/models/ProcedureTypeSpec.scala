@@ -34,7 +34,6 @@ class ProcedureTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
       forAll(gen) {
         procedureType =>
-
           JsString(procedureType.toString).validate[ProcedureType].asOpt.value mustEqual procedureType
       }
     }
@@ -45,7 +44,6 @@ class ProcedureTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
       forAll(gen) {
         invalidValue =>
-
           JsString(invalidValue).validate[ProcedureType] mustEqual JsError("error.invalid")
       }
     }
@@ -56,7 +54,6 @@ class ProcedureTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
       forAll(gen) {
         procedureType =>
-
           Json.toJson(procedureType) mustEqual JsString(procedureType.toString)
       }
     }

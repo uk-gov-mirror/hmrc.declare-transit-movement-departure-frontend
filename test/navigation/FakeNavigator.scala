@@ -23,12 +23,14 @@ import models.{Mode, NormalMode, UserAnswers}
 class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => Some(desiredRoute)
+    case _ =>
+      _ =>
+        Some(desiredRoute)
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => Some(desiredRoute)
+    case _ =>
+      _ =>
+        Some(desiredRoute)
   }
 }
-
-

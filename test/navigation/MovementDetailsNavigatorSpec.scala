@@ -35,8 +35,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(DeclarationTypePage, NormalMode, answers)
+            navigator
+              .nextPage(DeclarationTypePage, NormalMode, answers)
               .mustBe(movementDetailsRoute.ProcedureTypeController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -45,8 +45,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(ProcedureTypePage, NormalMode, answers)
+            navigator
+              .nextPage(ProcedureTypePage, NormalMode, answers)
               .mustBe(movementDetailsRoute.ContainersUsedPageController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -55,8 +55,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(ContainersUsedPage, NormalMode, answers)
+            navigator
+              .nextPage(ContainersUsedPage, NormalMode, answers)
               .mustBe(movementDetailsRoute.DeclarationPlaceController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -65,8 +65,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(DeclarationPlacePage, NormalMode, answers)
+            navigator
+              .nextPage(DeclarationPlacePage, NormalMode, answers)
               .mustBe(movementDetailsRoute.DeclarationForSomeoneElseController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -77,7 +77,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, true).toOption.value
 
-            navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
+            navigator
+              .nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
               .mustBe(movementDetailsRoute.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -88,7 +89,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           answers =>
             val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
 
-            navigator.nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
+            navigator
+              .nextPage(DeclarationForSomeoneElsePage, NormalMode, updatedUserAnswers)
               .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -97,8 +99,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(RepresentativeNamePage, NormalMode, answers)
+            navigator
+              .nextPage(RepresentativeNamePage, NormalMode, answers)
               .mustBe(movementDetailsRoute.RepresentativeCapacityController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -107,8 +109,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(RepresentativeCapacityPage, NormalMode, answers)
+            navigator
+              .nextPage(RepresentativeCapacityPage, NormalMode, answers)
               .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
@@ -120,8 +122,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-
-            navigator.nextPage(DeclarationTypePage, CheckMode, answers)
+            navigator
+              .nextPage(DeclarationTypePage, CheckMode, answers)
               .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
         }
@@ -130,10 +132,16 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, true).toOption.value
-                .remove(RepresentativeNamePage).toOption.value
+              val updatedUserAnswers = answers
+                .set(DeclarationForSomeoneElsePage, true)
+                .toOption
+                .value
+                .remove(RepresentativeNamePage)
+                .toOption
+                .value
 
-              navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
+              navigator
+                .nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
                 .mustBe(movementDetailsRoute.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
           }
         }
@@ -142,10 +150,16 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, true).toOption.value
-                .set(RepresentativeNamePage, "answer").toOption.value
+              val updatedUserAnswers = answers
+                .set(DeclarationForSomeoneElsePage, true)
+                .toOption
+                .value
+                .set(RepresentativeNamePage, "answer")
+                .toOption
+                .value
 
-              navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
+              navigator
+                .nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
                 .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
@@ -156,7 +170,8 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             answers =>
               val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
 
-              navigator.nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
+              navigator
+                .nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
                 .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }

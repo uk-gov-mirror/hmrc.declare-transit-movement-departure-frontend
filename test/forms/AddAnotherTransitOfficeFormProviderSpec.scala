@@ -27,7 +27,7 @@ class AddAnotherTransitOfficeFormProviderSpec extends StringFieldBehaviours {
   val maxLength   = 8
 
   val officeOfTransitList = OfficeOfTransitList(Seq(OfficeOfTransit("id", "name"), OfficeOfTransit("officeId", "someName")))
-  val form = new AddAnotherTransitOfficeFormProvider()(officeOfTransitList)
+  val form                = new AddAnotherTransitOfficeFormProvider()(officeOfTransitList)
 
   ".value" - {
 

@@ -40,17 +40,20 @@ import utils._
 import scala.concurrent.{ExecutionContext, Future}
 
 class DestinationOfficeController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             sessionRepository: SessionRepository,
-                                             @RouteDetails navigator: Navigator,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalActionProvider,
-                                             requireData: DataRequiredAction,
-                                             referenceDataConnector: ReferenceDataConnector,
-                                             formProvider: DestinationOfficeFormProvider,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             renderer: Renderer
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @RouteDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
+  formProvider: DestinationOfficeFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -60,16 +63,18 @@ class DestinationOfficeController @Inject()(
             case (customsOffices, countryName) =>
               val form: Form[CustomsOffice] = formProvider(customsOffices, countryName)
 
-              val preparedForm: Form[CustomsOffice] = request.userAnswers.get(DestinationOfficePage)
+              val preparedForm: Form[CustomsOffice] = request.userAnswers
+                .get(DestinationOfficePage)
                 .flatMap(customsOffices.getCustomsOffice)
-                .map(form.fill).getOrElse(form)
+                .map(form.fill)
+                .getOrElse(form)
 
               val json = Json.obj(
-                "form" -> preparedForm,
-                "lrn" -> lrn,
+                "form"           -> preparedForm,
+                "lrn"            -> lrn,
                 "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
-                "countryName" -> countryName,
-                "mode" -> mode
+                "countryName"    -> countryName,
+                "mode"           -> mode
               )
               renderer.render("destinationOffice.njk", json).map(Ok(_))
           }
@@ -84,39 +89,40 @@ class DestinationOfficeController @Inject()(
         case Some(countryCode) =>
           getCustomsOfficeAndCountryName(countryCode) flatMap {
             case (customsOffices, countryName) =>
-
               val form = formProvider(customsOffices, countryName)
 
-              form.bindFromRequest().fold(
-                formWithErrors => {
-                  val json = Json.obj(
-                    "form" -> formWithErrors,
-                    "lrn" -> lrn,
-                    "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.customsOffices),
-                    "countryName" -> countryName,
-                    "mode" -> mode
-                  )
-                  renderer.render("destinationOffice.njk", json).map(BadRequest(_))
-                },
-                value =>
-                  for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(DestinationOfficePage, value.id))
-                    _ <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(DestinationOfficePage, mode, updatedAnswers))
-              )
+              form
+                .bindFromRequest()
+                .fold(
+                  formWithErrors => {
+                    val json = Json.obj(
+                      "form"           -> formWithErrors,
+                      "lrn"            -> lrn,
+                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.customsOffices),
+                      "countryName"    -> countryName,
+                      "mode"           -> mode
+                    )
+                    renderer.render("destinationOffice.njk", json).map(BadRequest(_))
+                  },
+                  value =>
+                    for {
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(DestinationOfficePage, value.id))
+                      _              <- sessionRepository.set(updatedAnswers)
+                    } yield Redirect(navigator.nextPage(DestinationOfficePage, mode, updatedAnswers))
+                )
           }
         case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
   }
 
-  private def getCustomsOfficeAndCountryName(countryCode: CountryCode)(implicit request: DataRequest[AnyContent]): Future[(CustomsOfficeList, String)] = {
+  private def getCustomsOfficeAndCountryName(countryCode: CountryCode)(implicit request: DataRequest[AnyContent]): Future[(CustomsOfficeList, String)] =
     referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
       customsOffices =>
-        referenceDataConnector.getTransitCountryList() map { countryList =>
-          val countryName = countryList.getCountry(countryCode).fold(countryCode.code)(_.description)
-          (customsOffices, countryName)
+        referenceDataConnector.getTransitCountryList() map {
+          countryList =>
+            val countryName = countryList.getCountry(countryCode).fold(countryCode.code)(_.description)
+            (customsOffices, countryName)
         }
     }
-  }
 
 }

@@ -34,20 +34,22 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 class LocalReferenceNumberController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                sessionRepository: SessionRepository,
-                                                @PreTaskListDetails navigator: Navigator,
-                                                identify: IdentifierAction,
-                                                formProvider: LocalReferenceNumberFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                renderer: Renderer
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @PreTaskListDetails navigator: Navigator,
+  identify: IdentifierAction,
+  formProvider: LocalReferenceNumberFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   private val form = formProvider()
 
   def onPageLoad: Action[AnyContent] = identify.async {
     implicit request =>
-
       val json = Json.obj("form" -> form)
 
       renderer.render("localReferenceNumber.njk", json).map(Ok(_))
@@ -55,22 +57,23 @@ class LocalReferenceNumberController @Inject()(
 
   def onSubmit: Action[AnyContent] = identify.async {
     implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
+            val json = Json.obj(
+              "form" -> formWithErrors
+            )
 
-          val json = Json.obj(
-            "form" -> formWithErrors
-          )
-
-          renderer.render("localReferenceNumber.njk", json).map(BadRequest(_))
-        },
-        value =>
-          for {
-            userAnswers <- getOrCreateUserAnswers(request.eoriNumber, value)
-            _ <- sessionRepository.set(userAnswers)
-          } yield Redirect(navigator.nextPage(LocalReferenceNumberPage, NormalMode, userAnswers))
-      )
+            renderer.render("localReferenceNumber.njk", json).map(BadRequest(_))
+          },
+          value =>
+            for {
+              userAnswers <- getOrCreateUserAnswers(request.eoriNumber, value)
+              _           <- sessionRepository.set(userAnswers)
+            } yield Redirect(navigator.nextPage(LocalReferenceNumberPage, NormalMode, userAnswers))
+        )
   }
 
   def getOrCreateUserAnswers(eoriNumber: EoriNumber, value: LocalReferenceNumber): Future[UserAnswers] = {

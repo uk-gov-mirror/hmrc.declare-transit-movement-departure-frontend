@@ -43,9 +43,9 @@ class WhatIsConsigneeEoriControllerSpec extends SpecBase with MockitoSugar with 
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new WhatIsConsigneeEoriFormProvider()
-  val form = formProvider()
-  private val validEori    = "AB123456789012345"
+  val formProvider      = new WhatIsConsigneeEoriFormProvider()
+  val form              = formProvider()
+  private val validEori = "AB123456789012345"
 
   lazy val whatIsConsigneeEoriRoute = routes.WhatIsConsigneeEoriController.onPageLoad(lrn, NormalMode).url
 
@@ -56,10 +56,10 @@ class WhatIsConsigneeEoriControllerSpec extends SpecBase with MockitoSugar with 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, whatIsConsigneeEoriRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, whatIsConsigneeEoriRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -68,9 +68,9 @@ class WhatIsConsigneeEoriControllerSpec extends SpecBase with MockitoSugar with 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
       templateCaptor.getValue mustEqual "whatIsConsigneeEori.njk"
@@ -84,11 +84,11 @@ class WhatIsConsigneeEoriControllerSpec extends SpecBase with MockitoSugar with 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(WhatIsConsigneeEoriPage, validEori).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, whatIsConsigneeEoriRoute)
+      val userAnswers    = emptyUserAnswers.set(WhatIsConsigneeEoriPage, validEori).success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, whatIsConsigneeEoriRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -141,11 +141,11 @@ class WhatIsConsigneeEoriControllerSpec extends SpecBase with MockitoSugar with 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, whatIsConsigneeEoriRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, whatIsConsigneeEoriRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

@@ -38,18 +38,20 @@ import navigation.annotations.TraderDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorAddressController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            sessionRepository: SessionRepository,
-                                            @TraderDetails navigator: Navigator,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalActionProvider,
-                                            requireData: DataRequiredAction,
-                                            referenceDataConnector: ReferenceDataConnector,
-                                            formProvider: ConsignorAddressFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
-
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @TraderDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
+  formProvider: ConsignorAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -59,15 +61,15 @@ class ConsignorAddressController @Inject()(
             case Some(consignorName) =>
               val preparedForm = request.userAnswers.get(ConsignorAddressPage) match {
                 case Some(value) => formProvider(countries).fill(value)
-                case None => formProvider(countries)
+                case None        => formProvider(countries)
               }
 
               val json = Json.obj(
-                "form" -> preparedForm,
-                "lrn" -> lrn,
-                "mode" -> mode,
+                "form"          -> preparedForm,
+                "lrn"           -> lrn,
+                "mode"          -> mode,
                 "consignorName" -> consignorName,
-                "countries" -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
+                "countries"     -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
               )
 
               renderer.render("consignorAddress.njk", json).map(Ok(_))
@@ -92,11 +94,11 @@ class ConsignorAddressController @Inject()(
                         countries.getCountry(CountryCode(country))
                     }
                     val json = Json.obj(
-                      "form" -> formWithErrors,
-                      "lrn" -> lrn,
-                      "mode" -> mode,
+                      "form"          -> formWithErrors,
+                      "lrn"           -> lrn,
+                      "mode"          -> mode,
                       "consignorName" -> consignorName,
-                      "countries" -> countryJsonList(countryValue, countries.fullList)
+                      "countries"     -> countryJsonList(countryValue, countries.fullList)
                     )
 
                     renderer.render("consignorAddress.njk", json).map(BadRequest(_))
@@ -104,7 +106,7 @@ class ConsignorAddressController @Inject()(
                   value =>
                     for {
                       updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorAddressPage, value))
-                      _ <- sessionRepository.set(updatedAnswers)
+                      _              <- sessionRepository.set(updatedAnswers)
                     } yield Redirect(navigator.nextPage(ConsignorAddressPage, mode, updatedAnswers))
                 )
           }

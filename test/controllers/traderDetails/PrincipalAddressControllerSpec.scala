@@ -44,10 +44,9 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new PrincipalAddressFormProvider()
-  val form = formProvider(principalName)
+  val form         = formProvider(principalName)
 
   lazy val principalAddressRoute = routes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url
-
 
   "PrincipalAddress Controller" - {
 
@@ -61,10 +60,10 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
         .success
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, principalAddressRoute)
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, principalAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -97,10 +96,10 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
         .success
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, principalAddressRoute)
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, principalAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -111,15 +110,15 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       val filledForm = form.bind(
         Map(
           "numberAndStreet" -> principalAddress.numberAndStreet,
-          "town"->principalAddress.town,
-      "postcode" -> principalAddress.postcode
+          "town"            -> principalAddress.town,
+          "postcode"        -> principalAddress.postcode
         )
       )
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode,
+        "form"          -> filledForm,
+        "lrn"           -> lrn,
+        "mode"          -> NormalMode,
         "principalName" -> principalName
       )
 
@@ -148,7 +147,6 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
           )
           .build()
 
-
       val request =
         FakeRequest(POST, principalAddressRoute)
           .withFormUrlEncodedBody(
@@ -176,11 +174,11 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
         .success
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(POST, principalAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(POST, principalAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -197,7 +195,7 @@ class PrincipalAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       templateCaptor.getValue mustEqual "principalAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
-       application.stop()
+      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

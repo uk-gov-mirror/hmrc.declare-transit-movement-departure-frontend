@@ -39,30 +39,33 @@ import viewModels.sections.Section
 import scala.concurrent.{ExecutionContext, Future}
 
 class RouteDetailsCheckYourAnswersController @Inject()(
-                                                        override val messagesApi: MessagesApi,
-                                                        identify: IdentifierAction,
-                                                        getData: DataRetrievalActionProvider,
-                                                        requireData: DataRequiredAction,
-                                                        referenceDataConnector: ReferenceDataConnector,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        renderer: Renderer
-                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       request.userAnswers.get(DestinationCountryPage) match {
         case Some(countryCode) =>
-          createSections(countryCode) flatMap { sections =>
-
-            val json = Json.obj("lrn" -> lrn,
-              "sections" -> Json.toJson(sections),
-              "addOfficesOfTransitUrl" -> routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url,
-              "submitUrl" -> routes.RouteDetailsCheckYourAnswersController.onSubmit(lrn).url
-            )
-            renderer.render("routeDetailsCheckYourAnswers.njk", json).map(Ok(_))
+          createSections(countryCode) flatMap {
+            sections =>
+              val json = Json.obj(
+                "lrn"                    -> lrn,
+                "sections"               -> Json.toJson(sections),
+                "addOfficesOfTransitUrl" -> routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url,
+                "submitUrl"              -> routes.RouteDetailsCheckYourAnswersController.onSubmit(lrn).url
+              )
+              renderer.render("routeDetailsCheckYourAnswers.njk", json).map(Ok(_))
           }
-        case _ => Logger.info("DestinationCountryPage has no data")
+        case _ =>
+          Logger.info("DestinationCountryPage has no data")
           Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
   }
@@ -72,43 +75,49 @@ class RouteDetailsCheckYourAnswersController @Inject()(
       Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
-  private def createSections(countryCode: CountryCode)
-                            (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Seq[Section]] = {
+  private def createSections(countryCode: CountryCode)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Seq[Section]] = {
     val checkYourAnswersHelper = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
 
-    referenceDataConnector.getCountryList() flatMap { countryList =>
-      referenceDataConnector.getCustomsOffices() flatMap { customsOfficeList =>
-        referenceDataConnector.getTransitCountryList() flatMap { destCountryList =>
-          referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap { destOfficeList =>
-            officeOfTransitSections(checkYourAnswersHelper) map {officeOfTransitSection =>
-              val section: Section = Section(Seq(checkYourAnswersHelper.countryOfDispatch(countryList),
-                checkYourAnswersHelper.officeOfDeparture(customsOfficeList),
-                checkYourAnswersHelper.destinationCountry(destCountryList),
-                checkYourAnswersHelper.destinationOffice(destOfficeList)
-              ).flatten)
+    referenceDataConnector.getCountryList() flatMap {
+      countryList =>
+        referenceDataConnector.getCustomsOffices() flatMap {
+          customsOfficeList =>
+            referenceDataConnector.getTransitCountryList() flatMap {
+              destCountryList =>
+                referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
+                  destOfficeList =>
+                    officeOfTransitSections(checkYourAnswersHelper) map {
+                      officeOfTransitSection =>
+                        val section: Section = Section(
+                          Seq(
+                            checkYourAnswersHelper.countryOfDispatch(countryList),
+                            checkYourAnswersHelper.officeOfDeparture(customsOfficeList),
+                            checkYourAnswersHelper.destinationCountry(destCountryList),
+                            checkYourAnswersHelper.destinationOffice(destOfficeList)
+                          ).flatten)
 
-              Seq(section, officeOfTransitSection)
+                        Seq(section, officeOfTransitSection)
+                    }
+                }
             }
-          }
         }
-      }
     }
   }
 
-  private def officeOfTransitSections(routesCYAHelper: RouteDetailsCheckYourAnswersHelper)
-                                     (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Section] = {
-    referenceDataConnector.getOfficeOfTransitList() map { officeOfTransitList =>
-      val numberOfTransitOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
-      val index: Seq[Index] = List.range(0, numberOfTransitOffices).map(Index(_))
-      val rows = index.flatMap {
-        index =>
-          Seq(
-            routesCYAHelper.addAnotherTransitOffice(index, officeOfTransitList),
-            routesCYAHelper.arrivalTimesAtOffice(index)
-          ).flatten
-      }
-      Section(msg"officesOfTransit.checkYourAnswersLabel", rows)
+  private def officeOfTransitSections(routesCYAHelper: RouteDetailsCheckYourAnswersHelper)(implicit hc: HeaderCarrier,
+                                                                                           request: DataRequest[AnyContent]): Future[Section] =
+    referenceDataConnector.getOfficeOfTransitList() map {
+      officeOfTransitList =>
+        val numberOfTransitOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+        val index: Seq[Index]      = List.range(0, numberOfTransitOffices).map(Index(_))
+        val rows = index.flatMap {
+          index =>
+            Seq(
+              routesCYAHelper.addAnotherTransitOffice(index, officeOfTransitList),
+              routesCYAHelper.arrivalTimesAtOffice(index)
+            ).flatten
+        }
+        Section(msg"officesOfTransit.checkYourAnswersLabel", rows)
     }
-  }
 
 }

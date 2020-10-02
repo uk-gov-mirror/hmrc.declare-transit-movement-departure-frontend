@@ -43,13 +43,13 @@ import scala.concurrent.Future
 
 class ConsigneeAddressControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
-  val country = Country(CountryCode("GB"), "United Kingdom")
-  val countries = CountryList(Seq(country))
+  def onwardRoute                                        = Call("GET", "/foo")
+  val country                                            = Country(CountryCode("GB"), "United Kingdom")
+  val countries                                          = CountryList(Seq(country))
   val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   val formProvider = new ConsigneeAddressFormProvider()
-  val form = formProvider(countries)
+  val form         = formProvider(countries)
 
   lazy val consigneeAddressRoute = routes.ConsigneeAddressController.onPageLoad(lrn, NormalMode).url
 
@@ -61,10 +61,11 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockitoSugar with Nun
         "AddressLine1" -> "value 1",
         "AddressLine2" -> "value 2",
         "AddressLine3" -> "value 3",
-        "country" -> country
+        "country"      -> country
       )
     )
   )
+
   def jsonCountryList(preSelected: Boolean): Seq[JsObject] = Seq(
     Json.obj("text" -> "", "value"               -> ""),
     Json.obj("text" -> "United Kingdom", "value" -> "GB", "selected" -> preSelected)
@@ -91,9 +92,9 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, consigneeAddressRoute)
+      val request        = FakeRequest(GET, consigneeAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -132,9 +133,9 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(GET, consigneeAddressRoute)
+      val request        = FakeRequest(GET, consigneeAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -147,7 +148,7 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockitoSugar with Nun
           "AddressLine1" -> "Address line 1",
           "AddressLine2" -> "Address line 2",
           "AddressLine3" -> "Address line 3",
-          "country" -> "GB"
+          "country"      -> "GB"
         )
       )
 
@@ -179,11 +180,10 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockitoSugar with Nun
         applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)),
-             bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
           .build()
-
 
       val request =
         FakeRequest(POST, consigneeAddressRoute)
@@ -212,10 +212,10 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockitoSugar with Nun
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
         .build()
-      val request = FakeRequest(POST, consigneeAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request        = FakeRequest(POST, consigneeAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

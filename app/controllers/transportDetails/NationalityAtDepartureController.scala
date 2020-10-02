@@ -38,61 +38,64 @@ import navigation.annotations.TransportDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class NationalityAtDepartureController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  sessionRepository: SessionRepository,
-                                                  @TransportDetails navigator: Navigator,
-                                                  identify: IdentifierAction,
-                                                  getData: DataRetrievalActionProvider,
-                                                  requireData: DataRequiredAction,
-                                                  referenceDataConnector: ReferenceDataConnector,
-                                                  formProvider: NationalityAtDepartureFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @TransportDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
+  formProvider: NationalityAtDepartureFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-      implicit request =>
-        referenceDataConnector.getCountryList() flatMap {
-          countries =>
-            val form = formProvider(countries)
+    implicit request =>
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          val form = formProvider(countries)
 
-            val preparedForm = request.userAnswers
-              .get(NationalityAtDeparturePage)
-              .flatMap(countries.getCountry)
-              .map(form.fill)
-              .getOrElse(form)
+          val preparedForm = request.userAnswers
+            .get(NationalityAtDeparturePage)
+            .flatMap(countries.getCountry)
+            .map(form.fill)
+            .getOrElse(form)
 
-            renderPage(lrn, mode, preparedForm, countries.fullList, Results.Ok)
-        }
-    }
+          renderPage(lrn, mode, preparedForm, countries.fullList, Results.Ok)
+      }
+  }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-      implicit request =>
-        referenceDataConnector.getCountryList() flatMap {
-          countries =>
-            formProvider(countries)
-              .bindFromRequest()
-              .fold(
-                formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList, Results.BadRequest),
-                value =>
-                  for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityAtDeparturePage, value.code))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(NationalityAtDeparturePage, mode, updatedAnswers))
-              )
-        }
-    }
+    implicit request =>
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          formProvider(countries)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList, Results.BadRequest),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityAtDeparturePage, value.code))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(NationalityAtDeparturePage, mode, updatedAnswers))
+            )
+      }
+  }
 
-    private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
-      implicit request: Request[AnyContent]): Future[Result] = {
-      val json = Json.obj(
-        "form"        -> form,
-        "lrn"         -> lrn,
-        "mode"        -> mode,
-        "countries"   -> countryJsonList(form.value, countries),
-        "onSubmitUrl" -> routes.NationalityAtDepartureController.onSubmit(lrn, mode).url
-      )
+  private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
+    implicit request: Request[AnyContent]): Future[Result] = {
+    val json = Json.obj(
+      "form"        -> form,
+      "lrn"         -> lrn,
+      "mode"        -> mode,
+      "countries"   -> countryJsonList(form.value, countries),
+      "onSubmitUrl" -> routes.NationalityAtDepartureController.onSubmit(lrn, mode).url
+    )
 
-      renderer.render("nationalityAtDeparture.njk", json).map(status(_))
-    }
+    renderer.render("nationalityAtDeparture.njk", json).map(status(_))
+  }
 }

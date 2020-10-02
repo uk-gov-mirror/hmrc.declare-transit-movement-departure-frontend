@@ -19,10 +19,7 @@ package models
 import models.reference.TransportMode
 
 case class TransportModeList(transportModes: Seq[TransportMode]) {
-  def getTransportMode(code: String): Option[TransportMode] = {
+
+  def getTransportMode(code: String): Option[TransportMode] =
     transportModes.find(_.code == code)
-  }
 }
-
-
-

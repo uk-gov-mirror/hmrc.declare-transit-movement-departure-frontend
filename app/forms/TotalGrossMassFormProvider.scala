@@ -27,19 +27,13 @@ class TotalGrossMassFormProvider @Inject() extends Mappings {
 
     val totalGrossMassregex: String = "^[0-9]{1,11}(?:\\.[0-9]{1,3})?$"
 
-
-
     Form(
       "value" -> text("totalGrossMass.error.required")
-        .verifying(StopOnFirstFail[String](
-
-          maxLength(15, "totalGrossMass.error.length"),
-          regexp(totalGrossMassregex, "totalGrossMass.error.invalidCharacters")
-
-        )
-        )
-
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(15, "totalGrossMass.error.length"),
+            regexp(totalGrossMassregex, "totalGrossMass.error.invalidCharacters")
+          ))
     )
   }
 }
-

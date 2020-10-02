@@ -40,16 +40,19 @@ import utils.RouteDetailsCheckYourAnswersHelper
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddTransitOfficeController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            @RouteDetails navigator: Navigator,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalActionProvider,
-                                            requireData: DataRequiredAction,
-                                            formProvider: AddTransitOfficeFormProvider,
-                                            referenceDataConnector: ReferenceDataConnector,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            renderer: Renderer
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  @RouteDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: AddTransitOfficeFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -60,44 +63,44 @@ class AddTransitOfficeController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          renderPage(lrn, mode, formWithErrors).map(BadRequest(_))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTransitOfficePage, value))
-          } yield Redirect(navigator.nextPage(AddTransitOfficePage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            renderPage(lrn, mode, formWithErrors).map(BadRequest(_))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTransitOfficePage, value))
+            } yield Redirect(navigator.nextPage(AddTransitOfficePage, mode, updatedAnswers))
+        )
   }
 
-  private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Boolean])(implicit  request: DataRequest[AnyContent]): Future[Html] = {
+  private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] =
+    referenceDataConnector.getOfficeOfTransitList() flatMap {
+      officeOfTransitList =>
+        val routesCYAHelper          = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
+        val numberOfTransitOffices   = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+        val index: Seq[Index]        = List.range(0, numberOfTransitOffices).map(Index(_))
+        val maxLimitReached: Boolean = if (numberOfTransitOffices == 5) true else false
+        val officeOfTransitRows = index.map {
+          index =>
+            routesCYAHelper.officeOfTransitRow(index, officeOfTransitList, mode)
+        }
 
-    referenceDataConnector.getOfficeOfTransitList() flatMap { officeOfTransitList =>
-      val routesCYAHelper = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
-      val numberOfTransitOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
-      val index: Seq[Index] = List.range(0, numberOfTransitOffices).map(Index(_))
-      val maxLimitReached: Boolean = if(numberOfTransitOffices == 5) true else false
-      val officeOfTransitRows = index.map {
-        index =>
-          routesCYAHelper.officeOfTransitRow(index, officeOfTransitList, mode)
-      }
+        val singularOrPlural = if (numberOfTransitOffices == 1) "singular" else "plural"
+        val json = Json.obj(
+          "form"                          -> form,
+          "mode"                          -> mode,
+          "pageTitle"                     -> msg"addTransitOffice.title.$singularOrPlural".withArgs(numberOfTransitOffices),
+          "heading"                       -> msg"addTransitOffice.heading.$singularOrPlural".withArgs(numberOfTransitOffices),
+          "lrn"                           -> lrn,
+          "maxLimitReached"               -> maxLimitReached,
+          "redirectUrlOnReachingMaxLimit" -> routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url,
+          "officeOfTransitRows"           -> officeOfTransitRows,
+          "radios"                        -> Radios.yesNo(form("value"))
+        )
 
-      val singularOrPlural = if (numberOfTransitOffices == 1) "singular" else "plural"
-      val json = Json.obj(
-        "form" -> form,
-        "mode" -> mode,
-        "pageTitle" -> msg"addTransitOffice.title.$singularOrPlural".withArgs(numberOfTransitOffices),
-        "heading" -> msg"addTransitOffice.heading.$singularOrPlural".withArgs(numberOfTransitOffices),
-        "lrn" -> lrn,
-        "maxLimitReached" -> maxLimitReached,
-        "redirectUrlOnReachingMaxLimit" -> routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url,
-        "officeOfTransitRows" -> officeOfTransitRows,
-        "radios" -> Radios.yesNo(form("value"))
-      )
-
-      renderer.render("addTransitOffice.njk", json)
+        renderer.render("addTransitOffice.njk", json)
     }
-  }
 }

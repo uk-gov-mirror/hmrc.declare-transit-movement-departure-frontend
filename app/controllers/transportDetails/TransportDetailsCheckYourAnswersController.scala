@@ -32,29 +32,25 @@ import viewModels.sections.Section
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportDetailsCheckYourAnswersController @Inject()(
-                                                            override val messagesApi: MessagesApi,
-                                                            identify: IdentifierAction,
-                                                            getData: DataRetrievalActionProvider,
-                                                            requireData: DataRequiredAction,
-                                                            val controllerComponents: MessagesControllerComponents,
-                                                            referenceDataConnector: ReferenceDataConnector,
-                                                            renderer: Renderer
-                                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
-
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  referenceDataConnector: ReferenceDataConnector,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       referenceDataConnector.getCountryList().flatMap {
         countryList =>
           referenceDataConnector.getTransportModes().flatMap {
             transportModeList =>
-
               val sections: Seq[Section] = TransportDetailsCheckYourAnswersViewModel(request.userAnswers, countryList, transportModeList).sections
-              val json = Json.obj("lrn" -> lrn,
-                "sections" -> Json.toJson(sections)
-              )
+              val json                   = Json.obj("lrn" -> lrn, "sections" -> Json.toJson(sections))
 
               renderer.render("transportDetailsCheckYourAnswers.njk", json).map(Ok(_))
 

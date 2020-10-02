@@ -27,13 +27,14 @@ case object AddConsigneePage extends QuestionPage[Boolean] {
 
   override def toString: String = "addConsignee"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some (false) => userAnswers.remove(ConsigneeNamePage)
-        .flatMap(_.remove(ConsigneeAddressPage))
-        .flatMap(_.remove(WhatIsConsigneeEoriPage))
-        .flatMap(_.remove(IsConsigneeEoriKnownPage))
+      case Some(false) =>
+        userAnswers
+          .remove(ConsigneeNamePage)
+          .flatMap(_.remove(ConsigneeAddressPage))
+          .flatMap(_.remove(WhatIsConsigneeEoriPage))
+          .flatMap(_.remove(IsConsigneeEoriKnownPage))
       case _ => super.cleanup(value, userAnswers)
     }
-  }
 }

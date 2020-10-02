@@ -36,9 +36,12 @@ import scala.concurrent.{ExecutionContext, Future}
 // NOTE: There should be changes to bootstrap to make this easier, the API in bootstrap should allow a `Future[Html]` rather than just an `Html`
 @Singleton
 class ErrorHandler @Inject()(
-    renderer: Renderer,
-    val messagesApi: MessagesApi
-)(implicit ec: ExecutionContext) extends HttpErrorHandler with I18nSupport with NunjucksSupport {
+  renderer: Renderer,
+  val messagesApi: MessagesApi
+)(implicit ec: ExecutionContext)
+    extends HttpErrorHandler
+    with I18nSupport
+    with NunjucksSupport {
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] = {
 
@@ -47,9 +50,9 @@ class ErrorHandler @Inject()(
     statusCode match {
       case BAD_REQUEST =>
         renderer.render("badRequest.njk").map(BadRequest(_))
-      case NOT_FOUND   =>
+      case NOT_FOUND =>
         renderer.render("notFound.njk", Json.obj()).map(NotFound(_))
-      case _           =>
+      case _ =>
         renderer.render("error.njk", Json.obj()).map {
           content =>
             Results.Status(statusCode)(content)

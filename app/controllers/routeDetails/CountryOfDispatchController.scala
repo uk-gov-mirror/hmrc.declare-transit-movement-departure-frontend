@@ -38,21 +38,23 @@ import navigation.annotations.RouteDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryOfDispatchController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             sessionRepository: SessionRepository,
-                                             @RouteDetails navigator: Navigator,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalActionProvider,
-                                             requireData: DataRequiredAction,
-                                             referenceDataConnector: ReferenceDataConnector,
-                                             formProvider: CountryOfDispatchFormProvider,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             renderer: Renderer
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @RouteDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
+  formProvider: CountryOfDispatchFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       referenceDataConnector.getCountryList() flatMap {
         countries =>
           val form = formProvider(countries)
@@ -69,7 +71,6 @@ class CountryOfDispatchController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-
       referenceDataConnector.getCountryList() flatMap {
         countries =>
           formProvider(countries)

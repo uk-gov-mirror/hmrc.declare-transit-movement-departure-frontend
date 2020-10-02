@@ -18,7 +18,6 @@ package pages
 
 import play.api.libs.json.JsPath
 
-
 case object SealsInformationPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString

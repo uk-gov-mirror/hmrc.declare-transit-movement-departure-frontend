@@ -39,16 +39,12 @@ import navigation.annotations.MovementDetails
 
 import scala.concurrent.Future
 
-class DeclarationPlaceControllerSpec
-    extends SpecBase
-    with MockitoSugar
-    with NunjucksSupport
-    with JsonMatchers {
+class DeclarationPlaceControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new DeclarationPlaceFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val declarationPlaceRoute =
     routes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url
@@ -62,9 +58,9 @@ class DeclarationPlaceControllerSpec
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, declarationPlaceRoute)
+      val request        = FakeRequest(GET, declarationPlaceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -91,9 +87,9 @@ class DeclarationPlaceControllerSpec
         emptyUserAnswers.set(DeclarationPlacePage, "answer").success.value
       val application =
         applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, declarationPlaceRoute)
+      val request        = FakeRequest(GET, declarationPlaceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -149,9 +145,9 @@ class DeclarationPlaceControllerSpec
         applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request = FakeRequest(POST, declarationPlaceRoute)
         .withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

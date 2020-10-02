@@ -26,17 +26,17 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
+  def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(
-        key = Key(msg"addSecurityDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"addSecurityDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(yesOrNo(answer)),
         actions = List(
           Action(
-            content = msg"site.edit",
-            href = routes.AddSecurityDetailsController.onPageLoad(lrn, CheckMode).url,
+            content            = msg"site.edit",
+            href               = routes.AddSecurityDetailsController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSecurityDetails.checkYourAnswersLabel")),
-            attributes = Map("id" -> s"""change-add-security-details""")
+            attributes         = Map("id" -> s"""change-add-security-details""")
           )
         )
       )
@@ -45,7 +45,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
   def lrn: LocalReferenceNumber = userAnswers.id
 
 }
-  object CheckYourAnswersHelper {
+
+object CheckYourAnswersHelper {
 
   private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 }

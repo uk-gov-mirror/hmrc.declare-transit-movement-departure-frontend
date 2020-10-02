@@ -29,12 +29,7 @@ import play.api.libs.json.Json
 import play.api.mvc.SessionCookieBaker
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.{
-  Application,
-  BuiltInComponents,
-  BuiltInComponentsFromContext,
-  NoHttpFiltersComponents
-}
+import play.api.{Application, BuiltInComponents, BuiltInComponentsFromContext, NoHttpFiltersComponents}
 import uk.gov.hmrc.http.{HeaderNames, SessionKeys}
 
 import scala.concurrent.ExecutionContext
@@ -43,9 +38,7 @@ object SessionIdFilterSpec {
 
   val sessionId = "28836767-a008-46be-ac18-695ab140e705"
 
-  class TestSessionIdFilter @Inject()(override val mat: Materializer,
-                                      sessionCookieBaker: SessionCookieBaker,
-                                      ec: ExecutionContext)
+  class TestSessionIdFilter @Inject()(override val mat: Materializer, sessionCookieBaker: SessionCookieBaker, ec: ExecutionContext)
       extends SessionIdFilter(
         mat,
         UUID.fromString(sessionId),
@@ -55,11 +48,7 @@ object SessionIdFilterSpec {
 
 }
 
-class SessionIdFilterSpec
-    extends AnyFreeSpec
-    with Matchers
-    with OptionValues
-    with OneAppPerSuiteWithComponents {
+class SessionIdFilterSpec extends AnyFreeSpec with Matchers with OptionValues with OneAppPerSuiteWithComponents {
 
   override def components: BuiltInComponents =
     new BuiltInComponentsFromContext(context) with NoHttpFiltersComponents {
@@ -70,18 +59,20 @@ class SessionIdFilterSpec
 
       lazy val router: Router = Router.from {
         case GET(p"/test") =>
-          defaultActionBuilder.apply { request =>
-            val fromHeader =
-              request.headers.get(HeaderNames.xSessionId).getOrElse("")
-            val fromSession =
-              request.session.get(SessionKeys.sessionId).getOrElse("")
-            Results.Ok(
-              Json.obj("fromHeader" -> fromHeader, "fromSession" -> fromSession)
-            )
+          defaultActionBuilder.apply {
+            request =>
+              val fromHeader =
+                request.headers.get(HeaderNames.xSessionId).getOrElse("")
+              val fromSession =
+                request.session.get(SessionKeys.sessionId).getOrElse("")
+              Results.Ok(
+                Json.obj("fromHeader" -> fromHeader, "fromSession" -> fromSession)
+              )
           }
         case GET(p"/test2") =>
-          defaultActionBuilder.apply { implicit request =>
-            Results.Ok.addingToSession("foo" -> "bar")
+          defaultActionBuilder.apply {
+            implicit request =>
+              Results.Ok.addingToSession("foo" -> "bar")
           }
       }
     }
