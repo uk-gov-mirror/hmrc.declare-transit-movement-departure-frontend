@@ -19,11 +19,26 @@ package utils
 import controllers.guaranteeDetails.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.guaranteeDetails.GuaranteeReferencePage
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def guaranteeType: Option[Row] = userAnswers.get(GuaranteeTypePage) map {
+    answer =>
+      Row(
+        key   = Key(msg"guaranteeType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.GuaranteeTypeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"guaranteeType.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def accessCode: Option[Row] = userAnswers.get(AccessCodePage) map {
     answer =>
