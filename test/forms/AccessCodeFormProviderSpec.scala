@@ -17,15 +17,18 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class AccessCodeFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "accessCode.error.required"
   val lengthKey = "accessCode.error.length"
-  val maxLength = 4
-
+  val accessCodeLength = 4
+  val accessCodeRegex = "^[0-9]{4}$"
   val form = new AccessCodeFormProvider()()
+  val invalidKey = "accessCode.error.invalidCharacters"
+
 
   ".value" - {
     val fieldName = "value"
@@ -33,14 +36,7 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      stringsWithMaxLength(accessCodeLength)
     )
 
     behave like mandatoryField(
@@ -48,5 +44,19 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match regex" in {
+
+      val expectedError = List(FormError(fieldName, invalidKey, Seq(accessCodeRegex)))
+      val genInvalidString: Gen[String] = {
+        stringsWithLength(accessCodeLength) suchThat (!_.matches(accessCodeRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }
