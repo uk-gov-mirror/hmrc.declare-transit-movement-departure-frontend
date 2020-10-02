@@ -23,7 +23,7 @@ import controllers.goodsSummary.{routes => goodsSummaryRoute}
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
 import models.domain.SealDomain
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -182,12 +182,63 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
       "must go from ConfirmRemoveSealPage to SealsInformationPage when submitted" in {
         forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
-          case (userAnswers, seal) =>
+          (userAnswers, seal) =>
             val updatedAnswers = userAnswers.set(SealIdDetailsPage(sealIndex), seal).success.value
 
             navigator
               .nextPage(ConfirmRemoveSealPage(), NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+      "must go from AddSealsPage to " - {
+        "SealIdDetailsController(1) when 'true' is selected and they have no seals" in {
+          forAll(arbitrary[UserAnswers]) {
+            userAnswers =>
+              val updatedUserAnswers = userAnswers
+                .remove(SealIdDetailsPage(sealIndex)).success.value
+                .set(AddSealsPage, true).success.value
+
+              navigator.nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedUserAnswers.id, sealIndex, NormalMode))
+          }
+        }
+
+        "SealIdDetailsController(2) when 'true' is selected and they already have a seal" in {
+          val seal2 = Index(1)
+          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+            (userAnswers, seal) =>
+              val updatedUserAnswers = userAnswers
+                .set(SealIdDetailsPage(sealIndex), seal).success.value
+                .set(AddSealsPage, true).success.value
+
+              navigator.nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedUserAnswers.id, seal2, NormalMode))
+          }
+        }
+
+        "AddSealsLaterController when 'false' is selected and they don't have existing seals" in {
+          forAll(arbitrary[UserAnswers]) {
+            userAnswers =>
+              val updatedUserAnswers = userAnswers
+                .remove(SealIdDetailsPage(sealIndex)).success.value
+                .set(AddSealsPage, false).success.value
+
+              navigator.nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.AddSealsLaterController.onPageLoad(updatedUserAnswers.id, NormalMode))
+          }
+        }
+
+        "ConfirmRemoveSealsController when 'false' is selected and they have existing seals" in {
+          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+            (userAnswers, seal) =>
+              val updatedUserAnswers = userAnswers
+                .set(SealIdDetailsPage(sealIndex), seal).success.value
+                .set(AddSealsPage, false).success.value
+
+              navigator.nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.ConfirmRemoveSealsController.onPageLoad(updatedUserAnswers.id, NormalMode))
+          }
         }
       }
     }
@@ -359,6 +410,81 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }
+
+      "go from AddSealsPage to " - {
+        "SealIdDetailsController(1) when 'true' is selected and they have no seals" in {
+          forAll(arbitrary[UserAnswers]) {
+            userAnswers =>
+              val updatedUserAnswers = userAnswers
+                .remove(SealIdDetailsPage(sealIndex)).success.value
+                .set(AddSealsPage, true).success.value
+
+              navigator.nextPage(AddSealsPage, CheckMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedUserAnswers.id, sealIndex, CheckMode))
+          }
+        }
+
+        "GoodsSummaryCheckYourAnswersController when 'true' is selected and they already have a seal" in {
+          val seal2 = Index(1)
+          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+            (userAnswers, seal) =>
+              val updatedUserAnswers = userAnswers
+                .set(SealIdDetailsPage(sealIndex), seal).success.value
+                .set(AddSealsPage, true).success.value
+
+              navigator.nextPage(AddSealsPage, CheckMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedUserAnswers.id))
+          }
+        }
+
+        "AddSealsLaterController when 'false' is selected and they don't have existing seals" in {
+          forAll(arbitrary[UserAnswers]) {
+            userAnswers =>
+              val updatedUserAnswers = userAnswers
+                .remove(SealIdDetailsPage(sealIndex)).success.value
+                .set(AddSealsPage, false).success.value
+
+              navigator.nextPage(AddSealsPage, CheckMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.AddSealsLaterController.onPageLoad(updatedUserAnswers.id, CheckMode))
+          }
+        }
+
+        "ConfirmRemoveSealsController when 'false' is selected and they have existing seals" in {
+          forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
+            (userAnswers, seal) =>
+              val updatedUserAnswers = userAnswers
+                .set(SealIdDetailsPage(sealIndex), seal).success.value
+                .set(AddSealsPage, false).success.value
+
+              navigator.nextPage(AddSealsPage, CheckMode, updatedUserAnswers)
+                .mustBe(goodsSummaryRoute.ConfirmRemoveSealsController.onPageLoad(updatedUserAnswers.id, CheckMode))
+          }
+        }
+      }
+
+      "Must go from ConfirmRemoveSeals page" - {
+
+        "to CYA when answer is Yes" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(ConfirmRemoveSealsPage, true).toOption.value
+
+              navigator.nextPage(ConfirmRemoveSealsPage, CheckMode, updatedAnswers)
+                .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+          }
+        }
+
+        "to Add Seals Page when answer is No" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(ConfirmRemoveSealsPage, false).toOption.value
+
+              navigator.nextPage(ConfirmRemoveSealsPage, CheckMode, updatedAnswers)
+                .mustBe(goodsSummaryRoute.AddSealsController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+      }
+
     }
   }
 }

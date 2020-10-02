@@ -29,6 +29,21 @@ import uk.gov.hmrc.viewmodels._
 
 class GoodsSummaryCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def confirmRemoveSeals: Option[Row] = userAnswers.get(ConfirmRemoveSealsPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"confirmRemoveSeals.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConfirmRemoveSealsController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveSeals.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def sealsInformation: Option[Row] = userAnswers.get(SealsInformationPage) map {
     answer =>
       Row(

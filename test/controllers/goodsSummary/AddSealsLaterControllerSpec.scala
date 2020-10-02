@@ -26,6 +26,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import models.NormalMode
 
 import scala.concurrent.Future
 
