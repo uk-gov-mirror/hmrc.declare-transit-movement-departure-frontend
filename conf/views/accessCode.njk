@@ -31,18 +31,15 @@
         <span class="govuk-caption-xl">{{messages('guaranteeDetails.preHeading')}}</span>
 
           {{ csrf() | safe }}
+      <h1 class="govuk-heading-xl">{{ messages('accessCode.heading') }}</h1>
 
-          {{ govukInput({
-            label: {
-              text: messages('accessCode.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
-            },
-            id: "value",
-            name: "value",
-            value: form.value.value,
-            errorMessage: form.value.error
-          }) }}
+            {{ govukInput({
+
+                 type: "password",
+                 id: "access-code",
+                 classes: "govuk-input--width-5",
+                 name: "access-code"
+               }) }}
 
           {{ govukButton({
             text: messages("site.continue"),

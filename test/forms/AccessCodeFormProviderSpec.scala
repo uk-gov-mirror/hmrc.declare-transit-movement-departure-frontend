@@ -28,7 +28,6 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours {
   val form = new AccessCodeFormProvider()()
 
   ".value" - {
-
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
