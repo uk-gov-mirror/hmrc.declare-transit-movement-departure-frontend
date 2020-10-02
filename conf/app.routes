@@ -268,6 +268,7 @@ GET        /:lrn/goods-summary/change-add-seals                  controllers.goo
 POST       /:lrn/goods-summary/change-add-seals                  controllers.goodsSummary.AddSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/goods-summary/add-seals-later                       controllers.goodsSummary.AddSealsLaterController.onPageLoad(lrn: LocalReferenceNumber, mode:Mode = NormalMode)
+GET        /:lrn/goods-summary/change-add-seals-later                controllers.goodsSummary.AddSealsLaterController.onPageLoad(lrn: LocalReferenceNumber, mode:Mode = CheckMode)
 
 GET        /:lrn/goods-summary/control-result-date-limit             controllers.goodsSummary.ControlResultDateLimitController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/goods-summary/control-result-date-limit             controllers.goodsSummary.ControlResultDateLimitController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -306,6 +307,11 @@ GET        /:lrn/guarantee-details/guarantee-type                               
 POST       /:lrn/guarantee-details/guarantee-type                                              controllers.guaranteeDetails.GuaranteeTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/guarantee-details/change-guarantee-type                                       controllers.guaranteeDetails.GuaranteeTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/guarantee-details/change-guarantee-type                                       controllers.guaranteeDetails.GuaranteeTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/goods-summary/confirm-remove-seals                        controllers.goodsSummary.ConfirmRemoveSealsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/goods-summary/confirm-remove-seals                        controllers.goodsSummary.ConfirmRemoveSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/goods-summary/change-confirm-remove-seals                  controllers.goodsSummary.ConfirmRemoveSealsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/goods-summary/change-confirm-remove-seals                  controllers.goodsSummary.ConfirmRemoveSealsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/guarantee-details/access-code                        controllers.guaranteeDetails.AccessCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/guarantee-details/access-code                        controllers.guaranteeDetails.AccessCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

@@ -16,21 +16,39 @@
 
 package utils
 
+import java.time.LocalDate
+
 import base.SpecBase
+import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
-import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.reference.{Country, CountryCode, TransportMode}
-import models.{DeclarationType, Index, NormalMode, ProcedureType, RepresentativeCapacity, SectionDetails, UserAnswers}
+import models._
 import pages._
 
 class SectionsHelperSpec extends SpecBase {
 
   "SectionsHelper" - {
+    "GetSections" - {
+      "must include SafetyAndSecurity section when answer Yes to AddSecurityDetailsPage" in {
+
+        val userAnswers = emptyUserAnswers.set(AddSecurityDetailsPage, true).toOption.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+        val url = movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
+        val sectionName = "declarationSummary.section.movementDetails"
+        val safetyAndSecuritySection = "declarationSummary.section.safetyAndSecurity"
+        val expectedSections: Seq[SectionDetails] = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted)) :+
+          SectionDetails(safetyAndSecuritySection, "", NotStarted)
+
+        sectionsHelper.getSections mustBe  expectedSections
+
+      }
+    }
+
     "MovementDetails" - {
       "must return movement details section with status as NotStarted" in {
         val sectionsHelper = new SectionsHelper(emptyUserAnswers)
@@ -251,7 +269,7 @@ class SectionsHelperSpec extends SpecBase {
         result mustBe expectedSections
       }
 
-      "must goods summary section with status as Completed" in {
+      "must goods summary section with status as Completed on a Normal Journey" in {
         val userAnswers = emptyUserAnswers
           .set(DeclarePackagesPage, true).toOption.value
           .set(TotalPackagesPage, 100).success.value
@@ -261,6 +279,30 @@ class SectionsHelperSpec extends SpecBase {
           .set(CustomsApprovedLocationPage, "testlocation").success.value
           .set(AddSealsPage, true).toOption.value
           .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
+          .set(SealsInformationPage ,false).toOption.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+
+        val url = goodsSummaryRoutes.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn).url
+        val sectionName = "declarationSummary.section.goodsSummary"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
+
+        val result = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
+
+      "must goods summary section with status as Completed on a Simplified Journey" in {
+        val date = LocalDate.now
+
+        val userAnswers = emptyUserAnswers
+          .set(DeclarePackagesPage, true).toOption.value
+          .set(TotalPackagesPage, 100).success.value
+          .set(TotalGrossMassPage, "100.123").success.value
+          .set(ProcedureTypePage, Simplified).toOption.value
+          .set(AuthorisedLocationCodePage, "testcode").success.value
+          .set(ControlResultDateLimitPage, date).success.value
+          .set(AddSealsPage, true).toOption.value
+          .set(SealIdDetailsPage(sealIndex), sealDomain).success.value
           .set(SealsInformationPage ,false).toOption.value
         val sectionsHelper = new SectionsHelper(userAnswers)
 

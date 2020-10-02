@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("confirmRemoveSeal.title", sealTitle), form.errors) }}
+  {{ title(messages("confirmRemoveSeals.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -22,24 +22,26 @@
 
         {% if form.errors.length > 0 %}
           {{ govukErrorSummary({
-            "titleText": messages("error.summary.title", sealTitle),
-            "errorList": form.errorsapp
+            "titleText": messages("error.summary.title"),
+            "errorList": form.errors
           }) }}
         {% endif %}
 
-        <form action="{{ onSubmitUrl }}" method="post">
+        <form action="{{ routes.controllers.goodsSummary.ConfirmRemoveSealsController.onSubmit(lrn, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
 
           {{ csrf() | safe }}
+
+        <h1 class="govuk-heading-xl">{{ messages('confirmRemoveSeals.heading') }}</h1>
 
           {{ govukRadios({
             classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('confirmRemoveSeal.heading', sealNumber),
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--xl"
+                text: messages('confirmRemoveSeals.paragraph'),
+                isPageHeading: false,
+                classes: "govuk-body"
               }
             },
             items: radios,

@@ -61,6 +61,14 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
+  implicit lazy val arbitraryConfirmRemoveSealsUserAnswersEntry: Arbitrary[(ConfirmRemoveSealsPage.type, JsValue)] =
+      Arbitrary {
+      for {
+        page  <- arbitrary[ConfirmRemoveSealsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryConfirmRemoveOfficeOfTransitUserAnswersEntry: Arbitrary[(ConfirmRemoveOfficeOfTransitPage.type, JsValue)] =
     Arbitrary {
       for {
