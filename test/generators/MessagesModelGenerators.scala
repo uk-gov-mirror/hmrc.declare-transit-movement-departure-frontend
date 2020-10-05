@@ -16,7 +16,10 @@
 
 package generators
 
-import models.messages.InterchangeControlReference
+import java.time.{LocalDate, LocalTime}
+
+import models.messages.{DeclarationRequest, InterchangeControlReference, Meta}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import utils.Format.dateFormatted
 
@@ -28,6 +31,38 @@ trait MessagesModelGenerators extends Generators {
         date  <- localDateGen
         index <- Gen.posNum[Int]
       } yield InterchangeControlReference(dateFormatted(date), index)
+    }
+  }
+
+  implicit lazy val arbitraryMeta: Arbitrary[Meta] = {
+    Arbitrary {
+      for {
+        interchangeControlReference <- arbitrary[InterchangeControlReference]
+        date                        <- arbitrary[LocalDate]
+        time                        <- arbitrary[LocalTime]
+      } yield
+        Meta(
+          interchangeControlReference,
+          date,
+          LocalTime.of(time.getHour, time.getMinute),
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None
+        )
+    }
+  }
+
+  implicit lazy val arbitraryDeclarationRequest: Arbitrary[DeclarationRequest] = {
+    Arbitrary {
+      for {
+        meta <- arbitrary[Meta]
+        //TODO: This needs more xml nodes adding as models become available
+      } yield DeclarationRequest(meta)
     }
   }
 }
