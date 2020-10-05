@@ -17,7 +17,7 @@
 package utils
 
 import controllers.guaranteeDetails.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models._
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -27,9 +27,10 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def guaranteeType: Option[Row] = userAnswers.get(GuaranteeTypePage) map {
     answer =>
+      val gtName = GuaranteeType.getId(answer.toString)
       Row(
         key   = Key(msg"guaranteeType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(msg"guaranteeType.$gtName"),
         actions = List(
           Action(
             content            = msg"site.edit",

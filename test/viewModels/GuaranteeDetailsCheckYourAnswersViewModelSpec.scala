@@ -17,25 +17,28 @@
 package viewModels
 
 import base.SpecBase
+import generators.Generators
 import models.GuaranteeType.GuaranteeWaiver
+import models.{GuaranteeType, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.{AccessCodePage, LiabilityAmountPage, OtherReferencePage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
-import uk.gov.hmrc.viewmodels.Text.Literal
+import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
 
-class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks {
+class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "GuaranteeDetailsCheckYourAnswersViewModel" - {
 
     "display Guarantee Type when selected" in {
-
       val updatedAnswers = emptyUserAnswers.set(GuaranteeTypePage, GuaranteeWaiver).success.value
       val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 1
-      data.sections.head.rows.head.value.content mustEqual Literal("0")
+      val message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
+      message.key mustBe "guaranteeType.GuaranteeWaiver"
     }
 
     "display Guarantee Reference number when selected" in {
