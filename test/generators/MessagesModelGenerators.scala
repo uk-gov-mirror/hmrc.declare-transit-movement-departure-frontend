@@ -25,7 +25,7 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryInterchangeControlReference: Arbitrary[InterchangeControlReference] = {
     Arbitrary {
       for {
-        date <- localDateGen
+        date  <- localDateGen
         index <- Gen.posNum[Int]
       } yield InterchangeControlReference(dateFormatted(date), index)
     }

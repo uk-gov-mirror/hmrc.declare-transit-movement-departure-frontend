@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.movementDetails
+package controllers
 
 import base.SpecBase
-import controllers.{routes => mainRoute}
+import controllers.routes
 import forms.ProcedureTypeFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, ProcedureType}
@@ -35,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import navigation.annotations.MovementDetails
+import navigation.annotations.{MovementDetails, PreTaskListDetails}
 
 import scala.concurrent.Future
 
@@ -129,7 +129,7 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[MovementDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
@@ -189,9 +189,7 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -208,9 +206,7 @@ class ProcedureTypeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

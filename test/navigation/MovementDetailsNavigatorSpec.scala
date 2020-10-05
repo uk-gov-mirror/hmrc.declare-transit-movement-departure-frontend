@@ -31,22 +31,12 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
   "Movement Details Section" - {
     "Normal mode" - {
 
-      "must go from Declaration Type page to Procedure Type page" in {
+      "must go from Declaration Type page to container Used page" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(DeclarationTypePage, NormalMode, answers)
-              .mustBe(movementDetailsRoute.ProcedureTypeController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Procedure Type page to Container Used page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(ProcedureTypePage, NormalMode, answers)
               .mustBe(movementDetailsRoute.ContainersUsedPageController.onPageLoad(answers.id, NormalMode))
         }
       }
