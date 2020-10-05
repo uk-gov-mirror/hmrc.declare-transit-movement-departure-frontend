@@ -16,6 +16,9 @@
 
 package models.messages
 
+import java.time.LocalTime
+
+import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import models.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,6 +27,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import utils.Format
+import utils.Format.timeFormatter
 
 import scala.xml.NodeSeq
 
@@ -106,18 +110,18 @@ class MetaSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks w
       }
     }
 
-//    "must deserialize from xml" in {
-//      forAll(arbitrary[UnloadingRemarksRequest]) {
-//        unloadingRemarksRequest =>
-//          val xml    = unloadingRemarksRequest.toXml
-//          val result = XmlReader.of[Meta].read(xml).toOption.value
-//
-//          val formattedTimeOfPrep = Format.timeFormatted(unloadingRemarksRequest.meta.timeOfPreparation)
-//          val formatMeta          = unloadingRemarksRequest.meta.copy(timeOfPreparation = LocalTime.parse(formattedTimeOfPrep, timeFormatter))
-//
-//          result mustBe formatMeta
-//      }
-//    }
+    "must deserialize from xml" in {
+      forAll(arbitrary[DeclarationRequest]) {
+        declarationRequest =>
+          val xml    = declarationRequest.toXml
+          val result = XmlReader.of[Meta].read(xml).toOption.value
+
+          val formattedTimeOfPrep = Format.timeFormatted(declarationRequest.meta.timeOfPreparation)
+          val formatMeta          = declarationRequest.meta.copy(timeOfPreparation = LocalTime.parse(formattedTimeOfPrep, timeFormatter))
+
+          result mustBe formatMeta
+      }
+    }
   }
   // format: on
 }

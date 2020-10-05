@@ -58,9 +58,8 @@ object Meta {
         } ++
           <MesRecMES6>NCTS</MesRecMES6>
             <DatOfPreMES9>{Format.dateFormatted(a.dateOfPreparation)}</DatOfPreMES9>
-            <TimOfPreMES10>{Format.timeFormatted(a.timeOfPreparation)}</TimOfPreMES10> ++
-        {
-            a.interchangeControlReference.toXml
+            <TimOfPreMES10>{Format.timeFormatted(a.timeOfPreparation)}</TimOfPreMES10> ++ {
+          a.interchangeControlReference.toXml
         } ++ {
           a.recipientsReferencePassword.fold(NodeSeq.Empty) {
             recipientsReferencePassword =>
