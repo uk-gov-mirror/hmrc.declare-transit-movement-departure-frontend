@@ -16,18 +16,32 @@
 
 package navigation
 
-import controllers.goodsSummary.routes
-import derivable.DeriveNumberOfSeals
 import javax.inject.{Inject, Singleton}
-import models.ProcedureType.{Normal, Simplified}
 import models._
 import pages._
 import play.api.mvc.Call
+import pages.guaranteeDetails._
+import controllers.guaranteeDetails.routes
+import models.GuaranteeType._
 
 @Singleton
 class GuaranteeDetailsNavigator @Inject()() extends Navigator {
 
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+
+    case GuaranteeTypePage =>
+      ua =>
+        guaranteeTypeRoute(ua, NormalMode)
+
+  }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+
+  def guaranteeTypeRoute(ua: UserAnswers, mode: Mode) =
+    ua.get(GuaranteeTypePage) match {
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple)) =>
+        Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, mode))
+      case _ => Some(routes.OtherReferenceController.onPageLoad(ua.id, mode))
+    }
+
 }

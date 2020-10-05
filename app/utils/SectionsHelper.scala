@@ -21,6 +21,7 @@ import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
+import controllers.guaranteeDetails.{routes => guaranteetDetailsRoutes}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
@@ -93,9 +94,11 @@ class SectionsHelper(userAnswers: UserAnswers) {
     SectionDetails("declarationSummary.section.goodsSummary", page, status)
   }
 
-  private def guaranteeSection: SectionDetails =
-    SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
+  private def guaranteeSection: SectionDetails = {
+    val startPage: String = guaranteetDetailsRoutes.GuaranteeTypeController.onPageLoad(userAnswers.id, NormalMode).url
 
+    SectionDetails("declarationSummary.section.guarantee", startPage, NotStarted)
+  }
   private def safetyAndSecuritySection: SectionDetails =
     SectionDetails("declarationSummary.section.safetyAndSecurity", "", NotStarted)
 
