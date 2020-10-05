@@ -27,12 +27,13 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.xml.NodeSeq
 
-class InterchangeControlReferenceSpec extends AnyFreeSpec
-  with Matchers
-  with ScalaCheckPropertyChecks
-  with StreamlinedXmlEquality
-  with MessagesModelGenerators
-  with OptionValues {
+class InterchangeControlReferenceSpec
+    extends AnyFreeSpec
+    with Matchers
+    with ScalaCheckPropertyChecks
+    with StreamlinedXmlEquality
+    with MessagesModelGenerators
+    with OptionValues {
   "InterchangeControlReference" - {
     "must convert to xml and convert to correct format" in {
       forAll(arbitrary[String], arbitrary[Int]) {
