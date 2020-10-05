@@ -19,10 +19,11 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import javax.inject.Inject
+import models.GuaranteeType.FlatRateVoucher
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
-import pages.guaranteeDetails.GuaranteeReferencePage
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,13 +49,17 @@ class GuaranteeReferenceController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      val lengthGRN = request.userAnswers.get(GuaranteeTypePage) match {
+        case Some(FlatRateVoucher) => 24
+        case _=> 17
+      }
       val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+
+        case None        => formProvider(lengthGRN)
+        case Some(value) => formProvider(lengthGRN).fill(value)
       }
 
       val json = Json.obj(
@@ -68,7 +73,11 @@ class GuaranteeReferenceController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      val lengthGRN = request.userAnswers.get(GuaranteeTypePage) match {
+        case Some(FlatRateVoucher) => 24
+        case _=> 17
+      }
+         formProvider(lengthGRN)
         .bindFromRequest()
         .fold(
           formWithErrors => {

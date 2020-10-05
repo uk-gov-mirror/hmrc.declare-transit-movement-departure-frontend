@@ -32,9 +32,15 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
     case GuaranteeTypePage =>
       ua =>
         guaranteeTypeRoute(ua, NormalMode)
-    case OtherReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
-    case GuaranteeReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
-    case LiabilityAmountPage => ua => Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
+    case OtherReferencePage =>
+      ua =>
+        Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
+    case GuaranteeReferencePage =>
+      ua =>
+        Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
+    case LiabilityAmountPage =>
+      ua =>
+        Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
 //    case AccessCodePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
   }

@@ -29,7 +29,7 @@ class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
   val invalidKey                      = "guaranteeReference.error.invalid"
   val representativeNameRegex: String = "^[a-zA-Z0-9]{24}$"
 
-  val form = new GuaranteeReferenceFormProvider()()
+  val form = new GuaranteeReferenceFormProvider()(exactLength)
 
   ".value" - {
 

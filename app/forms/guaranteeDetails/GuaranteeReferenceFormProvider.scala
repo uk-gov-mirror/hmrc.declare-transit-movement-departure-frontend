@@ -23,15 +23,17 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class GuaranteeReferenceFormProvider @Inject() extends Mappings {
 
-  val exactLength                     = 24 //TODO implement logic for different lengths when guarantee type page built
-  val guaranteeReferenceRegex: String = "^[a-zA-Z0-9]{24}$"
 
-  def apply(): Form[String] =
+  def apply(grnExactLength:Int): Form[String] = {
+
+   val guaranteeReferenceRegex: String = s"^[a-zA-Z0-9]{$grnExactLength}$$"
+
     Form(
-      "value" -> text("guaranteeReference.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            exactLength(exactLength, "guaranteeReference.error.length2"),
+    "value" -> text("guaranteeReference.error.required")
+      .verifying(
+    StopOnFirstFail[String](
+    exactLength(grnExactLength, "guaranteeReference.error.length2"),
             regexp(guaranteeReferenceRegex, "guaranteeReference.error.invalid")
           )))
+  }
 }
