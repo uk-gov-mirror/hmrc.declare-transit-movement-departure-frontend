@@ -22,9 +22,8 @@ import generators.Generators
 import models.GuaranteeType._
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.OtherReferencePage
+import pages._
 import pages.guaranteeDetails._
 
 
@@ -164,10 +163,33 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           answers =>
             val updatedAnswers: UserAnswers = answers.set(GuaranteeReferencePage, "test").success.value
             navigator
-              .nextPage(OtherReferencePage, NormalMode, updatedAnswers)
+              .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
+
+      "From LiabilityAmountPage to AccessCodePage" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers = answers.set(LiabilityAmountPage, "100.12").success.value
+            navigator
+              .nextPage(LiabilityAmountPage, NormalMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+//      "From AccessCodeController to CYA" in {
+//
+//        forAll(arbitrary[UserAnswers]) {
+//          answers =>
+//            val updatedAnswers: UserAnswers = answers.set(AccessCodePage, "1234").success.value
+//            navigator
+//              .nextPage(OtherReferencePage, NormalMode, updatedAnswers)
+//              .mustBe(guaranteeDetailsRoute.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
+//        }
+//      }
+
 
 
     }
