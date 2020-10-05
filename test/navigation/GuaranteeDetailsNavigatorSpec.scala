@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.guaranteeDetails.{routes => guaranteeDetailsRoute}
 import generators.Generators
 import models.GuaranteeType._
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -190,6 +190,22 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 //      }
 
     }
+   "in Checkmode" -{
+
+     "must go from Guarantee Type page to OtherReferencePage change change answer from 0,1,2,4 or 9" in {
+
+       forAll(arbitrary[UserAnswers]) {
+         answers =>
+           val updatedAnswers: UserAnswers = answers
+             .remove(GuaranteeTypePage).success.value
+             .set(GuaranteeTypePage,CashDepositGuarantee).success.value
+           navigator
+             .nextPage(LiabilityAmountPage, CheckMode, updatedAnswers)
+             .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, NormalMode))
+       }
+
+     }
+   }
 
   }
 }

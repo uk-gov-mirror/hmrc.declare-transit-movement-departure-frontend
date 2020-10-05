@@ -16,13 +16,23 @@
 
 package pages.guaranteeDetails
 
-import models.GuaranteeType
-import pages.QuestionPage
+import models.GuaranteeType._
+import models.{GuaranteeType, UserAnswers}
+import pages.{OtherReferencePage, QuestionPage}
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "guaranteeType"
+
+  override def cleanup(value: Option[GuaranteeType], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple)) =>
+        userAnswers.remove(GuaranteeReferencePage)
+      case _ =>  userAnswers.remove(OtherReferencePage)
+    }
 }
