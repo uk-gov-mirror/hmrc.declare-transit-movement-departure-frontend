@@ -18,9 +18,11 @@ package generators
 
 import java.time.{LocalDate, LocalTime}
 
-import models.messages.{DeclarationRequest, InterchangeControlReference, Meta}
+import models.LocalReferenceNumber
+import models.messages.{DeclarationRequest, Header, InterchangeControlReference, Meta}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen.choose
 import utils.Format.dateFormatted
 
 trait MessagesModelGenerators extends Generators {
@@ -63,6 +65,48 @@ trait MessagesModelGenerators extends Generators {
         meta <- arbitrary[Meta]
         //TODO: This needs more xml nodes adding as models become available
       } yield DeclarationRequest(meta)
+    }
+  }
+
+  implicit lazy val arbitraryHeader: Arbitrary[Header] = {
+    Arbitrary {
+      for {
+        refNumHEA4            <- arbitrary[LocalReferenceNumber]
+        typOfDecHEA24         <- Gen.pick(Header.typeOfDeclarationLength, 'A' to 'Z')
+        couOfDesCodHEA30      <- Gen.option(stringsWithMaxLength(Header.countryLength))
+        agrLocOfGooCodHEA38   <- Gen.option(stringsWithMaxLength(Header.agreedLocationOfGoodsCodeLength))
+        agrLocOfGooHEA39      <- Gen.option(stringsWithMaxLength(Header.agreedLocationOfGoodsLength))
+        autLocOfGooCodHEA41   <- Gen.option(stringsWithMaxLength(Header.authorisedLocationOfGoodsCodeLength))
+        plaOfLoaCodHEA46      <- Gen.option(stringsWithMaxLength(Header.placeOfLoadingGoodsCodeLength))
+        couOfDisCodHEA55      <- Gen.option(stringsWithMaxLength(Header.countryLength))
+        cusSubPlaHEA66        <- Gen.option(stringsWithMaxLength(Header.customsSubPlaceLength))
+        inlTraModHEA75        <- Gen.option(choose(min = 1: Int, 99: Int))
+        traModAtBorHEA76      <- Gen.option(choose(min = 1: Int, 99: Int))
+        ideOfMeaOfTraAtDHEA78 <- Gen.option(stringsWithMaxLength(Header.identityMeansOfTransport))
+        natOfMeaOfTraAtDHEA80 <- Gen.option(stringsWithMaxLength(Header.countryLength))
+        ideOfMeaOfTraCroHEA85 <- Gen.option(stringsWithMaxLength(Header.identityMeansOfTransport))
+        natOfMeaOfTraCroHEA87 <- Gen.option(stringsWithMaxLength(Header.countryLength))
+        typOfMeaOfTraCroHEA88 <- Gen.option(choose(min = 1: Int, 99: Int))
+//        grossMass               <- Gen.choose(0.0, 99999999.999).map(BigDecimal(_).bigDecimal.setScale(3, BigDecimal.RoundingMode.DOWN))
+      } yield
+        Header(
+          refNumHEA4,
+          typOfDecHEA24.mkString,
+          couOfDesCodHEA30.map(_.mkString),
+          agrLocOfGooCodHEA38,
+          agrLocOfGooHEA39,
+          autLocOfGooCodHEA41,
+          plaOfLoaCodHEA46,
+          couOfDisCodHEA55.map(_.mkString),
+          cusSubPlaHEA66,
+          inlTraModHEA75,
+          traModAtBorHEA76,
+          ideOfMeaOfTraAtDHEA78,
+          natOfMeaOfTraAtDHEA80.map(_.mkString),
+          ideOfMeaOfTraCroHEA85,
+          natOfMeaOfTraCroHEA87.map(_.mkString),
+          typOfMeaOfTraCroHEA88
+        )
     }
   }
 }
