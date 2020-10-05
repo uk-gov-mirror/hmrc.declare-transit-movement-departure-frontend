@@ -19,13 +19,13 @@ package navigation
 import base.SpecBase
 import controllers.guaranteeDetails.{routes => guaranteeDetailsRoute}
 import generators.Generators
-import models.GuaranteeType.{ComprehensiveGuarantee, GuaranteeWaiver}
+import models.GuaranteeType._
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.OtherReferencePage
 import pages.guaranteeDetails._
-
 
 
 class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -36,24 +36,141 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
     "in normal mode" - {
 
-      "must go from GuaranteeTypePage" - {
+      "must go from GuaranteeTypePage to GuaranteeReferenceNumberPage when user selects" - {
 
-        "to GuaranteeReferenceNumberPage when user selects 0,1,2,4 or 9" in {
+        "GuaranteeWaiver" in {
+
           forAll(arbitrary[UserAnswers]) {
             answers =>
-       //       val updatedAnswers = answers.set(GuaranteeTypePage, Gen.oneOf(GuaranteeWaiver)).toOption.value
-
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, GuaranteeWaiver).success.value
               navigator
                 .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
           }
         }
 
-          "to OtherReferencePage when user selects anything but 0,1,2,4 or 9" in {
+        "ComprehensiveGuarantee" in {
 
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, ComprehensiveGuarantee).success.value
+              navigator
+                .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+
+        "IndividualGuarantee" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, IndividualGuarantee).success.value
+              navigator
+                .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+
+        "FlatRateVoucher" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, FlatRateVoucher).success.value
+              navigator
+                .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+
+        "IndividualGuaranteeMultiple" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, IndividualGuaranteeMultiple).success.value
+              navigator
+                .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
           }
         }
       }
+
+      "to OtherReferencePage when user selects" - {
+
+        "CashDepositGuarantee" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, CashDepositGuarantee).success.value
+              navigator
+                .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+        "GuaranteeNotRequired" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, GuaranteeNotRequired).success.value
+              navigator
+                .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+        "GuaranteeWaivedRedirect" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, GuaranteeWaivedRedirect).success.value
+              navigator
+                .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+        "GuaranteeWaiverByAgreement" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, GuaranteeWaiverByAgreement).success.value
+              navigator
+                .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+        "GuaranteeWaiverSecured" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers.set(GuaranteeTypePage, GuaranteeWaiverSecured).success.value
+              navigator
+                .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+      }
+      "From OtherReferencePage to LiabilityAmountPage" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers = answers.set(OtherReferencePage, "test").success.value
+            navigator
+              .nextPage(OtherReferencePage, NormalMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+      "From GuaranteeReferencePage to LiabilityAmountPage" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers = answers.set(GuaranteeReferencePage, "test").success.value
+            navigator
+              .nextPage(OtherReferencePage, NormalMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+
+    }
 
   }
 }
