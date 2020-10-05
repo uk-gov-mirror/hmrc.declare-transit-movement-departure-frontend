@@ -63,15 +63,27 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
       data.sections.head.rows.head.value.content mustEqual Literal("test")
     }
 
-    "display Liability Amount when selected" in {
+    "display Liability Amount" - {
+      "and amount as 10 when selected" in {
+        val updatedAnswers = emptyUserAnswers.set(LiabilityAmountPage, "10.00").success.value
+        val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
 
-      val updatedAnswers = emptyUserAnswers.set(LiabilityAmountPage, "10.00").success.value
-      val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
+        data.sections.head.sectionTitle must not be defined
+        data.sections.length mustEqual 1
+        data.sections.head.rows.length mustEqual 1
+        data.sections.head.rows.head.value.content mustEqual Literal("10.00")
+      }
 
-      data.sections.head.sectionTitle must not be defined
-      data.sections.length mustEqual 1
-      data.sections.head.rows.length mustEqual 1
-      data.sections.head.rows.head.value.content mustEqual Literal("10.00")
+      "and Default Liability Amount when selected" in {
+
+        val updatedAnswers = emptyUserAnswers.set(LiabilityAmountPage, "0").success.value
+        val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
+
+        data.sections.head.sectionTitle must not be defined
+        data.sections.length mustEqual 1
+        data.sections.head.rows.length mustEqual 1
+        data.sections.head.rows.head.value.content mustEqual Literal("EUR 10,000")
+      }
     }
 
     "display Access Code when selected" in {

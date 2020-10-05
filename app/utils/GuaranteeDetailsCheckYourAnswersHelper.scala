@@ -73,9 +73,13 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def liabilityAmount: Option[Row] = userAnswers.get(LiabilityAmountPage) map {
     answer =>
+      val displayAmount = answer.toDouble match {
+        case 0.00 => "EUR 10,000"
+        case _    => answer
+      }
       Row(
         key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(lit"$displayAmount"),
         actions = List(
           Action(
             content            = msg"site.edit",
