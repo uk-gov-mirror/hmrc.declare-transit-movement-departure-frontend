@@ -28,7 +28,7 @@ object XMLWrites {
     override def writes(a: A): NodeSeq = writerFn(a)
   }
 
-  implicit class XMLWritesOps[A](a: A) {
+  implicit class XMLWritesOps[A](val a: A) extends AnyVal {
 
     def toXml(implicit writer: XMLWrites[A]): NodeSeq =
       writer.writes(a)
