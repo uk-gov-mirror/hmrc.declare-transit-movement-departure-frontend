@@ -18,7 +18,7 @@ package utils
 
 import controllers.goodsSummary.routes.{ConfirmRemoveSealController, SealIdDetailsController, SealsInformationController}
 import derivable.DeriveNumberOfSeals
-import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages.SealIdDetailsPage
 import queries.SealsQuery
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -35,7 +35,7 @@ class AddSealHelper(userAnswers: UserAnswers) {
           actions = List(
             Action(
               content            = msg"site.edit",
-              href               = SealIdDetailsController.onPageLoad(lrn, sealIndex, mode).url,
+              href               = SealIdDetailsController.onPageLoad(lrn, sealIndex, CheckMode).url,
               visuallyHiddenText = Some(msg"addSeal.sealList.change.hidden".withArgs(answer.numberOrMark)),
               attributes         = Map("id" -> s"""change-seal-${sealIndex.display}""")
             ),
@@ -62,7 +62,7 @@ class AddSealHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = SealsInformationController.onPageLoad(lrn, mode).url,
+            href               = SealsInformationController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"change-sealIdDetails.checkYourAnswersLabel$singularOrPlural"),
             attributes         = Map("id" -> idPluralisation)
           )
