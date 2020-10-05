@@ -29,9 +29,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class InterchangeControlReferenceIdRepository @Inject()(
-                                                         mongo: ReactiveMongoApi,
-                                                         dateTimeService: DateTimeService
-                                                       ) {
+  mongo: ReactiveMongoApi,
+  dateTimeService: DateTimeService
+) {
 
   private val lastIndexKey = "last-index"
 
