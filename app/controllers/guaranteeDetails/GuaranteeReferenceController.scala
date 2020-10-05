@@ -49,12 +49,11 @@ class GuaranteeReferenceController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val lengthGRN = request.userAnswers.get(GuaranteeTypePage) match {
         case Some(FlatRateVoucher) => 24
-        case _=> 17
+        case _                     => 17
       }
       val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
 
@@ -75,9 +74,9 @@ class GuaranteeReferenceController @Inject()(
     implicit request =>
       val lengthGRN = request.userAnswers.get(GuaranteeTypePage) match {
         case Some(FlatRateVoucher) => 24
-        case _=> 17
+        case _                     => 17
       }
-         formProvider(lengthGRN)
+      formProvider(lengthGRN)
         .bindFromRequest()
         .fold(
           formWithErrors => {

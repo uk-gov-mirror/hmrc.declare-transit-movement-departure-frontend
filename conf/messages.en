@@ -599,8 +599,7 @@ guaranteeReference.checkYourAnswersLabel = Guarantee reference number
 guaranteeReference.paragraph = You must make sure this reference is up to date.
 guaranteeReference.error.required = Enter the guarantee reference number
 guaranteeReference.error.invalid = The guarantee reference number must only include letters a to z and numbers 0 to 9
-guaranteeReference.error.length1 = Guarantee reference number must be 17 characters
-guaranteeReference.error.length2 = Guarantee reference number must be 24 characters
+guaranteeReference.error.length = Guarantee reference number must be {0} characters
 
 liabilityAmount.title = How much is the liability amount?
 liabilityAmount.heading = How much is the liability amount?
