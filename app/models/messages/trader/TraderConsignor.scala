@@ -29,7 +29,7 @@ final case class TraderConsignor(
   postCode: String,
   city: String,
   countryCode: String,
-  eori: Option[String],
+  eori: Option[String]
 )
 
 object TraderConsignor {

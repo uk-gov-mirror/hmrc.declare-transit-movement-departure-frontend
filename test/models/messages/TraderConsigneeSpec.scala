@@ -18,7 +18,7 @@ package models.messages
 
 import generators.MessagesModelGenerators
 import models.XMLWrites._
-import models.messages.trader.{TraderConsigneeWithEori, TraderConsigneeWithoutEori}
+import models.messages.trader.TraderConsignee
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -37,35 +37,11 @@ class TraderConsigneeSpec
 
   "TraderConsigneeSpec" - {
 
-    "must serialize TraderConsigneeWithEori to xml" in {
-
-      forAll(arbitrary[TraderConsigneeWithEori]) {
+    "must serialize TraderConsignee to xml" in {
+      forAll(arbitrary[TraderConsignee]) {
         trader =>
-          val nameNode        = trader.name.map(value => <NamCE17>{escapeXml(value)}</NamCE17>)
-          val streetNameNode  = trader.streetAndNumber.map(value => <StrAndNumCE122>{value}</StrAndNumCE122>)
-          val postCodeNode    = trader.postCode.map(value => <PosCodCE123>{value}</PosCodCE123>)
-          val cityNode        = trader.city.map(value => <CitCE124>{value}</CitCE124>)
-          val countryCodeNode = trader.countryCode.map(value => <CouCE125>{value}</CouCE125>)
+          val eori = trader.eori.map(value => <TINCE159>{value}</TINCE159>)
 
-          val expectedResult =
-            <TRACONCE1>
-              {nameNode.getOrElse(NodeSeq.Empty) ++
-              streetNameNode.getOrElse(NodeSeq.Empty) ++
-              postCodeNode.getOrElse(NodeSeq.Empty) ++
-              cityNode.getOrElse(NodeSeq.Empty) ++
-              countryCodeNode.getOrElse(NodeSeq.Empty)}
-              <NADLNGCE>EN</NADLNGCE>
-              <TINCE159>{trader.eori}</TINCE159>
-            </TRACONCE1>
-
-          trader.toXml mustEqual expectedResult
-      }
-
-    }
-
-    "must serialize TraderConsigneeWithoutEori to xml" in {
-      forAll(arbitrary[TraderConsigneeWithoutEori]) {
-        trader =>
           val expectedResult =
             <TRACONCE1>
               <NamCE17>{escapeXml(trader.name)}</NamCE17>
@@ -74,6 +50,7 @@ class TraderConsigneeSpec
               <CitCE124>{trader.city}</CitCE124>
               <CouCE125>{trader.countryCode}</CouCE125>
               <NADLNGCE>EN</NADLNGCE>
+              {eori.getOrElse(NodeSeq.Empty)}
             </TRACONCE1>
 
           trader.toXml mustEqual expectedResult

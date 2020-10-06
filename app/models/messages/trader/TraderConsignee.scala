@@ -23,84 +23,27 @@ import models.{LanguageCodeEnglish, XMLWrites}
 
 import scala.xml._
 
-sealed trait TraderConsignee
-
-object TraderConsignee {
-
-  implicit lazy val xmlReader: XmlReader[TraderConsignee] =
-    TraderConsigneeWithEori.xmlReader.or(TraderConsigneeWithoutEori.xmlReader)
-}
-
-final case class TraderConsigneeWithEori(
-  eori: String,
-  name: Option[String],
-  streetAndNumber: Option[String],
-  postCode: Option[String],
-  city: Option[String],
-  countryCode: Option[String]
-) extends TraderConsignee
-
-object TraderConsigneeWithEori {
-
-  implicit val xmlReader: XmlReader[TraderConsigneeWithEori] = (
-    (__ \ "TINCE159").read[String],
-    (__ \ "NamCE17").read[String].optional,
-    (__ \ "StrAndNumCE122").read[String].optional,
-    (__ \ "PosCodCE123").read[String].optional,
-    (__ \ "CitCE124").read[String].optional,
-    (__ \ "CouCE125").read[String].optional
-  ).mapN(apply)
-
-  implicit def writes: XMLWrites[TraderConsigneeWithEori] = XMLWrites[TraderConsigneeWithEori] {
-    trader =>
-      <TRACONCE1>
-        {
-        trader.name.fold(NodeSeq.Empty) {
-          name =>
-            <NamCE17>{name}</NamCE17>
-        } ++
-          trader.streetAndNumber.fold(NodeSeq.Empty) {
-            streetAndNumber =>
-              <StrAndNumCE122>{streetAndNumber}</StrAndNumCE122>
-          } ++
-          trader.postCode.fold(NodeSeq.Empty) {
-            postCode =>
-              <PosCodCE123>{postCode}</PosCodCE123>
-          } ++
-          trader.city.fold(NodeSeq.Empty) {
-            city =>
-              <CitCE124>{city}</CitCE124>
-          } ++
-          trader.countryCode.fold(NodeSeq.Empty) {
-            countryCode =>
-              <CouCE125>{countryCode}</CouCE125>
-          }
-        }
-        <NADLNGCE>{LanguageCodeEnglish.code}</NADLNGCE>
-        <TINCE159>{trader.eori}</TINCE159>
-      </TRACONCE1>
-  }
-}
-
-final case class TraderConsigneeWithoutEori(
+final case class TraderConsignee(
   name: String,
   streetAndNumber: String,
   postCode: String,
   city: String,
-  countryCode: String
-) extends TraderConsignee
+  countryCode: String,
+  eori: Option[String]
+)
 
-object TraderConsigneeWithoutEori {
+object TraderConsignee {
 
-  implicit val xmlReader: XmlReader[TraderConsigneeWithoutEori] = (
+  implicit val xmlReader: XmlReader[TraderConsignee] = (
     (__ \ "NamCO17").read[String],
     (__ \ "StrAndNumCE122").read[String],
     (__ \ "PosCodCE123").read[String],
     (__ \ "CitCE124").read[String],
-    (__ \ "CouCE125").read[String]
+    (__ \ "CouCE125").read[String],
+    (__ \ "TINCE159").read[String].optional
   ).mapN(apply)
 
-  implicit def writes: XMLWrites[TraderConsigneeWithoutEori] = XMLWrites[TraderConsigneeWithoutEori] {
+  implicit def writes: XMLWrites[TraderConsignee] = XMLWrites[TraderConsignee] {
     trader =>
       <TRACONCE1>
         <NamCE17>{escapeXml(trader.name)}</NamCE17>
@@ -109,6 +52,12 @@ object TraderConsigneeWithoutEori {
         <CitCE124>{trader.city}</CitCE124>
         <CouCE125>{trader.countryCode}</CouCE125>
         <NADLNGCE>{LanguageCodeEnglish.code}</NADLNGCE>
+        {
+          trader.eori.fold(NodeSeq.Empty) {
+            eori =>
+              <TINCE159>{eori}</TINCE159>
+          }
+        }
       </TRACONCE1>
   }
 }
