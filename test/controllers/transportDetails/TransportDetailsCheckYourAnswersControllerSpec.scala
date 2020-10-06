@@ -18,6 +18,7 @@ package controllers.transportDetails
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode, TransportMode}
 import models.{CountryList, LocalReferenceNumber, TransportModeList}
@@ -76,42 +77,17 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with Mocki
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn)
+      val expectedJson = Json.obj(
+        "lrn"         -> lrn,
+        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+      )
+
+      val jsonCaptorWithoutConfig: JsObject = jsonCaptor.getValue - configKey - "sections"
 
       templateCaptor.getValue mustEqual "transportDetailsCheckYourAnswers.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonCaptorWithoutConfig mustBe expectedJson
 
       application.stop()
     }
-
-    "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val application: Application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[TransportDetails]).toInstance(new FakeNavigator(onwardRoute(lrn))),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-
-      val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        FakeRequest(POST, transportDetailsRoute)
-          .withFormUrlEncodedBody(("1", "test"))
-
-      val result: Future[Result] = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual onwardRoute(lrn).url
-
-      application.stop()
-    }
-
   }
-
 }

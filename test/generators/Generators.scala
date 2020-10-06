@@ -16,11 +16,11 @@
 
 package generators
 
-import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
+import java.time._
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
-import org.scalacheck.{Gen, Shrink}
+import org.scalacheck.{Arbitrary, Gen, Shrink}
 
 trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
 
@@ -85,6 +85,12 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     for {
       length <- choose(1, maxLength)
       chars  <- listOfN(length, arbitrary[Char])
+    } yield chars.mkString
+
+  def stringsWithMaxLength(maxLength: Int, characters: Gen[Char]): Gen[String] =
+    for {
+      length <- choose(1, maxLength)
+      chars  <- listOfN(length, characters)
     } yield chars.mkString
 
   def stringsWithLength(length: Int): Gen[String] =
@@ -152,6 +158,17 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       millis =>
         Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDateTime
     }
+  }
+
+  implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+    datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+  }
+
+  implicit lazy val arbitraryLocalTime: Arbitrary[LocalTime] = Arbitrary {
+    dateTimesBetween(
+      LocalDateTime.of(1900, 1, 1, 0, 0, 0),
+      LocalDateTime.of(2100, 1, 1, 0, 0, 0)
+    ).map(_.toLocalTime)
   }
 
   val localDateGen: Gen[LocalDate] = datesBetween(LocalDate.of(1900, 1, 1), LocalDate.now)

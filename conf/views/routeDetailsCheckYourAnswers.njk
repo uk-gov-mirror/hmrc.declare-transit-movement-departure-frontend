@@ -5,7 +5,7 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 
 {% block pageTitle %}
-  {{ title(messages("checkYourAnswers.title")) }}
+  {{ title(messages("routeDetailsCheckYourAnswers.title")) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -15,7 +15,7 @@
       <div class="govuk-grid-column-two-thirds">
 
         <h1 class="govuk-heading-xl">
-          {{ messages("checkYourAnswers.heading") }}
+          {{ messages("routeDetailsCheckYourAnswers.heading") }}
         </h1>
         {% for section in sections %}
              {{ sectionMacro(section.sectionTitle, section.rows) }}
@@ -23,16 +23,14 @@
 
         <p class="govuk-body"><a id="add-or-remove-office-of-transit" href="{{ addOfficesOfTransitUrl }}">{{ messages("addOrRemoveOfficesOfTransit.checkYourAnswersLabel") }}</a><p>
 
-        <form action="{{ submitUrl }}" method="post">
-
            {{ csrf() | safe }}
 
          {{ govukButton({
               text: messages("site.continue"),
               preventDoubleClick: true,
+              href: nextPageUrl,
               attributes: {id:"submit"}
             }) }}
-         </form>
       </div>
     </div>
   </div>

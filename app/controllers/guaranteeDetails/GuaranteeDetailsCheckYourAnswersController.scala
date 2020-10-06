@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package controllers.traderDetails
+package controllers.guaranteeDetails
 
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.{LocalReferenceNumber, UserAnswers}
+import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.TraderDetailsCheckYourAnswersHelper
+import viewModels.GuaranteeDetailsCheckYourAnswersViewModel
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TraderDetailsCheckYourAnswersController @Inject()(
+class GuaranteeDetailsCheckYourAnswersController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
@@ -43,37 +43,13 @@ class TraderDetailsCheckYourAnswersController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = createSections(request.userAnswers)
+      val sections: Seq[Section] = GuaranteeDetailsCheckYourAnswersViewModel(request.userAnswers).sections
       val json = Json.obj(
-        "lrn"         -> lrn,
-        "sections"    -> Json.toJson(sections),
-        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+        "lrn"      -> lrn,
+        "sections" -> Json.toJson(sections),
+        "nextPage" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
       )
 
-      renderer.render("traderDetailsCheckYourAnswers.njk", json).map(Ok(_))
-  }
-
-  private def createSections(userAnswers: UserAnswers): Seq[Section] = {
-    val checkYourAnswersHelper = new TraderDetailsCheckYourAnswersHelper(userAnswers)
-
-    Seq(
-      Section(
-        Seq(
-          checkYourAnswersHelper.isPrincipalEoriKnown,
-          checkYourAnswersHelper.whatIsPrincipalEori,
-          checkYourAnswersHelper.principalName,
-          checkYourAnswersHelper.principalAddress,
-          checkYourAnswersHelper.addConsignor,
-          checkYourAnswersHelper.isConsignorEoriKnown,
-          checkYourAnswersHelper.consignorName,
-          checkYourAnswersHelper.consignorAddress,
-          checkYourAnswersHelper.consignorEori,
-          checkYourAnswersHelper.addConsignee,
-          checkYourAnswersHelper.isConsigneeEoriKnown,
-          checkYourAnswersHelper.consigneeName,
-          checkYourAnswersHelper.consigneeAddress,
-          checkYourAnswersHelper.whatIsConsigneeEori,
-        ).flatten
-      ))
+      renderer.render("guaranteeDetailsCheckYourAnswers.njk", json).map(Ok(_))
   }
 }
