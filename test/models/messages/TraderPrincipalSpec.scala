@@ -23,6 +23,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import models.XMLWrites._
+import models.messages.trader.{TraderPrincipalWithEori, TraderPrincipalWithoutEori}
 
 import scala.xml.NodeSeq
 

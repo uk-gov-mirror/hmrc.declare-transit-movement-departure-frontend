@@ -20,6 +20,7 @@ import java.time.{LocalDate, LocalTime}
 
 import models.LocalReferenceNumber
 import models.messages._
+import models.messages.trader.{Trader, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.{alphaNumChar, choose}
@@ -125,11 +126,11 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryTraderPrincipalWithEori: Arbitrary[TraderPrincipalWithEori] =
     Arbitrary {
       for {
-        eori            <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.eoriLength)
-        name            <- Gen.option(stringsWithMaxLength(TraderPrincipalWithEori.Constants.nameLength))
-        streetAndNumber <- Gen.option(stringsWithMaxLength(TraderPrincipalWithEori.Constants.streetAndNumberLength))
-        postCode        <- Gen.option(stringsWithMaxLength(TraderPrincipalWithEori.Constants.postCodeLength))
-        city            <- Gen.option(stringsWithMaxLength(TraderPrincipalWithEori.Constants.cityLength))
+        eori            <- stringsWithMaxLength(Trader.Constants.eoriLength)
+        name            <- Gen.option(stringsWithMaxLength(Trader.Constants.nameLength))
+        streetAndNumber <- Gen.option(stringsWithMaxLength(Trader.Constants.streetAndNumberLength))
+        postCode        <- Gen.option(stringsWithMaxLength(Trader.Constants.postCodeLength))
+        city            <- Gen.option(stringsWithMaxLength(Trader.Constants.cityLength))
         countryCode     <- Gen.option(Gen.pick(2, 'A' to 'Z'))
       } yield TraderPrincipalWithEori(eori, name, streetAndNumber, postCode, city, countryCode.map(_.mkString))
     }
@@ -137,10 +138,10 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryTraderPrincipalWithoutEori: Arbitrary[TraderPrincipalWithoutEori] =
     Arbitrary {
       for {
-        name            <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.nameLength)
-        streetAndNumber <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.streetAndNumberLength)
-        postCode        <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.postCodeLength)
-        city            <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.cityLength)
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength)
+        streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength)
+        postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength)
+        city            <- stringsWithMaxLength(Trader.Constants.cityLength)
         countryCode     <- Gen.pick(2, 'A' to 'Z')
       } yield TraderPrincipalWithoutEori(name, streetAndNumber, postCode, city, countryCode.mkString)
     }

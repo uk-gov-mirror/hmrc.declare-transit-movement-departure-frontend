@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package models.messages
+package models.messages.trader
 
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
+import models.messages.escapeXml
 import models.{LanguageCodeEnglish, XMLWrites}
 
-import scala.xml.NodeSeq
+import scala.xml._
 
 sealed trait TraderPrincipal
 
@@ -50,22 +51,13 @@ object TraderPrincipalWithEori {
     (__ \ "CouPC125").read[String].optional
   ).mapN(apply)
 
-  object Constants {
-    val eoriLength            = 17
-    val nameLength            = 35
-    val streetAndNumberLength = 35
-    val postCodeLength        = 9
-    val cityLength            = 35
-    val countryCodeLength     = 2
-  }
-
   implicit def writes: XMLWrites[TraderPrincipalWithEori] = XMLWrites[TraderPrincipalWithEori] {
     trader =>
       <TRAPRIPC1>
         {
         trader.name.fold(NodeSeq.Empty) {
           name =>
-            <NamPC17>{escapeXml(name)}</NamPC17>
+            <NamPC17>{name}</NamPC17>
         } ++
           trader.streetAndNumber.fold(NodeSeq.Empty) {
             streetAndNumber =>
@@ -108,14 +100,6 @@ object TraderPrincipalWithoutEori {
     (__ \ "CouPC125").read[String]
   ).mapN(apply)
 
-  object Constants {
-    val nameLength            = 35
-    val streetAndNumberLength = 35
-    val postCodeLength        = 9
-    val cityLength            = 35
-    val countryCodeLength     = 2
-  }
-
   implicit def writes: XMLWrites[TraderPrincipalWithoutEori] = XMLWrites[TraderPrincipalWithoutEori] {
     trader =>
       <TRAPRIPC1>
@@ -127,5 +111,4 @@ object TraderPrincipalWithoutEori {
         <NADLNGPC>{LanguageCodeEnglish.code}</NADLNGPC>
       </TRAPRIPC1>
   }
-
 }
