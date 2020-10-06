@@ -25,17 +25,16 @@
              {{ sectionMacro(section.sectionTitle, section.rows) }}
         {% endfor %}
 
-        <form action="{{ routes.controllers.transportDetails.TransportDetailsCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
 
              {{ csrf() | safe }}
 
              {{ govukButton({
                   text: messages("site.continue"),
                   preventDoubleClick: true,
+                  href: nextPageUrl,
                   attributes: {id:"submit"}
                 }) }}
 
-         </form>
 
       </div>
     </div>

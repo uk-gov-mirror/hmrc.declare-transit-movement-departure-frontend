@@ -82,7 +82,7 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
         data.sections.head.sectionTitle must not be defined
         data.sections.length mustEqual 1
         data.sections.head.rows.length mustEqual 1
-        data.sections.head.rows.head.value.content mustEqual Literal("EUR 10,000")
+        data.sections.head.rows.head.value.content mustEqual Message("guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount")
       }
     }
 

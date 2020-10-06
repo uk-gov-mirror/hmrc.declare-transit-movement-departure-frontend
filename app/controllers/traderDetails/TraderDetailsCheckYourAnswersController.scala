@@ -44,14 +44,13 @@ class TraderDetailsCheckYourAnswersController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val sections: Seq[Section] = createSections(request.userAnswers)
-      val json                   = Json.obj("lrn" -> lrn, "sections" -> Json.toJson(sections))
+      val json = Json.obj(
+        "lrn"         -> lrn,
+        "sections"    -> Json.toJson(sections),
+        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+      )
 
       renderer.render("traderDetailsCheckYourAnswers.njk", json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
   private def createSections(userAnswers: UserAnswers): Seq[Section] = {

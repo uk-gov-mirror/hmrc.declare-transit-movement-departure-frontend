@@ -5,7 +5,7 @@
 {% from "macros/section.njk"                       import section as sectionMacro %}
 
 {% block pageTitle %}
-  {{ title(messages("checkYourAnswers.title")) }}
+  {{ title(messages("guaranteeDetailsCheckYourAnswers.title")) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -17,7 +17,7 @@
         <h1 class="govuk-heading-xl">
 
           <span class="govuk-caption-xl">{{messages('guaranteeDetails.preHeading')}}</span>
-          {{ messages("checkYourAnswers.heading") }}
+          {{ messages("guaranteeDetailsCheckYourAnswers.heading") }}
 
         </h1>
 
@@ -25,17 +25,14 @@
              {{ sectionMacro(section.sectionTitle, section.rows) }}
         {% endfor %}
 
-        <form action="{{ routes.controllers.guaranteeDetails.GuaranteeDetailsCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
-
              {{ csrf() | safe }}
 
              {{ govukButton({
                   text: messages("site.continue"),
                   preventDoubleClick: true,
+                  href: nextPage,
                   attributes: {id:"submit"}
                 }) }}
-
-         </form>
 
       </div>
     </div>

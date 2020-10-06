@@ -60,7 +60,7 @@ class RouteDetailsCheckYourAnswersController @Inject()(
                 "lrn"                    -> lrn,
                 "sections"               -> Json.toJson(sections),
                 "addOfficesOfTransitUrl" -> routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url,
-                "submitUrl"              -> routes.RouteDetailsCheckYourAnswersController.onSubmit(lrn).url
+                "nextPageUrl"            -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
               )
               renderer.render("routeDetailsCheckYourAnswers.njk", json).map(Ok(_))
           }
@@ -68,11 +68,6 @@ class RouteDetailsCheckYourAnswersController @Inject()(
           Logger.info("DestinationCountryPage has no data")
           Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 
   private def createSections(countryCode: CountryCode)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Seq[Section]] = {

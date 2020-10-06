@@ -44,13 +44,12 @@ class GuaranteeDetailsCheckYourAnswersController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val sections: Seq[Section] = GuaranteeDetailsCheckYourAnswersViewModel(request.userAnswers).sections
-      val json                   = Json.obj("lrn" -> lrn, "sections" -> Json.toJson(sections))
+      val json = Json.obj(
+        "lrn"      -> lrn,
+        "sections" -> Json.toJson(sections),
+        "nextPage" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+      )
 
       renderer.render("guaranteeDetailsCheckYourAnswers.njk", json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
   }
 }

@@ -62,7 +62,6 @@ GET        /:lrn/movement-details/change-representative-capacity                
 POST       /:lrn/movement-details/change-representative-capacity                  controllers.movementDetails.RepresentativeCapacityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/movement-details/check-your-answers                       controllers.movementDetails.MovementDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /:lrn/movement-details/check-your-answers                       controllers.movementDetails.MovementDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
 
 GET        /:lrn/trader-details/is-principal-eori-known                        controllers.traderDetails.IsPrincipalEoriKnownController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/trader-details/is-principal-eori-known                        controllers.traderDetails.IsPrincipalEoriKnownController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -137,7 +136,6 @@ GET        /:lrn/trader-details/change-consignee-address                  contro
 POST       /:lrn/trader-details/change-consignee-address                  controllers.traderDetails.ConsigneeAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/trader-details/check-your-answers                       controllers.traderDetails.TraderDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /:lrn/trader-details/check-your-answers                       controllers.traderDetails.TraderDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
 
 GET        /:lrn/transport-details/id-at-departure                        controllers.transportDetails.IdAtDepartureController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/transport-details/id-at-departure                         controllers.transportDetails.IdAtDepartureController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -207,7 +205,6 @@ GET        /:lrn/transport-details/change-mode-at-border                  contro
 POST       /:lrn/transport-details/change-mode-at-border                  controllers.transportDetails.ModeAtBorderController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/transport-details/check-your-answers                       controllers.transportDetails.TransportDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /:lrn/transport-details/check-your-answers                       controllers.transportDetails.TransportDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
 
 GET        /:lrn/route/added-offices-of-transit                          controllers.routeDetails.AddTransitOfficeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/route/added-offices-of-transit                         controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -215,7 +212,6 @@ GET        /:lrn/route/change-offices-of-transit                   controllers.r
 POST       /:lrn/route/change-offices-of-transit                   controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /:lrn/route/check-your-answers                       controllers.routeDetails.RouteDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
 
 GET        /:lrn/goods-summary/declare-packages                        controllers.goodsSummary.DeclarePackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/goods-summary/declare-packages                       controllers.goodsSummary.DeclarePackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -291,7 +287,6 @@ GET        /:lrn/:index/change-confirm-remove-office-of-transit                 
 POST       /:lrn/:index/change-confirm-remove-office-of-transit                  controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 
 GET        /:lrn/goods-summary/check-your-answers                       controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /:lrn/goods-summary/check-your-answers                       controllers.goodsSummary.GoodsSummaryCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
 
 GET        /:lrn/guarantee-details/guarantee-reference                        controllers.guaranteeDetails.GuaranteeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/guarantee-details/guarantee-reference                       controllers.guaranteeDetails.GuaranteeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -324,4 +319,3 @@ GET        /:lrn/guarantee-details/change-liability-amount                  cont
 POST       /:lrn/guarantee-details/change-liability-amount                  controllers.guaranteeDetails.LiabilityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/guarantee-details/check-your-answers                       controllers.guaranteeDetails.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /:lrn/guarantee-details/check-your-answers                       controllers.guaranteeDetails.GuaranteeDetailsCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
