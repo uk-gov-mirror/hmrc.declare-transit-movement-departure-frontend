@@ -24,6 +24,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import models.XMLWrites._
+import utils.Format
 
 import scala.xml.NodeSeq
 import scala.xml.Utility.trim
@@ -63,11 +64,11 @@ class HeaderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks
           )
 
           val inlTraModHEA75 = header.inlTraModHEA75.map(
-            value => <InlTraModHEA75>{value}</InlTraModHEA75>
+            value => <InlTraModHEA75>{value.toString}</InlTraModHEA75>
           )
 
           val traModAtBorHEA76 = header.traModAtBorHEA76.map(
-            value => <TraModAtBorHEA76>{value}</TraModAtBorHEA76>
+            value => <TraModAtBorHEA76>{value.toString}</TraModAtBorHEA76>
           )
 
           val ideOfMeaOfTraAtDHEA78 = header.ideOfMeaOfTraAtDHEA78.map(
@@ -89,12 +90,16 @@ class HeaderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks
           )
 
           val typOfMeaOfTraCroHEA88 = header.typOfMeaOfTraCroHEA88.map(
-            value => <TypOfMeaOfTraCroHEA88>{value}</TypOfMeaOfTraCroHEA88>
+            value => <TypOfMeaOfTraCroHEA88>{value.toString}</TypOfMeaOfTraCroHEA88>
+          )
+
+          val totNumOfPacHEA306 = header.totNumOfPacHEA306.map(
+            value => <TotNumOfPacHEA306>{value.toString}</TotNumOfPacHEA306>
           )
 
           val expectedResult: NodeSeq =
             <HEAHEA>
-              <RefNumHEA4>{escapeXml(header.refNumHEA4.toString)}</RefNumHEA4>
+              <RefNumHEA4>{escapeXml(header.refNumHEA4)}</RefNumHEA4>
               <TypOfDecHEA24>{header.typOfDecHEA24}</TypOfDecHEA24>
               {couOfDesCodHEA30.getOrElse(NodeSeq.Empty)}
               {agrLocOfGooCodHEA38.getOrElse(NodeSeq.Empty)}
@@ -110,11 +115,19 @@ class HeaderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks
               {ideOfMeaOfTraCroHEA85.getOrElse(NodeSeq.Empty)}
               {natOfMeaOfTraCroHEA87.getOrElse(NodeSeq.Empty)}
               {typOfMeaOfTraCroHEA88.getOrElse(NodeSeq.Empty)}
+              <ConIndHEA96>{header.conIndHEA96.toString}</ConIndHEA96>
+              <DiaLanIndAtDepHEA254>EN</DiaLanIndAtDepHEA254>
+              <NCTSAccDocHEA601LNG>EN</NCTSAccDocHEA601LNG>
+              <TotNumOfIteHEA305>{header.totNumOfIteHEA305.toString}</TotNumOfIteHEA305>
+              {totNumOfPacHEA306.getOrElse(NodeSeq.Empty)}
+              <TotGroMasHEA307>{header.totGroMasHEA307.toString}</TotGroMasHEA307>
+              <DecDatHEA383>{Format.dateFormatted(header.decDatHEA383)}</DecDatHEA383>
+              <DecPlaHEA394>{escapeXml(header.decPlaHEA394)}</DecPlaHEA394>
+              <DecPlaHEA394LNG>EN</DecPlaHEA394LNG>
             </HEAHEA>
 
           header.toXml.map(trim) mustEqual expectedResult.map(trim)
       }
-
     }
 
     "must deserialize Xml to Header" in {
@@ -126,8 +139,7 @@ class HeaderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks
       }
 
     }
-  }
-}
 
-//<HEAHEA><RefNumHEA4>kqLm0nyeroljwzdvcnelE</RefNumHEA4><TypOfDecHEA24>WBZTXRYSI</TypOfDecHEA24><CouOfDesCodHEA30>촔</CouOfDesCodHEA30><AgrLocOfGooCodHEA38>꧖諎㐿板厀ጙﾳ띑岣㛔</AgrLocOfGooCodHEA38><AutLocOfGooCodHEA41>ﶃﳈ晧</AutLocOfGooCodHEA41><PlaOfLoaCodHEA46>맗헁뇎Ɀ짶菰奦巭咖灍㇟</PlaOfLoaCodHEA46><CouOfDisCodHEA55>Ꚉ</CouOfDisCodHEA55><CusSubPlaHEA66>ꊊ誷屓䶿끳䣪]핊讷ṻ䤙袛긖᪳</CusSubPlaHEA66><InlTraModHEA75>63</InlTraModHEA75><TraModAtBorHEA76>40</TraModAtBorHEA76><NatOfMeaOfTraAtDHEA80>ꭑ</NatOfMeaOfTraAtDHEA80><IdeOfMeaOfTraCroHEA85>䏍ﲝᑤ쮣훦খ쮩⥣懰璱딟൵ᶚ싇➈㑲뭱χ셪</IdeOfMeaOfTraCroHEA85><IdeOfMeaOfTraCroHEA85LNG>EN</IdeOfMeaOfTraCroHEA85LNG><NatOfMeaOfTraCroHEA87>﷞</NatOfMeaOfTraCroHEA87><TypOfMeaOfTraCroHEA88>43</TypOfMeaOfTraCroHEA88></HEAHEA>
-//<HEAHEA><RefNumHEA4>kqLm0nyeroljwzdvcnelE</RefNumHEA4><TypOfDecHEA24>WBZTXRYSI</TypOfDecHEA24><CouOfDesCodHEA30>촔</CouOfDesCodHEA30><AgrLocOfGooCodHEA38>꧖諎㐿板厀ጙﾳ띑岣㛔</AgrLocOfGooCodHEA38><AutLocOfGooCodHEA41>ﶃﳈ晧</AutLocOfGooCodHEA41><PlaOfLoaCodHEA46>맗헁뇎Ɀ짶菰奦巭咖灍㇟</PlaOfLoaCodHEA46><CouOfDisCodHEA55>Ꚉ</CouOfDisCodHEA55><CusSubPlaHEA66>ꊊ誷屓䶿끳䣪]핊讷ṻ䤙袛긖᪳</CusSubPlaHEA66><InlTraModHEA75>63</InlTraModHEA75><TraModAtBorHEA76>40</TraModAtBorHEA76><NatOfMeaOfTraAtDHEA80>ꭑ</NatOfMeaOfTraAtDHEA80><IdeOfMeaOfTraCroHEA85>䏍ﲝᑤ쮣훦খ쮩⥣懰璱딟൵ᶚ싇➈㑲뭱χ셪</IdeOfMeaOfTraCroHEA85><IdeOfMeaOfTraCroHEA85LNG>EN</IdeOfMeaOfTraCroHEA85LNG><NatOfMeaOfTraCroHEA87>﷞</NatOfMeaOfTraCroHEA87><typOfMeaOfTraCroHEA88>43</typOfMeaOfTraCroHEA88></HEAHEA>
+  }
+
+}

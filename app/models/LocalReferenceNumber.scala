@@ -16,10 +16,6 @@
 
 package models
 
-import java.util.InvalidPropertiesFormatException
-
-import com.lucidchart.open.xtract.{XmlReader, __ => XmlPath}
-import play.api.Logger
 import play.api.libs.json._
 import play.api.mvc.PathBindable
 
@@ -58,13 +54,4 @@ object LocalReferenceNumber {
       value.toString
   }
 
-  implicit val xmlReader: XmlReader[LocalReferenceNumber] = {
-    (XmlPath \ "RefNumHEA4").read[String] map {
-      lrn =>
-        LocalReferenceNumber(lrn).getOrElse {
-          Logger.error(s"RefNumHEA4: Local Reference Number not in right format: $lrn")
-          throw new InvalidPropertiesFormatException("RefNumHEA4: Local Reference Number not in right format")
-        }
-    }
-  }
 }

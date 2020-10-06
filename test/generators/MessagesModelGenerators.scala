@@ -62,16 +62,17 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryDeclarationRequest: Arbitrary[DeclarationRequest] = {
     Arbitrary {
       for {
-        meta <- arbitrary[Meta]
+        meta   <- arbitrary[Meta]
+        header <- arbitrary[Header]
         //TODO: This needs more xml nodes adding as models become available
-      } yield DeclarationRequest(meta)
+      } yield DeclarationRequest(meta, header)
     }
   }
 
   implicit lazy val arbitraryHeader: Arbitrary[Header] = {
     Arbitrary {
       for {
-        refNumHEA4            <- arbitrary[LocalReferenceNumber]
+        refNumHEA4            <- arbitrary[LocalReferenceNumber].map(_.toString())
         typOfDecHEA24         <- Gen.pick(Header.typeOfDeclarationLength, 'A' to 'Z')
         couOfDesCodHEA30      <- Gen.option(stringsWithMaxLength(Header.countryLength))
         agrLocOfGooCodHEA38   <- Gen.option(stringsWithMaxLength(Header.agreedLocationOfGoodsCodeLength))
@@ -87,7 +88,12 @@ trait MessagesModelGenerators extends Generators {
         ideOfMeaOfTraCroHEA85 <- Gen.option(stringsWithMaxLength(Header.identityMeansOfTransport))
         natOfMeaOfTraCroHEA87 <- Gen.option(stringsWithMaxLength(Header.countryLength))
         typOfMeaOfTraCroHEA88 <- Gen.option(choose(min = 1: Int, 99: Int))
-//        grossMass               <- Gen.choose(0.0, 99999999.999).map(BigDecimal(_).bigDecimal.setScale(3, BigDecimal.RoundingMode.DOWN))
+        conIndHEA96           <- choose(min = 0: Int, 1: Int)
+        totNumOfIteHEA305     <- choose(min = 1: Int, 100: Int)
+        totNumOfPacHEA306     <- Gen.option(choose(min = 1: Int, 100: Int))
+        grossMass             <- Gen.choose(0.0, 99999999.999).map(BigDecimal(_).bigDecimal.setScale(3, BigDecimal.RoundingMode.DOWN))
+        decDatHEA383          <- arbitrary[LocalDate]
+        decPlaHEA394          <- stringsWithMaxLength(Header.declarationPlace)
       } yield
         Header(
           refNumHEA4,
@@ -105,7 +111,13 @@ trait MessagesModelGenerators extends Generators {
           natOfMeaOfTraAtDHEA80.map(_.mkString),
           ideOfMeaOfTraCroHEA85,
           natOfMeaOfTraCroHEA87.map(_.mkString),
-          typOfMeaOfTraCroHEA88
+          typOfMeaOfTraCroHEA88,
+          conIndHEA96,
+          totNumOfIteHEA305,
+          totNumOfPacHEA306,
+          grossMass.toString,
+          decDatHEA383,
+          decPlaHEA394
         )
     }
   }
