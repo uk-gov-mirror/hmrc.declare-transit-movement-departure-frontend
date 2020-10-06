@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package controllers.movementDetails
+package controllers.guaranteeDetails
 
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.{LocalReferenceNumber, UserAnswers}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import models.LocalReferenceNumber
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.MovementDetailsCheckYourAnswersHelper
+import viewModels.GuaranteeDetailsCheckYourAnswersViewModel
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MovementDetailsCheckYourAnswersController @Inject()(
+class GuaranteeDetailsCheckYourAnswersController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
@@ -43,30 +43,13 @@ class MovementDetailsCheckYourAnswersController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = createSections(request.userAnswers)
+      val sections: Seq[Section] = GuaranteeDetailsCheckYourAnswersViewModel(request.userAnswers).sections
       val json = Json.obj(
-        "lrn"         -> lrn,
-        "sections"    -> Json.toJson(sections),
-        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+        "lrn"      -> lrn,
+        "sections" -> Json.toJson(sections),
+        "nextPage" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
       )
 
-      renderer.render("movementDetailsCheckYourAnswers.njk", json).map(Ok(_))
-  }
-
-  private def createSections(userAnswers: UserAnswers): Seq[Section] = {
-    val checkYourAnswersHelper = new MovementDetailsCheckYourAnswersHelper(userAnswers)
-
-    Seq(
-      Section(
-        Seq(
-          checkYourAnswersHelper.declarationType,
-          checkYourAnswersHelper.procedureType,
-          checkYourAnswersHelper.containersUsedPage,
-          checkYourAnswersHelper.declarationPlace,
-          checkYourAnswersHelper.declarationForSomeoneElse,
-          checkYourAnswersHelper.representativeName,
-          checkYourAnswersHelper.representativeCapacity
-        ).flatten
-      ))
+      renderer.render("guaranteeDetailsCheckYourAnswers.njk", json).map(Ok(_))
   }
 }

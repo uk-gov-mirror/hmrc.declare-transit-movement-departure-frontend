@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewModels.GoodsSummaryCheckYourAnswersViewModel
 import viewModels.sections.Section
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class GoodsSummaryCheckYourAnswersController @Inject()(
   override val messagesApi: MessagesApi,
@@ -45,14 +45,12 @@ class GoodsSummaryCheckYourAnswersController @Inject()(
     implicit request =>
       val sections: Seq[Section] = GoodsSummaryCheckYourAnswersViewModel(request.userAnswers).sections
 
-      val json = Json.obj("lrn" -> lrn, "sections" -> Json.toJson(sections))
+      val json = Json.obj(
+        "lrn"         -> lrn,
+        "sections"    -> Json.toJson(sections),
+        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+      )
 
       renderer.render("goodsSummaryCheckYourAnswers.njk", json).map(Ok(_))
   }
-
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
-  }
-
 }

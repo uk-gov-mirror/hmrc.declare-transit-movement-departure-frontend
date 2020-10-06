@@ -64,6 +64,12 @@ transportDetails.preHeading = Transport details
 goodsSummary.preHeading = Goods summary
 guaranteeDetails.preHeading = Guarantee details
 
+routeDetailsCheckYourAnswers.heading = Check your answers
+routeDetailsCheckYourAnswers.title = Check your answers
+
+traderDetailsCheckYourAnswers.heading = Check your answers
+traderDetailsCheckYourAnswers.title = Check your answers
+
 postcode = Postcode
 postcodeExample = Like, AB1 1AB.
 
@@ -640,3 +646,7 @@ accessCode.checkYourAnswersLabel = Access code
 accessCode.error.required = Enter the access code
 accessCode.error.length = Access code must be 4 characters
 accessCode.error.invalidCharacters = Access code must only include letters a to z and numbers 0 to 9
+
+guaranteeDetailsCheckYourAnswers.title = Check your answers
+guaranteeDetailsCheckYourAnswers.heading = Check your answers
+guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount = EUR 10,000

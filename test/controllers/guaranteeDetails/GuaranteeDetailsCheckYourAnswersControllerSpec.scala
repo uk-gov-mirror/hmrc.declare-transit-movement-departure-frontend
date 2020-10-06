@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.goodsSummary
+package controllers.guaranteeDetails
 
 import base.SpecBase
 import matchers.JsonMatchers
@@ -30,9 +30,9 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class GoodsSummaryCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class GuaranteeDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
 
-  "GoodsSummaryCheckYourAnswers Controller" - {
+  "GuaranteeDetailsCheckYourAnswers Controller" - {
 
     "return OK and the correct view for a GET" in {
 
@@ -40,7 +40,7 @@ class GoodsSummaryCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, routes.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn).url)
+      val request        = FakeRequest(GET, routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -51,13 +51,13 @@ class GoodsSummaryCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "lrn"         -> lrn,
-        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+        "lrn"      -> lrn,
+        "nextPage" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
       )
 
       val jsonCaptorWithoutConfig: JsObject = jsonCaptor.getValue - configKey - "sections"
 
-      templateCaptor.getValue mustEqual "goodsSummaryCheckYourAnswers.njk"
+      templateCaptor.getValue mustEqual "guaranteeDetailsCheckYourAnswers.njk"
       jsonCaptorWithoutConfig mustBe expectedJson
 
       application.stop()

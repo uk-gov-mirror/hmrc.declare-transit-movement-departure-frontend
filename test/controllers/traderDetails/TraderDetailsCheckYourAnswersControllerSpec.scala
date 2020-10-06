@@ -18,6 +18,7 @@ package controllers.traderDetails
 
 import base.SpecBase
 import matchers.JsonMatchers
+import controllers.{routes => mainRoutes}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -49,10 +50,15 @@ class TraderDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoS
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn)
+      val expectedJson = Json.obj(
+        "lrn"         -> lrn,
+        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+      )
+
+      val jsonCaptorWithoutConfig: JsObject = jsonCaptor.getValue - configKey - "sections"
 
       templateCaptor.getValue mustEqual "traderDetailsCheckYourAnswers.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonCaptorWithoutConfig mustBe expectedJson
 
       application.stop()
     }

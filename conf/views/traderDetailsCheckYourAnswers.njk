@@ -1,11 +1,12 @@
-{% extends "includes/layout.njk" %}
+{% extends "includes/layout.njk" %}routeDetails
+routeDetails
 
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "macros/title.njk"                         import title %}
 {% from "macros/section.njk"                       import section as sectionMacro %}
 
 {% block pageTitle %}
-  {{ title(messages("checkYourAnswers.title")) }}
+  {{ title(messages("traderDetailsCheckYourAnswers.title")) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -17,7 +18,7 @@
         <h1 class="govuk-heading-xl">
 
          <span class="govuk-caption-xl">{{messages('traderDetails.preHeading')}}</span>
-          {{ messages("checkYourAnswers.heading") }}
+          {{ messages("traderDetailsCheckYourAnswers.heading") }}
 
         </h1>
 
@@ -27,15 +28,15 @@
              {{ sectionMacro(section.sectionTitle, section.rows) }}
         {% endfor %}
 
-        <form action="{{ routes.controllers.traderDetails.TraderDetailsCheckYourAnswersController.onSubmit(lrn).url }}" method="post">
             {{ csrf() | safe }}
 
          {{ govukButton({
               text: messages("site.continue"),
               preventDoubleClick: true,
+              href: nextPageUrl,
               attributes: {id:"submit"}
             }) }}
-         </form>
+
       </div>
     </div>
   </div>
