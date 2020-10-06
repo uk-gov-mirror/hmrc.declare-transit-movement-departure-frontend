@@ -41,7 +41,9 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
     case LiabilityAmountPage =>
       ua =>
         Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
-//    case AccessCodePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case AccessCodePage =>
+      ua =>
+        Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
 
   }
 //TODO change to CYA when CYA is merged

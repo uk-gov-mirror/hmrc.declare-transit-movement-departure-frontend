@@ -209,16 +209,16 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      //      "From AccessCodeController to CYA" in {
-      //
-      //        forAll(arbitrary[UserAnswers]) {
-      //          answers =>
-      //            val updatedAnswers: UserAnswers = answers.set(AccessCodePage, "1234").success.value
-      //            navigator
-      //              .nextPage(OtherReferencePage, NormalMode, updatedAnswers)
-      //              .mustBe(guaranteeDetailsRoute.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
-      //        }
-      //      }
+      "From AccessCodeController to CYA" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers = answers.set(AccessCodePage, "1234").success.value
+            navigator
+              .nextPage(OtherReferencePage, NormalMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
 
     }
     "in Checkmode" - {
