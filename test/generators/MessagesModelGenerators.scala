@@ -19,7 +19,7 @@ package generators
 import java.time.{LocalDate, LocalTime}
 
 import models.LocalReferenceNumber
-import models.messages.{DeclarationRequest, Header, InterchangeControlReference, Meta}
+import models.messages._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.{alphaNumChar, choose}
@@ -121,4 +121,27 @@ trait MessagesModelGenerators extends Generators {
         )
     }
   }
+
+  implicit lazy val arbitraryTraderPrincipalWithEori: Arbitrary[TraderPrincipalWithEori] =
+    Arbitrary {
+      for {
+        eori            <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.eoriLength)
+        name            <- Gen.option(stringsWithMaxLength(TraderPrincipalWithEori.Constants.nameLength))
+        streetAndNumber <- Gen.option(stringsWithMaxLength(TraderPrincipalWithEori.Constants.streetAndNumberLength))
+        postCode        <- Gen.option(stringsWithMaxLength(TraderPrincipalWithEori.Constants.postCodeLength))
+        city            <- Gen.option(stringsWithMaxLength(TraderPrincipalWithEori.Constants.cityLength))
+        countryCode     <- Gen.option(Gen.pick(2, 'A' to 'Z'))
+      } yield TraderPrincipalWithEori(eori, name, streetAndNumber, postCode, city, countryCode.map(_.mkString))
+    }
+
+  implicit lazy val arbitraryTraderPrincipalWithoutEori: Arbitrary[TraderPrincipalWithoutEori] =
+    Arbitrary {
+      for {
+        name            <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.nameLength)
+        streetAndNumber <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.streetAndNumberLength)
+        postCode        <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.postCodeLength)
+        city            <- stringsWithMaxLength(TraderPrincipalWithEori.Constants.cityLength)
+        countryCode     <- Gen.pick(2, 'A' to 'Z')
+      } yield TraderPrincipalWithoutEori(name, streetAndNumber, postCode, city, countryCode.mkString)
+    }
 }
