@@ -48,6 +48,22 @@ object GuaranteeType extends Enumerable.Implicits {
     IndividualGuaranteeMultiple
   )
 
+  val guaranteeReferenceRoute: Seq[GuaranteeType] = Seq(
+    GuaranteeWaiver,
+    ComprehensiveGuarantee,
+    IndividualGuarantee,
+    FlatRateVoucher,
+    IndividualGuaranteeMultiple
+  )
+
+  val nonGuaranteeReferenceRoute: Seq[GuaranteeType] = Seq(
+    CashDepositGuarantee,
+    GuaranteeNotRequired,
+    GuaranteeWaivedRedirect,
+    GuaranteeWaiverByAgreement,
+    GuaranteeWaiverSecured
+  )
+
   def getId(gtValue: String): String = gtValue match {
     case "0" => "GuaranteeWaiver"
     case "1" => "ComprehensiveGuarantee"

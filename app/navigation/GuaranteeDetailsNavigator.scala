@@ -26,92 +26,48 @@ import models.GuaranteeType._
 
 @Singleton
 class GuaranteeDetailsNavigator @Inject()() extends Navigator {
-
+// format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-
-    case GuaranteeTypePage =>
-      ua =>
-        guaranteeTypeRoute(ua, NormalMode)
-    case OtherReferencePage =>
-      ua =>
-        Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
-    case GuaranteeReferencePage =>
-      ua =>
-        Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
-    case LiabilityAmountPage =>
-      ua =>
-        Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
-    case AccessCodePage =>
-      ua =>
-        Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
-
+    case GuaranteeTypePage => ua => guaranteeTypeRoute(ua, NormalMode)
+    case OtherReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
+    case GuaranteeReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
+    case LiabilityAmountPage => ua => Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
+    case AccessCodePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
-//TODO change to CYA when CYA is merged
+
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-
-    case GuaranteeTypePage =>
-      ua =>
-        guaranteeTypeRoute(ua, CheckMode)
-    case OtherReferencePage =>
-      ua =>
-        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
-    case LiabilityAmountPage =>
-      ua =>
-        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
-    case AccessCodePage =>
-      ua =>
-        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
-    case GuaranteeReferencePage =>
-      ua =>
-        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+    case GuaranteeTypePage => ua => guaranteeTypeRoute(ua, CheckMode)
+    case _ => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
 
-  def guaranteeTypeRoute(ua: UserAnswers, mode: Mode) =
+  def guaranteeTypeRoute(ua: UserAnswers, mode: Mode): Option[Call] =
     (ua.get(GuaranteeTypePage), ua.get(GuaranteeReferencePage), mode) match {
-      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
-            _,
-            NormalMode) =>
+      case (Some(guaranteeType), _, NormalMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, NormalMode))
 
-      case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
-              GuaranteeWaiverSecured),
-            None,
-            NormalMode) =>
+      case (Some(guaranteeType), None, NormalMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, NormalMode))
 
-      case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
-              GuaranteeWaiverSecured),
-            Some(_),
-            CheckMode) =>
+      case (Some(guaranteeType), Some(_), CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, CheckMode))
 
-      case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
-              GuaranteeWaiverSecured),
-            None,
-            CheckMode) =>
-        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+      case (Some(guaranteeType), None, CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+        Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
-      case (Some(FlatRateVoucher), Some(guaranteeReference), CheckMode) =>
+      case (Some(FlatRateVoucher), Some(guaranteeReference), CheckMode) => 
         guaranteeReference.length match {
-          case 24 => Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+          case 24 => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
           case _  => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
         }
 
-      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple),
-            Some(guaranteeReference),
-            CheckMode) =>
+      case (Some(guaranteeType), Some(guaranteeReference), CheckMode) if guaranteeReferenceRoute.contains(guaranteeType)  => { //NOTE: this is the catch for ^^
         guaranteeReference.length match {
-          case 17 => Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
-          case _  => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
+          case 17 => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
+          case _ => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
         }
-      case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
-              GuaranteeWaiverSecured),
-            None,
-            CheckMode) =>
-        Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
+      }
 
       case _ => Some(routes.AccessCodeController.onPageLoad(ua.id, mode))
-
     }
-
+  // format: on
 }
