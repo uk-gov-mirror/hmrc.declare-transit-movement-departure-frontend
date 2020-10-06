@@ -50,6 +50,18 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
     case GuaranteeTypePage =>
       ua =>
         guaranteeTypeRoute(ua, CheckMode)
+    case OtherReferencePage =>
+      ua =>
+        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+    case LiabilityAmountPage =>
+      ua =>
+        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+    case AccessCodePage =>
+      ua =>
+        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+    case GuaranteeReferencePage =>
+      ua =>
+        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
   }
 
   def guaranteeTypeRoute(ua: UserAnswers, mode: Mode) =
@@ -90,6 +102,12 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
           case 17 => Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
           case _  => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
         }
+      case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
+              GuaranteeWaiverSecured),
+            None,
+            CheckMode) =>
+        Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
+
       case _ => Some(routes.AccessCodeController.onPageLoad(ua.id, mode))
 
     }
