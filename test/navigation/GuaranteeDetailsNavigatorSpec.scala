@@ -99,8 +99,12 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
-                .remove(GuaranteeReferencePage).success.value
-                .set(GuaranteeTypePage, CashDepositGuarantee).success.value
+                .remove(GuaranteeReferencePage)
+                .success
+                .value
+                .set(GuaranteeTypePage, CashDepositGuarantee)
+                .success
+                .value
               navigator
                 .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -111,8 +115,12 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
-                .remove(GuaranteeReferencePage).success.value
-                .set(GuaranteeTypePage, GuaranteeNotRequired).success.value
+                .remove(GuaranteeReferencePage)
+                .success
+                .value
+                .set(GuaranteeTypePage, GuaranteeNotRequired)
+                .success
+                .value
               navigator
                 .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -123,8 +131,12 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
-                .remove(GuaranteeReferencePage).success.value
-                .set(GuaranteeTypePage, GuaranteeWaivedRedirect).success.value
+                .remove(GuaranteeReferencePage)
+                .success
+                .value
+                .set(GuaranteeTypePage, GuaranteeWaivedRedirect)
+                .success
+                .value
               navigator
                 .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -135,8 +147,12 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
-                .remove(GuaranteeReferencePage).success.value
-                .set(GuaranteeTypePage, GuaranteeWaiverByAgreement).success.value
+                .remove(GuaranteeReferencePage)
+                .success
+                .value
+                .set(GuaranteeTypePage, GuaranteeWaiverByAgreement)
+                .success
+                .value
               navigator
                 .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -147,8 +163,12 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
-                .remove(GuaranteeReferencePage).success.value
-                .set(GuaranteeTypePage, GuaranteeWaiverSecured).success.value
+                .remove(GuaranteeReferencePage)
+                .success
+                .value
+                .set(GuaranteeTypePage, GuaranteeWaiverSecured)
+                .success
+                .value
               navigator
                 .nextPage(GuaranteeTypePage, NormalMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -188,34 +208,130 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-//      "From AccessCodeController to CYA" in {
-//
-//        forAll(arbitrary[UserAnswers]) {
-//          answers =>
-//            val updatedAnswers: UserAnswers = answers.set(AccessCodePage, "1234").success.value
-//            navigator
-//              .nextPage(OtherReferencePage, NormalMode, updatedAnswers)
-//              .mustBe(guaranteeDetailsRoute.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
-//        }
-//      }
+      //      "From AccessCodeController to CYA" in {
+      //
+      //        forAll(arbitrary[UserAnswers]) {
+      //          answers =>
+      //            val updatedAnswers: UserAnswers = answers.set(AccessCodePage, "1234").success.value
+      //            navigator
+      //              .nextPage(OtherReferencePage, NormalMode, updatedAnswers)
+      //              .mustBe(guaranteeDetailsRoute.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
+      //        }
+      //      }
 
     }
-   "in Checkmode" -{
+    "in Checkmode" - {
 
-     "must go from Guarantee Type page to OtherReferencePage change change answer from 0,1,2,4 or 9" in {
+      "must go from Guarantee Type page to" - {
 
-       forAll(arbitrary[UserAnswers]) {
-         answers =>
-           val updatedAnswers: UserAnswers = answers
-             .remove(GuaranteeTypePage).success.value
-             .set(GuaranteeTypePage,CashDepositGuarantee).success.value
-           navigator
-             .nextPage(LiabilityAmountPage, CheckMode, updatedAnswers)
-             .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, NormalMode))
-       }
+        "OtherReferencePage change answer from 0,1,2,4 or 9 to any answer other than 0,1,2,4 or 9 and answer exists for GuaranteeReferencePage" in {
 
-     }
-   }
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers
+                .set(GuaranteeTypePage, CashDepositGuarantee)
+                .success
+                .value
+                .set(GuaranteeReferencePage, "12345678901234567")
+                .success
+                .value
+              navigator
+                .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+
+        "to CYA page when user changes answer from 0,1,2,4 or 9 to any answer other than 0,1,2,4 or 9 and no answer exists for GuaranteeReferencePage" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers
+                .remove(OtherReferencePage)
+                .success
+                .value
+                .remove(GuaranteeReferencePage)
+                .success
+                .value
+                .set(GuaranteeTypePage, CashDepositGuarantee)
+                .success
+                .value
+              navigator
+                .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+
+        "to CYA page when user changes answer from 0,1,2, or 9 to 0,1,2 or 9" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers
+                .set(GuaranteeReferencePage, "12345678901234567")
+                .success
+                .value
+                .set(GuaranteeTypePage, GuaranteeWaiver)
+                .success
+                .value
+              navigator
+                .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+        "to GuaranteedReference page when user changes answer from 0,1,2, or 9 to 4" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers
+                .remove(GuaranteeReferencePage)
+                .success
+                .value
+                .set(GuaranteeTypePage, FlatRateVoucher)
+                .success
+                .value
+                .set(GuaranteeReferencePage, "12345678901234567")
+                .success
+                .value
+              navigator
+                .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+        "to GuaranteedReference page when user changes answer from 4 to 0,1,2, or 9 " in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers
+                .remove(GuaranteeReferencePage)
+                .success
+                .value
+                .set(GuaranteeReferencePage, "123456789012345678901234")
+                .success
+                .value
+                .set(GuaranteeTypePage, GuaranteeWaiver)
+                .success
+                .value
+              navigator
+                .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+        "to CYA page when user selects change but leaves answer as 4" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers = answers
+                .set(GuaranteeReferencePage, "123456789012345678901234")
+                .success
+                .value
+                .set(GuaranteeTypePage, FlatRateVoucher)
+                .success
+                .value
+              navigator
+                .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+
+      }
+
+    }
 
   }
+
 }

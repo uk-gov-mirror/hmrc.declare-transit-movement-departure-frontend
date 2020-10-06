@@ -32,7 +32,7 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
   override def cleanup(value: Option[GuaranteeType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple)) =>
-        userAnswers.remove(GuaranteeReferencePage)
-      case _ => userAnswers.remove(OtherReferencePage)
+        userAnswers.remove(OtherReferencePage)
+      case _ => userAnswers.remove(GuaranteeReferencePage)
     }
 }

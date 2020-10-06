@@ -44,7 +44,7 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
 //    case AccessCodePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
   }
-
+//TODO change to CYA when CYA is merged
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
     case GuaranteeTypePage =>
@@ -55,26 +55,39 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
   def guaranteeTypeRoute(ua: UserAnswers, mode: Mode) =
     (ua.get(GuaranteeTypePage), ua.get(GuaranteeReferencePage), mode) match {
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
-            None,
-            _) =>
+            _,
+            NormalMode) =>
         Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, NormalMode))
+
       case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
               GuaranteeWaiverSecured),
             None,
             NormalMode) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, NormalMode))
+
       case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
               GuaranteeWaiverSecured),
             Some(_),
             CheckMode) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, CheckMode))
-//      case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) |
-//            Some(GuaranteeWaiverByAgreement) | Some(GuaranteeWaiverSecured), None, CheckMode)
-//      => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, CheckMode))
-//      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),Some(_), NormalMode) =>
-//        Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, NormalMode))
-//
-//      case _ => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, mode))
+
+      case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
+              GuaranteeWaiverSecured),
+            None,
+            CheckMode) =>
+        Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+
+      case (Some(FlatRateVoucher), Some(_), CheckMode) =>
+        ua.get(GuaranteeReferencePage).size match {
+          case 24 => Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+          case 17 => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
+        }
+
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple), Some(_), CheckMode) =>
+        Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, mode))
+
+      case _ => Some(routes.AccessCodeController.onPageLoad(ua.id, mode))
+
     }
 
 }
