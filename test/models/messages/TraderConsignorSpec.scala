@@ -18,7 +18,7 @@ package models.messages
 
 import generators.MessagesModelGenerators
 import models.XMLWrites._
-import models.messages.trader.{TraderConsignorWithEori, TraderConsignorWithoutEori, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
+import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -37,35 +37,11 @@ class TraderConsignorSpec
 
   "TraderConsignorSpec" - {
 
-    "must serialize TraderPrincipalWithEori to xml" in {
-
-      forAll(arbitrary[TraderConsignorWithEori]) {
+    "must serialize TraderConsignor to xml" in {
+      forAll(arbitrary[TraderConsignor]) {
         trader =>
-          val nameNode        = trader.name.map(value => <NamCO17>{escapeXml(value)}</NamCO17>)
-          val streetNameNode  = trader.streetAndNumber.map(value => <StrAndNumCO122>{value}</StrAndNumCO122>)
-          val postCodeNode    = trader.postCode.map(value => <PosCodCO123>{value}</PosCodCO123>)
-          val cityNode        = trader.city.map(value => <CitCO124>{value}</CitCO124>)
-          val countryCodeNode = trader.countryCode.map(value => <CouCO125>{value}</CouCO125>)
+          val eori = trader.eori.map(value => <TINCO159>{value}</TINCO159>)
 
-          val expectedResult =
-            <TRACONCO1>
-              {nameNode.getOrElse(NodeSeq.Empty) ++
-              streetNameNode.getOrElse(NodeSeq.Empty) ++
-              postCodeNode.getOrElse(NodeSeq.Empty) ++
-              cityNode.getOrElse(NodeSeq.Empty) ++
-              countryCodeNode.getOrElse(NodeSeq.Empty)}
-              <NADLNGCO>EN</NADLNGCO>
-              <TINCO159>{trader.eori}</TINCO159>
-            </TRACONCO1>
-
-          trader.toXml mustEqual expectedResult
-      }
-
-    }
-
-    "must serialize TraderPrincipalWithoutEori to xml" in {
-      forAll(arbitrary[TraderConsignorWithoutEori]) {
-        trader =>
           val expectedResult =
             <TRACONCO1>
               <NamCO17>{escapeXml(trader.name)}</NamCO17>
@@ -74,6 +50,7 @@ class TraderConsignorSpec
               <CitCO124>{trader.city}</CitCO124>
               <CouCO125>{trader.countryCode}</CouCO125>
               <NADLNGCO>EN</NADLNGCO>
+              {eori.getOrElse(NodeSeq.Empty)}
             </TRACONCO1>
 
           trader.toXml mustEqual expectedResult

@@ -18,7 +18,7 @@ package models.messages
 
 import generators.MessagesModelGenerators
 import models.XMLWrites._
-import models.messages.trader.{TraderConsigneeWithEori, TraderConsigneeWithoutEori, TraderConsignorWithEori, TraderConsignorWithoutEori}
+import models.messages.trader.{TraderConsigneeWithEori, TraderConsigneeWithoutEori}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
