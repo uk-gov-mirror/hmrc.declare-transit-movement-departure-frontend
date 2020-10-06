@@ -24,9 +24,9 @@ class OtherReferenceFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey                       = "otherReference.error.required"
   val lengthKey                         = "otherReference.error.length"
-  val exactLength                       = 35
+  val maxLength                       = 35
   val invalidKey                        = "otherReference.error.invalid"
-  val otherReferenceNumberRegex: String = "^[a-zA-Z0-9]{35}$"
+  val otherReferenceNumberRegex: String = "^[a-zA-Z0-9]*$"
 
   val form = new OtherReferenceFormProvider()()
 
@@ -37,7 +37,14 @@ class OtherReferenceFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(exactLength)
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
@@ -50,7 +57,7 @@ class OtherReferenceFormProviderSpec extends StringFieldBehaviours {
 
       val expectedError = List(FormError(fieldName, invalidKey, Seq(otherReferenceNumberRegex)))
       val genInvalidString: Gen[String] = {
-        stringsWithLength(exactLength) suchThat (!_.matches(otherReferenceNumberRegex))
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(otherReferenceNumberRegex))
       }
 
       forAll(genInvalidString) {

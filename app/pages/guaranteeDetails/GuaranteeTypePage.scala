@@ -33,6 +33,6 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
     value match {
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple)) =>
         userAnswers.remove(GuaranteeReferencePage)
-      case _ =>  userAnswers.remove(OtherReferencePage)
+      case _ => userAnswers.remove(OtherReferencePage)
     }
 }

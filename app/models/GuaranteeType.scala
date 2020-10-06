@@ -44,7 +44,7 @@ object GuaranteeType extends Enumerable.Implicits {
     GuaranteeNotRequired,
     GuaranteeWaivedRedirect,
     GuaranteeWaiverByAgreement,
-    GuaranteeWaiver,
+    GuaranteeWaiverSecured,
     IndividualGuaranteeMultiple
   )
 
