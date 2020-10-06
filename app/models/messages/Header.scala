@@ -55,15 +55,17 @@ case class Header(
 
 object Header {
 
-  val typeOfDeclarationLength             = 9
-  val countryLength                       = 2
-  val agreedLocationOfGoodsCodeLength     = 17
-  val authorisedLocationOfGoodsCodeLength = 17
-  val agreedLocationOfGoodsLength         = 35
-  val declarationPlace                    = 35
-  val identityMeansOfTransport            = 27
-  val placeOfLoadingGoodsCodeLength       = 17
-  val customsSubPlaceLength               = 17
+  object Constants {
+    val typeOfDeclarationLength             = 9
+    val countryLength                       = 2
+    val agreedLocationOfGoodsCodeLength     = 17
+    val authorisedLocationOfGoodsCodeLength = 17
+    val agreedLocationOfGoodsLength         = 35
+    val declarationPlace                    = 35
+    val identityMeansOfTransport            = 27
+    val placeOfLoadingGoodsCodeLength       = 17
+    val customsSubPlaceLength               = 17
+  }
 
   // scalastyle:off
   implicit def writes: XMLWrites[Header] = XMLWrites[Header] {
