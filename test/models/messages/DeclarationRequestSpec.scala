@@ -24,8 +24,10 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalacheck.Arbitrary._
 import com.lucidchart.open.xtract.XmlReader
 
-import scala.xml.Node
+import scala.xml.{Node, NodeSeq}
 import models.XMLWrites._
+import models.messages.trader.{TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
+
 import scala.xml.Utility.trim
 
 class DeclarationRequestSpec
@@ -35,6 +37,8 @@ class DeclarationRequestSpec
     with MessagesModelGenerators
     with StreamlinedXmlEquality
     with OptionValues {
+
+  import DeclarationRequestSpec._
 
   "DeclarationRequest" - {
 
@@ -46,6 +50,7 @@ class DeclarationRequestSpec
             <CC015B>
               {declarationRequest.meta.toXml}
               {declarationRequest.header.toXml}
+              {traderPrinciple(declarationRequest.traderPrincipal)}
             </CC015B>
 
           declarationRequest.toXml.map(trim) mustBe expectedResult.map(trim)
@@ -65,4 +70,13 @@ class DeclarationRequestSpec
 
   }
 
+}
+
+object DeclarationRequestSpec {
+
+  def traderPrinciple(traderPrincipal: TraderPrincipal): NodeSeq = traderPrincipal match {
+    case traderPrincipalWithEori: TraderPrincipalWithEori       => traderPrincipalWithEori.toXml
+    case traderPrincipalWithoutEori: TraderPrincipalWithoutEori => traderPrincipalWithoutEori.toXml
+    case _                                                      => NodeSeq.Empty
+  }
 }
