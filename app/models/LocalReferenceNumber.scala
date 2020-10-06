@@ -53,4 +53,5 @@ object LocalReferenceNumber {
     override def unbind(key: String, value: LocalReferenceNumber): String =
       value.toString
   }
+
 }

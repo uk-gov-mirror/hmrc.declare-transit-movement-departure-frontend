@@ -48,6 +48,20 @@ object GuaranteeType extends Enumerable.Implicits {
     IndividualGuaranteeMultiple
   )
 
+  def getId(gtValue: String): String = gtValue match {
+    case "0" => "GuaranteeWaiver"
+    case "1" => "ComprehensiveGuarantee"
+    case "2" => "IndividualGuarantee"
+    case "4" => "FlatRateVoucher"
+    case "3" => "CashDepositGuarantee"
+    case "7" => "GuaranteeNotRequired"
+    case "6" => "GuaranteeWaivedRedirect"
+    case "A" => "GuaranteeWaiverByAgreement"
+    case "5" => "GuaranteeWaiverSecured"
+    case "9" => "IndividualGuaranteeMultiple"
+    case _   => gtValue
+  }
+
   def radios(form: Form[_])(implicit messages: Messages): Seq[Radios.Item] = {
 
     val field = form("value")
@@ -61,7 +75,7 @@ object GuaranteeType extends Enumerable.Implicits {
       Radios.Radio(msg"guaranteeType.GuaranteeWaivedRedirect", GuaranteeWaivedRedirect.toString),
       Radios.Radio(msg"guaranteeType.GuaranteeWaiverByAgreement", GuaranteeWaiverByAgreement.toString),
       Radios.Radio(msg"guaranteeType.GuaranteeWaiverSecured", GuaranteeWaiverSecured.toString),
-      Radios.Radio(msg"guaranteeType.IndividualGuarantee", IndividualGuarantee.toString)
+      Radios.Radio(msg"guaranteeType.IndividualGuaranteeMultiple", IndividualGuaranteeMultiple.toString)
     )
 
     Radios(field, items)

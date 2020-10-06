@@ -50,17 +50,15 @@ class TransportDetailsCheckYourAnswersController @Inject()(
           referenceDataConnector.getTransportModes().flatMap {
             transportModeList =>
               val sections: Seq[Section] = TransportDetailsCheckYourAnswersViewModel(request.userAnswers, countryList, transportModeList).sections
-              val json                   = Json.obj("lrn" -> lrn, "sections" -> Json.toJson(sections))
+              val json = Json.obj(
+                "lrn"         -> lrn,
+                "sections"    -> Json.toJson(sections),
+                "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+              )
 
               renderer.render("transportDetailsCheckYourAnswers.njk", json).map(Ok(_))
 
           }
       }
   }
-
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      Future.successful(Redirect(mainRoutes.DeclarationSummaryController.onPageLoad(lrn)))
-  }
-
 }

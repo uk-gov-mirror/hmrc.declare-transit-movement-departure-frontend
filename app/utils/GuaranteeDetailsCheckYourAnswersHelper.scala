@@ -17,13 +17,29 @@
 package utils
 
 import controllers.guaranteeDetails.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models._
 import pages._
-import pages.guaranteeDetails.GuaranteeReferencePage
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def guaranteeType: Option[Row] = userAnswers.get(GuaranteeTypePage) map {
+    answer =>
+      val gtName = GuaranteeType.getId(answer.toString)
+      Row(
+        key   = Key(msg"guaranteeType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(msg"guaranteeType.$gtName"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.GuaranteeTypeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"guaranteeType.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def accessCode: Option[Row] = userAnswers.get(AccessCodePage) map {
     answer =>
@@ -57,9 +73,13 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def liabilityAmount: Option[Row] = userAnswers.get(LiabilityAmountPage) map {
     answer =>
+      val displayAmount = answer.toDouble match {
+        case 0.00 => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
+        case _    => lit"$answer"
+      }
       Row(
         key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(displayAmount),
         actions = List(
           Action(
             content            = msg"site.edit",

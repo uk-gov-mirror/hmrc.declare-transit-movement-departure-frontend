@@ -21,7 +21,7 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit}
-import models.{CountryList, CustomsOfficeList, OfficeOfTransitList}
+import models.{CountryList, CustomsOfficeList, NormalMode, OfficeOfTransitList}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -42,7 +42,7 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
   private val customsOffices: CustomsOfficeList        = CustomsOfficeList(Seq(customsOffice))
   private val officeOfTransit                          = OfficeOfTransit("1", "name")
   private val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))
-  lazy val routeDetailsCheckYourAnswersRoute           = routes.RouteDetailsCheckYourAnswersController.onSubmit(lrn).url
+  lazy val routeDetailsCheckYourAnswersRoute           = mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
 
   "RouteDetailsCheckYourAnswers Controller" - {
 
@@ -72,10 +72,16 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn)
+      val expectedJson = Json.obj(
+        "lrn"                    -> lrn,
+        "nextPageUrl"            -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url,
+        "addOfficesOfTransitUrl" -> routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url
+      )
+
+      val jsonCaptorWithoutConfig: JsObject = jsonCaptor.getValue - configKey - "sections"
 
       templateCaptor.getValue mustEqual "routeDetailsCheckYourAnswers.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonCaptorWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -91,20 +97,6 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSu
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
-    }
-
-    "must redirect to task-list page on POST" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request =
-        FakeRequest(POST, routeDetailsCheckYourAnswersRoute)
-          .withFormUrlEncodedBody(("value", "id"))
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
     }
   }
 }
