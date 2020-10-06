@@ -21,22 +21,24 @@ import models.XMLWrites
 import scala.xml.{Elem, Node, NodeSeq}
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLWrites._
+import cats.syntax.all._
 
-case class DeclarationRequest(meta: Meta)
+case class DeclarationRequest(meta: Meta, header: Header)
 
 object DeclarationRequest {
 
   implicit def writes: XMLWrites[DeclarationRequest] = XMLWrites[DeclarationRequest] {
-    unloadingRemarksRequest =>
+    declarationRequest =>
       val parentNode: Node = <CC015B></CC015B>
 
       val childNodes: NodeSeq = {
-        unloadingRemarksRequest.meta.toXml
+        declarationRequest.meta.toXml ++
+          declarationRequest.header.toXml
       } //TODO: This needs more xml nodes adding as models become available
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
   }
 
   implicit val reads: XmlReader[DeclarationRequest] =
-    (__.read[Meta]) map apply
+    (__.read[Meta], (__ \ "HEAHEA").read[Header]) mapN apply
 }

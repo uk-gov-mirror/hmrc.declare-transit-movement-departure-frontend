@@ -41,13 +41,14 @@ class DeclarationRequestSpec
     "must serialise DeclarationRequest to xml" in {
       //TODO: This needs more xml nodes adding as models become available
       forAll(arbitrary[DeclarationRequest]) {
-        unloadingRemarksRequest =>
+        declarationRequest =>
           val expectedResult: Node =
             <CC015B>
-              {unloadingRemarksRequest.meta.toXml}
+              {declarationRequest.meta.toXml}
+              {declarationRequest.header.toXml}
             </CC015B>
 
-          unloadingRemarksRequest.toXml.map(trim) mustBe expectedResult.map(trim)
+          declarationRequest.toXml.map(trim) mustBe expectedResult.map(trim)
       }
 
     }
@@ -55,9 +56,9 @@ class DeclarationRequestSpec
     "must de-serialise xml to DeclarationRequest" in {
 
       forAll(arbitrary[DeclarationRequest]) {
-        unloadingRemarksRequest =>
-          val result = XmlReader.of[DeclarationRequest].read(unloadingRemarksRequest.toXml)
-          result.toOption.value mustBe unloadingRemarksRequest
+        declarationRequest =>
+          val result = XmlReader.of[DeclarationRequest].read(declarationRequest.toXml)
+          result.toOption.value mustBe declarationRequest
       }
 
     }
