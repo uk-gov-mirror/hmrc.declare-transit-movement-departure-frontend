@@ -49,7 +49,7 @@ class AddSealHelper(userAnswers: UserAnswers) {
         )
     }
 
-  def sealsRow(lrn: LocalReferenceNumber, mode: Mode): Option[Row] = userAnswers.get(SealsQuery()).map {
+  def sealsRow(lrn: LocalReferenceNumber): Option[Row] = userAnswers.get(SealsQuery()).map {
     answer =>
       val numberOfSeals = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
 
