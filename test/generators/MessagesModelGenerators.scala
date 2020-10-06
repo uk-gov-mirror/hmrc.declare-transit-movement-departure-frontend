@@ -168,4 +168,27 @@ trait MessagesModelGenerators extends Generators {
         countryCode     <- Gen.pick(2, 'A' to 'Z')
       } yield TraderConsignorWithoutEori(name, streetAndNumber, postCode, city, countryCode.mkString)
     }
+
+  implicit lazy val arbitraryTraderConsigneeWithEori: Arbitrary[TraderConsigneeWithEori] =
+    Arbitrary {
+      for {
+        eori            <- stringsWithMaxLength(Trader.Constants.eoriLength)
+        name            <- Gen.option(stringsWithMaxLength(Trader.Constants.nameLength))
+        streetAndNumber <- Gen.option(stringsWithMaxLength(Trader.Constants.streetAndNumberLength))
+        postCode        <- Gen.option(stringsWithMaxLength(Trader.Constants.postCodeLength))
+        city            <- Gen.option(stringsWithMaxLength(Trader.Constants.cityLength))
+        countryCode     <- Gen.option(Gen.pick(2, 'A' to 'Z'))
+      } yield TraderConsigneeWithEori(eori, name, streetAndNumber, postCode, city, countryCode.map(_.mkString))
+    }
+
+  implicit lazy val arbitraryTraderConsigneeWithoutEori: Arbitrary[TraderConsigneeWithoutEori] =
+    Arbitrary {
+      for {
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength)
+        streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength)
+        postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength)
+        city            <- stringsWithMaxLength(Trader.Constants.cityLength)
+        countryCode     <- Gen.pick(2, 'A' to 'Z')
+      } yield TraderConsigneeWithoutEori(name, streetAndNumber, postCode, city, countryCode.mkString)
+    }
 }
