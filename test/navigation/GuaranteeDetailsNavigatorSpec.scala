@@ -265,10 +265,10 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
-                .set(GuaranteeReferencePage, "12345678901234567")
+                .set(GuaranteeTypePage, GuaranteeWaiver)
                 .success
                 .value
-                .set(GuaranteeTypePage, GuaranteeWaiver)
+                .set(GuaranteeReferencePage, "12345678901234567")
                 .success
                 .value
               navigator
@@ -276,7 +276,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
                 .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, CheckMode))
           }
         }
-        "to GuaranteedReference page when user changes answer from 0,1,2, or 9 to 4" in {
+        "to GuaranteedReference page when user changes answer from 0,1,2, or 9 to FlatRateVoucher" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
@@ -294,7 +294,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
                 .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
           }
         }
-        "to GuaranteedReference page when user changes answer from 4 to 0,1,2, or 9 " in {
+        "to GuaranteedReference page when user changes answer from FlatRateVoucher to 0,1,2, or 9 " in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
@@ -312,7 +312,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
                 .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
           }
         }
-        "to CYA page when user selects change but leaves answer as 4" in {
+        "to CYA page when user selects change but leaves answer as FlatRateVoucher" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers

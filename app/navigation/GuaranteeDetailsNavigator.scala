@@ -77,15 +77,19 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
             CheckMode) =>
         Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
 
-      case (Some(FlatRateVoucher), Some(_), CheckMode) =>
-        ua.get(GuaranteeReferencePage).size match {
+      case (Some(FlatRateVoucher), Some(guaranteeReference), CheckMode) =>
+        guaranteeReference.length match {
           case 24 => Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
-          case 17 => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
+          case _  => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
         }
 
-      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple), Some(_), CheckMode) =>
-        Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, mode))
-
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple),
+            Some(guaranteeReference),
+            CheckMode) =>
+        guaranteeReference.length match {
+          case 17 => Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+          case _  => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
+        }
       case _ => Some(routes.AccessCodeController.onPageLoad(ua.id, mode))
 
     }
