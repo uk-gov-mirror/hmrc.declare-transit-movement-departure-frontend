@@ -18,7 +18,7 @@ package pages.guaranteeDetails
 
 import models.GuaranteeType._
 import models.{GuaranteeType, UserAnswers}
-import pages.{OtherReferencePage, QuestionPage}
+import pages.{AccessCodePage, OtherReferencePage, QuestionPage}
 import play.api.libs.json.JsPath
 
 import scala.util.Try
@@ -32,7 +32,13 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
   override def cleanup(value: Option[GuaranteeType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple)) =>
-        userAnswers.remove(OtherReferencePage)
-      case _ => userAnswers.remove(GuaranteeReferencePage)
+        userAnswers
+          .remove(OtherReferencePage)
+
+      case _ =>
+        userAnswers
+          .remove(GuaranteeReferencePage)
+          .flatMap(_.remove(AccessCodePage))
+
     }
 }
