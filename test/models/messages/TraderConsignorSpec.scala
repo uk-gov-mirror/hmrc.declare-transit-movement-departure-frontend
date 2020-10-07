@@ -16,6 +16,7 @@
 
 package models.messages
 
+import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import models.XMLWrites._
 import models.messages.trader._
@@ -40,22 +41,42 @@ class TraderConsignorSpec
     "must serialize TraderConsignor to xml" in {
       forAll(arbitrary[TraderConsignor]) {
         trader =>
-          val eori = trader.eori.map(value => <TINCO159>{value}</TINCO159>)
+          val eori = trader.eori.map(value => <TINCO159>
+            {value}
+          </TINCO159>)
 
           val expectedResult =
             <TRACONCO1>
-              <NamCO17>{escapeXml(trader.name)}</NamCO17>
-              <StrAndNumCO122>{trader.streetAndNumber}</StrAndNumCO122>
-              <PosCodCO123>{trader.postCode}</PosCodCO123>
-              <CitCO124>{trader.city}</CitCO124>
-              <CouCO125>{trader.countryCode}</CouCO125>
-              <NADLNGCO>EN</NADLNGCO>
-              {eori.getOrElse(NodeSeq.Empty)}
+              <NamCO17>
+                {escapeXml(trader.name)}
+              </NamCO17>
+              <StrAndNumCO122>
+                {trader.streetAndNumber}
+              </StrAndNumCO122>
+              <PosCodCO123>
+                {trader.postCode}
+              </PosCodCO123>
+              <CitCO124>
+                {trader.city}
+              </CitCO124>
+              <CouCO125>
+                {trader.countryCode}
+              </CouCO125>
+              <NADLNGCO>EN</NADLNGCO>{eori.getOrElse(NodeSeq.Empty)}
             </TRACONCO1>
 
           trader.toXml mustEqual expectedResult
       }
 
+    }
+
+    "must deserialize TraderConsignor from xml" in {
+      forAll(arbitrary[TraderConsignor]) {
+        data =>
+          val xml    = data.toXml
+          val result = XmlReader.of[TraderConsignor].read(xml).toOption.value
+          result mustBe data
+      }
     }
 
   }

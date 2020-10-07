@@ -16,6 +16,7 @@
 
 package models.messages
 
+import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import models.XMLWrites._
 import models.messages.trader.TraderConsignee
@@ -58,6 +59,13 @@ class TraderConsigneeSpec
 
     }
 
+    "must deserialize TraderConsignor from xml" in {
+      forAll(arbitrary[TraderConsignee]) {
+        data =>
+          val xml    = data.toXml
+          val result = XmlReader.of[TraderConsignee].read(xml).toOption.value
+          result mustBe data
+      }
+    }
   }
-
 }

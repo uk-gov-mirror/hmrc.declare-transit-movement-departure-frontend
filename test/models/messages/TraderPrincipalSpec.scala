@@ -16,14 +16,15 @@
 
 package models.messages
 
+import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import models.XMLWrites._
 import models.messages.trader.{TraderPrincipalWithEori, TraderPrincipalWithoutEori}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, StreamlinedXmlEquality}
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.xml.NodeSeq
 
@@ -37,46 +38,71 @@ class TraderPrincipalSpec
 
   "TraderPrincipalSpec" - {
 
-    "must serialize TraderPrincipalWithEori to xml" in {
+    "must serialize" - {
 
-      forAll(arbitrary[TraderPrincipalWithEori]) {
-        trader =>
-          val nameNode        = trader.name.map(value => <NamPC17>{escapeXml(value)}</NamPC17>)
-          val streetNameNode  = trader.streetAndNumber.map(value => <StrAndNumPC122>{value}</StrAndNumPC122>)
-          val postCodeNode    = trader.postCode.map(value => <PosCodPC123>{value}</PosCodPC123>)
-          val cityNode        = trader.city.map(value => <CitPC124>{value}</CitPC124>)
-          val countryCodeNode = trader.countryCode.map(value => <CouPC125>{value}</CouPC125>)
+      "TraderPrincipalWithEori to xml" in {
 
-          val expectedResult =
-            <TRAPRIPC1>
-              {nameNode.getOrElse(NodeSeq.Empty) ++
-              streetNameNode.getOrElse(NodeSeq.Empty) ++
-              postCodeNode.getOrElse(NodeSeq.Empty) ++
-              cityNode.getOrElse(NodeSeq.Empty) ++
-              countryCodeNode.getOrElse(NodeSeq.Empty)}
-              <NADLNGPC>EN</NADLNGPC>
-              <TINPC159>{trader.eori}</TINPC159>
-            </TRAPRIPC1>
+        forAll(arbitrary[TraderPrincipalWithEori]) {
+          trader =>
+            val nameNode        = trader.name.map(value => <NamPC17>{escapeXml(value)}</NamPC17>)
+            val streetNameNode  = trader.streetAndNumber.map(value => <StrAndNumPC122>{value}</StrAndNumPC122>)
+            val postCodeNode    = trader.postCode.map(value => <PosCodPC123>{value}</PosCodPC123>)
+            val cityNode        = trader.city.map(value => <CitPC124>{value}</CitPC124>)
+            val countryCodeNode = trader.countryCode.map(value => <CouPC125>{value}</CouPC125>)
 
-          trader.toXml mustEqual expectedResult
+            val expectedResult =
+              <TRAPRIPC1>
+                {nameNode.getOrElse(NodeSeq.Empty) ++
+                streetNameNode.getOrElse(NodeSeq.Empty) ++
+                postCodeNode.getOrElse(NodeSeq.Empty) ++
+                cityNode.getOrElse(NodeSeq.Empty) ++
+                countryCodeNode.getOrElse(NodeSeq.Empty)}
+                <NADLNGPC>EN</NADLNGPC>
+                <TINPC159>{trader.eori}</TINPC159>
+              </TRAPRIPC1>
+
+            trader.toXml mustEqual expectedResult
+        }
+
       }
 
+      "TraderPrincipalWithoutEori to xml" in {
+        forAll(arbitrary[TraderPrincipalWithoutEori]) {
+          trader =>
+            val expectedResult =
+              <TRAPRIPC1>
+                <NamPC17>{escapeXml(trader.name)}</NamPC17>
+                <StrAndNumPC122>{trader.streetAndNumber}</StrAndNumPC122>
+                <PosCodPC123>{trader.postCode}</PosCodPC123>
+                <CitPC124>{trader.city}</CitPC124>
+                <CouPC125>{trader.countryCode}</CouPC125>
+                <NADLNGPC>EN</NADLNGPC>
+              </TRAPRIPC1>
+
+            trader.toXml mustEqual expectedResult
+        }
+
+      }
     }
 
-    "must serialize TraderPrincipalWithoutEori to xml" in {
-      forAll(arbitrary[TraderPrincipalWithoutEori]) {
-        trader =>
-          val expectedResult =
-            <TRAPRIPC1>
-              <NamPC17>{escapeXml(trader.name)}</NamPC17>
-              <StrAndNumPC122>{trader.streetAndNumber}</StrAndNumPC122>
-              <PosCodPC123>{trader.postCode}</PosCodPC123>
-              <CitPC124>{trader.city}</CitPC124>
-              <CouPC125>{trader.countryCode}</CouPC125>
-              <NADLNGPC>EN</NADLNGPC>
-            </TRAPRIPC1>
+    "must deserialize" - {
 
-          trader.toXml mustEqual expectedResult
+      "TraderPrincipalWithoutEori from xml" in {
+        forAll(arbitrary[TraderPrincipalWithoutEori]) {
+          data =>
+            val xml    = data.toXml
+            val result = XmlReader.of[TraderPrincipalWithoutEori].read(xml).toOption.value
+            result mustBe data
+        }
+      }
+
+      "TraderPrincipalWithEori from xml" in {
+        forAll(arbitrary[TraderPrincipalWithEori]) {
+          data =>
+            val xml    = data.toXml
+            val result = XmlReader.of[TraderPrincipalWithEori].read(xml).toOption.value
+            result mustBe data
+        }
       }
 
     }
