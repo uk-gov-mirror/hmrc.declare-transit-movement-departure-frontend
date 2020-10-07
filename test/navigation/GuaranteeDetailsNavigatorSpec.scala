@@ -209,8 +209,8 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
-                .set(GuaranteeTypePage, CashDepositGuarantee).success.value
                 .set(GuaranteeReferencePage, "12345678901234567").success.value
+                .set(GuaranteeTypePage, CashDepositGuarantee).success.value
               navigator
                 .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
@@ -224,6 +224,9 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
               val updatedAnswers: UserAnswers = answers
                 .set(OtherReferencePage, "test").success.value
                 .set(GuaranteeTypePage, GuaranteeWaivedRedirect).success.value
+                .set(OtherReferencePage, "test").success.value
+                .remove(GuaranteeReferencePage).success.value
+
               navigator
                 .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.GuaranteeDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))

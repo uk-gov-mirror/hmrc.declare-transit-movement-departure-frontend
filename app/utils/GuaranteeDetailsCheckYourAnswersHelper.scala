@@ -45,7 +45,7 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     answer =>
       Row(
         key   = Key(msg"accessCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(lit"••••"),
         actions = List(
           Action(
             content            = msg"site.edit",

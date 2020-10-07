@@ -26,7 +26,7 @@ import models.GuaranteeType._
 
 @Singleton
 class GuaranteeDetailsNavigator @Inject()() extends Navigator {
-// format: off
+  // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case GuaranteeTypePage => ua => guaranteeTypeRoute(ua, NormalMode)
     case OtherReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
@@ -40,34 +40,30 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
     case _ => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
 
-  def guaranteeTypeRoute(ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(GuaranteeTypePage), ua.get(GuaranteeReferencePage), mode) match {
+  def guaranteeTypeRoute(ua: UserAnswers, mode: Mode): Option[Call] = 
+
+      (ua.get(GuaranteeTypePage), ua.get(GuaranteeReferencePage), mode) match {
       case (Some(guaranteeType), _, NormalMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, NormalMode))
 
       case (Some(guaranteeType), None, NormalMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, NormalMode))
 
-      case (Some(guaranteeType), Some(_), CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+      case (Some(guaranteeType), None, CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, CheckMode))
 
-      case (Some(guaranteeType), None, CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+      case (Some(guaranteeType), Some(_), CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
-      case (Some(FlatRateVoucher), Some(guaranteeReference), CheckMode) => 
-        guaranteeReference.length match {
-          case 24 => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
-          case _  => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
-        }
 
-      case (Some(guaranteeType), Some(guaranteeReference), CheckMode) if guaranteeReferenceRoute.contains(guaranteeType)  => { //NOTE: this is the catch for ^^
-        guaranteeReference.length match {
-          case 17 => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
-          case _ => Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
-        }
-      }
+      case (Some(guaranteeType), None, CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
 
-      case _ => Some(routes.AccessCodeController.onPageLoad(ua.id, mode))
+       Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
+
+
+
+      case _ => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     }
+  
   // format: on
 }
