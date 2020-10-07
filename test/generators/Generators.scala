@@ -160,6 +160,12 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     }
   }
 
+  def listWithMaxLength[A](maxLength: Int)(implicit a: Arbitrary[A]): Gen[List[A]] =
+    for {
+      length <- choose(1, maxLength)
+      seq    <- listOfN(length, arbitrary[A])
+    } yield seq
+
   implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
     datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
   }
@@ -169,6 +175,13 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       LocalDateTime.of(1900, 1, 1, 0, 0, 0),
       LocalDateTime.of(2100, 1, 1, 0, 0, 0)
     ).map(_.toLocalTime)
+  }
+
+  implicit lazy val arbitraryLocalDateTime: Arbitrary[LocalDateTime] = Arbitrary {
+    dateTimesBetween(
+      LocalDateTime.of(1900, 1, 1, 0, 0, 0),
+      LocalDateTime.of(2100, 1, 1, 0, 0, 0)
+    ).map(x => x.withNano(0).withSecond(0))
   }
 
   val localDateGen: Gen[LocalDate] = datesBetween(LocalDate.of(1900, 1, 1), LocalDate.now)

@@ -16,12 +16,12 @@
 
 package models
 
-import java.time.{LocalDate, LocalTime}
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 
 import com.lucidchart.open.xtract.{ParseError, ParseFailure, ParseResult, ParseSuccess, PartialParseSuccess, XmlReader}
 import com.lucidchart.open.xtract.XmlReader.{intReader, strictReadSeq}
 import play.api.Logger
-import utils.Format.{dateFormatter, timeFormatter}
+import utils.Format.{dateFormatter, dateTimeFormatterIE015, timeFormatter}
 
 import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
@@ -44,6 +44,16 @@ object XMLReads {
     new XmlReader[LocalTime] {
       override def read(xml: NodeSeq): ParseResult[LocalTime] =
         Try(LocalTime.parse(xml.text, timeFormatter)) match {
+          case Success(value) => ParseSuccess(value)
+          case Failure(e)     => ParseFailure(LocalTimeParseFailure(e.getMessage))
+        }
+    }
+  }
+
+  implicit val xmlDateTimeReads: XmlReader[LocalDateTime] = {
+    new XmlReader[LocalDateTime] {
+      override def read(xml: NodeSeq): ParseResult[LocalDateTime] =
+        Try(LocalDateTime.parse(xml.text, dateTimeFormatterIE015)) match {
           case Success(value) => ParseSuccess(value)
           case Failure(e)     => ParseFailure(LocalTimeParseFailure(e.getMessage))
         }
