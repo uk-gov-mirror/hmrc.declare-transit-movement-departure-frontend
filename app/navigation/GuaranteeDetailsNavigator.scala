@@ -16,6 +16,7 @@
 
 package navigation
 
+import akka.util.Helpers.Requiring
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
@@ -31,15 +32,31 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
     case GuaranteeTypePage => ua => guaranteeTypeRoute(ua, NormalMode)
     case OtherReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
     case GuaranteeReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
-    case LiabilityAmountPage => ua => Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
+    case LiabilityAmountPage => ua => liabilityAmountRoute(ua, NormalMode)
     case AccessCodePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case GuaranteeTypePage => ua => guaranteeTypeRoute(ua, CheckMode)
+    case LiabilityAmountPage => ua => liabilityAmountRoute(ua, CheckMode)
+    case GuaranteeReferencePage => ua => guaranteeReferenceRoutes(ua, CheckMode)
+    case AccessCodePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case _ => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
 
+  def guaranteeReferenceRoutes(ua:UserAnswers,mode:Mode) =
+    ua.get(LiabilityAmountPage) match {
+      case None => Some(routes.LiabilityAmountController.onPageLoad(ua.id, CheckMode))
+      case Some(_) =>  Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
+
+    }
+
+  def liabilityAmountRoute(ua:UserAnswers, mode:Mode)  = 
+    (ua.get(GuaranteeReferencePage), mode) match {
+      case (Some(_), NormalMode) => Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
+      case _ =>  Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    }
+  
   def guaranteeTypeRoute(ua: UserAnswers, mode: Mode): Option[Call] = 
 
       (ua.get(GuaranteeTypePage), ua.get(GuaranteeReferencePage), mode) match {
@@ -52,15 +69,15 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
       case (Some(guaranteeType), None, CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, CheckMode))
 
+      case (Some(guaranteeType), Some(_), CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
+        Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
+
+
       case (Some(guaranteeType), Some(_), CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
-
-      case (Some(guaranteeType), None, CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
-
-       Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
-
-
+      case (Some(guaranteeType), None , CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
+        Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
 
       case _ => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     }
