@@ -63,13 +63,14 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryDeclarationRequest: Arbitrary[DeclarationRequest] = {
     Arbitrary {
       for {
-        meta            <- arbitrary[Meta]
-        header          <- arbitrary[Header]
-        traderPrinciple <- Gen.oneOf(arbitrary[TraderPrincipalWithEori], arbitrary[TraderPrincipalWithoutEori])
-        traderConsignor <- Gen.option(arbitrary[TraderConsignor])
-        traderConsignee <- Gen.option(arbitrary[TraderConsignee])
+        meta                      <- arbitrary[Meta]
+        header                    <- arbitrary[Header]
+        traderPrinciple           <- Gen.oneOf(arbitrary[TraderPrincipalWithEori], arbitrary[TraderPrincipalWithoutEori])
+        traderConsignor           <- Gen.option(arbitrary[TraderConsignor])
+        traderConsignee           <- Gen.option(arbitrary[TraderConsignee])
+        traderAuthorisedConsignee <- arbitrary[TraderAuthorisedConsignee]
         //TODO: This needs more xml nodes adding as models become available
-      } yield DeclarationRequest(meta, header, traderPrinciple, traderConsignor, traderConsignee)
+      } yield DeclarationRequest(meta, header, traderPrinciple, traderConsignor, traderConsignee, traderAuthorisedConsignee)
     }
   }
 
@@ -171,5 +172,12 @@ trait MessagesModelGenerators extends Generators {
         countryCode     <- Gen.pick(2, 'A' to 'Z')
         eori            <- Gen.option(stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar))
       } yield TraderConsignee(name, streetAndNumber, postCode, city, countryCode.mkString, eori)
+    }
+
+  implicit lazy val arbitraryAuthorisedConsigneeTrader: Arbitrary[TraderAuthorisedConsignee] =
+    Arbitrary {
+      for {
+        eori <- stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar)
+      } yield TraderAuthorisedConsignee(eori)
     }
 }

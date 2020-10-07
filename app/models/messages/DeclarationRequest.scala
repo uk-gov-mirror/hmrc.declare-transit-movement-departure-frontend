@@ -28,7 +28,8 @@ case class DeclarationRequest(meta: Meta,
                               header: Header,
                               traderPrincipal: TraderPrincipal,
                               traderConsignor: Option[TraderConsignor],
-                              traderConsignee: Option[TraderConsignee])
+                              traderConsignee: Option[TraderConsignee],
+                              traderAuthorisedConsignee: TraderAuthorisedConsignee)
 
 object DeclarationRequest {
 
@@ -41,7 +42,8 @@ object DeclarationRequest {
           declarationRequest.header.toXml ++
           traderPrinciple(declarationRequest.traderPrincipal) ++
           declarationRequest.traderConsignor.map(_.toXml).getOrElse(NodeSeq.Empty) ++
-          declarationRequest.traderConsignee.map(_.toXml).getOrElse(NodeSeq.Empty)
+          declarationRequest.traderConsignee.map(_.toXml).getOrElse(NodeSeq.Empty) ++
+          declarationRequest.traderAuthorisedConsignee.toXml
       } //TODO: This needs more xml nodes adding as models become available
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
@@ -58,5 +60,6 @@ object DeclarationRequest {
      (__ \ "HEAHEA").read[Header],
      (__ \ "TRAPRIPC1").read[TraderPrincipal],
      (__ \ "TRACONCO1").read[TraderConsignor].optional,
-     (__ \ "TRACONCE1").read[TraderConsignee].optional) mapN apply
+     (__ \ "TRACONCE1").read[TraderConsignee].optional,
+     (__ \ "TRAAUTCONTRA").read[TraderAuthorisedConsignee]) mapN apply
 }
