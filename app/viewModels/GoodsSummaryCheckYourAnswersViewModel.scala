@@ -38,7 +38,7 @@ object GoodsSummaryCheckYourAnswersViewModel {
     val addCustomsApprovedLocation: Option[SummaryList.Row] = checkYourAnswersHelper.addCustomsApprovedLocation
     val customsApprovedLocation: Option[SummaryList.Row]    = checkYourAnswersHelper.customsApprovedLocation
     val addSeals: Option[SummaryList.Row]                   = checkYourAnswersHelper.addSeals
-    val seals                                               = addSealHelper.sealsRow(userAnswers.id, NormalMode)
+    val seals                                               = addSealHelper.sealsRow(userAnswers.id)
     val sealsInformation: Option[SummaryList.Row]           = checkYourAnswersHelper.sealsInformation
 
     val checkYourAnswersData = Seq(
