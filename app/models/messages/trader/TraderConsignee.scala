@@ -35,7 +35,7 @@ final case class TraderConsignee(
 object TraderConsignee {
 
   implicit val xmlReader: XmlReader[TraderConsignee] = (
-    (__ \ "NamCO17").read[String],
+    (__ \ "NamCE17").read[String],
     (__ \ "StrAndNumCE122").read[String],
     (__ \ "PosCodCE123").read[String],
     (__ \ "CitCE124").read[String],

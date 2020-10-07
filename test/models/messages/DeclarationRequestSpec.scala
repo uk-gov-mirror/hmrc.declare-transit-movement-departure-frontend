@@ -51,6 +51,8 @@ class DeclarationRequestSpec
               {declarationRequest.meta.toXml}
               {declarationRequest.header.toXml}
               {traderPrinciple(declarationRequest.traderPrincipal)}
+              {declarationRequest.traderConsignor.map(_.toXml).getOrElse(NodeSeq.Empty)}
+              {declarationRequest.traderConsignee.map(_.toXml).getOrElse(NodeSeq.Empty)}
             </CC015B>
 
           declarationRequest.toXml.map(trim) mustBe expectedResult.map(trim)

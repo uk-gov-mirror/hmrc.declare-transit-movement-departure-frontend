@@ -66,8 +66,10 @@ trait MessagesModelGenerators extends Generators {
         meta            <- arbitrary[Meta]
         header          <- arbitrary[Header]
         traderPrinciple <- Gen.oneOf(arbitrary[TraderPrincipalWithEori], arbitrary[TraderPrincipalWithoutEori])
+        traderConsignor <- Gen.option(arbitrary[TraderConsignor])
+        traderConsignee <- Gen.option(arbitrary[TraderConsignee])
         //TODO: This needs more xml nodes adding as models become available
-      } yield DeclarationRequest(meta, header, traderPrinciple)
+      } yield DeclarationRequest(meta, header, traderPrinciple, traderConsignor, traderConsignee)
     }
   }
 

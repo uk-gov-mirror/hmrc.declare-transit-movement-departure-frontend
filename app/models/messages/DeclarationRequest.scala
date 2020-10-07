@@ -20,11 +20,15 @@ import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLWrites
 import models.XMLWrites._
-import models.messages.trader.{TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
+import models.messages.trader._
 
 import scala.xml.{Elem, Node, NodeSeq}
 
-case class DeclarationRequest(meta: Meta, header: Header, traderPrincipal: TraderPrincipal)
+case class DeclarationRequest(meta: Meta,
+                              header: Header,
+                              traderPrincipal: TraderPrincipal,
+                              traderConsignor: Option[TraderConsignor],
+                              traderConsignee: Option[TraderConsignee])
 
 object DeclarationRequest {
 
@@ -35,7 +39,9 @@ object DeclarationRequest {
       val childNodes: NodeSeq = {
         declarationRequest.meta.toXml ++
           declarationRequest.header.toXml ++
-          traderPrinciple(declarationRequest.traderPrincipal)
+          traderPrinciple(declarationRequest.traderPrincipal) ++
+          declarationRequest.traderConsignor.map(_.toXml).getOrElse(NodeSeq.Empty) ++
+          declarationRequest.traderConsignee.map(_.toXml).getOrElse(NodeSeq.Empty)
       } //TODO: This needs more xml nodes adding as models become available
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
@@ -48,5 +54,9 @@ object DeclarationRequest {
   }
 
   implicit val reads: XmlReader[DeclarationRequest] =
-    (__.read[Meta], (__ \ "HEAHEA").read[Header], (__ \ "TRAPRIPC1").read[TraderPrincipal]) mapN apply
+    (__.read[Meta],
+     (__ \ "HEAHEA").read[Header],
+     (__ \ "TRAPRIPC1").read[TraderPrincipal],
+     (__ \ "TRACONCO1").read[TraderConsignor].optional,
+     (__ \ "TRACONCE1").read[TraderConsignee].optional) mapN apply
 }
