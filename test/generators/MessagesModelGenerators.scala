@@ -20,6 +20,7 @@ import java.time.{LocalDate, LocalTime}
 
 import models.LocalReferenceNumber
 import models.messages._
+import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.{alphaNumChar, choose}
@@ -60,6 +61,14 @@ trait MessagesModelGenerators extends Generators {
     }
   }
 
+  implicit lazy val arbitraryCustomsOfficeTransit: Arbitrary[CustomsOfficeTransit] =
+    Arbitrary {
+      for {
+        customsOffice   <- Gen.pick(CustomsOffice.length, 'A' to 'Z')
+        arrivalDateTime <- Gen.option(arbitrary(arbitraryLocalDateTime))
+      } yield CustomsOfficeTransit(customsOffice.mkString, arrivalDateTime)
+    }
+
   implicit lazy val arbitraryDeclarationRequest: Arbitrary[DeclarationRequest] = {
     Arbitrary {
       for {
@@ -69,8 +78,22 @@ trait MessagesModelGenerators extends Generators {
         traderConsignor           <- Gen.option(arbitrary[TraderConsignor])
         traderConsignee           <- Gen.option(arbitrary[TraderConsignee])
         traderAuthorisedConsignee <- arbitrary[TraderAuthorisedConsignee]
+        customsOfficeDeparture    <- Gen.pick(CustomsOffice.length, 'A' to 'Z')
+        customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.transitOfficeCount)
+        customsOfficeDestination  <- Gen.pick(CustomsOffice.length, 'A' to 'Z')
         //TODO: This needs more xml nodes adding as models become available
-      } yield DeclarationRequest(meta, header, traderPrinciple, traderConsignor, traderConsignee, traderAuthorisedConsignee)
+      } yield
+        DeclarationRequest(
+          meta,
+          header,
+          traderPrinciple,
+          traderConsignor,
+          traderConsignee,
+          traderAuthorisedConsignee,
+          CustomsOfficeDeparture(customsOfficeDeparture.mkString),
+          customsOfficeTransit,
+          CustomsOfficeDestination(customsOfficeDestination.mkString)
+        )
     }
   }
 
@@ -180,4 +203,5 @@ trait MessagesModelGenerators extends Generators {
         eori <- stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar)
       } yield TraderAuthorisedConsignee(eori)
     }
+
 }

@@ -36,6 +36,9 @@ object Format {
   val dateTimeFormatter: DateTimeFormatter               = DateTimeFormatter.ofPattern("dd MM yyyy HH:mm")
   def dateTimeFormatted(dateTime: LocalDateTime): String = dateTime.format(dateTimeFormatter)
 
+  val dateTimeFormatterIE015: DateTimeFormatter               = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
+  def dateTimeFormattedIE015(dateTime: LocalDateTime): String = dateTime.format(dateTimeFormatterIE015)
+
   def dateFormattedForHeader(dateTime: OffsetDateTime): String =
     dateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME)
 }
