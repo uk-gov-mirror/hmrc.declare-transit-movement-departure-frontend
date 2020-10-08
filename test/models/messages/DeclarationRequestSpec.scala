@@ -57,6 +57,7 @@ class DeclarationRequestSpec
               {declarationRequest.customsOfficeDeparture.toXml}
               {declarationRequest.customsOfficeTransit.flatMap(_.toXml)}
               {declarationRequest.customsOfficeDestination.toXml}
+              {declarationRequest.controlResult.map(_.toXml).getOrElse(NodeSeq.Empty)}
             </CC015B>
 
           declarationRequest.toXml.map(trim) mustBe expectedResult.map(trim)
