@@ -180,33 +180,76 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "From LiabilityAmountPage to AccessCodePage when a value is Some(_)" in {
+      "From Liability Amount Page" - {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers: UserAnswers =
-            answers
-              .set(GuaranteeTypePage, GuaranteeWaiver).success.value
-              .set(GuaranteeReferencePage, "test").success.value
-              .set(LiabilityAmountPage, "100.12").success.value
-            navigator
-              .nextPage(LiabilityAmountPage, NormalMode, updatedAnswers)
-              .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, NormalMode))
+        "to AccessCodePage when a value is greater than zero" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers =
+                answers
+                  .set(GuaranteeTypePage, GuaranteeWaiver).success.value
+                  .set(GuaranteeReferencePage, "test").success.value
+                  .set(LiabilityAmountPage, "100.12").success.value
+              navigator
+                .nextPage(LiabilityAmountPage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
         }
+
+        "to DefaultAmountPage when a value is None" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers =
+                answers
+                  .set(GuaranteeTypePage, GuaranteeWaiver).success.value
+                  .set(GuaranteeReferencePage, "test").success.value
+                  .remove(LiabilityAmountPage).success.value
+              navigator
+                .nextPage(LiabilityAmountPage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.DefaultAmountController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+
+        "to DefaultAmountPage when a value is empty" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers: UserAnswers =
+                answers
+                  .set(GuaranteeTypePage, GuaranteeWaiver).success.value
+                  .set(GuaranteeReferencePage, "test").success.value
+                  .set(LiabilityAmountPage, "").success.value
+              navigator
+                .nextPage(LiabilityAmountPage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.DefaultAmountController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+
       }
 
-      "From LiabilityAmountPage to DefaultAmountPage when a value is None" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers: UserAnswers =
-              answers
-                .set(GuaranteeTypePage, GuaranteeWaiver).success.value
-                .set(GuaranteeReferencePage, "test").success.value
-                .remove(LiabilityAmountPage).success.value
+      "From Default Amount Page" -{
+        "to Liability amount page if the answer is NO" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+            val updatedAnswers = answers
+              .set(DefaultAmountPage, false).success.value
             navigator
-              .nextPage(LiabilityAmountPage, NormalMode, updatedAnswers)
-              .mustBe(guaranteeDetailsRoute.DefaultAmountController.onPageLoad(updatedAnswers.id, NormalMode))
+              .nextPage(DefaultAmountPage, NormalMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "to Access code page if the answer is YES" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(DefaultAmountPage, true).success.value
+              navigator
+                .nextPage(DefaultAmountPage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(answers.id, NormalMode))
+          }
         }
       }
 
