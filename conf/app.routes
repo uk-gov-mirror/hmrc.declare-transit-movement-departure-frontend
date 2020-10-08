@@ -313,6 +313,12 @@ POST       /:lrn/guarantee-details/access-code                        controller
 GET        /:lrn/guarantee-details/change-access-code                  controllers.guaranteeDetails.AccessCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/guarantee-details/change-access-code                  controllers.guaranteeDetails.AccessCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+
+GET        /:lrn/guarantee-details/default-amount                       controllers.guaranteeDetails.DefaultAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/guarantee-details/default-amount                       controllers.guaranteeDetails.DefaultAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/guarantee-details/change-default-amount                       controllers.guaranteeDetails.DefaultAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/guarantee-details/change-default-amount                       controllers.guaranteeDetails.DefaultAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /:lrn/guarantee-details/liability-amount                        controllers.guaranteeDetails.LiabilityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/guarantee-details/liability-amount                        controllers.guaranteeDetails.LiabilityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/guarantee-details/change-liability-amount                  controllers.guaranteeDetails.LiabilityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

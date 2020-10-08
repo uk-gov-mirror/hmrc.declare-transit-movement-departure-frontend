@@ -640,6 +640,9 @@ guaranteeType.IndividualGuaranteeMultiple = (9) Individual guarantee with multip
 guaranteeType.checkYourAnswersLabel = Which type of guarantee is being used?
 guaranteeType.error.required = Select which type of guarantee is being used
 
+defaultAmount.error.required = Select yes if you want to use the default amount of EUR10,000
+
+
 accessCode.title = What is the access code?
 accessCode.heading = What is the access code?
 accessCode.checkYourAnswersLabel = Access code
