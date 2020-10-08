@@ -25,11 +25,11 @@ class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey                     = "guaranteeReference.error.required"
   val lengthKey                       = "guaranteeReference.error.length"
-  val exactLength                     = 24
+  val maxLength                       = 24
   val invalidKey                      = "guaranteeReference.error.invalid"
-  val representativeNameRegex: String = "^[a-zA-Z0-9]{24}$"
+  val representativeNameRegex: String = "^[A-Z0-9]*$"
 
-  val form = new GuaranteeReferenceFormProvider()(exactLength)
+  val form = new GuaranteeReferenceFormProvider()(maxLength)
 
   ".value" - {
 
@@ -38,7 +38,14 @@ class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(exactLength)
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
@@ -51,7 +58,7 @@ class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
 
       val expectedError = List(FormError(fieldName, invalidKey, Seq(representativeNameRegex)))
       val genInvalidString: Gen[String] = {
-        stringsWithLength(exactLength) suchThat (!_.matches(representativeNameRegex))
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(representativeNameRegex))
       }
 
       forAll(genInvalidString) {

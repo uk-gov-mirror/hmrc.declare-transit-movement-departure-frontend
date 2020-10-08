@@ -300,7 +300,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "From GuaranteeReferencePage to CYA if liability amountc and access code exists" in {
+      "From GuaranteeReferencePage to CYA if liability amount and access code exists" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers: UserAnswers = answers

@@ -26,7 +26,7 @@ class OtherReferenceFormProviderSpec extends StringFieldBehaviours {
   val lengthKey                         = "otherReference.error.length"
   val maxLength                         = 35
   val invalidKey                        = "otherReference.error.invalid"
-  val otherReferenceNumberRegex: String = "^[a-zA-Z0-9]*$"
+  val otherReferenceNumberRegex: String = "^[A-Z0-9]*$"
 
   val form = new OtherReferenceFormProvider()()
 

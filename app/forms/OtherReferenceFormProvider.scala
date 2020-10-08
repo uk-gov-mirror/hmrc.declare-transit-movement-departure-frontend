@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class OtherReferenceFormProvider @Inject() extends Mappings {
 
   val maxLength: Int                  = 35
-  val guaranteeReferenceRegex: String = "^[a-zA-Z0-9]*$"
+  val guaranteeReferenceRegex: String = "^[A-Z0-9]*$"
 
   def apply(): Form[String] =
     Form(

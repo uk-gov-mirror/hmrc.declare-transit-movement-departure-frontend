@@ -72,11 +72,11 @@ class GuaranteeReferenceController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val lengthGRN = request.userAnswers.get(GuaranteeTypePage) match {
+      val grnMaxLength = request.userAnswers.get(GuaranteeTypePage) match {
         case Some(FlatRateVoucher) => 24
         case _                     => 17
       }
-      formProvider(lengthGRN)
+      formProvider(grnMaxLength)
         .bindFromRequest()
         .fold(
           formWithErrors => {
