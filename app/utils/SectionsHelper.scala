@@ -144,7 +144,6 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
     Seq(
       userAnswers.get(DeclarationTypePage)           -> movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(ProcedureTypePage)             -> movementDetailsRoutes.ProcedureTypeController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(ContainersUsedPage)            -> movementDetailsRoutes.ContainersUsedPageController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(DeclarationPlacePage)          -> movementDetailsRoutes.DeclarationPlaceController.onPageLoad(lrn, NormalMode).url,
       userAnswers.get(DeclarationForSomeoneElsePage) -> movementDetailsRoutes.DeclarationForSomeoneElseController.onPageLoad(lrn, NormalMode).url

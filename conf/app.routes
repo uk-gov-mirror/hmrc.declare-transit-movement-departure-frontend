@@ -36,10 +36,10 @@ POST       /:lrn/movement-details/containers-used                        control
 GET        /:lrn/movement-details/change-containers-used                  controllers.movementDetails.ContainersUsedPageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/movement-details/change-containers-used                  controllers.movementDetails.ContainersUsedPageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/movement-details/procedure-type                        controllers.movementDetails.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/movement-details/procedure-type                        controllers.movementDetails.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/movement-details/change-procedure-type                  controllers.movementDetails.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/movement-details/change-procedure-type                  controllers.movementDetails.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/procedure-type                                             controllers.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/procedure-type                                             controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-procedure-type                                      controllers.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-procedure-type                                      controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/movement-details/declaration-place                        controllers.movementDetails.DeclarationPlaceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/movement-details/declaration-place                        controllers.movementDetails.DeclarationPlaceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
