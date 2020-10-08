@@ -39,8 +39,8 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
       case _ =>
         userAnswers
           .remove(GuaranteeReferencePage)
-          .flatMap(_.remove(AccessCodePage))
           .flatMap(_.remove(LiabilityAmountPage))
+          .flatMap(_.remove(AccessCodePage))
 
     }
 }

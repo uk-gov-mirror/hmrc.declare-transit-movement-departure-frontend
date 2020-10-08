@@ -209,7 +209,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
     "in Checkmode" - {
       "must go from Guarantee Type page to" - {
-        "OtherReferencePage when user selects 3,5,6,7 or A and guaranteeReference has been set to 17 characters" in {
+        "OtherReferencePage when user selects 3,5,6,7 or A and guaranteeReference had been set to 17 characters" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
