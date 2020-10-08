@@ -289,14 +289,25 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "From OtherReferencePage to CYA" in {
+      "From OtherReferencePage to CYA if Liability amount exists" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers = answers
+              .set(OtherReferencePage, "test").success.value
+              .set(LiabilityAmountPage, "1").success.value
+            navigator
+              .nextPage(OtherReferencePage, CheckMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.GuaranteeDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+      "From OtherReferencePage to LiabilityAmountPage if no answers for Liability amount exists" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers: UserAnswers = answers
               .set(OtherReferencePage, "test").success.value
             navigator
               .nextPage(OtherReferencePage, CheckMode, updatedAnswers)
-              .mustBe(guaranteeDetailsRoute.GuaranteeDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+              .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
 
