@@ -21,6 +21,7 @@ import forms.DefaultAmountFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import controllers.{routes => mainRoutes}
+import navigation.annotations.GuaranteeDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -119,7 +120,7 @@ class DefaultAmountControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[GuaranteeDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
