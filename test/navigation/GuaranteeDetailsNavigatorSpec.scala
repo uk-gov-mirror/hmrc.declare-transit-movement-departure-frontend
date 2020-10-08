@@ -180,7 +180,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "From LiabilityAmountPage to AccessCodePage" in {
+      "From LiabilityAmountPage to AccessCodePage when a value is Some(_)" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -194,6 +194,22 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
               .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
+
+      "From LiabilityAmountPage to DefaultAmountPage when a value is None" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers =
+              answers
+                .set(GuaranteeTypePage, GuaranteeWaiver).success.value
+                .set(GuaranteeReferencePage, "test").success.value
+                .remove(LiabilityAmountPage).success.value
+            navigator
+              .nextPage(LiabilityAmountPage, NormalMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.DefaultAmountController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
 
       "From AccessCodeController to CYA" in {
 
