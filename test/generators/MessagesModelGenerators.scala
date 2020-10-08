@@ -19,10 +19,11 @@ package generators
 import java.time.{LocalDate, LocalTime}
 
 import models.LocalReferenceNumber
-import models.messages.{DeclarationRequest, Header, InterchangeControlReference, Meta}
+import models.messages._
+import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.{alphaNumChar, choose}
+import org.scalacheck.{Arbitrary, Gen}
 import utils.Format.dateFormatted
 
 trait MessagesModelGenerators extends Generators {
@@ -62,10 +63,14 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryDeclarationRequest: Arbitrary[DeclarationRequest] = {
     Arbitrary {
       for {
-        meta   <- arbitrary[Meta]
-        header <- arbitrary[Header]
+        meta                      <- arbitrary[Meta]
+        header                    <- arbitrary[Header]
+        traderPrinciple           <- Gen.oneOf(arbitrary[TraderPrincipalWithEori], arbitrary[TraderPrincipalWithoutEori])
+        traderConsignor           <- Gen.option(arbitrary[TraderConsignor])
+        traderConsignee           <- Gen.option(arbitrary[TraderConsignee])
+        traderAuthorisedConsignee <- arbitrary[TraderAuthorisedConsignee]
         //TODO: This needs more xml nodes adding as models become available
-      } yield DeclarationRequest(meta, header)
+      } yield DeclarationRequest(meta, header, traderPrinciple, traderConsignor, traderConsignee, traderAuthorisedConsignee)
     }
   }
 
@@ -121,4 +126,58 @@ trait MessagesModelGenerators extends Generators {
         )
     }
   }
+
+  implicit lazy val arbitraryTraderPrincipalWithEori: Arbitrary[TraderPrincipalWithEori] =
+    Arbitrary {
+      for {
+        eori            <- stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar)
+        name            <- Gen.option(stringsWithMaxLength(Trader.Constants.nameLength))
+        streetAndNumber <- Gen.option(stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar))
+        postCode        <- Gen.option(stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar))
+        city            <- Gen.option(stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar))
+        countryCode     <- Gen.option(Gen.pick(2, 'A' to 'Z'))
+      } yield TraderPrincipalWithEori(eori, name, streetAndNumber, postCode, city, countryCode.map(_.mkString))
+    }
+
+  implicit lazy val arbitraryTraderPrincipalWithoutEori: Arbitrary[TraderPrincipalWithoutEori] =
+    Arbitrary {
+      for {
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength)
+        streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar)
+        postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar)
+        city            <- stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar)
+        countryCode     <- Gen.pick(2, 'A' to 'Z')
+      } yield TraderPrincipalWithoutEori(name, streetAndNumber, postCode, city, countryCode.mkString)
+    }
+
+  implicit lazy val arbitraryTraderConsignor: Arbitrary[TraderConsignor] =
+    Arbitrary {
+      for {
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength)
+        streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar)
+        postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar)
+        city            <- stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar)
+        countryCode     <- Gen.pick(2, 'A' to 'Z')
+        eori            <- Gen.option(stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar))
+      } yield TraderConsignor(name, streetAndNumber, postCode, city, countryCode.mkString, eori)
+    }
+
+  implicit lazy val arbitraryTraderConsignee: Arbitrary[TraderConsignee] =
+    Arbitrary {
+      for {
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength)
+        streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar)
+        postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar)
+        city            <- stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar)
+        countryCode     <- Gen.pick(2, 'A' to 'Z')
+        eori            <- Gen.option(stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar))
+      } yield TraderConsignee(name, streetAndNumber, postCode, city, countryCode.mkString, eori)
+    }
+
+  implicit lazy val arbitraryAuthorisedConsigneeTrader: Arbitrary[TraderAuthorisedConsignee] =
+    Arbitrary {
+      for {
+        eori <- stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar)
+      } yield TraderAuthorisedConsignee(eori)
+    }
 }
