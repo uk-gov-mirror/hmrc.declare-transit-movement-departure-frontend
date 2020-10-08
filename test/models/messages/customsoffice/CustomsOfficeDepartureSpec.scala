@@ -19,7 +19,6 @@ package models.messages.customsoffice
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import models.XMLWrites._
-import models.messages.trader.TraderAuthorisedConsignee
 import org.scalacheck.Gen
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -37,7 +36,7 @@ class CustomsOfficeDepartureSpec
   "CustomsOfficeDepartureSpec" - {
 
     "must serialize CustomsOfficeDeparture to xml" in {
-      forAll(Gen.pick(CustomsOffice.length, 'A' to 'Z')) {
+      forAll(Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')) {
         reference =>
           val customsOffice = CustomsOfficeDeparture(reference.mkString)
 
@@ -52,7 +51,7 @@ class CustomsOfficeDepartureSpec
     }
 
     "must deserialize CustomsOfficeDeparture from xml" in {
-      forAll(Gen.pick(CustomsOffice.length, 'A' to 'Z')) {
+      forAll(Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')) {
         reference =>
           val customsOffice = CustomsOfficeDeparture(reference.mkString)
 

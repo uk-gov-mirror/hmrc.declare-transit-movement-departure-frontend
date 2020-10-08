@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package models.messages.customsoffice
+package models.messages
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import models.XMLWrites._
-import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import utils.Format
 
-class CustomsOfficeDestinationSpec
+class ControlResultSpec
     extends AnyFreeSpec
     with Matchers
     with ScalaCheckPropertyChecks
@@ -33,31 +34,28 @@ class CustomsOfficeDestinationSpec
     with StreamlinedXmlEquality
     with OptionValues {
 
-  "CustomsOfficeDestinationSpec" - {
+  "ControlResultSpec" - {
 
-    "must serialize CustomsOfficeDestination to xml" in {
-      forAll(Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')) {
-        reference =>
-          val customsOffice = CustomsOfficeDestination(reference.mkString)
-
+    "must serialize ControlResult to xml" in {
+      forAll(arbitrary[ControlResult]) {
+        controlResult =>
           val expectedResult =
-            <CUSOFFDESEST>
-              <RefNumEST1>{customsOffice.referenceNumber}</RefNumEST1>
-            </CUSOFFDESEST>
+            <CONRESERS>
+              <ConResCodERS16>{controlResult.conResCodERS16}</ConResCodERS16>
+              <DatLimERS69>{Format.dateFormatted(controlResult.datLimERS69)}</DatLimERS69>
+            </CONRESERS>
 
-          customsOffice.toXml mustEqual expectedResult
+          controlResult.toXml mustEqual expectedResult
       }
 
     }
 
-    "must deserialize CustomsOfficeDestination from xml" in {
-      forAll(Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')) {
-        reference =>
-          val customsOffice = CustomsOfficeDestination(reference.mkString)
-
-          val xml    = customsOffice.toXml
-          val result = XmlReader.of[CustomsOfficeDestination].read(xml).toOption.value
-          result mustBe customsOffice
+    "must deserialize ControlResult from xml" in {
+      forAll(arbitrary[ControlResult]) {
+        data =>
+          val xml    = data.toXml
+          val result = XmlReader.of[ControlResult].read(xml).toOption.value
+          result mustBe data
       }
     }
   }
