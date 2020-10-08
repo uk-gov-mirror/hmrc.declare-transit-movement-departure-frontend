@@ -17,9 +17,11 @@
 package models.messages
 
 import cats.syntax.all._
+import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLWrites
 import models.XMLWrites._
+import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.trader._
 
 import scala.xml.{Elem, Node, NodeSeq}
@@ -29,7 +31,11 @@ case class DeclarationRequest(meta: Meta,
                               traderPrincipal: TraderPrincipal,
                               traderConsignor: Option[TraderConsignor],
                               traderConsignee: Option[TraderConsignee],
-                              traderAuthorisedConsignee: TraderAuthorisedConsignee)
+                              traderAuthorisedConsignee: TraderAuthorisedConsignee,
+                              customsOfficeDeparture: CustomsOfficeDeparture,
+                              customsOfficeTransit: Seq[CustomsOfficeTransit],
+                              customsOfficeDestination: CustomsOfficeDestination,
+                              controlResult: Option[ControlResult])
 
 object DeclarationRequest {
 
@@ -43,7 +49,11 @@ object DeclarationRequest {
           traderPrinciple(declarationRequest.traderPrincipal) ++
           declarationRequest.traderConsignor.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.traderConsignee.map(_.toXml).getOrElse(NodeSeq.Empty) ++
-          declarationRequest.traderAuthorisedConsignee.toXml
+          declarationRequest.traderAuthorisedConsignee.toXml ++
+          declarationRequest.customsOfficeDeparture.toXml ++
+          declarationRequest.customsOfficeTransit.flatMap(_.toXml) ++
+          declarationRequest.customsOfficeDestination.toXml ++
+          declarationRequest.controlResult.map(_.toXml).getOrElse(NodeSeq.Empty)
       } //TODO: This needs more xml nodes adding as models become available
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
@@ -61,5 +71,9 @@ object DeclarationRequest {
      (__ \ "TRAPRIPC1").read[TraderPrincipal],
      (__ \ "TRACONCO1").read[TraderConsignor].optional,
      (__ \ "TRACONCE1").read[TraderConsignee].optional,
-     (__ \ "TRAAUTCONTRA").read[TraderAuthorisedConsignee]) mapN apply
+     (__ \ "TRAAUTCONTRA").read[TraderAuthorisedConsignee],
+     (__ \ "CUSOFFDEPEPT").read[CustomsOfficeDeparture],
+     (__ \ "CUSOFFTRARNS").read(strictReadSeq[CustomsOfficeTransit]),
+     (__ \ "CUSOFFDESEST").read[CustomsOfficeDestination],
+     (__ \ "CONRESERS").read[ControlResult].optional) mapN apply
 }
