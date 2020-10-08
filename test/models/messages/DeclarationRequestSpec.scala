@@ -54,6 +54,10 @@ class DeclarationRequestSpec
               {declarationRequest.traderConsignor.map(_.toXml).getOrElse(NodeSeq.Empty)}
               {declarationRequest.traderConsignee.map(_.toXml).getOrElse(NodeSeq.Empty)}
               {declarationRequest.traderAuthorisedConsignee.toXml}
+              {declarationRequest.customsOfficeDeparture.toXml}
+              {declarationRequest.customsOfficeTransit.flatMap(_.toXml)}
+              {declarationRequest.customsOfficeDestination.toXml}
+              {declarationRequest.controlResult.map(_.toXml).getOrElse(NodeSeq.Empty)}
             </CC015B>
 
           declarationRequest.toXml.map(trim) mustBe expectedResult.map(trim)
