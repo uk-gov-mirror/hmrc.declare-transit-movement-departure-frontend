@@ -34,7 +34,8 @@ case class DeclarationRequest(meta: Meta,
                               traderAuthorisedConsignee: TraderAuthorisedConsignee,
                               customsOfficeDeparture: CustomsOfficeDeparture,
                               customsOfficeTransit: Seq[CustomsOfficeTransit],
-                              customsOfficeDestination: CustomsOfficeDestination)
+                              customsOfficeDestination: CustomsOfficeDestination,
+                              representative: Option[Representative])
 
 object DeclarationRequest {
 
@@ -51,7 +52,8 @@ object DeclarationRequest {
           declarationRequest.traderAuthorisedConsignee.toXml ++
           declarationRequest.customsOfficeDeparture.toXml ++
           declarationRequest.customsOfficeTransit.flatMap(_.toXml) ++
-          declarationRequest.customsOfficeDestination.toXml
+          declarationRequest.customsOfficeDestination.toXml ++
+          declarationRequest.representative.map(_.toXml).getOrElse(NodeSeq.Empty)
       } //TODO: This needs more xml nodes adding as models become available
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
@@ -72,5 +74,6 @@ object DeclarationRequest {
      (__ \ "TRAAUTCONTRA").read[TraderAuthorisedConsignee],
      (__ \ "CUSOFFDEPEPT").read[CustomsOfficeDeparture],
      (__ \ "CUSOFFTRARNS").read(strictReadSeq[CustomsOfficeTransit]),
-     (__ \ "CUSOFFDESEST").read[CustomsOfficeDestination]) mapN apply
+     (__ \ "CUSOFFDESEST").read[CustomsOfficeDestination],
+     (__ \ "REPREP").read[Representative].optional) mapN apply
 }

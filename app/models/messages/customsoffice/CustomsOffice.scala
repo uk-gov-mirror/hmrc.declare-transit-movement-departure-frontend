@@ -17,6 +17,6 @@
 package models.messages.customsoffice
 
 object CustomsOffice {
-  val length              = 17
+  val length             = 17
   val transitOfficeCount = 9
 }
