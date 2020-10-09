@@ -166,6 +166,12 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       seq    <- listOfN(length, arbitrary[A])
     } yield seq
 
+  def listWithMaxLength[T](maxSize: Int, gen: Gen[T]): Gen[Seq[T]] =
+    for {
+      size  <- Gen.choose(0, maxSize)
+      items <- Gen.listOfN(size, gen)
+    } yield items
+
   implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
     datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
   }
