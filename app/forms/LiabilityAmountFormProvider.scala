@@ -26,13 +26,14 @@ class LiabilityAmountFormProvider @Inject() extends Mappings {
 
   val liabilityAmountRegexDecimal = "^$|^[0-9]+(?:\\.[0-9]{2})?$"
   val liabilityAmountRegex        = "^$|^[0-9.]*$"
+  val greaterThanOneRegex         = "^$|^[1-9]+(?:\\.[0-9]{2})?$"
 
   def apply(): Form[String] =
     Form(
       "value" -> Forms.text
-        .verifying(
-          StopOnFirstFail[String](
-            regexp(liabilityAmountRegex, "liabilityAmount.error.characters"),
-            regexp(liabilityAmountRegexDecimal, "liabilityAmount.error.invalidFormat")
-          )))
+        .verifying(StopOnFirstFail[String](
+          regexp(liabilityAmountRegex, "liabilityAmount.error.characters"),
+          regexp(liabilityAmountRegexDecimal, "liabilityAmount.error.invalidFormat"),
+          regexp(greaterThanOneRegex, "liabilityAmount.error.greaterThanOne"),
+        )))
 }
