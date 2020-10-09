@@ -81,7 +81,11 @@ trait MessagesModelGenerators extends Generators {
         customsOfficeDeparture    <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.Constants.transitOfficeCount)
         customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
+        customsOfficeDeparture    <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
+        customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.Constants.transitOfficeCount)
+        customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         controlResult             <- Gen.option(arbitrary[ControlResult])
+        representative            <- Gen.option(arbitrary[Representative])
         //TODO: This needs more xml nodes adding as models become available
       } yield
         DeclarationRequest(
@@ -94,7 +98,8 @@ trait MessagesModelGenerators extends Generators {
           CustomsOfficeDeparture(customsOfficeDeparture.mkString),
           customsOfficeTransit,
           CustomsOfficeDestination(customsOfficeDestination.mkString),
-          controlResult
+          controlResult,
+          representative
         )
     }
   }
@@ -204,6 +209,14 @@ trait MessagesModelGenerators extends Generators {
       for {
         eori <- stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar)
       } yield TraderAuthorisedConsignee(eori)
+    }
+
+  implicit lazy val arbitraryRepresentative: Arbitrary[Representative] =
+    Arbitrary {
+      for {
+        name     <- stringsWithMaxLength(Representative.Constants.nameLength, alphaNumChar)
+        capacity <- Gen.option(stringsWithMaxLength(Representative.Constants.capacityLength, alphaNumChar))
+      } yield Representative(name, capacity)
     }
 
   implicit lazy val arbitraryControlResult: Arbitrary[ControlResult] =
