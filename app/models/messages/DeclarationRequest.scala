@@ -35,6 +35,7 @@ case class DeclarationRequest(meta: Meta,
                               customsOfficeDeparture: CustomsOfficeDeparture,
                               customsOfficeTransit: Seq[CustomsOfficeTransit],
                               customsOfficeDestination: CustomsOfficeDestination,
+                              controlResult: Option[ControlResult],
                               representative: Option[Representative])
 
 object DeclarationRequest {
@@ -53,6 +54,7 @@ object DeclarationRequest {
           declarationRequest.customsOfficeDeparture.toXml ++
           declarationRequest.customsOfficeTransit.flatMap(_.toXml) ++
           declarationRequest.customsOfficeDestination.toXml ++
+          declarationRequest.controlResult.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.representative.map(_.toXml).getOrElse(NodeSeq.Empty)
       } //TODO: This needs more xml nodes adding as models become available
 
@@ -75,5 +77,7 @@ object DeclarationRequest {
      (__ \ "CUSOFFDEPEPT").read[CustomsOfficeDeparture],
      (__ \ "CUSOFFTRARNS").read(strictReadSeq[CustomsOfficeTransit]),
      (__ \ "CUSOFFDESEST").read[CustomsOfficeDestination],
+     (__ \ "CONRESERS").read[ControlResult].optional,
      (__ \ "REPREP").read[Representative].optional) mapN apply
+
 }

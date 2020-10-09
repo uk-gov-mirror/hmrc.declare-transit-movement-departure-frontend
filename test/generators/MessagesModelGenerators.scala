@@ -64,7 +64,7 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryCustomsOfficeTransit: Arbitrary[CustomsOfficeTransit] =
     Arbitrary {
       for {
-        customsOffice   <- Gen.pick(CustomsOffice.length, 'A' to 'Z')
+        customsOffice   <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         arrivalDateTime <- Gen.option(arbitrary(arbitraryLocalDateTime))
       } yield CustomsOfficeTransit(customsOffice.mkString, arrivalDateTime)
     }
@@ -78,9 +78,13 @@ trait MessagesModelGenerators extends Generators {
         traderConsignor           <- Gen.option(arbitrary[TraderConsignor])
         traderConsignee           <- Gen.option(arbitrary[TraderConsignee])
         traderAuthorisedConsignee <- arbitrary[TraderAuthorisedConsignee]
-        customsOfficeDeparture    <- Gen.pick(CustomsOffice.length, 'A' to 'Z')
-        customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.transitOfficeCount)
-        customsOfficeDestination  <- Gen.pick(CustomsOffice.length, 'A' to 'Z')
+        customsOfficeDeparture    <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
+        customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.Constants.transitOfficeCount)
+        customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
+        customsOfficeDeparture    <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
+        customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.Constants.transitOfficeCount)
+        customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
+        controlResult             <- Gen.option(arbitrary[ControlResult])
         representative            <- Gen.option(arbitrary[Representative])
         //TODO: This needs more xml nodes adding as models become available
       } yield
@@ -94,6 +98,7 @@ trait MessagesModelGenerators extends Generators {
           CustomsOfficeDeparture(customsOfficeDeparture.mkString),
           customsOfficeTransit,
           CustomsOfficeDestination(customsOfficeDestination.mkString),
+          controlResult,
           representative
         )
     }
@@ -156,7 +161,7 @@ trait MessagesModelGenerators extends Generators {
     Arbitrary {
       for {
         eori            <- stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar)
-        name            <- Gen.option(stringsWithMaxLength(Trader.Constants.nameLength))
+        name            <- Gen.option(stringsWithMaxLength(Trader.Constants.nameLength, alphaNumChar))
         streetAndNumber <- Gen.option(stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar))
         postCode        <- Gen.option(stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar))
         city            <- Gen.option(stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar))
@@ -167,7 +172,7 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryTraderPrincipalWithoutEori: Arbitrary[TraderPrincipalWithoutEori] =
     Arbitrary {
       for {
-        name            <- stringsWithMaxLength(Trader.Constants.nameLength)
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength, alphaNumChar)
         streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar)
         postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar)
         city            <- stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar)
@@ -178,7 +183,7 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryTraderConsignor: Arbitrary[TraderConsignor] =
     Arbitrary {
       for {
-        name            <- stringsWithMaxLength(Trader.Constants.nameLength)
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength, alphaNumChar)
         streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar)
         postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar)
         city            <- stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar)
@@ -190,7 +195,7 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryTraderConsignee: Arbitrary[TraderConsignee] =
     Arbitrary {
       for {
-        name            <- stringsWithMaxLength(Trader.Constants.nameLength)
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength, alphaNumChar)
         streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar)
         postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar)
         city            <- stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar)
@@ -212,6 +217,14 @@ trait MessagesModelGenerators extends Generators {
         name     <- stringsWithMaxLength(Representative.Constants.nameLength, alphaNumChar)
         capacity <- Gen.option(stringsWithMaxLength(Representative.Constants.capacityLength, alphaNumChar))
       } yield Representative(name, capacity)
+    }
+
+  implicit lazy val arbitraryControlResult: Arbitrary[ControlResult] =
+    Arbitrary {
+      for {
+        controlResultCode <- Gen.pick(2, 'A' to 'Z')
+        dateLimit         <- localDateGen
+      } yield ControlResult(controlResultCode.mkString, dateLimit)
     }
 
 }

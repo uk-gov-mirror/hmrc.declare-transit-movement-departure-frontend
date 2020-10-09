@@ -60,7 +60,7 @@ class CustomsOfficeTransitSpec
       }
 
       "CustomsOfficeTransit to xml when arrival date is None" in {
-        forAll(Gen.pick(CustomsOffice.length, 'A' to 'Z')) {
+        forAll(Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')) {
           reference =>
             val customsOffice = CustomsOfficeTransit(reference.mkString, None)
 
