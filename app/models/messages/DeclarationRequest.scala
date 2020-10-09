@@ -36,7 +36,8 @@ case class DeclarationRequest(meta: Meta,
                               customsOfficeTransit: Seq[CustomsOfficeTransit],
                               customsOfficeDestination: CustomsOfficeDestination,
                               controlResult: Option[ControlResult],
-                              representative: Option[Representative])
+                              representative: Option[Representative],
+                              seals: Option[Seals])
 
 object DeclarationRequest {
 
@@ -55,7 +56,8 @@ object DeclarationRequest {
           declarationRequest.customsOfficeTransit.flatMap(_.toXml) ++
           declarationRequest.customsOfficeDestination.toXml ++
           declarationRequest.controlResult.map(_.toXml).getOrElse(NodeSeq.Empty) ++
-          declarationRequest.representative.map(_.toXml).getOrElse(NodeSeq.Empty)
+          declarationRequest.representative.map(_.toXml).getOrElse(NodeSeq.Empty) ++
+          declarationRequest.seals.map(_.toXml).getOrElse(NodeSeq.Empty)
       } //TODO: This needs more xml nodes adding as models become available
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
@@ -78,6 +80,7 @@ object DeclarationRequest {
      (__ \ "CUSOFFTRARNS").read(strictReadSeq[CustomsOfficeTransit]),
      (__ \ "CUSOFFDESEST").read[CustomsOfficeDestination],
      (__ \ "CONRESERS").read[ControlResult].optional,
-     (__ \ "REPREP").read[Representative].optional) mapN apply
+     (__ \ "REPREP").read[Representative].optional,
+     (__ \ "SEAINFSLI").read[Seals].optional) mapN apply
 
 }

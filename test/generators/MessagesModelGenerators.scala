@@ -86,6 +86,7 @@ trait MessagesModelGenerators extends Generators {
         customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         controlResult             <- Gen.option(arbitrary[ControlResult])
         representative            <- Gen.option(arbitrary[Representative])
+        seals                     <- Gen.option(arbitrary[Seals])
         //TODO: This needs more xml nodes adding as models become available
       } yield
         DeclarationRequest(
@@ -99,7 +100,8 @@ trait MessagesModelGenerators extends Generators {
           customsOfficeTransit,
           CustomsOfficeDestination(customsOfficeDestination.mkString),
           controlResult,
-          representative
+          representative,
+          seals
         )
     }
   }
@@ -225,6 +227,14 @@ trait MessagesModelGenerators extends Generators {
         controlResultCode <- Gen.pick(2, 'A' to 'Z')
         dateLimit         <- localDateGen
       } yield ControlResult(controlResultCode.mkString, dateLimit)
+    }
+
+  implicit lazy val arbitrarySeals: Arbitrary[Seals] =
+    Arbitrary {
+      for {
+        numberOfSeals <- choose(min = 1: Int, 10: Int)
+        sealId        <- listWithMaxLength(numberOfSeals, stringsWithMaxLength(Seals.Constants.sealIdLength, alphaNumChar))
+      } yield Seals(numberOfSeals, sealId)
     }
 
 }
