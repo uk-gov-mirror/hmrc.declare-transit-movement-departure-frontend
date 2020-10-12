@@ -56,6 +56,7 @@ class AddSealHelper(userAnswers: UserAnswers) {
       val singularOrPlural = if (numberOfSeals == 1) "singular" else "plural"
       val idPluralisation  = if (numberOfSeals == 1) "change-seal" else "change-seals"
       val html             = Html((answer.map(_.numberOrMark)).mkString("<br>"))
+
       Row(
         key   = Key(msg"sealIdDetails.checkYourAnswersLabel.$singularOrPlural"),
         value = Value(html),
