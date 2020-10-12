@@ -25,13 +25,15 @@ import models.ProcedureType.{Normal, Simplified}
 import models.domain.SealDomain
 import models.{CheckMode, Index, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import queries.SealsQuery
 
 class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new GoodsSummaryNavigator
-
+  // format: off
   "GoodsSummaryNavigator" - {
 
     "in Normal Mode" - {
@@ -248,17 +250,27 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
             (userAnswers, seal) =>
               val updatedUserAnswers = userAnswers
-                .set(SealIdDetailsPage(sealIndex), seal)
-                .success
-                .value
-                .set(AddSealsPage, false)
-                .success
-                .value
+                .set(SealIdDetailsPage(sealIndex), seal).success.value
+                .set(AddSealsPage, false).success.value
 
               navigator
                 .nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
                 .mustBe(goodsSummaryRoute.ConfirmRemoveSealsController.onPageLoad(updatedUserAnswers.id, NormalMode))
           }
+        }
+
+        "SealsInformationController when we already have 10 seals" in {
+          forAll(arbitrary[UserAnswers], Gen.listOfN(10, arbitrary[SealDomain])) {
+            (userAnswers, seals) =>
+            val updateAnswers = userAnswers
+              .set(SealsQuery(), seals).success.value
+              .set(AddSealsPage, true).success.value
+
+            navigator
+              .nextPage(AddSealsPage, NormalMode, updateAnswers)
+              .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updateAnswers.id, NormalMode))
+          }
+
         }
       }
     }
@@ -526,7 +538,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
       }
-
     }
   }
+  // format: on
 }
