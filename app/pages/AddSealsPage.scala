@@ -16,6 +16,7 @@
 
 package pages
 
+import derivable.DeriveNumberOfSeals
 import models.UserAnswers
 import play.api.libs.json.JsPath
 import queries.SealsQuery
@@ -28,8 +29,11 @@ case object AddSealsPage extends QuestionPage[Boolean] {
 
   override def toString: String = "addSeals"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
-    case Some(false) => userAnswers.remove(SealsQuery())
-    case Some(true)  => super.cleanup(value, userAnswers)
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    val sealCount = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
+    (value, sealCount) match {
+      case (Some(false), 0) => userAnswers.remove(SealsQuery())
+      case _                => super.cleanup(value, userAnswers)
+    }
   }
 }
