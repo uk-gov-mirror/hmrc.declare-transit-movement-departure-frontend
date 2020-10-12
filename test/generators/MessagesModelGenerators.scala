@@ -21,6 +21,7 @@ import java.time.{LocalDate, LocalTime}
 import models.LocalReferenceNumber
 import models.messages._
 import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
+import models.messages.goodsitem.GoodsItem
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
@@ -82,13 +83,11 @@ trait MessagesModelGenerators extends Generators {
         customsOfficeDeparture    <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.Constants.transitOfficeCount)
         customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
-        customsOfficeDeparture    <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
-        customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.Constants.transitOfficeCount)
-        customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         controlResult             <- Gen.option(arbitrary[ControlResult])
         representative            <- Gen.option(arbitrary[Representative])
         seals                     <- Gen.option(arbitrary[Seals])
         guarantee                 <- arbitrary[Guarantee]
+        goodsItems                <- nonEmptyListWithMaxSize(2, arbitrary[GoodsItem])
         //TODO: This needs more xml nodes adding as models become available
       } yield
         DeclarationRequest(
@@ -104,7 +103,8 @@ trait MessagesModelGenerators extends Generators {
           controlResult,
           representative,
           seals,
-          guarantee
+          guarantee,
+          goodsItems
         )
     }
   }
@@ -267,6 +267,30 @@ trait MessagesModelGenerators extends Generators {
         guaranteeType     <- stringsWithMaxLength(GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength, alphaNumChar)
         guarnteeReference <- listWithMaxLength(Guarantee.Constants.guaranteeReferenceCount, arbitrary[GuaranteeReference])
       } yield Guarantee(guaranteeType, guarnteeReference)
+    }
+
+  implicit lazy val arbitraryGoodsItem: Arbitrary[GoodsItem] =
+    Arbitrary {
+      for {
+        itemNumber           <- Gen.choose(1, 99999)
+        commodityCode        <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.commodityCodeLength, alphaNumChar))
+        declarationType      <- Gen.option(Gen.pick(GoodsItem.Constants.typeOfDeclarationLength, 'A' to 'Z'))
+        description          <- stringsWithMaxLength(GoodsItem.Constants.descriptionLength, alphaNumChar)
+        grossMass            <- Gen.option(Gen.choose(0.0, 99999999.999).map(BigDecimal(_)))
+        netMass              <- Gen.option(Gen.choose(0.0, 99999999.999).map(BigDecimal(_)))
+        countryOfDispatch    <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
+        countryOfDestination <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
+      } yield
+        GoodsItem(
+          itemNumber,
+          commodityCode,
+          declarationType.map(_.mkString),
+          description,
+          grossMass,
+          netMass,
+          countryOfDispatch,
+          countryOfDestination
+        )
     }
 
 }
