@@ -54,6 +54,7 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
               {countryOfDispatch}
               {countryOfDestination}
               {goodsItem.previousAdministrativeReferences.flatMap(value => value.toXml)}
+              {goodsItem.producedDocuments.flatMap(value => value.toXml)}
             </GOOITEGDS>
 
           goodsItem.toXml mustEqual expectedResult

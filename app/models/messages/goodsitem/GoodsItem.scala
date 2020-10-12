@@ -35,7 +35,8 @@ final case class GoodsItem(
   netMass: Option[BigDecimal],
   countryOfDispatch: Option[String],
   countryOfDestination: Option[String],
-  previousAdministrativeReferences: Seq[PreviousAdministrativeReference]
+  previousAdministrativeReferences: Seq[PreviousAdministrativeReference],
+  producedDocuments: Seq[ProducedDocument]
 //                            transportChargesPaymentMethod: Option[String], //CL116. Transport charges - Method of payment (A - Z) Where is this from
 //                            commercialReferenceNumber: Option[String], //an..70
 //                            dangerousGoodsCode: Option[String] //UN dangerous goods code an4
@@ -65,7 +66,8 @@ object GoodsItem {
                                                   (__ \ "NetMasGDS48").read[BigDecimal].optional,
                                                   (__ \ "CouOfDisGDS58").read[String].optional,
                                                   (__ \ "CouOfDesGDS59").read[String].optional,
-                                                  (__ \ "PREADMREFAR2").read(strictReadSeq[PreviousAdministrativeReference])).mapN(apply)
+                                                  (__ \ "PREADMREFAR2").read(strictReadSeq[PreviousAdministrativeReference]),
+                                                  (__ \ "PRODOCDC2").read(strictReadSeq[ProducedDocument])).mapN(apply)
   //(__ \ "PRODOCDC2").read(strictReadSeq[ProducedDocument]),
   //(__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention]),
   //(__ \ "TRACONCO2").read[Consignor](Consignor.xmlReaderGoodsLevel).optional,
@@ -85,6 +87,7 @@ object GoodsItem {
       val countryOfDestination = goodsItem.countryOfDestination.fold(NodeSeq.Empty)(value => <CouOfDesGDS59>{value}</CouOfDesGDS59>)
 
       val previousAdministrativeReference = goodsItem.previousAdministrativeReferences.flatMap(value => value.toXml)
+      val producedDocuments               = goodsItem.producedDocuments.flatMap(value => value.toXml)
 
       //TODO: Do we need these nodes, they're not in the WebSols xsds
 //      val transportChargesPaymentMethod = goodsItem.transportChargesPaymentMethod.fold(NodeSeq.Empty)(value => <MetOfPayGDI12>{value}</MetOfPayGDI12>)
@@ -102,6 +105,7 @@ object GoodsItem {
         {countryOfDispatch}
         {countryOfDestination}
         {previousAdministrativeReference}
+        {producedDocuments}
       </GOOITEGDS>
   }
 

@@ -21,7 +21,7 @@ import java.time.{LocalDate, LocalTime}
 import models.LocalReferenceNumber
 import models.messages._
 import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
-import models.messages.goodsitem.{GoodsItem, PreviousAdministrativeReference}
+import models.messages.goodsitem.{GoodsItem, PreviousAdministrativeReference, ProducedDocument}
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
@@ -282,6 +282,7 @@ trait MessagesModelGenerators extends Generators {
         countryOfDestination <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
         previousAdministrativeReference <- listWithMaxLength(PreviousAdministrativeReference.Constants.previousAdministrativeReferenceCount,
                                                              arbitrary[PreviousAdministrativeReference])
+        producedDocuments <- listWithMaxLength(ProducedDocument.Constants.producedDocumentCount, arbitrary[ProducedDocument])
       } yield
         GoodsItem(
           itemNumber,
@@ -292,7 +293,8 @@ trait MessagesModelGenerators extends Generators {
           netMass,
           countryOfDispatch,
           countryOfDestination,
-          previousAdministrativeReference
+          previousAdministrativeReference,
+          producedDocuments
         )
     }
 
@@ -307,6 +309,20 @@ trait MessagesModelGenerators extends Generators {
           preDocTypAR21,
           preDocRefAR26,
           comOfInfAR29,
+        )
+    }
+
+  implicit lazy val arbitraryPreviousProducedDocument: Arbitrary[ProducedDocument] =
+    Arbitrary {
+      for {
+        documentType            <- stringsWithMaxLength(ProducedDocument.Constants.documentTypeLength, alphaNumChar)
+        reference               <- Gen.option(stringsWithMaxLength(ProducedDocument.Constants.reference, alphaNumChar))
+        complementOfInformation <- Gen.option(stringsWithMaxLength(ProducedDocument.Constants.complementOfInformation, alphaNumChar))
+      } yield
+        ProducedDocument(
+          documentType,
+          reference,
+          complementOfInformation,
         )
     }
 
