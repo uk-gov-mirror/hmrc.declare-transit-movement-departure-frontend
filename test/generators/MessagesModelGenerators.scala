@@ -21,7 +21,7 @@ import java.time.{LocalDate, LocalTime}
 import models.LocalReferenceNumber
 import models.messages._
 import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
-import models.messages.goodsitem.GoodsItem
+import models.messages.goodsitem.{GoodsItem, PreviousAdministrativeReference}
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
@@ -264,9 +264,9 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryGuarantee: Arbitrary[Guarantee] =
     Arbitrary {
       for {
-        guaranteeType     <- stringsWithMaxLength(GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength, alphaNumChar)
-        guarnteeReference <- listWithMaxLength(Guarantee.Constants.guaranteeReferenceCount, arbitrary[GuaranteeReference])
-      } yield Guarantee(guaranteeType, guarnteeReference)
+        guaranteeType      <- stringsWithMaxLength(GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength, alphaNumChar)
+        guaranteeReference <- listWithMaxLength(Guarantee.Constants.guaranteeReferenceCount, arbitrary[GuaranteeReference])
+      } yield Guarantee(guaranteeType, guaranteeReference)
     }
 
   implicit lazy val arbitraryGoodsItem: Arbitrary[GoodsItem] =
@@ -280,6 +280,8 @@ trait MessagesModelGenerators extends Generators {
         netMass              <- Gen.option(Gen.choose(0.0, 99999999.999).map(BigDecimal(_)))
         countryOfDispatch    <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
         countryOfDestination <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
+        previousAdministrativeReference <- listWithMaxLength(PreviousAdministrativeReference.Constants.previousAdministrativeReferenceCount,
+                                                             arbitrary[PreviousAdministrativeReference])
       } yield
         GoodsItem(
           itemNumber,
@@ -289,7 +291,22 @@ trait MessagesModelGenerators extends Generators {
           grossMass,
           netMass,
           countryOfDispatch,
-          countryOfDestination
+          countryOfDestination,
+          previousAdministrativeReference
+        )
+    }
+
+  implicit lazy val arbitraryPreviousAdministrativeReferences: Arbitrary[PreviousAdministrativeReference] =
+    Arbitrary {
+      for {
+        preDocTypAR21 <- stringsWithMaxLength(PreviousAdministrativeReference.Constants.previousDocumentTypeLength, alphaNumChar)
+        preDocRefAR26 <- stringsWithMaxLength(PreviousAdministrativeReference.Constants.previousDocumentReferenceLength, alphaNumChar)
+        comOfInfAR29  <- Gen.option(stringsWithMaxLength(PreviousAdministrativeReference.Constants.complementOfInformationLength, alphaNumChar))
+      } yield
+        PreviousAdministrativeReference(
+          preDocTypAR21,
+          preDocRefAR26,
+          comOfInfAR29,
         )
     }
 

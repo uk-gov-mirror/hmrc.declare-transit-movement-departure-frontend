@@ -19,9 +19,12 @@ package models.messages.goodsitem
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.{LanguageCodeEnglish, XMLWrites}
 import cats.syntax.all._
+import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 
 import scala.xml.NodeSeq
 import utils.BigDecimalXMLReader._
+import models.XMLWrites
+import models.XMLWrites._
 
 final case class GoodsItem(
   itemNumber: Int,
@@ -31,7 +34,8 @@ final case class GoodsItem(
   grossMass: Option[BigDecimal],
   netMass: Option[BigDecimal],
   countryOfDispatch: Option[String],
-  countryOfDestination: Option[String]
+  countryOfDestination: Option[String],
+  previousAdministrativeReferences: Seq[PreviousAdministrativeReference]
 //                            transportChargesPaymentMethod: Option[String], //CL116. Transport charges - Method of payment (A - Z) Where is this from
 //                            commercialReferenceNumber: Option[String], //an..70
 //                            dangerousGoodsCode: Option[String] //UN dangerous goods code an4
@@ -60,7 +64,8 @@ object GoodsItem {
                                                   (__ \ "GroMasGDS46").read[BigDecimal].optional,
                                                   (__ \ "NetMasGDS48").read[BigDecimal].optional,
                                                   (__ \ "CouOfDisGDS58").read[String].optional,
-                                                  (__ \ "CouOfDesGDS59").read[String].optional).mapN(apply)
+                                                  (__ \ "CouOfDesGDS59").read[String].optional,
+                                                  (__ \ "PREADMREFAR2").read(strictReadSeq[PreviousAdministrativeReference])).mapN(apply)
   //(__ \ "PRODOCDC2").read(strictReadSeq[ProducedDocument]),
   //(__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention]),
   //(__ \ "TRACONCO2").read[Consignor](Consignor.xmlReaderGoodsLevel).optional,
@@ -79,6 +84,8 @@ object GoodsItem {
       val countryOfDispatch    = goodsItem.countryOfDispatch.fold(NodeSeq.Empty)(value => <CouOfDisGDS58>{value}</CouOfDisGDS58>)
       val countryOfDestination = goodsItem.countryOfDestination.fold(NodeSeq.Empty)(value => <CouOfDesGDS59>{value}</CouOfDesGDS59>)
 
+      val previousAdministrativeReference = goodsItem.previousAdministrativeReferences.flatMap(value => value.toXml)
+
       //TODO: Do we need these nodes, they're not in the WebSols xsds
 //      val transportChargesPaymentMethod = goodsItem.transportChargesPaymentMethod.fold(NodeSeq.Empty)(value => <MetOfPayGDI12>{value}</MetOfPayGDI12>)
 //      val commercialReferenceNumber = goodsItem.commercialReferenceNumber.fold(NodeSeq.Empty)(value => <ComRefNumGIM1>{value}</ComRefNumGIM1>)
@@ -94,6 +101,7 @@ object GoodsItem {
         {netMass}
         {countryOfDispatch}
         {countryOfDestination}
+        {previousAdministrativeReference}
       </GOOITEGDS>
   }
 
