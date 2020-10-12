@@ -21,7 +21,7 @@ import java.time.{LocalDate, LocalTime}
 import models.LocalReferenceNumber
 import models.messages._
 import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
-import models.messages.goodsitem.{GoodsItem, PreviousAdministrativeReference, ProducedDocument}
+import models.messages.goodsitem._
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
@@ -283,6 +283,7 @@ trait MessagesModelGenerators extends Generators {
         previousAdministrativeReference <- listWithMaxLength(PreviousAdministrativeReference.Constants.previousAdministrativeReferenceCount,
                                                              arbitrary[PreviousAdministrativeReference])
         producedDocuments <- listWithMaxLength(ProducedDocument.Constants.producedDocumentCount, arbitrary[ProducedDocument])
+        specialMentions   <- listWithMaxLength(SpecialMention.Constants.specialMentionCount, arbitrary[SpecialMention])
       } yield
         GoodsItem(
           itemNumber,
@@ -294,7 +295,8 @@ trait MessagesModelGenerators extends Generators {
           countryOfDispatch,
           countryOfDestination,
           previousAdministrativeReference,
-          producedDocuments
+          producedDocuments,
+          specialMentions
         )
     }
 
@@ -326,4 +328,34 @@ trait MessagesModelGenerators extends Generators {
         )
     }
 
+  protected val countrySpecificCodes      = Seq("DG0", "DG1")
+  protected val countrySpecificCodeGen    = Gen.oneOf(countrySpecificCodes)
+  protected val nonCountrySpecificCodeGen = stringsWithMaxLength(5, alphaNumChar).suchThat(!countrySpecificCodes.contains(_))
+
+  implicit lazy val arbitrarySpecialMentionEc: Arbitrary[SpecialMentionEc] =
+    Arbitrary {
+
+      countrySpecificCodeGen.map(SpecialMentionEc(_))
+    }
+
+  implicit lazy val arbitrarySpecialMentionNonEc: Arbitrary[SpecialMentionNonEc] =
+    Arbitrary {
+
+      for {
+        additionalInfo <- countrySpecificCodeGen
+        exportCountry  <- stringsWithMaxLength(2)
+      } yield SpecialMentionNonEc(additionalInfo, exportCountry)
+    }
+
+  implicit lazy val arbitrarySpecialMentionNoCountry: Arbitrary[SpecialMentionNoCountry] =
+    Arbitrary {
+
+      nonCountrySpecificCodeGen.map(SpecialMentionNoCountry(_))
+    }
+
+  implicit lazy val arbitrarySpecialMention: Arbitrary[SpecialMention] =
+    Arbitrary {
+
+      Gen.oneOf(arbitrary[SpecialMentionEc], arbitrary[SpecialMentionNonEc], arbitrary[SpecialMentionNoCountry])
+    }
 }

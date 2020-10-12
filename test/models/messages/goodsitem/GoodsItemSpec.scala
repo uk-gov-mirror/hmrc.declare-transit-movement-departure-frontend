@@ -55,6 +55,7 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
               {countryOfDestination}
               {goodsItem.previousAdministrativeReferences.flatMap(value => value.toXml)}
               {goodsItem.producedDocuments.flatMap(value => value.toXml)}
+              {goodsItem.specialMention.flatMap(value => specialMention(value))}
             </GOOITEGDS>
 
           goodsItem.toXml mustEqual expectedResult
@@ -70,5 +71,12 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
       }
     }
     //format on
+  }
+
+  def specialMention(specialMention: SpecialMention): NodeSeq = specialMention match {
+    case specialMention: SpecialMentionEc        => specialMention.toXml
+    case specialMention: SpecialMentionNonEc     => specialMention.toXml
+    case specialMention: SpecialMentionNoCountry => specialMention.toXml
+    case _                                       => NodeSeq.Empty
   }
 }
