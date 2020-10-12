@@ -63,11 +63,11 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
     }
 
   def liabilityAmountRoute(ua:UserAnswers, mode:Mode)  =
-    (ua.get(GuaranteeTypePage),ua.get(LiabilityAmountPage), mode) match {
-      case (Some(_),Some(""), NormalMode) => Some(routes.DefaultAmountController.onPageLoad(ua.id, NormalMode))
-      case (Some(_),Some(_), NormalMode) => Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
-      case (Some(_), None, NormalMode) => Some(routes.DefaultAmountController.onPageLoad(ua.id, NormalMode))
-      case (Some(guaranteeType), None,  CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
+    (ua.get(GuaranteeTypePage),ua.get(LiabilityAmountPage),ua.get(AccessCodePage), mode) match {
+      case (Some(_),Some(""),_,  NormalMode) => Some(routes.DefaultAmountController.onPageLoad(ua.id, NormalMode))
+      case (Some(_),Some(_), _, NormalMode) => Some(routes.AccessCodeController.onPageLoad(ua.id, NormalMode))
+      case (Some(_), None,_, NormalMode) => Some(routes.DefaultAmountController.onPageLoad(ua.id, NormalMode))
+      case (Some(guaranteeType), _, None,   CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
       case _ =>  Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     }
@@ -78,25 +78,28 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
   }
 
   def guaranteeTypeRoute(ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(GuaranteeTypePage), ua.get(GuaranteeReferencePage), mode) match {
-      case (Some(guaranteeType), _, NormalMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
+    (ua.get(GuaranteeTypePage), ua.get(GuaranteeReferencePage),ua.get(OtherReferencePage), mode) match {
+      case (Some(guaranteeType), _, _,  NormalMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, NormalMode))
 
-      case (Some(guaranteeType), None, NormalMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+      case (Some(guaranteeType), None, _,  NormalMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, NormalMode))
 
-      case (Some(guaranteeType), None, CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
-        Some(routes.OtherReferenceController.onPageLoad(ua.id, CheckMode))
-
-      case (Some(guaranteeType), Some(_), CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
-        Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
-
-
-      case (Some(guaranteeType), Some(_), CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+      case (Some(guaranteeType), None, Some(_), CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
-      case (Some(guaranteeType), None, CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
+      case (Some(guaranteeType), _ , None, CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+        Some(routes.OtherReferenceController.onPageLoad(ua.id, CheckMode))
+
+      case (Some(guaranteeType), Some(_), None,  CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
+        Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
+
+      case (Some(guaranteeType), None , None,  CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
+
+
+
+
 
       case _ => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     }

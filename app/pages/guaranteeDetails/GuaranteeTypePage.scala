@@ -30,17 +30,26 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
   override def toString: String = "guaranteeType"
 
   override def cleanup(value: Option[GuaranteeType], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple)) =>
+    (value, userAnswers.get(AccessCodePage)) match {
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
+            Some(_)) =>
+        userAnswers
+          .remove(OtherReferencePage)
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
+            None) =>
         userAnswers
           .remove(OtherReferencePage)
           .flatMap(_.remove(LiabilityAmountPage))
 
-      case _ =>
+      case (_, Some(_)) =>
         userAnswers
           .remove(GuaranteeReferencePage)
           .flatMap(_.remove(LiabilityAmountPage))
           .flatMap(_.remove(AccessCodePage))
 
+      case (_, None) =>
+        userAnswers.remove(GuaranteeReferencePage)
+
     }
+
 }
