@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.movementDetails
+package controllers
 
 import controllers.actions._
 import forms.ProcedureTypeFormProvider
@@ -29,14 +29,14 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import navigation.annotations.MovementDetails
+import navigation.annotations.{MovementDetails, PreTaskListDetails}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ProcedureTypeController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @MovementDetails navigator: Navigator,
+  @PreTaskListDetails navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,

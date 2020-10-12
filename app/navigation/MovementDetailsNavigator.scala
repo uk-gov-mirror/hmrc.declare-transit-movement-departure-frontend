@@ -28,9 +28,6 @@ class MovementDetailsNavigator @Inject()() extends Navigator {
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case DeclarationTypePage =>
       ua =>
-        Some(routes.ProcedureTypeController.onPageLoad(ua.id, NormalMode))
-    case ProcedureTypePage =>
-      ua =>
         Some(routes.ContainersUsedPageController.onPageLoad(ua.id, NormalMode))
     case ContainersUsedPage =>
       ua =>

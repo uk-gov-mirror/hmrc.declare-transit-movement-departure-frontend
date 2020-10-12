@@ -23,7 +23,7 @@
         {% if form.errors.length > 0 %}
           {{ govukErrorSummary({
             "titleText": messages("error.summary.title", sealTitle),
-            "errorList": form.errorsapp
+            "errorList": form.errors
           }) }}
         {% endif %}
 

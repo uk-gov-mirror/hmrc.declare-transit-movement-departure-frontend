@@ -29,9 +29,7 @@ class PreTaskListNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
   val navigator = new PreTaskListNavigator
 
   "Navigator" - {
-
     "in Normal mode" - {
-
       "must go from a page that doesn't exist in the route map to Index" in {
 
         case object UnknownPage extends Page
@@ -44,16 +42,23 @@ class PreTaskListNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
         }
       }
 
-      "must go from Local Reference Number page to Add Security Details page" in {
-
+      "must go from Local Reference Number page to Procedure Type page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(LocalReferenceNumberPage, NormalMode, answers)
-              .mustBe(routes.AddSecurityDetailsController.onPageLoad(answers.id, NormalMode))
+              .mustBe(routes.ProcedureTypeController.onPageLoad(answers.id, NormalMode))
         }
       }
 
+      "must go from Procedure Type to Add Security Details page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(ProcedureTypePage, NormalMode, answers)
+              .mustBe(routes.AddSecurityDetailsController.onPageLoad(answers.id, NormalMode))
+        }
+      }
     }
 
     "in Check mode" - {

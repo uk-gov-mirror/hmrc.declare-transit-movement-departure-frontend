@@ -22,6 +22,7 @@ import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLWrites
 import models.XMLWrites._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
+import models.messages.guarantee.Guarantee
 import models.messages.trader._
 
 import scala.xml.{Elem, Node, NodeSeq}
@@ -35,7 +36,10 @@ case class DeclarationRequest(meta: Meta,
                               customsOfficeDeparture: CustomsOfficeDeparture,
                               customsOfficeTransit: Seq[CustomsOfficeTransit],
                               customsOfficeDestination: CustomsOfficeDestination,
-                              controlResult: Option[ControlResult])
+                              controlResult: Option[ControlResult],
+                              representative: Option[Representative],
+                              seals: Option[Seals],
+                              guarantee: Guarantee)
 
 object DeclarationRequest {
 
@@ -53,7 +57,10 @@ object DeclarationRequest {
           declarationRequest.customsOfficeDeparture.toXml ++
           declarationRequest.customsOfficeTransit.flatMap(_.toXml) ++
           declarationRequest.customsOfficeDestination.toXml ++
-          declarationRequest.controlResult.map(_.toXml).getOrElse(NodeSeq.Empty)
+          declarationRequest.controlResult.map(_.toXml).getOrElse(NodeSeq.Empty) ++
+          declarationRequest.representative.map(_.toXml).getOrElse(NodeSeq.Empty) ++
+          declarationRequest.seals.map(_.toXml).getOrElse(NodeSeq.Empty) ++
+          declarationRequest.guarantee.toXml
       } //TODO: This needs more xml nodes adding as models become available
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
@@ -75,5 +82,9 @@ object DeclarationRequest {
      (__ \ "CUSOFFDEPEPT").read[CustomsOfficeDeparture],
      (__ \ "CUSOFFTRARNS").read(strictReadSeq[CustomsOfficeTransit]),
      (__ \ "CUSOFFDESEST").read[CustomsOfficeDestination],
-     (__ \ "CONRESERS").read[ControlResult].optional) mapN apply
+     (__ \ "CONRESERS").read[ControlResult].optional,
+     (__ \ "REPREP").read[Representative].optional,
+     (__ \ "SEAINFSLI").read[Seals].optional,
+     (__ \ "GUAGUA").read[Guarantee]) mapN apply
+
 }

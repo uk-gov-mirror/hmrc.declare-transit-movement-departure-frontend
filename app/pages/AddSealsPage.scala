@@ -16,11 +16,20 @@
 
 package pages
 
+import models.UserAnswers
 import play.api.libs.json.JsPath
+import queries.SealsQuery
+
+import scala.util.Try
 
 case object AddSealsPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addSeals"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(false) => userAnswers.remove(SealsQuery())
+    case Some(true)  => super.cleanup(value, userAnswers)
+  }
 }
