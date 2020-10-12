@@ -31,7 +31,7 @@ import pages._
 class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new GoodsSummaryNavigator
-
+  // format: off
   "GoodsSummaryNavigator" - {
 
     "in Normal Mode" - {
@@ -248,12 +248,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
             (userAnswers, seal) =>
               val updatedUserAnswers = userAnswers
-                .set(SealIdDetailsPage(sealIndex), seal)
-                .success
-                .value
-                .set(AddSealsPage, false)
-                .success
-                .value
+                .set(SealIdDetailsPage(sealIndex), seal).success.value
+                .set(AddSealsPage, false).success.value
 
               navigator
                 .nextPage(AddSealsPage, NormalMode, updatedUserAnswers)
@@ -269,12 +265,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(DeclarePackagesPage, true)
-              .toOption
-              .value
-              .remove(TotalPackagesPage)
-              .success
-              .value
+              .set(DeclarePackagesPage, true).toOption.value
+              .remove(TotalPackagesPage).success.value
 
             navigator
               .nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)
@@ -526,7 +518,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
       }
-
     }
   }
+  // format: on
 }

@@ -66,12 +66,11 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
       case _          => routes.AddSealsController.onPageLoad(ua.id, mode)
     }
 
-
   def confirmRemoveSeal(ua: UserAnswers, mode: Mode) = {
     val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
     (ua.get(ConfirmRemoveSealsPage), sealCount) match {
       case (Some(true), seals) if seals > 0 => routes.SealsInformationController.onPageLoad(ua.id, mode)
-      case (Some(true), seals) => routes.AddSealsController.onPageLoad(ua.id, mode)
+      case (Some(true), _) => routes.AddSealsController.onPageLoad(ua.id, mode)
       case _          => routes.SealsInformationController.onPageLoad(ua.id, mode)
     }
   }
