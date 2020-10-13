@@ -443,6 +443,32 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         }
       }
 
+      "must go from ConfirmRemoveSealsPage to" - {
+        "GoodSummaryCYA when True is selected" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ConfirmRemoveSealsPage, true).toOption.value
+
+              navigator
+                .nextPage(ConfirmRemoveSealsPage, CheckMode, updatedAnswers)
+                .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+          }
+        }
+
+        "AddSeals when False is selected" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ConfirmRemoveSealsPage, false).toOption.value
+
+              navigator
+                .nextPage(ConfirmRemoveSealsPage, CheckMode, updatedAnswers)
+                .mustBe(goodsSummaryRoute.AddSealsController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+      }
+
       "go from AddSealsPage to " - {
         "SealIdDetailsController(1) when 'true' is selected and they have no seals" in {
           forAll(arbitrary[UserAnswers]) {
