@@ -76,7 +76,7 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
 
       "and Default Liability Amount when selected" in {
 
-        val updatedAnswers = emptyUserAnswers.set(LiabilityAmountPage, "0").success.value
+        val updatedAnswers = emptyUserAnswers.set(LiabilityAmountPage, "").success.value
         val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
 
         data.sections.head.sectionTitle must not be defined

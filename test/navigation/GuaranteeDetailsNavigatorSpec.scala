@@ -229,15 +229,15 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
       }
 
-      "From Default Amount Page" -{
+      "From Default Amount Page" - {
         "to Liability amount page if the answer is NO" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
-            val updatedAnswers = answers
-              .set(DefaultAmountPage, false).success.value
-            navigator
-              .nextPage(DefaultAmountPage, NormalMode, updatedAnswers)
-              .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(answers.id, NormalMode))
+              val updatedAnswers = answers
+                .set(DefaultAmountPage, false).success.value
+              navigator
+                .nextPage(DefaultAmountPage, NormalMode, updatedAnswers)
+                .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(answers.id, NormalMode))
           }
         }
 
@@ -268,13 +268,14 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
     "in Checkmode" - {
       "must go from Guarantee Type page to" - {
-        "OtherReferencePage when user selects 3,5,6,7 or A and guaranteeReference had been set to 17 characters" in {
+        "OtherReferencePage when user selects 3,5,6,7 or A and guaranteeReference had been set" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
-                .set(GuaranteeReferencePage, "12345678901234567").success.value
+                .set(GuaranteeReferencePage, "1234").success.value
                 .set(GuaranteeTypePage, CashDepositGuarantee).success.value
+                .remove(OtherReferencePage).success.value
               navigator
                 .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.OtherReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
@@ -298,49 +299,26 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           }
         }
 
-        "to GuaranteeReference page when user changes answer from 0,1,2, or 9 and guaranteeReference has been set to 17 characters" in {
+        "to GuaranteeReference page when user changes answer from 4 to 0,1,2 or 9 and the cleanup removed previous answer" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
                 .set(GuaranteeTypePage, GuaranteeWaiver).success.value
-                .set(GuaranteeReferencePage, "12345678901234567").success.value
-                .set(GuaranteeTypePage, ComprehensiveGuarantee).success.value
+                .remove(GuaranteeReferencePage).success.value
               navigator
                 .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
           }
         }
 
-        "to GuaranteedReference page when user changes answer from 0,1,2, or 9 and guaranteeReference has been set to 17 characters" in {
+
+        "to GuaranteedReference page when user changes answer from  0,1,2 or 9 to 4 and the cleanup removed previous answer" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers: UserAnswers = answers
                 .set(GuaranteeTypePage, FlatRateVoucher).success.value
-                .set(GuaranteeReferencePage, "12345678901234567").success.value
-              navigator
-                .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
-                .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
-          }
-        }
+                .remove(GuaranteeReferencePage).success.value
 
-        "to GuaranteedReference page when user selects 0,1,2, or 9  and guaranteeReference has been set to 24 characters" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers: UserAnswers = answers
-                .set(GuaranteeReferencePage, "123456789012345678901234").success.value
-                .set(GuaranteeTypePage, GuaranteeWaiver).success.value
-              navigator
-                .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
-                .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
-          }
-        }
-
-        "to CYA page when user selects FlatRateVoucher and guaranteeReference has been set to 17 characters" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers: UserAnswers = answers
-                .set(GuaranteeReferencePage, "123456789012345678901234").success.value
-                .set(GuaranteeTypePage, FlatRateVoucher).success.value
               navigator
                 .nextPage(GuaranteeTypePage, CheckMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.GuaranteeReferenceController.onPageLoad(updatedAnswers.id, CheckMode))
