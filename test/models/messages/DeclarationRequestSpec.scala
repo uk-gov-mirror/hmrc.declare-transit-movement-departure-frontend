@@ -59,8 +59,8 @@ class DeclarationRequestSpec
               {declarationRequest.customsOfficeDestination.toXml}
               {declarationRequest.controlResult.map(_.toXml).getOrElse(NodeSeq.Empty)}
               {declarationRequest.representative.map(_.toXml).getOrElse(NodeSeq.Empty)}
-
-
+              {declarationRequest.seals.map(_.toXml).getOrElse(NodeSeq.Empty)}
+              {declarationRequest.guarantee.toXml}
             </CC015B>
 
           declarationRequest.toXml.map(trim) mustBe expectedResult.map(trim)

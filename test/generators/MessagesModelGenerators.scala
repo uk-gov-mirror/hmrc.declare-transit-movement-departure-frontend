@@ -21,6 +21,7 @@ import java.time.{LocalDate, LocalTime}
 import models.LocalReferenceNumber
 import models.messages._
 import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
+import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.{alphaNumChar, choose}
@@ -86,6 +87,8 @@ trait MessagesModelGenerators extends Generators {
         customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         controlResult             <- Gen.option(arbitrary[ControlResult])
         representative            <- Gen.option(arbitrary[Representative])
+        seals                     <- Gen.option(arbitrary[Seals])
+        guarantee                 <- arbitrary[Guarantee]
         //TODO: This needs more xml nodes adding as models become available
       } yield
         DeclarationRequest(
@@ -99,7 +102,9 @@ trait MessagesModelGenerators extends Generators {
           customsOfficeTransit,
           CustomsOfficeDestination(customsOfficeDestination.mkString),
           controlResult,
-          representative
+          representative,
+          seals,
+          guarantee
         )
     }
   }
@@ -225,6 +230,43 @@ trait MessagesModelGenerators extends Generators {
         controlResultCode <- Gen.pick(2, 'A' to 'Z')
         dateLimit         <- localDateGen
       } yield ControlResult(controlResultCode.mkString, dateLimit)
+    }
+
+  implicit lazy val arbitrarySeals: Arbitrary[Seals] =
+    Arbitrary {
+      for {
+        numberOfSeals <- choose(min = 1: Int, 10: Int)
+        sealId        <- listWithMaxLength(numberOfSeals, stringsWithMaxLength(Seals.Constants.sealIdLength, alphaNumChar))
+      } yield Seals(numberOfSeals, sealId)
+    }
+
+  implicit lazy val arbitraryGuaranteeReferenceWithGrn: Arbitrary[GuaranteeReferenceWithGrn] =
+    Arbitrary {
+      for {
+        guaranteeReferenceNumber <- stringsWithMaxLength(GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength, alphaNumChar)
+        accessCode               <- stringsWithMaxLength(GuaranteeReference.Constants.accessCodeLength, alphaNumChar)
+      } yield GuaranteeReferenceWithGrn(guaranteeReferenceNumber, accessCode)
+    }
+
+  implicit lazy val arbitraryGuaranteeReferenceWithOther: Arbitrary[GuaranteeReferenceWithOther] =
+    Arbitrary {
+      for {
+        guaranteeReferenceNumber <- stringsWithMaxLength(GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength, alphaNumChar)
+        accessCode               <- Gen.option(stringsWithMaxLength(GuaranteeReference.Constants.accessCodeLength, alphaNumChar))
+      } yield GuaranteeReferenceWithOther(guaranteeReferenceNumber, accessCode)
+    }
+
+  implicit lazy val arbitraryGuaranteeReference: Arbitrary[GuaranteeReference] =
+    Arbitrary {
+      Gen.oneOf[GuaranteeReference](arbitrary[GuaranteeReferenceWithGrn], arbitrary[GuaranteeReferenceWithOther])
+    }
+
+  implicit lazy val arbitraryGuarantee: Arbitrary[Guarantee] =
+    Arbitrary {
+      for {
+        guaranteeType     <- stringsWithMaxLength(GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength, alphaNumChar)
+        guarnteeReference <- listWithMaxLength(Guarantee.Constants.guaranteeReferenceCount, arbitrary[GuaranteeReference])
+      } yield Guarantee(guaranteeType, guarnteeReference)
     }
 
 }
