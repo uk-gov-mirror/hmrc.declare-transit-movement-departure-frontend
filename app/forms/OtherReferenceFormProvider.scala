@@ -20,10 +20,11 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import config.FrontendAppConfig
 
-class OtherReferenceFormProvider @Inject() extends Mappings {
+class OtherReferenceFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
 
-  val maxLength: Int                  = 35
+  val maxLength: Int                  = appConfig.otherRefMaxLength
   val guaranteeReferenceRegex: String = "^[A-Z0-9]*$"
 
   def apply(): Form[String] =

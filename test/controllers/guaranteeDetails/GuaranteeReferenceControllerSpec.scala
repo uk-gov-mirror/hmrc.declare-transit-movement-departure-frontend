@@ -38,6 +38,7 @@ import controllers.{routes => mainRoutes}
 import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import models.GuaranteeType.{FlatRateVoucher, GuaranteeWaiver}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import config.FrontendAppConfig
 
 import scala.concurrent.Future
 
@@ -46,7 +47,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new GuaranteeReferenceFormProvider()
-  val form         = formProvider(24)
+  val form         = formProvider(frontendAppConfig.maxLengthFlatRateVoucherGRN)
 
   lazy val guaranteeReferenceRoute = routes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url
 

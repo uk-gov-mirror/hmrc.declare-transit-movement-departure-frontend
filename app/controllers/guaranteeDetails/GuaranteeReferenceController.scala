@@ -31,6 +31,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import config.FrontendAppConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +45,7 @@ class GuaranteeReferenceController @Inject()(
   formProvider: GuaranteeReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
@@ -52,8 +53,8 @@ class GuaranteeReferenceController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val lengthGRN = request.userAnswers.get(GuaranteeTypePage) match {
-        case Some(FlatRateVoucher) => 24
-        case _                     => 17
+        case Some(FlatRateVoucher) => appConfig.maxLengthFlatRateVoucherGRN
+        case _                     => appConfig.maxLengthGRN
       }
       val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
 
@@ -73,8 +74,8 @@ class GuaranteeReferenceController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val grnMaxLength = request.userAnswers.get(GuaranteeTypePage) match {
-        case Some(FlatRateVoucher) => 24
-        case _                     => 17
+        case Some(FlatRateVoucher) => appConfig.maxLengthFlatRateVoucherGRN
+        case _                     => appConfig.maxLengthGRN
       }
       formProvider(grnMaxLength)
         .bindFromRequest()

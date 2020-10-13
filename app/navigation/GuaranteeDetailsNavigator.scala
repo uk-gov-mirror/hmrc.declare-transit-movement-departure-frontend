@@ -85,7 +85,6 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
       case (Some(guaranteeType), None, _,  NormalMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, NormalMode))
 
-
       case (Some(guaranteeType), Some(_), _,  CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
@@ -95,14 +94,8 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
       case (Some(guaranteeType), _ , None, CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, CheckMode))
 
-
-
       case (Some(guaranteeType), None , None,  CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeReferenceController.onPageLoad(ua.id, CheckMode))
-
-
-
-
 
       case _ => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     }

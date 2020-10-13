@@ -17,6 +17,7 @@
 package controllers.guaranteeDetails
 
 import base.SpecBase
+import config.FrontendAppConfig
 import forms.OtherReferenceFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -36,14 +37,15 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import config.FrontendAppConfig
 
 import scala.concurrent.Future
 
-class OtherReferenceControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class OtherReferenceControllerSpec(appConfig: FrontendAppConfig) extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new OtherReferenceFormProvider()
+  val formProvider = new OtherReferenceFormProvider(appConfig: FrontendAppConfig)
   val form         = formProvider()
 
   lazy val otherReferenceRoute = routes.OtherReferenceController.onPageLoad(lrn, NormalMode).url
