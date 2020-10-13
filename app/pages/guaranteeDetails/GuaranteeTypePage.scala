@@ -33,13 +33,13 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
     (value, userAnswers.get(AccessCodePage)) match {
 
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple), Some(_))
-          if (userAnswers.get(GuaranteeReferencePage).toString.length > 17) =>
+          if userAnswers.get(GuaranteeReferencePage).toString.length > 17 =>
         userAnswers.remove(GuaranteeReferencePage)
 
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
             Some(_)) =>
-        userAnswers
-          .remove(OtherReferencePage)
+        userAnswers.remove(OtherReferencePage)
+
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
             None) =>
         userAnswers

@@ -85,11 +85,12 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
       case (Some(guaranteeType), None, _,  NormalMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, NormalMode))
 
-      case (Some(guaranteeType), _,  Some(_), CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+
+      case (Some(guaranteeType), Some(_), _,  CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
-      case (Some(guaranteeType), Some(_), None,  CheckMode) if guaranteeReferenceRoute.contains(guaranteeType) =>
-        Some(routes.OtherReferenceController.onPageLoad(ua.id, CheckMode))
+      case (Some(guaranteeType), _,  Some(_), CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+        Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
       case (Some(guaranteeType), _ , None, CheckMode) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Some(routes.OtherReferenceController.onPageLoad(ua.id, CheckMode))
