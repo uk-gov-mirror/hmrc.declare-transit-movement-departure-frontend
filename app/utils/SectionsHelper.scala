@@ -231,16 +231,16 @@ class SectionsHelper(userAnswers: UserAnswers) {
     val lrn       = userAnswers.id
     val sealIndex = Index(0)
 
-    val declarePackagesDiversionPages: Seq[(Option[Int], String)] = if (userAnswers.get(DeclarePackagesPage).contains(true)) {
-      Seq(userAnswers.get(TotalPackagesPage) -> goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url)
-    } else {
-      Seq.empty
+    val declarePackagesDiversionPages: Seq[(Option[_], String)] = userAnswers.get(DeclarePackagesPage) match {
+      case Some(true)  => Seq(userAnswers.get(TotalPackagesPage) -> goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url)
+      case Some(false) => Seq(userAnswers.get(TotalGrossMassPage) -> goodsSummaryRoutes.TotalGrossMassController.onPageLoad(lrn, NormalMode).url)
+      case _           => Seq.empty
     }
 
-    val addCustomsApprovedLocationDiversionPages: Seq[(Option[String], String)] = if (userAnswers.get(AddCustomsApprovedLocationPage).contains(true)) {
-      Seq(userAnswers.get(CustomsApprovedLocationPage) -> goodsSummaryRoutes.CustomsApprovedLocationController.onPageLoad(lrn, NormalMode).url)
-    } else {
-      Seq.empty
+    val addCustomsApprovedLocationDiversionPages: Seq[(Option[String], String)] = userAnswers.get(AddCustomsApprovedLocationPage) match {
+      case Some(true) =>
+        Seq(userAnswers.get(CustomsApprovedLocationPage) -> goodsSummaryRoutes.CustomsApprovedLocationController.onPageLoad(lrn, NormalMode).url)
+      case _ => Seq.empty
     }
 
     val sealsInformationDiversionPages: Seq[(Option[SealDomain], String)] = if (userAnswers.get(SealsInformationPage).contains(true)) {
@@ -263,19 +263,24 @@ class SectionsHelper(userAnswers: UserAnswers) {
             userAnswers.get(ControlResultDateLimitPage) -> goodsSummaryRoutes.ControlResultDateLimitController.onPageLoad(lrn, NormalMode).url
           )
         case Some(Normal) =>
-          Seq(
-            userAnswers.get(AddCustomsApprovedLocationPage) -> goodsSummaryRoutes.AddCustomsApprovedLocationController.onPageLoad(lrn, NormalMode).url,
-            userAnswers.get(CustomsApprovedLocationPage)    -> goodsSummaryRoutes.CustomsApprovedLocationController.onPageLoad(lrn, NormalMode).url
-          )
+          userAnswers.get(AddCustomsApprovedLocationPage) match {
+            case Some(true) =>
+              Seq(
+                userAnswers.get(AddCustomsApprovedLocationPage) -> goodsSummaryRoutes.AddCustomsApprovedLocationController.onPageLoad(lrn, NormalMode).url,
+                userAnswers.get(CustomsApprovedLocationPage)    -> goodsSummaryRoutes.CustomsApprovedLocationController.onPageLoad(lrn, NormalMode).url
+              )
+            case _ =>
+              Seq(userAnswers.get(AddCustomsApprovedLocationPage) -> goodsSummaryRoutes.AddCustomsApprovedLocationController.onPageLoad(lrn, NormalMode).url)
+          }
         case _ => Seq.empty
       }
     }
 
     Seq(
       userAnswers.get(DeclarePackagesPage) -> goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(TotalPackagesPage)   -> goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(TotalGrossMassPage)  -> goodsSummaryRoutes.TotalGrossMassController.onPageLoad(lrn, NormalMode).url,
-      userAnswers.get(AddSealsPage)        -> goodsSummaryRoutes.AddSealsController.onPageLoad(lrn, NormalMode).url,
+      //   userAnswers.get(TotalPackagesPage)   -> goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url,
+      //userAnswers.get(TotalGrossMassPage) -> goodsSummaryRoutes.TotalGrossMassController.onPageLoad(lrn, NormalMode).url,
+      //userAnswers.get(AddSealsPage) -> goodsSummaryRoutes.AddSealsController.onPageLoad(lrn, NormalMode).url,
     ) ++ declarePackagesDiversionPages ++ addCustomsApprovedLocationDiversionPages ++ addSealsPages ++ simplifiedPages ++ sealsInformationDiversionPages
 
   }

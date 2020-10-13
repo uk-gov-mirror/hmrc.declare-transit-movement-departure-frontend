@@ -31,7 +31,7 @@ import models._
 import pages._
 
 class SectionsHelperSpec extends SpecBase {
-
+  // format: off
   "SectionsHelper" - {
     "GetSections" - {
       "must include SafetyAndSecurity section when answer Yes to AddSecurityDetailsPage" in {
@@ -319,8 +319,10 @@ class SectionsHelperSpec extends SpecBase {
 
         result mustBe expectedSections
       }
+
       "must return goodssummary section with status as In Progress" in {
-        val userAnswers    = emptyUserAnswers.set(DeclarePackagesPage, true).success.value
+        val userAnswers    = emptyUserAnswers
+          .set(DeclarePackagesPage, true).success.value
         val sectionsHelper = new SectionsHelper(userAnswers)
 
         val url              = goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url
@@ -334,33 +336,15 @@ class SectionsHelperSpec extends SpecBase {
 
       "must goods summary section with status as Completed on a Normal Journey" in {
         val userAnswers = emptyUserAnswers
-          .set(DeclarePackagesPage, true)
-          .toOption
-          .value
-          .set(TotalPackagesPage, 100)
-          .success
-          .value
-          .set(TotalGrossMassPage, "100.123")
-          .success
-          .value
-          .set(ProcedureTypePage, Normal)
-          .toOption
-          .value
-          .set(AddCustomsApprovedLocationPage, true)
-          .success
-          .value
-          .set(CustomsApprovedLocationPage, "testlocation")
-          .success
-          .value
-          .set(AddSealsPage, true)
-          .toOption
-          .value
-          .set(SealIdDetailsPage(Index(0)), sealDomain)
-          .success
-          .value
-          .set(SealsInformationPage, false)
-          .toOption
-          .value
+          .set(ProcedureTypePage, Normal).toOption.value
+          .set(DeclarePackagesPage, true).toOption.value
+          .set(TotalPackagesPage, 100).success.value
+          .set(TotalGrossMassPage, "100.123").success.value
+          .set(AddCustomsApprovedLocationPage, true).success.value
+          .set(CustomsApprovedLocationPage, "testlocation").success.value
+          .set(AddSealsPage, true).toOption.value
+          .set(SealIdDetailsPage(Index(0)), sealDomain).success.value
+          .set(SealsInformationPage, false).toOption.value
         val sectionsHelper = new SectionsHelper(userAnswers)
 
         val url              = goodsSummaryRoutes.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn).url
@@ -372,37 +356,18 @@ class SectionsHelperSpec extends SpecBase {
         result mustBe expectedSections
       }
 
-      "must goods summary section with status as Completed on a Simplified Journey" in {
+      "must goods summary section with status as Completed Journey" in {
         val date = LocalDate.now
 
         val userAnswers = emptyUserAnswers
-          .set(DeclarePackagesPage, true)
-          .toOption
-          .value
-          .set(TotalPackagesPage, 100)
-          .success
-          .value
-          .set(TotalGrossMassPage, "100.123")
-          .success
-          .value
-          .set(ProcedureTypePage, Simplified)
-          .toOption
-          .value
-          .set(AuthorisedLocationCodePage, "testcode")
-          .success
-          .value
-          .set(ControlResultDateLimitPage, date)
-          .success
-          .value
-          .set(AddSealsPage, true)
-          .toOption
-          .value
-          .set(SealIdDetailsPage(sealIndex), sealDomain)
-          .success
-          .value
-          .set(SealsInformationPage, false)
-          .toOption
-          .value
+          .set(DeclarePackagesPage, true).toOption.value
+          .set(TotalPackagesPage, 100).success.value
+          .set(TotalGrossMassPage, "100.123").success.value
+          .set(AuthorisedLocationCodePage, "testcode").success.value
+          .set(ControlResultDateLimitPage, date).success.value
+          .set(AddSealsPage, true).toOption.value
+          .set(SealIdDetailsPage(sealIndex), sealDomain).success.value
+          .set(SealsInformationPage, false).toOption.value
         val sectionsHelper = new SectionsHelper(userAnswers)
 
         val url              = goodsSummaryRoutes.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn).url
@@ -414,6 +379,32 @@ class SectionsHelperSpec extends SpecBase {
         result mustBe expectedSections
       }
 
+
+      "must direct to totalPackages when not completed and DeclarePackagesPage is True" in {
+        val userAnswers = emptyUserAnswers
+          .set(DeclarePackagesPage, true).success.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+        val results = sectionsHelper.getSections
+
+        val url = goodsSummaryRoutes.TotalPackagesController.onPageLoad(lrn, NormalMode).url
+        val sectionName      = "declarationSummary.section.goodsSummary"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, InProgress))
+
+        results mustBe expectedSections
+      }
+
+      "must direct to totalGrossMass when not completed and DeclarePackages is False" in {
+        val userAnswers = emptyUserAnswers
+          .set(DeclarePackagesPage, false).success.value
+        val sectionsHelper = new SectionsHelper(userAnswers)
+        val results = sectionsHelper.getSections
+
+        val url = goodsSummaryRoutes.TotalGrossMassController.onPageLoad(lrn, NormalMode).url
+        val sectionName      = "declarationSummary.section.goodsSummary"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, InProgress))
+
+        results mustBe expectedSections
+      }
     }
   }
 
@@ -433,4 +424,5 @@ class SectionsHelperSpec extends SpecBase {
         if (section.name == sectionDtls.name) sectionDtls else section
     }
   }
+  // format: off
 }
