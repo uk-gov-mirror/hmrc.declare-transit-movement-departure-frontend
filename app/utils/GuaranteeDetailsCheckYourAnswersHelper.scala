@@ -73,9 +73,9 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def liabilityAmount: Option[Row] = userAnswers.get(LiabilityAmountPage) map {
     answer =>
-      val displayAmount = answer.toDouble match {
-        case 0.00 => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
-        case _    => lit"$answer"
+      val displayAmount = answer match {
+        case "" => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
+        case _  => lit"$answer"
       }
       Row(
         key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
