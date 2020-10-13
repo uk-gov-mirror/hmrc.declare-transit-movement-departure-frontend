@@ -37,9 +37,10 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case ControlResultDateLimitPage     => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
     case CustomsApprovedLocationPage    => ua => Some(routes.AddSealsController.onPageLoad(ua.id, NormalMode))
     case AddSealsPage                   => ua => Some(addSealsRoute(ua, NormalMode))
-    case SealIdDetailsPage(sealIndex)   => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, NormalMode))
+    case SealIdDetailsPage(_)           => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, NormalMode))
     case AddSealsLaterPage              => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case SealsInformationPage           => ua => Some(sealsInformationRoute(ua, NormalMode))
+    case ConfirmRemoveSealsPage         => ua => Some(confirmRemoveSealsRoute(ua, CheckMode))
     case ConfirmRemoveSealPage()        => ua => Some(confirmRemoveSeal(ua, NormalMode))
   }
 
@@ -54,7 +55,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case CustomsApprovedLocationPage    => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
     case AddSealsPage                   => ua => Some(addSealsRoute(ua, CheckMode))
     case AddSealsLaterPage              => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
-    case SealIdDetailsPage(sealIndex)   => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, CheckMode))
+    case SealIdDetailsPage(_)           => ua => Some(routes.SealsInformationController.onPageLoad(ua.id, CheckMode))
     case SealsInformationPage           => ua => Some(sealsInformationRoute(ua, CheckMode))
     case ConfirmRemoveSealsPage         => ua => Some(confirmRemoveSealsRoute(ua, CheckMode))
     case ConfirmRemoveSealPage()        => ua => Some(confirmRemoveSeal(ua, CheckMode))
@@ -65,7 +66,6 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
       case Some(true) => routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id)
       case _          => routes.AddSealsController.onPageLoad(ua.id, mode)
     }
-
 
   def confirmRemoveSeal(ua: UserAnswers, mode: Mode) = {
     val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
