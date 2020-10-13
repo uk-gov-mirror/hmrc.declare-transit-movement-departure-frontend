@@ -209,6 +209,36 @@ trait MessagesModelGenerators extends Generators {
       } yield TraderConsignee(name, streetAndNumber, postCode, city, countryCode.mkString, eori)
     }
 
+  implicit lazy val arbitraryTraderConsignorGoodsItem: Arbitrary[TraderConsignorGoodsItem] =
+    Arbitrary {
+      for {
+        traderConsignor <- arbitrary[TraderConsignor]
+      } yield
+        TraderConsignorGoodsItem(
+          traderConsignor.name,
+          traderConsignor.streetAndNumber,
+          traderConsignor.postCode,
+          traderConsignor.city,
+          traderConsignor.countryCode.mkString,
+          traderConsignor.eori
+        )
+    }
+
+  implicit lazy val arbitraryTraderConsigneeGoodsItem: Arbitrary[TraderConsigneeGoodsItem] =
+    Arbitrary {
+      for {
+        traderConsignee <- arbitrary[TraderConsignee]
+      } yield
+        TraderConsigneeGoodsItem(
+          traderConsignee.name,
+          traderConsignee.streetAndNumber,
+          traderConsignee.postCode,
+          traderConsignee.city,
+          traderConsignee.countryCode.mkString,
+          traderConsignee.eori
+        )
+    }
+
   implicit lazy val arbitraryAuthorisedConsigneeTrader: Arbitrary[TraderAuthorisedConsignee] =
     Arbitrary {
       for {
@@ -282,8 +312,10 @@ trait MessagesModelGenerators extends Generators {
         countryOfDestination <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
         previousAdministrativeReference <- listWithMaxLength(PreviousAdministrativeReference.Constants.previousAdministrativeReferenceCount,
                                                              arbitrary[PreviousAdministrativeReference])
-        producedDocuments <- listWithMaxLength(ProducedDocument.Constants.producedDocumentCount, arbitrary[ProducedDocument])
-        specialMentions   <- listWithMaxLength(SpecialMention.Constants.specialMentionCount, arbitrary[SpecialMention])
+        producedDocuments        <- listWithMaxLength(ProducedDocument.Constants.producedDocumentCount, arbitrary[ProducedDocument])
+        specialMentions          <- listWithMaxLength(SpecialMention.Constants.specialMentionCount, arbitrary[SpecialMention])
+        traderConsignorGoodsItem <- Gen.option(arbitrary[TraderConsignorGoodsItem])
+        traderConsigneeGoodsItem <- Gen.option(arbitrary[TraderConsigneeGoodsItem])
       } yield
         GoodsItem(
           itemNumber,
@@ -296,7 +328,9 @@ trait MessagesModelGenerators extends Generators {
           countryOfDestination,
           previousAdministrativeReference,
           producedDocuments,
-          specialMentions
+          specialMentions,
+          traderConsignorGoodsItem,
+          traderConsigneeGoodsItem
         )
     }
 

@@ -37,7 +37,9 @@ final case class GoodsItem(
   countryOfDestination: Option[String],
   previousAdministrativeReferences: Seq[PreviousAdministrativeReference],
   producedDocuments: Seq[ProducedDocument],
-  specialMention: Seq[SpecialMention]
+  specialMention: Seq[SpecialMention],
+  traderConsignorGoodsItem: Option[TraderConsignorGoodsItem],
+  traderConsigneeGoodsItem: Option[TraderConsigneeGoodsItem]
 //                            transportChargesPaymentMethod: Option[String], //CL116. Transport charges - Method of payment (A - Z) Where is this from
 //                            commercialReferenceNumber: Option[String], //an..70
 //                            dangerousGoodsCode: Option[String] //UN dangerous goods code an4
@@ -69,7 +71,9 @@ object GoodsItem {
                                                   (__ \ "CouOfDesGDS59").read[String].optional,
                                                   (__ \ "PREADMREFAR2").read(strictReadSeq[PreviousAdministrativeReference]),
                                                   (__ \ "PRODOCDC2").read(strictReadSeq[ProducedDocument]),
-                                                  (__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention])).mapN(apply)
+                                                  (__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention]),
+                                                  (__ \ "TRACONCO2").read[TraderConsignorGoodsItem].optional,
+                                                  (__ \ "TRACONCE2").read[TraderConsigneeGoodsItem].optional).mapN(apply)
   //(__ \ "PRODOCDC2").read(strictReadSeq[ProducedDocument]),
   //(__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention]),
   //(__ \ "TRACONCO2").read[Consignor](Consignor.xmlReaderGoodsLevel).optional,
@@ -91,6 +95,8 @@ object GoodsItem {
       val previousAdministrativeReference = goodsItem.previousAdministrativeReferences.flatMap(value => value.toXml)
       val producedDocuments               = goodsItem.producedDocuments.flatMap(value => value.toXml)
       val specialMentions                 = goodsItem.specialMention.flatMap(value => specialMention(value))
+      val traderConsignorGoodsItem        = goodsItem.traderConsignorGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
+      val traderConsigneeGoodsItem        = goodsItem.traderConsigneeGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
 
       //TODO: Do we need these nodes, they're not in the WebSols xsds
 //      val transportChargesPaymentMethod = goodsItem.transportChargesPaymentMethod.fold(NodeSeq.Empty)(value => <MetOfPayGDI12>{value}</MetOfPayGDI12>)
@@ -110,6 +116,8 @@ object GoodsItem {
         {previousAdministrativeReference}
         {producedDocuments}
         {specialMentions}
+        {traderConsignorGoodsItem}
+        {traderConsigneeGoodsItem}
       </GOOITEGDS>
   }
 

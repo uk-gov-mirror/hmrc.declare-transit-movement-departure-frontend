@@ -35,12 +35,14 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
 
       forAll(arbitrary[GoodsItem]) {
         goodsItem =>
-          val commodityCode        = goodsItem.commodityCode.fold(NodeSeq.Empty)(value => <ComCodTarCodGDS10>{value}</ComCodTarCodGDS10>)
-          val declarationType      = goodsItem.declarationType.fold(NodeSeq.Empty)(value => <DecTypGDS15>{value}</DecTypGDS15>)
-          val grossMass            = goodsItem.grossMass.fold(NodeSeq.Empty)(value => <GroMasGDS46>{value}</GroMasGDS46>)
-          val netMass              = goodsItem.netMass.fold(NodeSeq.Empty)(value => <NetMasGDS48>{value}</NetMasGDS48>)
-          val countryOfDispatch    = goodsItem.countryOfDispatch.fold(NodeSeq.Empty)(value => <CouOfDisGDS58>{value}</CouOfDisGDS58>)
-          val countryOfDestination = goodsItem.countryOfDestination.fold(NodeSeq.Empty)(value => <CouOfDesGDS59>{value}</CouOfDesGDS59>)
+          val commodityCode            = goodsItem.commodityCode.fold(NodeSeq.Empty)(value => <ComCodTarCodGDS10>{value}</ComCodTarCodGDS10>)
+          val declarationType          = goodsItem.declarationType.fold(NodeSeq.Empty)(value => <DecTypGDS15>{value}</DecTypGDS15>)
+          val grossMass                = goodsItem.grossMass.fold(NodeSeq.Empty)(value => <GroMasGDS46>{value}</GroMasGDS46>)
+          val netMass                  = goodsItem.netMass.fold(NodeSeq.Empty)(value => <NetMasGDS48>{value}</NetMasGDS48>)
+          val countryOfDispatch        = goodsItem.countryOfDispatch.fold(NodeSeq.Empty)(value => <CouOfDisGDS58>{value}</CouOfDisGDS58>)
+          val countryOfDestination     = goodsItem.countryOfDestination.fold(NodeSeq.Empty)(value => <CouOfDesGDS59>{value}</CouOfDesGDS59>)
+          val traderConsignorGoodsItem = goodsItem.traderConsignorGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
+          val traderConsigneeGoodsItem = goodsItem.traderConsigneeGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
 
           val expectedResult =
             <GOOITEGDS>
@@ -56,6 +58,8 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
               {goodsItem.previousAdministrativeReferences.flatMap(value => value.toXml)}
               {goodsItem.producedDocuments.flatMap(value => value.toXml)}
               {goodsItem.specialMention.flatMap(value => specialMention(value))}
+              {traderConsignorGoodsItem}
+              {traderConsigneeGoodsItem}
             </GOOITEGDS>
 
           goodsItem.toXml mustEqual expectedResult
