@@ -43,6 +43,10 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
           val countryOfDestination     = goodsItem.countryOfDestination.fold(NodeSeq.Empty)(value => <CouOfDesGDS59>{value}</CouOfDesGDS59>)
           val traderConsignorGoodsItem = goodsItem.traderConsignorGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
           val traderConsigneeGoodsItem = goodsItem.traderConsigneeGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
+          val containers = goodsItem.containers.toList.map {
+            x =>
+              <CONNR2><ConNumNR21>{x}</ConNumNR21></CONNR2>
+          }
 
           val expectedResult =
             <GOOITEGDS>
@@ -60,6 +64,7 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
               {goodsItem.specialMention.flatMap(value => specialMention(value))}
               {traderConsignorGoodsItem}
               {traderConsigneeGoodsItem}
+              {containers}
             </GOOITEGDS>
 
           goodsItem.toXml mustEqual expectedResult

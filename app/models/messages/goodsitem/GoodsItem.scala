@@ -19,7 +19,7 @@ package models.messages.goodsitem
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.{LanguageCodeEnglish, XMLWrites}
 import cats.syntax.all._
-import com.lucidchart.open.xtract.XmlReader.strictReadSeq
+import com.lucidchart.open.xtract.XmlReader.{seq, strictReadSeq}
 
 import scala.xml.NodeSeq
 import utils.BigDecimalXMLReader._
@@ -39,7 +39,8 @@ final case class GoodsItem(
   producedDocuments: Seq[ProducedDocument],
   specialMention: Seq[SpecialMention],
   traderConsignorGoodsItem: Option[TraderConsignorGoodsItem],
-  traderConsigneeGoodsItem: Option[TraderConsigneeGoodsItem]
+  traderConsigneeGoodsItem: Option[TraderConsigneeGoodsItem],
+  containers: Seq[String]
 //                            transportChargesPaymentMethod: Option[String], //CL116. Transport charges - Method of payment (A - Z) Where is this from
 //                            commercialReferenceNumber: Option[String], //an..70
 //                            dangerousGoodsCode: Option[String] //UN dangerous goods code an4
@@ -73,7 +74,8 @@ object GoodsItem {
                                                   (__ \ "PRODOCDC2").read(strictReadSeq[ProducedDocument]),
                                                   (__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention]),
                                                   (__ \ "TRACONCO2").read[TraderConsignorGoodsItem].optional,
-                                                  (__ \ "TRACONCE2").read[TraderConsigneeGoodsItem].optional).mapN(apply)
+                                                  (__ \ "TRACONCE2").read[TraderConsigneeGoodsItem].optional,
+                                                  (__ \ "CONNR2" \ "ConNumNR21").read(seq[String])).mapN(apply)
   //(__ \ "PRODOCDC2").read(strictReadSeq[ProducedDocument]),
   //(__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention]),
   //(__ \ "TRACONCO2").read[Consignor](Consignor.xmlReaderGoodsLevel).optional,
@@ -98,6 +100,8 @@ object GoodsItem {
       val traderConsignorGoodsItem        = goodsItem.traderConsignorGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
       val traderConsigneeGoodsItem        = goodsItem.traderConsigneeGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
 
+      val containers = goodsItem.containers.toList.map(x => <CONNR2><ConNumNR21>{x}</ConNumNR21></CONNR2>)
+
       //TODO: Do we need these nodes, they're not in the WebSols xsds
 //      val transportChargesPaymentMethod = goodsItem.transportChargesPaymentMethod.fold(NodeSeq.Empty)(value => <MetOfPayGDI12>{value}</MetOfPayGDI12>)
 //      val commercialReferenceNumber = goodsItem.commercialReferenceNumber.fold(NodeSeq.Empty)(value => <ComRefNumGIM1>{value}</ComRefNumGIM1>)
@@ -118,6 +122,7 @@ object GoodsItem {
         {specialMentions}
         {traderConsignorGoodsItem}
         {traderConsigneeGoodsItem}
+        {containers}
       </GOOITEGDS>
   }
 

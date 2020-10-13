@@ -316,6 +316,7 @@ trait MessagesModelGenerators extends Generators {
         specialMentions          <- listWithMaxLength(SpecialMention.Constants.specialMentionCount, arbitrary[SpecialMention])
         traderConsignorGoodsItem <- Gen.option(arbitrary[TraderConsignorGoodsItem])
         traderConsigneeGoodsItem <- Gen.option(arbitrary[TraderConsigneeGoodsItem])
+        containers               <- listWithMaxLength(Containers.Constants.containerCount, stringsWithMaxLength(Containers.Constants.containerNumberLength, alphaNumChar))
       } yield
         GoodsItem(
           itemNumber,
@@ -330,7 +331,8 @@ trait MessagesModelGenerators extends Generators {
           producedDocuments,
           specialMentions,
           traderConsignorGoodsItem,
-          traderConsigneeGoodsItem
+          traderConsigneeGoodsItem,
+          containers
         )
     }
 
