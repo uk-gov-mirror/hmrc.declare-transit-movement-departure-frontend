@@ -52,51 +52,53 @@ class GuaranteeReferenceController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val lengthGRN: Int = grnMaxLengthValue(request)
-      val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        val lengthGRN: Int = grnMaxLengthValue(request.userAnswers)
+        val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
 
-        case None        => formProvider(lengthGRN)
-        case Some(value) => formProvider(lengthGRN).fill(value)
-      }
+          case None        => formProvider(lengthGRN)
+          case Some(value) => formProvider(lengthGRN).fill(value)
+        }
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("guaranteeDetails/guaranteeReference.njk", json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val grnMaxLength: Int = grnMaxLengthValue(request)
-      formProvider(grnMaxLength)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
-            )
-
-            renderer.render("guaranteeDetails/guaranteeReference.njk", json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GuaranteeReferencePage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(GuaranteeReferencePage, mode, updatedAnswers))
+        val json = Json.obj(
+          "form" -> preparedForm,
+          "lrn"  -> lrn,
+          "mode" -> mode
         )
-  }
 
-  private def grnMaxLengthValue(userAnswers:UserAnswers) =  userAnswers.get(GuaranteeTypePage) match {
-      case Some(FlatRateVoucher) => GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength
-      case _                     => GuaranteeReferenceWithGrn.Constants.grnOtherTypeLength
+        renderer.render("guaranteeDetails/guaranteeReference.njk", json).map(Ok(_))
     }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        val grnMaxLength: Int = grnMaxLengthValue(request.userAnswers)
+        formProvider(grnMaxLength)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form" -> formWithErrors,
+                "lrn"  -> lrn,
+                "mode" -> mode
+              )
+
+              renderer.render("guaranteeDetails/guaranteeReference.njk", json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(GuaranteeReferencePage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(GuaranteeReferencePage, mode, updatedAnswers))
+          )
+    }
+
+  private def grnMaxLengthValue(userAnswers: UserAnswers) = userAnswers.get(GuaranteeTypePage) match {
+    case Some(FlatRateVoucher) => GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength
+    case _                     => GuaranteeReferenceWithGrn.Constants.grnOtherTypeLength
+  }
 
 }
