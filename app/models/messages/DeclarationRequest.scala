@@ -67,7 +67,7 @@ object DeclarationRequest {
           declarationRequest.seals.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.guarantee.toXml ++
           declarationRequest.goodsItems.toList.flatMap(_.toXml)
-      } //TODO: This needs more xml nodes adding as models become available
+      }
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
   }

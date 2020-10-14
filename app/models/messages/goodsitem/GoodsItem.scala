@@ -40,17 +40,8 @@ final case class GoodsItem(
   traderConsignorGoodsItem: Option[TraderConsignorGoodsItem],
   traderConsigneeGoodsItem: Option[TraderConsigneeGoodsItem],
   containers: Seq[String],
-  packages: Seq[Package]
-//                            transportChargesPaymentMethod: Option[String], //CL116. Transport charges - Method of payment (A - Z) Where is this from
-//                            commercialReferenceNumber: Option[String], //an..70
-//                            dangerousGoodsCode: Option[String] //UN dangerous goods code an4
-  //      producedDocuments: Seq[ProducedDocument],
-  //      specialMentions: Seq[SpecialMention],
-  //      consignor: Option[Consignor],
-  //      consignee: Option[Consignee],
-  //      containers: Seq[String],
-  //      packages: NonEmptyList[Package],
-  //      sensitiveGoodsInformation: Seq[SensitiveGoodsInformation]
+  packages: Seq[Package],
+  sensitiveGoodsInformation: Seq[SensitiveGoodsInformation]
 )
 
 object GoodsItem {
@@ -60,8 +51,11 @@ object GoodsItem {
     val typeOfDeclarationLength = 9
     val descriptionLength       = 280
     val countryLength           = 2
+    val itemCount               = 999
   }
 
+  //TODO: MetOfPayGDI12, ComRefNumGIM1, UNDanGooCodGDI1 are optional nodes but aren't in WebSols xsd
+  //TODO: If these questions aren't asked in the journey we can remove them
   implicit val xmlReader: XmlReader[GoodsItem] = ((__ \ "IteNumGDS7").read[Int],
                                                   (__ \ "ComCodTarCodGDS10").read[String].optional,
                                                   (__ \ "DecTypGDS15").read[String].optional,
@@ -76,14 +70,8 @@ object GoodsItem {
                                                   (__ \ "TRACONCO2").read[TraderConsignorGoodsItem].optional,
                                                   (__ \ "TRACONCE2").read[TraderConsigneeGoodsItem].optional,
                                                   (__ \ "CONNR2" \ "ConNumNR21").read(seq[String]),
-                                                  (__ \ "PACGS2").read(strictReadSeq[Package])).mapN(apply)
-  //(__ \ "PRODOCDC2").read(strictReadSeq[ProducedDocument]),
-  //(__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention]),
-  //(__ \ "TRACONCO2").read[Consignor](Consignor.xmlReaderGoodsLevel).optional,
-  //(__ \ "TRACONCE2").read[Consignee](Consignee.xmlReaderGoodsLevel).optional,
-  //(__ \ "CONNR2" \ "ConNumNR21").read(strictReadSeq[String]),
-  //(__ \ "PACGS2").read(xmlNonEmptyListReads[Package]),
-  //(__ \ "SGICODSD2").read(seq[SensitiveGoodsInformation]
+                                                  (__ \ "PACGS2").read(strictReadSeq[Package]),
+                                                  (__ \ "SGICODSD2").read(strictReadSeq[SensitiveGoodsInformation])).mapN(apply)
 
   implicit def writes: XMLWrites[GoodsItem] = XMLWrites[GoodsItem] {
     goodsItem =>
@@ -95,20 +83,17 @@ object GoodsItem {
       val countryOfDispatch    = goodsItem.countryOfDispatch.fold(NodeSeq.Empty)(value => <CouOfDisGDS58>{value}</CouOfDisGDS58>)
       val countryOfDestination = goodsItem.countryOfDestination.fold(NodeSeq.Empty)(value => <CouOfDesGDS59>{value}</CouOfDesGDS59>)
 
-      val previousAdministrativeReference = goodsItem.previousAdministrativeReferences.flatMap(value => value.toXml)
-      val producedDocuments               = goodsItem.producedDocuments.flatMap(value => value.toXml)
-      val specialMentions                 = goodsItem.specialMention.flatMap(value => specialMentionNode(value))
-      val traderConsignorGoodsItem        = goodsItem.traderConsignorGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
-      val traderConsigneeGoodsItem        = goodsItem.traderConsigneeGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
+      val previousAdministrativeReference = goodsItem.previousAdministrativeReferences.flatMap(_.toXml)
+      val producedDocuments               = goodsItem.producedDocuments.flatMap(_.toXml)
+      val specialMentions                 = goodsItem.specialMention.flatMap(specialMentionNode)
+      val traderConsignorGoodsItem        = goodsItem.traderConsignorGoodsItem.fold(NodeSeq.Empty)(_.toXml)
+      val traderConsigneeGoodsItem        = goodsItem.traderConsigneeGoodsItem.fold(NodeSeq.Empty)(_.toXml)
 
       val containers = goodsItem.containers.toList.map(x => <CONNR2><ConNumNR21>{x}</ConNumNR21></CONNR2>)
 
-      val packages = goodsItem.packages.flatMap(value => packageNode(value))
+      val packages = goodsItem.packages.flatMap(packageNode)
 
-      //TODO: Do we need these nodes, they're not in the WebSols xsds
-//      val transportChargesPaymentMethod = goodsItem.transportChargesPaymentMethod.fold(NodeSeq.Empty)(value => <MetOfPayGDI12>{value}</MetOfPayGDI12>)
-//      val commercialReferenceNumber = goodsItem.commercialReferenceNumber.fold(NodeSeq.Empty)(value => <ComRefNumGIM1>{value}</ComRefNumGIM1>)
-//      val dangerousGoodsCode = goodsItem.dangerousGoodsCode.fold(NodeSeq.Empty)(value => <UNDanGooCodGDI1>{value}</UNDanGooCodGDI1>)
+      val sensitiveGoodsInformation = goodsItem.sensitiveGoodsInformation.flatMap(_.toXml)
 
       <GOOITEGDS>
         <IteNumGDS7>{goodsItem.itemNumber}</IteNumGDS7>
@@ -127,6 +112,7 @@ object GoodsItem {
         {traderConsigneeGoodsItem}
         {containers}
         {packages}
+        {sensitiveGoodsInformation}
       </GOOITEGDS>
   }
 
