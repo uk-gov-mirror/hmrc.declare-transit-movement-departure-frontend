@@ -22,13 +22,14 @@ import javax.inject.Inject
 import models.GuaranteeType.FlatRateVoucher
 import models.messages.guarantee.{GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.requests.DataRequest
-import models.{LocalReferenceNumber, Mode}
+import models.{LocalReferenceNumber, Mode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.mvc.Controller.request
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -93,11 +94,9 @@ class GuaranteeReferenceController @Inject()(
         )
   }
 
-  private def grnMaxLengthValue(request: DataRequest[AnyContent]) = {
-    val grnMaxLength = request.userAnswers.get(GuaranteeTypePage) match {
+  private def grnMaxLengthValue(userAnswers:UserAnswers) =  userAnswers.get(GuaranteeTypePage) match {
       case Some(FlatRateVoucher) => GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength
       case _                     => GuaranteeReferenceWithGrn.Constants.grnOtherTypeLength
     }
-    grnMaxLength
-  }
+
 }
