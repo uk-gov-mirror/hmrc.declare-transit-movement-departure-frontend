@@ -613,7 +613,7 @@ liabilityAmount.checkYourAnswersLabel = Liability amount
 liabilityAmount.error.required = Enter the liability amount
 liabilityAmount.error.length = Liability amount must be 100 characters or less
 liabilityAmount.error.characters = Liability amount must only include numbers 0 to 9 and a decimal place
-liabilityAmount.paragraph = Amount must include a decimal place, like 230.00. Enter 0 to use the default amount of EUR 10,000
+liabilityAmount.paragraph = liabilityAmount.paragraph =Amount can have up to 2 decimal places.
 liabilityAmount.error.invalidFormat = Enter an amount with 2 decimal places
 liabilityAmount.error.greaterThanOne = Enter amount must be greater than 1
 
