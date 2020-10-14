@@ -18,13 +18,13 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.messages.guarantee.GuaranteeReferenceWithOther
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
-import config.FrontendAppConfig
 
-class OtherReferenceFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
+class OtherReferenceFormProvider @Inject()() extends Mappings {
 
-  val maxLength: Int                  = appConfig.otherRefMaxLength
+  val maxLength: Int                  = GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength
   val guaranteeReferenceRegex: String = "^[A-Z0-9]*$"
 
   def apply(): Form[String] =

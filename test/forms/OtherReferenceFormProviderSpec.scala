@@ -17,19 +17,19 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.messages.guarantee.GuaranteeReferenceWithOther
 import org.scalacheck.Gen
 import play.api.data.FormError
-import config.FrontendAppConfig
 
-class OtherReferenceFormProviderSpec(appConfig: FrontendAppConfig) extends StringFieldBehaviours {
+class OtherReferenceFormProviderSpec() extends StringFieldBehaviours {
 
   val requiredKey                       = "otherReference.error.required"
   val lengthKey                         = "otherReference.error.length"
-  val maxLength                         = appConfig.otherRefMaxLength
+  val maxLength                         = GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength
   val invalidKey                        = "otherReference.error.invalid"
   val otherReferenceNumberRegex: String = "^[A-Z0-9]*$"
 
-  val form = new OtherReferenceFormProvider(appConfig: FrontendAppConfig)()
+  val form = new OtherReferenceFormProvider()()
 
   ".value" - {
 

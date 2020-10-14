@@ -56,7 +56,4 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   def routeToSwitchLanguage: String => Call =
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
-  val maxLengthGRN                = 17
-  val maxLengthFlatRateVoucherGRN = 24
-  val otherRefMaxLength           = 35
 }

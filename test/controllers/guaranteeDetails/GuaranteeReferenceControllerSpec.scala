@@ -17,7 +17,6 @@
 package controllers.guaranteeDetails
 
 import base.SpecBase
-import controllers.routes
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.GuaranteeDetails
@@ -37,8 +36,8 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
 import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import models.GuaranteeType.{FlatRateVoucher, GuaranteeWaiver}
+import models.messages.guarantee.GuaranteeReferenceWithGrn
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
-import config.FrontendAppConfig
 
 import scala.concurrent.Future
 
@@ -47,7 +46,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new GuaranteeReferenceFormProvider()
-  val form         = formProvider(frontendAppConfig.maxLengthFlatRateVoucherGRN)
+  val form         = formProvider(GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength)
 
   lazy val guaranteeReferenceRoute = routes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url
 

@@ -20,6 +20,8 @@ import controllers.actions._
 import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import javax.inject.Inject
 import models.GuaranteeType.FlatRateVoucher
+import models.messages.guarantee.{GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
+import models.requests.DataRequest
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
@@ -31,7 +33,6 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import config.FrontendAppConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,17 +46,14 @@ class GuaranteeReferenceController @Inject()(
   formProvider: GuaranteeReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
-)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val lengthGRN = request.userAnswers.get(GuaranteeTypePage) match {
-        case Some(FlatRateVoucher) => appConfig.maxLengthFlatRateVoucherGRN
-        case _                     => appConfig.maxLengthGRN
-      }
+      val lengthGRN: Int = grnMaxLengthValue(request)
       val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
 
         case None        => formProvider(lengthGRN)
@@ -73,10 +71,7 @@ class GuaranteeReferenceController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val grnMaxLength = request.userAnswers.get(GuaranteeTypePage) match {
-        case Some(FlatRateVoucher) => appConfig.maxLengthFlatRateVoucherGRN
-        case _                     => appConfig.maxLengthGRN
-      }
+      val grnMaxLength: Int = grnMaxLengthValue(request)
       formProvider(grnMaxLength)
         .bindFromRequest()
         .fold(
@@ -96,5 +91,13 @@ class GuaranteeReferenceController @Inject()(
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(GuaranteeReferencePage, mode, updatedAnswers))
         )
+  }
+
+  private def grnMaxLengthValue(request: DataRequest[AnyContent]) = {
+    val grnMaxLength = request.userAnswers.get(GuaranteeTypePage) match {
+      case Some(FlatRateVoucher) => GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength
+      case _                     => GuaranteeReferenceWithGrn.Constants.grnOtherTypeLength
+    }
+    grnMaxLength
   }
 }
