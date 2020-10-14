@@ -16,15 +16,14 @@
 
 package models.messages.goodsitem
 
-import com.lucidchart.open.xtract.{__, XmlReader}
-import models.{LanguageCodeEnglish, XMLWrites}
 import cats.syntax.all._
 import com.lucidchart.open.xtract.XmlReader.{seq, strictReadSeq}
+import com.lucidchart.open.xtract.{__, XmlReader}
+import models.{LanguageCodeEnglish, XMLWrites}
+import models.XMLWrites._
+import utils.BigDecimalXMLReader._
 
 import scala.xml.NodeSeq
-import utils.BigDecimalXMLReader._
-import models.XMLWrites
-import models.XMLWrites._
 
 final case class GoodsItem(
   itemNumber: Int,
@@ -40,7 +39,8 @@ final case class GoodsItem(
   specialMention: Seq[SpecialMention],
   traderConsignorGoodsItem: Option[TraderConsignorGoodsItem],
   traderConsigneeGoodsItem: Option[TraderConsigneeGoodsItem],
-  containers: Seq[String]
+  containers: Seq[String],
+  packages: Seq[Package]
 //                            transportChargesPaymentMethod: Option[String], //CL116. Transport charges - Method of payment (A - Z) Where is this from
 //                            commercialReferenceNumber: Option[String], //an..70
 //                            dangerousGoodsCode: Option[String] //UN dangerous goods code an4
@@ -75,7 +75,8 @@ object GoodsItem {
                                                   (__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention]),
                                                   (__ \ "TRACONCO2").read[TraderConsignorGoodsItem].optional,
                                                   (__ \ "TRACONCE2").read[TraderConsigneeGoodsItem].optional,
-                                                  (__ \ "CONNR2" \ "ConNumNR21").read(seq[String])).mapN(apply)
+                                                  (__ \ "CONNR2" \ "ConNumNR21").read(seq[String]),
+                                                  (__ \ "PACGS2").read(strictReadSeq[Package])).mapN(apply)
   //(__ \ "PRODOCDC2").read(strictReadSeq[ProducedDocument]),
   //(__ \ "SPEMENMT2").read(strictReadSeq[SpecialMention]),
   //(__ \ "TRACONCO2").read[Consignor](Consignor.xmlReaderGoodsLevel).optional,
@@ -96,11 +97,13 @@ object GoodsItem {
 
       val previousAdministrativeReference = goodsItem.previousAdministrativeReferences.flatMap(value => value.toXml)
       val producedDocuments               = goodsItem.producedDocuments.flatMap(value => value.toXml)
-      val specialMentions                 = goodsItem.specialMention.flatMap(value => specialMention(value))
+      val specialMentions                 = goodsItem.specialMention.flatMap(value => specialMentionNode(value))
       val traderConsignorGoodsItem        = goodsItem.traderConsignorGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
       val traderConsigneeGoodsItem        = goodsItem.traderConsigneeGoodsItem.fold(NodeSeq.Empty)(value => value.toXml)
 
       val containers = goodsItem.containers.toList.map(x => <CONNR2><ConNumNR21>{x}</ConNumNR21></CONNR2>)
+
+      val packages = goodsItem.packages.flatMap(value => packageNode(value))
 
       //TODO: Do we need these nodes, they're not in the WebSols xsds
 //      val transportChargesPaymentMethod = goodsItem.transportChargesPaymentMethod.fold(NodeSeq.Empty)(value => <MetOfPayGDI12>{value}</MetOfPayGDI12>)
@@ -123,14 +126,22 @@ object GoodsItem {
         {traderConsignorGoodsItem}
         {traderConsigneeGoodsItem}
         {containers}
+        {packages}
       </GOOITEGDS>
   }
 
-  def specialMention(specialMention: SpecialMention): NodeSeq = specialMention match {
+  def specialMentionNode(specialMention: SpecialMention): NodeSeq = specialMention match {
     case specialMention: SpecialMentionEc        => specialMention.toXml
     case specialMention: SpecialMentionNonEc     => specialMention.toXml
     case specialMention: SpecialMentionNoCountry => specialMention.toXml
     case _                                       => NodeSeq.Empty
+  }
+
+  def packageNode(packageType: Package): NodeSeq = packageType match {
+    case packageItem: UnpackedPackage => packageItem.toXml
+    case packageItem: RegularPackage  => packageItem.toXml
+    case packageItem: BulkPackage     => packageItem.toXml
+    case _                            => NodeSeq.Empty
   }
 
 }

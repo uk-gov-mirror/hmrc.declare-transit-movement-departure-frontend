@@ -317,6 +317,7 @@ trait MessagesModelGenerators extends Generators {
         traderConsignorGoodsItem <- Gen.option(arbitrary[TraderConsignorGoodsItem])
         traderConsigneeGoodsItem <- Gen.option(arbitrary[TraderConsigneeGoodsItem])
         containers               <- listWithMaxLength(Containers.Constants.containerCount, stringsWithMaxLength(Containers.Constants.containerNumberLength, alphaNumChar))
+        packages                 <- listWithMaxLength(Package.Constants.packageCount, arbitrary[Package])
       } yield
         GoodsItem(
           itemNumber,
@@ -332,7 +333,8 @@ trait MessagesModelGenerators extends Generators {
           specialMentions,
           traderConsignorGoodsItem,
           traderConsigneeGoodsItem,
-          containers
+          containers,
+          packages
         )
     }
 
@@ -393,5 +395,37 @@ trait MessagesModelGenerators extends Generators {
     Arbitrary {
 
       Gen.oneOf(arbitrary[SpecialMentionEc], arbitrary[SpecialMentionNonEc], arbitrary[SpecialMentionNoCountry])
+    }
+
+  implicit lazy val arbitraryBulkPackage: Arbitrary[BulkPackage] =
+    Arbitrary {
+      for {
+        kindOfPackage   <- Gen.oneOf(BulkPackage.validCodes)
+        marksAndNumbers <- Gen.option(stringsWithMaxLength(42, alphaNumChar))
+      } yield BulkPackage(kindOfPackage, marksAndNumbers)
+    }
+
+  implicit lazy val arbitraryUnpackedPackage: Arbitrary[UnpackedPackage] =
+    Arbitrary {
+      for {
+        kindOfPackage   <- Gen.oneOf(UnpackedPackage.validCodes)
+        numberOfPieces  <- Gen.choose(1, 99999)
+        marksAndNumbers <- Gen.option(stringsWithMaxLength(42, alphaNumChar))
+      } yield UnpackedPackage(kindOfPackage, numberOfPieces, marksAndNumbers)
+    }
+
+  implicit lazy val arbitraryRegularPackage: Arbitrary[RegularPackage] =
+    Arbitrary {
+      for {
+        kindOfPackage    <- stringsWithMaxLength(3, alphaNumChar).suchThat(x => !BulkPackage.validCodes.contains(x) && !UnpackedPackage.validCodes.contains(x))
+        numberOfPackages <- Gen.choose(0, 99999)
+        marksAndNumbers  <- stringsWithMaxLength(42, alphaNumChar)
+      } yield RegularPackage(kindOfPackage, numberOfPackages, marksAndNumbers)
+    }
+
+  implicit lazy val arbitraryPackage: Arbitrary[Package] =
+    Arbitrary {
+
+      Gen.oneOf(arbitrary[BulkPackage], arbitrary[UnpackedPackage], arbitrary[RegularPackage])
     }
 }

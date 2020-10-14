@@ -19,6 +19,7 @@ package models.messages.goodsitem
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import models.XMLWrites._
+import models.messages.goodsitem.GoodsItem.packageNode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -47,6 +48,7 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
             x =>
               <CONNR2><ConNumNR21>{x}</ConNumNR21></CONNR2>
           }
+          val packages = goodsItem.packages.flatMap(value => packageNode(value))
 
           val expectedResult =
             <GOOITEGDS>
@@ -65,6 +67,7 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
               {traderConsignorGoodsItem}
               {traderConsigneeGoodsItem}
               {containers}
+              {packages}
             </GOOITEGDS>
 
           goodsItem.toXml mustEqual expectedResult
@@ -87,5 +90,12 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
     case specialMention: SpecialMentionNonEc     => specialMention.toXml
     case specialMention: SpecialMentionNoCountry => specialMention.toXml
     case _                                       => NodeSeq.Empty
+  }
+
+  def packageNode(packageType: Package): NodeSeq = packageType match {
+    case packageItem: UnpackedPackage => packageItem.toXml
+    case packageItem: RegularPackage  => packageItem.toXml
+    case packageItem: BulkPackage     => packageItem.toXml
+    case _                            => NodeSeq.Empty
   }
 }
