@@ -22,10 +22,10 @@ class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
 
   "OtherReferenceliabilityAmountPage" - {
 
-    beRetrievable[String](OtherReferenceliabilityAmountPage)
+    beRetrievable[String](OtherReferenceLiabilityAmountPage)
 
-    beSettable[String](OtherReferenceliabilityAmountPage)
+    beSettable[String](OtherReferenceLiabilityAmountPage)
 
-    beRemovable[String](OtherReferenceliabilityAmountPage)
+    beRemovable[String](OtherReferenceLiabilityAmountPage)
   }
 }

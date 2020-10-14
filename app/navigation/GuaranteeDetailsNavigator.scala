@@ -30,11 +30,12 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
   // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case GuaranteeTypePage => ua => guaranteeTypeRoute(ua, NormalMode)
-    case OtherReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
+    case OtherReferencePage => ua => Some(routes.OtherReferenceLiabilityAmountController.onPageLoad(ua.id, NormalMode))
     case GuaranteeReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
     case LiabilityAmountPage => ua => liabilityAmountRoute(ua, NormalMode)
     case DefaultAmountPage => ua => defaultAmountRoute(ua, NormalMode)
     case AccessCodePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case OtherReferenceLiabilityAmountPage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -44,12 +45,20 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
     case GuaranteeReferencePage => ua => guaranteeReferenceRoutes(ua, CheckMode)
     case DefaultAmountPage => ua => defaultAmountRoute(ua, CheckMode)
     case AccessCodePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
+    case OtherReferenceLiabilityAmountPage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case _ => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
   }
 
   def otherReferenceRoute (ua:UserAnswers,mode:Mode) =
-    ua.get(LiabilityAmountPage) match {
-      case None => Some(routes.LiabilityAmountController.onPageLoad(ua.id,CheckMode))
+    (ua.get(LiabilityAmountPage), ua.get(GuaranteeTypePage)) match {
+      case (None, Some(guaranteeType))
+        if nonGuaranteeReferenceRoute.contains(guaranteeType) => {
+          Some(routes.OtherReferenceLiabilityAmountController.onPageLoad(ua.id, CheckMode))
+    }
+      case (None, Some(guaranteeType))
+        if guaranteeReferenceRoute.contains(guaranteeType) => {
+        Some(routes.LiabilityAmountController.onPageLoad(ua.id, CheckMode))
+      }
       case _ => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     }
 
