@@ -18,14 +18,14 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
 
 class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey          = "liabilityAmount.error.required"
   val lengthKey            = "liabilityAmount.error.length"
   val maxLength            = 100
-  val liabilityAmountRegex = "^[0-9.]*$"
+  val liabilityAmountRegex = "^$|^[0-9.]*$"
   val invalidKey           = "liabilityAmount.error.characters"
 
   val form = new LiabilityAmountFormProvider()()
@@ -38,12 +38,6 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       stringsWithMaxLength(maxLength)
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
     )
 
     "must not bind strings that do not match regex" in {

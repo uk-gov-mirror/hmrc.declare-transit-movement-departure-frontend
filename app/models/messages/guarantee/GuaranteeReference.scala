@@ -39,6 +39,7 @@ object GuaranteeReferenceWithGrn {
 
   object Constants {
     val guaranteeReferenceNumberLength = 24
+    val grnOtherTypeLength             = 17
   }
 
   implicit val xmlReader: XmlReader[GuaranteeReferenceWithGrn] = ((__ \ "GuaRefNumGRNREF1").read[String], (__ \ "AccCodREF6").read[String]).mapN(apply)

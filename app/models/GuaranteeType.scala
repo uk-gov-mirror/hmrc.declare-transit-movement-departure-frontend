@@ -18,7 +18,6 @@ package models
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json._
 import uk.gov.hmrc.viewmodels._
 
 sealed trait GuaranteeType
@@ -45,8 +44,24 @@ object GuaranteeType extends Enumerable.Implicits {
     GuaranteeNotRequired,
     GuaranteeWaivedRedirect,
     GuaranteeWaiverByAgreement,
-    GuaranteeWaiver,
+    GuaranteeWaiverSecured,
     IndividualGuaranteeMultiple
+  )
+
+  val guaranteeReferenceRoute: Seq[GuaranteeType] = Seq(
+    GuaranteeWaiver,
+    ComprehensiveGuarantee,
+    IndividualGuarantee,
+    FlatRateVoucher,
+    IndividualGuaranteeMultiple
+  )
+
+  val nonGuaranteeReferenceRoute: Seq[GuaranteeType] = Seq(
+    CashDepositGuarantee,
+    GuaranteeNotRequired,
+    GuaranteeWaivedRedirect,
+    GuaranteeWaiverByAgreement,
+    GuaranteeWaiverSecured
   )
 
   def getId(gtValue: String): String = gtValue match {
