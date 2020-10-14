@@ -29,12 +29,12 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     answer =>
       val gtName = GuaranteeType.getId(answer.toString)
       Row(
-        key = Key(msg"guaranteeType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"guaranteeType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(msg"guaranteeType.$gtName"),
         actions = List(
           Action(
-            content = msg"site.edit",
-            href = routes.GuaranteeTypeController.onPageLoad(lrn, CheckMode).url,
+            content            = msg"site.edit",
+            href               = routes.GuaranteeTypeController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"guaranteeType.checkYourAnswersLabel"))
           )
         )
@@ -44,12 +44,12 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def accessCode: Option[Row] = userAnswers.get(AccessCodePage) map {
     answer =>
       Row(
-        key = Key(msg"accessCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"accessCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"••••"),
         actions = List(
           Action(
-            content = msg"site.edit",
-            href = routes.AccessCodeController.onPageLoad(lrn, CheckMode).url,
+            content            = msg"site.edit",
+            href               = routes.AccessCodeController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"accessCode.checkYourAnswersLabel"))
           )
         )
@@ -59,49 +59,48 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def otherReference: Option[Row] = userAnswers.get(OtherReferencePage) map {
     answer =>
       Row(
-        key = Key(msg"otherReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"otherReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"$answer"),
         actions = List(
           Action(
-            content = msg"site.edit",
-            href = routes.OtherReferenceController.onPageLoad(lrn, CheckMode).url,
+            content            = msg"site.edit",
+            href               = routes.OtherReferenceController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"otherReference.checkYourAnswersLabel"))
           )
         )
       )
   }
 
-  def liabilityAmount: Option[Row] = {
+  def liabilityAmount: Option[Row] =
     userAnswers.get(LiabilityAmountPage) map {
       answer =>
         val displayAmount = answer match {
-          case x if x.trim.nonEmpty => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
-          case _ => lit"$answer"
+          case x if x.trim.nonEmpty => lit"$answer"
+          case _                    => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
         }
 
         Row(
-          key = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
           value = Value(displayAmount),
           actions = List(
             Action(
-              content = msg"site.edit",
-              href = routes.LiabilityAmountController.onPageLoad(lrn, CheckMode).url,
+              content            = msg"site.edit",
+              href               = routes.LiabilityAmountController.onPageLoad(lrn, CheckMode).url,
               visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"liabilityAmount.checkYourAnswersLabel"))
             )
           )
         )
     }
-  }
 
   def guaranteeReference: Option[Row] = userAnswers.get(GuaranteeReferencePage) map {
     answer =>
       Row(
-        key = Key(msg"guaranteeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"guaranteeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"$answer"),
         actions = List(
           Action(
-            content = msg"site.edit",
-            href = routes.GuaranteeReferenceController.onPageLoad(lrn, CheckMode).url,
+            content            = msg"site.edit",
+            href               = routes.GuaranteeReferenceController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"guaranteeReference.checkYourAnswersLabel"))
           )
         )
