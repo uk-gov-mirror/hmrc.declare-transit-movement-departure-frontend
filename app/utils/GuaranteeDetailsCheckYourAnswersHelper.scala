@@ -75,8 +75,8 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     userAnswers.get(LiabilityAmountPage) map {
       answer =>
         val displayAmount = answer match {
-          case x if x.trim.nonEmpty => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
-          case _                    => lit"$answer"
+          case x if x.trim.nonEmpty => lit"$answer"
+          case _                    => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
         }
 
         Row(
