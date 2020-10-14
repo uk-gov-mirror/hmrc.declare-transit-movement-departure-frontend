@@ -16,16 +16,23 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class OtherReferenceLiabiityAmountFormProvider @Inject() extends Mappings {
 
+  val liabilityAmountRegexDecimal = "^[0-9]+(?:\\.[0-9]{2})?$"
+  val liabilityAmountRegex        = "^[0-9.]*$"
+  val greaterThanOneRegex         = "^[1-9]+(?:\\.[0-9]{2})?$"
+
   def apply(): Form[String] =
     Form(
-      "value" -> text("otherReferenceLiabiityAmount.error.required")
-        .verifying(maxLength(100, "otherReferenceLiabiityAmount.error.length"))
-    )
+      "value" -> text("liabilityAmount.error.required")
+        .verifying(StopOnFirstFail[String](
+          regexp(liabilityAmountRegex, "liabilityAmount.error.characters"),
+          regexp(liabilityAmountRegexDecimal, "liabilityAmount.error.invalidFormat"),
+          regexp(greaterThanOneRegex, "liabilityAmount.error.greaterThanOne"),
+        )))
 }
