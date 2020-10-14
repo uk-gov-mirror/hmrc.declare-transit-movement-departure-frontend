@@ -25,6 +25,21 @@ import uk.gov.hmrc.viewmodels._
 
 class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def otherReferenceLiabiityAmount: Option[Row] = userAnswers.get(OtherReferenceLiabiityAmountPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"otherReferenceLiabiityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.OtherReferenceLiabiityAmountController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"otherReferenceLiabiityAmount.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def guaranteeType: Option[Row] = userAnswers.get(GuaranteeTypePage) map {
     answer =>
       val gtName = GuaranteeType.getId(answer.toString)
