@@ -52,9 +52,9 @@ class GuaranteeReferenceController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, userAnswers: UserAnswers): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val lengthGRN: Int = grnMaxLengthValue(request)
+      val lengthGRN: Int = grnMaxLengthValue(userAnswers)
       val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
 
         case None        => formProvider(lengthGRN)
@@ -70,9 +70,9 @@ class GuaranteeReferenceController @Inject()(
       renderer.render("guaranteeDetails/guaranteeReference.njk", json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, userAnswers: UserAnswers): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val grnMaxLength: Int = grnMaxLengthValue(request)
+      val grnMaxLength: Int = grnMaxLengthValue(userAnswers)
       formProvider(grnMaxLength)
         .bindFromRequest()
         .fold(
