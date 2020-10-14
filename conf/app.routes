@@ -325,3 +325,8 @@ GET        /:lrn/guarantee-details/change-liability-amount                  cont
 POST       /:lrn/guarantee-details/change-liability-amount                  controllers.guaranteeDetails.LiabilityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/guarantee-details/check-your-answers                       controllers.guaranteeDetails.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
+
+GET        /:lrn/other-reference-liabiity-amount                        controllers.OtherReferenceLiabiityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/other-reference-liabiity-amount                        controllers.OtherReferenceLiabiityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-other-reference-liabiity-amount                  controllers.OtherReferenceLiabiityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-other-reference-liabiity-amount                  controllers.OtherReferenceLiabiityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

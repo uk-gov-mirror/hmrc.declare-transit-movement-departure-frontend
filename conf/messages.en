@@ -655,3 +655,9 @@ accessCode.error.invalidCharacters = Access code must only include letters a to 
 guaranteeDetailsCheckYourAnswers.title = Check your answers
 guaranteeDetailsCheckYourAnswers.heading = Check your answers
 guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount = EUR 10,000
+
+otherReferenceLiabiityAmount.title = otherReferenceLiabiityAmount
+otherReferenceLiabiityAmount.heading = otherReferenceLiabiityAmount
+otherReferenceLiabiityAmount.checkYourAnswersLabel = otherReferenceLiabiityAmount
+otherReferenceLiabiityAmount.error.required = Enter otherReferenceLiabiityAmount
+otherReferenceLiabiityAmount.error.length = OtherReferenceLiabiityAmount must be 100 characters or less
