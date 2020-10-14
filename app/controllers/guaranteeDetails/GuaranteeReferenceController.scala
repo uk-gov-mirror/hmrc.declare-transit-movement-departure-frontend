@@ -19,13 +19,17 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.GuaranteeType.FlatRateVoucher
+import models.messages.guarantee.{GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
+import models.requests.DataRequest
+import models.{LocalReferenceNumber, Mode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
-import pages.guaranteeDetails.GuaranteeReferencePage
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.mvc.Controller.request
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -48,13 +52,13 @@ class GuaranteeReferenceController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form = formProvider()
-
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, userAnswers: UserAnswers): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      val lengthGRN: Int = grnMaxLengthValue(userAnswers)
       val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+
+        case None        => formProvider(lengthGRN)
+        case Some(value) => formProvider(lengthGRN).fill(value)
       }
 
       val json = Json.obj(
@@ -66,9 +70,10 @@ class GuaranteeReferenceController @Inject()(
       renderer.render("guaranteeDetails/guaranteeReference.njk", json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, userAnswers: UserAnswers): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      val grnMaxLength: Int = grnMaxLengthValue(userAnswers)
+      formProvider(grnMaxLength)
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -88,4 +93,10 @@ class GuaranteeReferenceController @Inject()(
             } yield Redirect(navigator.nextPage(GuaranteeReferencePage, mode, updatedAnswers))
         )
   }
+
+  private def grnMaxLengthValue(userAnswers:UserAnswers) =  userAnswers.get(GuaranteeTypePage) match {
+      case Some(FlatRateVoucher) => GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength
+      case _                     => GuaranteeReferenceWithGrn.Constants.grnOtherTypeLength
+    }
+
 }

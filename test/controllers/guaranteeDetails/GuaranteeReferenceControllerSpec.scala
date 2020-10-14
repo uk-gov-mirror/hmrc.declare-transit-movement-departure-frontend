@@ -17,7 +17,6 @@
 package controllers.guaranteeDetails
 
 import base.SpecBase
-import controllers.routes
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.GuaranteeDetails
@@ -36,7 +35,9 @@ import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
 import forms.guaranteeDetails.GuaranteeReferenceFormProvider
-import pages.guaranteeDetails.GuaranteeReferencePage
+import models.GuaranteeType.{FlatRateVoucher, GuaranteeWaiver}
+import models.messages.guarantee.GuaranteeReferenceWithGrn
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 import scala.concurrent.Future
 
@@ -45,7 +46,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new GuaranteeReferenceFormProvider()
-  val form         = formProvider()
+  val form         = formProvider(GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength)
 
   lazy val guaranteeReferenceRoute = routes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url
 
@@ -110,23 +111,52 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with N
       application.stop()
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted for te that takes 24 chars" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = {
+        val updatedAnswers = emptyUserAnswers.set(GuaranteeTypePage, FlatRateVoucher).success.value
+        applicationBuilder(userAnswers = Some(updatedAnswers))
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[GuaranteeDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
+      }
 
       val request =
         FakeRequest(POST, guaranteeReferenceRoute)
           .withFormUrlEncodedBody(("value", "123456789012345678901234"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      application.stop()
+    }
+    "must redirect to the next page when valid data is submitted for type that takes 17 chars" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application = {
+        val updatedAnswers = emptyUserAnswers.set(GuaranteeTypePage, GuaranteeWaiver).success.value
+        applicationBuilder(userAnswers = Some(updatedAnswers))
+          .overrides(
+            bind(classOf[Navigator]).qualifiedWith(classOf[GuaranteeDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+      }
+
+      val request =
+        FakeRequest(POST, guaranteeReferenceRoute)
+          .withFormUrlEncodedBody(("value", "12345678901234567"))
 
       val result = route(application, request).value
 

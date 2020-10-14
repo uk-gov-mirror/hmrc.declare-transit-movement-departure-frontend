@@ -24,6 +24,7 @@ import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
+import controllers.guaranteeDetails.{routes => guaranteetDetailsRoutes}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.reference.{Country, CountryCode, TransportMode}
@@ -426,7 +427,7 @@ class SectionsHelperSpec extends SpecBase {
                      traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
                      NotStarted),
       SectionDetails("declarationSummary.section.goodsSummary", goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.guarantee", "", NotStarted)
+      SectionDetails("declarationSummary.section.guarantee", guaranteetDetailsRoutes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url, NotStarted)
     )
     sections.map {
       section =>

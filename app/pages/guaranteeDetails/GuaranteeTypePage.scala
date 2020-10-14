@@ -16,13 +16,45 @@
 
 package pages.guaranteeDetails
 
-import models.GuaranteeType
-import pages.QuestionPage
+import models.GuaranteeType._
+import models.{GuaranteeType, UserAnswers}
+import pages.{AccessCodePage, LiabilityAmountPage, OtherReferencePage, QuestionPage}
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "guaranteeType"
+
+  override def cleanup(value: Option[GuaranteeType], userAnswers: UserAnswers): Try[UserAnswers] =
+    (value, userAnswers.get(AccessCodePage)) match {
+
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple), Some(_))
+          if userAnswers.get(GuaranteeReferencePage).toString.length > 17 =>
+        userAnswers.remove(GuaranteeReferencePage)
+
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
+            Some(_)) =>
+        userAnswers.remove(OtherReferencePage)
+
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
+            None) =>
+        userAnswers
+          .remove(OtherReferencePage)
+          .flatMap(_.remove(LiabilityAmountPage))
+
+      case (_, Some(_)) =>
+        userAnswers
+          .remove(GuaranteeReferencePage)
+          .flatMap(_.remove(LiabilityAmountPage))
+          .flatMap(_.remove(AccessCodePage))
+
+      case (_, None) =>
+        userAnswers.remove(GuaranteeReferencePage)
+
+    }
+
 }

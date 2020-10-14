@@ -281,12 +281,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(DeclarePackagesPage, true)
-              .toOption
-              .value
-              .remove(TotalPackagesPage)
-              .success
-              .value
+              .set(DeclarePackagesPage, true).toOption.value
+              .remove(TotalPackagesPage).success.value
 
             navigator
               .nextPage(DeclarePackagesPage, CheckMode, updatedAnswers)

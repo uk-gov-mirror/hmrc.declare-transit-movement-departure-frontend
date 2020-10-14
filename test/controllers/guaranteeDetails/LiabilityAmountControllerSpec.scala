@@ -141,8 +141,8 @@ class LiabilityAmountControllerSpec extends SpecBase with MockitoSugar with Nunj
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, liabilityAmountRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, liabilityAmountRoute).withFormUrlEncodedBody(("value", "0.00"))
+      val boundForm      = form.bind(Map("value" -> "0.00"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
