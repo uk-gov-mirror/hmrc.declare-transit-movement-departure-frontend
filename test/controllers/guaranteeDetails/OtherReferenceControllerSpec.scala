@@ -17,6 +17,7 @@
 package controllers.guaranteeDetails
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import forms.OtherReferenceFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -35,11 +36,10 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class OtherReferenceControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class OtherReferenceControllerSpec() extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
