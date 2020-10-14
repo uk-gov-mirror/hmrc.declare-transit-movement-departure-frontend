@@ -17,7 +17,7 @@
 package controllers.guaranteeDetails
 
 import base.SpecBase
-import forms.OtherReferenceLiabiityAmountFormProvider
+import forms.OtherReferenceliabilityAmountFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.GuaranteeDetails
@@ -26,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.OtherReferenceLiabiityAmountPage
+import pages.OtherReferenceliabilityAmountPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -39,16 +39,16 @@ import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class OtherReferenceliabilityAmountControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new OtherReferenceLiabiityAmountFormProvider()
+  val formProvider = new OtherReferenceliabilityAmountFormProvider()
   val form         = formProvider()
 
-  lazy val otherReferenceLiabiityAmountRoute = routes.OtherReferenceLiabiityAmountController.onPageLoad(lrn, NormalMode).url
+  lazy val otherReferenceliabilityAmountRoute = routes.OtherReferenceliabilityAmountController.onPageLoad(lrn, NormalMode).url
 
-  "OtherReferenceLiabiityAmount Controller" - {
+  "OtherReferenceliabilityAmount Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -56,7 +56,7 @@ class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSu
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, otherReferenceLiabiityAmountRoute)
+      val request        = FakeRequest(GET, otherReferenceliabilityAmountRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -72,7 +72,7 @@ class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSu
         "lrn"  -> lrn
       )
 
-      templateCaptor.getValue mustEqual "otherReferenceLiabiityAmount.njk"
+      templateCaptor.getValue mustEqual "otherReferenceliabilityAmount.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -83,9 +83,9 @@ class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSu
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(OtherReferenceLiabiityAmountPage, "answer").success.value
+      val userAnswers    = emptyUserAnswers.set(OtherReferenceliabilityAmountPage, "answer").success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, otherReferenceLiabiityAmountRoute)
+      val request        = FakeRequest(GET, otherReferenceliabilityAmountRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -103,7 +103,7 @@ class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSu
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "otherReferenceLiabiityAmount.njk"
+      templateCaptor.getValue mustEqual "otherReferenceliabilityAmount.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -124,7 +124,7 @@ class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSu
           .build()
 
       val request =
-        FakeRequest(POST, otherReferenceLiabiityAmountRoute)
+        FakeRequest(POST, otherReferenceliabilityAmountRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
@@ -141,7 +141,7 @@ class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSu
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, otherReferenceLiabiityAmountRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, otherReferenceliabilityAmountRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -158,7 +158,7 @@ class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSu
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "otherReferenceLiabiityAmount.njk"
+      templateCaptor.getValue mustEqual "otherReferenceliabilityAmount.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -168,7 +168,7 @@ class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSu
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, otherReferenceLiabiityAmountRoute)
+      val request = FakeRequest(GET, otherReferenceliabilityAmountRoute)
 
       val result = route(application, request).value
 
@@ -184,7 +184,7 @@ class OtherReferenceLiabiityAmountControllerSpec extends SpecBase with MockitoSu
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, otherReferenceLiabiityAmountRoute)
+        FakeRequest(POST, otherReferenceliabilityAmountRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value

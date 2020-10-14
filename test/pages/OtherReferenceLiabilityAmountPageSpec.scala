@@ -16,11 +16,16 @@
 
 package pages
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object OtherReferenceLiabiityAmountPage extends QuestionPage[String] {
+class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "OtherReferenceliabilityAmountPage" - {
 
-  override def toString: String = "liabiityAmount"
+    beRetrievable[String](OtherReferenceliabilityAmountPage)
+
+    beSettable[String](OtherReferenceliabilityAmountPage)
+
+    beRemovable[String](OtherReferenceliabilityAmountPage)
+  }
 }

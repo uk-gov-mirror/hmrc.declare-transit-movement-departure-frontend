@@ -20,14 +20,14 @@ import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class OtherReferenceLiabiityAmountFormProviderSpec extends StringFieldBehaviours {
+class OtherReferenceliabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey          = "liabilityAmount.error.required"
   val lengthKey            = "liabilityAmount.error.length"
   val maxLength            = 100
   val liabilityAmountRegex = "^$|^[0-9.]*$"
   val invalidKey           = "liabilityAmount.error.characters"
-  val form                 = new OtherReferenceLiabiityAmountFormProvider()()
+  val form                 = new OtherReferenceLiabilityAmountFormProvider()()
 
   ".value" - {
 

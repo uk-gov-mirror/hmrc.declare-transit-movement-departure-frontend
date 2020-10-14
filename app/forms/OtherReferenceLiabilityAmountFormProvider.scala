@@ -21,7 +21,7 @@ import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class OtherReferenceLiabiityAmountFormProvider @Inject() extends Mappings {
+class OtherReferenceLiabilityAmountFormProvider @Inject() extends Mappings {
 
   val liabilityAmountRegexDecimal = "^[0-9]+(?:\\.[0-9]{2})?$"
   val liabilityAmountRegex        = "^[0-9.]*$"

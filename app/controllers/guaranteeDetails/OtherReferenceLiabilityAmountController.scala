@@ -17,12 +17,12 @@
 package controllers.guaranteeDetails
 
 import controllers.actions._
-import forms.OtherReferenceLiabiityAmountFormProvider
+import forms.OtherReferenceLiabilityAmountFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
-import pages.OtherReferenceLiabiityAmountPage
+import pages.OtherReferenceLiabilityAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,14 +33,14 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class OtherReferenceLiabiityAmountController @Inject()(
+class OtherReferenceLiabilityAmountController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @GuaranteeDetails navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: OtherReferenceLiabiityAmountFormProvider,
+  formProvider: OtherReferenceLiabilityAmountFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -52,7 +52,7 @@ class OtherReferenceLiabiityAmountController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(OtherReferenceLiabiityAmountPage) match {
+      val preparedForm = request.userAnswers.get(OtherReferenceLiabilityAmountPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,7 +63,7 @@ class OtherReferenceLiabiityAmountController @Inject()(
         "mode" -> mode
       )
 
-      renderer.render("otherReferenceLiabiityAmount.njk", json).map(Ok(_))
+      renderer.render("otherReferenceLiabilityAmount.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -79,13 +79,13 @@ class OtherReferenceLiabiityAmountController @Inject()(
               "mode" -> mode
             )
 
-            renderer.render("otherReferenceLiabiityAmount.njk", json).map(BadRequest(_))
+            renderer.render("otherReferenceLiabilityAmount.njk", json).map(BadRequest(_))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherReferenceLiabiityAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherReferenceLiabilityAmountPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(OtherReferenceLiabiityAmountPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(OtherReferenceLiabilityAmountPage, mode, updatedAnswers))
         )
   }
 }

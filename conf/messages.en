@@ -656,8 +656,8 @@ guaranteeDetailsCheckYourAnswers.title = Check your answers
 guaranteeDetailsCheckYourAnswers.heading = Check your answers
 guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount = EUR 10,000
 
-otherReferenceLiabiityAmount.title = otherReferenceLiabiityAmount
-otherReferenceLiabiityAmount.heading = otherReferenceLiabiityAmount
-otherReferenceLiabiityAmount.checkYourAnswersLabel = otherReferenceLiabiityAmount
-otherReferenceLiabiityAmount.error.required = Enter the liabiity amount
-otherReferenceLiabiityAmount.error.length = OtherReferenceLiabiityAmount must be 100 characters or less
+otherReferenceliabilityAmount.title = otherReferenceliabilityAmount
+otherReferenceliabilityAmount.heading = otherReferenceliabilityAmount
+otherReferenceliabilityAmount.checkYourAnswersLabel = otherReferenceliabilityAmount
+otherReferenceliabilityAmount.error.required = Enter the liabiity amount
+otherReferenceliabilityAmount.error.length = OtherReferenceliabilityAmount must be 100 characters or less
