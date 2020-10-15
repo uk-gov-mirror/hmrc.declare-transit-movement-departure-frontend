@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package models.messages
+package models.messages.goodsitem
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites._
-import models.messages.trader.TraderConsignee
+import models.LanguageCodeEnglish
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import models.XMLWrites._
 
 import scala.xml.NodeSeq
 
-class TraderConsigneeSpec
+class PreviousAdministrativeReferenceSpec
     extends AnyFreeSpec
     with Matchers
     with ScalaCheckPropertyChecks
@@ -36,34 +36,32 @@ class TraderConsigneeSpec
     with StreamlinedXmlEquality
     with OptionValues {
 
-  "TraderConsigneeSpec" - {
+  "PreviousAdministrativeReferenceSpec" - {
 
-    "must serialize TraderConsignee to xml" in {
-      forAll(arbitrary[TraderConsignee]) {
-        trader =>
-          val eori = trader.eori.map(value => <TINCE159>{value}</TINCE159>)
+    "must serialize PreviousAdministrativeReference to xml" in {
+
+      forAll(arbitrary[PreviousAdministrativeReference]) {
+        reference =>
+          val comOfInfAR29 = reference.comOfInfAR29.fold(NodeSeq.Empty)(value => <ComOfInfAR29>{value}</ComOfInfAR29>
+              <ComOfInfAR29LNG>EN</ComOfInfAR29LNG>)
 
           val expectedResult =
-            <TRACONCE1>
-              <NamCE17>{escapeXml(trader.name)}</NamCE17>
-              <StrAndNumCE122>{escapeXml(trader.streetAndNumber)}</StrAndNumCE122>
-              <PosCodCE123>{trader.postCode}</PosCodCE123>
-              <CitCE124>{escapeXml(trader.city)}</CitCE124>
-              <CouCE125>{trader.countryCode}</CouCE125>
-              <NADLNGCE>EN</NADLNGCE>
-              {eori.getOrElse(NodeSeq.Empty)}
-            </TRACONCE1>
+            <PREADMREFAR2>
+              <PreDocTypAR21>{reference.preDocTypAR21}</PreDocTypAR21>
+              <PreDocRefAR26>{reference.preDocRefAR26}</PreDocRefAR26>
+              <PreDocRefLNG>{LanguageCodeEnglish.code}</PreDocRefLNG>
+              {comOfInfAR29}
+            </PREADMREFAR2>
 
-          trader.toXml mustEqual expectedResult
+          reference.toXml mustEqual expectedResult
       }
-
     }
 
-    "must deserialize TraderConsignor from xml" in {
-      forAll(arbitrary[TraderConsignee]) {
+    "must deserialize PreviousAdministrativeReference from xml" in {
+      forAll(arbitrary[PreviousAdministrativeReference]) {
         data =>
           val xml    = data.toXml
-          val result = XmlReader.of[TraderConsignee].read(xml).toOption.value
+          val result = XmlReader.of[PreviousAdministrativeReference].read(xml).toOption.value
           result mustBe data
       }
     }

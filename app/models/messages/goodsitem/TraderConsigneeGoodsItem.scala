@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.messages.trader
+package models.messages.goodsitem
 
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
@@ -23,7 +23,7 @@ import models.{LanguageCodeEnglish, XMLWrites}
 
 import scala.xml._
 
-final case class TraderConsignee(
+final case class TraderConsigneeGoodsItem(
   name: String,
   streetAndNumber: String,
   postCode: String,
@@ -32,32 +32,32 @@ final case class TraderConsignee(
   eori: Option[String]
 )
 
-object TraderConsignee {
+object TraderConsigneeGoodsItem {
 
-  implicit val xmlReader: XmlReader[TraderConsignee] = (
-    (__ \ "NamCE17").read[String],
-    (__ \ "StrAndNumCE122").read[String],
-    (__ \ "PosCodCE123").read[String],
-    (__ \ "CitCE124").read[String],
-    (__ \ "CouCE125").read[String],
-    (__ \ "TINCE159").read[String].optional
+  implicit val xmlReader: XmlReader[TraderConsigneeGoodsItem] = (
+    (__ \ "NamCE27").read[String],
+    (__ \ "StrAndNumCE222").read[String],
+    (__ \ "PosCodCE223").read[String],
+    (__ \ "CitCE224").read[String],
+    (__ \ "CouCE225").read[String],
+    (__ \ "TINCE259").read[String].optional
   ).mapN(apply)
 
-  implicit def writes: XMLWrites[TraderConsignee] = XMLWrites[TraderConsignee] {
+  implicit def writes: XMLWrites[TraderConsigneeGoodsItem] = XMLWrites[TraderConsigneeGoodsItem] {
     trader =>
-      <TRACONCE1>
-        <NamCE17>{escapeXml(trader.name)}</NamCE17>
-        <StrAndNumCE122>{escapeXml(trader.streetAndNumber)}</StrAndNumCE122>
-        <PosCodCE123>{trader.postCode}</PosCodCE123>
-        <CitCE124>{escapeXml(trader.city)}</CitCE124>
-        <CouCE125>{trader.countryCode}</CouCE125>
-        <NADLNGCE>{LanguageCodeEnglish.code}</NADLNGCE>
+      <TRACONCE2>
+        <NamCE27>{escapeXml(trader.name)}</NamCE27>
+        <StrAndNumCE222>{escapeXml(trader.streetAndNumber)}</StrAndNumCE222>
+        <PosCodCE223>{trader.postCode}</PosCodCE223>
+        <CitCE224>{escapeXml(trader.city)}</CitCE224>
+        <CouCE225>{trader.countryCode}</CouCE225>
+        <NADLNGGICE>{LanguageCodeEnglish.code}</NADLNGGICE>
         {
           trader.eori.fold(NodeSeq.Empty) {
             eori =>
-              <TINCE159>{eori}</TINCE159>
+              <TINCE259>{eori}</TINCE259>
           }
         }
-      </TRACONCE1>
+      </TRACONCE2>
   }
 }

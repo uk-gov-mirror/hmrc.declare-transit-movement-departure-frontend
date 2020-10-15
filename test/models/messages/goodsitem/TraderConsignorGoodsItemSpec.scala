@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.messages
+package models.messages.goodsitem
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import models.XMLWrites._
-import models.messages.trader.TraderConsignee
+import models.messages.escapeXml
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -28,7 +28,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.xml.NodeSeq
 
-class TraderConsigneeSpec
+class TraderConsignorGoodsItemSpec
     extends AnyFreeSpec
     with Matchers
     with ScalaCheckPropertyChecks
@@ -36,36 +36,49 @@ class TraderConsigneeSpec
     with StreamlinedXmlEquality
     with OptionValues {
 
-  "TraderConsigneeSpec" - {
+  "TraderConsignorGoodsItemSpec" - {
 
-    "must serialize TraderConsignee to xml" in {
-      forAll(arbitrary[TraderConsignee]) {
+    "must serialize TraderConsignorGoodsItem to xml" in {
+      forAll(arbitrary[TraderConsignorGoodsItem]) {
         trader =>
-          val eori = trader.eori.map(value => <TINCE159>{value}</TINCE159>)
+          val eori = trader.eori.map(value => <TINCO259>
+            {value}
+          </TINCO259>)
 
           val expectedResult =
-            <TRACONCE1>
-              <NamCE17>{escapeXml(trader.name)}</NamCE17>
-              <StrAndNumCE122>{escapeXml(trader.streetAndNumber)}</StrAndNumCE122>
-              <PosCodCE123>{trader.postCode}</PosCodCE123>
-              <CitCE124>{escapeXml(trader.city)}</CitCE124>
-              <CouCE125>{trader.countryCode}</CouCE125>
-              <NADLNGCE>EN</NADLNGCE>
-              {eori.getOrElse(NodeSeq.Empty)}
-            </TRACONCE1>
+            <TRACONCO2>
+              <NamCO27>
+                {escapeXml(trader.name)}
+              </NamCO27>
+              <StrAndNumCO222>
+                {escapeXml(trader.streetAndNumber)}
+              </StrAndNumCO222>
+              <PosCodCO223>
+                {trader.postCode}
+              </PosCodCO223>
+              <CitCO224>
+                {escapeXml(trader.city)}
+              </CitCO224>
+              <CouCO225>
+                {trader.countryCode}
+              </CouCO225>
+              <NADLNGGTCO>EN</NADLNGGTCO>{eori.getOrElse(NodeSeq.Empty)}
+            </TRACONCO2>
 
           trader.toXml mustEqual expectedResult
       }
 
     }
 
-    "must deserialize TraderConsignor from xml" in {
-      forAll(arbitrary[TraderConsignee]) {
+    "must deserialize TraderConsignorGoodsItem from xml" in {
+      forAll(arbitrary[TraderConsignorGoodsItem]) {
         data =>
           val xml    = data.toXml
-          val result = XmlReader.of[TraderConsignee].read(xml).toOption.value
+          val result = XmlReader.of[TraderConsignorGoodsItem].read(xml).toOption.value
           result mustBe data
       }
     }
+
   }
+
 }

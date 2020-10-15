@@ -57,11 +57,11 @@ object TraderPrincipalWithEori {
         {
         trader.name.fold(NodeSeq.Empty) {
           name =>
-            <NamPC17>{name}</NamPC17>
+            <NamPC17>{escapeXml(name)}</NamPC17>
         } ++
           trader.streetAndNumber.fold(NodeSeq.Empty) {
             streetAndNumber =>
-              <StrAndNumPC122>{streetAndNumber}</StrAndNumPC122>
+              <StrAndNumPC122>{escapeXml(streetAndNumber)}</StrAndNumPC122>
           } ++
           trader.postCode.fold(NodeSeq.Empty) {
             postCode =>
@@ -69,7 +69,7 @@ object TraderPrincipalWithEori {
           } ++
           trader.city.fold(NodeSeq.Empty) {
             city =>
-              <CitPC124>{city}</CitPC124>
+              <CitPC124>{escapeXml(city)}</CitPC124>
           } ++
           trader.countryCode.fold(NodeSeq.Empty) {
             countryCode =>
@@ -104,9 +104,9 @@ object TraderPrincipalWithoutEori {
     trader =>
       <TRAPRIPC1>
         <NamPC17>{escapeXml(trader.name)}</NamPC17>
-        <StrAndNumPC122>{trader.streetAndNumber}</StrAndNumPC122>
+        <StrAndNumPC122>{escapeXml(trader.streetAndNumber)}</StrAndNumPC122>
         <PosCodPC123>{trader.postCode}</PosCodPC123>
-        <CitPC124>{trader.city}</CitPC124>
+        <CitPC124>{escapeXml(trader.city)}</CitPC124>
         <CouPC125>{trader.countryCode}</CouPC125>
         <NADLNGPC>{LanguageCodeEnglish.code}</NADLNGPC>
       </TRAPRIPC1>

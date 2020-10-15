@@ -45,9 +45,9 @@ class TraderPrincipalSpec
         forAll(arbitrary[TraderPrincipalWithEori]) {
           trader =>
             val nameNode        = trader.name.map(value => <NamPC17>{escapeXml(value)}</NamPC17>)
-            val streetNameNode  = trader.streetAndNumber.map(value => <StrAndNumPC122>{value}</StrAndNumPC122>)
+            val streetNameNode  = trader.streetAndNumber.map(value => <StrAndNumPC122>{escapeXml(value)}</StrAndNumPC122>)
             val postCodeNode    = trader.postCode.map(value => <PosCodPC123>{value}</PosCodPC123>)
-            val cityNode        = trader.city.map(value => <CitPC124>{value}</CitPC124>)
+            val cityNode        = trader.city.map(value => <CitPC124>{escapeXml(value)}</CitPC124>)
             val countryCodeNode = trader.countryCode.map(value => <CouPC125>{value}</CouPC125>)
 
             val expectedResult =
@@ -72,9 +72,9 @@ class TraderPrincipalSpec
             val expectedResult =
               <TRAPRIPC1>
                 <NamPC17>{escapeXml(trader.name)}</NamPC17>
-                <StrAndNumPC122>{trader.streetAndNumber}</StrAndNumPC122>
+                <StrAndNumPC122>{escapeXml(trader.streetAndNumber)}</StrAndNumPC122>
                 <PosCodPC123>{trader.postCode}</PosCodPC123>
-                <CitPC124>{trader.city}</CitPC124>
+                <CitPC124>{escapeXml(trader.city)}</CitPC124>
                 <CouPC125>{trader.countryCode}</CouPC125>
                 <NADLNGPC>EN</NADLNGPC>
               </TRAPRIPC1>

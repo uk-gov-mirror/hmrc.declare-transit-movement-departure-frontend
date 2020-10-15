@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package models.messages
+package models.messages.goodsitem
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import models.XMLWrites._
-import models.messages.trader.TraderConsignee
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -28,7 +27,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.xml.NodeSeq
 
-class TraderConsigneeSpec
+class ProducedDocumentSpec
     extends AnyFreeSpec
     with Matchers
     with ScalaCheckPropertyChecks
@@ -36,34 +35,33 @@ class TraderConsigneeSpec
     with StreamlinedXmlEquality
     with OptionValues {
 
-  "TraderConsigneeSpec" - {
+  "ProducedDocumentSpec" - {
 
-    "must serialize TraderConsignee to xml" in {
-      forAll(arbitrary[TraderConsignee]) {
-        trader =>
-          val eori = trader.eori.map(value => <TINCE159>{value}</TINCE159>)
+    "must serialize ProducedDocument to xml" in {
 
-          val expectedResult =
-            <TRACONCE1>
-              <NamCE17>{escapeXml(trader.name)}</NamCE17>
-              <StrAndNumCE122>{escapeXml(trader.streetAndNumber)}</StrAndNumCE122>
-              <PosCodCE123>{trader.postCode}</PosCodCE123>
-              <CitCE124>{escapeXml(trader.city)}</CitCE124>
-              <CouCE125>{trader.countryCode}</CouCE125>
-              <NADLNGCE>EN</NADLNGCE>
-              {eori.getOrElse(NodeSeq.Empty)}
-            </TRACONCE1>
+      forAll(arbitrary[ProducedDocument]) {
+        producedDocument =>
+          val reference = producedDocument.reference.fold(NodeSeq.Empty)(value => <DocRefDC23>{value}</DocRefDC23>)
 
-          trader.toXml mustEqual expectedResult
+          val complementOfInformation = producedDocument.complementOfInformation.fold(NodeSeq.Empty)(value => <ComOfInfDC25>{value}</ComOfInfDC25>
+            <ComOfInfDC25LNG>EN</ComOfInfDC25LNG>)
+
+          val expectedResult = <PRODOCDC2>
+            <DocTypDC21>{producedDocument.documentType}</DocTypDC21>
+            {reference}
+            <DocRefDCLNG>EN</DocRefDCLNG>
+            {complementOfInformation}
+          </PRODOCDC2>
+
+          producedDocument.toXml mustEqual expectedResult
       }
-
     }
 
-    "must deserialize TraderConsignor from xml" in {
-      forAll(arbitrary[TraderConsignee]) {
+    "must deserialize ProducedDocument from xml" in {
+      forAll(arbitrary[ProducedDocument]) {
         data =>
           val xml    = data.toXml
-          val result = XmlReader.of[TraderConsignee].read(xml).toOption.value
+          val result = XmlReader.of[ProducedDocument].read(xml).toOption.value
           result mustBe data
       }
     }

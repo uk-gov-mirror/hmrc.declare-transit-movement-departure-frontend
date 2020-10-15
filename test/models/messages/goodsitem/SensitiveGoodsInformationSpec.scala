@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package models.messages
+package models.messages.goodsitem
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites._
-import models.messages.trader.TraderConsignee
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import models.XMLWrites._
 
 import scala.xml.NodeSeq
 
-class TraderConsigneeSpec
+class SensitiveGoodsInformationSpec
     extends AnyFreeSpec
     with Matchers
     with ScalaCheckPropertyChecks
@@ -36,34 +35,28 @@ class TraderConsigneeSpec
     with StreamlinedXmlEquality
     with OptionValues {
 
-  "TraderConsigneeSpec" - {
+  "SensitiveGoodsInformationSpec" - {
 
-    "must serialize TraderConsignee to xml" in {
-      forAll(arbitrary[TraderConsignee]) {
-        trader =>
-          val eori = trader.eori.map(value => <TINCE159>{value}</TINCE159>)
+    "must serialize SensitiveGoodsInformation to xml" in {
 
-          val expectedResult =
-            <TRACONCE1>
-              <NamCE17>{escapeXml(trader.name)}</NamCE17>
-              <StrAndNumCE122>{escapeXml(trader.streetAndNumber)}</StrAndNumCE122>
-              <PosCodCE123>{trader.postCode}</PosCodCE123>
-              <CitCE124>{escapeXml(trader.city)}</CitCE124>
-              <CouCE125>{trader.countryCode}</CouCE125>
-              <NADLNGCE>EN</NADLNGCE>
-              {eori.getOrElse(NodeSeq.Empty)}
-            </TRACONCE1>
+      forAll(arbitrary[SensitiveGoodsInformation]) {
+        information =>
+          val goodsCode = information.goodsCode.fold(NodeSeq.Empty)(value => <SenGooCodSD22>{value}</SenGooCodSD22>)
 
-          trader.toXml mustEqual expectedResult
+          val expectedResult = <SGICODSD2>
+            {goodsCode}
+            <SenQuaSD23>{information.quantity}</SenQuaSD23>
+          </SGICODSD2>
+
+          information.toXml mustEqual expectedResult
       }
-
     }
 
-    "must deserialize TraderConsignor from xml" in {
-      forAll(arbitrary[TraderConsignee]) {
+    "must deserialize SensitiveGoodsInformation from xml" in {
+      forAll(arbitrary[SensitiveGoodsInformation]) {
         data =>
           val xml    = data.toXml
-          val result = XmlReader.of[TraderConsignee].read(xml).toOption.value
+          val result = XmlReader.of[SensitiveGoodsInformation].read(xml).toOption.value
           result mustBe data
       }
     }
