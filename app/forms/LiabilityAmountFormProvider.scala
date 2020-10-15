@@ -24,9 +24,9 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class LiabilityAmountFormProvider @Inject() extends Mappings {
 
-  val liabilityAmountRegexDecimal = "^$|^[0-9]+(?:\\.[0-9]{2})?$"
+  val liabilityAmountRegexDecimal = "^[1-9]{1}[0-9]*(?:\\.[0-9]{1,2})?$"
   val liabilityAmountRegex        = "^$|^[0-9.]*$"
-  val greaterThanOneRegex         = "^$|^[1-9]+(?:\\.[0-9]{2})?$"
+  val greaterThanOneRegex         = "^[1-9]{1}[0-9]*(?:\\.[0-9]{1,2})?$"
 
   def apply(): Form[String] =
     Form(
