@@ -16,14 +16,13 @@
 
 package navigation
 
-import akka.util.Helpers.Requiring
+import controllers.guaranteeDetails.routes
 import javax.inject.{Inject, Singleton}
+import models.GuaranteeType._
 import models._
 import pages._
-import play.api.mvc.Call
 import pages.guaranteeDetails._
-import controllers.guaranteeDetails.routes
-import models.GuaranteeType._
+import play.api.mvc.Call
 
 @Singleton
 class GuaranteeDetailsNavigator @Inject()() extends Navigator {
