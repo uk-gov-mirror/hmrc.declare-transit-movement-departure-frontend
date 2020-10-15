@@ -47,9 +47,9 @@ object TraderConsigneeGoodsItem {
     trader =>
       <TRACONCE2>
         <NamCE27>{escapeXml(trader.name)}</NamCE27>
-        <StrAndNumCE222>{trader.streetAndNumber}</StrAndNumCE222>
+        <StrAndNumCE222>{escapeXml(trader.streetAndNumber)}</StrAndNumCE222>
         <PosCodCE223>{trader.postCode}</PosCodCE223>
-        <CitCE224>{trader.city}</CitCE224>
+        <CitCE224>{escapeXml(trader.city)}</CitCE224>
         <CouCE225>{trader.countryCode}</CouCE225>
         <NADLNGGICE>{LanguageCodeEnglish.code}</NADLNGGICE>
         {
