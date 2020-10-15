@@ -25,16 +25,42 @@ import uk.gov.hmrc.viewmodels._
 
 class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def defaultAmount: Option[Row] =
+    if (userAnswers.get(LiabilityAmountPage).isEmpty && userAnswers.get(OtherReferenceLiabilityAmountPage).isEmpty) {
+      userAnswers.get(DefaultAmountPage) map {
+
+        answer =>
+          val useDefault = if (answer) {
+            "Yes"
+          } else {
+            "No"
+          }
+          Row(
+            key   = Key(msg"defaultAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value = Value(lit"$useDefault"),
+            actions = List(
+              Action(
+                content            = msg"site.edit",
+                href               = routes.DefaultAmountController.onPageLoad(lrn, CheckMode).url,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"defaultAmount.checkYourAnswersLabel"))
+              )
+            )
+          )
+      }
+    } else {
+      None
+    }
+
   def otherReferenceliabilityAmount: Option[Row] = userAnswers.get(OtherReferenceLiabilityAmountPage) map {
     answer =>
       Row(
-        key   = Key(msg"otherReferenceliabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.OtherReferenceLiabilityAmountController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"otherReferenceliabilityAmount.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"liabilityAmount.checkYourAnswersLabel"))
           )
         )
       )

@@ -9,7 +9,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("otherReferenceLiabilityAmount.title"), form.errors) }}
+  {{ title(messages("liabilityAmount.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -41,6 +41,7 @@
                {{ hmrcInputCurrency({
                       name: "value",
                       id: "value",
+                      value: form.value.value,
                       classes: "govuk-input--width-10",
                       autocomplete: "off",
                       type: "tel"

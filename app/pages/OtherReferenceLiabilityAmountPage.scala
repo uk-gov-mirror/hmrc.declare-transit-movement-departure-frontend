@@ -22,5 +22,5 @@ case object OtherReferenceLiabilityAmountPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "liabilityAmount"
+  override def toString: String = "otherReferenceLiabilityAmount"
 }
