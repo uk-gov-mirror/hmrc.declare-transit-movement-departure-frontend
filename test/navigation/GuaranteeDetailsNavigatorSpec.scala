@@ -193,6 +193,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
                   .set(GuaranteeTypePage, GuaranteeWaiver).success.value
                   .set(GuaranteeReferencePage, "test").success.value
                   .set(LiabilityAmountPage, "").success.value
+                  .set(AccessCodePage, "1111").success.value
               navigator
                 .nextPage(LiabilityAmountPage, NormalMode, updatedAnswers)
                 .mustBe(guaranteeDetailsRoute.DefaultAmountController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -377,7 +378,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
       }
 
 
-      " LiabilityAmountPage if no answers for Liability amount exists" in {
+      " OtherReferenceLiabilityAmountPage if no answers for Liability amount exists" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers: UserAnswers = answers
@@ -413,6 +414,17 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
             navigator
               .nextPage(GuaranteeReferencePage, CheckMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+      }
+      "to LiabilityAmount page when no liability amount exists" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers = answers
+              .set(GuaranteeReferencePage, "test").success.value
+              .remove(LiabilityAmountPage).success.value
+            navigator
+              .nextPage(GuaranteeReferencePage, CheckMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
     }
@@ -480,14 +492,28 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
       }
     }
     "From DefaultAmountPage" - {
-      "to CYA when Yes is selected" in {
+      "to CYA when Yes is selected and access code is present" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers: UserAnswers = answers.set(DefaultAmountPage, true).success.value
+            val updatedAnswers: UserAnswers = answers
+              .set(DefaultAmountPage, true).success.value
+              .set(AccessCodePage, "1111").success.value
             navigator
               .nextPage(DefaultAmountPage, CheckMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.GuaranteeDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+      "to AccessCode page when Yes is selected and access code is not present" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers = answers
+              .set(DefaultAmountPage, true).success.value
+              .remove(AccessCodePage).success.value
+            navigator
+              .nextPage(DefaultAmountPage, CheckMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.AccessCodeController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
       "to liabilityAmountPage when No is selected" in {
