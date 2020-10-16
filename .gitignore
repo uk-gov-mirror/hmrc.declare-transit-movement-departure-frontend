@@ -34,3 +34,7 @@ bin
 /.classpath
 *.iws
 migrations
+.bloop/
+.metals/
+.vscode/
+project/metals.sbt
