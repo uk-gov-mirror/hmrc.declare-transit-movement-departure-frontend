@@ -30,25 +30,28 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
   override def toString: String = "guaranteeType"
 
   override def cleanup(value: Option[GuaranteeType], userAnswers: UserAnswers): Try[UserAnswers] =
-    (value, userAnswers.get(AccessCodePage)) match {
+    (value, userAnswers.get(AccessCodePage), userAnswers.get(GuaranteeReferencePage)) match {
 
-      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple), _)
-          if userAnswers.get(GuaranteeReferencePage).getOrElse(0).toString.length > 17 =>
+      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple), _, Some(grnNumber))
+          if grnNumber.length > 17 =>
         userAnswers.remove(GuaranteeReferencePage)
 
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
-            Some(_)) =>
+            Some(_),
+            _) =>
         userAnswers.remove(OtherReferencePage)
 
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
-            None) =>
+            None,
+            _) =>
         userAnswers
           .remove(OtherReferencePage)
           .flatMap(_.remove(OtherReferenceLiabilityAmountPage))
 
       case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
               GuaranteeWaiverSecured),
-            Some(_)) =>
+            Some(_),
+            _) =>
         userAnswers
           .remove(GuaranteeReferencePage)
           .flatMap(_.remove(LiabilityAmountPage))
@@ -57,8 +60,11 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
 
       case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
               GuaranteeWaiverSecured),
-            None) =>
+            None,
+            _) =>
         userAnswers.remove(GuaranteeReferencePage)
+
+      case _ => super.cleanup(value, userAnswers)
 
     }
 
