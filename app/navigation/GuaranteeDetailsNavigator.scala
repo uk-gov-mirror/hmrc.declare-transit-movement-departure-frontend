@@ -49,7 +49,7 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
   }
 
   def otherReferenceRoute(ua: UserAnswers) =
-    (ua.get(LiabilityAmountPage), ua.get(GuaranteeTypePage)) match {
+    (ua.get(OtherReferenceLiabilityAmountPage), ua.get(GuaranteeTypePage)) match {
       case (None, Some(guaranteeType))
         if nonGuaranteeReferenceRoute.contains(guaranteeType) => {
         Some(routes.OtherReferenceLiabilityAmountController.onPageLoad(ua.id, CheckMode))
