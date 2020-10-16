@@ -26,7 +26,7 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
   val lengthKey                      = "liabilityAmount.error.length"
   val maxLength                      = 100
   val liabilityAmountCharactersRegex = "^$|^[0-9.]*$"
-  val liabilityAmountFormatRegex     = "^[1-9]{1}[0-9]*(?:\\.[0-9]{1,2})?$"
+  val liabilityAmountFormatRegex     = "^$|([0-9]*(?:\\.[0-9]{1,2})?)$"
   val invalidCharactersKey           = "liabilityAmount.error.characters"
   val invalidFormatKey               = "liabilityAmount.error.invalidFormat"
 

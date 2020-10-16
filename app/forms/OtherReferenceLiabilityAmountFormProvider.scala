@@ -25,7 +25,7 @@ class OtherReferenceLiabilityAmountFormProvider @Inject() extends Mappings {
 
   val liabilityAmountRegexDecimal = "^[1-9]{1}[0-9]*(?:\\.[0-9]{1,2})?$"
   val liabilityAmountRegex        = "^[0-9.]*$"
-  val greaterThanOneRegex         = "^[1-9]{1}[0-9]*(?:\\.[0-9]{1,2})?$"
+  val greaterThanZeroRegex        = "^[1-9]{1}[0-9.]*$"
 
   def apply(): Form[String] =
     Form(
@@ -33,6 +33,6 @@ class OtherReferenceLiabilityAmountFormProvider @Inject() extends Mappings {
         .verifying(StopOnFirstFail[String](
           regexp(liabilityAmountRegex, "liabilityAmount.error.characters"),
           regexp(liabilityAmountRegexDecimal, "liabilityAmount.error.invalidFormat"),
-          regexp(greaterThanOneRegex, "liabilityAmount.error.greaterThanOne"),
+          regexp(greaterThanZeroRegex, "liabilityAmount.error.greaterThanZero"),
         )))
 }

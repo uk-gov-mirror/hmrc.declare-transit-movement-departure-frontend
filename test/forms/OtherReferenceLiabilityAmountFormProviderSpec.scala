@@ -73,7 +73,6 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
 
       forAll(genInvalidString) {
         invalidString =>
-          println(invalidString)
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors mustBe expectedError
       }

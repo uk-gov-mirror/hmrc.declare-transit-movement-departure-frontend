@@ -24,16 +24,16 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class LiabilityAmountFormProvider @Inject() extends Mappings {
 
-  val liabilityAmountRegexDecimal = "^[1-9]{1}[0-9]*(?:\\.[0-9]{1,2})?$"
-  val liabilityAmountRegex        = "^$|^[0-9.]*$"
-  val greaterThanOneRegex         = "^[1-9]{1}[0-9]*(?:\\.[0-9]{1,2})?$"
+  val liabilityAmountCharactersRegex = "^$|^[0-9.]*$"
+  val liabilityAmountFormatRegex     = "^$|([0-9]*(?:\\.[0-9]{1,2})?)$"
+  val greaterThanZeroRegex           = "^$|([1-9]{1}[0-9.]*)$"
 
   def apply(): Form[String] =
     Form(
       "value" -> Forms.text
         .verifying(StopOnFirstFail[String](
-          regexp(liabilityAmountRegex, "liabilityAmount.error.characters"),
-          regexp(liabilityAmountRegexDecimal, "liabilityAmount.error.invalidFormat"),
-          regexp(greaterThanOneRegex, "liabilityAmount.error.greaterThanOne"),
+          regexp(liabilityAmountCharactersRegex, "liabilityAmount.error.characters"),
+          regexp(liabilityAmountFormatRegex, "liabilityAmount.error.invalidFormat"),
+          regexp(greaterThanZeroRegex, "liabilityAmount.error.greaterThanZero"),
         )))
 }
