@@ -17,16 +17,16 @@
 package utils
 
 import controllers.goodsSummary.{routes => goodsSummaryRoutes}
+import controllers.guaranteeDetails.{routes => guaranteetDetailsRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
-import controllers.guaranteeDetails.{routes => guaranteetDetailsRoutes}
 import models.GuaranteeType.{guaranteeReferenceRoute, nonGuaranteeReferenceRoute}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
-import models.{GuaranteeType, Index, NormalMode, SectionDetails, Status, UserAnswers}
+import models.{Index, NormalMode, SectionDetails, Status, UserAnswers}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
 
@@ -103,6 +103,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
     SectionDetails("declarationSummary.section.guarantee", page, status)
   }
+
   private def safetyAndSecuritySection: SectionDetails =
     SectionDetails("declarationSummary.section.safetyAndSecurity", "", NotStarted)
 
@@ -289,14 +290,22 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
   private val guaranteeDetailsPages: Seq[(Option[_], String)] = {
     val lrn = userAnswers.id
-    val guaranteeTypePage = userAnswers.get(GuaranteeTypePage) match {
-      case Some(guaranteeType) if guaranteeReferenceRoute.contains(guaranteeType) =>
+
+    val guaranteeTypePage = (userAnswers.get(GuaranteeTypePage), userAnswers.get(LiabilityAmountPage)) match {
+      case (Some(guaranteeType), Some(_)) if guaranteeReferenceRoute.contains(guaranteeType) =>
         Seq(
           userAnswers.get(GuaranteeReferencePage) -> guaranteetDetailsRoutes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url,
           userAnswers.get(LiabilityAmountPage)    -> guaranteetDetailsRoutes.LiabilityAmountController.onPageLoad(lrn, NormalMode).url,
           userAnswers.get(AccessCodePage)         -> guaranteetDetailsRoutes.AccessCodeController.onPageLoad(lrn, NormalMode).url
         )
-      case Some(guaranteeType) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+      case (Some(guaranteeType), None) if guaranteeReferenceRoute.contains(guaranteeType) =>
+        Seq(
+          userAnswers.get(GuaranteeReferencePage) -> guaranteetDetailsRoutes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(DefaultAmountPage)      -> guaranteetDetailsRoutes.DefaultAmountController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(AccessCodePage)         -> guaranteetDetailsRoutes.AccessCodeController.onPageLoad(lrn, NormalMode).url
+        )
+
+      case (Some(guaranteeType), _) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
         Seq(
           userAnswers.get(OtherReferencePage)                -> guaranteetDetailsRoutes.OtherReferenceController.onPageLoad(lrn, NormalMode).url,
           userAnswers.get(OtherReferenceLiabilityAmountPage) -> guaranteetDetailsRoutes.OtherReferenceLiabilityAmountController.onPageLoad(lrn, NormalMode).url
@@ -304,14 +313,8 @@ class SectionsHelper(userAnswers: UserAnswers) {
       case _ => Seq.empty
     }
 
-    val defaultAmountPage = if (userAnswers.get(LiabilityAmountPage).isEmpty) {
-      Seq(userAnswers.get(DefaultAmountPage) -> guaranteetDetailsRoutes.DefaultAmountController.onPageLoad(lrn, NormalMode).url)
-    } else {
-      Seq.empty
-    }
-
     Seq(
       userAnswers.get(GuaranteeTypePage) -> guaranteetDetailsRoutes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url
-    ) ++ guaranteeTypePage ++ defaultAmountPage
+    ) ++ guaranteeTypePage
   }
 }

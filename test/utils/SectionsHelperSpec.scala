@@ -25,7 +25,7 @@ import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
-import models.GuaranteeType.{CashDepositGuarantee, GuaranteeWaiver}
+import models.GuaranteeType.{CashDepositGuarantee, GuaranteeNotRequired, GuaranteeWaiver}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models._
@@ -476,12 +476,12 @@ class SectionsHelperSpec extends SpecBase {
 
         val userAnswers = emptyUserAnswers
           .set(GuaranteeTypePage, CashDepositGuarantee)
-          .toOption
+          .success
           .value
           .set(OtherReferencePage, "54321")
           .toOption
           .value
-          .set(OtherReferenceLiabilityAmountPage, "10.5")
+          .set(OtherReferenceLiabilityAmountPage, "10.50")
           .toOption
           .value
 
