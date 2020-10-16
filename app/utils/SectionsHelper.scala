@@ -17,15 +17,17 @@
 package utils
 
 import controllers.goodsSummary.{routes => goodsSummaryRoutes}
+import controllers.guaranteeDetails.{routes => guaranteetDetailsRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
-import controllers.guaranteeDetails.{routes => guaranteetDetailsRoutes}
+import models.GuaranteeType.{guaranteeReferenceRoute, nonGuaranteeReferenceRoute}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
 import models.{Index, NormalMode, SectionDetails, Status, UserAnswers}
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
 
 class SectionsHelper(userAnswers: UserAnswers) {
@@ -95,10 +97,13 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private def guaranteeSection: SectionDetails = {
-    val startPage: String = guaranteetDetailsRoutes.GuaranteeTypeController.onPageLoad(userAnswers.id, NormalMode).url
+    val startPage: String                  = guaranteetDetailsRoutes.GuaranteeTypeController.onPageLoad(userAnswers.id, NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (guaranteetDetailsRoutes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
+    val (page, status)                     = getIncompletePage(startPage, guaranteeDetailsPages).getOrElse(cyaPageAndStatus)
 
-    SectionDetails("declarationSummary.section.guarantee", startPage, NotStarted)
+    SectionDetails("declarationSummary.section.guarantee", page, status)
   }
+
   private def safetyAndSecuritySection: SectionDetails =
     SectionDetails("declarationSummary.section.safetyAndSecurity", "", NotStarted)
 
@@ -281,5 +286,35 @@ class SectionsHelper(userAnswers: UserAnswers) {
       userAnswers.get(AddSealsPage)        -> goodsSummaryRoutes.AddSealsController.onPageLoad(lrn, NormalMode).url,
     ) ++ declarePackagesDiversionPages ++ addCustomsApprovedLocationDiversionPages ++ addSealsPages ++ simplifiedPages ++ sealsInformationDiversionPages
 
+  }
+
+  private val guaranteeDetailsPages: Seq[(Option[_], String)] = {
+    val lrn = userAnswers.id
+
+    val guaranteeTypePage = (userAnswers.get(GuaranteeTypePage), userAnswers.get(LiabilityAmountPage)) match {
+      case (Some(guaranteeType), Some(_)) if guaranteeReferenceRoute.contains(guaranteeType) =>
+        Seq(
+          userAnswers.get(GuaranteeReferencePage) -> guaranteetDetailsRoutes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(LiabilityAmountPage)    -> guaranteetDetailsRoutes.LiabilityAmountController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(AccessCodePage)         -> guaranteetDetailsRoutes.AccessCodeController.onPageLoad(lrn, NormalMode).url
+        )
+      case (Some(guaranteeType), None) if guaranteeReferenceRoute.contains(guaranteeType) =>
+        Seq(
+          userAnswers.get(GuaranteeReferencePage) -> guaranteetDetailsRoutes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(DefaultAmountPage)      -> guaranteetDetailsRoutes.DefaultAmountController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(AccessCodePage)         -> guaranteetDetailsRoutes.AccessCodeController.onPageLoad(lrn, NormalMode).url
+        )
+
+      case (Some(guaranteeType), _) if nonGuaranteeReferenceRoute.contains(guaranteeType) =>
+        Seq(
+          userAnswers.get(OtherReferencePage)                -> guaranteetDetailsRoutes.OtherReferenceController.onPageLoad(lrn, NormalMode).url,
+          userAnswers.get(OtherReferenceLiabilityAmountPage) -> guaranteetDetailsRoutes.OtherReferenceLiabilityAmountController.onPageLoad(lrn, NormalMode).url
+        )
+      case _ => Seq.empty
+    }
+
+    Seq(
+      userAnswers.get(GuaranteeTypePage) -> guaranteetDetailsRoutes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url
+    ) ++ guaranteeTypePage
   }
 }

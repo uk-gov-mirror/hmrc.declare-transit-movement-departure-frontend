@@ -18,19 +18,19 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.{Field, FormError}
+import play.api.data.FormError
 
-class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
+class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey                    = "liabilityAmount.error.required"
   val lengthKey                      = "liabilityAmount.error.length"
   val maxLength                      = 100
-  val liabilityAmountCharactersRegex = "^$|^[0-9.]*$"
   val liabilityAmountFormatRegex     = "^[1-9]{1}[0-9]*(?:\\.[0-9]{1,2})?$"
-  val invalidCharactersKey           = "liabilityAmount.error.characters"
+  val liabilityAmountCharactersRegex = "^[0-9.]*$"
+  val invalidCharacterKey            = "liabilityAmount.error.characters"
   val invalidFormatKey               = "liabilityAmount.error.invalidFormat"
 
-  val form = new LiabilityAmountFormProvider()()
+  val form = new OtherReferenceLiabilityAmountFormProvider()()
 
   ".value" - {
 
@@ -42,9 +42,15 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+
     "must not bind strings that do not match invalid characters regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
+      val expectedError = List(FormError(fieldName, invalidCharacterKey, Seq(liabilityAmountCharactersRegex)))
       val genInvalidString: Gen[String] = {
         stringsWithLength(maxLength) suchThat (!_.matches(liabilityAmountCharactersRegex))
       }
@@ -67,6 +73,7 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
       forAll(genInvalidString) {
         invalidString =>
+          println(invalidString)
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors mustBe expectedError
       }

@@ -20,16 +20,18 @@ import java.time.LocalDate
 
 import base.SpecBase
 import controllers.goodsSummary.{routes => goodsSummaryRoutes}
+import controllers.guaranteeDetails.{routes => guaranteeDetailsRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
-import controllers.guaranteeDetails.{routes => guaranteetDetailsRoutes}
+import models.GuaranteeType.{CashDepositGuarantee, GuaranteeNotRequired, GuaranteeWaiver}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
-import models.reference.{Country, CountryCode, TransportMode}
 import models._
+import models.reference.{Country, CountryCode, TransportMode}
 import pages._
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 class SectionsHelperSpec extends SpecBase {
 
@@ -416,6 +418,83 @@ class SectionsHelperSpec extends SpecBase {
       }
 
     }
+
+    "Guarantee Details" - {
+      "must return guarantee details section with status as NotStarted" in {
+        val sectionsHelper   = new SectionsHelper(emptyUserAnswers)
+        val url              = guaranteeDetailsRoutes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url
+        val sectionName      = "declarationSummary.section.guarantee"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted))
+        val result           = sectionsHelper.getSections
+
+        result mustBe expectedSections
+      }
+
+      "must return guarantee details section with status as InProgress" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(GuaranteeTypePage, GuaranteeWaiver)
+          .success
+          .value
+
+        val sectionsHelper   = new SectionsHelper(userAnswers)
+        val url              = guaranteeDetailsRoutes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url
+        val result           = sectionsHelper.getSections
+        val sectionName      = "declarationSummary.section.guarantee"
+        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, InProgress))
+
+        result mustBe expectedSections
+      }
+
+      "must return guarantee details section with status as Complete when Guarantee Reference path completed" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(GuaranteeTypePage, GuaranteeWaiver)
+          .toOption
+          .value
+          .set(GuaranteeReferencePage, "12345")
+          .toOption
+          .value
+          .set(LiabilityAmountPage, "100.00")
+          .toOption
+          .value
+          .set(AccessCodePage, "1234")
+          .toOption
+          .value
+
+        val url             = guaranteeDetailsRoutes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        val expectedSection = SectionDetails("declarationSummary.section.guarantee", url, Completed)
+        val expectedResult  = updateSectionsWithExpectedValue(expectedSection)
+
+        val sectionsHelper = new SectionsHelper(userAnswers)
+        val result         = sectionsHelper.getSections
+
+        result mustBe expectedResult
+      }
+
+      "must return guarantee details section with status as Complete when Other Reference path completed" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(GuaranteeTypePage, CashDepositGuarantee)
+          .success
+          .value
+          .set(OtherReferencePage, "54321")
+          .toOption
+          .value
+          .set(OtherReferenceLiabilityAmountPage, "10.50")
+          .toOption
+          .value
+
+        val url             = guaranteeDetailsRoutes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        val expectedSection = SectionDetails("declarationSummary.section.guarantee", url, Completed)
+        val expectedResult  = updateSectionsWithExpectedValue(expectedSection)
+
+        val sectionsHelper = new SectionsHelper(userAnswers)
+        val result         = sectionsHelper.getSections
+
+        result mustBe expectedResult
+      }
+    }
   }
 
   private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
@@ -427,7 +506,7 @@ class SectionsHelperSpec extends SpecBase {
                      traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
                      NotStarted),
       SectionDetails("declarationSummary.section.goodsSummary", goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.guarantee", guaranteetDetailsRoutes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url, NotStarted)
+      SectionDetails("declarationSummary.section.guarantee", guaranteeDetailsRoutes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url, NotStarted)
     )
     sections.map {
       section =>
