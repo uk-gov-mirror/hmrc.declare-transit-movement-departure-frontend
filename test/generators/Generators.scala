@@ -18,6 +18,7 @@ package generators
 
 import java.time._
 
+import cats.data.NonEmptyList
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
@@ -33,14 +34,13 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     for {
       seq1 <- gen
       seq2 <- Gen.listOfN(seq1.length, genValue)
-    } yield {
+    } yield
       seq1.toSeq.zip(seq2).foldRight("") {
         case ((n, Some(v)), m) =>
           m + n + v
         case ((n, _), m) =>
           m + n
       }
-    }
   }
 
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
@@ -49,10 +49,14 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
+    arbitrary[BigInt] suchThat (
+      x => x > Int.MaxValue
+    )
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
+    arbitrary[BigInt] suchThat (
+      x => x < Int.MinValue
+    )
 
   def nonNumerics: Gen[String] =
     alphaStr suchThat (_.size > 0)
@@ -70,7 +74,9 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat (x => x < min || x > max)
+    arbitrary[Int] suchThat (
+      x => x < min || x > max
+    )
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
@@ -160,6 +166,9 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     }
   }
 
+  def nonEmptyListOf[A](maxLength: Int)(implicit a: Arbitrary[A]): Gen[NonEmptyList[A]] =
+    listWithMaxLength[A](maxLength).map(NonEmptyList.fromListUnsafe _)
+
   def listWithMaxLength[A](maxLength: Int)(implicit a: Arbitrary[A]): Gen[List[A]] =
     for {
       length <- choose(1, maxLength)
@@ -187,7 +196,9 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     dateTimesBetween(
       LocalDateTime.of(1900, 1, 1, 0, 0, 0),
       LocalDateTime.of(2100, 1, 1, 0, 0, 0)
-    ).map(x => x.withNano(0).withSecond(0))
+    ).map(
+      x => x.withNano(0).withSecond(0)
+    )
   }
 
   val localDateGen: Gen[LocalDate] = datesBetween(LocalDate.of(1900, 1, 1), LocalDate.now)
