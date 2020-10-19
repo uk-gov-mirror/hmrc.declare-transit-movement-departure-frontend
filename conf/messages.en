@@ -615,7 +615,7 @@ liabilityAmount.error.length = Liability amount must be 100 characters or less
 liabilityAmount.error.characters = The liability amount must only include numbers 0 to 9 and a decimal place
 liabilityAmount.paragraph = Amount can have up to 2 decimal places.
 liabilityAmount.error.invalidFormat = Enter the liability amount in the right format, like 1234.95
-liabilityAmount.error.greaterThanOne = The liability amount must be 1 or more
+liabilityAmount.error.greaterThanZero = The liability amount must be 1 or more
 
 otherReference.title = What is the reference for the guarantee?
 otherReference.heading = What is the reference for the guarantee?

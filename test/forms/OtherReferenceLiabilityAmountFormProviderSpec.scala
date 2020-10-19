@@ -19,16 +19,10 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
+import models.messages.guarantee.Guarantee.Constants._
+
 
 class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviours {
-
-  val requiredKey                    = "liabilityAmount.error.required"
-  val lengthKey                      = "liabilityAmount.error.length"
-  val maxLength                      = 100
-  val liabilityAmountFormatRegex     = "^[1-9]{1}[0-9]*(?:\\.[0-9]{1,2})?$"
-  val liabilityAmountCharactersRegex = "^[0-9.]*$"
-  val invalidCharacterKey            = "liabilityAmount.error.characters"
-  val invalidFormatKey               = "liabilityAmount.error.invalidFormat"
 
   val form = new OtherReferenceLiabilityAmountFormProvider()()
 
@@ -50,7 +44,7 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
 
     "must not bind strings that do not match invalid characters regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidCharacterKey, Seq(liabilityAmountCharactersRegex)))
+      val expectedError = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
       val genInvalidString: Gen[String] = {
         stringsWithLength(maxLength) suchThat (!_.matches(liabilityAmountCharactersRegex))
       }
@@ -73,10 +67,18 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
 
       forAll(genInvalidString) {
         invalidString =>
-          println(invalidString)
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors mustBe expectedError
       }
     }
+
+    "must not bind strings that do not match greater than zero regex" in {
+
+      val expectedError = List(FormError(fieldName, greaterThanZeroErrorKey, Seq(greaterThanZeroRegex)))
+      val invalidString = "0.5"
+      val result        = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+      result.errors mustBe expectedError
+    }
+
   }
 }
