@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package queries
+package navigation
 
-object Constants {
-  val RouteDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val Items                        = "items"
+import javax.inject.{Inject, Singleton}
+import models._
+import pages._
+import play.api.mvc.Call
+
+@Singleton
+class AddItemsNavigator @Inject()() extends Navigator {
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] =
+    ???
+
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] =
+    ???
 
 }

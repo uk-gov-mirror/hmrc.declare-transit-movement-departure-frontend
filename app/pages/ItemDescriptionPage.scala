@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package queries
+package pages
 
-object Constants {
-  val RouteDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val Items                        = "items"
+import models.Index
+import play.api.libs.json.JsPath
+import queries.Constants.Items
 
+case class ItemDescriptionPage(index: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = JsPath \ Items \ index.toString \ toString
+
+  override def toString: String = "itemDescription"
 }

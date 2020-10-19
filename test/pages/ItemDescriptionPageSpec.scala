@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package queries
+package pages
 
-object Constants {
-  val RouteDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val Items                        = "items"
+import models.Index
+import pages.behaviours.PageBehaviours
 
+class ItemDescriptionPageSpec extends PageBehaviours {
+
+  "ItemDescriptionPage" - {
+
+    val index = Index(1)
+
+    beRetrievable[String](ItemDescriptionPage(index))
+
+    beSettable[String](ItemDescriptionPage(index))
+
+    beRemovable[String](ItemDescriptionPage(index))
+  }
 }

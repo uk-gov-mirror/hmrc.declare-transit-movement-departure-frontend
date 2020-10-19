@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package queries
+package navigation.annotations;
 
-object Constants {
-  val RouteDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val Items                        = "items"
+import com.google.inject.BindingAnnotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface AddItems {
 }
