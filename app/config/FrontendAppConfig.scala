@@ -38,6 +38,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   val nctsEnquiriesUrl: String       = configuration.get[String]("urls.nctsEnquiries")
   lazy val referenceDataUrl: String  = configuration.get[Service]("microservice.services.referenceData").fullServiceUrl
 
+  val departureHost = configuration.get[Service]("microservice.services.departures").fullServiceUrl
+
   lazy val authUrl: String                   = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String                  = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String          = configuration.get[String]("urls.loginContinue")
