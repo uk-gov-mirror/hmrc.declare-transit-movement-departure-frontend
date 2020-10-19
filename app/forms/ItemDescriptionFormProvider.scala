@@ -16,16 +16,16 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.Index
 import play.api.data.Form
 
 class ItemDescriptionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(index: Index): Form[String] =
     Form(
-      "value" -> text("itemDescription.error.required")
+      "value" -> text("itemDescription.error.required", Seq(index.display))
         .verifying(maxLength(280, "itemDescription.error.length"))
     )
 }

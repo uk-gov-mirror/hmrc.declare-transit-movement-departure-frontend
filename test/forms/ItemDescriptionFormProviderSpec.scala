@@ -16,38 +16,38 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class ItemDescriptionFormProviderSpec extends StringFieldBehaviours {
+class ItemDescriptionFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
   val requiredKey = "itemDescription.error.required"
   val lengthKey   = "itemDescription.error.length"
   val maxLength   = 280
-
-  val form = new ItemDescriptionFormProvider()()
+  val form        = new ItemDescriptionFormProvider()
 
   ".value" - {
 
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
-      form,
+      form(index),
       fieldName,
       stringsWithMaxLength(maxLength)
     )
 
     behave like fieldWithMaxLength(
-      form,
+      form(index),
       fieldName,
       maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
-      form,
+      form(index),
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
   }
 }

@@ -48,13 +48,11 @@ class ItemDescriptionController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(ItemDescriptionPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(index)
+        case Some(value) => formProvider(index).fill(value)
       }
 
       val json = Json.obj(
@@ -69,7 +67,7 @@ class ItemDescriptionController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(index)
         .bindFromRequest()
         .fold(
           formWithErrors => {

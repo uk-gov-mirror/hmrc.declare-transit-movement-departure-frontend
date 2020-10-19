@@ -17,7 +17,7 @@
 package controllers.addItems
 
 import base.SpecBase
-import controllers.routes
+import controllers.{routes => mainRoutes}
 import forms.ItemDescriptionFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -36,7 +36,6 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -45,7 +44,7 @@ class ItemDescriptionControllerSpec extends SpecBase with MockitoSugar with Nunj
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new ItemDescriptionFormProvider()
-  val form         = formProvider()
+  val form         = formProvider(index)
 
   lazy val itemDescriptionRoute = routes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url
 
