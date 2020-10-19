@@ -63,6 +63,7 @@ routeDetails.preHeading = Route details
 transportDetails.preHeading = Transport details
 goodsSummary.preHeading = Goods summary
 guaranteeDetails.preHeading = Guarantee details
+items.preHeading = Items
 
 routeDetailsCheckYourAnswers.heading = Check your answers
 routeDetailsCheckYourAnswers.title = Check your answers
@@ -657,3 +658,9 @@ guaranteeDetailsCheckYourAnswers.heading = Check your answers
 guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount = EUR 10,000
 
 
+
+itemDescription.title = What is the description of item 1?
+itemDescription.heading = What is the description of item 1?
+itemDescription.checkYourAnswersLabel = What is the description of item 1?
+itemDescription.error.required = Enter item description
+itemDescription.error.length = Item description must be 280 characters or less

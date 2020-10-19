@@ -21,7 +21,6 @@ import org.scalacheck.Gen
 import play.api.data.FormError
 import models.messages.guarantee.Guarantee.Constants._
 
-
 class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
   val form = new OtherReferenceLiabilityAmountFormProvider()()
