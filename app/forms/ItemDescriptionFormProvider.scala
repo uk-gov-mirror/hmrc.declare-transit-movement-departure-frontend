@@ -20,12 +20,18 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import models.Index
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ItemDescriptionFormProvider @Inject() extends Mappings {
+
+  val regex: String = "^[a-zA-Z0-9 ]*$"
 
   def apply(index: Index): Form[String] =
     Form(
       "value" -> text("itemDescription.error.required", Seq(index.display))
-        .verifying(maxLength(280, "itemDescription.error.length"))
-    )
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(280, "itemDescription.error.length"),
+            regexp(regex, "itemDescription.error.invalid", index.display)
+          )))
 }

@@ -18,36 +18,53 @@ package forms
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class ItemDescriptionFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
-  val requiredKey = "itemDescription.error.required"
-  val lengthKey   = "itemDescription.error.length"
-  val maxLength   = 280
-  val form        = new ItemDescriptionFormProvider()
+  val requiredKey            = "itemDescription.error.required"
+  val lengthKey              = "itemDescription.error.length"
+  val invalidKey             = "itemDescription.error.invalid"
+  val maxLength              = 280
+  val form                   = new ItemDescriptionFormProvider()(index)
+  val itemDescRegexp: String = "^[a-zA-Z0-9 ]*$"
 
   ".value" - {
 
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
-      form(index),
+      form,
       fieldName,
       stringsWithMaxLength(maxLength)
     )
 
     behave like fieldWithMaxLength(
-      form(index),
+      form,
       fieldName,
       maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
-      form(index),
+      form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
+
+    "must not bind strings that do not match regex" in {
+
+      val expectedError = List(FormError(fieldName, invalidKey, Seq(index.display)))
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(itemDescRegexp))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }
