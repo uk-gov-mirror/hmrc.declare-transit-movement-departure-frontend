@@ -5,6 +5,8 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
 
 {% block pageTitle %}
   {{ title(messages("itemDescription.title"), form.errors) }}
@@ -28,20 +30,21 @@
         {% endif %}
 
         <form action="{{ routes.controllers.addItems.ItemDescriptionController.onSubmit(lrn, mode).url }}" method="post">
+          <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
+         <h1 class="govuk-heading-xl"> {{ messages("itemDescription.heading", index) }}  </h1>
 
           {{ csrf() | safe }}
 
-          {{ govukInput({
-            label: {
-              text: messages('itemDescription.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
-            },
-            id: "value",
-            name: "value",
-            value: form.value.value,
-            errorMessage: form.value.error
-          }) }}
+         {{ govukCharacterCount({
+                       name: "value",
+                       id: "value",
+                       maxlength: 350,
+                       value: form.value.value,
+                       label: {
+                         text: messages('itemDescription.paragraph'),
+                         isPageHeading: false
+                       }
+                 }) }}
 
           {{ govukButton({
             text: messages("site.continue"),

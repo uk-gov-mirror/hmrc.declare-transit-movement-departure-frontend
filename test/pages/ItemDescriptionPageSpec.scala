@@ -16,16 +16,19 @@
 
 package pages
 
+import models.Index
 import pages.behaviours.PageBehaviours
 
 class ItemDescriptionPageSpec extends PageBehaviours {
 
   "ItemDescriptionPage" - {
 
-    beRetrievable[String](ItemDescriptionPage)
+    val index = Index(1)
 
-    beSettable[String](ItemDescriptionPage)
+    beRetrievable[String](ItemDescriptionPage(index))
 
-    beRemovable[String](ItemDescriptionPage)
+    beSettable[String](ItemDescriptionPage(index))
+
+    beRemovable[String](ItemDescriptionPage(index))
   }
 }

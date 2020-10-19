@@ -19,7 +19,7 @@ package controllers.addItems
 import controllers.actions._
 import forms.ItemDescriptionFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.ItemDescriptionPage
@@ -50,23 +50,24 @@ class ItemDescriptionController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ItemDescriptionPage) match {
+      val preparedForm = request.userAnswers.get(ItemDescriptionPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
+        "form"  -> preparedForm,
+        "lrn"   -> lrn,
+        "index" -> index.display,
+        "mode"  -> mode
       )
 
       renderer.render("itemDescription.njk", json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
@@ -74,18 +75,19 @@ class ItemDescriptionController @Inject()(
           formWithErrors => {
 
             val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
+              "form"  -> formWithErrors,
+              "lrn"   -> lrn,
+              "index" -> index.display,
+              "mode"  -> mode
             )
 
             renderer.render("itemDescription.njk", json).map(BadRequest(_))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemDescriptionPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemDescriptionPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ItemDescriptionPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(ItemDescriptionPage(index), mode, updatedAnswers))
         )
   }
 }

@@ -17,14 +17,14 @@
 package utils
 
 import controllers.addItems.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def itemDescription: Option[Row] = userAnswers.get(ItemDescriptionPage) map {
+  def itemDescription(index: Index): Option[Row] = userAnswers.get(ItemDescriptionPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"itemDescription.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -32,7 +32,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.ItemDescriptionController.onPageLoad(lrn, CheckMode).url,
+            href               = routes.ItemDescriptionController.onPageLoad(lrn, index, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"itemDescription.checkYourAnswersLabel"))
           )
         )

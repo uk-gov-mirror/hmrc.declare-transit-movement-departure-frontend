@@ -331,8 +331,7 @@ POST       /:lrn/guarantee-details/other-reference-liability-amount             
 GET        /:lrn/guarantee-details/change-other-reference-liability-amount                  controllers.guaranteeDetails.OtherReferenceLiabilityAmountController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/guarantee-details/change-other-reference-liability-amount                  controllers.guaranteeDetails.OtherReferenceLiabilityAmountController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/add-items/item-details/item-description                        controllers.addItems.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/add-items/item-details/item-description                         controllers.addItems.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/add-items/item-details/change-item-description                   controllers.addItems.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/add-items/item-details/change-item-description                   controllers.addItems.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-k
+GET        /:lrn/add-items/item-details/:index/item-description                        controllers.addItems.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/item-details/:index/item-description                         controllers.addItems.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/item-details/:index/change-item-description                   controllers.addItems.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/item-details/:index/change-item-description                   controllers.addItems.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)

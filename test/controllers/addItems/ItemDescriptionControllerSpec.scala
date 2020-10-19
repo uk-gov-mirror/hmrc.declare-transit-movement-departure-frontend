@@ -47,7 +47,7 @@ class ItemDescriptionControllerSpec extends SpecBase with MockitoSugar with Nunj
   val formProvider = new ItemDescriptionFormProvider()
   val form         = formProvider()
 
-  lazy val itemDescriptionRoute = routes.ItemDescriptionController.onPageLoad(lrn, NormalMode).url
+  lazy val itemDescriptionRoute = routes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url
 
   "ItemDescription Controller" - {
 
@@ -84,7 +84,7 @@ class ItemDescriptionControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(ItemDescriptionPage, "answer").success.value
+      val userAnswers    = emptyUserAnswers.set(ItemDescriptionPage(index), "answer").success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, itemDescriptionRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
