@@ -32,7 +32,8 @@ class TotalGrossMassFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(15, "totalGrossMass.error.length"),
-            regexp(totalGrossMassregex, "totalGrossMass.error.invalidCharacters")
+            regexp(totalGrossMassregex, "totalGrossMass.error.invalidCharacters"),
+            min(0, "totalGrossMass.error.minimum")
           ))
     )
   }

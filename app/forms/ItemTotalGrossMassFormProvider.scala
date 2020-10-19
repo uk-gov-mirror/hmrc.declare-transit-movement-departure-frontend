@@ -16,10 +16,11 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.Index
 import play.api.data.Form
+import play.api.i18n.Messages
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ItemTotalGrossMassFormProvider @Inject() extends Mappings {
@@ -34,7 +35,9 @@ class ItemTotalGrossMassFormProvider @Inject() extends Mappings {
           StopOnFirstFail[String](
             maxLength(15, "itemTotalGrossMass.error.length"),
             regexp(totalGrossMassInvalidCharactersRegex, "itemTotalGrossMass.error.invalidCharacters", index.display),
-            regexp(totalGrossMassInvalidFormatRegex, "itemTotalGrossMass.error.invalidFormat", index.display)
+            regexp(totalGrossMassInvalidFormatRegex, "itemTotalGrossMass.error.invalidFormat", index.display),
+            min(0, "itemTotalGrossMass.error.minimum")
           )
-        ))
+        )
+    )
 }

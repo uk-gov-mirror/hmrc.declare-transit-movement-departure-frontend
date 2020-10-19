@@ -43,7 +43,7 @@ class ItemTotalGrossMassControllerSpec extends SpecBase with MockitoSugar with N
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new ItemTotalGrossMassFormProvider()
-  val form         = formProvider(index)
+  val form         = formProvider(index)(messages)
 
   lazy val itemTotalGrossMassRoute = routes.ItemTotalGrossMassController.onPageLoad(lrn, index, NormalMode).url
 
