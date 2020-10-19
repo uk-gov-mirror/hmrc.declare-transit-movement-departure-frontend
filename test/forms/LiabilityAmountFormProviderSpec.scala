@@ -23,8 +23,6 @@ import play.api.data.FormError
 
 class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
-
-
   val form = new LiabilityAmountFormProvider()()
 
   ".value" - {
