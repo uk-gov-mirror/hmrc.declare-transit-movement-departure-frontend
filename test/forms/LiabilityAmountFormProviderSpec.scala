@@ -24,11 +24,13 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey                    = "liabilityAmount.error.required"
   val lengthKey                      = "liabilityAmount.error.length"
+  val invalidCharactersKey           = "liabilityAmount.error.characters"
+  val invalidFormatKey               = "liabilityAmount.error.invalidFormat"
+  val greaterThanZeroErrorKey        = "liabilityAmount.error.greaterThanZero"
   val maxLength                      = 100
   val liabilityAmountCharactersRegex = "^$|^[0-9.]*$"
   val liabilityAmountFormatRegex     = "^$|([0-9]*(?:\\.[0-9]{1,2})?)$"
-  val invalidCharactersKey           = "liabilityAmount.error.characters"
-  val invalidFormatKey               = "liabilityAmount.error.invalidFormat"
+  val greaterThanZeroRegex           = "^$|([1-9]{1}[0-9.]*)$"
 
   val form = new LiabilityAmountFormProvider()()
 
@@ -71,5 +73,14 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
           result.errors mustBe expectedError
       }
     }
+
+    "must not bind strings that do not match greater than zero regex" in {
+
+      val expectedError = List(FormError(fieldName, greaterThanZeroErrorKey, Seq(greaterThanZeroRegex)))
+      val invalidString = "0.5"
+      val result        = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+      result.errors mustBe expectedError
+    }
+
   }
 }
