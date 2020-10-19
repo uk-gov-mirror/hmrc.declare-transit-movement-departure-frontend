@@ -20,12 +20,9 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import models.messages.guarantee.Guarantee.Constants._
 
 class OtherReferenceLiabilityAmountFormProvider @Inject() extends Mappings {
-
-  val liabilityAmountCharactersRegex = "^$|^[0-9.]*$"
-  val liabilityAmountFormatRegex     = "^$|([0-9]*(?:\\.[0-9]{1,2})?)$"
-  val greaterThanZeroRegex           = "^$|([1-9]{1}[0-9.]*)$"
 
   def apply(): Form[String] =
     Form(
