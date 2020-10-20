@@ -19,10 +19,27 @@ package utils
 import controllers.movementDetails.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.movementDetails.PreLodgeDeclarationPage
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class MovementDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def preLodgeDeclarationPage: Option[Row] = userAnswers.get(PreLodgeDeclarationPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"preLodgeDeclaration.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.PreLodgeDeclarationController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"preLodgeDeclaration.checkYourAnswersLabel")),
+            attributes         = Map("id" -> s"""change-containers-used""")
+          )
+        )
+      )
+  }
 
   def representativeCapacity: Option[Row] = userAnswers.get(RepresentativeCapacityPage) map {
     answer =>
