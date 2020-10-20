@@ -405,7 +405,7 @@ idAtDeparture.error.invalidCharacters = The name, registration or reference of t
 nationalityAtDeparture.title = What is the nationality at departure?
 nationalityAtDeparture.heading = What is the nationality at departure?
 nationalityAtDeparture.checkYourAnswersLabel = Nationality at departure
-nationalityAtDeparture.error.required = Enter the nationality at departure
+nationalityAtDeparture.error.required = Select the nationality at departure
 
 idCrossingBorder.title = What is the name, registration or reference of the vehicle crossing the border?
 idCrossingBorder.heading = What is the name, registration or reference of the vehicle crossing the border?
