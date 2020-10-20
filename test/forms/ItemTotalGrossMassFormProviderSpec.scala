@@ -20,16 +20,9 @@ import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
+import queries.Constants._
 
 class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
-
-  val requiredKey                                  = "itemTotalGrossMass.error.required"
-  val lengthKey                                    = "itemTotalGrossMass.error.length"
-  val invalidCharactersKey                         = "itemTotalGrossMass.error.invalidCharacters"
-  val invalidFormatKey                             = "itemTotalGrossMass.error.invalidFormat"
-  val maxLength                                    = 15
-  val totalGrossMassInvalidCharactersRegex: String = "^[0-9.]*$"
-  val totalGrossMassInvalidFormatRegex: String     = "^[0-9]{1,11}(?:\\.[0-9]{1,3})?$"
 
   val form = new ItemTotalGrossMassFormProvider()(index)
 
@@ -40,29 +33,29 @@ class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with Spec
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(maxLengthGrossMass)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength   = maxLengthGrossMass,
+      lengthError = FormError(fieldName, lengthKeyGrossMass, Seq(maxLengthGrossMass))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
+      requiredError = FormError(fieldName, requiredKeyGrossMass, Seq(index.display))
     )
 
     "must not bind strings that do not match the total gross mass invalid characters regex" in {
 
       val expectedError =
-        List(FormError(fieldName, invalidCharactersKey, Seq(index.display)))
+        List(FormError(fieldName, invalidCharactersKeyGrossMass, Seq(index.display)))
 
       val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(totalGrossMassInvalidCharactersRegex))
+        stringsWithMaxLength(maxLengthGrossMass) suchThat (!_.matches(totalGrossMassInvalidCharactersRegex))
       }
 
       forAll(genInvalidString) {
@@ -75,12 +68,11 @@ class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with Spec
     "must not bind strings that do not match the total gross mass invalid format regex" in {
 
       val expectedError =
-        List(FormError(fieldName, invalidFormatKey, Seq(index.display)))
+        List(FormError(fieldName, invalidFormatKeyGrossMass, Seq(index.display)))
 
       val genInvalidString: Gen[String] = {
-        decimals suchThat (_.matches(totalGrossMassInvalidCharactersRegex))
-        decimals suchThat (!_.matches(totalGrossMassInvalidFormatRegex))
-        decimals suchThat (_.toDouble > 0.000)
+        stringsWithMaxLength(maxLengthGrossMass) suchThat (_.matches(totalGrossMassInvalidCharactersRegex))
+        stringsWithMaxLength(maxLengthGrossMass) suchThat (!_.matches(totalGrossMassInvalidFormatRegex))
       }
 
       forAll(genInvalidString) {
@@ -89,5 +81,14 @@ class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with Spec
           result.errors mustBe expectedError
       }
     }
+
+    "must not bind string of '0'" in {
+
+      val invalidString = "0"
+      val expectedError = List(FormError(fieldName, invalidAmountKeyGrossMass, Seq(index.display)))
+      val result        = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+      result.errors mustBe expectedError
+    }
+
   }
 }

@@ -20,23 +20,20 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import models.Index
 import play.api.data.Form
-import play.api.i18n.Messages
+import queries.Constants._
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ItemTotalGrossMassFormProvider @Inject() extends Mappings {
 
-  val totalGrossMassInvalidCharactersRegex: String = "^[0-9.]*$"
-  val totalGrossMassInvalidFormatRegex: String     = "^[0-9]{1,11}(?:\\.[0-9]{1,3})?$"
-
   def apply(index: Index): Form[String] =
     Form(
-      "value" -> text("itemTotalGrossMass.error.required", Seq(index.display))
+      "value" -> text(requiredKeyGrossMass, Seq(index.display))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(15, "itemTotalGrossMass.error.length"),
-            regexp(totalGrossMassInvalidCharactersRegex, "itemTotalGrossMass.error.invalidCharacters", index.display),
-            regexp(totalGrossMassInvalidFormatRegex, "itemTotalGrossMass.error.invalidFormat", index.display),
-            min(0, "itemTotalGrossMass.error.minimum")
+            maxLength(maxLengthGrossMass, lengthKeyGrossMass),
+            regexp(totalGrossMassInvalidCharactersRegex, invalidCharactersKeyGrossMass, index.display),
+            regexp(totalGrossMassInvalidFormatRegex, invalidFormatKeyGrossMass, index.display),
+            minGrossMax(0, invalidAmountKeyGrossMass, index.display)
           )
         )
     )
