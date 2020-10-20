@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks {
 
-  val stubUrl = "/transits-movements-trader-at-departure/movements/departures"
+  val stubUrl = "/transits-movements-trader-at-departure/movements/departures/"
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -40,7 +40,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
     )
     .build()
 
-  private val connector                     = app.injector.instanceOf[DepartureMovementConnector]
+  private lazy val connector                = app.injector.instanceOf[DepartureMovementConnector]
   private val errorResponsesCodes: Gen[Int] = Gen.chooseNum(400, 599)
 
   "DepartureMovementConnector" - {
