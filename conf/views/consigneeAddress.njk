@@ -77,21 +77,23 @@
             errorMessage: form.AddressLine3.error
           }) }}
 
-
           {{ govukSelect({
-                    classes: "govuk-input--width-20 autocomplete",
-                    label: {
-                               text: messages('consigneeAddress.AddressLine4')
-                              },
-                    id: "country",
-                    name: "country",
-                    errorMessage: form.value.error,
-                    items: countries
-                  }) }}
-                  {{ govukButton({
-                    text: messages("site.continue"),
-                      attributes: {id:"submit"}
-                  }) }}
+            classes: "govuk-input--width-20 autocomplete",
+            label: {
+               text: messages('consigneeAddress.AddressLine4')
+            },
+            id: "country",
+            name: "country",
+            errorMessage: form.value.error,
+            items: countries,
+            value: form.country.value,
+            errorMessage: form.country.error
+          }) }}
+
+          {{ govukButton({
+            text: messages("site.continue"),
+              attributes: {id:"submit"}
+          }) }}
 
         </form>
 
