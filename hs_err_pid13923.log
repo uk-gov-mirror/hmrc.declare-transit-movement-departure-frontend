@@ -1,0 +1,1366 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 180355072 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Zero Based Compressed Oops mode in which the Java heap is
+#     placed in the first 32GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 32GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2792), pid=13923, tid=0x00007fef51ad0700
+#
+# JRE version: OpenJDK Runtime Environment (8.0_265-b01) (build 1.8.0_265-8u265-b01-0ubuntu2~18.04-b01)
+# Java VM: OpenJDK 64-Bit Server VM (25.265-b01 mixed mode linux-amd64 compressed oops)
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007fef68092800):  VMThread [stack: 0x00007fef519d1000,0x00007fef51ad1000] [id=13936]
+
+Stack: [0x00007fef519d1000,0x00007fef51ad1000],  sp=0x00007fef51acf380,  free space=1016k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xabaae2]
+V  [libjvm.so+0x4de3f7]
+V  [libjvm.so+0x8f0560]
+V  [libjvm.so+0x8e74be]
+V  [libjvm.so+0x96eb16]
+V  [libjvm.so+0x96fe88]
+V  [libjvm.so+0x96c1d6]
+V  [libjvm.so+0x96c56c]
+V  [libjvm.so+0x91ae28]
+V  [libjvm.so+0xabc812]
+V  [libjvm.so+0xac11b6]
+V  [libjvm.so+0xabf14e]
+V  [libjvm.so+0xabfd5b]
+V  [libjvm.so+0xac0198]
+V  [libjvm.so+0x8ed782]
+
+VM_Operation (0x00007fef494fa700): ParallelGCFailedAllocation, mode: safepoint, requested by thread 0x00007fef6aa71000
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007feef606f000 JavaThread "Trireme Script Thread" daemon [_thread_blocked, id=15155, stack(0x00007fee753f8000,0x00007fee754f9000)]
+  0x00007feef72c3800 JavaThread "Trireme Script Thread" daemon [_thread_blocked, id=15024, stack(0x00007fee37bdc000,0x00007fee37cdd000)]
+  0x00007feef7644800 JavaThread "Trireme Script Thread" daemon [_thread_blocked, id=14919, stack(0x00007fee371d2000,0x00007fee372d3000)]
+  0x00007feef509f800 JavaThread "Trireme Script Thread" daemon [_thread_blocked, id=14456, stack(0x00007fef38bfc000,0x00007fef38cfd000)]
+  0x00007feef4c94800 JavaThread "Trireme Script Thread" daemon [_thread_blocked, id=14348, stack(0x00007fef383f4000,0x00007fef384f5000)]
+  0x00007feef7890000 JavaThread "Trireme Script Thread" daemon [_thread_blocked, id=14290, stack(0x00007fef41f90000,0x00007fef42091000)]
+  0x00007feef4c34800 JavaThread "Trireme Script Thread" daemon [_thread_blocked, id=14211, stack(0x00007fee75bfc000,0x00007fee75cfd000)]
+  0x00007feee0003800 JavaThread "scala-execution-context-global-122" daemon [_thread_blocked, id=14190, stack(0x00007fef41388000,0x00007fef41489000)]
+  0x00007feee4006800 JavaThread "scala-execution-context-global-121" daemon [_thread_blocked, id=14189, stack(0x00007fef1c1be000,0x00007fef1c2bf000)]
+  0x00007feef5248000 JavaThread "Trireme Script Thread" daemon [_thread_blocked, id=14088, stack(0x00007fef39cfd000,0x00007fef39dfe000)]
+  0x00007feee0002000 JavaThread "scala-execution-context-global-19" daemon [_thread_blocked, id=13994, stack(0x00007fef43a91000,0x00007fef43b92000)]
+  0x00007feeec013800 JavaThread "scala-execution-context-global-18" daemon [_thread_blocked, id=13992, stack(0x00007fef43b92000,0x00007fef43c93000)]
+  0x00007fef6aa71000 JavaThread "pool-1-thread-1-ScalaTest-running-DeclarationRequestSpec" [_thread_blocked, id=13950, stack(0x00007fef493fe000,0x00007fef494ff000)]
+  0x00007fef6a865000 JavaThread "ScalaTest-dispatcher" [_thread_blocked, id=13949, stack(0x00007fef4baff000,0x00007fef4bc00000)]
+  0x00007fef680e5000 JavaThread "Service Thread" daemon [_thread_blocked, id=13946, stack(0x00007fef50eea000,0x00007fef50feb000)]
+  0x00007fef680da000 JavaThread "C1 CompilerThread3" daemon [_thread_blocked, id=13945, stack(0x00007fef50fec000,0x00007fef510ec000)]
+  0x00007fef680d8000 JavaThread "C2 CompilerThread2" daemon [_thread_blocked, id=13944, stack(0x00007fef510ed000,0x00007fef511ed000)]
+  0x00007fef680d6000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=13943, stack(0x00007fef511ee000,0x00007fef512ee000)]
+  0x00007fef680d3000 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=13942, stack(0x00007fef512ef000,0x00007fef513ef000)]
+  0x00007fef680cf000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=13941, stack(0x00007fef513ef000,0x00007fef514f0000)]
+  0x00007fef680a0800 JavaThread "Finalizer" daemon [_thread_blocked, id=13938, stack(0x00007fef517ce000,0x00007fef518cf000)]
+  0x00007fef6809c000 JavaThread "Reference Handler" daemon [_thread_blocked, id=13937, stack(0x00007fef518cf000,0x00007fef519d0000)]
+  0x00007fef6801c800 JavaThread "main" [_thread_blocked, id=13927, stack(0x00007fef708f2000,0x00007fef709f2000)]
+
+Other Threads:
+=>0x00007fef68092800 VMThread [stack: 0x00007fef519d1000,0x00007fef51ad1000] [id=13936]
+  0x00007fef680e7800 WatcherThread [stack: 0x00007fef50dea000,0x00007fef50eea000] [id=13947]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007fef680193e0] Threads_lock - owner thread: 0x00007fef68092800
+[0x00007fef680198e0] Heap_lock - owner thread: 0x00007fef6aa71000
+
+heap address: 0x00000006c7800000, size: 3976 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x00000007c0000000
+
+Heap:
+ PSYoungGen      total 1040896K, used 71680K [0x000000076d300000, 0x00000007b5400000, 0x00000007c0000000)
+  eden space 969216K, 0% used [0x000000076d300000,0x000000076d300000,0x00000007a8580000)
+  from space 71680K, 100% used [0x00000007a8580000,0x00000007acb80000,0x00000007acb80000)
+  to   space 52736K, 0% used [0x00000007acb80000,0x00000007acb80000,0x00000007aff00000)
+ ParOldGen       total 430080K, used 117314K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 27% used [0x00000006c7800000,0x00000006cea90b08,0x00000006e1c00000)
+ Metaspace       used 178115K, capacity 206315K, committed 206592K, reserved 1236992K
+  class space    used 18849K, capacity 19885K, committed 19968K, reserved 1048576K
+
+Card table byte_map: [0x00007fef6c6bc000,0x00007fef6ce81000] byte_map_base: 0x00007fef69080000
+
+Marking Bits: (ParMarkBitMap*) 0x00007fef6fb89520
+ Begin Bits: [0x00007fef1c3c0000, 0x00007fef201e0000)
+ End Bits:   [0x00007fef201e0000, 0x00007fef24000000)
+
+Polling page: 0x00007fef70a0a000
+
+CodeCache: size=245760Kb used=39920Kb max_used=39933Kb free=205839Kb
+ bounds [0x00007fef59000000, 0x00007fef5b740000, 0x00007fef68000000]
+ total_blobs=12385 nmethods=11592 adapters=702
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 51.061 Thread 0x00007fef680da000 14736       3       scala.xml.Utility$::$anonfun$escape$2 (103 bytes)
+Event: 51.062 Thread 0x00007fef680da000 nmethod 14736 0x00007fef5b731550 code [0x00007fef5b731840, 0x00007fef5b733048]
+Event: 51.062 Thread 0x00007fef680d3000 14737       4       scala.xml.Utility$::$anonfun$escape$2 (103 bytes)
+Event: 51.094 Thread 0x00007fef680d3000 nmethod 14737 0x00007fef5b736090 code [0x00007fef5b7362a0, 0x00007fef5b736c50]
+Event: 51.872 Thread 0x00007fef680da000 14738       3       scala.xml.Node::$anonfun$nonEmptyChildren$1 (33 bytes)
+Event: 51.873 Thread 0x00007fef680da000 nmethod 14738 0x00007fef5b712e50 code [0x00007fef5b712fe0, 0x00007fef5b7133b8]
+Event: 51.873 Thread 0x00007fef680d6000 14739       4       scala.xml.Node::buildString (66 bytes)
+Event: 51.882 Thread 0x00007fef680d8000 14740       4       scala.xml.Node::$anonfun$nonEmptyChildren$1 (33 bytes)
+Event: 51.884 Thread 0x00007fef680d6000 nmethod 14739 0x00007fef5b737cd0 code [0x00007fef5b737e80, 0x00007fef5b7384c8]
+Event: 51.892 Thread 0x00007fef680d8000 nmethod 14740 0x00007fef5b738b90 code [0x00007fef5b738da0, 0x00007fef5b7394a0]
+
+GC Heap History (10 events):
+Event: 43.866 GC heap after
+Heap after GC invocations=35 (full 5):
+ PSYoungGen      total 826880K, used 33563K [0x000000076d300000, 0x00000007a3700000, 0x00000007c0000000)
+  eden space 772096K, 0% used [0x000000076d300000,0x000000076d300000,0x000000079c500000)
+  from space 54784K, 61% used [0x00000007a0180000,0x00000007a2246c08,0x00000007a3700000)
+  to   space 58368K, 0% used [0x000000079c500000,0x000000079c500000,0x000000079fe00000)
+ ParOldGen       total 430080K, used 47438K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 11% used [0x00000006c7800000,0x00000006ca653958,0x00000006e1c00000)
+ Metaspace       used 170752K, capacity 195666K, committed 195840K, reserved 1226752K
+  class space    used 17968K, capacity 18892K, committed 18944K, reserved 1048576K
+}
+Event: 46.681 GC heap before
+{Heap before GC invocations=36 (full 5):
+ PSYoungGen      total 826880K, used 805659K [0x000000076d300000, 0x00000007a3700000, 0x00000007c0000000)
+  eden space 772096K, 100% used [0x000000076d300000,0x000000079c500000,0x000000079c500000)
+  from space 54784K, 61% used [0x00000007a0180000,0x00000007a2246c08,0x00000007a3700000)
+  to   space 58368K, 0% used [0x000000079c500000,0x000000079c500000,0x000000079fe00000)
+ ParOldGen       total 430080K, used 47438K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 11% used [0x00000006c7800000,0x00000006ca653958,0x00000006e1c00000)
+ Metaspace       used 177925K, capacity 206113K, committed 206336K, reserved 1234944K
+  class space    used 18840K, capacity 19874K, committed 19968K, reserved 1048576K
+Event: 46.698 GC heap after
+Heap after GC invocations=36 (full 5):
+ PSYoungGen      total 830464K, used 25437K [0x000000076d300000, 0x00000007a9780000, 0x00000007c0000000)
+  eden space 772096K, 0% used [0x000000076d300000,0x000000076d300000,0x000000079c500000)
+  from space 58368K, 43% used [0x000000079c500000,0x000000079ddd76b8,0x000000079fe00000)
+  to   space 55808K, 0% used [0x00000007a6100000,0x00000007a6100000,0x00000007a9780000)
+ ParOldGen       total 430080K, used 49321K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 11% used [0x00000006c7800000,0x00000006ca82a448,0x00000006e1c00000)
+ Metaspace       used 177925K, capacity 206113K, committed 206336K, reserved 1234944K
+  class space    used 18840K, capacity 19874K, committed 19968K, reserved 1048576K
+}
+Event: 47.336 GC heap before
+{Heap before GC invocations=37 (full 5):
+ PSYoungGen      total 830464K, used 797533K [0x000000076d300000, 0x00000007a9780000, 0x00000007c0000000)
+  eden space 772096K, 100% used [0x000000076d300000,0x000000079c500000,0x000000079c500000)
+  from space 58368K, 43% used [0x000000079c500000,0x000000079ddd76b8,0x000000079fe00000)
+  to   space 55808K, 0% used [0x00000007a6100000,0x00000007a6100000,0x00000007a9780000)
+ ParOldGen       total 430080K, used 49321K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 11% used [0x00000006c7800000,0x00000006ca82a448,0x00000006e1c00000)
+ Metaspace       used 177985K, capacity 206121K, committed 206336K, reserved 1234944K
+  class space    used 18840K, capacity 19874K, committed 19968K, reserved 1048576K
+Event: 47.348 GC heap after
+Heap after GC invocations=37 (full 5):
+ PSYoungGen      total 932864K, used 15306K [0x000000076d300000, 0x00000007a9780000, 0x00000007c0000000)
+  eden space 877056K, 0% used [0x000000076d300000,0x000000076d300000,0x00000007a2b80000)
+  from space 55808K, 27% used [0x00000007a6100000,0x00000007a6ff2800,0x00000007a9780000)
+  to   space 54784K, 0% used [0x00000007a2b80000,0x00000007a2b80000,0x00000007a6100000)
+ ParOldGen       total 430080K, used 49329K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 11% used [0x00000006c7800000,0x00000006ca82c448,0x00000006e1c00000)
+ Metaspace       used 177985K, capacity 206121K, committed 206336K, reserved 1234944K
+  class space    used 18840K, capacity 19874K, committed 19968K, reserved 1048576K
+}
+Event: 48.420 GC heap before
+{Heap before GC invocations=38 (full 5):
+ PSYoungGen      total 932864K, used 892362K [0x000000076d300000, 0x00000007a9780000, 0x00000007c0000000)
+  eden space 877056K, 100% used [0x000000076d300000,0x00000007a2b80000,0x00000007a2b80000)
+  from space 55808K, 27% used [0x00000007a6100000,0x00000007a6ff2800,0x00000007a9780000)
+  to   space 54784K, 0% used [0x00000007a2b80000,0x00000007a2b80000,0x00000007a6100000)
+ ParOldGen       total 430080K, used 49329K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 11% used [0x00000006c7800000,0x00000006ca82c448,0x00000006e1c00000)
+ Metaspace       used 178014K, capacity 206217K, committed 206336K, reserved 1234944K
+  class space    used 18840K, capacity 19874K, committed 19968K, reserved 1048576K
+Event: 48.453 GC heap after
+Heap after GC invocations=38 (full 5):
+ PSYoungGen      total 931840K, used 20064K [0x000000076d300000, 0x00000007aff00000, 0x00000007c0000000)
+  eden space 877056K, 0% used [0x000000076d300000,0x000000076d300000,0x00000007a2b80000)
+  from space 54784K, 36% used [0x00000007a2b80000,0x00000007a3f18010,0x00000007a6100000)
+  to   space 52736K, 0% used [0x00000007acb80000,0x00000007acb80000,0x00000007aff00000)
+ ParOldGen       total 430080K, used 49337K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 11% used [0x00000006c7800000,0x00000006ca82e448,0x00000006e1c00000)
+ Metaspace       used 178014K, capacity 206217K, committed 206336K, reserved 1234944K
+  class space    used 18840K, capacity 19874K, committed 19968K, reserved 1048576K
+}
+Event: 49.480 GC heap before
+{Heap before GC invocations=39 (full 5):
+ PSYoungGen      total 931840K, used 897120K [0x000000076d300000, 0x00000007aff00000, 0x00000007c0000000)
+  eden space 877056K, 100% used [0x000000076d300000,0x00000007a2b80000,0x00000007a2b80000)
+  from space 54784K, 36% used [0x00000007a2b80000,0x00000007a3f18010,0x00000007a6100000)
+  to   space 52736K, 0% used [0x00000007acb80000,0x00000007acb80000,0x00000007aff00000)
+ ParOldGen       total 430080K, used 49337K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 11% used [0x00000006c7800000,0x00000006ca82e448,0x00000006e1c00000)
+ Metaspace       used 178102K, capacity 206315K, committed 206592K, reserved 1236992K
+  class space    used 18849K, capacity 19885K, committed 19968K, reserved 1048576K
+Event: 49.655 GC heap after
+Heap after GC invocations=39 (full 5):
+ PSYoungGen      total 1021952K, used 52725K [0x000000076d300000, 0x00000007b5400000, 0x00000007c0000000)
+  eden space 969216K, 0% used [0x000000076d300000,0x000000076d300000,0x00000007a8580000)
+  from space 52736K, 99% used [0x00000007acb80000,0x00000007afefd600,0x00000007aff00000)
+  to   space 71680K, 0% used [0x00000007a8580000,0x00000007a8580000,0x00000007acb80000)
+ ParOldGen       total 430080K, used 79926K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 18% used [0x00000006c7800000,0x00000006cc60dae8,0x00000006e1c00000)
+ Metaspace       used 178102K, capacity 206315K, committed 206592K, reserved 1236992K
+  class space    used 18849K, capacity 19885K, committed 19968K, reserved 1048576K
+}
+Event: 52.211 GC heap before
+{Heap before GC invocations=40 (full 5):
+ PSYoungGen      total 1021952K, used 1021941K [0x000000076d300000, 0x00000007b5400000, 0x00000007c0000000)
+  eden space 969216K, 100% used [0x000000076d300000,0x00000007a8580000,0x00000007a8580000)
+  from space 52736K, 99% used [0x00000007acb80000,0x00000007afefd600,0x00000007aff00000)
+  to   space 71680K, 0% used [0x00000007a8580000,0x00000007a8580000,0x00000007acb80000)
+ ParOldGen       total 430080K, used 79926K [0x00000006c7800000, 0x00000006e1c00000, 0x000000076d300000)
+  object space 430080K, 18% used [0x00000006c7800000,0x00000006cc60dae8,0x00000006e1c00000)
+ Metaspace       used 178115K, capacity 206315K, committed 206592K, reserved 1236992K
+  class space    used 18849K, capacity 19885K, committed 19968K, reserved 1048576K
+
+Deoptimization events (10 events):
+Event: 47.603 Thread 0x00007fef6aa71000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fef5b02bd60 method=scala.collection.immutable.HashSet$HashSet1.get0(Ljava/lang/Object;II)Z @ 16
+Event: 49.836 Thread 0x00007fef6aa71000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007fef5b529324 method=scala.xml.Elem$.unapplySeq(Lscala/xml/Node;)Lscala/Option; @ 82
+Event: 50.771 Thread 0x00007fef6aa71000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fef5b57c184 method=scala.xml.Utility$.$anonfun$escape$2(Lscala/collection/mutable/StringBuilder;C)Lscala/collection/mutable/StringBuilder; @ 55
+Event: 50.771 Thread 0x00007fef6aa71000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fef5a1da300 method=scala.runtime.BoxesRunTime.equals2(Ljava/lang/Object;Ljava/lang/Object;)Z @ 20
+Event: 50.777 Thread 0x00007fef6aa71000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fef5b58a0d8 method=scala.xml.Utility$.$anonfun$escape$2(Lscala/collection/mutable/StringBuilder;C)Lscala/collection/mutable/StringBuilder; @ 55
+Event: 50.855 Thread 0x00007fef6aa71000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fef5b71fddc method=scala.xml.Utility$.$anonfun$escape$2(Lscala/collection/mutable/StringBuilder;C)Lscala/collection/mutable/StringBuilder; @ 20
+Event: 51.060 Thread 0x00007fef6aa71000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fef5b71e230 method=scala.xml.Utility$.$anonfun$escape$2(Lscala/collection/mutable/StringBuilder;C)Lscala/collection/mutable/StringBuilder; @ 20
+Event: 51.872 Thread 0x00007fef6aa71000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fef5a71d940 method=scala.xml.Node.$anonfun$nonEmptyChildren$1(Lscala/xml/Node;)Z @ 24
+Event: 51.872 Thread 0x00007fef6aa71000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007fef5b5504a0 method=scala.xml.Node.strict_$eq$eq(Lscala/xml/Equality;)Z @ 135
+Event: 51.872 Thread 0x00007fef6aa71000 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007fef5a71c3a8 method=scala.collection.LinearSeqOptimized.sameElements(Lscala/collection/GenIterable;)Z @ 1
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 46.156 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$filter$2(Lcom/lucidchart/open/xtract/XmlReader;Lscala/Function0;Lscala/Function1;Lscala/xml/NodeSeq;)Lcom/lucidchart/open/xtract/ParseResult;> (0x000000079027b3a0) thrown at [/build/ope
+Event: 46.159 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$collect$1(Lcom/lucidchart/open/xtract/XmlReader;Lscala/Function0;Lscala/PartialFunction;Lscala/xml/NodeSeq;)Lcom/lucidchart/open/xtract/ParseResult;> (0x0000000790292ca0) thrown at [/bu
+Event: 46.161 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$map14$1(Lscala/Function14;Lscala/Tuple2;)Ljava/lang/Object;> (0x00000007902bc568) thrown at [/build/openjdk-8-nxKaDu/openjdk-8-8u265-b01/src/hotspot/src/share/vm/interpreter/linkResolve
+Event: 46.278 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$format$1(Lscala/collection/immutable/StringLike;Ljava/lang/Object;)Ljava/lang/Object;> (0x00000007916c6d88) thrown at [/build/openjdk-8-nxKaDu/openjdk-8-8u265-b01/src/hotspot/src/share/
+Event: 46.489 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$arbitraryTraderPrincipalWithEori$3(Lgenerators/MessagesModelGenerators;Ljava/lang/String;Lscala/Option;)Lorg/scalacheck/Gen;> (0x0000000793510500) thrown at [/build/openjdk-8-nxKaDu/ope
+Event: 46.490 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$arbitraryTraderPrincipalWithEori$4(Lgenerators/MessagesModelGenerators;Ljava/lang/String;Lscala/Option;Lscala/Option;)Lorg/scalacheck/Gen;> (0x00000007935216a0) thrown at [/build/openjd
+Event: 46.490 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$arbitraryTraderPrincipalWithEori$5(Lgenerators/MessagesModelGenerators;Ljava/lang/String;Lscala/Option;Lscala/Option;Lscala/Option;)Lorg/scalacheck/Gen;> (0x000000079352b5d8) thrown at 
+Event: 46.491 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$arbitraryTraderPrincipalWithEori$6(Ljava/lang/String;Lscala/Option;Lscala/Option;Lscala/Option;Lscala/Option;)Lorg/scalacheck/Gen;> (0x0000000793534e88) thrown at [/build/openjdk-8-nxKa
+Event: 46.491 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$arbitraryTraderPrincipalWithEori$7(Ljava/lang/String;Lscala/Option;Lscala/Option;Lscala/Option;Lscala/Option;Lscala/Option;)Lmodels/messages/trader/TraderPrincipalWithEori;> (0x00000007
+Event: 46.492 Thread 0x00007fef6aa71000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$arbitraryTraderPrincipalWithEori$8(Lscala/collection/Seq;)Ljava/lang/String;> (0x0000000793548538) thrown at [/build/openjdk-8-nxKaDu/openjdk-8-8u265-b01/src/hotspot/src/share/vm/interp
+
+Events (10 events):
+Event: 51.872 Thread 0x00007fef6aa71000 Uncommon trap: trap_request=0xffffff65 fr.pc=0x00007fef5a71d940
+Event: 51.872 Thread 0x00007fef6aa71000 DEOPT PACKING pc=0x00007fef5a71d940 sp=0x00007fef494fa8e0
+Event: 51.872 Thread 0x00007fef6aa71000 DEOPT UNPACKING pc=0x00007fef5904547a sp=0x00007fef494fa8c8 mode 2
+Event: 51.872 Thread 0x00007fef6aa71000 Uncommon trap: trap_request=0xffffffde fr.pc=0x00007fef5b5504a0
+Event: 51.872 Thread 0x00007fef6aa71000 DEOPT PACKING pc=0x00007fef5b5504a0 sp=0x00007fef494fa940
+Event: 51.872 Thread 0x00007fef6aa71000 DEOPT UNPACKING pc=0x00007fef5904547a sp=0x00007fef494fa8e0 mode 2
+Event: 51.872 Thread 0x00007fef6aa71000 Uncommon trap: trap_request=0xffffffde fr.pc=0x00007fef5a71c3a8
+Event: 51.872 Thread 0x00007fef6aa71000 DEOPT PACKING pc=0x00007fef5a71c3a8 sp=0x00007fef494fa890
+Event: 51.872 Thread 0x00007fef6aa71000 DEOPT UNPACKING pc=0x00007fef5904547a sp=0x00007fef494fa798 mode 2
+Event: 52.210 Executing VM operation: ParallelGCFailedAllocation
+
+
+Dynamic libraries:
+6c7800000-6e1c00000 rw-p 00000000 00:00 0 
+6e1c00000-76d300000 ---p 00000000 00:00 0 
+76d300000-7b5400000 rw-p 00000000 00:00 0 
+7c0000000-7c1380000 rw-p 00000000 00:00 0 
+7c1380000-800000000 ---p 00000000 00:00 0 
+5565ed1f2000-5565ed1f3000 r-xp 00000000 103:02 27528248                  /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+5565ed3f2000-5565ed3f3000 r--p 00000000 103:02 27528248                  /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+5565ed3f3000-5565ed3f4000 rw-p 00001000 103:02 27528248                  /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+5565ed805000-5565ed84a000 rw-p 00000000 00:00 0                          [heap]
+7fee33dc2000-7fee33fc2000 rw-p 00000000 00:00 0 
+7fee33fc2000-7fee341c2000 rw-p 00000000 00:00 0 
+7fee341c2000-7fee343c2000 rw-p 00000000 00:00 0 
+7fee343c2000-7fee353c3000 rw-p 00000000 00:00 0 
+7fee354c4000-7fee364c5000 rw-p 00000000 00:00 0 
+7fee364c5000-7fee364c8000 ---p 00000000 00:00 0 
+7fee364c8000-7fee365c6000 rw-p 00000000 00:00 0 
+7fee365c6000-7fee365c9000 ---p 00000000 00:00 0 
+7fee365c9000-7fee366c7000 rw-p 00000000 00:00 0 
+7fee367c8000-7fee367cb000 ---p 00000000 00:00 0 
+7fee367cb000-7fee368c9000 rw-p 00000000 00:00 0 
+7fee368c9000-7fee368cc000 ---p 00000000 00:00 0 
+7fee368cc000-7fee369ca000 rw-p 00000000 00:00 0 
+7fee36ecf000-7fee36ed2000 ---p 00000000 00:00 0 
+7fee36ed2000-7fee36fd0000 rw-p 00000000 00:00 0 
+7fee370d1000-7fee370d4000 ---p 00000000 00:00 0 
+7fee370d4000-7fee371d2000 rw-p 00000000 00:00 0 
+7fee371d2000-7fee371d5000 ---p 00000000 00:00 0 
+7fee371d5000-7fee372d3000 rw-p 00000000 00:00 0 
+7fee374d5000-7fee374d8000 ---p 00000000 00:00 0 
+7fee374d8000-7fee375d6000 rw-p 00000000 00:00 0 
+7fee37adb000-7fee37ade000 ---p 00000000 00:00 0 
+7fee37ade000-7fee37bdc000 rw-p 00000000 00:00 0 
+7fee37bdc000-7fee37bdf000 ---p 00000000 00:00 0 
+7fee37bdf000-7fee39edf000 rw-p 00000000 00:00 0 
+7fee3aff4000-7fee3b1f4000 rw-p 00000000 00:00 0 
+7fee3b1f4000-7fee3b3f4000 rw-p 00000000 00:00 0 
+7fee3b3f4000-7fee3b3f7000 ---p 00000000 00:00 0 
+7fee3b3f7000-7fee3b4f5000 rw-p 00000000 00:00 0 
+7fee3b4f5000-7fee3b4f8000 ---p 00000000 00:00 0 
+7fee3b4f8000-7fee3b5f6000 rw-p 00000000 00:00 0 
+7fee3b5f8000-7fee3b5fb000 ---p 00000000 00:00 0 
+7fee3b5fb000-7fee3b6f9000 rw-p 00000000 00:00 0 
+7fee3b6f9000-7fee3b6fc000 ---p 00000000 00:00 0 
+7fee3b6fc000-7fee3b9fa000 rw-p 00000000 00:00 0 
+7fee3bafd000-7fee3bb00000 ---p 00000000 00:00 0 
+7fee3bb00000-7fee3bbfe000 rw-p 00000000 00:00 0 
+7fee3be00000-7fee3c000000 rw-p 00000000 00:00 0 
+7fee3c000000-7fee3c67f000 rw-p 00000000 00:00 0 
+7fee3c67f000-7fee40000000 ---p 00000000 00:00 0 
+7fee40000000-7fee40327000 rw-p 00000000 00:00 0 
+7fee40327000-7fee44000000 ---p 00000000 00:00 0 
+7fee440ed000-7fee440f0000 ---p 00000000 00:00 0 
+7fee440f0000-7fee443ee000 rw-p 00000000 00:00 0 
+7fee443ee000-7fee443f1000 ---p 00000000 00:00 0 
+7fee443f1000-7fee444ef000 rw-p 00000000 00:00 0 
+7fee445f0000-7fee447f0000 rw-p 00000000 00:00 0 
+7fee447f0000-7fee449f0000 rw-p 00000000 00:00 0 
+7fee449f0000-7fee44bf0000 rw-p 00000000 00:00 0 
+7fee44bf2000-7fee44bf5000 ---p 00000000 00:00 0 
+7fee44bf5000-7fee44ef3000 rw-p 00000000 00:00 0 
+7fee44ef3000-7fee44ef6000 ---p 00000000 00:00 0 
+7fee44ef6000-7fee44ff4000 rw-p 00000000 00:00 0 
+7fee44ff4000-7fee44ff7000 ---p 00000000 00:00 0 
+7fee44ff7000-7fee450f5000 rw-p 00000000 00:00 0 
+7fee451f6000-7fee451f9000 ---p 00000000 00:00 0 
+7fee451f9000-7fee452f7000 rw-p 00000000 00:00 0 
+7fee453fa000-7fee455fa000 rw-p 00000000 00:00 0 
+7fee455fa000-7fee457fa000 rw-p 00000000 00:00 0 
+7fee457fa000-7fee457fd000 ---p 00000000 00:00 0 
+7fee457fd000-7fee458fb000 rw-p 00000000 00:00 0 
+7fee458fb000-7fee45afb000 rw-p 00000000 00:00 0 
+7fee45afb000-7fee45cfb000 rw-p 00000000 00:00 0 
+7fee45cfb000-7fee46cfc000 rw-p 00000000 00:00 0 
+7fee46cfc000-7fee46cff000 ---p 00000000 00:00 0 
+7fee46cff000-7fee46dfd000 rw-p 00000000 00:00 0 
+7fee46dfd000-7fee46e00000 ---p 00000000 00:00 0 
+7fee46e00000-7fee46efe000 rw-p 00000000 00:00 0 
+7fee46efe000-7fee46f01000 ---p 00000000 00:00 0 
+7fee46f01000-7fee48000000 rw-p 00000000 00:00 0 
+7fee48000000-7fee48042000 rw-p 00000000 00:00 0 
+7fee48042000-7fee4c000000 ---p 00000000 00:00 0 
+7fee4c000000-7fee4c025000 rw-p 00000000 00:00 0 
+7fee4c025000-7fee50000000 ---p 00000000 00:00 0 
+7fee50000000-7fee50021000 rw-p 00000000 00:00 0 
+7fee50021000-7fee54000000 ---p 00000000 00:00 0 
+7fee54000000-7fee54033000 rw-p 00000000 00:00 0 
+7fee54033000-7fee58000000 ---p 00000000 00:00 0 
+7fee58000000-7fee58021000 rw-p 00000000 00:00 0 
+7fee58021000-7fee5c000000 ---p 00000000 00:00 0 
+7fee5c000000-7fee5c0d9000 rw-p 00000000 00:00 0 
+7fee5c0d9000-7fee60000000 ---p 00000000 00:00 0 
+7fee60000000-7fee60039000 rw-p 00000000 00:00 0 
+7fee60039000-7fee64000000 ---p 00000000 00:00 0 
+7fee64000000-7fee6408b000 rw-p 00000000 00:00 0 
+7fee6408b000-7fee68000000 ---p 00000000 00:00 0 
+7fee68000000-7fee68168000 rw-p 00000000 00:00 0 
+7fee68168000-7fee6c000000 ---p 00000000 00:00 0 
+7fee6c000000-7fee6c021000 rw-p 00000000 00:00 0 
+7fee6c021000-7fee70000000 ---p 00000000 00:00 0 
+7fee70000000-7fee70045000 rw-p 00000000 00:00 0 
+7fee70045000-7fee74000000 ---p 00000000 00:00 0 
+7fee740e7000-7fee740ea000 ---p 00000000 00:00 0 
+7fee740ea000-7fee741e8000 rw-p 00000000 00:00 0 
+7fee741ea000-7fee743ea000 rw-p 00000000 00:00 0 
+7fee744eb000-7fee744ee000 ---p 00000000 00:00 0 
+7fee744ee000-7fee747ec000 rw-p 00000000 00:00 0 
+7fee747ee000-7fee749ee000 rw-p 00000000 00:00 0 
+7fee74aef000-7fee74af2000 ---p 00000000 00:00 0 
+7fee74af2000-7fee74bf0000 rw-p 00000000 00:00 0 
+7fee74bf0000-7fee74bf3000 ---p 00000000 00:00 0 
+7fee74bf3000-7fee74cf1000 rw-p 00000000 00:00 0 
+7fee74df2000-7fee74df5000 ---p 00000000 00:00 0 
+7fee74df5000-7fee74ef3000 rw-p 00000000 00:00 0 
+7fee74ef5000-7fee750f5000 rw-p 00000000 00:00 0 
+7fee750f5000-7fee750f8000 ---p 00000000 00:00 0 
+7fee750f8000-7fee751f6000 rw-p 00000000 00:00 0 
+7fee751f8000-7fee753f8000 rw-p 00000000 00:00 0 
+7fee753f8000-7fee753fb000 ---p 00000000 00:00 0 
+7fee753fb000-7fee754f9000 rw-p 00000000 00:00 0 
+7fee755fa000-7fee755fd000 ---p 00000000 00:00 0 
+7fee755fd000-7fee756fb000 rw-p 00000000 00:00 0 
+7fee757fc000-7fee759fc000 rw-p 00000000 00:00 0 
+7fee759fc000-7fee75bfc000 rw-p 00000000 00:00 0 
+7fee75bfc000-7fee75bff000 ---p 00000000 00:00 0 
+7fee75bff000-7fee75cfd000 rw-p 00000000 00:00 0 
+7fee75dfe000-7fee75ffe000 rw-p 00000000 00:00 0 
+7fee75ffe000-7fee78000000 rw-p 00000000 00:00 0 
+7fee78000000-7fee78081000 rw-p 00000000 00:00 0 
+7fee78081000-7fee7c000000 ---p 00000000 00:00 0 
+7fee7c000000-7fee7c021000 rw-p 00000000 00:00 0 
+7fee7c021000-7fee80000000 ---p 00000000 00:00 0 
+7fee80000000-7fee80021000 rw-p 00000000 00:00 0 
+7fee80021000-7fee84000000 ---p 00000000 00:00 0 
+7fee84000000-7fee84021000 rw-p 00000000 00:00 0 
+7fee84021000-7fee88000000 ---p 00000000 00:00 0 
+7fee88000000-7fee88021000 rw-p 00000000 00:00 0 
+7fee88021000-7fee8c000000 ---p 00000000 00:00 0 
+7fee8c000000-7fee8c021000 rw-p 00000000 00:00 0 
+7fee8c021000-7fee90000000 ---p 00000000 00:00 0 
+7fee90000000-7fee90021000 rw-p 00000000 00:00 0 
+7fee90021000-7fee94000000 ---p 00000000 00:00 0 
+7fee94000000-7fee9433c000 rw-p 00000000 00:00 0 
+7fee9433c000-7fee98000000 ---p 00000000 00:00 0 
+7fee98000000-7fee98329000 rw-p 00000000 00:00 0 
+7fee98329000-7fee9c000000 ---p 00000000 00:00 0 
+7fee9c000000-7fee9c021000 rw-p 00000000 00:00 0 
+7fee9c021000-7feea0000000 ---p 00000000 00:00 0 
+7feea0000000-7feea032c000 rw-p 00000000 00:00 0 
+7feea032c000-7feea4000000 ---p 00000000 00:00 0 
+7feea4000000-7feea4334000 rw-p 00000000 00:00 0 
+7feea4334000-7feea8000000 ---p 00000000 00:00 0 
+7feea8000000-7feea8951000 rw-p 00000000 00:00 0 
+7feea8951000-7feeac000000 ---p 00000000 00:00 0 
+7feeac000000-7feeac021000 rw-p 00000000 00:00 0 
+7feeac021000-7feeb0000000 ---p 00000000 00:00 0 
+7feeb0000000-7feeb033a000 rw-p 00000000 00:00 0 
+7feeb033a000-7feeb4000000 ---p 00000000 00:00 0 
+7feeb4000000-7feeb4038000 rw-p 00000000 00:00 0 
+7feeb4038000-7feeb8000000 ---p 00000000 00:00 0 
+7feeb8000000-7feeb86f7000 rw-p 00000000 00:00 0 
+7feeb86f7000-7feebc000000 ---p 00000000 00:00 0 
+7feebc000000-7feebc034000 rw-p 00000000 00:00 0 
+7feebc034000-7feec0000000 ---p 00000000 00:00 0 
+7feec0000000-7feec0021000 rw-p 00000000 00:00 0 
+7feec0021000-7feec4000000 ---p 00000000 00:00 0 
+7feec4000000-7feec44c5000 rw-p 00000000 00:00 0 
+7feec44c5000-7feec8000000 ---p 00000000 00:00 0 
+7feec8000000-7feec8021000 rw-p 00000000 00:00 0 
+7feec8021000-7feecc000000 ---p 00000000 00:00 0 
+7feecc000000-7feecc327000 rw-p 00000000 00:00 0 
+7feecc327000-7feed0000000 ---p 00000000 00:00 0 
+7feed0000000-7feed0544000 rw-p 00000000 00:00 0 
+7feed0544000-7feed4000000 ---p 00000000 00:00 0 
+7feed4000000-7feed403d000 rw-p 00000000 00:00 0 
+7feed403d000-7feed8000000 ---p 00000000 00:00 0 
+7feed8000000-7feed80a8000 rw-p 00000000 00:00 0 
+7feed80a8000-7feedc000000 ---p 00000000 00:00 0 
+7feedc000000-7feedc528000 rw-p 00000000 00:00 0 
+7feedc528000-7feee0000000 ---p 00000000 00:00 0 
+7feee0000000-7feee0021000 rw-p 00000000 00:00 0 
+7feee0021000-7feee4000000 ---p 00000000 00:00 0 
+7feee4000000-7feee4021000 rw-p 00000000 00:00 0 
+7feee4021000-7feee8000000 ---p 00000000 00:00 0 
+7feee8000000-7feee8021000 rw-p 00000000 00:00 0 
+7feee8021000-7feeec000000 ---p 00000000 00:00 0 
+7feeec000000-7feeec021000 rw-p 00000000 00:00 0 
+7feeec021000-7feef0000000 ---p 00000000 00:00 0 
+7feef0000000-7feef06a7000 rw-p 00000000 00:00 0 
+7feef06a7000-7feef4000000 ---p 00000000 00:00 0 
+7feef4000000-7feef7ffb000 rw-p 00000000 00:00 0 
+7feef7ffb000-7feef8000000 ---p 00000000 00:00 0 
+7feef8000000-7feef8021000 rw-p 00000000 00:00 0 
+7feef8021000-7feefc000000 ---p 00000000 00:00 0 
+7feefc000000-7feefc021000 rw-p 00000000 00:00 0 
+7feefc021000-7fef00000000 ---p 00000000 00:00 0 
+7fef00000000-7fef01cc2000 rw-p 00000000 00:00 0 
+7fef01cc2000-7fef04000000 ---p 00000000 00:00 0 
+7fef04000000-7fef04c65000 rw-p 00000000 00:00 0 
+7fef04c65000-7fef08000000 ---p 00000000 00:00 0 
+7fef08000000-7fef09d69000 rw-p 00000000 00:00 0 
+7fef09d69000-7fef0c000000 ---p 00000000 00:00 0 
+7fef0c000000-7fef0e3f1000 rw-p 00000000 00:00 0 
+7fef0e3f1000-7fef10000000 ---p 00000000 00:00 0 
+7fef10000000-7fef10326000 rw-p 00000000 00:00 0 
+7fef10326000-7fef14000000 ---p 00000000 00:00 0 
+7fef14000000-7fef140a7000 rw-p 00000000 00:00 0 
+7fef140a7000-7fef18000000 ---p 00000000 00:00 0 
+7fef18000000-7fef18021000 rw-p 00000000 00:00 0 
+7fef18021000-7fef1c000000 ---p 00000000 00:00 0 
+7fef1c1be000-7fef1c1c1000 ---p 00000000 00:00 0 
+7fef1c1c1000-7fef1c2bf000 rw-p 00000000 00:00 0 
+7fef1c3c0000-7fef24000000 rw-p 00000000 00:00 0 
+7fef24000000-7fef2433e000 rw-p 00000000 00:00 0 
+7fef2433e000-7fef28000000 ---p 00000000 00:00 0 
+7fef28000000-7fef2804a000 rw-p 00000000 00:00 0 
+7fef2804a000-7fef2c000000 ---p 00000000 00:00 0 
+7fef2c000000-7fef2c055000 rw-p 00000000 00:00 0 
+7fef2c055000-7fef30000000 ---p 00000000 00:00 0 
+7fef30000000-7fef30021000 rw-p 00000000 00:00 0 
+7fef30021000-7fef34000000 ---p 00000000 00:00 0 
+7fef34000000-7fef3403b000 rw-p 00000000 00:00 0 
+7fef3403b000-7fef38000000 ---p 00000000 00:00 0 
+7fef380f1000-7fef380f4000 ---p 00000000 00:00 0 
+7fef380f4000-7fef381f2000 rw-p 00000000 00:00 0 
+7fef382f3000-7fef382f6000 ---p 00000000 00:00 0 
+7fef382f6000-7fef383f4000 rw-p 00000000 00:00 0 
+7fef383f4000-7fef383f7000 ---p 00000000 00:00 0 
+7fef383f7000-7fef384f5000 rw-p 00000000 00:00 0 
+7fef384f5000-7fef384f8000 ---p 00000000 00:00 0 
+7fef384f8000-7fef385f6000 rw-p 00000000 00:00 0 
+7fef386f9000-7fef388f9000 rw-p 00000000 00:00 0 
+7fef388f9000-7fef388fc000 ---p 00000000 00:00 0 
+7fef388fc000-7fef389fa000 rw-p 00000000 00:00 0 
+7fef38bfc000-7fef38bff000 ---p 00000000 00:00 0 
+7fef38bff000-7fef38efd000 rw-p 00000000 00:00 0 
+7fef38efd000-7fef390fd000 rw-p 00000000 00:00 0 
+7fef390fd000-7fef392fd000 rw-p 00000000 00:00 0 
+7fef392fd000-7fef394fd000 rw-p 00000000 00:00 0 
+7fef394fd000-7fef396fd000 rw-p 00000000 00:00 0 
+7fef396fd000-7fef398fd000 rw-p 00000000 00:00 0 
+7fef398fd000-7fef39afd000 rw-p 00000000 00:00 0 
+7fef39afd000-7fef39cfd000 rw-p 00000000 00:00 0 
+7fef39cfd000-7fef39d00000 ---p 00000000 00:00 0 
+7fef39d00000-7fef39ffe000 rw-p 00000000 00:00 0 
+7fef39ffe000-7fef3c000000 rw-p 00000000 00:00 0 
+7fef3c000000-7fef3c021000 rw-p 00000000 00:00 0 
+7fef3c021000-7fef40000000 ---p 00000000 00:00 0 
+7fef4004f000-7fef4024f000 rw-p 00000000 00:00 0 
+7fef4024f000-7fef4044f000 rw-p 00000000 00:00 0 
+7fef4044f000-7fef40452000 ---p 00000000 00:00 0 
+7fef40452000-7fef40550000 rw-p 00000000 00:00 0 
+7fef40550000-7fef40750000 rw-p 00000000 00:00 0 
+7fef40851000-7fef40854000 ---p 00000000 00:00 0 
+7fef40854000-7fef40952000 rw-p 00000000 00:00 0 
+7fef40952000-7fef40b52000 rw-p 00000000 00:00 0 
+7fef40b52000-7fef40b5b000 r-xp 00000000 103:02 27528287                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7fef40b5b000-7fef40d5a000 ---p 00009000 103:02 27528287                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7fef40d5a000-7fef40d5b000 r--p 00008000 103:02 27528287                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7fef40d5b000-7fef40d5c000 rw-p 00009000 103:02 27528287                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libmanagement.so
+7fef40d5c000-7fef40f5c000 rw-p 00000000 00:00 0 
+7fef40f5c000-7fef40f84000 r-xp 00000000 103:02 27528294                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libsunec.so
+7fef40f84000-7fef41183000 ---p 00028000 103:02 27528294                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libsunec.so
+7fef41183000-7fef41187000 r--p 00027000 103:02 27528294                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libsunec.so
+7fef41187000-7fef41188000 rw-p 0002b000 103:02 27528294                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libsunec.so
+7fef41188000-7fef41388000 rw-p 00000000 00:00 0 
+7fef41388000-7fef4138b000 ---p 00000000 00:00 0 
+7fef4138b000-7fef41489000 rw-p 00000000 00:00 0 
+7fef4158a000-7fef4158d000 ---p 00000000 00:00 0 
+7fef4158d000-7fef4168b000 rw-p 00000000 00:00 0 
+7fef4168d000-7fef416cd000 rw-p 00000000 00:00 0 
+7fef416cd000-7fef4188d000 ---p 00000000 00:00 0 
+7fef4198e000-7fef41991000 ---p 00000000 00:00 0 
+7fef41991000-7fef41c8f000 rw-p 00000000 00:00 0 
+7fef41c8f000-7fef41e8f000 rw-p 00000000 00:00 0 
+7fef41e8f000-7fef41e92000 ---p 00000000 00:00 0 
+7fef41e92000-7fef41f90000 rw-p 00000000 00:00 0 
+7fef41f90000-7fef41f93000 ---p 00000000 00:00 0 
+7fef41f93000-7fef42291000 rw-p 00000000 00:00 0 
+7fef42291000-7fef42491000 rw-p 00000000 00:00 0 
+7fef42491000-7fef42691000 rw-p 00000000 00:00 0 
+7fef42691000-7fef42891000 rw-p 00000000 00:00 0 
+7fef42891000-7fef42a91000 rw-p 00000000 00:00 0 
+7fef42a91000-7fef42c91000 rw-p 00000000 00:00 0 
+7fef42c91000-7fef42e91000 rw-p 00000000 00:00 0 
+7fef42e91000-7fef43091000 rw-p 00000000 00:00 0 
+7fef43091000-7fef43291000 rw-p 00000000 00:00 0 
+7fef43291000-7fef43491000 rw-p 00000000 00:00 0 
+7fef43491000-7fef43691000 rw-p 00000000 00:00 0 
+7fef43691000-7fef43891000 rw-p 00000000 00:00 0 
+7fef43891000-7fef43a91000 rw-p 00000000 00:00 0 
+7fef43a91000-7fef43a94000 ---p 00000000 00:00 0 
+7fef43a94000-7fef43b92000 rw-p 00000000 00:00 0 
+7fef43b92000-7fef43b95000 ---p 00000000 00:00 0 
+7fef43b95000-7fef43e93000 rw-p 00000000 00:00 0 
+7fef44000000-7fef44021000 rw-p 00000000 00:00 0 
+7fef44021000-7fef48000000 ---p 00000000 00:00 0 
+7fef480fd000-7fef482fd000 rw-p 00000000 00:00 0 
+7fef482fd000-7fef484fd000 rw-p 00000000 00:00 0 
+7fef484fd000-7fef486fd000 rw-p 00000000 00:00 0 
+7fef486fd000-7fef488fd000 rw-p 00000000 00:00 0 
+7fef488fd000-7fef48afd000 rw-p 00000000 00:00 0 
+7fef48afd000-7fef48cfd000 rw-p 00000000 00:00 0 
+7fef48dfe000-7fef48ffe000 rw-p 00000000 00:00 0 
+7fef48ffe000-7fef491fe000 rw-p 00000000 00:00 0 
+7fef491fe000-7fef493fe000 rw-p 00000000 00:00 0 
+7fef493fe000-7fef49401000 ---p 00000000 00:00 0 
+7fef49401000-7fef496ff000 rw-p 00000000 00:00 0 
+7fef496ff000-7fef498ff000 rw-p 00000000 00:00 0 
+7fef498ff000-7fef49aff000 rw-p 00000000 00:00 0 
+7fef49aff000-7fef49cff000 rw-p 00000000 00:00 0 
+7fef49cff000-7fef49eff000 rw-p 00000000 00:00 0 
+7fef49eff000-7fef4a0ff000 rw-p 00000000 00:00 0 
+7fef4a0ff000-7fef4a2ff000 rw-p 00000000 00:00 0 
+7fef4a2ff000-7fef4a4ff000 rw-p 00000000 00:00 0 
+7fef4a4ff000-7fef4a6ff000 rw-p 00000000 00:00 0 
+7fef4a6ff000-7fef4a8ff000 rw-p 00000000 00:00 0 
+7fef4a8ff000-7fef4aaff000 rw-p 00000000 00:00 0 
+7fef4aaff000-7fef4acff000 rw-p 00000000 00:00 0 
+7fef4acff000-7fef4aeff000 rw-p 00000000 00:00 0 
+7fef4aeff000-7fef4b0ff000 rw-p 00000000 00:00 0 
+7fef4b0ff000-7fef4b2ff000 rw-p 00000000 00:00 0 
+7fef4b2ff000-7fef4b4ff000 rw-p 00000000 00:00 0 
+7fef4b4ff000-7fef4b6ff000 rw-p 00000000 00:00 0 
+7fef4b6ff000-7fef4b8ff000 rw-p 00000000 00:00 0 
+7fef4b8ff000-7fef4baff000 rw-p 00000000 00:00 0 
+7fef4baff000-7fef4bb02000 ---p 00000000 00:00 0 
+7fef4bb02000-7fef4be00000 rw-p 00000000 00:00 0 
+7fef4be00000-7fef4c000000 rw-p 00000000 00:00 0 
+7fef4c000000-7fef4c021000 rw-p 00000000 00:00 0 
+7fef4c021000-7fef50000000 ---p 00000000 00:00 0 
+7fef500b3000-7fef500b5000 r--s 00016000 103:02 27528327                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jce.jar
+7fef500b5000-7fef500b6000 r--p 00000000 103:02 29371906                  /usr/share/locale-langpack/en_GB/LC_MESSAGES/libc.mo
+7fef500b6000-7fef500b8000 r--s 00002000 103:02 26221492                  /home/digital32589/.sbt/boot/scala-2.12.10/org.scala-sbt/sbt/1.3.13/test-interface-1.0.jar
+7fef500b8000-7fef500bd000 r--s 000a7000 103:02 27528329                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jsse.jar
+7fef500bd000-7fef500ee000 rw-p 00000000 00:00 0 
+7fef500ee000-7fef50105000 r-xp 00000000 103:02 27528289                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnet.so
+7fef50105000-7fef50305000 ---p 00017000 103:02 27528289                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnet.so
+7fef50305000-7fef50306000 r--p 00017000 103:02 27528289                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnet.so
+7fef50306000-7fef50307000 rw-p 00018000 103:02 27528289                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnet.so
+7fef50307000-7fef50319000 r-xp 00000000 103:02 27528290                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnio.so
+7fef50319000-7fef50518000 ---p 00012000 103:02 27528290                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnio.so
+7fef50518000-7fef50519000 r--p 00011000 103:02 27528290                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnio.so
+7fef50519000-7fef5051a000 rw-p 00012000 103:02 27528290                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libnio.so
+7fef5051a000-7fef5051b000 r--s 00005000 103:02 26221435                  /home/digital32589/.sbt/boot/scala-2.12.10/org.scala-sbt/sbt/1.3.13/test-agent-1.3.13.jar
+7fef5051b000-7fef50521000 r--s 00165000 103:02 27924762                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/pdfbox/fontbox/2.0.8/fontbox-2.0.8.jar
+7fef50521000-7fef5058a000 r--s 00af5000 103:02 27924774                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/ibm/icu/icu4j/59.1/icu4j-59.1.jar
+7fef5058a000-7fef5058c000 r--s 0000b000 103:02 27924782                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/de/rototor/pdfbox/graphics2d/0.12/graphics2d-0.12.jar
+7fef5058c000-7fef5058f000 r--s 0001e000 103:02 27794207                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/pdfbox/xmpbox/2.0.8/xmpbox-2.0.8.jar
+7fef5058f000-7fef505a4000 r--s 0024a000 103:02 27924772                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/pdfbox/pdfbox/2.0.8/pdfbox-2.0.8.jar
+7fef505a4000-7fef505fc000 r--s 003a7000 103:02 26214623                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.60/bcprov-jdk15on-1.60.jar
+7fef505fc000-7fef50606000 r--s 0009b000 103:02 26224634                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/reactivemongo-bson-api_2.12/0.20.11/reactivemongo-bson-api_2.12-0.20.11.jar
+7fef50606000-7fef50630000 r--s 001f1000 103:02 26224605                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/reactivemongo-shaded/0.20.11/reactivemongo-shaded-0.20.11.jar
+7fef50630000-7fef50632000 r--s 0000c000 103:02 25956736                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar
+7fef50632000-7fef50643000 r--s 0008c000 103:02 25953967                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar
+7fef50643000-7fef50644000 r--s 00000000 103:02 25954164                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/typelevel/macro-compat_2.12/1.1.1/macro-compat_2.12-1.1.1.jar
+7fef50644000-7fef50647000 r--s 00029000 103:02 25822364                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-functional_2.12/2.6.14/play-functional_2.12-2.6.14.jar
+7fef50647000-7fef50648000 r--s 00001000 103:02 26222055                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.6.25/play-exceptions-2.6.25.jar
+7fef50648000-7fef50649000 r--s 00004000 103:02 27663526                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/openhtmltopdf/openhtmltopdf-jsoup-dom-converter/0.0.1-RC13/openhtmltopdf-jsoup-dom-converter-0.0.1-RC13.jar
+7fef50649000-7fef5064a000 r--s 00005000 103:02 27794227                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/openhtmltopdf/openhtmltopdf-rtl-support/0.0.1-RC13/openhtmltopdf-rtl-support-0.0.1-RC13.jar
+7fef5064a000-7fef5064c000 r--s 0001d000 103:02 27663507                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/openhtmltopdf/openhtmltopdf-pdfbox/0.0.1-RC13/openhtmltopdf-pdfbox-0.0.1-RC13.jar
+7fef5064c000-7fef5065f000 r--s 0010f000 103:02 27663534                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/openhtmltopdf/openhtmltopdf-core/0.0.1-RC13/openhtmltopdf-core-0.0.1-RC13.jar
+7fef5065f000-7fef50660000 r--s 00003000 103:02 27663530                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/nibor/autolink/autolink/0.6.0/autolink-0.6.0.jar
+7fef50660000-7fef50669000 r--s 0006f000 103:02 25954181                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar
+7fef50669000-7fef5066a000 r--s 0000a000 103:02 26085312                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-util/5.0.3/asm-util-5.0.3.jar
+7fef5066a000-7fef5066b000 r--s 00004000 103:02 26085534                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-analysis/5.0.3/asm-analysis-5.0.3.jar
+7fef5066b000-7fef5066d000 r--s 00006000 103:02 26085614                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-tree/5.0.3/asm-tree-5.0.3.jar
+7fef5066d000-7fef5066e000 r--s 0000c000 103:02 26085423                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/ow2/asm/asm/5.0.3/asm-5.0.3.jar
+7fef5066e000-7fef50673000 r--s 00029000 103:02 26085251                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/parboiled/parboiled-core/1.1.7/parboiled-core-1.1.7.jar
+7fef50673000-7fef50698000 r--s 002de000 103:02 26085335                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2.jar
+7fef50698000-7fef5069c000 r--s 00040000 103:02 26085200                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2.jar
+7fef5069c000-7fef506a1000 r--s 0002c000 103:02 26085216                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.5.v20170502/websocket-common-9.4.5.v20170502.jar
+7fef506a1000-7fef506a2000 r--s 00007000 103:02 26085156                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.5.v20170502/websocket-client-9.4.5.v20170502.jar
+7fef506a2000-7fef506a5000 r--s 00008000 103:02 26085099                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.5.v20170502/websocket-api-9.4.5.v20170502.jar
+7fef506a5000-7fef506a8000 r--s 00015000 103:02 25954550                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar
+7fef506a8000-7fef506b0000 r--s 00068000 103:02 26085429                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.5.v20170502/jetty-util-9.4.5.v20170502.jar
+7fef506b0000-7fef506b3000 r--s 0001d000 103:02 26085098                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.5.v20170502/jetty-io-9.4.5.v20170502.jar
+7fef506b3000-7fef506b6000 r--s 00025000 103:02 26085118                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.5.v20170502/jetty-http-9.4.5.v20170502.jar
+7fef506b6000-7fef506bc000 r--s 0003c000 103:02 26085173                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.5.v20170502/jetty-client-9.4.5.v20170502.jar
+7fef506bc000-7fef506be000 r--s 00009000 103:02 26085132                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.3/httpmime-4.5.3.jar
+7fef506be000-7fef506c1000 r--s 0001d000 103:02 26085567                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.27/neko-htmlunit-2.27.jar
+7fef506c1000-7fef506cf000 r--s 0011b000 103:02 26085325                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.27/htmlunit-core-js-2.27.jar
+7fef506cf000-7fef506d3000 r--s 0005a000 103:02 26085160                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/cssparser/cssparser/0.9.23/cssparser-0.9.23.jar
+7fef506d3000-7fef506d4000 r--s 00003000 103:02 26085075                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/w3c/css/sac/1.3/sac-1.3.jar
+7fef506d4000-7fef506d5000 r--s 00001000 103:02 26085499                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/3.5.3/selenium-safari-driver-3.5.3.jar
+7fef506d5000-7fef506d6000 r--s 00001000 103:02 26085491                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-opera-driver/3.5.3/selenium-opera-driver-3.5.3.jar
+7fef506d6000-7fef506d7000 r--s 00003000 103:02 26085551                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-ie-driver/3.5.3/selenium-ie-driver-3.5.3.jar
+7fef506d7000-7fef506d8000 r--s 00001000 103:02 26085511                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-edge-driver/3.5.3/selenium-edge-driver-3.5.3.jar
+7fef506d8000-7fef506d9000 r--s 00002000 103:02 26085109                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-chrome-driver/3.5.3/selenium-chrome-driver-3.5.3.jar
+7fef506d9000-7fef506db000 r--s 0000a000 103:02 26222478                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/ehcache/jcache/1.0.1/jcache-1.0.1.jar
+7fef506db000-7fef507c5000 r--s 008da000 103:02 26222395                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/net/sf/ehcache/ehcache/2.10.6/ehcache-2.10.6.jar
+7fef507c5000-7fef507c6000 r--s 00009000 103:02 26222470                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-cache_2.12/2.6.25/play-cache_2.12-2.6.25.jar
+7fef507c6000-7fef507d2000 r--s 00176000 103:02 27007326                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.12/3.2.0/scalactic_2.12-3.2.0.jar
+7fef507d2000-7fef507d3000 r--s 00000000 103:02 26222460                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.0/scalatest-compatible-3.2.0.jar
+7fef507d3000-7fef507d5000 r--s 00000000 103:02 26085387                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar
+7fef507d5000-7fef507e6000 r--s 00155000 103:02 26085321                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna-platform/4.1.0/jna-platform-4.1.0.jar
+7fef507e6000-7fef507ea000 r--s 000dc000 103:02 25822445                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/4.1.0/jna-4.1.0.jar
+7fef507ea000-7fef507f2000 r--s 00048000 103:02 25954132                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.6/httpcore-4.4.6.jar
+7fef507f2000-7fef507ff000 r--s 000aa000 103:02 26085458                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.3/httpclient-4.5.3.jar
+7fef507ff000-7fef50804000 r--s 00034000 103:02 25954427                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
+7fef50804000-7fef50806000 r--s 0000e000 103:02 25954037                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
+7fef50806000-7fef50808000 r--s 0000c000 103:02 26085486                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar
+7fef50808000-7fef5080f000 r--s 0004f000 103:02 26085373                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/cglib/cglib-nodep/3.2.4/cglib-nodep-3.2.4.jar
+7fef5080f000-7fef50836000 r--s 001c3000 103:02 26085214                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.27/htmlunit-2.27.jar
+7fef50836000-7fef50837000 r--s 00007000 103:02 26085482                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/atteo/classindex/classindex/3.4/classindex-3.4.jar
+7fef50837000-7fef5083d000 r--s 00050000 103:02 26222413                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.8.1/selenium-remote-driver-3.8.1.jar
+7fef5083d000-7fef5083e000 r--s 00000000 103:02 25954468                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.14/animal-sniffer-annotations-1.14.jar
+7fef5083e000-7fef50840000 r--s 00001000 103:02 25954328                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1.jar
+7fef50840000-7fef50842000 r--s 00002000 103:02 25956741                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.1.3/error_prone_annotations-2.1.3.jar
+7fef50842000-7fef50844000 r--s 00006000 103:02 25956727                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-compat-qual/2.0.0/checker-compat-qual-2.0.0.jar
+7fef50844000-7fef50846000 r--s 00009000 103:02 26085320                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+7fef50846000-7fef5084d000 r--s 00056000 103:02 26085515                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-compress/1.9/commons-compress-1.9.jar
+7fef5084d000-7fef5085a000 r--s 00125000 103:02 26085709                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/mozilla/rhino/1.7.10/rhino-1.7.10.jar
+7fef5085a000-7fef5085e000 r--s 0003e000 103:02 27924768                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.12/0.3.8/ssl-config-core_2.12-0.3.8.jar
+7fef5085e000-7fef50862000 r--s 0002e000 103:02 25954562                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.12/2.22.0/nscala-time_2.12-2.22.0.jar
+7fef50862000-7fef50863000 r--s 00001000 103:02 5379015                   /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/http-core_2.12/2.4.0/http-core_2.12-2.4.0.jar
+7fef50863000-7fef50864000 r--s 00000000 103:02 5379014                   /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/http-verbs_2.12/11.6.0/http-verbs_2.12-11.6.0.jar
+7fef50864000-7fef50866000 r--s 00006000 103:02 27796646                  /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/secure_2.12/7.11.0/secure_2.12-7.11.0.jar
+7fef50866000-7fef50869000 r--s 00020000 103:02 27794217                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/iheart/ficus_2.12/1.4.7/ficus_2.12-1.4.7.jar
+7fef50869000-7fef5086b000 r--s 00000000 103:02 26085450                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/io/dropwizard/metrics/metrics-logback/3.2.4/metrics-logback-3.2.4.jar
+7fef5086b000-7fef5086d000 r--s 00008000 103:02 26085307                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/3.2.4/metrics-jvm-3.2.4.jar
+7fef5086d000-7fef5086e000 r--s 00003000 103:02 26085467                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/io/dropwizard/metrics/metrics-json/3.2.4/metrics-json-3.2.4.jar
+7fef5086e000-7fef50872000 r--s 0001e000 103:02 26085225                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/io/dropwizard/metrics/metrics-core/3.2.5/metrics-core-3.2.5.jar
+7fef50872000-7fef5087b000 r--s 0002d000 103:02 26085061                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar
+7fef5087b000-7fef50881000 r--s 00040000 103:02 26224624                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.13.0/log4j-api-2.13.0.jar
+7fef50881000-7fef50886000 r--s 0004a000 103:02 26085194                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/dnsjava/dnsjava/2.1.9/dnsjava-2.1.9.jar
+7fef50886000-7fef50887000 r--s 0000a000 103:02 26224604                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/reactivemongo-bson-compat_2.12/0.20.11/reactivemongo-bson-compat_2.12-0.20.11.jar
+7fef50887000-7fef5088a000 r--s 0002f000 103:02 26224615                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/reactivemongo-core_2.12/0.20.11/reactivemongo-core_2.12-0.20.11.jar
+7fef5088a000-7fef50890000 r--s 00064000 103:02 27798030                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/reactivemongo-bson_2.12/0.20.11/reactivemongo-bson_2.12-0.20.11.jar
+7fef50890000-7fef50894000 r--s 0002f000 103:02 27794201                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/cachecontrol_2.12/1.1.7/cachecontrol_2.12-1.1.7.jar
+7fef50894000-7fef50895000 r--s 00002000 103:02 27794211                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ws-standalone-json_2.12/1.1.14/play-ws-standalone-json_2.12-1.1.14.jar
+7fef50895000-7fef50896000 r--s 00002000 103:02 27794219                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ws-standalone-xml_2.12/1.1.14/play-ws-standalone-xml_2.12-1.1.14.jar
+7fef50896000-7fef50898000 r--s 00014000 103:02 27924778                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ws-standalone_2.12/1.1.14/play-ws-standalone_2.12-1.1.14.jar
+7fef50898000-7fef508a4000 r--s 000e0000 103:02 27663491                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-parsing_2.12/10.0.15/akka-parsing_2.12-10.0.15.jar
+7fef508a4000-7fef508b7000 r--s 0010a000 103:02 25954016                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.12/0.8.0/scala-java8-compat_2.12-0.8.0.jar
+7fef508b7000-7fef508b8000 r--s 00000000 103:02 26085060                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar
+7fef508b8000-7fef508b9000 r--s 00003000 103:02 26085206                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/javax/transaction/jta/1.1/jta-1.1.jar
+7fef508b9000-7fef508bd000 r--s 0001c000 103:02 26089392                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar
+7fef508bd000-7fef508c1000 r--s 00018000 103:02 26085574                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/io/jsonwebtoken/jjwt/0.7.0/jjwt-0.7.0.jar
+7fef508c1000-7fef508c8000 r--s 000a2000 103:02 25822403                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-json_2.12/2.6.14/play-json_2.12-2.6.14.jar
+7fef508c8000-7fef508ce000 r--s 0004d000 103:02 5247491                   /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.12/commons-codec-1.12.jar
+7fef508ce000-7fef508d0000 r--s 00003000 103:02 26222404                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jcl-over-slf4j/1.7.29/jcl-over-slf4j-1.7.29.jar
+7fef508d0000-7fef508d2000 r--s 00000000 103:02 26222351                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/1.7.29/jul-to-slf4j-1.7.29.jar
+7fef508d2000-7fef508d4000 r--s 00009000 103:02 26221525                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar
+7fef508d4000-7fef508d5000 r--s 00004000 103:02 26222367                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-netty-utils/2.6.25/play-netty-utils-2.6.25.jar
+7fef508d5000-7fef508d6000 r--s 00000000 103:02 26222037                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.6.25/build-link-2.6.25.jar
+7fef508d6000-7fef508d8000 r--s 00008000 103:02 27009555                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-youtrack-converter/0.35.10/flexmark-youtrack-converter-0.35.10.jar
+7fef508d8000-7fef508e0000 r--s 00052000 103:02 27400233                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-util/0.35.10/flexmark-util-0.35.10.jar
+7fef508e0000-7fef508e1000 r--s 00001000 103:02 27400247                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-profile-pegdown/0.35.10/flexmark-profile-pegdown-0.35.10.jar
+7fef508e1000-7fef508e3000 r--s 00000000 103:02 27137185                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-pdf-converter/0.35.10/flexmark-pdf-converter-0.35.10.jar
+7fef508e3000-7fef508e5000 r--s 00008000 103:02 27400225                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-jira-converter/0.35.10/flexmark-jira-converter-0.35.10.jar
+7fef508e5000-7fef508e7000 r--s 00008000 103:02 27009543                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-html-parser/0.35.10/flexmark-html-parser-0.35.10.jar
+7fef508e7000-7fef508ea000 r--s 00015000 103:02 27137167                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-formatter/0.35.10/flexmark-formatter-0.35.10.jar
+7fef508ea000-7fef508eb000 r--s 00002000 103:02 27268321                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-youtube-embedded/0.35.10/flexmark-ext-youtube-embedded-0.35.10.jar
+7fef508eb000-7fef508ed000 r--s 00003000 103:02 27009527                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-yaml-front-matter/0.35.10/flexmark-ext-yaml-front-matter-0.35.10.jar
+7fef508ed000-7fef508ef000 r--s 00005000 103:02 27400259                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-wikilink/0.35.10/flexmark-ext-wikilink-0.35.10.jar
+7fef508ef000-7fef508f1000 r--s 00004000 103:02 27009561                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-typographic/0.35.10/flexmark-ext-typographic-0.35.10.jar
+7fef508f1000-7fef508f5000 r--s 00013000 103:02 27137142                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-toc/0.35.10/flexmark-ext-toc-0.35.10.jar
+7fef508f5000-7fef508f8000 r--s 00010000 103:02 27268329                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-tables/0.35.10/flexmark-ext-tables-0.35.10.jar
+7fef508f8000-7fef508fa000 r--s 00002000 103:02 27009547                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-superscript/0.35.10/flexmark-ext-superscript-0.35.10.jar
+7fef508fa000-7fef508fc000 r--s 00006000 103:02 27137152                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-xwiki-macros/0.35.10/flexmark-ext-xwiki-macros-0.35.10.jar
+7fef508fc000-7fef508fe000 r--s 00002000 103:02 27400251                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-ins/0.35.10/flexmark-ext-ins-0.35.10.jar
+7fef508fe000-7fef50900000 r--s 00007000 103:02 27009539                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-macros/0.35.10/flexmark-ext-macros-0.35.10.jar
+7fef50900000-7fef50902000 r--s 00005000 103:02 27137173                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-media-tags/0.35.10/flexmark-ext-media-tags-0.35.10.jar
+7fef50902000-7fef50904000 r--s 00004000 103:02 27009519                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-jekyll-tag/0.35.10/flexmark-ext-jekyll-tag-0.35.10.jar
+7fef50904000-7fef50906000 r--s 00003000 103:02 27268310                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-jekyll-front-matter/0.35.10/flexmark-ext-jekyll-front-matter-0.35.10.jar
+7fef50906000-7fef50908000 r--s 00009000 103:02 27268416                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-gitlab/0.35.10/flexmark-ext-gitlab-0.35.10.jar
+7fef50908000-7fef50909000 r--s 00003000 103:02 27400229                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-gfm-users/0.35.10/flexmark-ext-gfm-users-0.35.10.jar
+7fef50909000-7fef5090b000 r--s 00005000 103:02 27400263                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-gfm-tasklist/0.35.10/flexmark-ext-gfm-tasklist-0.35.10.jar
+7fef5090b000-7fef5090e000 r--s 00006000 103:02 27137148                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-gfm-tables/0.35.10/flexmark-ext-gfm-tables-0.35.10.jar
+7fef5090e000-7fef50910000 r--s 00005000 103:02 27268292                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-gfm-strikethrough/0.35.10/flexmark-ext-gfm-strikethrough-0.35.10.jar
+7fef50910000-7fef50911000 r--s 00003000 103:02 27400243                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-gfm-issues/0.35.10/flexmark-ext-gfm-issues-0.35.10.jar
+7fef50911000-7fef50914000 r--s 00008000 103:02 27137197                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-footnotes/0.35.10/flexmark-ext-footnotes-0.35.10.jar
+7fef50914000-7fef50916000 r--s 00002000 103:02 27009510                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-escaped-character/0.35.10/flexmark-ext-escaped-character-0.35.10.jar
+7fef50916000-7fef50919000 r--s 0000c000 103:02 27009559                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-enumerated-reference/0.35.10/flexmark-ext-enumerated-reference-0.35.10.jar
+7fef50919000-7fef5091a000 r--s 00011000 103:02 27533734                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-emoji/0.35.10/flexmark-ext-emoji-0.35.10.jar
+7fef5091a000-7fef5091c000 r--s 00008000 103:02 27137177                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-definition/0.35.10/flexmark-ext-definition-0.35.10.jar
+7fef5091c000-7fef5091e000 r--s 00001000 103:02 27400221                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-autolink/0.35.10/flexmark-ext-autolink-0.35.10.jar
+7fef5091e000-7fef50920000 r--s 00007000 103:02 27009514                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-attributes/0.35.10/flexmark-ext-attributes-0.35.10.jar
+7fef50920000-7fef50922000 r--s 00002000 103:02 27268306                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-aside/0.35.10/flexmark-ext-aside-0.35.10.jar
+7fef50922000-7fef50924000 r--s 00003000 103:02 27137189                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-anchorlink/0.35.10/flexmark-ext-anchorlink-0.35.10.jar
+7fef50924000-7fef50926000 r--s 00007000 103:02 27268317                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-admonition/0.35.10/flexmark-ext-admonition-0.35.10.jar
+7fef50926000-7fef50928000 r--s 00007000 103:02 27137193                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-ext-abbreviation/0.35.10/flexmark-ext-abbreviation-0.35.10.jar
+7fef50928000-7fef50932000 r--s 00057000 103:02 27268302                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark/0.35.10/flexmark-0.35.10.jar
+7fef50932000-7fef50936000 r--s 00033000 103:02 25954412                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.12/1.1.2/scala-parser-combinators_2.12-1.1.2.jar
+7fef50936000-7fef50938000 r--s 00002000 103:02 25953962                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar
+7fef50938000-7fef5093a000 r--s 0000c000 103:02 26870608                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/objenesis/objenesis/2.6/objenesis-2.6.jar
+7fef5093a000-7fef5093e000 r--s 0003c000 103:02 27533766                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.10.5/byte-buddy-agent-1.10.5.jar
+7fef5093e000-7fef50986000 r--s 002e9000 103:02 27533721                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.10.5/byte-buddy-1.10.5.jar
+7fef50986000-7fef50988000 r--s 00010000 103:02 26085575                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/parboiled/parboiled-java/1.1.7/parboiled-java-1.1.7.jar
+7fef50988000-7fef50989000 r--s 00002000 103:02 26222355                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/codeborne/phantomjsdriver/1.4.4/phantomjsdriver-1.4.4.jar
+7fef50989000-7fef5098a000 r--s 00000000 103:02 26085478                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/3.5.3/selenium-java-3.5.3.jar
+7fef5098a000-7fef5098c000 r--s 00008000 103:02 26222448                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ehcache_2.12/2.6.25/play-ehcache_2.12-2.6.25.jar
+7fef5098c000-7fef509af000 r--s 00360000 103:02 27137135                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.12.11/scala-reflect-2.12.11.jar
+7fef509af000-7fef509b1000 r--s 0002c000 103:02 26222444                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.12/3.2.0/scalatest-mustmatchers_2.12-3.2.0.jar
+7fef509b1000-7fef509b3000 r--s 0002c000 103:02 26222381                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-shouldmatchers_2.12/3.2.0/scalatest-shouldmatchers_2.12-3.2.0.jar
+7fef509b3000-7fef509c6000 r--s 001de000 103:02 26222421                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-matchers-core_2.12/3.2.0/scalatest-matchers-core_2.12-3.2.0.jar
+7fef509c6000-7fef509c7000 r--s 00004000 103:02 26222350                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-diagrams_2.12/3.2.0/scalatest-diagrams_2.12-3.2.0.jar
+7fef509c7000-7fef509c9000 r--s 0001e000 103:02 26222452                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-wordspec_2.12/3.2.0/scalatest-wordspec_2.12-3.2.0.jar
+7fef509c9000-7fef509ca000 r--s 00006000 103:02 26222386                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-refspec_2.12/3.2.0/scalatest-refspec_2.12-3.2.0.jar
+7fef509ca000-7fef509cc000 r--s 00007000 103:02 26222425                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-propspec_2.12/3.2.0/scalatest-propspec_2.12-3.2.0.jar
+7fef509cc000-7fef509ce000 r--s 00019000 103:02 26222365                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funspec_2.12/3.2.0/scalatest-funspec_2.12-3.2.0.jar
+7fef509ce000-7fef509d0000 r--s 0000e000 103:02 26222456                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.12/3.2.0/scalatest-funsuite_2.12-3.2.0.jar
+7fef509d0000-7fef509d2000 r--s 00018000 103:02 26222372                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-freespec_2.12/3.2.0/scalatest-freespec_2.12-3.2.0.jar
+7fef509d2000-7fef509d5000 r--s 00028000 103:02 26222412                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.12/3.2.0/scalatest-flatspec_2.12-3.2.0.jar
+7fef509d5000-7fef509d7000 r--s 00012000 103:02 26222348                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.12/3.2.0/scalatest-featurespec_2.12-3.2.0.jar
+7fef509d7000-7fef509f8000 r--s 00361000 103:02 26222429                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest-core_2.12/3.2.0/scalatest-core_2.12-3.2.0.jar
+7fef509f8000-7fef509fa000 r--s 00009000 103:02 26085516                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/inject/extensions/guice-assistedinject/4.1.0/guice-assistedinject-4.1.0.jar
+7fef509fa000-7fef50a08000 r--s 00097000 103:02 26085395                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/inject/guice/4.1.0/guice-4.1.0.jar
+7fef50a08000-7fef50a0a000 r--s 000c2000 103:02 26085255                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-firefox-driver/3.5.3/selenium-firefox-driver-3.5.3.jar
+7fef50a0a000-7fef50a0f000 r--s 00020000 103:02 26085549                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.5.3/selenium-support-3.5.3.jar
+7fef50a0f000-7fef50a13000 r--s 00019000 103:02 26222337                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.8.1/selenium-api-3.8.1.jar
+7fef50a13000-7fef50a15000 r--s 00010000 103:02 26085402                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.27/htmlunit-driver-2.27.jar
+7fef50a15000-7fef50a1f000 r--s 00052000 103:02 26085181                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fluentlenium/fluentlenium-core/3.3.0/fluentlenium-core-3.3.0.jar
+7fef50a1f000-7fef50a21000 r--s 00003000 103:02 25954218                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar
+7fef50a21000-7fef50a53000 r--s 00264000 103:02 25824380                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/23.6.1-jre/guava-23.6.1-jre.jar
+7fef50a53000-7fef50a55000 r--s 00006000 103:02 26085702                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/novocode/junit-interface/0.11/junit-interface-0.11.jar
+7fef50a55000-7fef50a5d000 r--s 00045000 103:02 26085354                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar
+7fef50a5d000-7fef50a81000 r--s 00497000 103:02 26368145                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-kernel_2.12/2.2.0/cats-kernel_2.12-2.2.0.jar
+7fef50a81000-7fef50a82000 r--s 00000000 103:02 26224606                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-macros_2.12/2.1.1/cats-macros_2.12-2.1.1.jar
+7fef50a82000-7fef50a83000 r--s 00002000 103:02 26222408                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar
+7fef50a83000-7fef50a89000 r--s 0008b000 103:02 26876722                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-stm/scala-stm_2.12/0.8/scala-stm_2.12-0.8.jar
+7fef50a89000-7fef50ab4000 r--s 004a2000 103:02 26368155                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-core_2.12/2.2.0/cats-core_2.12-2.2.0.jar
+7fef50ab4000-7fef50ab5000 r--s 00006000 103:02 26085656                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/webjars/webjars-locator-core/0.35/webjars-locator-core-0.35.jar
+7fef50ab5000-7fef50abb000 r--s 00101000 103:02 26085433                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/io/apigee/trireme/trireme-node12src/0.9.4/trireme-node12src-0.9.4.jar
+7fef50abb000-7fef50ac0000 r--s 0002d000 103:02 26085142                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/io/apigee/trireme/trireme-kernel/0.9.4/trireme-kernel-0.9.4.jar
+7fef50ac0000-7fef50ac5000 r--s 00036000 103:02 26085254                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/io/apigee/trireme/trireme-core/0.9.4/trireme-core-0.9.4.jar
+7fef50ac5000-7fef50ac8000 r--s 0003b000 103:02 26479656                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/pathikrit/better-files_2.12/3.5.0/better-files_2.12-3.5.0.jar
+7fef50ac8000-7fef50aee000 r--s 00336000 103:02 27137136                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.12/2.5.23/akka-actor_2.12-2.5.23.jar
+7fef50aee000-7fef50af0000 r--s 00003000 103:02 27400207                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-slf4j_2.12/2.5.23/akka-slf4j_2.12-2.5.23.jar
+7fef50af0000-7fef50af7000 r--s 0006f000 103:02 27400215                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf_2.12/2.5.23/akka-protobuf_2.12-2.5.23.jar
+7fef50af7000-7fef50b31000 r--s 00411000 103:02 27400205                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.12/2.5.23/akka-stream_2.12-2.5.23.jar
+7fef50b31000-7fef50b33000 r--s 00004000 103:02 27536850                  /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/time_2.12/3.9.0/time_2.12-3.9.0.jar
+7fef50b33000-7fef50b36000 r--s 00024000 103:02 26222441                  /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/play-auditing-play-26_2.12/5.8.0/play-auditing-play-26_2.12-5.8.0.jar
+7fef50b36000-7fef50b3b000 r--s 00047000 103:02 5247480                   /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/http-verbs-play-26_2.12/11.6.0/http-verbs-play-26_2.12-11.6.0.jar
+7fef50b3b000-7fef50b3d000 r--s 0000f000 103:02 27536842                  /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/crypto_2.12/5.6.0/crypto_2.12-5.6.0.jar
+7fef50b3d000-7fef50b42000 r--s 00058000 103:02 27536846                  /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/auth-client_2.12/2.35.0-play-26/auth-client_2.12-2.35.0-play-26.jar
+7fef50b42000-7fef50b44000 r--s 00004000 103:02 26085349                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/io/dropwizard/metrics/metrics-graphite/3.2.5/metrics-graphite-3.2.5.jar
+7fef50b44000-7fef50b47000 r--s 00014000 103:02 27007322                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-guice_2.12/2.6.25/play-guice_2.12-2.6.25.jar
+7fef50b47000-7fef50b48000 r--s 00004000 103:02 26350973                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/kenshoo/metrics-play_2.12/2.6.6_0.6.2/metrics-play_2.12-2.6.6_0.6.2.jar
+7fef50b48000-7fef50b4c000 r--s 00020000 103:02 26870609                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar
+7fef50b4c000-7fef50b65000 r--s 0013a000 103:02 26085618                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0.jar
+7fef50b65000-7fef50b68000 r--s 00016000 103:02 26087737                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.9.7/jackson-datatype-jsr310-2.9.7.jar
+7fef50b68000-7fef50b6a000 r--s 00007000 103:02 26087744                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.9.7/jackson-datatype-jdk8-2.9.7.jar
+7fef50b6a000-7fef50b6d000 r--s 0000e000 103:02 26222397                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.10.3/jackson-annotations-2.10.3.jar
+7fef50b6d000-7fef50b72000 r--s 00043000 103:02 26222390                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.4.0/config-1.4.0.jar
+7fef50b72000-7fef50b7d000 r--s 00069000 103:02 26085550                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar
+7fef50b7d000-7fef50b92000 r--s 00142000 103:02 26222437                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.10.3/jackson-databind-2.10.3.jar
+7fef50b92000-7fef50b97000 r--s 00051000 103:02 26222464                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.10.3/jackson-core-2.10.3.jar
+7fef50b97000-7fef50b9b000 r--s 00031000 103:02 25953985                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/commons-io/commons-io/2.6/commons-io-2.6.jar
+7fef50b9b000-7fef50ba4000 r--s 00073000 103:02 5247479                   /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar
+7fef50ba4000-7fef50ba6000 r--s 0000e000 103:02 27402103                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/reactivemongo-akkastream_2.12/0.20.11/reactivemongo-akkastream_2.12-0.20.11.jar
+7fef50ba6000-7fef50bab000 r--s 00050000 103:02 26876718                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/reactivemongo-play-json_2.12/0.20.11-play26/reactivemongo-play-json_2.12-0.20.11-play26.jar
+7fef50bab000-7fef50bcc000 r--s 002b2000 103:02 27140246                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/reactivemongo_2.12/0.20.11/reactivemongo_2.12-0.20.11.jar
+7fef50bcc000-7fef50bcf000 r--s 0000a000 103:02 26085113                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/javax/cache/cache-api/1.0.0/cache-api-1.0.0.jar
+7fef50bcf000-7fef50bd2000 r--s 00015000 103:02 26089380                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/shaded-oauth/1.1.14/shaded-oauth-1.1.14.jar
+7fef50bd2000-7fef50c09000 r--s 00284000 103:02 26089387                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/shaded-asynchttpclient/1.1.14/shaded-asynchttpclient-1.1.14.jar
+7fef50c09000-7fef50c0c000 r--s 0003d000 103:02 27663522                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ahc-ws-standalone_2.12/1.1.14/play-ahc-ws-standalone_2.12-1.1.14.jar
+7fef50c0c000-7fef50c0d000 r--s 00005000 103:02 27007330                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ws_2.12/2.6.25/play-ws_2.12-2.6.25.jar
+7fef50c0d000-7fef50c3a000 r--s 00310000 103:02 27268284                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-core_2.12/10.0.15/akka-http-core_2.12-10.0.15.jar
+7fef50c3a000-7fef50c3c000 r--s 00014000 103:02 27400811                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-streams_2.12/2.6.25/play-streams_2.12-2.6.25.jar
+7fef50c3c000-7fef50c42000 r--s 00041000 103:02 26085291                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar
+7fef50c42000-7fef50c60000 r--s 00281000 103:02 27138036                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play_2.12/2.6.25/play_2.12-2.6.25.jar
+7fef50c60000-7fef50c65000 r--s 00083000 103:02 25822329                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.12/1.2.0/scala-xml_2.12-1.2.0.jar
+7fef50c65000-7fef50c66000 r--s 00000000 103:02 26874211                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/vladsch/flexmark/flexmark-all/0.35.10/flexmark-all-0.35.10.jar
+7fef50c66000-7fef50d2a000 r--s 00c0e000 103:02 26087819                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.27.0/wiremock-standalone-2.27.0.jar
+7fef50d2a000-7fef50d2c000 r--s 0001c000 103:02 1970379                   /home/digital32589/.cache/coursier/v1/https/jcenter.bintray.com/wolfendale/scalacheck-gen-regexp_2.12/0.1.1/scalacheck-gen-regexp_2.12-0.1.1.jar
+7fef50d2c000-7fef50d39000 r--s 0010e000 103:02 27794235                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalacheck/scalacheck_2.12/1.14.3/scalacheck_2.12-1.14.3.jar
+7fef50d39000-7fef50d4a000 r--s 00080000 103:02 26874199                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/mockito/mockito-core/3.3.3/mockito-core-3.3.3.jar
+7fef50d4a000-7fef50d50000 r--s 00051000 103:02 26085434                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/jsoup/jsoup/1.10.3/jsoup-1.10.3.jar
+7fef50d50000-7fef50d53000 r--s 00011000 103:02 26085190                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/pegdown/pegdown/1.6.0/pegdown-1.6.0.jar
+7fef50d53000-7fef50d55000 r--s 00017000 103:02 26479642                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatestplus/scalatestplus-scalacheck_2.12/3.1.0.0-RC2/scalatestplus-scalacheck_2.12-3.1.0.0-RC2.jar
+7fef50d55000-7fef50d58000 r--s 0002f000 103:02 26875574                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatestplus/play/scalatestplus-play_2.12/3.1.3/scalatestplus-play_2.12-3.1.3.jar
+7fef50d58000-7fef50d59000 r--s 00000000 103:02 26874202                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatestplus/mockito-3-2_2.12/3.1.2.0/mockito-3-2_2.12-3.1.2.0.jar
+7fef50d59000-7fef50d5a000 r--s 00000000 103:02 26875588                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.12/3.2.0/scalatest_2.12-3.2.0.jar
+7fef50d5a000-7fef50d5c000 r--s 00020000 103:02 26875582                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-test_2.12/2.6.25/play-test_2.12-2.6.25.jar
+7fef50d5c000-7fef50d5e000 r--s 00022000 103:02 26368154                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/lucidchart/xtract_2.12/2.2.1/xtract_2.12-2.2.1.jar
+7fef50d5e000-7fef50d61000 r--s 0001a000 103:02 26224630                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-iteratees-reactive-streams_2.12/2.6.1/play-iteratees-reactive-streams_2.12-2.6.1.jar
+7fef50d61000-7fef50d66000 r--s 00063000 103:02 26224612                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-iteratees_2.12/2.6.1/play-iteratees_2.12-2.6.1.jar
+7fef50d66000-7fef50d6f000 r--s 00070000 103:02 26085284                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/govuk-frontend/3.3.0/govuk-frontend-3.3.0.jar
+7fef50d6f000-7fef50d71000 r--s 0001e000 103:02 5247478                   /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/play-nunjucks-viewmodel_2.12/0.9.0-play-26/play-nunjucks-viewmodel_2.12-0.9.0-play-26.jar
+7fef50d71000-7fef50d73000 r--s 0018f000 103:02 26479625                  /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/play-nunjucks_2.12/0.23.0-play-26/play-nunjucks_2.12-0.23.0-play-26.jar
+7fef50d73000-7fef50d75000 r--s 00000000 103:02 25824910                  /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/play-allowlist-filter_2.12/0.1.0-play-26/play-allowlist-filter_2.12-0.1.0-play-26.jar
+7fef50d75000-7fef50d7a000 r--s 00052000 103:02 5247484                   /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/bootstrap-play-26_2.12/1.14.0/bootstrap-play-26_2.12-1.14.0.jar
+7fef50d7a000-7fef50db3000 r--s 004f6000 103:02 2491632                   /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.12/scala-library-2.12.12.jar
+7fef50db3000-7fef50dce000 r--s 00394000 103:02 27528308                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/cldrdata.jar
+7fef50dce000-7fef50de9000 r--s 001d6000 103:02 27528313                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/nashorn.jar
+7fef50de9000-7fef50dea000 ---p 00000000 00:00 0 
+7fef50dea000-7fef50eea000 rw-p 00000000 00:00 0 
+7fef50eea000-7fef50eed000 ---p 00000000 00:00 0 
+7fef50eed000-7fef50feb000 rw-p 00000000 00:00 0 
+7fef50feb000-7fef50fec000 ---p 00000000 00:00 0 
+7fef50fec000-7fef50fef000 ---p 00000000 00:00 0 
+7fef50fef000-7fef510ec000 rw-p 00000000 00:00 0 
+7fef510ec000-7fef510ed000 ---p 00000000 00:00 0 
+7fef510ed000-7fef510f0000 ---p 00000000 00:00 0 
+7fef510f0000-7fef511ed000 rw-p 00000000 00:00 0 
+7fef511ed000-7fef511ee000 ---p 00000000 00:00 0 
+7fef511ee000-7fef511f1000 ---p 00000000 00:00 0 
+7fef511f1000-7fef512ee000 rw-p 00000000 00:00 0 
+7fef512ee000-7fef512ef000 ---p 00000000 00:00 0 
+7fef512ef000-7fef512f2000 ---p 00000000 00:00 0 
+7fef512f2000-7fef513ef000 rw-p 00000000 00:00 0 
+7fef513ef000-7fef513f2000 ---p 00000000 00:00 0 
+7fef513f2000-7fef514f0000 rw-p 00000000 00:00 0 
+7fef514f0000-7fef517ce000 r--p 00000000 103:02 27527118                  /usr/lib/locale/locale-archive
+7fef517ce000-7fef517d1000 ---p 00000000 00:00 0 
+7fef517d1000-7fef518cf000 rw-p 00000000 00:00 0 
+7fef518cf000-7fef518d2000 ---p 00000000 00:00 0 
+7fef518d2000-7fef519d0000 rw-p 00000000 00:00 0 
+7fef519d0000-7fef519d1000 ---p 00000000 00:00 0 
+7fef519d1000-7fef5362e000 rw-p 00000000 00:00 0 
+7fef5362e000-7fef53800000 r--s 03ca8000 103:02 27528334                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar
+7fef53800000-7fef54000000 rw-p 00000000 00:00 0 
+7fef54000000-7fef54021000 rw-p 00000000 00:00 0 
+7fef54021000-7fef58000000 ---p 00000000 00:00 0 
+7fef58000000-7fef588f9000 rw-p 00000000 00:00 0 
+7fef588f9000-7fef588fa000 ---p 00000000 00:00 0 
+7fef588fa000-7fef589fa000 rw-p 00000000 00:00 0 
+7fef589fa000-7fef589fb000 ---p 00000000 00:00 0 
+7fef589fb000-7fef58afb000 rw-p 00000000 00:00 0 
+7fef58afb000-7fef58afc000 ---p 00000000 00:00 0 
+7fef58afc000-7fef58bfc000 rw-p 00000000 00:00 0 
+7fef58bfc000-7fef58bfd000 ---p 00000000 00:00 0 
+7fef58bfd000-7fef58cfd000 rw-p 00000000 00:00 0 
+7fef58cfd000-7fef58cfe000 ---p 00000000 00:00 0 
+7fef58cfe000-7fef58dfe000 rw-p 00000000 00:00 0 
+7fef58dfe000-7fef58dff000 ---p 00000000 00:00 0 
+7fef58dff000-7fef58eff000 rw-p 00000000 00:00 0 
+7fef58eff000-7fef58f00000 ---p 00000000 00:00 0 
+7fef58f00000-7fef59000000 rw-p 00000000 00:00 0 
+7fef59000000-7fef5b740000 rwxp 00000000 00:00 0 
+7fef5b740000-7fef68000000 ---p 00000000 00:00 0 
+7fef68000000-7fef6aabb000 rw-p 00000000 00:00 0 
+7fef6aabb000-7fef6c000000 ---p 00000000 00:00 0 
+7fef6c000000-7fef6c001000 r--s 00000000 103:02 26742380                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.12.12/1.7.0/silencer-lib_2.12.12-1.7.0.jar
+7fef6c001000-7fef6c005000 r--s 00044000 103:02 26353688                  /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/play-ui_2.12/8.11.0-play-26/play-ui_2.12-8.11.0-play-26.jar
+7fef6c005000-7fef6c006000 r--s 00007000 103:02 5250619                   /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/play-conditional-form-mapping_2.12/1.3.0-play-26/play-conditional-form-mapping_2.12-1.3.0-play-26.jar
+7fef6c006000-7fef6c008000 r--s 00007000 103:02 27536840                  /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/play-health_2.12/3.15.0-play-26/play-health_2.12-3.15.0-play-26.jar
+7fef6c008000-7fef6c009000 r--s 00001000 103:02 5247471                   /home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/logback-json-logger_2.12/4.8.0/logback-json-logger_2.12-4.8.0.jar
+7fef6c009000-7fef6c00b000 r--s 0001b000 103:02 26353772                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/play2-reactivemongo_2.12/0.20.11-play26/play2-reactivemongo_2.12-0.20.11-play26.jar
+7fef6c00b000-7fef6c00d000 r--s 00011000 103:02 27138038                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ahc-ws_2.12/2.6.25/play-ahc-ws_2.12-2.6.25.jar
+7fef6c00d000-7fef6c00f000 r--s 00018000 103:02 26875578                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-akka-http-server_2.12/2.6.25/play-akka-http-server_2.12-2.6.25.jar
+7fef6c00f000-7fef6c010000 r--s 00002000 103:02 26874200                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-logback_2.12/2.6.24/play-logback_2.12-2.6.24.jar
+7fef6c010000-7fef6c014000 r--s 00040000 103:02 26350969                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/filters-helpers_2.12/2.6.24/filters-helpers_2.12-2.6.24.jar
+7fef6c014000-7fef6c017000 r--s 00034000 103:02 26352508                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-server_2.12/2.6.25/play-server_2.12-2.6.25.jar
+7fef6c017000-7fef6c08d000 rw-p 00000000 00:00 0 
+7fef6c08d000-7fef6c08e000 ---p 00000000 00:00 0 
+7fef6c08e000-7fef6c260000 rw-p 00000000 00:00 0 
+7fef6c260000-7fef6c6bc000 ---p 00000000 00:00 0 
+7fef6c6bc000-7fef6c78e000 rw-p 00000000 00:00 0 
+7fef6c78e000-7fef6cbe9000 ---p 00000000 00:00 0 
+7fef6cbe9000-7fef6ce2a000 rw-p 00000000 00:00 0 
+7fef6ce2a000-7fef6ce80000 ---p 00000000 00:00 0 
+7fef6ce80000-7fef6cf1e000 rw-p 00000000 00:00 0 
+7fef6cf1e000-7fef6d241000 ---p 00000000 00:00 0 
+7fef6d241000-7fef6d249000 r-xp 00000000 103:02 27528297                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libzip.so
+7fef6d249000-7fef6d448000 ---p 00008000 103:02 27528297                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libzip.so
+7fef6d448000-7fef6d449000 r--p 00007000 103:02 27528297                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libzip.so
+7fef6d449000-7fef6d44a000 rw-p 00008000 103:02 27528297                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libzip.so
+7fef6d44a000-7fef6d455000 r-xp 00000000 103:02 21766962                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7fef6d455000-7fef6d654000 ---p 0000b000 103:02 21766962                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7fef6d654000-7fef6d655000 r--p 0000a000 103:02 21766962                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7fef6d655000-7fef6d656000 rw-p 0000b000 103:02 21766962                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7fef6d656000-7fef6d65c000 rw-p 00000000 00:00 0 
+7fef6d65c000-7fef6d673000 r-xp 00000000 103:02 21766959                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7fef6d673000-7fef6d872000 ---p 00017000 103:02 21766959                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7fef6d872000-7fef6d873000 r--p 00016000 103:02 21766959                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7fef6d873000-7fef6d874000 rw-p 00017000 103:02 21766959                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7fef6d874000-7fef6d876000 rw-p 00000000 00:00 0 
+7fef6d876000-7fef6d881000 r-xp 00000000 103:02 21766964                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7fef6d881000-7fef6da80000 ---p 0000b000 103:02 21766964                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7fef6da80000-7fef6da81000 r--p 0000a000 103:02 21766964                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7fef6da81000-7fef6da82000 rw-p 0000b000 103:02 21766964                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7fef6da82000-7fef6da8a000 r-xp 00000000 103:02 21766960                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7fef6da8a000-7fef6dc8a000 ---p 00008000 103:02 21766960                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7fef6dc8a000-7fef6dc8b000 r--p 00008000 103:02 21766960                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7fef6dc8b000-7fef6dc8c000 rw-p 00009000 103:02 21766960                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7fef6dc8c000-7fef6dcb6000 r-xp 00000000 103:02 27528277                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libjava.so
+7fef6dcb6000-7fef6deb5000 ---p 0002a000 103:02 27528277                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libjava.so
+7fef6deb5000-7fef6deb6000 r--p 00029000 103:02 27528277                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libjava.so
+7fef6deb6000-7fef6deb8000 rw-p 0002a000 103:02 27528277                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libjava.so
+7fef6deb8000-7fef6dec8000 r-xp 00000000 103:02 27528296                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libverify.so
+7fef6dec8000-7fef6e0c7000 ---p 00010000 103:02 27528296                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libverify.so
+7fef6e0c7000-7fef6e0c9000 r--p 0000f000 103:02 27528296                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libverify.so
+7fef6e0c9000-7fef6e0ca000 rw-p 00011000 103:02 27528296                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libverify.so
+7fef6e0ca000-7fef6e0d1000 r-xp 00000000 103:02 21766969                  /lib/x86_64-linux-gnu/librt-2.27.so
+7fef6e0d1000-7fef6e2d0000 ---p 00007000 103:02 21766969                  /lib/x86_64-linux-gnu/librt-2.27.so
+7fef6e2d0000-7fef6e2d1000 r--p 00006000 103:02 21766969                  /lib/x86_64-linux-gnu/librt-2.27.so
+7fef6e2d1000-7fef6e2d2000 rw-p 00007000 103:02 21766969                  /lib/x86_64-linux-gnu/librt-2.27.so
+7fef6e2d2000-7fef6e2e9000 r-xp 00000000 103:02 21758045                  /lib/x86_64-linux-gnu/libgcc_s.so.1
+7fef6e2e9000-7fef6e4e8000 ---p 00017000 103:02 21758045                  /lib/x86_64-linux-gnu/libgcc_s.so.1
+7fef6e4e8000-7fef6e4e9000 r--p 00016000 103:02 21758045                  /lib/x86_64-linux-gnu/libgcc_s.so.1
+7fef6e4e9000-7fef6e4ea000 rw-p 00017000 103:02 21758045                  /lib/x86_64-linux-gnu/libgcc_s.so.1
+7fef6e4ea000-7fef6e687000 r-xp 00000000 103:02 21766956                  /lib/x86_64-linux-gnu/libm-2.27.so
+7fef6e687000-7fef6e886000 ---p 0019d000 103:02 21766956                  /lib/x86_64-linux-gnu/libm-2.27.so
+7fef6e886000-7fef6e887000 r--p 0019c000 103:02 21766956                  /lib/x86_64-linux-gnu/libm-2.27.so
+7fef6e887000-7fef6e888000 rw-p 0019d000 103:02 21766956                  /lib/x86_64-linux-gnu/libm-2.27.so
+7fef6e888000-7fef6ea01000 r-xp 00000000 103:02 27526212                  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+7fef6ea01000-7fef6ec01000 ---p 00179000 103:02 27526212                  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+7fef6ec01000-7fef6ec0b000 r--p 00179000 103:02 27526212                  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+7fef6ec0b000-7fef6ec0d000 rw-p 00183000 103:02 27526212                  /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+7fef6ec0d000-7fef6ec11000 rw-p 00000000 00:00 0 
+7fef6ec11000-7fef6f8b9000 r-xp 00000000 103:02 27528299                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7fef6f8b9000-7fef6fab9000 ---p 00ca8000 103:02 27528299                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7fef6fab9000-7fef6fb4d000 r--p 00ca8000 103:02 27528299                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7fef6fb4d000-7fef6fb76000 rw-p 00d3c000 103:02 27528299                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/libjvm.so
+7fef6fb76000-7fef6fba6000 rw-p 00000000 00:00 0 
+7fef6fba6000-7fef6fbc0000 r-xp 00000000 103:02 21766967                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7fef6fbc0000-7fef6fdbf000 ---p 0001a000 103:02 21766967                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7fef6fdbf000-7fef6fdc0000 r--p 00019000 103:02 21766967                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7fef6fdc0000-7fef6fdc1000 rw-p 0001a000 103:02 21766967                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7fef6fdc1000-7fef6fdc5000 rw-p 00000000 00:00 0 
+7fef6fdc5000-7fef6fdc8000 r-xp 00000000 103:02 21766955                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7fef6fdc8000-7fef6ffc7000 ---p 00003000 103:02 21766955                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7fef6ffc7000-7fef6ffc8000 r--p 00002000 103:02 21766955                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7fef6ffc8000-7fef6ffc9000 rw-p 00003000 103:02 21766955                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7fef6ffc9000-7fef6ffe5000 r-xp 00000000 103:02 21761462                  /lib/x86_64-linux-gnu/libz.so.1.2.11
+7fef6ffe5000-7fef701e4000 ---p 0001c000 103:02 21761462                  /lib/x86_64-linux-gnu/libz.so.1.2.11
+7fef701e4000-7fef701e5000 r--p 0001b000 103:02 21761462                  /lib/x86_64-linux-gnu/libz.so.1.2.11
+7fef701e5000-7fef701e6000 rw-p 0001c000 103:02 21761462                  /lib/x86_64-linux-gnu/libz.so.1.2.11
+7fef701e6000-7fef703cd000 r-xp 00000000 103:02 21766952                  /lib/x86_64-linux-gnu/libc-2.27.so
+7fef703cd000-7fef705cd000 ---p 001e7000 103:02 21766952                  /lib/x86_64-linux-gnu/libc-2.27.so
+7fef705cd000-7fef705d1000 r--p 001e7000 103:02 21766952                  /lib/x86_64-linux-gnu/libc-2.27.so
+7fef705d1000-7fef705d3000 rw-p 001eb000 103:02 21766952                  /lib/x86_64-linux-gnu/libc-2.27.so
+7fef705d3000-7fef705d7000 rw-p 00000000 00:00 0 
+7fef705d7000-7fef705e5000 r-xp 00000000 103:02 27528263                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7fef705e5000-7fef707e4000 ---p 0000e000 103:02 27528263                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7fef707e4000-7fef707e5000 r--p 0000d000 103:02 27528263                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7fef707e5000-7fef707e6000 rw-p 0000e000 103:02 27528263                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/jli/libjli.so
+7fef707e6000-7fef7080d000 r-xp 00000000 103:02 21766948                  /lib/x86_64-linux-gnu/ld-2.27.so
+7fef7080d000-7fef7080f000 r--s 00011000 103:02 25957217                  /home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.12/1.3.16/twirl-api_2.12-1.3.16.jar
+7fef7080f000-7fef70811000 r--s 00007000 103:02 28051127                  /usr/share/java/java-atk-wrapper.jar
+7fef70811000-7fef70812000 r--s 0000a000 103:02 27528311                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/jaccess.jar
+7fef70812000-7fef70816000 r--s 0003a000 103:02 27528316                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/sunpkcs11.jar
+7fef70816000-7fef70820000 r--s 00117000 103:02 27528312                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/localedata.jar
+7fef70820000-7fef708f1000 rw-p 00000000 00:00 0 
+7fef708f1000-7fef708f2000 ---p 00000000 00:00 0 
+7fef708f2000-7fef708f5000 ---p 00000000 00:00 0 
+7fef708f5000-7fef709f4000 rw-p 00000000 00:00 0 
+7fef709f4000-7fef709f5000 r--s 00010000 103:02 27528317                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/zipfs.jar
+7fef709f5000-7fef709fb000 r--s 0003d000 103:02 27528315                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/sunjce_provider.jar
+7fef709fb000-7fef709fe000 r--s 0000f000 103:02 27528310                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/icedtea-sound.jar
+7fef709fe000-7fef70a00000 r--s 00001000 103:02 27528309                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/dnsns.jar
+7fef70a00000-7fef70a01000 r--s 0000d000 103:02 27528314                  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/sunec.jar
+7fef70a01000-7fef70a09000 rw-s 00000000 103:02 21182720                  /tmp/hsperfdata_digital32589/13923
+7fef70a09000-7fef70a0a000 rw-p 00000000 00:00 0 
+7fef70a0a000-7fef70a0b000 ---p 00000000 00:00 0 
+7fef70a0b000-7fef70a0d000 rw-p 00000000 00:00 0 
+7fef70a0d000-7fef70a0e000 r--p 00027000 103:02 21766948                  /lib/x86_64-linux-gnu/ld-2.27.so
+7fef70a0e000-7fef70a0f000 rw-p 00028000 103:02 21766948                  /lib/x86_64-linux-gnu/ld-2.27.so
+7fef70a0f000-7fef70a10000 rw-p 00000000 00:00 0 
+7fff6984f000-7fff69879000 rw-p 00000000 00:00 0                          [stack]
+7fff6993a000-7fff6993d000 r--p 00000000 00:00 0                          [vvar]
+7fff6993d000-7fff6993f000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -Djna.nosys=true -Dconfig.resource=test.application.conf 
+java_command: sbt.ForkMain 45441
+java_class_path (initial): /home/digital32589/Applications/hmrc-development-environment/hmrc/declare-transit-movement-departure-frontend/target/scala-2.12/test-classes:/home/digital32589/Applications/hmrc-development-environment/hmrc/declare-transit-movement-departure-frontend/target/web/classes/test:/home/digital32589/Applications/hmrc-development-environment/hmrc/declare-transit-movement-departure-frontend/target/scala-2.12/classes:/home/digital32589/Applications/hmrc-development-environment/hmrc/declare-transit-movement-departure-frontend/target/web/classes/main:/home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.12/scala-library-2.12.12.jar:/home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.12/1.3.16/twirl-api_2.12-1.3.16.jar:/home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-server_2.12/2.6.25/play-server_2.12-2.6.25.jar:/home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/filters-helpers_2.12/2.6.24/filters-helpers_2.12-2.6.24.jar:/home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-logback_2.12/2.6.24/play-logback_2.12-2.6.24.jar:/home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-akka-http-server_2.12/2.6.25/play-akka-http-server_2.12-2.6.25.jar:/home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-ahc-ws_2.12/2.6.25/play-ahc-ws_2.12-2.6.25.jar:/home/digital32589/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivemongo/play2-reactivemongo_2.12/0.20.11-play26/play2-reactivemongo_2.12-0.20.11-play26.jar:/home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/logback-json-logger_2.12/4.8.0/logback-json-logger_2.12-4.8.0.jar:/home/digital32589/.cache/coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/play-health_2.12/3.15.0-play-26/play-health
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+PATH=/home/digital32589/bin:/home/digital32589/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+USERNAME=digital32589
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xabb430], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xabb430], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x8eb5b0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x8eb5b0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x8eb5b0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x8eb5b0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x8eb460], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x8ebad0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: [libjvm.so+0x8ebad0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGTERM: [libjvm.so+0x8ebad0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0x8ebad0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04.5 LTS"
+
+uname:Linux 4.15.0-121-generic #123-Ubuntu SMP Mon Oct 5 16:16:40 UTC 2020 x86_64
+libc:glibc 2.27 NPTL 2.27 
+rlimit: STACK 8192k, CORE 0k, NPROC 100000, NOFILE 100000, AS infinity
+load average:24.92 26.17 16.58
+
+/proc/meminfo:
+MemTotal:       16282912 kB
+MemFree:          144924 kB
+MemAvailable:      47548 kB
+Buffers:            1292 kB
+Cached:           413616 kB
+SwapCached:        12808 kB
+Active:         14122624 kB
+Inactive:        1360408 kB
+Active(anon):   14100296 kB
+Inactive(anon):  1336216 kB
+Active(file):      22328 kB
+Inactive(file):    24192 kB
+Unevictable:         144 kB
+Mlocked:             144 kB
+SwapTotal:      16598012 kB
+SwapFree:              0 kB
+Dirty:                72 kB
+Writeback:            20 kB
+AnonPages:      15057504 kB
+Mapped:           122156 kB
+Shmem:            368084 kB
+Slab:             309508 kB
+SReclaimable:     113068 kB
+SUnreclaim:       196440 kB
+KernelStack:       53632 kB
+PageTables:       163892 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    24739468 kB
+Committed_AS:   53955656 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      992728 kB
+DirectMap2M:    15644672 kB
+DirectMap1G:           0 kB
+
+container (cgroup) information:
+container_type: cgroupv1
+cpu_cpuset_cpus: 0-7
+cpu_memory_nodes: 0
+active_processor_count: 8
+cpu_quota: -1
+cpu_period: 100000
+cpu_shares: -1
+memory_limit_in_bytes: -1
+memory_and_swap_limit_in_bytes: -2
+memory_soft_limit_in_bytes: -1
+memory_usage_in_bytes: 16090951680
+memory_max_usage_in_bytes: 16096288768
+
+
+CPU:total 8 (initial active 8) (4 cores per cpu, 2 threads per core) family 6 model 94 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, ht, tsc, tscinvbit, bmi1, bmi2, adx
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xdc
+cpu MHz		: 2699.998
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit srbds
+bogomips	: 5199.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xdc
+cpu MHz		: 2700.001
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit srbds
+bogomips	: 5199.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xdc
+cpu MHz		: 2700.001
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit srbds
+bogomips	: 5199.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xdc
+cpu MHz		: 2699.997
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit srbds
+bogomips	: 5199.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xdc
+cpu MHz		: 2700.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit srbds
+bogomips	: 5199.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xdc
+cpu MHz		: 2699.988
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit srbds
+bogomips	: 5199.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 6
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xdc
+cpu MHz		: 2700.006
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit srbds
+bogomips	: 5199.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 7
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 94
+model name	: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+stepping	: 3
+microcode	: 0xdc
+cpu MHz		: 2700.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 7
+initial apicid	: 7
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit srbds
+bogomips	: 5199.98
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 16282912k(146148k free), swap 16598012k(0k free)
+
+vm_info: OpenJDK 64-Bit Server VM (25.265-b01) for linux-amd64 JRE (1.8.0_265-8u265-b01-0ubuntu2~18.04-b01), built on Aug  3 2020 01:16:56 by "buildd" with gcc 7.5.0
+
+time: Tue Oct 20 11:20:23 2020
+timezone: BST
+elapsed time: 52 seconds (0d 0h 0m 52s)
+

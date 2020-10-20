@@ -16,16 +16,17 @@
 
 package pages
 
+import models.Index
 import pages.behaviours.PageBehaviours
 
-class ItemTotalGrossMassPageSpec extends PageBehaviours {
+class ItemTotalGrossMassPageSpec(index: Index) extends PageBehaviours {
 
   "ItemTotalGrossMassPage" - {
 
-    beRetrievable[String](ItemTotalGrossMassPage)
+    beRetrievable[String](ItemTotalGrossMassPage(index))
 
-    beSettable[String](ItemTotalGrossMassPage)
+    beSettable[String](ItemTotalGrossMassPage(index))
 
-    beRemovable[String](ItemTotalGrossMassPage)
+    beRemovable[String](ItemTotalGrossMassPage(index))
   }
 }

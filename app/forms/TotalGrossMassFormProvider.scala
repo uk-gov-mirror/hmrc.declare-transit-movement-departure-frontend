@@ -20,7 +20,7 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
-import queries.Constants._
+import models.domain.GrossMass.Constants._
 
 class TotalGrossMassFormProvider @Inject() extends Mappings {
 

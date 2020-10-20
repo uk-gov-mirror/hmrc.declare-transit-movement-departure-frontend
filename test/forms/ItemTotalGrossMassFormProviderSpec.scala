@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
-import queries.Constants._
+import models.domain.GrossMass.Constants._
 
 class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
 

@@ -26,8 +26,8 @@ trait PageGenerators {
   implicit lazy val arbitraryItemDescriptionPage: Arbitrary[ItemDescriptionPage] =
     Arbitrary(ItemDescriptionPage(Index(0)))
 
-  implicit lazy val arbitraryItemTotalGrossMassPage: Arbitrary[ItemTotalGrossMassPage.type] =
-    Arbitrary(ItemTotalGrossMassPage)
+  implicit lazy val arbitraryItemTotalGrossMassPage: Arbitrary[ItemTotalGrossMassPage] =
+    Arbitrary(ItemTotalGrossMassPage(Index(0)))
 
   implicit lazy val arbitraryOtherReferenceLiabiityAmountPage: Arbitrary[OtherReferenceLiabilityAmountPage.type] =
     Arbitrary(OtherReferenceLiabilityAmountPage)
