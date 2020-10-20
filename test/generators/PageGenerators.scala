@@ -20,8 +20,12 @@ import models.Index
 import org.scalacheck.Arbitrary
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryPreLodgeDeclarationPage: Arbitrary[PreLodgeDeclarationPage.type] =
+    Arbitrary(PreLodgeDeclarationPage)
 
   implicit lazy val arbitraryItemDescriptionPage: Arbitrary[ItemDescriptionPage] =
     Arbitrary(ItemDescriptionPage(Index(0)))

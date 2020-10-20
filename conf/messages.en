@@ -666,3 +666,8 @@ itemDescription.error.length = Item description must be 280 characters or less
 itemDescription.paragraph = Give a brief summary of the item.
 itemDescription.error.invalid =  Description of item {0} must only include letters a to z, numbers 0 to 9 or blank spaces.
 
+
+preLodgeDeclaration.title = preLodgeDeclaration
+preLodgeDeclaration.heading = preLodgeDeclaration
+preLodgeDeclaration.checkYourAnswersLabel = preLodgeDeclaration
+preLodgeDeclaration.error.required = Select yes if preLodgeDeclaration
