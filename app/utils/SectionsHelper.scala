@@ -22,6 +22,7 @@ import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
+import controllers.addItems.{routes => addItemsRoutes}
 import models.GuaranteeType.{guaranteeReferenceRoute, nonGuaranteeReferenceRoute}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
@@ -39,6 +40,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
       routesSection,
       transportSection,
       tradersDetailsSection,
+      itemsSection,
       goodsSummarySection,
       guaranteeSection
     )
@@ -86,6 +88,14 @@ class SectionsHelper(userAnswers: UserAnswers) {
     val (page, status)                     = getIncompletePage(startPage, traderDetailsPage).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.tradersDetails", page, status)
+  }
+
+  private def itemsSection: SectionDetails = {
+    val startPage: String                  = addItemsRoutes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(1), NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (addItemsRoutes.ItemDescriptionController.onPageLoad(userAnswers.id).url, Completed)
+    val (page, status)                     = getIncompletePage(startPage, movementDetailsPages).getOrElse(cyaPageAndStatus)
+
+    SectionDetails("declarationSummary.section.movementDetails", page, status)
   }
 
   private def goodsSummarySection: SectionDetails = {
