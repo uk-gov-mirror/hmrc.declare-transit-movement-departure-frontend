@@ -39,7 +39,7 @@ class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar wit
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, routes.ItemsCheckYourAnswersController.onPageLoad(lrn).url)
+      val request        = FakeRequest(GET, routes.ItemsCheckYourAnswersController.onPageLoad(lrn, index).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 

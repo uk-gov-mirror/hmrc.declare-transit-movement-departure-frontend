@@ -22,7 +22,7 @@ import queries.Constants.Items
 
 case class ItemDescriptionPage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ Items \ index.toString \ toString
+  override def path: JsPath = JsPath \ Items \ index.position \ toString
 
   override def toString: String = "itemDescription"
 }

@@ -18,12 +18,15 @@ package controllers.addItems
 
 import controllers.actions._
 import javax.inject.Inject
-import models.LocalReferenceNumber
+import models.{Index, LocalReferenceNumber, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.AddItemsCheckYourAnswersHelper
+import viewModels.AddItemsCheckYourAnswersViewModel
+import viewModels.sections.Section
 
 import scala.concurrent.ExecutionContext
 
@@ -38,9 +41,13 @@ class ItemsCheckYourAnswersController @Inject()(
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val json = Json.obj("lrn" -> lrn)
+      val sections: Seq[Section] = AddItemsCheckYourAnswersViewModel(request.userAnswers, index).sections
+      val json = Json.obj(
+        "lrn"      -> lrn,
+        "sections" -> Json.toJson(sections)
+      )
 
       renderer.render("itemsCheckYourAnswers.njk", json).map(Ok(_))
   }
