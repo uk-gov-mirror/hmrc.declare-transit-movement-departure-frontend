@@ -336,6 +336,11 @@ POST       /:lrn/add-items/item-details/:index/item-description                 
 GET        /:lrn/add-items/item-details/:index/change-item-description                   controllers.addItems.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/item-details/:index/change-item-description                   controllers.addItems.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 
+GET        /:lrn/add-items/item-details/:index/add-total-net-mass                      controllers.addItems.AddTotalNetMassController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/item-details/:index/add-total-net-mass                      controllers.addItems.AddTotalNetMassController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/item-details/:index/change-add-total-net-mass               controllers.addItems.AddTotalNetMassController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/item-details/:index/change-add-total-net-mass               controllers.addItems.AddTotalNetMassController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+
 GET        /:lrn/add-items/item-details/:index/item-total-gross-mass                        controllers.addItems.ItemTotalGrossMassController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/item-details/:index/item-total-gross-mass                        controllers.addItems.ItemTotalGrossMassController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/item-details/:index/change-item-total-gross-mass                  controllers.addItems.ItemTotalGrossMassController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
