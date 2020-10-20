@@ -19,14 +19,14 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def addTotalNetMass: Option[Row] = userAnswers.get(AddTotalNetMassPage) map {
+  def addTotalNetMass(index: Index): Option[Row] = userAnswers.get(AddTotalNetMassPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"addTotalNetMass.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -34,7 +34,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.AddTotalNetMassController.onPageLoad(lrn, CheckMode).url,
+            href               = routes.AddTotalNetMassController.onPageLoad(lrn, index, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addTotalNetMass.checkYourAnswersLabel"))
           )
         )

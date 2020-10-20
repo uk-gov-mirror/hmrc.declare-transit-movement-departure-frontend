@@ -16,11 +16,13 @@
 
 package pages
 
+import models.Index
 import play.api.libs.json.JsPath
+import queries.Constants.Items
 
-case object AddTotalNetMassPage extends QuestionPage[Boolean] {
+case class AddTotalNetMassPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ Items \ index.toString \ toString
 
   override def toString: String = "addTotalNetMass"
 }

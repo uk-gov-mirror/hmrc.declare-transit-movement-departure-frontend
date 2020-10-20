@@ -17,16 +17,12 @@
 package pages
 
 import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
+import queries.Constants.Items
 
-class AddTotalNetMassPageSpec(index: Index) extends PageBehaviours {
+case class ItemTotalGrossMassPage(index: Index) extends QuestionPage[String] {
 
-  "AddTotalNetMassPage" - {
+  override def path: JsPath = JsPath \ Items \ index.toString \ toString
 
-    beRetrievable[Boolean](AddTotalNetMassPage(index))
-
-    beSettable[Boolean](AddTotalNetMassPage(index))
-
-    beRemovable[Boolean](AddTotalNetMassPage(index))
-  }
+  override def toString: String = "itemTotalGrossMass"
 }

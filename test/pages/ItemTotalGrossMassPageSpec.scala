@@ -19,14 +19,14 @@ package pages
 import models.Index
 import pages.behaviours.PageBehaviours
 
-class AddTotalNetMassPageSpec(index: Index) extends PageBehaviours {
+class ItemTotalGrossMassPageSpec(index: Index) extends PageBehaviours {
 
-  "AddTotalNetMassPage" - {
+  "ItemTotalGrossMassPage" - {
 
-    beRetrievable[Boolean](AddTotalNetMassPage(index))
+    beRetrievable[String](ItemTotalGrossMassPage(index))
 
-    beSettable[Boolean](AddTotalNetMassPage(index))
+    beSettable[String](ItemTotalGrossMassPage(index))
 
-    beRemovable[Boolean](AddTotalNetMassPage(index))
+    beRemovable[String](ItemTotalGrossMassPage(index))
   }
 }

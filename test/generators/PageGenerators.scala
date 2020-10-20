@@ -23,11 +23,14 @@ import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryAddTotalNetMassPage: Arbitrary[AddTotalNetMassPage.type] =
-    Arbitrary(AddTotalNetMassPage)
+  implicit lazy val arbitraryAddTotalNetMassPage: Arbitrary[AddTotalNetMassPage] =
+    Arbitrary(AddTotalNetMassPage(Index(0)))
 
   implicit lazy val arbitraryItemDescriptionPage: Arbitrary[ItemDescriptionPage] =
     Arbitrary(ItemDescriptionPage(Index(0)))
+
+  implicit lazy val arbitraryItemTotalGrossMassPage: Arbitrary[ItemTotalGrossMassPage] =
+    Arbitrary(ItemTotalGrossMassPage(Index(0)))
 
   implicit lazy val arbitraryOtherReferenceLiabiityAmountPage: Arbitrary[OtherReferenceLiabilityAmountPage.type] =
     Arbitrary(OtherReferenceLiabilityAmountPage)
