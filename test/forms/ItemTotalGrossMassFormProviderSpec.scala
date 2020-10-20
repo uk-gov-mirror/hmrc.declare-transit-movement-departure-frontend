@@ -71,8 +71,10 @@ class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with Spec
         List(FormError(fieldName, invalidFormatKeyGrossMass, Seq(index.display)))
 
       val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLengthGrossMass) suchThat (_.matches(totalGrossMassInvalidCharactersRegex))
-        stringsWithMaxLength(maxLengthGrossMass) suchThat (!_.matches(totalGrossMassInvalidFormatRegex))
+        decimals
+          .suchThat(_.length < 16)
+          .suchThat(_.matches(totalGrossMassInvalidCharactersRegex))
+          .suchThat(!_.matches(totalGrossMassInvalidFormatRegex))
       }
 
       forAll(genInvalidString) {
