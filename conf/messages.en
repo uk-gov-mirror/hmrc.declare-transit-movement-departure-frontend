@@ -443,7 +443,7 @@ nationalityCrossingBorder.error.length = The nationality crossing the border mus
 inlandMode.title = What is the inland mode?
 inlandMode.heading = What is the inland mode?
 inlandMode.checkYourAnswersLabel = Inland mode
-inlandMode.error.required = Enter the inland Mode
+inlandMode.error.required = Select the inland mode
 inlandMode.error.length = The inland mode must be 100 characters or less
 
 modeCrossingBorder.title = What is the mode crossing the border?
