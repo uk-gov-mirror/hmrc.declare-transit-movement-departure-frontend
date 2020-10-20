@@ -18,10 +18,9 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit, TransportMode}
-import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, TransportModeList}
+import models.reference._
+import models._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
