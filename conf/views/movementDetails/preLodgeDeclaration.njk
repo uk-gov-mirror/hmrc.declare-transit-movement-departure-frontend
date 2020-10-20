@@ -29,6 +29,8 @@
 
         <form action="{{ routes.controllers.movementDetails.PreLodgeDeclarationController.onSubmit(lrn, mode).url }}" method="post">
 
+        <span class="govuk-caption-xl">{{messages('movementDetails.preHeading')}}</span>
+
           {{ csrf() | safe }}
 
           {{ govukRadios({
