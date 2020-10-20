@@ -16,22 +16,15 @@
 
 package forms
 
-import forms.mappings.Mappings
 import javax.inject.Inject
+import forms.mappings.Mappings
+import models.Index
 import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
-import models.domain.GrossMass.Constants._
 
-class TotalGrossMassFormProvider @Inject() extends Mappings {
+class AddTotalNetMassFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(index: Index): Form[Boolean] =
     Form(
-      "value" -> text(requiredKeyTotalGrossMass)
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(maxLengthGrossMass, lengthKeyTotalGrossMass),
-            regexp(totalGrossMassInvalidFormatRegex, invalidCharactersTotalGrossMass),
-            minGrossMax(0, minLengthTotalGrossMass)
-          ))
+      "value" -> boolean("addTotalNetMass.error.required", "error.boolean", Seq(index.display))
     )
 }
