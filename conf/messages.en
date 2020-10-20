@@ -405,7 +405,7 @@ idAtDeparture.error.invalidCharacters = The name, registration or reference of t
 nationalityAtDeparture.title = What is the nationality at departure?
 nationalityAtDeparture.heading = What is the nationality at departure?
 nationalityAtDeparture.checkYourAnswersLabel = Nationality at departure
-nationalityAtDeparture.error.required = Enter the nationality at departure
+nationalityAtDeparture.error.required = Select the nationality at departure
 
 idCrossingBorder.title = What is the name, registration or reference of the vehicle crossing the border?
 idCrossingBorder.heading = What is the name, registration or reference of the vehicle crossing the border?
@@ -437,25 +437,25 @@ destinationOffice.error.required = Select the office in {0} that the are goods e
 nationalityCrossingBorder.title = What is the nationality crossing the border?
 nationalityCrossingBorder.heading = What is the nationality crossing the border?
 nationalityCrossingBorder.checkYourAnswersLabel = Nationality crossing the border
-nationalityCrossingBorder.error.required = Enter the nationality crossing the border
+nationalityCrossingBorder.error.required = Select the nationality crossing the border
 nationalityCrossingBorder.error.length = The nationality crossing the border must be 35 characters or less
 
 inlandMode.title = What is the inland mode?
 inlandMode.heading = What is the inland mode?
 inlandMode.checkYourAnswersLabel = Inland mode
-inlandMode.error.required = Enter the inland Mode
+inlandMode.error.required = Select the inland mode
 inlandMode.error.length = The inland mode must be 100 characters or less
 
 modeCrossingBorder.title = What is the mode crossing the border?
 modeCrossingBorder.heading = What is the mode crossing the border?
 modeCrossingBorder.checkYourAnswersLabel = Mode crossing the border
-modeCrossingBorder.error.required = Enter the mode crossing the border
+modeCrossingBorder.error.required = Select the mode crossing the border
 modeCrossingBorder.error.length = Mode crossing border must be 100 characters or less
 
 modeAtBorder.title = What is the mode at the border?
 modeAtBorder.heading = What is the mode at the border?
 modeAtBorder.checkYourAnswersLabel = Mode at the border
-modeAtBorder.error.required = Enter the mode at the border
+modeAtBorder.error.required = Select the mode at the border
 modeAtBorder.error.length = The mode at the border must be 100 characters or less
 
 addTransitOffice.title.singular = You have added {0} office of transit
