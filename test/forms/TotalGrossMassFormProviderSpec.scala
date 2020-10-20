@@ -19,14 +19,9 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
+import models.domain.GrossMass.Constants._
 
 class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
-
-  val requiredKey                 = "totalGrossMass.error.required"
-  val lengthKey                   = "totalGrossMass.error.length"
-  val maxLength                   = 15
-  val invalidCharacters           = "totalGrossMass.error.invalidCharacters"
-  val totalGrossMassregex: String = "^[0-9]{1,11}(?:\\.[0-9]{1,3})?$"
 
   val form = new TotalGrossMassFormProvider()()
 
@@ -37,29 +32,29 @@ class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(maxLengthGrossMass)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength   = maxLengthGrossMass,
+      lengthError = FormError(fieldName, lengthKeyTotalGrossMass, Seq(maxLengthGrossMass))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKeyTotalGrossMass)
     )
 
     "must not bind strings that do not match the totalgross mass regex" in {
 
       val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(totalGrossMassregex)))
+        List(FormError(fieldName, invalidCharactersTotalGrossMass, Seq(totalGrossMassInvalidFormatRegex)))
 
       val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(totalGrossMassregex))
+        stringsWithMaxLength(maxLengthGrossMass) suchThat (!_.matches(totalGrossMassInvalidFormatRegex))
       }
 
       forAll(genInvalidString) {
@@ -68,5 +63,6 @@ class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
           result.errors mustBe expectedError
       }
     }
+
   }
 }
