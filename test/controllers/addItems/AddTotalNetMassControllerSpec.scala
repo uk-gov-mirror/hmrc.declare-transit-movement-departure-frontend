@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import base.SpecBase
 import forms.AddTotalNetMassFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
+import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
-import navigation.annotations.{AddItems, PreTaskListDetails}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -35,6 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -43,7 +44,7 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new AddTotalNetMassFormProvider()
-  val form         = formProvider()
+  val form         = formProvider(index)
 
   lazy val addTotalNetMassRoute = routes.AddTotalNetMassController.onPageLoad(lrn, index, NormalMode).url
 
@@ -69,6 +70,7 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
         "form"   -> form,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
+        "index"  -> index.display,
         "radios" -> Radios.yesNo(form("value"))
       )
 
@@ -177,7 +179,7 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -194,7 +196,7 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

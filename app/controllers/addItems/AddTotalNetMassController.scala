@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import controllers.actions._
 import forms.AddTotalNetMassFormProvider
@@ -48,19 +48,18 @@ class AddTotalNetMassController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(AddTotalNetMassPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(index: Index)
+        case Some(value) => formProvider(index: Index).fill(value)
       }
 
       val json = Json.obj(
         "form"   -> preparedForm,
         "mode"   -> mode,
         "lrn"    -> lrn,
+        "index"  -> index.display,
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
@@ -69,7 +68,7 @@ class AddTotalNetMassController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(index: Index)
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -78,6 +77,7 @@ class AddTotalNetMassController @Inject()(
               "form"   -> formWithErrors,
               "mode"   -> mode,
               "lrn"    -> lrn,
+              "index"  -> index.display,
               "radios" -> Radios.yesNo(formWithErrors("value"))
             )
 

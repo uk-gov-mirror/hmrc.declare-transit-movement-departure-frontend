@@ -16,15 +16,16 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddTotalNetMassFormProviderSpec extends BooleanFieldBehaviours {
+class AddTotalNetMassFormProviderSpec extends BooleanFieldBehaviours with SpecBase {
 
   val requiredKey = "addTotalNetMass.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddTotalNetMassFormProvider()()
+  val form = new AddTotalNetMassFormProvider()(index)
 
   ".value" - {
 
@@ -33,13 +34,13 @@ class AddTotalNetMassFormProviderSpec extends BooleanFieldBehaviours {
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      invalidError = FormError(fieldName, invalidKey, Seq(index.display))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
   }
 }
