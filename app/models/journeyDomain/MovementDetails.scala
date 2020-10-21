@@ -16,9 +16,8 @@
 
 package models.journeyDomain
 
-import cats.data._
 import cats.implicits._
-import models.{DeclarationType, RepresentativeCapacity, UserAnswers}
+import models.{DeclarationType, RepresentativeCapacity}
 import pages._
 
 sealed trait DeclarationForSomeoneElseAnswer
@@ -39,8 +38,8 @@ object DeclarationForSomeoneElse {
 
   implicit val readDeclarationForSomeoneElse: UserAnswersReader[DeclarationForSomeoneElse] =
     (
-      RepresentativeNamePage.read,
-      RepresentativeCapacityPage.read
+      RepresentativeNamePage.reader,
+      RepresentativeCapacityPage.reader
     ).tupled.map(DeclarationForSomeoneElse.apply _ tupled)
 }
 
@@ -63,10 +62,10 @@ final case class SimplifiedMovementDetails(
 
 object SimplifiedMovementDetails {
 
-  implicit val makeSimplifiedMovementDetails: ParseUserAnswers[Option, SimplifiedMovementDetails] = {
+  implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, SimplifiedMovementDetails] = {
 
     val declarationForSomeoneElseAnswer: UserAnswersReader[DeclarationForSomeoneElseAnswer] =
-      DeclarationForSomeoneElsePage.read.flatMap(
+      DeclarationForSomeoneElsePage.reader.flatMap(
         bool =>
           if (bool) {
             UserAnswersReader[DeclarationForSomeoneElse].widen[DeclarationForSomeoneElseAnswer]
@@ -75,11 +74,11 @@ object SimplifiedMovementDetails {
         }
       )
 
-    ParseUserAnswers(
+    UserAnswersOptionalParser(
       (
-        DeclarationTypePage.read,
-        ContainersUsedPage.read,
-        DeclarationPlacePage.read,
+        DeclarationTypePage.reader,
+        ContainersUsedPage.reader,
+        DeclarationPlacePage.reader,
         declarationForSomeoneElseAnswer
       ).tupled
     )(SimplifiedMovementDetails.apply _ tupled)

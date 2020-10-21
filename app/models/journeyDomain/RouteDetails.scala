@@ -37,9 +37,9 @@ object TransitInformation {
     ((__ \ AddAnotherTransitOfficePage.key).read[String] and
       (__ \ ArrivalTimesAtOfficePage.key \ "dateTime").read[LocalDateTime])(TransitInformation(_, _))
 
-  implicit val readSeqTransitInformation = {
+  implicit val readSeqTransitInformation: UserAnswersReader[NonEmptyList[TransitInformation]] = {
     val readArrayOfTransitOffices: UserAnswersReader[List[JsObject]] =
-      DeriveNumberOfOfficeOfTransits.read
+      DeriveNumberOfOfficeOfTransits.reader
 
     val readTransitOffices =
       ReaderT[Option, List[JsObject], List[TransitInformation]] {
@@ -60,13 +60,13 @@ final case class RouteDetails(
 
 object RouteDetails {
 
-  implicit val makeSimplifiedMovementDetails: ParseUserAnswers[Option, RouteDetails] =
-    ParseUserAnswers(
+  implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, RouteDetails] =
+    UserAnswersOptionalParser(
       (
-        CountryOfDispatchPage.read,
-        OfficeOfDeparturePage.read,
-        DestinationCountryPage.read,
-        DestinationOfficePage.read,
+        CountryOfDispatchPage.reader,
+        OfficeOfDeparturePage.reader,
+        DestinationCountryPage.reader,
+        DestinationOfficePage.reader,
         UserAnswersReader[NonEmptyList[TransitInformation]]
       ).tupled
     )(RouteDetails.apply _ tupled)

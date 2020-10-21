@@ -17,7 +17,6 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
-import cats.data.NonEmptyList
 import models.{Index, LocalDateTimeWithAMPM, UserAnswers}
 import pages._
 
@@ -51,7 +50,7 @@ class RouteDetailsSpec extends SpecBase with GeneratorSpec {
                 .value
           }
 
-          val result = ParseUserAnswers.parseNoDetails[RouteDetails](userAnswers).value
+          val result = UserAnswersParser[Option, RouteDetails].run(userAnswers).value
 
           result mustEqual expected
 

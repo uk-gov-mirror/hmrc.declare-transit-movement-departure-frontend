@@ -20,19 +20,28 @@ import cats.data._
 import models.UserAnswers
 import pages.QuestionPage
 
-trait ParseUserAnswers[F[_], A] {
+trait UserAnswersParser[F[_], A] {
 
-  def parse(ua: UserAnswers): F[A]
+  def run(ua: UserAnswers): F[A]
 
 }
 
-object ParseUserAnswers {
+object UserAnswersParser {
 
-  def apply[A, B](reader: ReaderT[Option, UserAnswers, A])(f: A => B): ParseUserAnswers[Option, B] =
-    ua => reader.run(ua).map(f)
+  def apply[F[_], A](implicit parser: UserAnswersParser[F, A]): UserAnswersParser[F, A] = parser
 
-  def parseNoDetails[A](userAnswers: UserAnswers)(implicit PUA: ParseUserAnswers[Option, A]): Option[A] =
-    PUA.parse(userAnswers)
+}
 
+class UserAnswersOptionalParser[A](reader: ReaderT[Option, UserAnswers, A]) extends UserAnswersParser[Option, A] {
+  self =>
 
+  override def run(ua: UserAnswers): Option[A] =
+    reader.run(ua)
+
+}
+
+object UserAnswersOptionalParser {
+
+  def apply[A, B](reader: ReaderT[Option, UserAnswers, A])(f: A => B): UserAnswersOptionalParser[B] =
+    new UserAnswersOptionalParser(reader.map(f))
 }

@@ -56,7 +56,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec {
                   .value
             }
 
-            val result = ParseUserAnswers.parseNoDetails[SimplifiedMovementDetails](userAnswers).value
+            val result = UserAnswersParser[Option, SimplifiedMovementDetails].run(userAnswers).value
 
             result mustEqual expected
 

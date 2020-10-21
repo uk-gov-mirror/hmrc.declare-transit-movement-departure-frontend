@@ -24,17 +24,13 @@ package object journeyDomain {
 
   type UserAnswersReader[A] = ReaderT[Option, UserAnswers, A]
 
-  object UserAnswersReader {
+  private[models] object UserAnswersReader {
     def apply[A: UserAnswersReader]: UserAnswersReader[A] = implicitly[UserAnswersReader[A]]
   }
 
-  trait GettableAsReader[A] {
-    def reader(a: Gettable[A]): UserAnswersReader[A]
-  }
+  implicit class GettableAsOptionalReaderOps[A](a: Gettable[A]) {
 
-  implicit class GettableAsReaderOps[A](a: Gettable[A]) {
-
-    def read(implicit rds: Reads[A]): UserAnswersReader[A] =
+    def reader(implicit reads: Reads[A]): UserAnswersReader[A] =
       ReaderT[Option, UserAnswers, A](_.get(a))
   }
 
