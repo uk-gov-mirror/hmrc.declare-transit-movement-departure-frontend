@@ -20,20 +20,18 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import models.domain.GrossMass.Constants._
 
 class TotalGrossMassFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] = {
-
-    val totalGrossMassregex: String = "^[0-9]{1,11}(?:\\.[0-9]{1,3})?$"
-
+  def apply(): Form[String] =
     Form(
-      "value" -> text("totalGrossMass.error.required")
+      "value" -> text(requiredKeyTotalGrossMass)
         .verifying(
           StopOnFirstFail[String](
-            maxLength(15, "totalGrossMass.error.length"),
-            regexp(totalGrossMassregex, "totalGrossMass.error.invalidCharacters")
+            maxLength(maxLengthGrossMass, lengthKeyTotalGrossMass),
+            regexp(totalGrossMassInvalidFormatRegex, invalidCharactersTotalGrossMass),
+            minGrossMax(0, minLengthTotalGrossMass)
           ))
     )
-  }
 }

@@ -20,11 +20,27 @@ import models.Index
 import org.scalacheck.Arbitrary
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryPreLodgeDeclarationPage: Arbitrary[PreLodgeDeclarationPage.type] =
+    Arbitrary(PreLodgeDeclarationPage)
+
+  implicit lazy val arbitraryTotalNetMassPage: Arbitrary[TotalNetMassPage] =
+    Arbitrary(TotalNetMassPage(Index(0)))
+
+  implicit lazy val arbitraryIsCommodityCodeKnownPage: Arbitrary[IsCommodityCodeKnownPage] =
+    Arbitrary(IsCommodityCodeKnownPage(Index(0)))
+
+  implicit lazy val arbitraryAddTotalNetMassPage: Arbitrary[AddTotalNetMassPage] =
+    Arbitrary(AddTotalNetMassPage(Index(0)))
+
   implicit lazy val arbitraryItemDescriptionPage: Arbitrary[ItemDescriptionPage] =
     Arbitrary(ItemDescriptionPage(Index(0)))
+
+  implicit lazy val arbitraryItemTotalGrossMassPage: Arbitrary[ItemTotalGrossMassPage] =
+    Arbitrary(ItemTotalGrossMassPage(Index(0)))
 
   implicit lazy val arbitraryOtherReferenceLiabiityAmountPage: Arbitrary[OtherReferenceLiabilityAmountPage.type] =
     Arbitrary(OtherReferenceLiabilityAmountPage)

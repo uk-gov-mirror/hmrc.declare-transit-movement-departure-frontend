@@ -16,11 +16,14 @@
 
 package pages
 
-import models.ProcedureType
+import models.ProcedureType._
+import models.{ProcedureType, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.movementDetails.PreLodgeDeclarationPage
 
 class ProcedureTypeSpec extends PageBehaviours {
-
+  // format: off
   "ProcedureTypePage" - {
 
     beRetrievable[ProcedureType](ProcedureTypePage)
@@ -28,5 +31,20 @@ class ProcedureTypeSpec extends PageBehaviours {
     beSettable[ProcedureType](ProcedureTypePage)
 
     beRemovable[ProcedureType](ProcedureTypePage)
+
+    "cleanup" - {
+      "must clean down PreLodgedDeclarationPage when changing to Simplified" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result = userAnswers
+              .set(ProcedureTypePage, Normal).success.value
+              .set(PreLodgeDeclarationPage, true).success.value
+              .set(ProcedureTypePage, Simplified).success.value
+
+            result.get(PreLodgeDeclarationPage) must not be defined
+        }
+      }
+    }
   }
+  // format: on
 }
