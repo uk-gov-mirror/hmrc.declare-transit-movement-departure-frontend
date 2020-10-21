@@ -345,3 +345,8 @@ GET        /:lrn/add-items/item-details/:index/item-total-gross-mass            
 POST       /:lrn/add-items/item-details/:index/item-total-gross-mass                        controllers.addItems.ItemTotalGrossMassController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/item-details/:index/change-item-total-gross-mass                  controllers.addItems.ItemTotalGrossMassController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/item-details/:index/change-item-total-gross-mass                 controllers.addItems.ItemTotalGrossMassController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/add-items/item-details/:index/is-commodity-code-known                        controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/item-details/:index/is-commodity-code-known                         controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/item-details/:index/change-is-commodity-code-known               controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/item-details/:index/change-is-commodity-code-known                 controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)

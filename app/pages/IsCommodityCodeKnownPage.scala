@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import models.Index
+import play.api.libs.json.JsPath
+import queries.Constants.Items
 
-class IsConsigneeEoriKnownFormProvider @Inject() extends Mappings {
+case class IsCommodityCodeKnownPage(index: Index) extends QuestionPage[Boolean] {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isConsigneeEoriKnown.error.required")
-    )
+  override def path: JsPath = JsPath \ Items \ index.position \ toString
+
+  override def toString: String = "isCommodityCodeKnown"
 }

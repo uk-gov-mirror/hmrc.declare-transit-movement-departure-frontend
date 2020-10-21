@@ -24,6 +24,21 @@ import uk.gov.hmrc.viewmodels._
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def isCommodityCodeKnown(index: Index): Option[Row] = userAnswers.get(IsCommodityCodeKnownPage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"isCommodityCodeKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.IsCommodityCodeKnownController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"isCommodityCodeKnown.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addTotalNetMass(index: Index): Option[Row] = userAnswers.get(AddTotalNetMassPage(index)) map {
     answer =>
       Row(

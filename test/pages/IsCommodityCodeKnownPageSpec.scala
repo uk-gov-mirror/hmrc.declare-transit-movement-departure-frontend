@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import models.Index
+import pages.behaviours.PageBehaviours
 
-class IsConsigneeEoriKnownFormProvider @Inject() extends Mappings {
+class IsCommodityCodeKnownPageSpec(index: Index) extends PageBehaviours {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isConsigneeEoriKnown.error.required")
-    )
+  "IsCommodityCodeKnownPage" - {
+
+    beRetrievable[Boolean](IsCommodityCodeKnownPage(index))
+
+    beSettable[Boolean](IsCommodityCodeKnownPage(index))
+
+    beRemovable[Boolean](IsCommodityCodeKnownPage(index))
+  }
 }

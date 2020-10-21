@@ -18,12 +18,13 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import models.Index
 import play.api.data.Form
 
-class IsConsigneeEoriKnownFormProvider @Inject() extends Mappings {
+class IsCommodityCodeKnownFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(index: Index): Form[Boolean] =
     Form(
-      "value" -> boolean("isConsigneeEoriKnown.error.required")
+      "value" -> boolean("isCommodityCodeKnown.error.required", "error.boolean", Seq(index.display))
     )
 }
