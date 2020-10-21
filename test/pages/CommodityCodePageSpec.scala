@@ -19,15 +19,16 @@ package pages
 import models.Index
 import pages.behaviours.PageBehaviours
 
-class TotalNetMassPageSpec extends PageBehaviours {
+class CommodityCodePageSpec extends PageBehaviours {
 
   private val index = Index(0)
-  "TotalNetMassPage" - {
 
-    beRetrievable[String](TotalNetMassPage(index))
+  "CommodityCodePage" - {
 
-    beSettable[String](TotalNetMassPage(index))
+    beRetrievable[String](CommodityCodePage(index))
 
-    beRemovable[String](TotalNetMassPage(index))
+    beSettable[String](CommodityCodePage(index))
+
+    beRemovable[String](CommodityCodePage(index))
   }
 }

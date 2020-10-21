@@ -24,6 +24,9 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
+    Arbitrary(CommodityCodePage(Index(0)))
+
   implicit lazy val arbitraryPreLodgeDeclarationPage: Arbitrary[PreLodgeDeclarationPage.type] =
     Arbitrary(PreLodgeDeclarationPage)
 

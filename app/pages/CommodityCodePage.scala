@@ -17,17 +17,12 @@
 package pages
 
 import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
+import queries.Constants.Items
 
-class TotalNetMassPageSpec extends PageBehaviours {
+case class CommodityCodePage(index: Index) extends QuestionPage[String] {
 
-  private val index = Index(0)
-  "TotalNetMassPage" - {
+  override def path: JsPath = JsPath \ Items \ index.position \ toString
 
-    beRetrievable[String](TotalNetMassPage(index))
-
-    beSettable[String](TotalNetMassPage(index))
-
-    beRemovable[String](TotalNetMassPage(index))
-  }
+  override def toString: String = "commodityCode"
 }
