@@ -35,7 +35,7 @@ class MovementDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.PreLodgeDeclarationController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"preLodgeDeclaration.checkYourAnswersLabel")),
-            attributes         = Map("id" -> s"""change-containers-used""")
+            attributes         = Map("id" -> s"""change-pre-lodge-declaration""")
           )
         )
       )

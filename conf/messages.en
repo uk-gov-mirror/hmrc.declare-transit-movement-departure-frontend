@@ -671,6 +671,8 @@ preLodgeDeclaration.title = Will you be pre-lodging this declaration?
 preLodgeDeclaration.heading = Will you be pre-lodging this declaration?
 preLodgeDeclaration.checkYourAnswersLabel = Pre-lodging?
 preLodgeDeclaration.error.required = Select yes if you are pre-lodging this declaration
+itemsCheckYourAnswers.title = Check your answers
+itemsCheckYourAnswers.heading = Check your answers
 
 addTotalNetMass.title = Do you need to declare the total net mass for item {0}?
 addTotalNetMass.heading = Do you need to declare the total net mass for item {0}?
