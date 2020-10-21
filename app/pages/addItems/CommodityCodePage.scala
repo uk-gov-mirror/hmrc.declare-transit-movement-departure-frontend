@@ -27,4 +27,3 @@ case class CommodityCodePage(index: Index) extends QuestionPage[String] {
 
   override def toString: String = "addItems/commodityCode"
 }
-g
