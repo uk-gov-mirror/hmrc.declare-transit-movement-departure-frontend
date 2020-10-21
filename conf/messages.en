@@ -704,3 +704,8 @@ commodityCode.heading = commodityCode
 commodityCode.checkYourAnswersLabel = commodityCode
 commodityCode.error.required = Enter commodityCode
 commodityCode.error.length = CommodityCode must be 22 characters or less
+
+isCommodityCodeKnown.title = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.heading = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.checkYourAnswersLabel = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.error.required = Select yes if you know the commodity code for item {0}
