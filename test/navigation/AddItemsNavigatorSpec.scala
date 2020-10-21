@@ -45,8 +45,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(ItemDescriptionPage(index), NormalMode, answers)
-              .mustBe(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(answers.id, index, NormalMode))
+              .nextPage(ItemTotalGrossMassPage(index), NormalMode, answers)
+              .mustBe(addItemsRoutes.AddTotalNetMassController.onPageLoad(answers.id, index, NormalMode))
         }
       }
 
@@ -54,9 +54,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.set(AddTotalNetMassPage(index), true).success.value
             navigator
-              .nextPage(ItemDescriptionPage(index), NormalMode, answers)
-              .mustBe(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(answers.id, index, NormalMode))
+              .nextPage(AddTotalNetMassPage(index), NormalMode, updatedAnswers)
+              .mustBe(addItemsRoutes.TotalNetMassController.onPageLoad(answers.id, index, NormalMode))
         }
       }
     }

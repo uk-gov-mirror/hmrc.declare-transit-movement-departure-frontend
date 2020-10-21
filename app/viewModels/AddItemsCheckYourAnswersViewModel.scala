@@ -30,12 +30,11 @@ object AddItemsCheckYourAnswersViewModel {
 
     AddItemsCheckYourAnswersViewModel(
       Seq(
-        Section(
-          Seq(
-            checkYourAnswersHelper.itemDescription(index),
-            checkYourAnswersHelper.itemTotalGrossMass(index),
-            checkYourAnswersHelper.addTotalNetMass(index),
-            checkYourAnswersHelper.totalNetMass(index)
-          ).flatten)))
+        Section(Seq(
+          checkYourAnswersHelper.itemDescription(index),
+          checkYourAnswersHelper.itemTotalGrossMass(index),
+          checkYourAnswersHelper.addTotalNetMass(index),
+          checkYourAnswersHelper.totalNetMass(index)
+        ).flatten)))
   }
 }
