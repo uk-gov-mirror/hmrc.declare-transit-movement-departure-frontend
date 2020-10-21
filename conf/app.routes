@@ -359,3 +359,8 @@ POST       /:lrn/add-items/item-details/:index/change-total-net-mass            
 GET        /:lrn/add-items/:index/check-answers                       controllers.addItems.ItemsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 
 GET        /:lrn/packageType                       controllers.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber)
+
+GET        /:lrn/totalPackages                  controllers.TotalPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/totalPackages                  controllers.TotalPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeTotalPackages                        controllers.TotalPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeTotalPackages                        controllers.TotalPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
