@@ -374,3 +374,8 @@ GET        /:lrn/totalPieces                  controllers.TotalPiecesController.
 POST       /:lrn/totalPieces                  controllers.TotalPiecesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeTotalPieces                        controllers.TotalPiecesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeTotalPieces                        controllers.TotalPiecesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/addMark                        controllers.AddMarkController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addMark                        controllers.AddMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddMark                  controllers.AddMarkController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddMark                  controllers.AddMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

@@ -722,3 +722,8 @@ totalPieces.error.nonNumeric = Enter your totalPieces using numbers
 totalPieces.error.required = Enter your totalPieces
 totalPieces.error.wholeNumber = Enter your totalPieces using whole numbers
 totalPieces.error.outOfRange = TotalPieces must be between {0} and {1}
+
+addMark.title = addMark
+addMark.heading = addMark
+addMark.checkYourAnswersLabel = addMark
+addMark.error.required = Select yes if addMark

@@ -24,6 +24,9 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryAddMarkPage: Arbitrary[AddMarkPage.type] =
+    Arbitrary(AddMarkPage)
+
   implicit lazy val arbitraryTotalPiecesPage: Arbitrary[TotalPiecesPage.type] =
     Arbitrary(TotalPiecesPage)
 
