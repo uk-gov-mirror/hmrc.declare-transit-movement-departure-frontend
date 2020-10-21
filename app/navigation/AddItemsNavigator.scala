@@ -16,6 +16,7 @@
 
 package navigation
 
+import controllers.addItems.{routes => addItemsRoutes}
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
@@ -23,10 +24,30 @@ import play.api.mvc.Call
 
 @Singleton
 class AddItemsNavigator @Inject()() extends Navigator {
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] =
-    ???
 
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] =
-    ???
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case ItemDescriptionPage(index) =>
+      ua =>
+        Some(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
+    case ItemTotalGrossMassPage(index) =>
+      ua =>
+        Some(addItemsRoutes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
+    case AddTotalNetMassPage(index) =>
+      ua =>
+        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+  }
+
+  //TODO: Need to refactor this code
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case ItemDescriptionPage(index) =>
+      ua =>
+        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case ItemTotalGrossMassPage(index) =>
+      ua =>
+        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case AddTotalNetMassPage(index) =>
+      ua =>
+        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+  }
 
 }

@@ -19,7 +19,9 @@ package pages
 import models.Index
 import pages.behaviours.PageBehaviours
 
-class ItemTotalGrossMassPageSpec(index: Index) extends PageBehaviours {
+class ItemTotalGrossMassPageSpec extends PageBehaviours {
+
+  private val index = Index(0)
 
   "ItemTotalGrossMassPage" - {
 

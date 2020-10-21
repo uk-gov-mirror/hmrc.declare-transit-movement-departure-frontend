@@ -19,7 +19,9 @@ package pages
 import models.Index
 import pages.behaviours.PageBehaviours
 
-class ItemDescriptionPageSpec(index: Index) extends PageBehaviours {
+class ItemDescriptionPageSpec extends PageBehaviours {
+
+  private val index = Index(0)
 
   "ItemDescriptionPage" - {
 
