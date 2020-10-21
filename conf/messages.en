@@ -738,3 +738,8 @@ addAnotherPackage.title = addAnotherPackage
 addAnotherPackage.heading = addAnotherPackage
 addAnotherPackage.checkYourAnswersLabel = addAnotherPackage
 addAnotherPackage.error.required = Select yes if addAnotherPackage
+
+isCommodityCodeKnown.title = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.heading = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.checkYourAnswersLabel = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.error.required = Select yes if you know the commodity code for item {0}

@@ -45,6 +45,9 @@ trait PageGenerators {
   implicit lazy val arbitraryTotalNetMassPage: Arbitrary[TotalNetMassPage] =
     Arbitrary(TotalNetMassPage(Index(0)))
 
+  implicit lazy val arbitraryIsCommodityCodeKnownPage: Arbitrary[IsCommodityCodeKnownPage] =
+    Arbitrary(IsCommodityCodeKnownPage(Index(0)))
+
   implicit lazy val arbitraryAddTotalNetMassPage: Arbitrary[AddTotalNetMassPage] =
     Arbitrary(AddTotalNetMassPage(Index(0)))
 
