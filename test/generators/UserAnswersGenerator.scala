@@ -21,6 +21,16 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.addItems.traderDetails.{
+  TraderDetailsConsigneeAddressPage,
+  TraderDetailsConsigneeEoriKnownPage,
+  TraderDetailsConsigneeEoriNumberPage,
+  TraderDetailsConsigneeNamePage,
+  TraderDetailsConsignorAddressPage,
+  TraderDetailsConsignorEoriKnownPage,
+  TraderDetailsConsignorEoriNumberPage,
+  TraderDetailsConsignorNamePage
+}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -29,7 +39,15 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(TotalNetMassPage, JsValue)] ::
+    arbitrary[(TraderDetailsConsignorNamePage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorEoriNumberPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorEoriKnownPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorAddressPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeNamePage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeEoriNumberPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeEoriKnownPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeAddressPage.type, JsValue)] ::
+      arbitrary[(TotalNetMassPage, JsValue)] ::
       arbitrary[(AddTotalNetMassPage, JsValue)] ::
       arbitrary[(IsCommodityCodeKnownPage, JsValue)] ::
       arbitrary[(AddTotalNetMassPage, JsValue)] ::

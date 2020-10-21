@@ -703,3 +703,49 @@ isCommodityCodeKnown.title = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.heading = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.checkYourAnswersLabel = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.error.required = Select yes if you know the commodity code for item {0}
+
+traderDetailsConsigneeAddress.title = traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.heading = traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.checkYourAnswersLabel = traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.error.required = Enter traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.error.length = TraderDetailsConsigneeAddress must be 100 characters or less
+
+traderDetailsConsigneeEoriKnown.title = traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeEoriKnown.heading = traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeEoriKnown.checkYourAnswersLabel = traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeEoriKnown.error.required = Select yes if traderDetailsConsigneeEoriKnown
+
+traderDetailsConsigneeEoriNumber.title = traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.heading = traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.checkYourAnswersLabel = traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.error.required = Enter traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.error.length = TraderDetailsConsigneeEoriNumber must be 100 characters or less
+
+traderDetailsConsigneeName.title = traderDetailsConsigneeName
+traderDetailsConsigneeName.heading = traderDetailsConsigneeName
+traderDetailsConsigneeName.checkYourAnswersLabel = traderDetailsConsigneeName
+traderDetailsConsigneeName.error.required = Enter traderDetailsConsigneeName
+traderDetailsConsigneeName.error.length = TraderDetailsConsigneeName must be 100 characters or less
+
+traderDetailsConsignorAddress.title = traderDetailsConsignorAddress
+traderDetailsConsignorAddress.heading = traderDetailsConsignorAddress
+traderDetailsConsignorAddress.checkYourAnswersLabel = traderDetailsConsignorAddress
+traderDetailsConsignorAddress.error.required = Enter traderDetailsConsignorAddress
+traderDetailsConsignorAddress.error.length = TraderDetailsConsignorAddress must be 100 characters or less
+
+traderDetailsConsignorEoriKnown.title = traderDetailsConsignorEoriKnown
+traderDetailsConsignorEoriKnown.heading = traderDetailsConsignorEoriKnown
+traderDetailsConsignorEoriKnown.checkYourAnswersLabel = traderDetailsConsignorEoriKnown
+traderDetailsConsignorEoriKnown.error.required = Select yes if traderDetailsConsignorEoriKnown
+
+traderDetailsConsignorEoriNumber.title = traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.heading = traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.checkYourAnswersLabel = traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.error.required = Enter traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.error.length = TraderDetailsConsignorEoriNumber must be 100 characters or less
+
+traderDetailsConsignorName.title = traderDetailsConsignorName
+traderDetailsConsignorName.heading = traderDetailsConsignorName
+traderDetailsConsignorName.checkYourAnswersLabel = traderDetailsConsignorName
+traderDetailsConsignorName.error.required = Enter traderDetailsConsignorName
+traderDetailsConsignorName.error.length = TraderDetailsConsignorName must be 100 characters or less
