@@ -40,7 +40,17 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
       }
 
-      "must go from total gross mass page to total net mass page" in {
+      "must go from total gross mass page to add total net mass page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(ItemDescriptionPage(index), NormalMode, answers)
+              .mustBe(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(answers.id, index, NormalMode))
+        }
+      }
+
+      "must go from add total net mass page to total net mass page if the answer is 'Yes'" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>

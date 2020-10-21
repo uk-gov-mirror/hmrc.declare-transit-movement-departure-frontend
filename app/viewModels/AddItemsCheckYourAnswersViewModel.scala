@@ -34,7 +34,8 @@ object AddItemsCheckYourAnswersViewModel {
           Seq(
             checkYourAnswersHelper.itemDescription(index),
             checkYourAnswersHelper.itemTotalGrossMass(index),
-            checkYourAnswersHelper.addTotalNetMass(index)
+            checkYourAnswersHelper.addTotalNetMass(index),
+            checkYourAnswersHelper.totalNetMass(index)
           ).flatten)))
   }
 }

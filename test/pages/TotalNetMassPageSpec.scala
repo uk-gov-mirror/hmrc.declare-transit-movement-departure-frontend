@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class TotalNetMassPageSpec extends PageBehaviours {
 
-  private val index = Index (0)
+  private val index = Index(0)
   "TotalNetMassPage" - {
 
     beRetrievable[String](TotalNetMassPage(index))
