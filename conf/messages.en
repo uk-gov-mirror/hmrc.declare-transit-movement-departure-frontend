@@ -698,3 +698,8 @@ totalNetMass.error.length =  The total net mass for item {0} in kilograms must b
 totalNetMass.error.minimum =  The total net mass for item {0} in kilograms must be 0.001 or more
 totalNetMass.error.invalidCharacters =  The total net mass for item {0} in kilograms must only include numbers 0 to 9 and a decimal place
 totalNetMass.error.invalidFormat =  The total net mass for item {0} in kilograms must have up to 3 decimal places, like 1000.985
+
+isCommodityCodeKnown.title = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.heading = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.checkYourAnswersLabel = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.error.required = Select yes if you know the commodity code for item {0}
