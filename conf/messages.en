@@ -735,3 +735,11 @@ isCommodityCodeKnown.title = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.heading = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.checkYourAnswersLabel = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.error.required = Select yes if you know the commodity code for item {0}
+
+howManyPackages.title = HowManyPackages
+howManyPackages.heading = HowManyPackages
+howManyPackages.checkYourAnswersLabel = HowManyPackages
+howManyPackages.error.nonNumeric = Enter your howManyPackages using numbers
+howManyPackages.error.required = Enter your howManyPackages
+howManyPackages.error.wholeNumber = Enter your howManyPackages using whole numbers
+howManyPackages.error.outOfRange = HowManyPackages must be between {0} and {1}

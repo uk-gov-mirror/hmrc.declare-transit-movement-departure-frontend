@@ -385,6 +385,11 @@ POST       /:lrn/addAnotherPackage                        controllers.addItems.A
 GET        /:lrn/changeAddAnotherPackage                  controllers.addItems.AddAnotherPackageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddAnotherPackage                  controllers.addItems.AddAnotherPackageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /:lrn/howManyPackages                                controllers.addItems.HowManyPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/howManyPackages                                controllers.addItems.HowManyPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeHowManyPackages                          controllers.addItems.HowManyPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeHowManyPackages                          controllers.addItems.HowManyPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /:lrn/add-items/item-details/:index/is-commodity-code-known                        controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/item-details/:index/is-commodity-code-known                         controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/item-details/:index/change-is-commodity-code-known               controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
