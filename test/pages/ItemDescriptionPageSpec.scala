@@ -19,11 +19,9 @@ package pages
 import models.Index
 import pages.behaviours.PageBehaviours
 
-class ItemDescriptionPageSpec extends PageBehaviours {
+class ItemDescriptionPageSpec(index: Index) extends PageBehaviours {
 
   "ItemDescriptionPage" - {
-
-    val index = Index(1)
 
     beRetrievable[String](ItemDescriptionPage(index))
 
