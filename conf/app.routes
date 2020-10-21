@@ -364,3 +364,8 @@ GET        /:lrn/totalPackages                  controllers.TotalPackagesControl
 POST       /:lrn/totalPackages                  controllers.TotalPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeTotalPackages                        controllers.TotalPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeTotalPackages                        controllers.TotalPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/declareNumberOfPackages                        controllers.DeclareNumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/declareNumberOfPackages                        controllers.DeclareNumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeDeclareNumberOfPackages                  controllers.DeclareNumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeDeclareNumberOfPackages                  controllers.DeclareNumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

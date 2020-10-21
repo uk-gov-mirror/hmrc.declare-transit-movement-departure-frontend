@@ -709,3 +709,8 @@ totalPackages.error.nonNumeric = Enter your totalPackages using numbers
 totalPackages.error.required = Enter your totalPackages
 totalPackages.error.wholeNumber = Enter your totalPackages using whole numbers
 totalPackages.error.outOfRange = TotalPackages must be between {0} and {1}
+
+declareNumberOfPackages.title = declareNumberOfPackages
+declareNumberOfPackages.heading = declareNumberOfPackages
+declareNumberOfPackages.checkYourAnswersLabel = declareNumberOfPackages
+declareNumberOfPackages.error.required = Select yes if declareNumberOfPackages
