@@ -16,12 +16,23 @@
 
 package pages
 
-import models.ProcedureType
+import models.ProcedureType.Simplified
+import models.{ProcedureType, UserAnswers}
+import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object ProcedureTypePage extends QuestionPage[ProcedureType] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "procedureType"
+
+  override def cleanup(value: Option[ProcedureType], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(Simplified) => userAnswers.remove(PreLodgeDeclarationPage)
+      case _                => super.cleanup(value, userAnswers)
+    }
+
 }

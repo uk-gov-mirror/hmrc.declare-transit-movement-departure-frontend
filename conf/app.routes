@@ -336,6 +336,11 @@ POST       /:lrn/add-items/item-details/:index/item-description                 
 GET        /:lrn/add-items/item-details/:index/change-item-description                   controllers.addItems.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/item-details/:index/change-item-description                   controllers.addItems.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 
+GET        /:lrn/movement-details/will-you-be-pre-lodging                        controllers.movementDetails.PreLodgeDeclarationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/movement-details/will-you-be-pre-lodging                        controllers.movementDetails.PreLodgeDeclarationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/movement-details/change-will-you-be-pre-lodging                  controllers.movementDetails.PreLodgeDeclarationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/movement-details/change-will-you-be-pre-lodging                  controllers.movementDetails.PreLodgeDeclarationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /:lrn/add-items/item-details/:index/add-total-net-mass                      controllers.addItems.AddTotalNetMassController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/item-details/:index/add-total-net-mass                      controllers.addItems.AddTotalNetMassController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/item-details/:index/change-add-total-net-mass               controllers.addItems.AddTotalNetMassController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
@@ -352,3 +357,8 @@ GET        /:lrn/add-items/item-details/:index/change-total-net-mass            
 POST       /:lrn/add-items/item-details/:index/change-total-net-mass                  controllers.addItems.TotalNetMassController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 
 GET        /:lrn/add-items/:index/check-answers                       controllers.addItems.ItemsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/add-items/item-details/:index/is-commodity-code-known                        controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/item-details/:index/is-commodity-code-known                         controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/item-details/:index/change-is-commodity-code-known               controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/item-details/:index/change-is-commodity-code-known                 controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)

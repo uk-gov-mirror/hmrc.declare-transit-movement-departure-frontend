@@ -21,17 +21,33 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
-
   self: Generators =>
+
+  implicit lazy val arbitraryPreLodgeDeclarationUserAnswersEntry: Arbitrary[(PreLodgeDeclarationPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[PreLodgeDeclarationPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryTotalNetMassUserAnswersEntry: Arbitrary[(TotalNetMassPage, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[TotalNetMassPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryIsCommodityCodeKnownUserAnswersEntry: Arbitrary[(IsCommodityCodeKnownPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[IsCommodityCodeKnownPage]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
 

@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.movementDetails
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import pages.behaviours.PageBehaviours
 
-class IsConsigneeEoriKnownFormProvider @Inject() extends Mappings {
+class PreLodgeDeclarationPageSpec extends PageBehaviours {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isConsigneeEoriKnown.error.required")
-    )
+  "PreLodgeDeclarationPage" - {
+
+    beRetrievable[Boolean](PreLodgeDeclarationPage)
+
+    beSettable[Boolean](PreLodgeDeclarationPage)
+
+    beRemovable[Boolean](PreLodgeDeclarationPage)
+  }
 }

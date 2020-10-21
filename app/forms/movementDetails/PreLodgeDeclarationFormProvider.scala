@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package forms.movementDetails
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
 
-class IsConsigneeEoriKnownFormProvider @Inject() extends Mappings {
+class PreLodgeDeclarationFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("isConsigneeEoriKnown.error.required")
+      "value" -> boolean("preLodgeDeclaration.error.required")
     )
 }

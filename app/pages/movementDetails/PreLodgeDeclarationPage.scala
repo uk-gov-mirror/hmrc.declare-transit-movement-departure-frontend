@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.movementDetails
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class IsConsigneeEoriKnownFormProvider @Inject() extends Mappings {
+case object PreLodgeDeclarationPage extends QuestionPage[Boolean] {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isConsigneeEoriKnown.error.required")
-    )
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "preLodgeDeclaration"
 }

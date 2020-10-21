@@ -57,7 +57,7 @@ index.title = common-transit-convention-departure
 index.heading = common-transit-convention-departure
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
-movementDetails.preHeading = Movement details
+movementDetails.preHeading = General Information
 traderDetails.preHeading = Trader’s details
 routeDetails.preHeading = Route details
 transportDetails.preHeading = Transport details
@@ -193,7 +193,7 @@ declarationSummary.title = Declaration summary
 declarationSummary.heading = Declaration summary
 declarationSummary.departureDetails = Departure details
 declarationSummary.p = You can save your declaration and come back later. You have 28 days from the first time you save to complete this declaration or your information will be deleted.
-declarationSummary.section.movementDetails = {0} movement details
+declarationSummary.section.movementDetails = {0} general information
 declarationSummary.section.routes = {0} route
 declarationSummary.section.transport = {0} transport
 declarationSummary.section.tradersDetails = {0} trader’s details
@@ -667,6 +667,10 @@ itemDescription.error.length = Item description must be 280 characters or less
 itemDescription.paragraph = Give a brief summary of the item.
 itemDescription.error.invalid =  Description of item {0} must only include letters a to z, numbers 0 to 9 or blank spaces.
 
+preLodgeDeclaration.title = Will you be pre-lodging this declaration?
+preLodgeDeclaration.heading = Will you be pre-lodging this declaration?
+preLodgeDeclaration.checkYourAnswersLabel = Pre-lodging?
+preLodgeDeclaration.error.required = Select yes if you are pre-lodging this declaration
 itemsCheckYourAnswers.title = Check your answers
 itemsCheckYourAnswers.heading = Check your answers
 
@@ -674,7 +678,6 @@ addTotalNetMass.title = Do you need to declare the total net mass for item {0}?
 addTotalNetMass.heading = Do you need to declare the total net mass for item {0}?
 addTotalNetMass.checkYourAnswersLabel = Declare total net mass for item {0}?
 addTotalNetMass.error.required =  Select yes if you need to declare the total net mass for item {0}
-
 
 itemTotalGrossMass.title = What is the total gross mass for item {0} in kilograms?
 itemTotalGrossMass.heading = What is the total gross mass for item {0} in kilograms?
@@ -695,3 +698,8 @@ totalNetMass.error.length =  The total net mass for item {0} in kilograms must b
 totalNetMass.error.minimum =  The total net mass for item {0} in kilograms must be 0.001 or more
 totalNetMass.error.invalidCharacters =  The total net mass for item {0} in kilograms must only include numbers 0 to 9 and a decimal place
 totalNetMass.error.invalidFormat =  The total net mass for item {0} in kilograms must have up to 3 decimal places, like 1000.985
+
+isCommodityCodeKnown.title = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.heading = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.checkYourAnswersLabel = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.error.required = Select yes if you know the commodity code for item {0}
