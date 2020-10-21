@@ -21,7 +21,7 @@ import controllers.actions._
 import derivable.DeriveNumberOfOfficeOfTransits
 import forms.AddTransitOfficeFormProvider
 import javax.inject.Inject
-import models.requests.DataRequest
+import controllers.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
@@ -66,9 +66,7 @@ class AddTransitOfficeController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-            renderPage(lrn, mode, formWithErrors).map(BadRequest(_))
-          },
+          formWithErrors => renderPage(lrn, mode, formWithErrors).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTransitOfficePage, value))

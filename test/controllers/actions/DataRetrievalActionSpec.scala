@@ -17,7 +17,7 @@
 package controllers.actions
 
 import generators.Generators
-import models.requests.{IdentifierRequest, OptionalDataRequest}
+import controllers.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -77,10 +77,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneApp
 
         when(sessionRepository.get(any(), any())) thenReturn Future.successful(None)
 
-        harness(lrn, {
-          request =>
-            request.userAnswers must not be defined
-        })
+        harness(lrn, request => request.userAnswers must not be defined)
       }
     }
 
@@ -90,10 +87,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneApp
 
         when(sessionRepository.get(any(), any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber)))
 
-        harness(lrn, {
-          request =>
-            request.userAnswers mustBe defined
-        })
+        harness(lrn, request => request.userAnswers mustBe defined)
       }
     }
   }

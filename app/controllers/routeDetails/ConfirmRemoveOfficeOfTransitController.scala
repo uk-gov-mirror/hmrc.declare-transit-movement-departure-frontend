@@ -22,7 +22,7 @@ import derivable.DeriveNumberOfOfficeOfTransits
 import forms.ConfirmRemoveOfficeOfTransitFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.requests.DataRequest
+import controllers.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
@@ -95,7 +95,8 @@ class ConfirmRemoveOfficeOfTransitController @Inject()(
   }
 
   private def renderPage(lrn: LocalReferenceNumber, officeOfTransitId: String, mode: Mode, form: Form[Boolean])(
-    implicit request: DataRequest[AnyContent]): Future[Html] =
+    implicit
+    request: DataRequest[AnyContent]): Future[Html] =
     referenceDataConnector.getOfficeOfTransit(officeOfTransitId) flatMap {
       officeOfTransit =>
         val json = Json.obj(

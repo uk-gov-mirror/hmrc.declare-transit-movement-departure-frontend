@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.requests
+package controllers.requests
 
 import play.api.mvc.{Request, WrappedRequest}
 import models.{EoriNumber, UserAnswers}

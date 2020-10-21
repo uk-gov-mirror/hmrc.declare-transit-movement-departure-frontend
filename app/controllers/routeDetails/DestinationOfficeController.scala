@@ -22,7 +22,7 @@ import controllers.{routes => mainRoutes}
 import forms.DestinationOfficeFormProvider
 import javax.inject.Inject
 import models.reference.{CountryCode, CustomsOffice}
-import models.requests.DataRequest
+import controllers.requests.DataRequest
 import models.{CustomsOfficeList, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails

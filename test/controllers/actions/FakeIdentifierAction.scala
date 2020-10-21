@@ -18,7 +18,7 @@ package controllers.actions
 
 import javax.inject.Inject
 import models.EoriNumber
-import models.requests.IdentifierRequest
+import controllers.requests.IdentifierRequest
 import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}

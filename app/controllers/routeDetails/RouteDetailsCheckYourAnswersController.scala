@@ -22,7 +22,7 @@ import controllers.{routes => mainRoutes}
 import derivable.DeriveNumberOfOfficeOfTransits
 import javax.inject.Inject
 import models.reference.CountryCode
-import models.requests.DataRequest
+import controllers.requests.DataRequest
 import models.{Index, LocalReferenceNumber, NormalMode}
 import pages.DestinationCountryPage
 import play.api.Logger
@@ -89,7 +89,8 @@ class RouteDetailsCheckYourAnswersController @Inject()(
                             checkYourAnswersHelper.officeOfDeparture(customsOfficeList),
                             checkYourAnswersHelper.destinationCountry(destCountryList),
                             checkYourAnswersHelper.destinationOffice(destOfficeList)
-                          ).flatten)
+                          ).flatten
+                        )
 
                         Seq(section, officeOfTransitSection)
                     }
@@ -99,8 +100,9 @@ class RouteDetailsCheckYourAnswersController @Inject()(
     }
   }
 
-  private def officeOfTransitSections(routesCYAHelper: RouteDetailsCheckYourAnswersHelper)(implicit hc: HeaderCarrier,
-                                                                                           request: DataRequest[AnyContent]): Future[Section] =
+  private def officeOfTransitSections(
+    routesCYAHelper: RouteDetailsCheckYourAnswersHelper
+  )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Section] =
     referenceDataConnector.getOfficeOfTransitList() map {
       officeOfTransitList =>
         val numberOfTransitOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
