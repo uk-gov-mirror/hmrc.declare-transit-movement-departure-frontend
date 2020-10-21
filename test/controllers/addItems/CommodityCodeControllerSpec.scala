@@ -73,7 +73,7 @@ class CommodityCodeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "lrn"  -> lrn
       )
 
-      templateCaptor.getValue mustEqual "commodityCode.njk"
+      templateCaptor.getValue mustEqual "addItems/commodityCode.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -105,7 +105,7 @@ class CommodityCodeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "mode"  -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "commodityCode.njk"
+      templateCaptor.getValue mustEqual "addItems/commodityCode.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -160,7 +160,7 @@ class CommodityCodeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "commodityCode.njk"
+      templateCaptor.getValue mustEqual "addItems/commodityCode.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()

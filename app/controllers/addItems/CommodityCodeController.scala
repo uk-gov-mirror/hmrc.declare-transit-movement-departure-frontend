@@ -63,7 +63,7 @@ class CommodityCodeController @Inject()(
         "mode"  -> mode
       )
 
-      renderer.render("commodityCode.njk", json).map(Ok(_))
+      renderer.render("addItems/commodityCode.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -80,7 +80,7 @@ class CommodityCodeController @Inject()(
               "mode"  -> mode
             )
 
-            renderer.render("commodityCode.njk", json).map(BadRequest(_))
+            renderer.render("addItems/commodityCode.njk", json).map(BadRequest(_))
           },
           value =>
             for {
