@@ -17,7 +17,6 @@
 package controllers.addItems
 
 import base.SpecBase
-import forms.AddTotalNetMassFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems

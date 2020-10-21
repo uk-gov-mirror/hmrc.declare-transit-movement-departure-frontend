@@ -18,7 +18,7 @@ package controllers.addItems
 
 import base.SpecBase
 import controllers.{routes => mainRoutes}
-import forms.CommodityCodeFormProvider
+import forms.addItems.CommodityCodeFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.AddItems
@@ -27,7 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.CommodityCodePage
+import pages.addItems
+import pages.addItems.CommodityCodePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -83,7 +84,7 @@ class CommodityCodeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(CommodityCodePage(index), "111111").success.value
+      val userAnswers    = emptyUserAnswers.set(addItems.CommodityCodePage(index), "111111").success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, commodityCodeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

@@ -17,6 +17,7 @@
 package forms
 
 import base.SpecBase
+import controllers.addItems.AddTotalNetMassFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 

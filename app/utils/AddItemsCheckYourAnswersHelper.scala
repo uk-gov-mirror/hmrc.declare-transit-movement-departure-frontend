@@ -19,6 +19,7 @@ package utils
 import controllers.addItems.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.addItems.CommodityCodePage
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
 import models.Index
+import pages.addItems
 import pages.behaviours.PageBehaviours
 
 class CommodityCodePageSpec extends PageBehaviours {
@@ -27,8 +28,8 @@ class CommodityCodePageSpec extends PageBehaviours {
 
     beRetrievable[String](CommodityCodePage(index))
 
-    beSettable[String](CommodityCodePage(index))
+    beSettable[String](addItems.CommodityCodePage(index))
 
-    beRemovable[String](CommodityCodePage(index))
+    beRemovable[String](addItems.CommodityCodePage(index))
   }
 }
