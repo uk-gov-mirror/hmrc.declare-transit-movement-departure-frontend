@@ -22,7 +22,7 @@ import play.api.data.FormError
 class AddMarkFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "addMark.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey  = "error.boolean"
 
   val form = new AddMarkFormProvider()()
 

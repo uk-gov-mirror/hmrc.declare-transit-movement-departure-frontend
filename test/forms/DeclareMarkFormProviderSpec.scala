@@ -22,8 +22,8 @@ import play.api.data.FormError
 class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "declareMark.error.required"
-  val lengthKey = "declareMark.error.length"
-  val maxLength = 42
+  val lengthKey   = "declareMark.error.length"
+  val maxLength   = 42
 
   val form = new DeclareMarkFormProvider()()
 
@@ -40,7 +40,7 @@ class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

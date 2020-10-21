@@ -14,51 +14,51 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import base.SpecBase
-import forms.TotalPiecesFormProvider
+import forms.DeclareMarkFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
-import navigation.FakeNavigator
+import models.NormalMode
+import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.TotalPiecesPage
+import pages.DeclareMarkPage
 import play.api.inject.bind
-import play.api.libs.json.{JsNumber, JsObject, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
-
-  val formProvider = new TotalPiecesFormProvider()
-  val form = formProvider()
+class DeclareMarkControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer = 1
+  val formProvider = new DeclareMarkFormProvider()
+  val form         = formProvider()
 
-  lazy val totalPiecesRoute = routes.TotalPiecesController.onPageLoad(lrn, NormalMode).url
+  lazy val declareMarkRoute = routes.DeclareMarkController.onPageLoad(lrn, NormalMode).url
 
-  "TotalPieces Controller" - {
+  "DeclareMark Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, totalPiecesRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, declareMarkRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -68,11 +68,11 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       val expectedJson = Json.obj(
         "form" -> form,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
-      templateCaptor.getValue mustEqual "totalPieces.njk"
+      templateCaptor.getValue mustEqual "declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -83,11 +83,11 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(TotalPiecesPage, validAnswer).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, totalPiecesRoute)
+      val userAnswers    = emptyUserAnswers.set(DeclareMarkPage, "answer").success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, declareMarkRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -95,7 +95,7 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> validAnswer.toString))
+      val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -103,7 +103,7 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "totalPieces.njk"
+      templateCaptor.getValue mustEqual "declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -118,19 +118,18 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
       val request =
-        FakeRequest(POST, totalPiecesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+        FakeRequest(POST, declareMarkRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -141,11 +140,11 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, totalPiecesRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, declareMarkRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -159,7 +158,7 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "totalPieces.njk"
+      templateCaptor.getValue mustEqual "declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -169,12 +168,13 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, totalPiecesRoute)
+      val request = FakeRequest(GET, declareMarkRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -184,14 +184,14 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, totalPiecesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+        FakeRequest(POST, declareMarkRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

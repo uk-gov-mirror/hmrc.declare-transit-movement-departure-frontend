@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import controllers.actions._
 import forms.DeclareNumberOfPackagesFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.{AddItemsNavigator, Navigator}
+import navigation.Navigator
+import navigation.annotations.AddItems
 import pages.DeclareNumberOfPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -35,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclareNumberOfPackagesController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @AddItemsNavigator navigator: Navigator,
+  @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,

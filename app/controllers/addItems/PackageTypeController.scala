@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import controllers.actions._
 import javax.inject.Inject
 import models.LocalReferenceNumber
-import navigation.{AddItemsNavigator, Navigator}
+import navigation.Navigator
+import navigation.annotations.AddItems
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +36,7 @@ class PackageTypeController @Inject()(
   requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer,
-  @AddItemsNavigator navigator: Navigator
+  @AddItems navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

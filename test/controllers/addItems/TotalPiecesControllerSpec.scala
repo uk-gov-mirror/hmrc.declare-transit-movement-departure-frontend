@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import base.SpecBase
-import forms.DeclareNumberOfPackagesFormProvider
+import forms.TotalPiecesFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
-import navigation.FakeNavigator
+import models.NormalMode
+import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DeclareNumberOfPackagesPage
+import pages.TotalPiecesPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -33,30 +34,33 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+
+  val formProvider = new TotalPiecesFormProvider()
+  val form         = formProvider()
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new DeclareNumberOfPackagesFormProvider()
-  val form = formProvider()
+  val validAnswer = 1
 
-  lazy val declareNumberOfPackagesRoute = routes.DeclareNumberOfPackagesController.onPageLoad(lrn, NormalMode).url
+  lazy val totalPiecesRoute = routes.TotalPiecesController.onPageLoad(lrn, NormalMode).url
 
-  "DeclareNumberOfPackages Controller" - {
+  "TotalPieces Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, declareNumberOfPackagesRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, totalPiecesRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -65,13 +69,12 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form" -> form,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "declareNumberOfPackages.njk"
+      templateCaptor.getValue mustEqual "totalPieces.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -82,11 +85,11 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(DeclareNumberOfPackagesPage, true).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, declareNumberOfPackagesRoute)
+      val userAnswers    = emptyUserAnswers.set(TotalPiecesPage, validAnswer).success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, totalPiecesRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -94,16 +97,15 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "declareNumberOfPackages.njk"
+      templateCaptor.getValue mustEqual "totalPieces.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -118,14 +120,14 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
       val request =
-        FakeRequest(POST, declareNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, totalPiecesRoute)
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
 
@@ -141,11 +143,11 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, declareNumberOfPackagesRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, totalPiecesRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -154,13 +156,12 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "declareNumberOfPackages.njk"
+      templateCaptor.getValue mustEqual "totalPieces.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -170,13 +171,12 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, declareNumberOfPackagesRoute)
+      val request = FakeRequest(GET, totalPiecesRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -186,14 +186,14 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, declareNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, totalPiecesRoute)
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

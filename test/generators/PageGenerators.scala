@@ -39,9 +39,6 @@ trait PageGenerators {
   implicit lazy val arbitraryDeclareNumberOfPackagesPage: Arbitrary[DeclareNumberOfPackagesPage.type] =
     Arbitrary(DeclareNumberOfPackagesPage)
 
-  implicit lazy val arbitraryTotalPackagesPage: Arbitrary[TotalPackagesPage.type] =
-    Arbitrary(TotalPackagesPage)
-
   implicit lazy val arbitraryPreLodgeDeclarationPage: Arbitrary[PreLodgeDeclarationPage.type] =
     Arbitrary(PreLodgeDeclarationPage)
 

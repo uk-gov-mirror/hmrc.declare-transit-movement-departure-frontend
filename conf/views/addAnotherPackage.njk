@@ -27,7 +27,7 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.AddAnotherPackageController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.addItems.AddAnotherPackageController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 

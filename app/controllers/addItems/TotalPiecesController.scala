@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import controllers.actions._
 import forms.TotalPiecesFormProvider
 import javax.inject.Inject
-import pages.TotalPiecesPage
 import models.{LocalReferenceNumber, Mode}
-import navigation.{AddItemsNavigator, Navigator}
+import navigation.Navigator
+import navigation.annotations.AddItems
+import pages.TotalPiecesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TotalPiecesController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @AddItemsNavigator navigator: Navigator,
+  @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,

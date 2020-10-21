@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import controllers.actions._
-import forms.DeclareMarkFormProvider
+import forms.AddMarkFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.{AddItemsNavigator, Navigator}
-import pages.DeclareMarkPage
+import navigation.Navigator
+import navigation.annotations.AddItems
+import pages.AddMarkPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclareMarkController @Inject()(
+class AddMarkController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @AddItemsNavigator navigator: Navigator,
+  @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: DeclareMarkFormProvider,
+  formProvider: AddMarkFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -51,18 +52,19 @@ class DeclareMarkController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DeclareMarkPage) match {
+      val preparedForm = request.userAnswers.get(AddMarkPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
+        "form"   -> preparedForm,
+        "mode"   -> mode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
-      renderer.render("declareMark.njk", json).map(Ok(_))
+      renderer.render("addMark.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -73,18 +75,19 @@ class DeclareMarkController @Inject()(
           formWithErrors => {
 
             val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
+              "form"   -> formWithErrors,
+              "mode"   -> mode,
+              "lrn"    -> lrn,
+              "radios" -> Radios.yesNo(formWithErrors("value"))
             )
 
-            renderer.render("declareMark.njk", json).map(BadRequest(_))
+            renderer.render("addMark.njk", json).map(BadRequest(_))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareMarkPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddMarkPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DeclareMarkPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddMarkPage, mode, updatedAnswers))
         )
   }
 }

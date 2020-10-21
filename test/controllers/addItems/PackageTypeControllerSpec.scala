@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import base.SpecBase
 import matchers.JsonMatchers
@@ -26,6 +26,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -38,10 +39,10 @@ class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, routes.PackageTypeController.onPageLoad(lrn).url)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, routes.PackageTypeController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 

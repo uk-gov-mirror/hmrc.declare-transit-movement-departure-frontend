@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import controllers.actions._
-import forms.AddMarkFormProvider
+import forms.AddAnotherPackageFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.{AddItemsNavigator, Navigator}
-import pages.AddMarkPage
+import navigation.Navigator
+import navigation.annotations.AddItems
+import pages.AddAnotherPackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,14 +33,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddMarkController @Inject()(
+class AddAnotherPackageController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @AddItemsNavigator navigator: Navigator,
+  @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddMarkFormProvider,
+  formProvider: AddAnotherPackageFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -51,7 +52,7 @@ class AddMarkController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddMarkPage) match {
+      val preparedForm = request.userAnswers.get(AddAnotherPackagePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,7 +64,7 @@ class AddMarkController @Inject()(
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
-      renderer.render("addMark.njk", json).map(Ok(_))
+      renderer.render("addAnotherPackage.njk", json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -80,13 +81,13 @@ class AddMarkController @Inject()(
               "radios" -> Radios.yesNo(formWithErrors("value"))
             )
 
-            renderer.render("addMark.njk", json).map(BadRequest(_))
+            renderer.render("addAnotherPackage.njk", json).map(BadRequest(_))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddMarkPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPackagePage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddMarkPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddAnotherPackagePage, mode, updatedAnswers))
         )
   }
 }
