@@ -77,17 +77,10 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours with SpecBase 
       val expectedError =
         List(FormError(fieldName, commodityCodeInvalidFormatKey, Seq(index.display)))
 
-      val genInvalidString: Gen[String] = {
-        nonEmptyString
-          .suchThat(_.matches(commodityCodeCharactersRegex))
-          .suchThat(!_.matches(commodityCodeFormatRegex))
-      }
+      val result = form.bind(Map(fieldName -> "12345")).apply(fieldName)
+      result.errors mustBe expectedError
 
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
     }
   }
+
 }

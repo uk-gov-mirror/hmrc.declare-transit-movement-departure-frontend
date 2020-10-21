@@ -83,7 +83,7 @@ class CommodityCodeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(CommodityCodePage(index), "answer").success.value
+      val userAnswers    = emptyUserAnswers.set(CommodityCodePage(index), "111111").success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, commodityCodeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -95,12 +95,13 @@ class CommodityCodeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "111111"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"  -> filledForm,
+        "lrn"   -> lrn,
+        "index" -> index.display,
+        "mode"  -> NormalMode
       )
 
       templateCaptor.getValue mustEqual "commodityCode.njk"
@@ -125,7 +126,7 @@ class CommodityCodeControllerSpec extends SpecBase with MockitoSugar with Nunjuc
 
       val request =
         FakeRequest(POST, commodityCodeRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "111111"))
 
       val result = route(application, request).value
 
