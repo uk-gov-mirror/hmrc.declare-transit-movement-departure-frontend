@@ -27,6 +27,9 @@ trait PageGenerators {
   implicit lazy val arbitraryPreLodgeDeclarationPage: Arbitrary[PreLodgeDeclarationPage.type] =
     Arbitrary(PreLodgeDeclarationPage)
 
+  implicit lazy val arbitraryTotalNetMassPage: Arbitrary[TotalNetMassPage] =
+    Arbitrary(TotalNetMassPage(Index(0)))
+
   implicit lazy val arbitraryAddTotalNetMassPage: Arbitrary[AddTotalNetMassPage] =
     Arbitrary(AddTotalNetMassPage(Index(0)))
 
