@@ -16,11 +16,12 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import models.Index
 import play.api.data.FormError
 
-class IsCommodityCodeKnownFormProviderSpec(index: Index) extends BooleanFieldBehaviours {
+class IsCommodityCodeKnownFormProviderSpec extends BooleanFieldBehaviours with SpecBase {
 
   val requiredKey = "isCommodityCodeKnown.error.required"
   val invalidKey  = "error.boolean"
