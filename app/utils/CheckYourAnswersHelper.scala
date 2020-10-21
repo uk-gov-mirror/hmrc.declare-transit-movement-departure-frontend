@@ -26,6 +26,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def addAnotherPackage: Option[Row] = userAnswers.get(AddAnotherPackagePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addAnotherPackage.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddAnotherPackageController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherPackage.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def declareMark: Option[Row] = userAnswers.get(DeclareMarkPage) map {
     answer =>
       Row(

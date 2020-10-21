@@ -384,3 +384,8 @@ GET        /:lrn/declareMark                        controllers.DeclareMarkContr
 POST       /:lrn/declareMark                        controllers.DeclareMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeDeclareMark                  controllers.DeclareMarkController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeDeclareMark                  controllers.DeclareMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/addAnotherPackage                        controllers.AddAnotherPackageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addAnotherPackage                        controllers.AddAnotherPackageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddAnotherPackage                  controllers.AddAnotherPackageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddAnotherPackage                  controllers.AddAnotherPackageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

@@ -733,3 +733,8 @@ declareMark.heading = declareMark
 declareMark.checkYourAnswersLabel = declareMark
 declareMark.error.required = Enter declareMark
 declareMark.error.length = DeclareMark must be 42 characters or less
+
+addAnotherPackage.title = addAnotherPackage
+addAnotherPackage.heading = addAnotherPackage
+addAnotherPackage.checkYourAnswersLabel = addAnotherPackage
+addAnotherPackage.error.required = Select yes if addAnotherPackage
