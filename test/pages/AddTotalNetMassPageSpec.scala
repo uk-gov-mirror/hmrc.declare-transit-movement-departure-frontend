@@ -19,7 +19,9 @@ package pages
 import models.Index
 import pages.behaviours.PageBehaviours
 
-class AddTotalNetMassPageSpec(index: Index) extends PageBehaviours {
+class AddTotalNetMassPageSpec extends PageBehaviours {
+
+  private val index = Index(0)
 
   "AddTotalNetMassPage" - {
 

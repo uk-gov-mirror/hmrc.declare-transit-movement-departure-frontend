@@ -23,6 +23,9 @@ import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryTotalNetMassPage: Arbitrary[TotalNetMassPage] =
+    Arbitrary(TotalNetMassPage(Index(0)))
+
   implicit lazy val arbitraryIsCommodityCodeKnownPage: Arbitrary[IsCommodityCodeKnownPage] =
     Arbitrary(IsCommodityCodeKnownPage(Index(0)))
 

@@ -24,6 +24,21 @@ import uk.gov.hmrc.viewmodels._
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def totalNetMass(index: Index): Option[Row] = userAnswers.get(TotalNetMassPage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"totalNetMass.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.TotalNetMassController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalNetMass.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def isCommodityCodeKnown(index: Index): Option[Row] = userAnswers.get(IsCommodityCodeKnownPage(index)) map {
     answer =>
       Row(
@@ -57,7 +72,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def itemTotalGrossMass(index: Index): Option[Row] = userAnswers.get(ItemTotalGrossMassPage(index)) map {
     answer =>
       Row(
-        key   = Key(msg"itemTotalGrossMass.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"itemTotalGrossMass.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"$answer"),
         actions = List(
           Action(
@@ -72,7 +87,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def itemDescription(index: Index): Option[Row] = userAnswers.get(ItemDescriptionPage(index)) map {
     answer =>
       Row(
-        key   = Key(msg"itemDescription.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"itemDescription.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"$answer"),
         actions = List(
           Action(

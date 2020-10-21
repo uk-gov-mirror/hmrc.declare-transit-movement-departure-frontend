@@ -21,9 +21,9 @@ import pages.behaviours.PageBehaviours
 
 class ItemDescriptionPageSpec extends PageBehaviours {
 
-  "ItemDescriptionPage" - {
+  private val index = Index(0)
 
-    val index = Index(1)
+  "ItemDescriptionPage" - {
 
     beRetrievable[String](ItemDescriptionPage(index))
 

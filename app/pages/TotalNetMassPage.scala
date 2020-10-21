@@ -17,18 +17,12 @@
 package pages
 
 import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
+import queries.Constants.Items
 
-class IsCommodityCodeKnownPageSpec extends PageBehaviours {
+case class TotalNetMassPage(index: Index) extends QuestionPage[String] {
 
-  private val index = Index(0)
+  override def path: JsPath = JsPath \ Items \ index.position \ toString
 
-  "IsCommodityCodeKnownPage" - {
-
-    beRetrievable[Boolean](IsCommodityCodeKnownPage(index))
-
-    beSettable[Boolean](IsCommodityCodeKnownPage(index))
-
-    beRemovable[Boolean](IsCommodityCodeKnownPage(index))
-  }
+  override def toString: String = "totalNetMass"
 }
