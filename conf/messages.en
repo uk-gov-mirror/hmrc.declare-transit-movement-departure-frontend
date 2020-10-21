@@ -727,3 +727,9 @@ addMark.title = addMark
 addMark.heading = addMark
 addMark.checkYourAnswersLabel = addMark
 addMark.error.required = Select yes if addMark
+
+declareMark.title = declareMark
+declareMark.heading = declareMark
+declareMark.checkYourAnswersLabel = declareMark
+declareMark.error.required = Enter declareMark
+declareMark.error.length = DeclareMark must be 42 characters or less

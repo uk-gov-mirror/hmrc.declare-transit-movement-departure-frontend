@@ -379,3 +379,8 @@ GET        /:lrn/addMark                        controllers.AddMarkController.on
 POST       /:lrn/addMark                        controllers.AddMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeAddMark                  controllers.AddMarkController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddMark                  controllers.AddMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/declareMark                        controllers.DeclareMarkController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/declareMark                        controllers.DeclareMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeDeclareMark                  controllers.DeclareMarkController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeDeclareMark                  controllers.DeclareMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
