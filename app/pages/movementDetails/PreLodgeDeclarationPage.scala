@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.movementDetails
 
-import models.ProcedureType.Simplified
-import models.{ProcedureType, UserAnswers}
-import pages.movementDetails.PreLodgeDeclarationPage
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-import scala.util.Try
-
-case object ProcedureTypePage extends QuestionPage[ProcedureType] {
+case object PreLodgeDeclarationPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "procedureType"
-
-  override def cleanup(value: Option[ProcedureType], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(Simplified) => userAnswers.remove(PreLodgeDeclarationPage)
-      case _                => super.cleanup(value, userAnswers)
-    }
-
+  override def toString: String = "preLodgeDeclaration"
 }

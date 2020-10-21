@@ -19,11 +19,14 @@ package controllers.movementDetails
 import base.SpecBase
 import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{JsObject, Json}
+import pages.{ContainersUsedPage, DeclarationPlacePage, DeclarationTypePage}
+import pages.movementDetails.PreLodgeDeclarationPage
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -31,7 +34,7 @@ import play.twirl.api.Html
 import scala.concurrent.Future
 
 class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
-
+  // format: off
   "MovementDetailsCheckYourAnswers Controller" - {
 
     "return OK and the correct view for a GET" in {
@@ -62,5 +65,38 @@ class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with Mockit
 
       application.stop()
     }
+
+    "must contain correct number of rows and keys when passed answers" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+
+      val ua = emptyUserAnswers
+        .set(DeclarationTypePage, DeclarationType.Option1).success.value
+        .set(PreLodgeDeclarationPage, true).success.value
+
+      val application    = applicationBuilder(userAnswers = Some(ua)).build()
+      val request        = FakeRequest(GET, routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, request).value
+      status(result)
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      val json: JsObject = jsonCaptor.getValue
+
+      val sections = json("sections")
+      val rows     = sections \\ "key"
+
+
+      rows.size mustBe 2
+      rows(0)("text").as[String] mustBe "declarationType.checkYourAnswersLabel"
+      rows(1)("text").as[String] mustBe "preLodgeDeclaration.checkYourAnswersLabel"
+
+      application.stop()
+    }
   }
+  // format: on
 }

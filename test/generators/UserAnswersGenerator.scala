@@ -22,6 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
@@ -33,6 +34,8 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(ItemDescriptionPage, JsValue)] ::
       arbitrary[(OtherReferenceLiabilityAmountPage.type, JsValue)] ::
       arbitrary[(ItemTotalGrossMassPage, JsValue)] ::
+      arbitrary[(PreLodgeDeclarationPage.type, JsValue)] ::
+      arbitrary[(ItemDescriptionPage, JsValue)] ::
       arbitrary[(OtherReferenceLiabilityAmountPage.type, JsValue)] ::
       arbitrary[(ConfirmRemoveSealsPage.type, JsValue)] ::
       arbitrary[(GuaranteeTypePage.type, JsValue)] ::
