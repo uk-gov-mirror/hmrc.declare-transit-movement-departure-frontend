@@ -16,16 +16,23 @@
 
 package controllers.addItems
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
+import forms.PackageTypeFormProvider
 import javax.inject.Inject
-import models.LocalReferenceNumber
+import models.reference.PackageType
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
+import pages.PackageTypePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.packageTypeList
 
 import scala.concurrent.ExecutionContext
 
@@ -36,15 +43,35 @@ class PackageTypeController @Inject()(
   requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer,
-  @AddItems navigator: Navigator
+  @AddItems navigator: Navigator,
+  referenceDataConnector: ReferenceDataConnector,
+  formProvider: PackageTypeFormProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
+    with NunjucksSupport
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val json = Json.obj("lrn" -> lrn)
+      referenceDataConnector.getPackageTypes().flatMap {
+        packageTypes =>
+          val form = formProvider(packageTypes)
 
-      renderer.render("packageType.njk", json).map(Ok(_))
+          val preparedForm: Form[PackageType] = request.userAnswers
+            .get(PackageTypePage)
+            .flatMap(packageTypes.getPackageType)
+            .map(form.fill)
+            .getOrElse(form)
+
+          val json = Json.obj(
+            "form"      -> preparedForm,
+            "lrn"       -> lrn,
+            "mode"      -> mode,
+            "countries" -> packageTypeList(form.value, packageTypes.packageTypeList)
+          )
+
+          renderer.render("countryOfDispatch.njk", json).map(Ok(_))
+      }
   }
+
 }

@@ -20,7 +20,7 @@ import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
 import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit, PackageType, TransportMode}
-import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, TransportModeList}
+import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, PackageTypeList, TransportModeList}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -306,7 +306,12 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
             .willReturn(okJson(packageTypeJson))
         )
 
-        val expectResult = Seq(PackageType("AB", "description 1"), PackageType("CD", "description 2"))
+        val expectResult = PackageTypeList(
+          Seq(
+            PackageType("AB", "description 1"),
+            PackageType("CD", "description 2")
+          )
+        )
 
         connector.getPackageTypes().futureValue mustEqual expectResult
       }

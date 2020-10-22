@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-import models.reference.{Country, CustomsOffice, OfficeOfTransit, TransportMode}
+import models.reference.{Country, CustomsOffice, OfficeOfTransit, PackageType, TransportMode}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.viewmodels.{Content, MessageInterpolators}
 
 package object utils {
   val defaultOption: JsObject = Json.obj("value" -> "", "text" -> "")
+
+  def packageTypeList(value: Option[PackageType], packageTypes: Seq[PackageType]): Seq[JsObject] = {
+    val packageTypeJson = packageTypes.map {
+      packageType =>
+        Json.obj("text" -> s"${packageType.description} (${packageType.code})", "value" -> packageType, "selected" -> value.contains(packageType))
+    }
+
+    defaultOption +: packageTypeJson
+  }
 
   def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {
     val countryJsonList = countries.map {
