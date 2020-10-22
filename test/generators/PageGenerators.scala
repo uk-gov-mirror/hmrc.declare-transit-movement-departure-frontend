@@ -19,20 +19,33 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import pages._
-import pages.addItems.traderDetails.{
-  TraderDetailsConsigneeAddressPage,
-  TraderDetailsConsigneeEoriKnownPage,
-  TraderDetailsConsigneeEoriNumberPage,
-  TraderDetailsConsigneeNamePage,
-  TraderDetailsConsignorAddressPage,
-  TraderDetailsConsignorEoriKnownPage,
-  TraderDetailsConsignorEoriNumberPage,
-  TraderDetailsConsignorNamePage
-}
+import pages.addItems._
+import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryHowManyPackagesPage: Arbitrary[HowManyPackagesPage.type] =
+    Arbitrary(HowManyPackagesPage)
+
+  implicit lazy val arbitraryAddAnotherPackagePage: Arbitrary[AddAnotherPackagePage.type] =
+    Arbitrary(AddAnotherPackagePage)
+
+  implicit lazy val arbitraryDeclareMarkPage: Arbitrary[DeclareMarkPage.type] =
+    Arbitrary(DeclareMarkPage)
+
+  implicit lazy val arbitraryAddMarkPage: Arbitrary[AddMarkPage.type] =
+    Arbitrary(AddMarkPage)
+
+  implicit lazy val arbitraryTotalPiecesPage: Arbitrary[TotalPiecesPage.type] =
+    Arbitrary(TotalPiecesPage)
+
+  implicit lazy val arbitraryDeclareNumberOfPackagesPage: Arbitrary[DeclareNumberOfPackagesPage.type] =
+    Arbitrary(DeclareNumberOfPackagesPage)
+
+  implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
+    Arbitrary(addItems.CommodityCodePage(Index(0)))
 
   implicit lazy val arbitraryTraderDetailsConsignorNamePage: Arbitrary[TraderDetailsConsignorNamePage.type] =
     Arbitrary(TraderDetailsConsignorNamePage)

@@ -17,11 +17,12 @@
 package controllers.addItems
 
 import controllers.actions._
+import forms.AddMarkFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.AddTotalNetMassPage
+import pages.AddMarkPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,14 +33,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddTotalNetMassController @Inject()(
+class AddMarkController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddTotalNetMassFormProvider,
+  formProvider: AddMarkFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -47,27 +48,28 @@ class AddTotalNetMassController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  private val form = formProvider()
+
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddTotalNetMassPage(index)) match {
-        case None        => formProvider(index: Index)
-        case Some(value) => formProvider(index: Index).fill(value)
+      val preparedForm = request.userAnswers.get(AddMarkPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
         "form"   -> preparedForm,
         "mode"   -> mode,
         "lrn"    -> lrn,
-        "index"  -> index.display,
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
-      renderer.render("addTotalNetMass.njk", json).map(Ok(_))
+      renderer.render("addMark.njk", json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      formProvider(index: Index)
+      form
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -76,17 +78,16 @@ class AddTotalNetMassController @Inject()(
               "form"   -> formWithErrors,
               "mode"   -> mode,
               "lrn"    -> lrn,
-              "index"  -> index.display,
               "radios" -> Radios.yesNo(formWithErrors("value"))
             )
 
-            renderer.render("addTotalNetMass.njk", json).map(BadRequest(_))
+            renderer.render("addMark.njk", json).map(BadRequest(_))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTotalNetMassPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddMarkPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddTotalNetMassPage(index), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddMarkPage, mode, updatedAnswers))
         )
   }
 }

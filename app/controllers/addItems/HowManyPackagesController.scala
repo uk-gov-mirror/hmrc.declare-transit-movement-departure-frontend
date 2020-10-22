@@ -17,29 +17,30 @@
 package controllers.addItems
 
 import controllers.actions._
+import forms.HowManyPackagesFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.AddTotalNetMassPage
+import pages.HowManyPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddTotalNetMassController @Inject()(
+class HowManyPackagesController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddTotalNetMassFormProvider,
+  formProvider: HowManyPackagesFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -47,46 +48,44 @@ class AddTotalNetMassController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  private val form = formProvider()
+
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddTotalNetMassPage(index)) match {
-        case None        => formProvider(index: Index)
-        case Some(value) => formProvider(index: Index).fill(value)
+      val preparedForm = request.userAnswers.get(HowManyPackagesPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "index"  -> index.display,
-        "radios" -> Radios.yesNo(preparedForm("value"))
+        "form" -> preparedForm,
+        "lrn"  -> lrn,
+        "mode" -> mode
       )
 
-      renderer.render("addTotalNetMass.njk", json).map(Ok(_))
+      renderer.render("howManyPackages.njk", json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      formProvider(index: Index)
+      form
         .bindFromRequest()
         .fold(
           formWithErrors => {
 
             val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "index"  -> index.display,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
+              "form" -> formWithErrors,
+              "lrn"  -> lrn,
+              "mode" -> mode
             )
 
-            renderer.render("addTotalNetMass.njk", json).map(BadRequest(_))
+            renderer.render("howManyPackages.njk", json).map(BadRequest(_))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTotalNetMassPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(HowManyPackagesPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddTotalNetMassPage(index), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(HowManyPackagesPage, mode, updatedAnswers))
         )
   }
 }

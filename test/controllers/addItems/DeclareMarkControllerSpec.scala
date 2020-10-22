@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.goodsSummary
+package controllers.addItems
 
 import base.SpecBase
-import controllers.{routes => mainRoutes}
-import forms.ConfirmRemoveSealFormProvider
+import forms.DeclareMarkFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
-import navigation.annotations.GoodsSummary
+import models.NormalMode
+import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.SealIdDetailsPage
+import pages.DeclareMarkPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -35,48 +34,76 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class DeclareMarkControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new ConfirmRemoveSealFormProvider()
-  val form         = formProvider(sealDomain)
+  val formProvider = new DeclareMarkFormProvider()
+  val form         = formProvider()
 
-  lazy val confirmRemoveSealRoute = routes.ConfirmRemoveSealController.onPageLoad(lrn, sealIndex, NormalMode).url
+  lazy val declareMarkRoute = routes.DeclareMarkController.onPageLoad(lrn, NormalMode).url
 
-  private val removeSealRoute: String   = routes.ConfirmRemoveSealController.onPageLoad(lrn, sealIndex, NormalMode).url
-  private val userAnswersWithSeal       = emptyUserAnswers.set(SealIdDetailsPage(sealIndex), sealDomain).success.value
-  private val confirmRemoveSealTemplate = "/confirmRemoveSeals.njk"
-
-  "ConfirmRemoveSeals Controller" - {
+  "DeclareMark Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(userAnswersWithSeal)).build()
-      val request        = FakeRequest(GET, confirmRemoveSealRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, declareMarkRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-      val result         = route(application, request).value
+
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
-      templateCaptor.getValue mustEqual "/confirmRemoveSeal.njk"
+      templateCaptor.getValue mustEqual "declareMark.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
+
+      application.stop()
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+
+      val userAnswers    = emptyUserAnswers.set(DeclareMarkPage, "answer").success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, declareMarkRoute)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      val filledForm = form.bind(Map("value" -> "answer"))
+
+      val expectedJson = Json.obj(
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
+      )
+
+      templateCaptor.getValue mustEqual "declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -89,31 +116,21 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with Nu
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersWithSeal))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[GoodsSummary]).toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
       val request =
-        FakeRequest(POST, confirmRemoveSealRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, declareMarkRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      val newUserAnswers = UserAnswers(
-        id         = userAnswersWithSeal.id,
-        eoriNumber = userAnswersWithSeal.eoriNumber,
-        userAnswersWithSeal.remove(SealIdDetailsPage(sealIndex)).success.value.data,
-        userAnswersWithSeal.lastUpdated
-      )
-
-      verify(mockSessionRepository, times(1)).set(newUserAnswers)
 
       application.stop()
     }
@@ -123,8 +140,8 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with Nu
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(userAnswersWithSeal)).build()
-      val request        = FakeRequest(POST, confirmRemoveSealRoute).withFormUrlEncodedBody(("value", ""))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, declareMarkRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -136,13 +153,12 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with Nu
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "/confirmRemoveSeal.njk"
+      templateCaptor.getValue mustEqual "declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -152,7 +168,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with Nu
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, confirmRemoveSealRoute)
+      val request = FakeRequest(GET, declareMarkRoute)
 
       val result = route(application, request).value
 
@@ -168,8 +184,8 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with Nu
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, confirmRemoveSealRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, declareMarkRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 

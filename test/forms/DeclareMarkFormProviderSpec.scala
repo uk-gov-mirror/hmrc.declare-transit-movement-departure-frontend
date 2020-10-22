@@ -16,32 +16,38 @@
 
 package forms
 
-import base.SpecBase
-import controllers.addItems.AddTotalNetMassFormProvider
-import forms.behaviours.BooleanFieldBehaviours
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class AddTotalNetMassFormProviderSpec extends BooleanFieldBehaviours with SpecBase {
+class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "addTotalNetMass.error.required"
-  val invalidKey  = "error.boolean"
+  val requiredKey = "declareMark.error.required"
+  val lengthKey   = "declareMark.error.length"
+  val maxLength   = 42
 
-  val form = new AddTotalNetMassFormProvider()(index)
+  val form = new DeclareMarkFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
 
-    behave like booleanField(
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey, Seq(index.display))
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }
