@@ -76,11 +76,11 @@ class AddAnotherItemController @Inject()(
 
   private def renderPage(lrn: LocalReferenceNumber, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
 
-    val cyaHelper         = new AddItemsCheckYourAnswersHelper(request.userAnswers)
-    val numberOfItems     = request.userAnswers.get(DeriveNumberOfItems).getOrElse(0)
-    val index: Seq[Index] = List.range(0, numberOfItems).map(Index(_))
+    val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
+    val numberOfItems         = request.userAnswers.get(DeriveNumberOfItems).getOrElse(0)
+    val indexList: Seq[Index] = List.range(0, numberOfItems).map(Index(_))
 
-    val itemRows = index.map {
+    val itemRows = indexList.map {
       index =>
         cyaHelper.itemRows(index)
     }
