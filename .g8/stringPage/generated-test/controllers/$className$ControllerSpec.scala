@@ -1,10 +1,11 @@
 package controllers
 
 import base.SpecBase
-import forms.$className$FormProvider
 import matchers.JsonMatchers
+import forms.$className$FormProvider
 import models.{NormalMode, UserAnswers}
-import navigation.FakeNavigator
+import navigation.{FakeNavigator, Navigator}
+import navigation.annotations.$navRoute$
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -25,8 +26,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new $className$FormProvider()
-  val form = formProvider()
+  private val formProvider = new $className$FormProvider()
+  private val form = formProvider()
+  private val template = "$className;format="decap"$.njk"
 
   lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, NormalMode).url
 
@@ -54,8 +56,10 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "lrn"    -> lrn
       )
 
-      templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -85,8 +89,10 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -100,7 +106,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[$navRoute$]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
@@ -140,7 +146,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
+      templateCaptor.getValue mustEqual template
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
