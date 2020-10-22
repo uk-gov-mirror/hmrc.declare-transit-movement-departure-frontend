@@ -43,23 +43,23 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddTotalNetMassPage(index) => ua => addTotalNessMassRoute(index, ua,  CheckMode)
     case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, CheckMode)
     case CommodityCodePage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
+    case TotalNetMassPage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
 
 
   }
 
   def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
-    (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index))) match {
-      case (Some(true), _)       => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), _)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
-      case (Some(true), None)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
+    (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)), mode) match {
+      case (Some(true), _, NormalMode)       => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), _, NormalMode)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
+      case (Some(true), None, CheckMode)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
       case _ => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
-
 
   def addTotalNessMassRoute(index:Index, ua:UserAnswers, mode:Mode) = 
     (ua.get(AddTotalNetMassPage(index)), ua.get(TotalNetMassPage(index)), mode) match {
       case (Some(false), _, NormalMode)    => Some(addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(true), None, _)           => Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, mode))
+      case (Some(true), None , _)           => Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, mode))
       case _                               => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
     // format: on
