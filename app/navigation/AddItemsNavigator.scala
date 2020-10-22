@@ -24,30 +24,26 @@ import play.api.mvc.Call
 
 @Singleton
 class AddItemsNavigator @Inject()() extends Navigator {
-
+  // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ItemDescriptionPage(index) =>
-      ua =>
-        Some(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
-    case ItemTotalGrossMassPage(index) =>
-      ua =>
-        Some(addItemsRoutes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
-    case AddTotalNetMassPage(index) =>
-      ua =>
-        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case ItemDescriptionPage(index) => ua => Some(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
+    case ItemTotalGrossMassPage(index) => ua => Some(addItemsRoutes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
+    case AddTotalNetMassPage(index) => ua=>   addTotalNessMassRoute(index, ua,  NormalMode)
   }
 
   //TODO: Need to refactor this code
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ItemDescriptionPage(index) =>
-      ua =>
-        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case ItemTotalGrossMassPage(index) =>
-      ua =>
-        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case AddTotalNetMassPage(index) =>
-      ua =>
-        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case ItemDescriptionPage(index) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case ItemTotalGrossMassPage(index) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case AddTotalNetMassPage(index) => ua => addTotalNessMassRoute(index, ua,  CheckMode)
   }
 
+  def addTotalNessMassRoute(index:Index, ua:UserAnswers, mode:Mode) = {
+    (ua.get(AddTotalNetMassPage(index)), ua.get(TotalNetMassPage(index))) match {
+      case (Some(true), None)=> Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, mode))
+      case (Some(true), Some(_))=> Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, CheckMode))
+      case (Some(false),_) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    }
+  }
+  // format: on
 }

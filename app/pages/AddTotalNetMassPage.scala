@@ -16,13 +16,21 @@
 
 package pages
 
-import models.Index
+import models.{Index, UserAnswers}
 import play.api.libs.json.JsPath
 import queries.Constants.Items
+
+import scala.util.Try
 
 case class AddTotalNetMassPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ Items \ index.position \ toString
 
   override def toString: String = "addTotalNetMass"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(TotalNetMassPage(index))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }
