@@ -29,6 +29,14 @@ trait UserAnswersEntryGenerators extends PageGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryRemoveItemUserAnswersEntry: Arbitrary[(RemoveItemPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RemoveItemPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryHowManyPackagesUserAnswersEntry: Arbitrary[(HowManyPackagesPage.type, JsValue)] =
     Arbitrary {
       for {

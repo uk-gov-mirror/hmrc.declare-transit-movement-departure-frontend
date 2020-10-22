@@ -753,3 +753,8 @@ howManyPackages.error.nonNumeric = Enter your howManyPackages using numbers
 howManyPackages.error.required = Enter your howManyPackages
 howManyPackages.error.wholeNumber = Enter your howManyPackages using whole numbers
 howManyPackages.error.outOfRange = HowManyPackages must be between {0} and {1}
+
+removeItem.title = Are you sure you want to remove this item?
+removeItem.heading = Are you sure you want to remove this item?
+removeItem.checkYourAnswersLabel = removeItem
+removeItem.error.required = Select yes if you are sure you want to remove this item
