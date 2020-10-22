@@ -34,7 +34,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
         Some(addItemsRoutes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
     case AddTotalNetMassPage(index) =>
       ua =>
-        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+        isAddTotalNetMassPage(ua, index)
   }
 
   //TODO: Need to refactor this code
@@ -49,5 +49,12 @@ class AddItemsNavigator @Inject()() extends Navigator {
       ua =>
         Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
   }
+
+  def isAddTotalNetMassPage(ua: UserAnswers, index: Index): Option[Call] =
+    if (ua.get(AddTotalNetMassPage(index)).contains(true)) {
+      Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, NormalMode))
+    } else {
+      Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    }
 
 }

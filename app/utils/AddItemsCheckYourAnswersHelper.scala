@@ -19,15 +19,31 @@ package utils
 import controllers.addItems.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.addItems.CommodityCodePage
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def commodityCode(index: Index): Option[Row] = userAnswers.get(CommodityCodePage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"commodityCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CommodityCodeController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"commodityCode.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def totalNetMass(index: Index): Option[Row] = userAnswers.get(TotalNetMassPage(index)) map {
     answer =>
       Row(
-        key   = Key(msg"totalNetMass.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"totalNetMass.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"$answer"),
         actions = List(
           Action(
