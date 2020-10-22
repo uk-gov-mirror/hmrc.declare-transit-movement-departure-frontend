@@ -22,15 +22,19 @@ import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
+import controllers.addItems.{routes => addItemsRoutes}
 import models.GuaranteeType.{guaranteeReferenceRoute, nonGuaranteeReferenceRoute}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
 import models.{Index, NormalMode, SectionDetails, Status, UserAnswers}
+import pages.addItems.CommodityCodePage
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
 
 class SectionsHelper(userAnswers: UserAnswers) {
+
+  val lrn = userAnswers.id
 
   def getSections: Seq[SectionDetails] = {
 
@@ -39,6 +43,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
       routesSection,
       transportSection,
       tradersDetailsSection,
+      itemsSection,
       goodsSummarySection,
       guaranteeSection
     )
@@ -88,6 +93,15 @@ class SectionsHelper(userAnswers: UserAnswers) {
     SectionDetails("declarationSummary.section.tradersDetails", page, status)
   }
 
+  private def itemsSection: SectionDetails = {
+    val startPage: String = addItemsRoutes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(0), NormalMode).url
+    val cyaPageAndStatus
+      : (String, Status) = (addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, Index(0)).url, Completed) // TODO Need to replace with Add another Item page CTCTRADERS-1187
+    val (page, status)   = getIncompletePage(startPage, addItemPages).getOrElse(cyaPageAndStatus)
+
+    SectionDetails("declarationSummary.section.addItems", page, status)
+  }
+
   private def goodsSummarySection: SectionDetails = {
     val startPage: String                  = goodsSummaryRoutes.DeclarePackagesController.onPageLoad(userAnswers.id, NormalMode).url
     val cyaPageAndStatus: (String, Status) = (goodsSummaryRoutes.GoodsSummaryCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
@@ -108,8 +122,6 @@ class SectionsHelper(userAnswers: UserAnswers) {
     SectionDetails("declarationSummary.section.safetyAndSecurity", "", NotStarted)
 
   private val transportDetailsPage: Seq[(Option[_], String)] = {
-    val lrn = userAnswers.id
-
     val addIdAtDeparturePages: Seq[(Option[Object], String)] = if (userAnswers.get(AddIdAtDeparturePage).contains(true)) {
       Seq(userAnswers.get(IdAtDeparturePage) -> transportDetailsRoutes.IdAtDepartureController.onPageLoad(lrn, NormalMode).url)
     } else {
@@ -139,8 +151,6 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private val movementDetailsPages: Seq[(Option[_], String)] = {
-    val lrn = userAnswers.id
-
     val declareForSomeoneElseDiversionPages: Seq[(Option[Object], String)] = if (userAnswers.get(DeclarationForSomeoneElsePage).contains(true)) {
       Seq(
         userAnswers.get(RepresentativeNamePage)     -> movementDetailsRoutes.RepresentativeNameController.onPageLoad(lrn, NormalMode).url,
@@ -160,7 +170,6 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private val routeDetailsPages: Seq[(Option[_], String)] = {
-    val lrn   = userAnswers.id
     val index = Index(0)
     val arrivalTimeAtTransit: Seq[(Option[Object], String)] = if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
       Seq(userAnswers.get(ArrivalTimesAtOfficePage(index)) -> routeDetailsRoutes.ArrivalTimesAtOfficeController.onPageLoad(lrn, index, NormalMode).url)
@@ -233,6 +242,24 @@ class SectionsHelper(userAnswers: UserAnswers) {
     Seq(
       userAnswers.get(IsPrincipalEoriKnownPage) -> traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
     ) ++ isPrincipalEoriKnowDiversionPages ++ addConsignorPage ++ addConsignorPageDiversionPage ++ isConsignorEoriKnownPage ++ addConsigneePage ++ addConsigneeDiversionPage ++ isConsigneeEoriKnownPage
+  }
+
+  private val addItemPages: Seq[(Option[_], String)] = {
+    val index = Index(0)
+    val addTotalGrossMassPages: Seq[(Option[_], String)] = if (userAnswers.get(AddTotalNetMassPage(index)).contains(true)) {
+      Seq(userAnswers.get(TotalNetMassPage(index)) -> addItemsRoutes.TotalNetMassController.onPageLoad(lrn, index, NormalMode).url)
+    } else { Seq.empty }
+
+    val commodityCodePages = if (userAnswers.get(IsCommodityCodeKnownPage(index)).contains(true)) {
+      Seq(userAnswers.get(CommodityCodePage(index)) -> addItemsRoutes.CommodityCodeController.onPageLoad(lrn, index, NormalMode).url)
+    } else { Seq.empty }
+
+    Seq(
+      userAnswers.get(ItemDescriptionPage(index))      -> addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url,
+      userAnswers.get(ItemTotalGrossMassPage(index))   -> addItemsRoutes.ItemTotalGrossMassController.onPageLoad(lrn, index, NormalMode).url,
+      userAnswers.get(AddTotalNetMassPage(index))      -> addItemsRoutes.AddTotalNetMassController.onPageLoad(lrn, index, NormalMode).url,
+      userAnswers.get(IsCommodityCodeKnownPage(index)) -> addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(lrn, index, NormalMode).url
+    ) ++ addTotalGrossMassPages ++ commodityCodePages
   }
 
   private val goodsSummaryPages: Seq[(Option[_], String)] = {

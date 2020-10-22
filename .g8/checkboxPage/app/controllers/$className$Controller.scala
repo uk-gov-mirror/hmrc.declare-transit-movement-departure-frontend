@@ -4,6 +4,8 @@ import controllers.actions._
 import forms.$className$FormProvider
 import javax.inject.Inject
 import models.{Mode, LocalReferenceNumber, $className$}
+import navigation.Navigator
+import navigation.annotations.$navRoute$
 import pages.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -18,7 +20,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class $className$Controller @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
-                                       navigator: Navigator,
+                                       @$navRoute$ navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
@@ -28,6 +30,7 @@ class $className$Controller @Inject()(
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
+  private val template = "$className;format="decap"$.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -44,7 +47,7 @@ class $className$Controller @Inject()(
         "checkboxes" -> $className$.checkboxes(preparedForm)
       )
 
-      renderer.render("$className;format="decap"$.njk", json).map(Ok(_))
+      renderer.render(template, json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -60,7 +63,7 @@ class $className$Controller @Inject()(
             "checkboxes" -> $className$.checkboxes(formWithErrors)
           )
 
-          renderer.render("$className;format="decap"$.njk", json).map(BadRequest(_))
+          renderer.render(template, json).map(BadRequest(_))
         },
         value =>
           for {
