@@ -18,9 +18,9 @@ package forms
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import models.domain.GrossMass.Constants._
 import org.scalacheck.Gen
 import play.api.data.FormError
-import models.domain.GrossMass.Constants._
 
 class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
@@ -40,7 +40,7 @@ class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with Spec
       form,
       fieldName,
       maxLength   = maxLengthGrossMass,
-      lengthError = FormError(fieldName, lengthKeyGrossMass, Seq(maxLengthGrossMass))
+      lengthError = FormError(fieldName, lengthKeyGrossMass, Seq(index.display))
     )
 
     behave like mandatoryField(
