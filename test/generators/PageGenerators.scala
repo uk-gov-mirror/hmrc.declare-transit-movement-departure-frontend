@@ -18,8 +18,9 @@ package generators
 
 import models.Index
 import org.scalacheck.Arbitrary
-import pages.{addItems, _}
-import pages.addItems.{CommodityCodePage, RemoveItemPage}
+import pages._
+import pages.addItems._
+import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 
@@ -48,6 +49,30 @@ trait PageGenerators {
 
   implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
     Arbitrary(addItems.CommodityCodePage(Index(0)))
+
+  implicit lazy val arbitraryTraderDetailsConsignorNamePage: Arbitrary[TraderDetailsConsignorNamePage.type] =
+    Arbitrary(TraderDetailsConsignorNamePage)
+
+  implicit lazy val arbitraryTraderDetailsConsignorEoriNumberPage: Arbitrary[TraderDetailsConsignorEoriNumberPage.type] =
+    Arbitrary(TraderDetailsConsignorEoriNumberPage)
+
+  implicit lazy val arbitraryTraderDetailsConsignorEoriKnownPage: Arbitrary[TraderDetailsConsignorEoriKnownPage.type] =
+    Arbitrary(TraderDetailsConsignorEoriKnownPage)
+
+  implicit lazy val arbitraryTraderDetailsConsignorAddressPage: Arbitrary[TraderDetailsConsignorAddressPage.type] =
+    Arbitrary(TraderDetailsConsignorAddressPage)
+
+  implicit lazy val arbitraryTraderDetailsConsigneeNamePage: Arbitrary[TraderDetailsConsigneeNamePage.type] =
+    Arbitrary(TraderDetailsConsigneeNamePage)
+
+  implicit lazy val arbitraryTraderDetailsConsigneeEoriNumberPage: Arbitrary[TraderDetailsConsigneeEoriNumberPage.type] =
+    Arbitrary(TraderDetailsConsigneeEoriNumberPage)
+
+  implicit lazy val arbitraryTraderDetailsConsigneeEoriKnownPage: Arbitrary[TraderDetailsConsigneeEoriKnownPage.type] =
+    Arbitrary(TraderDetailsConsigneeEoriKnownPage)
+
+  implicit lazy val arbitraryTraderDetailsConsigneeAddressPage: Arbitrary[TraderDetailsConsigneeAddressPage.type] =
+    Arbitrary(TraderDetailsConsigneeAddressPage)
 
   implicit lazy val arbitraryPreLodgeDeclarationPage: Arbitrary[PreLodgeDeclarationPage.type] =
     Arbitrary(PreLodgeDeclarationPage)

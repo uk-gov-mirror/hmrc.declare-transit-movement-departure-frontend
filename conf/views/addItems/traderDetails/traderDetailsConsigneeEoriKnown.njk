@@ -1,15 +1,13 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
-{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
-{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
-
 
 {% block pageTitle %}
-  {{ title(messages("itemDescription.title"), form.errors) }}
+  {{ title(messages("traderDetailsConsigneeEoriKnown.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -29,22 +27,23 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.addItems.ItemDescriptionController.onSubmit(lrn, mode).url }}" method="post">
-          <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
-         <h1 class="govuk-heading-xl"> {{ messages("itemDescription.heading", index) }}  </h1>
+        <form action="{{ routes.controllers.addItems.traderDetails.TraderDetailsConsigneeEoriKnownController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
-         {{ govukCharacterCount({
-                       name: "value",
-                       id: "value",
-                       maxlength: 280,
-                       value: form.value.value,
-                       label: {
-                         text: messages('itemDescription.paragraph'),
-                         isPageHeading: false
-                       }
-                 }) }}
+          {{ govukRadios({
+            classes: "govuk-radios--inline",
+            name: 'value',
+            fieldset: {
+              legend: {
+                text: messages('traderDetailsConsigneeEoriKnown.heading'),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl"
+              }
+            },
+            items: radios,
+            errorMessage: form.value.error
+          }) }}
 
           {{ govukButton({
             text: messages("site.continue"),
