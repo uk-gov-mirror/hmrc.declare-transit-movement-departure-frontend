@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package pages.addItems
 
-import javax.inject.Inject
-import forms.mappings.Mappings
 import models.Index
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.Items
 
-class AddTotalNetMassFormProvider @Inject() extends Mappings {
+case class CommodityCodePage(index: Index) extends QuestionPage[String] {
 
-  def apply(index: Index): Form[Boolean] =
-    Form(
-      "value" -> boolean("addTotalNetMass.error.required", "error.boolean", Seq(index.display))
-    )
+  override def path: JsPath = JsPath \ Items \ index.position \ toString
+
+  override def toString: String = "addItems/commodityCode"
 }
