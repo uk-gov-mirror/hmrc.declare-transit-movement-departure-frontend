@@ -699,6 +699,38 @@ totalNetMass.error.minimum =  The total net mass for item {0} in kilograms must 
 totalNetMass.error.invalidCharacters =  The total net mass for item {0} in kilograms must only include numbers 0 to 9 and a decimal place
 totalNetMass.error.invalidFormat =  The total net mass for item {0} in kilograms must have up to 3 decimal places, like 1000.985
 
+packageType.title = packageType
+packageType.heading = packageType
+
+declareNumberOfPackages.title = declareNumberOfPackages
+declareNumberOfPackages.heading = declareNumberOfPackages
+declareNumberOfPackages.checkYourAnswersLabel = declareNumberOfPackages
+declareNumberOfPackages.error.required = Select yes if declareNumberOfPackages
+
+totalPieces.title = TotalPieces
+totalPieces.heading = TotalPieces
+totalPieces.checkYourAnswersLabel = TotalPieces
+totalPieces.error.nonNumeric = Enter your totalPieces using numbers
+totalPieces.error.required = Enter your totalPieces
+totalPieces.error.wholeNumber = Enter your totalPieces using whole numbers
+totalPieces.error.outOfRange = TotalPieces must be between {0} and {1}
+
+addMark.title = addMark
+addMark.heading = addMark
+addMark.checkYourAnswersLabel = addMark
+addMark.error.required = Select yes if addMark
+
+declareMark.title = declareMark
+declareMark.heading = declareMark
+declareMark.checkYourAnswersLabel = declareMark
+declareMark.error.required = Enter declareMark
+declareMark.error.length = DeclareMark must be 42 characters or less
+
+addAnotherPackage.title = addAnotherPackage
+addAnotherPackage.heading = addAnotherPackage
+addAnotherPackage.checkYourAnswersLabel = addAnotherPackage
+addAnotherPackage.error.required = Select yes if addAnotherPackage
+
 commodityCode.title = What is the commodity code for item {0}?
 commodityCode.heading = What is the commodity code for item {0}?
 commodityCode.checkYourAnswersLabel = Commodity code for item {0}
@@ -712,3 +744,11 @@ isCommodityCodeKnown.title = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.heading = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.checkYourAnswersLabel = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.error.required = Select yes if you know the commodity code for item {0}
+
+howManyPackages.title = HowManyPackages
+howManyPackages.heading = HowManyPackages
+howManyPackages.checkYourAnswersLabel = HowManyPackages
+howManyPackages.error.nonNumeric = Enter your howManyPackages using numbers
+howManyPackages.error.required = Enter your howManyPackages
+howManyPackages.error.wholeNumber = Enter your howManyPackages using whole numbers
+howManyPackages.error.outOfRange = HowManyPackages must be between {0} and {1}
