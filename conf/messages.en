@@ -801,3 +801,12 @@ traderDetailsConsignorName.heading = traderDetailsConsignorName
 traderDetailsConsignorName.checkYourAnswersLabel = traderDetailsConsignorName
 traderDetailsConsignorName.error.required = Enter traderDetailsConsignorName
 traderDetailsConsignorName.error.length = TraderDetailsConsignorName must be 100 characters or less
+
+addAnotherItem.title.singular = You have added {0} item
+addAnotherItem.title.plural = You have added {0} items
+addAnotherItem.heading.singular = You have added {0} item
+addAnotherItem.heading.plural = You have added {0} items
+addAnotherItem.error.required = Select yes if you need to add another item
+addAnotherItem.paragraph = Do you need to add another item?
+addAnotherItem.change.hidden = Item {0}
+addAnotherItem.delete.hidden = Item {0}

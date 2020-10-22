@@ -47,6 +47,9 @@ trait PageGenerators {
   implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
     Arbitrary(addItems.CommodityCodePage(Index(0)))
 
+  implicit lazy val arbitraryAddAnotherItemPage: Arbitrary[AddAnotherItemPage.type] =
+    Arbitrary(AddAnotherItemPage)
+
   implicit lazy val arbitraryTraderDetailsConsignorNamePage: Arbitrary[TraderDetailsConsignorNamePage.type] =
     Arbitrary(TraderDetailsConsignorNamePage)
 
