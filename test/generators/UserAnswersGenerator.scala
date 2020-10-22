@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.addItems.CommodityCodePage
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -36,6 +37,8 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(TotalPiecesPage.type, JsValue)] ::
       arbitrary[(DeclareNumberOfPackagesPage.type, JsValue)] ::
       arbitrary[(TotalPackagesPage.type, JsValue)] ::
+      arbitrary[(TotalNetMassPage, JsValue)] ::
+      arbitrary[(CommodityCodePage, JsValue)] ::
       arbitrary[(TotalNetMassPage, JsValue)] ::
       arbitrary[(AddTotalNetMassPage, JsValue)] ::
       arbitrary[(IsCommodityCodeKnownPage, JsValue)] ::

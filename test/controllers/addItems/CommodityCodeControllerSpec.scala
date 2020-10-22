@@ -17,15 +17,18 @@
 package controllers.addItems
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
+import forms.addItems.CommodityCodeFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddTotalNetMassPage
+import pages.addItems
+import pages.addItems.CommodityCodePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -33,21 +36,20 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class CommodityCodeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new AddTotalNetMassFormProvider()
+  val formProvider = new CommodityCodeFormProvider()
   val form         = formProvider(index)
 
-  lazy val addTotalNetMassRoute = routes.AddTotalNetMassController.onPageLoad(lrn, index, NormalMode).url
+  lazy val commodityCodeRoute = routes.CommodityCodeController.onPageLoad(lrn, index, NormalMode).url
 
-  "AddTotalNetMass Controller" - {
+  "CommodityCode Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -55,7 +57,7 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, addTotalNetMassRoute)
+      val request        = FakeRequest(GET, commodityCodeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -66,14 +68,12 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "index"  -> index.display,
-        "radios" -> Radios.yesNo(form("value"))
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
-      templateCaptor.getValue mustEqual "addTotalNetMass.njk"
+      templateCaptor.getValue mustEqual "addItems/commodityCode.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -84,9 +84,9 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddTotalNetMassPage(index), true).success.value
+      val userAnswers    = emptyUserAnswers.set(addItems.CommodityCodePage(index), "111111").success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, addTotalNetMassRoute)
+      val request        = FakeRequest(GET, commodityCodeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -96,16 +96,16 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> "111111"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form"  -> filledForm,
+        "lrn"   -> lrn,
+        "index" -> index.display,
+        "mode"  -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "addTotalNetMass.njk"
+      templateCaptor.getValue mustEqual "addItems/commodityCode.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -126,13 +126,12 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
           .build()
 
       val request =
-        FakeRequest(POST, addTotalNetMassRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, commodityCodeRoute)
+          .withFormUrlEncodedBody(("value", "111111"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -144,7 +143,7 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, addTotalNetMassRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, commodityCodeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -156,13 +155,12 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "addTotalNetMass.njk"
+      templateCaptor.getValue mustEqual "addItems/commodityCode.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -172,7 +170,7 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, addTotalNetMassRoute)
+      val request = FakeRequest(GET, commodityCodeRoute)
 
       val result = route(application, request).value
 
@@ -188,8 +186,8 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockitoSugar with Nunj
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, addTotalNetMassRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, commodityCodeRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
