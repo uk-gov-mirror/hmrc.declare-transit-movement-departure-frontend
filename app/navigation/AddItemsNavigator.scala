@@ -20,6 +20,7 @@ import controllers.addItems.{routes => addItemsRoutes}
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
+import pages.addItems._
 import play.api.mvc.Call
 
 @Singleton
@@ -29,7 +30,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ItemDescriptionPage(index) => ua => Some(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
     case ItemTotalGrossMassPage(index) => ua => Some(addItemsRoutes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
     case AddTotalNetMassPage(index) => ua=>   addTotalNessMassRoute(index, ua,  NormalMode)
-
+    case TotalNetMassPage(index) => ua => Some(addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
+    case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, NormalMode)
+    case CommodityCodePage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
 
   }
 
@@ -38,15 +41,26 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ItemDescriptionPage(index) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case ItemTotalGrossMassPage(index) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case AddTotalNetMassPage(index) => ua => addTotalNessMassRoute(index, ua,  CheckMode)
+    case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, CheckMode)
+    case CommodityCodePage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
+
+
   }
 
+  def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
+    (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index))) match {
+      case (Some(true), _)       => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), _)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
+      case (Some(true), None)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
+      case _ => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    }
 
 
   def addTotalNessMassRoute(index:Index, ua:UserAnswers, mode:Mode) = 
-    (ua.get(AddTotalNetMassPage(index)), ua.get(TotalNetMassPage(index))) match {
-      case (Some(true), None)=> Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, mode))
-      case (Some(true), Some(_))=> Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, CheckMode))
-      case (Some(false),_) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    (ua.get(AddTotalNetMassPage(index)), ua.get(TotalNetMassPage(index)), mode) match {
+      case (Some(false), _, NormalMode)    => Some(addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(true), None, _)           => Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, mode))
+      case _                               => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
     // format: on
 }
