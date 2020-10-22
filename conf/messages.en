@@ -200,6 +200,7 @@ declarationSummary.section.tradersDetails = {0} trader’s details
 declarationSummary.section.goodsSummary = {0} goods summary
 declarationSummary.section.guarantee = {0} guarantee
 declarationSummary.section.safetyAndSecurity = {0} safety and security details
+declarationSummary.section.addItems = {0} items
 declarationSummary.backToTransitMovements = Back to transit movements
 
 declarationType.title = What declaration do you want to create?

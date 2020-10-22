@@ -18,7 +18,7 @@ package controllers.goodsSummary
 
 import base.SpecBase
 import controllers.{routes => mainRoutes}
-import forms.{ConfirmRemoveSealFormProvider, ConfirmRemoveSealsFormProvider}
+import forms.ConfirmRemoveSealFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.GoodsSummary
