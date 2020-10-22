@@ -17,30 +17,60 @@
 package controllers.addItems
 
 import base.SpecBase
+import connectors.ReferenceDataConnector
+import forms.PackageTypeFormProvider
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
+import models.reference.PackageType
+import models.{NormalMode, PackageTypeList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.PackageTypePage
+import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import controllers.{routes => mainRoutes}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatchers with NunjucksSupport {
+
+  private def onwardRoute = Call("GET", "/foo")
+
+  private val packageType1: PackageType = PackageType("AB", "Description 1")
+  private val packageType2: PackageType = PackageType("CD", "Description 2")
+
+  private val packageTypeList: PackageTypeList = PackageTypeList(Seq(packageType1, packageType2))
+
+  private val form = new PackageTypeFormProvider()(packageTypeList)
+
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+
+  lazy val packageTypeRoute: String = routes.PackageTypeController.onPageLoad(lrn, NormalMode).url
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockRefDataConnector)
+  }
 
   "PackageType Controller" - {
 
-    "return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, routes.PackageTypeController.onPageLoad(lrn).url)
+      when(mockRefDataConnector.getPackageTypes()(any(), any())).thenReturn(Future.successful(packageTypeList))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+
+      val request        = FakeRequest(GET, packageTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -50,10 +80,66 @@ class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatc
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn)
+      val packageTypesJson = Seq(
+        Json.obj("value" -> "", "text"   -> ""),
+        Json.obj("value" -> "AB", "text" -> "Description 1 (AB)", "selected" -> false),
+        Json.obj("value" -> "CD", "text" -> "Description 2 (CD)", "selected" -> false)
+      )
+
+      val expectedJson = Json.obj(
+        "form"         -> form,
+        "mode"         -> NormalMode,
+        "lrn"          -> lrn,
+        "packageTypes" -> packageTypesJson
+      )
+
+      val jsonCaptorWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual "packageType.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonCaptorWithoutConfig mustEqual expectedJson
+
+      application.stop()
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getPackageTypes()(any(), any())).thenReturn(Future.successful(packageTypeList))
+
+      val userAnswers = emptyUserAnswers.set(PackageTypePage, "AB").success.value
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request        = FakeRequest(GET, packageTypeRoute)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      val filledForm = form.bind(Map("value" -> "AB"))
+
+      val packageTypesJson = Seq(
+        Json.obj("value" -> "", "text"   -> ""),
+        Json.obj("value" -> "AB", "text" -> "Description 1 (AB)", "selected" -> true),
+        Json.obj("value" -> "CD", "text" -> "Description 2 (CD)", "selected" -> false)
+      )
+
+      val expectedJson = Json.obj(
+        "form"         -> filledForm,
+        "mode"         -> NormalMode,
+        "lrn"          -> lrn,
+        "packageTypes" -> packageTypesJson
+      )
+
+      val jsonCaptorWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual "packageType.njk"
+      jsonCaptorWithoutConfig mustEqual expectedJson
 
       application.stop()
     }

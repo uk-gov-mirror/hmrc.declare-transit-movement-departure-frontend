@@ -64,10 +64,10 @@ class PackageTypeController @Inject()(
             .getOrElse(form)
 
           val json = Json.obj(
-            "form"      -> preparedForm,
-            "lrn"       -> lrn,
-            "mode"      -> mode,
-            "countries" -> packageTypeList(form.value, packageTypes.packageTypeList)
+            "form"         -> preparedForm,
+            "lrn"          -> lrn,
+            "mode"         -> mode,
+            "packageTypes" -> packageTypeList(preparedForm.value, packageTypes.packageTypeList)
           )
 
           renderer.render("packageType.njk", json).map(Ok(_))

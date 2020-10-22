@@ -20,8 +20,8 @@ import models.reference.PackageType
 
 class PackageTypeList(val packageTypeList: Seq[PackageType]) {
 
-  def fullList: Seq[PackageType]                                    = packageTypeList
-  def getPackageType(packageType: PackageType): Option[PackageType] = packageTypeList.find(_ == packageType)
+  def fullList: Seq[PackageType]                                   = packageTypeList
+  def getPackageType(packageTypeCode: String): Option[PackageType] = packageTypeList.find(_.code == packageTypeCode)
 
   override def equals(obj: Any): Boolean =
     obj match {

@@ -16,11 +16,17 @@
 
 package pages
 
-import play.api.libs.json.JsPath
+import models.reference.PackageType
+import pages.behaviours.PageBehaviours
 
-case object PackageTypePage extends QuestionPage[String] {
+class PackageTypePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "PackageTypePage" - {
 
-  override def toString: String = "packageType"
+    beRetrievable[String](PackageTypePage)
+
+    beSettable[String](PackageTypePage)
+
+    beRemovable[String](PackageTypePage)
+  }
 }

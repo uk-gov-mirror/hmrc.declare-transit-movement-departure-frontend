@@ -24,7 +24,7 @@ package object utils {
   def packageTypeList(value: Option[PackageType], packageTypes: Seq[PackageType]): Seq[JsObject] = {
     val packageTypeJson = packageTypes.map {
       packageType =>
-        Json.obj("text" -> s"${packageType.description} (${packageType.code})", "value" -> packageType, "selected" -> value.contains(packageType))
+        Json.obj("text" -> s"${packageType.description} (${packageType.code})", "value" -> packageType.code, "selected" -> value.contains(packageType))
     }
 
     defaultOption +: packageTypeJson
