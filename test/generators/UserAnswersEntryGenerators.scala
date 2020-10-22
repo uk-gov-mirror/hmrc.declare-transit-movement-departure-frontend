@@ -20,13 +20,13 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
+import pages.addItems.traderDetails._
 import pages.addItems.CommodityCodePage
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
-
   self: Generators =>
 
   implicit lazy val arbitraryHowManyPackagesUserAnswersEntry: Arbitrary[(HowManyPackagesPage.type, JsValue)] =
@@ -81,6 +81,70 @@ trait UserAnswersEntryGenerators extends PageGenerators {
     Arbitrary {
       for {
         page  <- arbitrary[CommodityCodePage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTraderDetailsConsignorNameUserAnswersEntry: Arbitrary[(TraderDetailsConsignorNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TraderDetailsConsignorNamePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTraderDetailsConsignorEoriNumberUserAnswersEntry: Arbitrary[(TraderDetailsConsignorEoriNumberPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TraderDetailsConsignorEoriNumberPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTraderDetailsConsignorEoriKnownUserAnswersEntry: Arbitrary[(TraderDetailsConsignorEoriKnownPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TraderDetailsConsignorEoriKnownPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTraderDetailsConsignorAddressUserAnswersEntry: Arbitrary[(TraderDetailsConsignorAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TraderDetailsConsignorAddressPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTraderDetailsConsigneeNameUserAnswersEntry: Arbitrary[(TraderDetailsConsigneeNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TraderDetailsConsigneeNamePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTraderDetailsConsigneeEoriNumberUserAnswersEntry: Arbitrary[(TraderDetailsConsigneeEoriNumberPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TraderDetailsConsigneeEoriNumberPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTraderDetailsConsigneeEoriKnownUserAnswersEntry: Arbitrary[(TraderDetailsConsigneeEoriKnownPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TraderDetailsConsigneeEoriKnownPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTraderDetailsConsigneeAddressUserAnswersEntry: Arbitrary[(TraderDetailsConsigneeAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TraderDetailsConsigneeAddressPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
