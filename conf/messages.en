@@ -806,3 +806,13 @@ removeItem.title = Are you sure you want to remove this item?
 removeItem.heading = Are you sure you want to remove this item?
 removeItem.checkYourAnswersLabel = removeItem
 removeItem.error.required = Select yes if you are sure you want to remove this item
+
+addItemsSameConsigneeForAllItems.title = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.heading = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.checkYourAnswersLabel = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.error.required = Select yes if addItemsSameConsigneeForAllItems
+
+addItemsSameConsignorForAllItems.title = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.heading = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.checkYourAnswersLabel = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.error.required = Select yes if addItemsSameConsignorForAllItems
