@@ -137,6 +137,7 @@ compliant.four.p1.2=tax credits
 compliant.four.p1.3=). You are not required to create a new phone number or email address for this purpose
 compliant.four.p2.1=If your service does provide support and you get requests for content in an alternative format, refer to the guidance on the Intranet for getting media in an
 compliant.four.p2.2=alternative format
+
 compliant.four.p3=If you have difficulty using this service, contact us by:
 compliant.four.l1=email [email address]
 compliant.four.l2=call [phone number]
@@ -737,6 +738,7 @@ commodityCode.heading = What is the commodity code for item {0}?
 commodityCode.checkYourAnswersLabel = Commodity code for item {0}
 commodityCode.error.required = Enter the commodity code for item {0}
 commodityCode.error.length = Commodity Code must be 10 characters or less
+commodityCode.hintText = Commodity codes are 6, 8 or 10 numbers.
 commodityCode.errors.invalidCharacters = The commodity code must only include numbers 0 to 9
 commodityCode.errors.invalidFormat =  Enter the commodity code for item {0} in the right format, like 123456, 12345678 or 1234567890
 
