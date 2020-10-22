@@ -247,5 +247,37 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
+  def consignorForAllItems: Option[Row] = userAnswers.get(ConsignorForAllItemsPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"consignorForAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsignorForAllItemsController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consignorForAllItems.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-consignor-for-all-items")
+          )
+        )
+      )
+  }
+
+  def consigneeForAllItems: Option[Row] = userAnswers.get(ConsigneeForAllItemsPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"consigneeForAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsigneeForAllItemsController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consigneeForAllItems.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-consignee-for-all-items")
+          )
+        )
+      )
+  }
+
   def lrn: LocalReferenceNumber = userAnswers.id
 }
