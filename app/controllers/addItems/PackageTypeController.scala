@@ -24,20 +24,22 @@ import models.reference.PackageType
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.PackageTypePage
+import pages.{HowManyPackagesPage, PackageTypePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.packageTypeList
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PackageTypeController @Inject()(
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
@@ -74,4 +76,30 @@ class PackageTypeController @Inject()(
       }
   }
 
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+    implicit request =>
+      referenceDataConnector.getPackageTypes().flatMap {
+        packageTypes =>
+          val form = formProvider(packageTypes)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                val json = Json.obj(
+                  "form"         -> formWithErrors,
+                  "lrn"          -> lrn,
+                  "mode"         -> mode,
+                  "packageTypes" -> packageTypeList(form.value, packageTypes.packageTypeList)
+                )
+
+                renderer.render("packageType.njk", json).map(BadRequest(_))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage, value.code))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(PackageTypePage, mode, updatedAnswers))
+            )
+      }
+  }
 }

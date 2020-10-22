@@ -39,7 +39,7 @@
           {{ messages("packageType.heading") }}
         </h1>
 
-        <form action="" method="post">
+        <form action="{{ routes.controllers.addItems.PackageTypeController.onSubmit(lrn, mode).url }}" method="post">
 
           <p class="govuk-body">{{messages('packageType.label')}}</p>
 

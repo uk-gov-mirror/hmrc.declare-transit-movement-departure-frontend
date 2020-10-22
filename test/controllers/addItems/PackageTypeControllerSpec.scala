@@ -22,6 +22,8 @@ import forms.PackageTypeFormProvider
 import matchers.JsonMatchers
 import models.reference.PackageType
 import models.{NormalMode, PackageTypeList}
+import navigation.annotations.RouteDetails
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -29,11 +31,13 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.PackageTypePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Call
+import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoute}
 
 import scala.concurrent.Future
 
@@ -140,6 +144,95 @@ class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatc
 
       templateCaptor.getValue mustEqual "packageType.njk"
       jsonCaptorWithoutConfig mustEqual expectedJson
+
+      application.stop()
+    }
+
+    "must redirect to the next page when valid data is submitted" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRefDataConnector.getPackageTypes()(any(), any())).thenReturn(Future.successful(packageTypeList))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
+          )
+          .build()
+
+      val request = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "AB"))
+
+      val result: Future[Result] = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      application.stop()
+    }
+
+    "must return a Bad Request and errors when invalid data is submitted" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getPackageTypes()(any(), any())).thenReturn(Future.successful(packageTypeList))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request        = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(application, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      val expectedJson = Json.obj(
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
+      )
+
+      templateCaptor.getValue mustEqual "packageType.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
+
+      application.stop()
+    }
+
+    "must redirect to Session Expired for a GET if no existing data is found" in {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(GET, packageTypeRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "must redirect to Session Expired for a POST if no existing data is found" ignore {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "answer"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
