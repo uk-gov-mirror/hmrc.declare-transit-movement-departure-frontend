@@ -29,6 +29,54 @@ trait UserAnswersEntryGenerators extends PageGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryHowManyPackagesUserAnswersEntry: Arbitrary[(HowManyPackagesPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[HowManyPackagesPage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddAnotherPackageUserAnswersEntry: Arbitrary[(AddAnotherPackagePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddAnotherPackagePage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryDeclareMarkUserAnswersEntry: Arbitrary[(DeclareMarkPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[DeclareMarkPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddMarkUserAnswersEntry: Arbitrary[(AddMarkPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddMarkPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTotalPiecesUserAnswersEntry: Arbitrary[(TotalPiecesPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TotalPiecesPage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryDeclareNumberOfPackagesUserAnswersEntry: Arbitrary[(DeclareNumberOfPackagesPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[DeclareNumberOfPackagesPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryCommodityCodeUserAnswersEntry: Arbitrary[(CommodityCodePage, JsValue)] =
     Arbitrary {
       for {
