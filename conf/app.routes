@@ -399,3 +399,13 @@ GET        /:lrn/add-items/item-details/:index/is-commodity-code-known          
 POST       /:lrn/add-items/item-details/:index/is-commodity-code-known                         controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/item-details/:index/change-is-commodity-code-known               controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/item-details/:index/change-is-commodity-code-known                 controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/trader-details/consignee-for-all-items                             controllers.traderDetails.ConsigneeForAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/trader-details/consignee-for-all-items                             controllers.traderDetails.ConsigneeForAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/trader-details/change-consignee-for-all-items                      controllers.traderDetails.ConsigneeForAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/trader-details/change-consignee-for-all-items                      controllers.traderDetails.ConsigneeForAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/trader-details/consignor-for-all-items                             controllers.traderDetails.ConsignorForAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/trader-details/consignor-for-all-items                             controllers.traderDetails.ConsignorForAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/trader-details/change-consignor-for-all-items                      controllers.traderDetails.ConsignorForAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/trader-details/change-consignor-for-all-items                      controllers.traderDetails.ConsignorForAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

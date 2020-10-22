@@ -37,6 +37,9 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
         Some(routes.AddConsignorController.onPageLoad(ua.id, NormalMode))
     case WhatIsPrincipalEoriPage =>
       ua =>
+        Some(routes.ConsignorForAllItemsController.onPageLoad(ua.id, NormalMode))
+    case ConsignorForAllItemsPage =>
+      ua =>
         Some(routes.AddConsignorController.onPageLoad(ua.id, NormalMode))
     case AddConsignorPage =>
       ua =>
@@ -45,6 +48,9 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
       ua =>
         Some(isConsignorEoriKnownRoute(ua, NormalMode))
     case ConsignorEoriPage =>
+      ua =>
+        Some(routes.ConsigneeForAllItemsController.onPageLoad(ua.id, NormalMode))
+    case ConsigneeForAllItemsPage =>
       ua =>
         Some(routes.AddConsigneeController.onPageLoad(ua.id, NormalMode))
     case ConsignorNamePage =>

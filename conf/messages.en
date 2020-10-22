@@ -753,3 +753,13 @@ howManyPackages.error.nonNumeric = Enter your howManyPackages using numbers
 howManyPackages.error.required = Enter your howManyPackages
 howManyPackages.error.wholeNumber = Enter your howManyPackages using whole numbers
 howManyPackages.error.outOfRange = HowManyPackages must be between {0} and {1}
+
+consignorForAllItems.title = Are you the consignor for all items?
+consignorForAllItems.heading = Are you the consignor for all items?
+consignorForAllItems.checkYourAnswersLabel = Are you the consignor for all items?
+consignorForAllItems.error.required = Select yes if you are the consignor for all items
+
+consigneeForAllItems.title = Are you the consignee for all items?
+consigneeForAllItems.heading = Are you the consignee for all items?
+consigneeForAllItems.checkYourAnswersLabel = Are you the consignee for all items?
+consigneeForAllItems.error.required = Select yes if you are the consignee for all items
