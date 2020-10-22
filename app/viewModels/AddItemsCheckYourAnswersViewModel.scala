@@ -34,7 +34,9 @@ object AddItemsCheckYourAnswersViewModel {
           checkYourAnswersHelper.itemDescription(index),
           checkYourAnswersHelper.itemTotalGrossMass(index),
           checkYourAnswersHelper.addTotalNetMass(index),
-          checkYourAnswersHelper.totalNetMass(index)
+          checkYourAnswersHelper.totalNetMass(index),
+          checkYourAnswersHelper.isCommodityCodeKnown(index),
+          checkYourAnswersHelper.commodityCode(index)
         ).flatten)))
   }
 }

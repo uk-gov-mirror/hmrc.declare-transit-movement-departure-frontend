@@ -17,7 +17,8 @@
 package viewModels
 
 import base.SpecBase
-import pages.{AddTotalNetMassPage, ItemDescriptionPage, ItemTotalGrossMassPage, TotalNetMassPage}
+import pages._
+import pages.addItems._
 
 class AddItemsCheckYourAnswersViewModelSpec extends SpecBase {
 
@@ -37,12 +38,18 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase {
         .set(TotalNetMassPage(index), "20")
         .success
         .value
+        .set(IsCommodityCodeKnownPage(index), true)
+        .success
+        .value
+        .set(CommodityCodePage(index), "111111")
+        .success
+        .value
 
       val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
-      data.sections.head.rows.length mustEqual 4
+      data.sections.head.rows.length mustEqual 6
     }
   }
 }
