@@ -18,9 +18,9 @@ package forms
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
 import models.domain.NetMass.Constants._
 import org.scalacheck.Gen
+import play.api.data.FormError
 
 class TotalNetMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
@@ -40,7 +40,7 @@ class TotalNetMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
       form,
       fieldName,
       maxLength   = maxLengthNetMass,
-      lengthError = FormError(fieldName, lengthKeyTotalNetMass, Seq(maxLengthNetMass))
+      lengthError = FormError(fieldName, lengthKeyNetMass, Seq(index.display))
     )
 
     behave like mandatoryField(
