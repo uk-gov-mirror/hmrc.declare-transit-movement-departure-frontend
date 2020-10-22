@@ -22,7 +22,8 @@ import generators.Generators
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{AddTotalNetMassPage, ItemDescriptionPage, ItemTotalGrossMassPage}
+import pages.{AddTotalNetMassPage, ItemDescriptionPage, ItemTotalGrossMassPage, TotalNetMassPage}
+import pages.addItems._
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -40,19 +41,36 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
       }
 
-      "must go from total gross mass page to total net mass page" in {
+      "must go from total gross mass page to add total net mass page" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(ItemDescriptionPage(index), NormalMode, answers)
-              .mustBe(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(answers.id, index, NormalMode))
+              .nextPage(ItemTotalGrossMassPage(index), NormalMode, answers)
+              .mustBe(addItemsRoutes.AddTotalNetMassController.onPageLoad(answers.id, index, NormalMode))
+        }
+      }
+
+      "must go from add total net mass page to total net mass page if the answer is 'Yes'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddTotalNetMassPage(index), true)
+              .success
+              .value
+              .remove(TotalNetMassPage(index))
+              .success
+              .value
+            navigator
+              .nextPage(AddTotalNetMassPage(index), NormalMode, updatedAnswers)
+              .mustBe(addItemsRoutes.TotalNetMassController.onPageLoad(answers.id, index, NormalMode))
         }
       }
     }
 
     "in check mode" - {
-      "must go from item description page to Check Your Answers" - {
+      "must go from item description page to Check Your Answers" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
@@ -61,20 +79,23 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
       }
 
-      "must go from total grass mass page to Check Your Answers" - {
+      "must go from total grass mass page to Check Your Answers" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.set(ItemTotalGrossMassPage(index), "100").success.value
             navigator
-              .nextPage(ItemTotalGrossMassPage(index), CheckMode, answers)
+              .nextPage(ItemTotalGrossMassPage(index), CheckMode, updatedAnswers)
               .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
 
-      "must go from total net mass page to Check Your Answers" - {
+      "must go from total net mass page to Check Your Answers" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.set(ItemTotalGrossMassPage(index), "100").success.value
+
             navigator
-              .nextPage(AddTotalNetMassPage(index), CheckMode, answers)
+              .nextPage(ItemTotalGrossMassPage(index), CheckMode, updatedAnswers)
               .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }

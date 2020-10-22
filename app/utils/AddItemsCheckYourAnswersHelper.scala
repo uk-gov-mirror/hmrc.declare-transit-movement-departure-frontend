@@ -43,7 +43,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def totalNetMass(index: Index): Option[Row] = userAnswers.get(TotalNetMassPage(index)) map {
     answer =>
       Row(
-        key   = Key(msg"totalNetMass.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"totalNetMass.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"$answer"),
         actions = List(
           Action(
