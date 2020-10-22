@@ -19,7 +19,7 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import pages.{addItems, _}
-import pages.addItems.CommodityCodePage
+import pages.addItems.{CommodityCodePage, RemoveItemPage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 

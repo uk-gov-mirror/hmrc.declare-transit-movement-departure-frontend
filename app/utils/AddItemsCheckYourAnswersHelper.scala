@@ -19,7 +19,7 @@ package utils
 import controllers.addItems.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.CommodityCodePage
+import pages.addItems.{CommodityCodePage, RemoveItemPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
@@ -110,6 +110,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.ItemDescriptionController.onPageLoad(lrn, index, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"itemDescription.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def removeItem: Option[Row] = userAnswers.get(RemoveItemPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"removeItem.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.RemoveItemController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"removeItem.checkYourAnswersLabel"))
           )
         )
       )
