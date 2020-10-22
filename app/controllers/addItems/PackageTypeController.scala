@@ -70,7 +70,7 @@ class PackageTypeController @Inject()(
             "countries" -> packageTypeList(form.value, packageTypes.packageTypeList)
           )
 
-          renderer.render("countryOfDispatch.njk", json).map(Ok(_))
+          renderer.render("packageType.njk", json).map(Ok(_))
       }
   }
 
