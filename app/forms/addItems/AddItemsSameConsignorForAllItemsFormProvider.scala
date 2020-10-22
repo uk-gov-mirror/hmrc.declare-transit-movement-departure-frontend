@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package forms.addItems
 
-import models.{Index, UserAnswers}
-import play.api.libs.json.JsPath
-import queries.Constants.Items
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-import scala.util.Try
+class AddItemsSameConsignorForAllItemsFormProvider @Inject() extends Mappings {
 
-case class AddTotalNetMassPage(index: Index) extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ Items \ index.position \ toString
-
-  override def toString: String = "addTotalNetMass"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(TotalNetMassPage(index))
-      case _           => super.cleanup(value, userAnswers)
-    }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addItemsSameConsignorForAllItems.error.required")
+    )
 }

@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import pages.addItems.traderDetails._
+import pages.addItems.{AddItemsSameConsigneeForAllItemsPage, AddItemsSameConsignorForAllItemsPage, CommodityCodePage}
 import pages.addItems.{AddAnotherItemPage, CommodityCodePage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
@@ -28,6 +29,22 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry: Arbitrary[(AddItemsSameConsignorForAllItemsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddItemsSameConsignorForAllItemsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsUserAnswersEntry: Arbitrary[(AddItemsSameConsigneeForAllItemsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddItemsSameConsigneeForAllItemsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryHowManyPackagesUserAnswersEntry: Arbitrary[(HowManyPackagesPage.type, JsValue)] =
     Arbitrary {

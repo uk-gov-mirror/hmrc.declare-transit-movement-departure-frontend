@@ -16,21 +16,17 @@
 
 package pages
 
-import models.{Index, UserAnswers}
-import play.api.libs.json.JsPath
-import queries.Constants.Items
+import pages.addItems.AddItemsSameConsigneeForAllItemsPage
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
+class AddItemsSameConsigneeForAllItemsPageSpec extends PageBehaviours {
 
-case class AddTotalNetMassPage(index: Index) extends QuestionPage[Boolean] {
+  "AddItemsSameConsigneeForAllItemsPage" - {
 
-  override def path: JsPath = JsPath \ Items \ index.position \ toString
+    beRetrievable[Boolean](AddItemsSameConsigneeForAllItemsPage)
 
-  override def toString: String = "addTotalNetMass"
+    beSettable[Boolean](AddItemsSameConsigneeForAllItemsPage)
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(TotalNetMassPage(index))
-      case _           => super.cleanup(value, userAnswers)
-    }
+    beRemovable[Boolean](AddItemsSameConsigneeForAllItemsPage)
+  }
 }

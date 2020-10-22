@@ -802,6 +802,16 @@ traderDetailsConsignorName.checkYourAnswersLabel = traderDetailsConsignorName
 traderDetailsConsignorName.error.required = Enter traderDetailsConsignorName
 traderDetailsConsignorName.error.length = TraderDetailsConsignorName must be 100 characters or less
 
+addItemsSameConsigneeForAllItems.title = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.heading = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.checkYourAnswersLabel = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.error.required = Select yes if addItemsSameConsigneeForAllItems
+
+addItemsSameConsignorForAllItems.title = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.heading = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.checkYourAnswersLabel = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.error.required = Select yes if addItemsSameConsignorForAllItems
+
 addAnotherItem.title.singular = You have added {0} item
 addAnotherItem.title.plural = You have added {0} items
 addAnotherItem.heading.singular = You have added {0} item
