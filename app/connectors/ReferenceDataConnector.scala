@@ -62,4 +62,9 @@ class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClie
     http.GET[OfficeOfTransit](serviceUrl)
   }
 
+  def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/kinds-of-package"
+    http.GET[Seq[PackageType]](serviceUrl)
+  }
+
 }
