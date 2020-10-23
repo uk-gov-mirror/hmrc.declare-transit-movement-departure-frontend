@@ -16,9 +16,10 @@
 
 package pages.addItems
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class AddItemsSameConsigneeForAllItemsPageSpec extends PageBehaviours {
+class AddItemsSameConsigneeForAllItemsPageSpec extends PageBehaviours with SpecBase {
 
   "AddItemsSameConsigneeForAllItemsPage" - {
 

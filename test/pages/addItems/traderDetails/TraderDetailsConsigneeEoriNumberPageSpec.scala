@@ -16,9 +16,10 @@
 
 package pages.addItems.traderDetails
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class TraderDetailsConsigneeEoriNumberPageSpec extends PageBehaviours {
+class TraderDetailsConsigneeEoriNumberPageSpec extends PageBehaviours with SpecBase {
 
   "TraderDetailsConsigneeEoriNumberPage" - {
 

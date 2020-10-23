@@ -16,10 +16,10 @@
 
 package pages
 
-import models.Index
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class TotalNetMassPageSpec extends PageBehaviours {
+class TotalNetMassPageSpec extends PageBehaviours with SpecBase {
 
   "TotalNetMassPage" - {
 

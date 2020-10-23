@@ -16,9 +16,10 @@
 
 package pages.addItems.traderDetails
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class TraderDetailsConsignorNamePageSpec extends PageBehaviours {
+class TraderDetailsConsignorNamePageSpec extends PageBehaviours with SpecBase {
 
   "TraderDetailsConsignorNamePage" - {
 

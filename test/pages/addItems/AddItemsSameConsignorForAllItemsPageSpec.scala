@@ -16,10 +16,10 @@
 
 package pages.addItems
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
-import models.Index
 
-class AddItemsSameConsignorForAllItemsPageSpec extends PageBehaviours {
+class AddItemsSameConsignorForAllItemsPageSpec extends PageBehaviours with SpecBase {
 
   "AddItemsSameConsignorForAllItemsPage" - {
 

@@ -16,7 +16,9 @@
 
 package navigation
 
+import controllers.routes
 import controllers.addItems.{routes => addItemsRoutes}
+import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
@@ -33,7 +35,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TotalNetMassPage(index) => ua => Some(addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
     case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, NormalMode)
     case CommodityCodePage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
-
+    case AddItemsSameConsignorForAllItemsPage(index) => ua => addItemsSameConsignorForAllItems(ua, index, NormalMode)
   }
 
   //TODO: Need to refactor this code
@@ -44,9 +46,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, CheckMode)
     case CommodityCodePage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
     case TotalNetMassPage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
-
-
   }
+
+  def addItemsSameConsignorForAllItems(ua: UserAnswers, index: Index, mode: Mode) =
+    ua.get(AddItemsSameConsignorForAllItemsPage(index)) match {
+      case Some(true) => Some(addItemsRoutes.AddItemsSameConsigneeForAllItemsController.onPageLoad(ua.id, index, mode))
+      case Some(false) => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, mode))
+      case _ => Some(routes.SessionExpiredController.onPageLoad())
+    }
 
   def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
     (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)), mode) match {
