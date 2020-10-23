@@ -94,10 +94,9 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private def itemsSection: SectionDetails = {
-    val startPage: String = addItemsRoutes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(0), NormalMode).url
-    val cyaPageAndStatus
-      : (String, Status) = (addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, Index(0)).url, Completed) // TODO Need to replace with Add another Item page CTCTRADERS-1187
-    val (page, status)   = getIncompletePage(startPage, addItemPages).getOrElse(cyaPageAndStatus)
+    val startPage: String                  = addItemsRoutes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(0), NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (addItemsRoutes.AddAnotherItemController.onPageLoad(userAnswers.id).url, Completed)
+    val (page, status)                     = getIncompletePage(startPage, addItemPages).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.addItems", page, status)
   }

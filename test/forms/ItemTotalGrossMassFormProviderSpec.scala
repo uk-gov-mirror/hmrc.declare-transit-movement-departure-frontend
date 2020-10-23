@@ -18,9 +18,10 @@ package forms
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import models.domain.GrossMass.Constants._
+import models.messages.guarantee.Guarantee.Constants.maxLength
 import org.scalacheck.Gen
 import play.api.data.FormError
-import models.domain.GrossMass.Constants._
 
 class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
@@ -40,7 +41,7 @@ class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with Spec
       form,
       fieldName,
       maxLength   = maxLengthGrossMass,
-      lengthError = FormError(fieldName, lengthKeyGrossMass, Seq(maxLengthGrossMass))
+      lengthError = FormError(fieldName, lengthKeyGrossMass, Seq(index.display))
     )
 
     behave like mandatoryField(
@@ -54,11 +55,9 @@ class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with Spec
       val expectedError =
         List(FormError(fieldName, invalidCharactersKeyGrossMass, Seq(index.display)))
 
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLengthGrossMass) suchThat (!_.matches(totalGrossMassInvalidCharactersRegex))
-      }
+      val genMaxLengthAlpha = Gen.containerOfN[List, Char](maxLengthGrossMass, Gen.alphaChar).map(_.mkString)
 
-      forAll(genInvalidString) {
+      forAll(genMaxLengthAlpha) {
         invalidString =>
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors mustBe expectedError

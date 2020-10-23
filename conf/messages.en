@@ -137,6 +137,7 @@ compliant.four.p1.2=tax credits
 compliant.four.p1.3=). You are not required to create a new phone number or email address for this purpose
 compliant.four.p2.1=If your service does provide support and you get requests for content in an alternative format, refer to the guidance on the Intranet for getting media in an
 compliant.four.p2.2=alternative format
+
 compliant.four.p3=If you have difficulty using this service, contact us by:
 compliant.four.l1=email [email address]
 compliant.four.l2=call [phone number]
@@ -736,6 +737,7 @@ commodityCode.heading = What is the commodity code for item {0}?
 commodityCode.checkYourAnswersLabel = Commodity code for item {0}
 commodityCode.error.required = Enter the commodity code for item {0}
 commodityCode.error.length = Commodity Code must be 10 characters or less
+commodityCode.hintText = Commodity codes are 6, 8 or 10 numbers.
 commodityCode.errors.invalidCharacters = The commodity code must only include numbers 0 to 9
 commodityCode.errors.invalidFormat =  Enter the commodity code for item {0} in the right format, like 123456, 12345678 or 1234567890
 
@@ -762,3 +764,74 @@ consigneeForAllItems.title = Are you the consignee for all items?
 consigneeForAllItems.heading = Are you the consignee for all items?
 consigneeForAllItems.checkYourAnswersLabel = Are you the consignee for all items?
 consigneeForAllItems.error.required = Select yes if you are the consignee for all items
+
+traderDetailsConsigneeAddress.title = traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.heading = traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.checkYourAnswersLabel = traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.error.required = Enter traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.error.length = TraderDetailsConsigneeAddress must be 100 characters or less
+
+traderDetailsConsigneeEoriKnown.title = traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeEoriKnown.heading = traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeEoriKnown.checkYourAnswersLabel = traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeEoriKnown.error.required = Select yes if traderDetailsConsigneeEoriKnown
+
+traderDetailsConsigneeEoriNumber.title = traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.heading = traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.checkYourAnswersLabel = traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.error.required = Enter traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.error.length = TraderDetailsConsigneeEoriNumber must be 100 characters or less
+
+traderDetailsConsigneeName.title = traderDetailsConsigneeName
+traderDetailsConsigneeName.heading = traderDetailsConsigneeName
+traderDetailsConsigneeName.checkYourAnswersLabel = traderDetailsConsigneeName
+traderDetailsConsigneeName.error.required = Enter traderDetailsConsigneeName
+traderDetailsConsigneeName.error.length = TraderDetailsConsigneeName must be 100 characters or less
+
+traderDetailsConsignorAddress.title = traderDetailsConsignorAddress
+traderDetailsConsignorAddress.heading = traderDetailsConsignorAddress
+traderDetailsConsignorAddress.checkYourAnswersLabel = traderDetailsConsignorAddress
+traderDetailsConsignorAddress.error.required = Enter traderDetailsConsignorAddress
+traderDetailsConsignorAddress.error.length = TraderDetailsConsignorAddress must be 100 characters or less
+
+traderDetailsConsignorEoriKnown.title = traderDetailsConsignorEoriKnown
+traderDetailsConsignorEoriKnown.heading = traderDetailsConsignorEoriKnown
+traderDetailsConsignorEoriKnown.checkYourAnswersLabel = traderDetailsConsignorEoriKnown
+traderDetailsConsignorEoriKnown.error.required = Select yes if traderDetailsConsignorEoriKnown
+
+traderDetailsConsignorEoriNumber.title = traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.heading = traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.checkYourAnswersLabel = traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.error.required = Enter traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.error.length = TraderDetailsConsignorEoriNumber must be 100 characters or less
+
+traderDetailsConsignorName.title = traderDetailsConsignorName
+traderDetailsConsignorName.heading = traderDetailsConsignorName
+traderDetailsConsignorName.checkYourAnswersLabel = traderDetailsConsignorName
+traderDetailsConsignorName.error.required = Enter traderDetailsConsignorName
+traderDetailsConsignorName.error.length = TraderDetailsConsignorName must be 100 characters or less
+
+addItemsSameConsigneeForAllItems.title = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.heading = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.checkYourAnswersLabel = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.error.required = Select yes if addItemsSameConsigneeForAllItems
+
+addItemsSameConsignorForAllItems.title = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.heading = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.checkYourAnswersLabel = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.error.required = Select yes if addItemsSameConsignorForAllItems
+
+addAnotherItem.title.singular = You have added {0} item
+addAnotherItem.title.plural = You have added {0} items
+addAnotherItem.heading.singular = You have added {0} item
+addAnotherItem.heading.plural = You have added {0} items
+addAnotherItem.error.required = Select yes if you need to add another item
+addAnotherItem.paragraph = Do you need to add another item?
+
+addItems.checkYourAnswersLabel.itemDetails = Item details
+addItems.checkYourAnswersLabel.traderDetails = Trader details
+addItems.checkYourAnswersLabel.packages = Packages
+addItems.checkYourAnswersLabel.containers = Containers
+addItems.checkYourAnswersLabel.containers = Special mentions
+addItems.checkYourAnswersLabel.certificates = Produced documents and work certificates
+addItems.checkYourAnswersLabel.references = Previous administrative references

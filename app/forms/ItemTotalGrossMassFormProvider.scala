@@ -30,7 +30,7 @@ class ItemTotalGrossMassFormProvider @Inject() extends Mappings {
       "value" -> text(requiredKeyGrossMass, Seq(index.display))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(maxLengthGrossMass, lengthKeyGrossMass),
+            maxLength(maxLengthGrossMass, lengthKeyGrossMass, index.display),
             regexp(totalGrossMassInvalidCharactersRegex, invalidCharactersKeyGrossMass, index.display),
             regexp(totalGrossMassInvalidFormatRegex, invalidFormatKeyGrossMass, index.display),
             minGrossMax(0, invalidAmountKeyGrossMass, index.display)
