@@ -22,7 +22,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class $className$ControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class $className$ControllerSpec extends SpecBase with NunjucksDependentSpec with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

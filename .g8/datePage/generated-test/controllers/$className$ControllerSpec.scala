@@ -24,7 +24,7 @@ import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
 
 import scala.concurrent.Future
 
-class $className$ControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class $className$ControllerSpec extends SpecBase with NunjucksDependentSpec with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   private val formProvider = new $className$FormProvider()
   private def form = formProvider()
