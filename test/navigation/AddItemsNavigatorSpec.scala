@@ -19,6 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.addItems.{routes => addItemsRoutes}
 import generators.Generators
+import models.reference.PackageType
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -116,6 +117,95 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             navigator
               .nextPage(CommodityCodePage(index), NormalMode, answers)
               .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+        }
+      }
+
+      "PackageJourney" - {
+
+        "PackageType" - {
+
+          "must go to HowManyPackages when PackageType code isn't bulk or unpacked" in {
+
+            forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
+              (answers, packageType) =>
+
+                val updatedAnswers = answers
+                  .set(PackageTypePage, packageType.code)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(PackageTypePage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.HowManyPackagesController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
+          "must go to DeclareNumberOfPackages when PackageType code is bulk or unpacked" in {
+
+            forAll(arbitrary[UserAnswers], arbitraryBulkOrUnpackedPackageType.arbitrary) {
+              (answers, packageType) =>
+
+                val updatedAnswers = answers
+                  .set(PackageTypePage, packageType.code)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(PackageTypePage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.DeclareNumberOfPackagesController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+        }
+
+        "HowManyPackages" - {
+
+          "must go to DeclareMark when PackageType code isn't bulk or unpacked" in {
+            forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
+              (answers, packageType) =>
+
+                val updatedAnswers = answers
+                  .set(PackageTypePage, packageType.code)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(HowManyPackagesPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.DeclareMarkController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
+          "must go to AddMark when PackageType code is bulk" in {}
+
+          "must go to TotalPieces when PackageType code is unpacked" in {}
+
+        }
+
+        "DeclareNumberOfPackages" - {
+
+          "must go to HowManyPackages if answer is 'Yes'" in {}
+
+          "must go to AddMark if answer is 'No' and PackageType is bulk" in {}
+
+          "must go to TotalPieces if answer is 'No' and PackageType is unpacked" in {}
+
+        }
+
+        "TotalPieces" - {
+
+          "must go to AddMark" in {}
+        }
+
+        "AddMark" - {
+
+          "must go to DeclareMark if answers is 'Yes'" in {}
+
+          "must go to AddAnotherPackage if answers if 'No'" in {}
+        }
+
+        "DeclareMark" - {
+
+          "must go to AddAnotherPackage" in {}
+
         }
       }
     }
