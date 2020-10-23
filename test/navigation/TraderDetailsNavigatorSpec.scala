@@ -66,7 +66,7 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
           answers =>
             navigator
               .nextPage(WhatIsPrincipalEoriPage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, NormalMode))
+              .mustBe(traderDetailsRoute.ConsignorForAllItemsController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -86,7 +86,7 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
           answers =>
             navigator
               .nextPage(PrincipalAddressPage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, NormalMode))
+              .mustBe(traderDetailsRoute.ConsignorForAllItemsController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -114,7 +114,7 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
               .value
             navigator
               .nextPage(AddConsignorPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.AddConsigneeController.onPageLoad(answers.id, NormalMode))
+              .mustBe(traderDetailsRoute.ConsigneeForAllItemsController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -241,6 +241,62 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
               .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
+
+      "must go from Consignor for all items page to Add a consignor page when 'NO' is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(ConsignorForAllItemsPage, false)
+              .success
+              .value
+            navigator
+              .nextPage(ConsignorForAllItemsPage, NormalMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from Consignor for all items page to Consignee for all items page when 'YES' is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(ConsignorForAllItemsPage, true)
+              .success
+              .value
+            navigator
+              .nextPage(ConsignorForAllItemsPage, NormalMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.ConsigneeForAllItemsController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from Consignee for all items page to Add a consignee page when 'NO' is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(ConsigneeForAllItemsPage, false)
+              .success
+              .value
+            navigator
+              .nextPage(ConsigneeForAllItemsPage, NormalMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.AddConsigneeController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from Consignee for all items page to CYA page when 'YES' is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(ConsigneeForAllItemsPage, true)
+              .success
+              .value
+            navigator
+              .nextPage(ConsigneeForAllItemsPage, NormalMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
     }
 
     "in Check mode" - {
@@ -328,6 +384,62 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
             navigator
               .nextPage(AddConsignorPage, CheckMode, updatedAnswers)
               .mustBe(traderDetailsRoute.IsConsignorEoriKnownController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "must go from Consignor for all items page to Add a consignor page when 'NO' is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(ConsignorForAllItemsPage, false)
+              .success
+              .value
+            navigator
+              .nextPage(ConsignorForAllItemsPage, CheckMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "must go from Consignor for all items page to Consignee for all items page when 'YES' is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(ConsignorForAllItemsPage, true)
+              .success
+              .value
+            navigator
+              .nextPage(ConsignorForAllItemsPage, CheckMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.ConsigneeForAllItemsController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "must go from Consignee for all items page to Add a consignee page when 'NO' is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(ConsigneeForAllItemsPage, false)
+              .success
+              .value
+            navigator
+              .nextPage(ConsigneeForAllItemsPage, CheckMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.AddConsigneeController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "must go from Consignee for all items page to CYA page when 'YES' is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(ConsigneeForAllItemsPage, true)
+              .success
+              .value
+            navigator
+              .nextPage(ConsigneeForAllItemsPage, CheckMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
     }

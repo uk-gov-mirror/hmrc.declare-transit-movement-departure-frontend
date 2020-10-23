@@ -17,6 +17,7 @@
 package controllers.traderDetails
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import forms.ConsigneeForAllItemsFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -46,7 +47,7 @@ class ConsigneeForAllItemsControllerSpec extends SpecBase with MockitoSugar with
   private val form         = formProvider()
   private val template     = "consigneeForAllItems.njk"
 
-  lazy val consigneeForAllItemsRoute = routes.traderDetails.ConsigneeForAllItemsController.onPageLoad(lrn, NormalMode).url
+  lazy val consigneeForAllItemsRoute = routes.ConsigneeForAllItemsController.onPageLoad(lrn, NormalMode).url
 
   "ConsigneeForAllItems Controller" - {
 
@@ -184,7 +185,7 @@ class ConsigneeForAllItemsControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -201,7 +202,7 @@ class ConsigneeForAllItemsControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
