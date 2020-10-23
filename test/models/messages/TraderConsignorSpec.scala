@@ -51,13 +51,13 @@ class TraderConsignorSpec
                 {escapeXml(trader.name)}
               </NamCO17>
               <StrAndNumCO122>
-                {trader.streetAndNumber}
+                {escapeXml(trader.streetAndNumber)}
               </StrAndNumCO122>
               <PosCodCO123>
                 {trader.postCode}
               </PosCodCO123>
               <CitCO124>
-                {trader.city}
+                {escapeXml(trader.city)}
               </CitCO124>
               <CouCO125>
                 {trader.countryCode}

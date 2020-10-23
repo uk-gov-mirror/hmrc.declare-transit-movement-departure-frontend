@@ -21,14 +21,48 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.addItems._
+import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(ConfirmRemoveSealsPage.type, JsValue)] ::
+    arbitrary[(AddItemsSameConsignorForAllItemsPage.type, JsValue)] ::
+      arbitrary[(AddItemsSameConsigneeForAllItemsPage.type, JsValue)] ::
+      arbitrary[(HowManyPackagesPage.type, JsValue)] ::
+      arbitrary[(AddAnotherPackagePage.type, JsValue)] ::
+      arbitrary[(DeclareMarkPage.type, JsValue)] ::
+      arbitrary[(AddMarkPage.type, JsValue)] ::
+      arbitrary[(TotalPiecesPage.type, JsValue)] ::
+      arbitrary[(DeclareNumberOfPackagesPage.type, JsValue)] ::
+      arbitrary[(TotalPackagesPage.type, JsValue)] ::
+      arbitrary[(TotalNetMassPage, JsValue)] ::
+      arbitrary[(CommodityCodePage, JsValue)] ::
+      arbitrary[(TotalNetMassPage, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorNamePage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorEoriNumberPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorEoriKnownPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorAddressPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeNamePage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeEoriNumberPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeEoriKnownPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeAddressPage.type, JsValue)] ::
+      arbitrary[(AddAnotherItemPage.type, JsValue)] ::
+      arbitrary[(TotalNetMassPage, JsValue)] ::
+      arbitrary[(AddTotalNetMassPage, JsValue)] ::
+      arbitrary[(IsCommodityCodeKnownPage, JsValue)] ::
+      arbitrary[(AddTotalNetMassPage, JsValue)] ::
+      arbitrary[(ItemDescriptionPage, JsValue)] ::
+      arbitrary[(OtherReferenceLiabilityAmountPage.type, JsValue)] ::
+      arbitrary[(ItemTotalGrossMassPage, JsValue)] ::
+      arbitrary[(PreLodgeDeclarationPage.type, JsValue)] ::
+      arbitrary[(ItemDescriptionPage, JsValue)] ::
+      arbitrary[(OtherReferenceLiabilityAmountPage.type, JsValue)] ::
+      arbitrary[(ConfirmRemoveSealsPage.type, JsValue)] ::
       arbitrary[(GuaranteeTypePage.type, JsValue)] ::
       arbitrary[(OtherReferencePage.type, JsValue)] ::
       arbitrary[(GuaranteeReferencePage.type, JsValue)] ::

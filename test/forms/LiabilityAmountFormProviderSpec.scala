@@ -17,16 +17,11 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.messages.guarantee.Guarantee.Constants._
 import org.scalacheck.Gen
-import play.api.data.{Field, FormError}
+import play.api.data.FormError
 
 class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
-
-  val requiredKey          = "liabilityAmount.error.required"
-  val lengthKey            = "liabilityAmount.error.length"
-  val maxLength            = 100
-  val liabilityAmountRegex = "^$|^[0-9.]*$"
-  val invalidKey           = "liabilityAmount.error.characters"
 
   val form = new LiabilityAmountFormProvider()()
 
@@ -40,11 +35,11 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings that do not match invalid characters regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(liabilityAmountRegex)))
+      val expectedError = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
       val genInvalidString: Gen[String] = {
-        stringsWithLength(maxLength) suchThat (!_.matches(liabilityAmountRegex))
+        stringsWithLength(maxLength) suchThat (!_.matches(liabilityAmountCharactersRegex))
       }
 
       forAll(genInvalidString) {
@@ -53,5 +48,30 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
           result.errors mustBe expectedError
       }
     }
+
+    "must not bind strings that do not match invalid format regex" in {
+
+      val expectedError = List(FormError(fieldName, invalidFormatKey, Seq(liabilityAmountFormatRegex)))
+      val genInvalidString: Gen[String] = {
+        decimals
+          .suchThat(_.matches(liabilityAmountCharactersRegex))
+          .suchThat(!_.matches(liabilityAmountFormatRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
+
+    "must not bind strings that do not match greater than zero regex" in {
+
+      val expectedError = List(FormError(fieldName, greaterThanZeroErrorKey, Seq(greaterThanZeroRegex)))
+      val invalidString = "0.5"
+      val result        = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+      result.errors mustBe expectedError
+    }
+
   }
 }

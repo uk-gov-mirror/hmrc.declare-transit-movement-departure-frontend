@@ -18,10 +18,9 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit, TransportMode}
-import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, TransportModeList}
+import models.reference._
+import models._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -61,6 +60,11 @@ class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClie
   def getOfficeOfTransit(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[OfficeOfTransit] = {
     val serviceUrl = s"${config.referenceDataUrl}/office-transit/$id"
     http.GET[OfficeOfTransit](serviceUrl)
+  }
+
+  def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[PackageTypeList] = {
+    val serviceUrl = s"${config.referenceDataUrl}/kinds-of-package"
+    http.GET[Seq[PackageType]](serviceUrl).map(PackageTypeList(_))
   }
 
 }

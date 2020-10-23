@@ -21,6 +21,7 @@ import java.time.{LocalDate, LocalTime}
 import models.LocalReferenceNumber
 import models.messages._
 import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
+import models.messages.goodsitem._
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
@@ -82,14 +83,11 @@ trait MessagesModelGenerators extends Generators {
         customsOfficeDeparture    <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.Constants.transitOfficeCount)
         customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
-        customsOfficeDeparture    <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
-        customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.Constants.transitOfficeCount)
-        customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         controlResult             <- Gen.option(arbitrary[ControlResult])
         representative            <- Gen.option(arbitrary[Representative])
         seals                     <- Gen.option(arbitrary[Seals])
         guarantee                 <- arbitrary[Guarantee]
-        //TODO: This needs more xml nodes adding as models become available
+        goodsItems                <- nonEmptyListWithMaxSize(GoodsItem.Constants.itemCount, arbitrary[GoodsItem])
       } yield
         DeclarationRequest(
           meta,
@@ -104,7 +102,8 @@ trait MessagesModelGenerators extends Generators {
           controlResult,
           representative,
           seals,
-          guarantee
+          guarantee,
+          goodsItems
         )
     }
   }
@@ -209,6 +208,36 @@ trait MessagesModelGenerators extends Generators {
       } yield TraderConsignee(name, streetAndNumber, postCode, city, countryCode.mkString, eori)
     }
 
+  implicit lazy val arbitraryTraderConsignorGoodsItem: Arbitrary[TraderConsignorGoodsItem] =
+    Arbitrary {
+      for {
+        traderConsignor <- arbitrary[TraderConsignor]
+      } yield
+        TraderConsignorGoodsItem(
+          traderConsignor.name,
+          traderConsignor.streetAndNumber,
+          traderConsignor.postCode,
+          traderConsignor.city,
+          traderConsignor.countryCode.mkString,
+          traderConsignor.eori
+        )
+    }
+
+  implicit lazy val arbitraryTraderConsigneeGoodsItem: Arbitrary[TraderConsigneeGoodsItem] =
+    Arbitrary {
+      for {
+        traderConsignee <- arbitrary[TraderConsignee]
+      } yield
+        TraderConsigneeGoodsItem(
+          traderConsignee.name,
+          traderConsignee.streetAndNumber,
+          traderConsignee.postCode,
+          traderConsignee.city,
+          traderConsignee.countryCode.mkString,
+          traderConsignee.eori
+        )
+    }
+
   implicit lazy val arbitraryAuthorisedConsigneeTrader: Arbitrary[TraderAuthorisedConsignee] =
     Arbitrary {
       for {
@@ -264,9 +293,147 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryGuarantee: Arbitrary[Guarantee] =
     Arbitrary {
       for {
-        guaranteeType     <- stringsWithMaxLength(GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength, alphaNumChar)
-        guarnteeReference <- listWithMaxLength(Guarantee.Constants.guaranteeReferenceCount, arbitrary[GuaranteeReference])
-      } yield Guarantee(guaranteeType, guarnteeReference)
+        guaranteeType      <- stringsWithMaxLength(GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength, alphaNumChar)
+        guaranteeReference <- listWithMaxLength(Guarantee.Constants.guaranteeReferenceCount, arbitrary[GuaranteeReference])
+      } yield Guarantee(guaranteeType, guaranteeReference)
     }
 
+  implicit lazy val arbitraryGoodsItem: Arbitrary[GoodsItem] =
+    Arbitrary {
+      for {
+        itemNumber           <- Gen.choose(1, 99999)
+        commodityCode        <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.commodityCodeLength, alphaNumChar))
+        declarationType      <- Gen.option(Gen.pick(GoodsItem.Constants.typeOfDeclarationLength, 'A' to 'Z'))
+        description          <- stringsWithMaxLength(GoodsItem.Constants.descriptionLength, alphaNumChar)
+        grossMass            <- Gen.option(Gen.choose(0.0, 99999999.999).map(BigDecimal(_)))
+        netMass              <- Gen.option(Gen.choose(0.0, 99999999.999).map(BigDecimal(_)))
+        countryOfDispatch    <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
+        countryOfDestination <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
+        previousAdministrativeReference <- listWithMaxLength(PreviousAdministrativeReference.Constants.previousAdministrativeReferenceCount,
+                                                             arbitrary[PreviousAdministrativeReference])
+        producedDocuments         <- listWithMaxLength(ProducedDocument.Constants.producedDocumentCount, arbitrary[ProducedDocument])
+        specialMentions           <- listWithMaxLength(SpecialMention.Constants.specialMentionCount, arbitrary[SpecialMention])
+        traderConsignorGoodsItem  <- Gen.option(arbitrary[TraderConsignorGoodsItem])
+        traderConsigneeGoodsItem  <- Gen.option(arbitrary[TraderConsigneeGoodsItem])
+        containers                <- listWithMaxLength(Containers.Constants.containerCount, stringsWithMaxLength(Containers.Constants.containerNumberLength, alphaNumChar))
+        packages                  <- listWithMaxLength(Package.Constants.packageCount, arbitrary[Package])
+        sensitiveGoodsInformation <- listWithMaxLength(SensitiveGoodsInformation.Constants.sensitiveGoodsInformationCount, arbitrary[SensitiveGoodsInformation])
+      } yield
+        GoodsItem(
+          itemNumber,
+          commodityCode,
+          declarationType.map(_.mkString),
+          description,
+          grossMass,
+          netMass,
+          countryOfDispatch,
+          countryOfDestination,
+          previousAdministrativeReference,
+          producedDocuments,
+          specialMentions,
+          traderConsignorGoodsItem,
+          traderConsigneeGoodsItem,
+          containers,
+          packages,
+          sensitiveGoodsInformation
+        )
+    }
+
+  implicit lazy val arbitraryPreviousAdministrativeReferences: Arbitrary[PreviousAdministrativeReference] =
+    Arbitrary {
+      for {
+        preDocTypAR21 <- stringsWithMaxLength(PreviousAdministrativeReference.Constants.previousDocumentTypeLength, alphaNumChar)
+        preDocRefAR26 <- stringsWithMaxLength(PreviousAdministrativeReference.Constants.previousDocumentReferenceLength, alphaNumChar)
+        comOfInfAR29  <- Gen.option(stringsWithMaxLength(PreviousAdministrativeReference.Constants.complementOfInformationLength, alphaNumChar))
+      } yield
+        PreviousAdministrativeReference(
+          preDocTypAR21,
+          preDocRefAR26,
+          comOfInfAR29,
+        )
+    }
+
+  implicit lazy val arbitraryPreviousProducedDocument: Arbitrary[ProducedDocument] =
+    Arbitrary {
+      for {
+        documentType            <- stringsWithMaxLength(ProducedDocument.Constants.documentTypeLength, alphaNumChar)
+        reference               <- Gen.option(stringsWithMaxLength(ProducedDocument.Constants.reference, alphaNumChar))
+        complementOfInformation <- Gen.option(stringsWithMaxLength(ProducedDocument.Constants.complementOfInformation, alphaNumChar))
+      } yield
+        ProducedDocument(
+          documentType,
+          reference,
+          complementOfInformation,
+        )
+    }
+
+  protected val countrySpecificCodes      = Seq("DG0", "DG1")
+  protected val countrySpecificCodeGen    = Gen.oneOf(countrySpecificCodes)
+  protected val nonCountrySpecificCodeGen = stringsWithMaxLength(5, alphaNumChar).suchThat(!countrySpecificCodes.contains(_))
+
+  implicit lazy val arbitrarySpecialMentionEc: Arbitrary[SpecialMentionEc] =
+    Arbitrary {
+      countrySpecificCodeGen.map(SpecialMentionEc(_))
+    }
+
+  implicit lazy val arbitrarySpecialMentionNonEc: Arbitrary[SpecialMentionNonEc] =
+    Arbitrary {
+      for {
+        additionalInfo <- countrySpecificCodeGen
+        exportCountry  <- stringsWithMaxLength(2)
+      } yield SpecialMentionNonEc(additionalInfo, exportCountry)
+    }
+
+  implicit lazy val arbitrarySpecialMentionNoCountry: Arbitrary[SpecialMentionNoCountry] =
+    Arbitrary {
+      nonCountrySpecificCodeGen.map(SpecialMentionNoCountry(_))
+    }
+
+  implicit lazy val arbitrarySpecialMention: Arbitrary[SpecialMention] =
+    Arbitrary {
+      Gen.oneOf(arbitrary[SpecialMentionEc], arbitrary[SpecialMentionNonEc], arbitrary[SpecialMentionNoCountry])
+    }
+
+  implicit lazy val arbitraryBulkPackage: Arbitrary[BulkPackage] =
+    Arbitrary {
+      for {
+        kindOfPackage   <- Gen.oneOf(BulkPackage.validCodes)
+        marksAndNumbers <- Gen.option(stringsWithMaxLength(42, alphaNumChar))
+      } yield BulkPackage(kindOfPackage, marksAndNumbers)
+    }
+
+  implicit lazy val arbitraryUnpackedPackage: Arbitrary[UnpackedPackage] =
+    Arbitrary {
+      for {
+        kindOfPackage   <- Gen.oneOf(UnpackedPackage.validCodes)
+        numberOfPieces  <- Gen.choose(1, 99999)
+        marksAndNumbers <- Gen.option(stringsWithMaxLength(42, alphaNumChar))
+      } yield UnpackedPackage(kindOfPackage, numberOfPieces, marksAndNumbers)
+    }
+
+  implicit lazy val arbitraryRegularPackage: Arbitrary[RegularPackage] =
+    Arbitrary {
+      for {
+        kindOfPackage    <- stringsWithMaxLength(3, alphaNumChar).suchThat(x => !BulkPackage.validCodes.contains(x) && !UnpackedPackage.validCodes.contains(x))
+        numberOfPackages <- Gen.choose(0, 99999)
+        marksAndNumbers  <- stringsWithMaxLength(42, alphaNumChar)
+      } yield RegularPackage(kindOfPackage, numberOfPackages, marksAndNumbers)
+    }
+
+  implicit lazy val arbitraryPackage: Arbitrary[Package] =
+    Arbitrary {
+      Gen.oneOf(arbitrary[BulkPackage], arbitrary[UnpackedPackage], arbitrary[RegularPackage])
+    }
+
+  implicit lazy val arbitrarySensitiveGoodsInformation: Arbitrary[SensitiveGoodsInformation] =
+    Arbitrary {
+      for {
+        goodsCode <- Gen.option(Gen.choose(0, 99))
+        quantity  <- Gen.choose(0, 99999)
+      } yield
+        SensitiveGoodsInformation(
+          goodsCode,
+          quantity
+        )
+    }
 }

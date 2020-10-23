@@ -19,9 +19,87 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import pages._
+import pages.addItems._
+import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsPage: Arbitrary[AddItemsSameConsignorForAllItemsPage.type] =
+    Arbitrary(AddItemsSameConsignorForAllItemsPage)
+
+  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsPage: Arbitrary[AddItemsSameConsigneeForAllItemsPage.type] =
+    Arbitrary(AddItemsSameConsigneeForAllItemsPage)
+
+  implicit lazy val arbitraryHowManyPackagesPage: Arbitrary[HowManyPackagesPage.type] =
+    Arbitrary(HowManyPackagesPage)
+
+  implicit lazy val arbitraryAddAnotherPackagePage: Arbitrary[AddAnotherPackagePage.type] =
+    Arbitrary(AddAnotherPackagePage)
+
+  implicit lazy val arbitraryDeclareMarkPage: Arbitrary[DeclareMarkPage.type] =
+    Arbitrary(DeclareMarkPage)
+
+  implicit lazy val arbitraryAddMarkPage: Arbitrary[AddMarkPage.type] =
+    Arbitrary(AddMarkPage)
+
+  implicit lazy val arbitraryTotalPiecesPage: Arbitrary[TotalPiecesPage.type] =
+    Arbitrary(TotalPiecesPage)
+
+  implicit lazy val arbitraryDeclareNumberOfPackagesPage: Arbitrary[DeclareNumberOfPackagesPage.type] =
+    Arbitrary(DeclareNumberOfPackagesPage)
+
+  implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
+    Arbitrary(addItems.CommodityCodePage(Index(0)))
+
+  implicit lazy val arbitraryAddAnotherItemPage: Arbitrary[AddAnotherItemPage.type] =
+    Arbitrary(AddAnotherItemPage)
+
+  implicit lazy val arbitraryTraderDetailsConsignorNamePage: Arbitrary[TraderDetailsConsignorNamePage.type] =
+    Arbitrary(TraderDetailsConsignorNamePage)
+
+  implicit lazy val arbitraryTraderDetailsConsignorEoriNumberPage: Arbitrary[TraderDetailsConsignorEoriNumberPage.type] =
+    Arbitrary(TraderDetailsConsignorEoriNumberPage)
+
+  implicit lazy val arbitraryTraderDetailsConsignorEoriKnownPage: Arbitrary[TraderDetailsConsignorEoriKnownPage.type] =
+    Arbitrary(TraderDetailsConsignorEoriKnownPage)
+
+  implicit lazy val arbitraryTraderDetailsConsignorAddressPage: Arbitrary[TraderDetailsConsignorAddressPage.type] =
+    Arbitrary(TraderDetailsConsignorAddressPage)
+
+  implicit lazy val arbitraryTraderDetailsConsigneeNamePage: Arbitrary[TraderDetailsConsigneeNamePage.type] =
+    Arbitrary(TraderDetailsConsigneeNamePage)
+
+  implicit lazy val arbitraryTraderDetailsConsigneeEoriNumberPage: Arbitrary[TraderDetailsConsigneeEoriNumberPage.type] =
+    Arbitrary(TraderDetailsConsigneeEoriNumberPage)
+
+  implicit lazy val arbitraryTraderDetailsConsigneeEoriKnownPage: Arbitrary[TraderDetailsConsigneeEoriKnownPage.type] =
+    Arbitrary(TraderDetailsConsigneeEoriKnownPage)
+
+  implicit lazy val arbitraryTraderDetailsConsigneeAddressPage: Arbitrary[TraderDetailsConsigneeAddressPage.type] =
+    Arbitrary(TraderDetailsConsigneeAddressPage)
+
+  implicit lazy val arbitraryPreLodgeDeclarationPage: Arbitrary[PreLodgeDeclarationPage.type] =
+    Arbitrary(PreLodgeDeclarationPage)
+
+  implicit lazy val arbitraryTotalNetMassPage: Arbitrary[TotalNetMassPage] =
+    Arbitrary(TotalNetMassPage(Index(0)))
+
+  implicit lazy val arbitraryIsCommodityCodeKnownPage: Arbitrary[IsCommodityCodeKnownPage] =
+    Arbitrary(IsCommodityCodeKnownPage(Index(0)))
+
+  implicit lazy val arbitraryAddTotalNetMassPage: Arbitrary[AddTotalNetMassPage] =
+    Arbitrary(AddTotalNetMassPage(Index(0)))
+
+  implicit lazy val arbitraryItemDescriptionPage: Arbitrary[ItemDescriptionPage] =
+    Arbitrary(ItemDescriptionPage(Index(0)))
+
+  implicit lazy val arbitraryItemTotalGrossMassPage: Arbitrary[ItemTotalGrossMassPage] =
+    Arbitrary(ItemTotalGrossMassPage(Index(0)))
+
+  implicit lazy val arbitraryOtherReferenceLiabiityAmountPage: Arbitrary[OtherReferenceLiabilityAmountPage.type] =
+    Arbitrary(OtherReferenceLiabilityAmountPage)
 
   implicit lazy val arbitraryConfirmRemoveSealsPage: Arbitrary[ConfirmRemoveSealsPage.type] =
     Arbitrary(ConfirmRemoveSealsPage)

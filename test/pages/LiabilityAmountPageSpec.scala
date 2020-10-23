@@ -16,9 +16,13 @@
 
 package pages
 
+import generators.Generators
+import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
-class LiabilityAmountPageSpec extends PageBehaviours {
+class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+
+  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
 
   "LiabilityAmountPage" - {
 

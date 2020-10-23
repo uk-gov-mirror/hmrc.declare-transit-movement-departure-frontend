@@ -57,12 +57,13 @@ index.title = common-transit-convention-departure
 index.heading = common-transit-convention-departure
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
-movementDetails.preHeading = Movement details
+movementDetails.preHeading = General Information
 traderDetails.preHeading = Trader’s details
 routeDetails.preHeading = Route details
 transportDetails.preHeading = Transport details
 goodsSummary.preHeading = Goods summary
 guaranteeDetails.preHeading = Guarantee details
+items.preHeading = Items
 
 routeDetailsCheckYourAnswers.heading = Check your answers
 routeDetailsCheckYourAnswers.title = Check your answers
@@ -136,6 +137,7 @@ compliant.four.p1.2=tax credits
 compliant.four.p1.3=). You are not required to create a new phone number or email address for this purpose
 compliant.four.p2.1=If your service does provide support and you get requests for content in an alternative format, refer to the guidance on the Intranet for getting media in an
 compliant.four.p2.2=alternative format
+
 compliant.four.p3=If you have difficulty using this service, contact us by:
 compliant.four.l1=email [email address]
 compliant.four.l2=call [phone number]
@@ -192,13 +194,14 @@ declarationSummary.title = Declaration summary
 declarationSummary.heading = Declaration summary
 declarationSummary.departureDetails = Departure details
 declarationSummary.p = You can save your declaration and come back later. You have 28 days from the first time you save to complete this declaration or your information will be deleted.
-declarationSummary.section.movementDetails = {0} movement details
+declarationSummary.section.movementDetails = {0} general information
 declarationSummary.section.routes = {0} route
 declarationSummary.section.transport = {0} transport
 declarationSummary.section.tradersDetails = {0} trader’s details
 declarationSummary.section.goodsSummary = {0} goods summary
 declarationSummary.section.guarantee = {0} guarantee
 declarationSummary.section.safetyAndSecurity = {0} safety and security details
+declarationSummary.section.addItems = {0} items
 declarationSummary.backToTransitMovements = Back to transit movements
 
 declarationType.title = What declaration do you want to create?
@@ -404,7 +407,7 @@ idAtDeparture.error.invalidCharacters = The name, registration or reference of t
 nationalityAtDeparture.title = What is the nationality at departure?
 nationalityAtDeparture.heading = What is the nationality at departure?
 nationalityAtDeparture.checkYourAnswersLabel = Nationality at departure
-nationalityAtDeparture.error.required = Enter the nationality at departure
+nationalityAtDeparture.error.required = Select the nationality at departure
 
 idCrossingBorder.title = What is the name, registration or reference of the vehicle crossing the border?
 idCrossingBorder.heading = What is the name, registration or reference of the vehicle crossing the border?
@@ -436,25 +439,25 @@ destinationOffice.error.required = Select the office in {0} that the are goods e
 nationalityCrossingBorder.title = What is the nationality crossing the border?
 nationalityCrossingBorder.heading = What is the nationality crossing the border?
 nationalityCrossingBorder.checkYourAnswersLabel = Nationality crossing the border
-nationalityCrossingBorder.error.required = Enter the nationality crossing the border
+nationalityCrossingBorder.error.required = Select the nationality crossing the border
 nationalityCrossingBorder.error.length = The nationality crossing the border must be 35 characters or less
 
 inlandMode.title = What is the inland mode?
 inlandMode.heading = What is the inland mode?
 inlandMode.checkYourAnswersLabel = Inland mode
-inlandMode.error.required = Enter the inland Mode
+inlandMode.error.required = Select the inland mode
 inlandMode.error.length = The inland mode must be 100 characters or less
 
 modeCrossingBorder.title = What is the mode crossing the border?
 modeCrossingBorder.heading = What is the mode crossing the border?
 modeCrossingBorder.checkYourAnswersLabel = Mode crossing the border
-modeCrossingBorder.error.required = Enter the mode crossing the border
+modeCrossingBorder.error.required = Select the mode crossing the border
 modeCrossingBorder.error.length = Mode crossing border must be 100 characters or less
 
 modeAtBorder.title = What is the mode at the border?
 modeAtBorder.heading = What is the mode at the border?
 modeAtBorder.checkYourAnswersLabel = Mode at the border
-modeAtBorder.error.required = Enter the mode at the border
+modeAtBorder.error.required = Select the mode at the border
 modeAtBorder.error.length = The mode at the border must be 100 characters or less
 
 addTransitOffice.title.singular = You have added {0} office of transit
@@ -494,6 +497,7 @@ totalGrossMass.heading = What is the total gross mass in kilograms?
 totalGrossMass.checkYourAnswersLabel = What is the total gross mass in kilograms?
 totalGrossMass.error.required = Enter the total gross mass in kilograms
 totalGrossMass.error.length = The total gross mass in kilograms must be 99,999,999,999.999 or less
+totalGrossMass.error.minimum = The total gross mass in kilograms must be 0.001 or more.
 totalGrossMass.paragraph = Amount can have up to 3 decimal places.
 totalGrossMass.error.invalidCharacters = The total gross mass in kilograms must be 11 numbers or less and up to 3 decimal places, like 1000000.000
 
@@ -612,10 +616,10 @@ liabilityAmount.heading = How much is the liability amount?
 liabilityAmount.checkYourAnswersLabel = Liability amount
 liabilityAmount.error.required = Enter the liability amount
 liabilityAmount.error.length = Liability amount must be 100 characters or less
-liabilityAmount.error.characters = Liability amount must only include numbers 0 to 9 and a decimal place
+liabilityAmount.error.characters = The liability amount must only include numbers 0 to 9 and a decimal place
 liabilityAmount.paragraph = Amount can have up to 2 decimal places.
-liabilityAmount.error.invalidFormat = Enter an amount with 2 decimal places
-liabilityAmount.error.greaterThanOne = Enter amount must be greater than 1
+liabilityAmount.error.invalidFormat = Enter the liability amount in the right format, like 1234.95
+liabilityAmount.error.greaterThanZero = The liability amount must be 1 or more
 
 otherReference.title = What is the reference for the guarantee?
 otherReference.heading = What is the reference for the guarantee?
@@ -643,7 +647,7 @@ guaranteeType.error.required = Select which type of guarantee is being used
 defaultAmount.title = Do you want to use the default amount of EUR10,000?
 defaultAmount.heading = Do you want to use the default amount of EUR10,000?
 defaultAmount.error.required = Select yes if you want to use the default amount of EUR10,000
-
+defaultAmount.checkYourAnswersLabel =  Do you want to use the default amount of EUR10,000?
 
 accessCode.title = What is the access code?
 accessCode.heading = What is the access code?
@@ -652,6 +656,173 @@ accessCode.error.required = Enter the access code
 accessCode.error.length = Access code must be 4 characters
 accessCode.error.invalidCharacters = Access code must only include letters a to z and numbers 0 to 9
 
+
 guaranteeDetailsCheckYourAnswers.title = Check your answers
 guaranteeDetailsCheckYourAnswers.heading = Check your answers
 guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount = EUR 10,000
+
+itemDescription.title = What is the description of item {0}}?
+itemDescription.heading = What is the description of item {0}?
+itemDescription.checkYourAnswersLabel = Description of item {0}
+itemDescription.error.required = Enter item description of item {0}
+itemDescription.error.length = Item description must be 280 characters or less
+itemDescription.paragraph = Give a brief summary of the item.
+itemDescription.error.invalid =  Description of item {0} must only include letters a to z, numbers 0 to 9 or blank spaces.
+
+preLodgeDeclaration.title = Will you be pre-lodging this declaration?
+preLodgeDeclaration.heading = Will you be pre-lodging this declaration?
+preLodgeDeclaration.checkYourAnswersLabel = Pre-lodging?
+preLodgeDeclaration.error.required = Select yes if you are pre-lodging this declaration
+itemsCheckYourAnswers.title = Check your answers
+itemsCheckYourAnswers.heading = Check your answers
+
+addTotalNetMass.title = Do you need to declare the total net mass for item {0}?
+addTotalNetMass.heading = Do you need to declare the total net mass for item {0}?
+addTotalNetMass.checkYourAnswersLabel = Declare total net mass for item {0}?
+addTotalNetMass.error.required =  Select yes if you need to declare the total net mass for item {0}
+
+itemTotalGrossMass.title = What is the total gross mass for item {0} in kilograms?
+itemTotalGrossMass.heading = What is the total gross mass for item {0} in kilograms?
+itemTotalGrossMass.checkYourAnswersLabel = Total gross mass for item {0}
+itemTotalGrossMass.hintText = Amount can have up to 3 decimal places.
+itemTotalGrossMass.error.required = Enter the total gross mass for item {0} in kilograms
+itemTotalGrossMass.error.length =  The total gross mass for item {0} in kilograms must be 99,999,999,999.999 or less
+itemTotalGrossMass.error.minimum =  The total gross mass for item {0} in  kilograms must be 0.001 or more
+itemTotalGrossMass.error.invalidCharacters =  The total gross mass for item {0} in kilograms must only include numbers 0 to 9 and a decimal place
+itemTotalGrossMass.error.invalidFormat =  The total gross mass for item {0} in kilograms must have up to 3 decimal places, like 1000.985
+
+totalNetMass.title = What is the total net mass for item {0} in kilograms?
+totalNetMass.heading = What is the total net mass for item {0} in kilograms?
+totalNetMass.checkYourAnswersLabel = Total net mass for item {0}
+totalNetMass.hintText = Amount can have up to 3 decimal places.
+totalNetMass.error.required = Enter the total net mass for item {0} in kilograms
+totalNetMass.error.length =  The total net mass for item {0} in kilograms must be 99,999,999,999.999 or less
+totalNetMass.error.minimum =  The total net mass for item {0} in kilograms must be 0.001 or more
+totalNetMass.error.invalidCharacters =  The total net mass for item {0} in kilograms must only include numbers 0 to 9 and a decimal place
+totalNetMass.error.invalidFormat =  The total net mass for item {0} in kilograms must have up to 3 decimal places, like 1000.985
+
+packageType.title = packageType
+packageType.heading = packageType
+
+declareNumberOfPackages.title = declareNumberOfPackages
+declareNumberOfPackages.heading = declareNumberOfPackages
+declareNumberOfPackages.checkYourAnswersLabel = declareNumberOfPackages
+declareNumberOfPackages.error.required = Select yes if declareNumberOfPackages
+
+totalPieces.title = TotalPieces
+totalPieces.heading = TotalPieces
+totalPieces.checkYourAnswersLabel = TotalPieces
+totalPieces.error.nonNumeric = Enter your totalPieces using numbers
+totalPieces.error.required = Enter your totalPieces
+totalPieces.error.wholeNumber = Enter your totalPieces using whole numbers
+totalPieces.error.outOfRange = TotalPieces must be between {0} and {1}
+
+addMark.title = addMark
+addMark.heading = addMark
+addMark.checkYourAnswersLabel = addMark
+addMark.error.required = Select yes if addMark
+
+declareMark.title = declareMark
+declareMark.heading = declareMark
+declareMark.checkYourAnswersLabel = declareMark
+declareMark.error.required = Enter declareMark
+declareMark.error.length = DeclareMark must be 42 characters or less
+
+addAnotherPackage.title = addAnotherPackage
+addAnotherPackage.heading = addAnotherPackage
+addAnotherPackage.checkYourAnswersLabel = addAnotherPackage
+addAnotherPackage.error.required = Select yes if addAnotherPackage
+
+commodityCode.title = What is the commodity code for item {0}?
+commodityCode.heading = What is the commodity code for item {0}?
+commodityCode.checkYourAnswersLabel = Commodity code for item {0}
+commodityCode.error.required = Enter the commodity code for item {0}
+commodityCode.error.length = Commodity Code must be 10 characters or less
+commodityCode.hintText = Commodity codes are 6, 8 or 10 numbers.
+commodityCode.errors.invalidCharacters = The commodity code must only include numbers 0 to 9
+commodityCode.errors.invalidFormat =  Enter the commodity code for item {0} in the right format, like 123456, 12345678 or 1234567890
+
+
+isCommodityCodeKnown.title = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.heading = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.checkYourAnswersLabel = Do you know the commodity code for item {0}?
+isCommodityCodeKnown.error.required = Select yes if you know the commodity code for item {0}
+
+howManyPackages.title = HowManyPackages
+howManyPackages.heading = HowManyPackages
+howManyPackages.checkYourAnswersLabel = HowManyPackages
+howManyPackages.error.nonNumeric = Enter your howManyPackages using numbers
+howManyPackages.error.required = Enter your howManyPackages
+howManyPackages.error.wholeNumber = Enter your howManyPackages using whole numbers
+howManyPackages.error.outOfRange = HowManyPackages must be between {0} and {1}
+
+traderDetailsConsigneeAddress.title = traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.heading = traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.checkYourAnswersLabel = traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.error.required = Enter traderDetailsConsigneeAddress
+traderDetailsConsigneeAddress.error.length = TraderDetailsConsigneeAddress must be 100 characters or less
+
+traderDetailsConsigneeEoriKnown.title = traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeEoriKnown.heading = traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeEoriKnown.checkYourAnswersLabel = traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeEoriKnown.error.required = Select yes if traderDetailsConsigneeEoriKnown
+
+traderDetailsConsigneeEoriNumber.title = traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.heading = traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.checkYourAnswersLabel = traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.error.required = Enter traderDetailsConsigneeEoriNumber
+traderDetailsConsigneeEoriNumber.error.length = TraderDetailsConsigneeEoriNumber must be 100 characters or less
+
+traderDetailsConsigneeName.title = traderDetailsConsigneeName
+traderDetailsConsigneeName.heading = traderDetailsConsigneeName
+traderDetailsConsigneeName.checkYourAnswersLabel = traderDetailsConsigneeName
+traderDetailsConsigneeName.error.required = Enter traderDetailsConsigneeName
+traderDetailsConsigneeName.error.length = TraderDetailsConsigneeName must be 100 characters or less
+
+traderDetailsConsignorAddress.title = traderDetailsConsignorAddress
+traderDetailsConsignorAddress.heading = traderDetailsConsignorAddress
+traderDetailsConsignorAddress.checkYourAnswersLabel = traderDetailsConsignorAddress
+traderDetailsConsignorAddress.error.required = Enter traderDetailsConsignorAddress
+traderDetailsConsignorAddress.error.length = TraderDetailsConsignorAddress must be 100 characters or less
+
+traderDetailsConsignorEoriKnown.title = traderDetailsConsignorEoriKnown
+traderDetailsConsignorEoriKnown.heading = traderDetailsConsignorEoriKnown
+traderDetailsConsignorEoriKnown.checkYourAnswersLabel = traderDetailsConsignorEoriKnown
+traderDetailsConsignorEoriKnown.error.required = Select yes if traderDetailsConsignorEoriKnown
+
+traderDetailsConsignorEoriNumber.title = traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.heading = traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.checkYourAnswersLabel = traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.error.required = Enter traderDetailsConsignorEoriNumber
+traderDetailsConsignorEoriNumber.error.length = TraderDetailsConsignorEoriNumber must be 100 characters or less
+
+traderDetailsConsignorName.title = traderDetailsConsignorName
+traderDetailsConsignorName.heading = traderDetailsConsignorName
+traderDetailsConsignorName.checkYourAnswersLabel = traderDetailsConsignorName
+traderDetailsConsignorName.error.required = Enter traderDetailsConsignorName
+traderDetailsConsignorName.error.length = TraderDetailsConsignorName must be 100 characters or less
+
+addItemsSameConsigneeForAllItems.title = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.heading = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.checkYourAnswersLabel = addItemsSameConsigneeForAllItems
+addItemsSameConsigneeForAllItems.error.required = Select yes if addItemsSameConsigneeForAllItems
+
+addItemsSameConsignorForAllItems.title = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.heading = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.checkYourAnswersLabel = addItemsSameConsignorForAllItems
+addItemsSameConsignorForAllItems.error.required = Select yes if addItemsSameConsignorForAllItems
+
+addAnotherItem.title.singular = You have added {0} item
+addAnotherItem.title.plural = You have added {0} items
+addAnotherItem.heading.singular = You have added {0} item
+addAnotherItem.heading.plural = You have added {0} items
+addAnotherItem.error.required = Select yes if you need to add another item
+addAnotherItem.paragraph = Do you need to add another item?
+
+addItems.checkYourAnswersLabel.itemDetails = Item details
+addItems.checkYourAnswersLabel.traderDetails = Trader details
+addItems.checkYourAnswersLabel.packages = Packages
+addItems.checkYourAnswersLabel.containers = Containers
+addItems.checkYourAnswersLabel.containers = Special mentions
+addItems.checkYourAnswersLabel.certificates = Produced documents and work certificates
+addItems.checkYourAnswersLabel.references = Previous administrative references

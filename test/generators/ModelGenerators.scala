@@ -22,16 +22,25 @@ import models._
 import models.domain.SealDomain
 import models.domain.SealDomain.Constants
 import models.journeyDomain._
-import models.reference.{Country, CountryCode, CustomsOffice}
+import models.reference.{Country, CountryCode, CustomsOffice, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] = {
+    Arbitrary {
+      for {
+        code        <- arbitrary[String]
+        description <- arbitrary[String]
+      } yield PackageType(code, description)
+    }
+  }
+
   implicit lazy val arbitraryGuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
-      Gen.oneOf(GuaranteeType.values.toSeq)
+      Gen.oneOf(GuaranteeType.values)
     }
 
   implicit lazy val arbitrarySealDomain: Arbitrary[SealDomain] =

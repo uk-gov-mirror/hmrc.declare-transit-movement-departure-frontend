@@ -25,6 +25,49 @@ import uk.gov.hmrc.viewmodels._
 
 class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def defaultAmount: Option[Row] =
+    if (userAnswers.get(LiabilityAmountPage).isEmpty && userAnswers.get(OtherReferenceLiabilityAmountPage).isEmpty) {
+      userAnswers.get(DefaultAmountPage) map {
+
+        answer =>
+          val useDefault = if (answer) {
+            "Yes"
+          } else {
+            "No"
+          }
+          Row(
+            key   = Key(msg"defaultAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value = Value(lit"$useDefault"),
+            actions = List(
+              Action(
+                content            = msg"site.edit",
+                href               = routes.DefaultAmountController.onPageLoad(lrn, CheckMode).url,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"defaultAmount.checkYourAnswersLabel")),
+                attributes         = Map("id" -> "change-default-amount")
+              )
+            )
+          )
+      }
+    } else {
+      None
+    }
+
+  def otherReferenceliabilityAmount: Option[Row] = userAnswers.get(OtherReferenceLiabilityAmountPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.OtherReferenceLiabilityAmountController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"liabilityAmount.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-other-reference-liabilty-amount")
+          )
+        )
+      )
+  }
+
   def guaranteeType: Option[Row] = userAnswers.get(GuaranteeTypePage) map {
     answer =>
       val gtName = GuaranteeType.getId(answer.toString)
@@ -35,7 +78,8 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.GuaranteeTypeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"guaranteeType.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"guaranteeType.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-guarantee-type")
           )
         )
       )
@@ -50,7 +94,8 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.AccessCodeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"accessCode.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"accessCode.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-access-code")
           )
         )
       )
@@ -65,7 +110,8 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.OtherReferenceController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"otherReference.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"otherReference.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-other-reference")
           )
         )
       )
@@ -86,7 +132,8 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             Action(
               content            = msg"site.edit",
               href               = routes.LiabilityAmountController.onPageLoad(lrn, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"liabilityAmount.checkYourAnswersLabel"))
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"liabilityAmount.checkYourAnswersLabel")),
+              attributes         = Map("id" -> "change-liability-amount")
             )
           )
         )
@@ -101,7 +148,8 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.GuaranteeReferenceController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"guaranteeReference.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"guaranteeReference.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-guarantee-reference")
           )
         )
       )

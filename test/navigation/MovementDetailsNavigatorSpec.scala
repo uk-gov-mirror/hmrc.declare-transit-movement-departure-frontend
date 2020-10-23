@@ -20,23 +20,53 @@ import base.SpecBase
 import controllers.movementDetails.{routes => movementDetailsRoute}
 import generators.Generators
 import models._
+import models.ProcedureType._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.movementDetails.PreLodgeDeclarationPage
 
 class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new MovementDetailsNavigator
-
+  // format: off
   "Movement Details Section" - {
     "Normal mode" - {
 
-      "must go from Declaration Type page to container Used page" in {
+      "must go from Declaration Type page to" - {
+        "containers Used page when Simplified is selected" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers
+                .set(ProcedureTypePage, Simplified).success.value
+
+              navigator
+                .nextPage(DeclarationTypePage, NormalMode, userAnswers)
+                .mustBe(movementDetailsRoute.ContainersUsedPageController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "pre-lodge declaration when Normal is selected" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers
+                .set(ProcedureTypePage, Normal).success.value
+
+              navigator
+                .nextPage(DeclarationTypePage, NormalMode, userAnswers)
+                .mustBe(movementDetailsRoute.PreLodgeDeclarationController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+      }
+
+      "must go from PreLodge Declaration page to Containers Used page" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(DeclarationTypePage, NormalMode, answers)
+              .nextPage(PreLodgeDeclarationPage, NormalMode, answers)
               .mustBe(movementDetailsRoute.ContainersUsedPageController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -108,65 +138,102 @@ class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
     "Check mode" - {
 
-      "Must go from Declaration-Type to Movement Details Check Your Answers" - {
+      "Must go from Declaration-Type to" - {
+        "Movement Details Check Your Answers when ProcedureType Normal and Prelodge is populated" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers
+                .set(ProcedureTypePage, Normal).success.value
+                .set(PreLodgeDeclarationPage, true).success.value
+
+              navigator
+                .nextPage(DeclarationTypePage, CheckMode, userAnswers)
+                .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+          }
+        }
+
+        "Movement Details Check Your Answers when ProcedureType Simplified" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers
+                .set(ProcedureTypePage, Simplified).success.value
+
+              navigator
+                .nextPage(DeclarationTypePage, CheckMode, userAnswers)
+                .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+          }
+        }
+
+        "PreLodgeDeclaration when ProcedureType Normal and Prelodge is NOT populated" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val userAnswers = answers
+                .set(ProcedureTypePage, Normal).success.value
+                .remove(PreLodgeDeclarationPage).success.value
+
+              navigator
+                .nextPage(DeclarationTypePage, CheckMode, userAnswers)
+                .mustBe(movementDetailsRoute.PreLodgeDeclarationController.onPageLoad(answers.id, CheckMode))
+
+          }
+        }
+      }
+
+      "must go from PreLodge Declaration page to CYA page" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(DeclarationTypePage, CheckMode, answers)
+              .nextPage(PreLodgeDeclarationPage, CheckMode, answers)
               .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
-
         }
+      }
 
-        "must go from Declaration For Someone Else page to Representative Name page on selecting option 'Yes'" in {
+      "must go from Declaration For Someone Else page to CYA page on selecting option 'Yes' and representativeNamePage has data" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers
-                .set(DeclarationForSomeoneElsePage, true)
-                .toOption
-                .value
-                .remove(RepresentativeNamePage)
-                .toOption
-                .value
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedUserAnswers = answers
+              .set(DeclarationForSomeoneElsePage, true).toOption.value
+              .set(RepresentativeNamePage, "answer").toOption.value
 
-              navigator
-                .nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
-                .mustBe(movementDetailsRoute.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
-          }
+            navigator
+              .nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
+              .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
+      }
 
-        "must go from Declaration For Someone Else page to CYA page on selecting option 'Yes' and representativeNamePage has data" in {
+      "must go from Declaration For Someone Else page to Representative Name page on selecting option 'Yes'" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers
-                .set(DeclarationForSomeoneElsePage, true)
-                .toOption
-                .value
-                .set(RepresentativeNamePage, "answer")
-                .toOption
-                .value
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedUserAnswers = answers
+              .set(DeclarationForSomeoneElsePage, true).toOption.value
+              .remove(RepresentativeNamePage).toOption.value
 
-              navigator
-                .nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
-                .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
-          }
+            navigator
+              .nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
+              .mustBe(movementDetailsRoute.RepresentativeNameController.onPageLoad(answers.id, NormalMode))
         }
+      }
 
-        "must go from Declaration For Someone Else page to movement details check your answers page on selecting option 'No'" in {
+      "must go from Declaration For Someone Else page to movement details check your answers page on selecting option 'No'" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedUserAnswers = answers.set(DeclarationForSomeoneElsePage, false).toOption.value
 
-              navigator
-                .nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
-                .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
-          }
+            navigator
+              .nextPage(DeclarationForSomeoneElsePage, CheckMode, updatedUserAnswers)
+              .mustBe(movementDetailsRoute.MovementDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
-
       }
     }
   }
+  // format: on
 }
