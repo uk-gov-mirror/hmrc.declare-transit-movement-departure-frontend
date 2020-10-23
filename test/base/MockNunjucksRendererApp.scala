@@ -26,7 +26,7 @@ import controllers.actions.{
 }
 import models.UserAnswers
 import org.mockito.Mockito
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.AddCustomsApprovedLocationPage
@@ -39,7 +39,7 @@ import play.modules.reactivemongo.ReactiveMongoApi
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
 
 trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEach with MockitoSugar {
-  self: SpecBase =>
+  self: TestSuite =>
 
   val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 
