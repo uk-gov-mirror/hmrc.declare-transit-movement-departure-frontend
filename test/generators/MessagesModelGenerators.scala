@@ -256,9 +256,8 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryControlResult: Arbitrary[ControlResult] =
     Arbitrary {
       for {
-        controlResultCode <- Gen.pick(2, 'A' to 'Z')
-        dateLimit         <- localDateGen
-      } yield ControlResult(controlResultCode.mkString, dateLimit)
+        dateLimit <- localDateGen
+      } yield ControlResult(dateLimit)
     }
 
   implicit lazy val arbitrarySeals: Arbitrary[Seals] =
