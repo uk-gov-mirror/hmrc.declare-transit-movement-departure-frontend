@@ -47,7 +47,7 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase {
 
       val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index)
 
-      data.sections.head.sectionTitle must not be defined
+      data.sections.head.sectionTitle mustBe defined
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 6
     }

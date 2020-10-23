@@ -358,7 +358,10 @@ POST       /:lrn/add-items/item-details/:index/change-total-net-mass            
 
 GET        /:lrn/add-items/:index/check-answers                       controllers.addItems.ItemsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/packageType                       controllers.addItems.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber)
+GET        /:lrn/packageType                            controllers.addItems.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/packageType                            controllers.addItems.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changePackageType                       controllers.addItems.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changePackageType                       controllers.addItems.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/declareNumberOfPackages                        controllers.addItems.DeclareNumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/declareNumberOfPackages                        controllers.addItems.DeclareNumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -454,3 +457,6 @@ GET        /:lrn/add-items/item-details/:index/addItemsSameConsignorForAllItems 
 POST       /:lrn/add-items/item-details/:index/addItemsSameConsignorForAllItems                        controllers.addItems.AddItemsSameConsignorForAllItemsController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/item-details/:index/change-AddItemsSameConsignorForAllItems                 controllers.addItems.AddItemsSameConsignorForAllItemsController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/item-details/:index/change-AddItemsSameConsignorForAllItems                 controllers.addItems.AddItemsSameConsignorForAllItemsController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/add-items/add-items                        controllers.addItems.AddAnotherItemController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/add-items/add-items                        controllers.addItems.AddAnotherItemController.onSubmit(lrn: LocalReferenceNumber)

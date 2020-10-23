@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import models.{Index, UserAnswers}
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsObject, JsPath}
 import queries.Constants.Items
-import pages.addItems.CommodityCodePage
 
-import scala.util.Try
+case object DeriveNumberOfItems extends Derivable[List[JsObject], Int] {
 
-case class IsCommodityCodeKnownPage(index: Index) extends QuestionPage[Boolean] {
+  override val derive: List[JsObject] => Int = _.size
 
-  override def path: JsPath = JsPath \ Items \ index.position \ toString
-
-  override def toString: String = "isCommodityCodeKnown"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) =>
-        userAnswers
-          .remove(CommodityCodePage(index))
-
-      case _ => super.cleanup(value, userAnswers)
-    }
+  override def path: JsPath = JsPath \ Items
 }

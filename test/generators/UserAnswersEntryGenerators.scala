@@ -23,6 +23,7 @@ import pages._
 import pages.addItems.{CommodityCodePage, RemoveItemPage}
 import pages.addItems.traderDetails._
 import pages.addItems.{AddItemsSameConsigneeForAllItemsPage, AddItemsSameConsignorForAllItemsPage, CommodityCodePage}
+import pages.addItems.{AddAnotherItemPage, CommodityCodePage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -107,6 +108,14 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       for {
         page  <- arbitrary[CommodityCodePage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddAnotherItemUserAnswersEntry: Arbitrary[(AddAnotherItemPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddAnotherItemPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
 

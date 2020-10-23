@@ -16,20 +16,17 @@
 
 package pages
 
-import generators.Generators
-import org.scalacheck.Arbitrary
+import models.reference.PackageType
 import pages.behaviours.PageBehaviours
 
-class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+class PackageTypePageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
+  "PackageTypePage" - {
 
-  "LiabilityAmountPage" - {
+    beRetrievable[String](PackageTypePage)
 
-    beRetrievable[String](LiabilityAmountPage)
+    beSettable[String](PackageTypePage)
 
-    beSettable[String](LiabilityAmountPage)
-
-    beRemovable[String](LiabilityAmountPage)
+    beRemovable[String](PackageTypePage)
   }
 }

@@ -19,7 +19,6 @@ package generators
 import java.time._
 
 import cats.data.NonEmptyList
-import models.Index
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}

@@ -283,6 +283,29 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
+  def itemRows(index: Index): Option[Row] =
+    userAnswers.get(ItemDescriptionPage(index)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index).url,
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-item-${index.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index).url,
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-item-${index.display}""")
+            )
+          )
+        )
+    }
+
   def lrn: LocalReferenceNumber = userAnswers.id
 
 }

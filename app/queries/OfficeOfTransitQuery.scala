@@ -17,11 +17,10 @@
 package queries
 
 import models.Index
-import models.domain.SealDomain
 import pages.QuestionPage
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsObject, JsPath}
 
-final case class OfficeOfTransitQuery(index: Index) extends QuestionPage[Seq[SealDomain]] {
+final case class OfficeOfTransitQuery(index: Index) extends QuestionPage[JsObject] {
 
   override def path: JsPath = JsPath \ Constants.RouteDetailsOfficesOfTransit \ index.position
 

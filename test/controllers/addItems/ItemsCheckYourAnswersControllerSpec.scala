@@ -49,7 +49,10 @@ class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar wit
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn)
+      val expectedJson = Json.obj(
+        "lrn"         -> lrn,
+        "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
+      )
 
       templateCaptor.getValue mustEqual "itemsCheckYourAnswers.njk"
       jsonCaptor.getValue must containJson(expectedJson)

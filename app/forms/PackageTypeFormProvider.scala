@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import generators.Generators
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.{CountryList, PackageTypeList}
+import models.reference.{Country, PackageType}
+import play.api.data.Form
 
-class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+class PackageTypeFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
-
-  "LiabilityAmountPage" - {
-
-    beRetrievable[String](LiabilityAmountPage)
-
-    beSettable[String](LiabilityAmountPage)
-
-    beRemovable[String](LiabilityAmountPage)
-  }
+  def apply(packageTypes: PackageTypeList): Form[PackageType] =
+    Form(
+      "value" -> text("packageType.error.required")
+        .verifying("packageType.error.required", value => packageTypes.packageTypeList.exists(_.code == value))
+        .transform[PackageType](value => packageTypes.packageTypeList.find(_.code == value).get, _.code)
+    )
 }

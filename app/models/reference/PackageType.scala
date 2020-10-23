@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models.reference
 
-import generators.Generators
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Json, OFormat}
 
-class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+case class PackageType(code: String, description: String)
 
-  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
-
-  "LiabilityAmountPage" - {
-
-    beRetrievable[String](LiabilityAmountPage)
-
-    beSettable[String](LiabilityAmountPage)
-
-    beRemovable[String](LiabilityAmountPage)
-  }
+object PackageType {
+  implicit val format: OFormat[PackageType] = Json.format[PackageType]
 }
