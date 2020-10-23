@@ -58,7 +58,7 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
         Some(routes.ConsignorAddressController.onPageLoad(ua.id, NormalMode))
     case ConsignorAddressPage =>
       ua =>
-        Some(routes.AddConsigneeController.onPageLoad(ua.id, NormalMode))
+        Some(routes.ConsigneeForAllItemsController.onPageLoad(ua.id, NormalMode))
     case AddConsigneePage =>
       ua =>
         Some(addConsigneeRoute(ua, NormalMode))

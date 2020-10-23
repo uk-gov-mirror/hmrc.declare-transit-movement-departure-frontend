@@ -130,7 +130,7 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.AddConsigneeController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignee.checkYourAnswersLabel")),
-            attributes         = Map("id" -> "change-add-consignee")
+            attributes         = Map("id" -> "change-consignee-same-for-all-items")
           )
         )
       )
@@ -180,7 +180,7 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.AddConsignorController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignor.checkYourAnswersLabel")),
-            attributes         = Map("id" -> "change-add-consignor")
+            attributes         = Map("id" -> "change-consignor-same-for-all-items")
           )
         )
       )
