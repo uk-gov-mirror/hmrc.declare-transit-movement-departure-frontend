@@ -29,14 +29,15 @@ import org.scalacheck.{Arbitrary, Gen}
 trait ModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] = {
+  val stringMaxLength = 256
+
+  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
     Arbitrary {
       for {
         code        <- arbitrary[String]
         description <- arbitrary[String]
       } yield PackageType(code, description)
     }
-  }
 
   implicit lazy val arbitraryGuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
@@ -53,9 +54,9 @@ trait ModelGenerators {
   implicit lazy val arbitraryConsigneeAddress: Arbitrary[ConsigneeAddress] =
     Arbitrary {
       for {
-        addressLine1 <- arbitrary[String]
-        addressLine2 <- arbitrary[String]
-        addressLine3 <- arbitrary[String]
+        addressLine1 <- stringsWithMaxLength(stringMaxLength)
+        addressLine2 <- stringsWithMaxLength(stringMaxLength)
+        addressLine3 <- stringsWithMaxLength(stringMaxLength)
         addressLine4 <- arbitrary[Country]
       } yield ConsigneeAddress(addressLine1, addressLine2, addressLine3, addressLine4)
     }
@@ -82,16 +83,16 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code <- arbitrary[CountryCode]
-        name <- arbitrary[String]
+        name <- stringsWithMaxLength(stringMaxLength)
       } yield Country(code, name)
     }
 
   implicit lazy val arbitraryConsignorAddress: Arbitrary[ConsignorAddress] =
     Arbitrary {
       for {
-        addressLine1 <- arbitrary[String]
-        addressLine2 <- arbitrary[String]
-        addressLine3 <- arbitrary[String]
+        addressLine1 <- stringsWithMaxLength(stringMaxLength)
+        addressLine2 <- stringsWithMaxLength(stringMaxLength)
+        addressLine3 <- stringsWithMaxLength(stringMaxLength)
         addressLine4 <- arbitrary[Country]
       } yield ConsignorAddress(addressLine1, addressLine2, addressLine3, addressLine4)
     }
@@ -131,10 +132,10 @@ trait ModelGenerators {
 
     Arbitrary {
       for {
-        id          <- arbitrary[String]
-        name        <- arbitrary[String]
+        id          <- stringsWithMaxLength(stringMaxLength)
+        name        <- stringsWithMaxLength(stringMaxLength)
         roles       <- genRoles
-        phoneNumber <- Gen.option(arbitrary[String])
+        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
       } yield CustomsOffice(id, name, roles, phoneNumber)
     }
   }
@@ -145,7 +146,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryDeclarationForSomeoneElse: Arbitrary[DeclarationForSomeoneElse] =
     Arbitrary {
       for {
-        companyName <- arbitrary[String]
+        companyName <- stringsWithMaxLength(stringMaxLength)
         capacity    <- arbitrary[RepresentativeCapacity]
       } yield DeclarationForSomeoneElse(companyName, capacity)
     }
@@ -158,15 +159,14 @@ trait ModelGenerators {
       for {
         declarationType           <- arbitrary[DeclarationType]
         containersUsed            <- arbitrary[Boolean]
-        declarationPlacePage      <- arbitrary[String]
+        declarationPlacePage      <- stringsWithMaxLength(stringMaxLength)
         declarationForSomeoneElse <- arbitrary[DeclarationForSomeoneElseAnswer]
-      } yield
-        SimplifiedMovementDetails(
-          declarationType,
-          containersUsed,
-          declarationPlacePage,
-          declarationForSomeoneElse
-        )
+      } yield SimplifiedMovementDetails(
+        declarationType,
+        containersUsed,
+        declarationPlacePage,
+        declarationForSomeoneElse
+      )
     }
 
   implicit lazy val arbitraryLocalDateTimeWithAMPM: Arbitrary[LocalDateTimeWithAMPM] =
@@ -180,31 +180,29 @@ trait ModelGenerators {
   implicit lazy val arbitraryTransitInformation: Arbitrary[TransitInformation] =
     Arbitrary {
       for {
-        transitOffice <- arbitrary[String]
+        transitOffice <- stringsWithMaxLength(stringMaxLength)
         arrivalTime   <- arbitrary[LocalDateTime]
-      } yield
-        TransitInformation(
-          transitOffice,
-          arrivalTime
-        )
+      } yield TransitInformation(
+        transitOffice,
+        arrivalTime
+      )
     }
 
   implicit lazy val arbitraryRouteDetails: Arbitrary[RouteDetails] =
     Arbitrary {
       for {
         countryOfDispatch  <- arbitrary[CountryCode]
-        officeOfDeparture  <- arbitrary[String]
+        officeOfDeparture  <- stringsWithMaxLength(stringMaxLength)
         destinationCountry <- arbitrary[CountryCode]
-        destinationOffice  <- arbitrary[String]
+        destinationOffice  <- stringsWithMaxLength(stringMaxLength)
         transitInformation <- nonEmptyListOf[TransitInformation](10)
-      } yield
-        RouteDetails(
-          countryOfDispatch,
-          officeOfDeparture,
-          destinationCountry,
-          destinationOffice,
-          transitInformation
-        )
+      } yield RouteDetails(
+        countryOfDispatch,
+        officeOfDeparture,
+        destinationCountry,
+        destinationOffice,
+        transitInformation
+      )
     }
 
 }
