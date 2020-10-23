@@ -16,7 +16,7 @@
 
 package controllers.guaranteeDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.GuaranteeDetails
@@ -41,7 +41,7 @@ import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 import scala.concurrent.Future
 
-class GuaranteeReferenceControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class GuaranteeReferenceControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

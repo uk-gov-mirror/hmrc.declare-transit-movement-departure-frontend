@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import base.MockNunjucksRendererApp
 import config.FrontendAppConfig
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
@@ -30,7 +31,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class TechnicalDifficultiesControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class TechnicalDifficultiesControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   "TechnicalDifficulties Controller" - {
 

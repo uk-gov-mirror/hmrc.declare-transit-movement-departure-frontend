@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.any
@@ -26,7 +26,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class IndexControllerSpec extends SpecBase {
+class IndexControllerSpec extends SpecBase with MockNunjucksRendererApp {
 
   "Index Controller" - {
 

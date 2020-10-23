@@ -16,7 +16,7 @@
 
 package controllers.guaranteeDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.guaranteeDetails.GuaranteeTypeFormProvider
 import matchers.JsonMatchers
 import models.{GuaranteeType, NormalMode}
@@ -37,7 +37,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class GuaranteeTypeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class GuaranteeTypeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

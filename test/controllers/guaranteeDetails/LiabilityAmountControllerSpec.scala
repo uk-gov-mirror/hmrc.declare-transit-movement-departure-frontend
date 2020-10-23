@@ -16,7 +16,7 @@
 
 package controllers.guaranteeDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.LiabilityAmountFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -39,7 +39,7 @@ import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class LiabilityAmountControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class LiabilityAmountControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

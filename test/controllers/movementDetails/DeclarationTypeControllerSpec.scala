@@ -16,7 +16,7 @@
 
 package controllers.movementDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
 import forms.DeclarationTypeFormProvider
 import matchers.JsonMatchers
@@ -39,7 +39,7 @@ import navigation.annotations.MovementDetails
 
 import scala.concurrent.Future
 
-class DeclarationTypeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class DeclarationTypeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
