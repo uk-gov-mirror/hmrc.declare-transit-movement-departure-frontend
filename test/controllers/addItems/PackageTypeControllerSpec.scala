@@ -22,7 +22,7 @@ import forms.PackageTypeFormProvider
 import matchers.JsonMatchers
 import models.reference.PackageType
 import models.{NormalMode, PackageTypeList}
-import navigation.annotations.RouteDetails
+import navigation.annotations.{AddItems, RouteDetails}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -158,7 +158,7 @@ class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatc
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
           )
@@ -222,7 +222,7 @@ class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatc
       application.stop()
     }
 
-    "must redirect to Session Expired for a POST if no existing data is found" ignore {
+    "must redirect to Session Expired for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
