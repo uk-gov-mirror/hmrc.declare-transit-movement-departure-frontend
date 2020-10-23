@@ -39,7 +39,7 @@ trait SpecBase
     extends AnyFreeSpec
     with Matchers
     with OptionValues
-    with GuiceOneAppPerSuite
+    with GuiceOneAppPerSuite // TODO: remove
     with TryValues
     with ScalaFutures
     with IntegrationPatience
@@ -73,10 +73,12 @@ trait SpecBase
 
   implicit def messages: Messages = Helpers.stubMessages()
 
+  // TODO: Remove
   def injector: Injector = app.injector
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig] // TODO: remove
 
+  // TODO: Move to a separate trait
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(

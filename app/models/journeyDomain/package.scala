@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.Index
-import play.api.libs.json.JsPath
-import queries.Constants.RouteDetailsOfficesOfTransit
+import cats.data.ReaderT
+import play.api.libs.json.Reads
+import queries.Gettable
 
-case class AddAnotherTransitOfficePage(index: Index) extends QuestionPage[String] {
+package object journeyDomain {
 
-  override def path: JsPath = JsPath \ RouteDetailsOfficesOfTransit \ index.position \ toString
+  type UserAnswersReader[A] = ReaderT[Option, UserAnswers, A]
 
-  override def toString: String = AddAnotherTransitOfficePage.key
-}
+  private[models] object UserAnswersReader {
+    def apply[A: UserAnswersReader]: UserAnswersReader[A] = implicitly[UserAnswersReader[A]]
+  }
 
-object AddAnotherTransitOfficePage {
-  val key: String = "addAnotherTransitOffice"
+  implicit class GettableAsOptionalReaderOps[A](a: Gettable[A]) {
+
+    def reader(implicit reads: Reads[A]): UserAnswersReader[A] =
+      ReaderT[Option, UserAnswers, A](_.get(a))
+  }
+
 }
