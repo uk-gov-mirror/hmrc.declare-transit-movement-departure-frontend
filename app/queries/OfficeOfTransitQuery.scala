@@ -23,6 +23,6 @@ import play.api.libs.json.JsPath
 
 final case class OfficeOfTransitQuery(index: Index) extends QuestionPage[Seq[SealDomain]] {
 
-  override def path: JsPath = JsPath \ Constants.RouteDetailsOfficesOfTransit \ index.position
+  override def path: JsPath = JsPath \ Constants.routeDetailsOfficesOfTransit \ index.position
 
 }

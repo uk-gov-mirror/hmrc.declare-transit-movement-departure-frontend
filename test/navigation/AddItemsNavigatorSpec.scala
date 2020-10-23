@@ -24,7 +24,7 @@ import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import pages.addItems.{AddItemsSameConsigneeForAllItemsPage, _}
+import pages.addItems._
 import pages.addItems.traderDetails._
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -117,9 +117,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage, true).success.value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), true).success.value
                 navigator
-                  .nextPage(AddItemsSameConsignorForAllItemsPage, NormalMode, updatedAnswers)
+                  .nextPage(AddItemsSameConsignorForAllItemsPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(updatedAnswers.id, index, NormalMode))
             }
           }
@@ -128,9 +128,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage, false).success.value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
                 navigator
-                  .nextPage(AddItemsSameConsignorForAllItemsPage, NormalMode, updatedAnswers)
+                  .nextPage(AddItemsSameConsignorForAllItemsPage(index), NormalMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(updatedAnswers.id, index, NormalMode))
             }
           }
@@ -141,9 +141,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage, true).success.value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage, NormalMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), NormalMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
             }
           }
@@ -152,9 +152,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage, false).success.value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage, NormalMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), NormalMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorNameController.onPageLoad(updatedAnswers.id, index, NormalMode))
             }
           }
@@ -164,7 +164,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(TraderDetailsConsignorEoriNumberPage, NormalMode, answers)
+                .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, answers)
                 .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, NormalMode))
           }
         }
@@ -173,7 +173,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(TraderDetailsConsignorNamePage, NormalMode, answers)
+                .nextPage(TraderDetailsConsignorNamePage(index), NormalMode, answers)
                 .mustBe(traderRoutes.TraderDetailsConsignorAddressController.onPageLoad(answers.id, index, NormalMode))
           }
         }
@@ -182,7 +182,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(TraderDetailsConsignorAddressPage, NormalMode, answers)
+                .nextPage(TraderDetailsConsignorAddressPage(index), NormalMode, answers)
                 .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, NormalMode))
           }
         }
@@ -193,10 +193,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage, true).success.value
-                  .set(AddItemsSameConsigneeForAllItemsPage, true).success.value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), true).success.value
+                  .set(AddItemsSameConsigneeForAllItemsPage(index), true).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage, NormalMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(updatedAnswers.id, index, NormalMode))
             }
           }
@@ -205,10 +205,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             (forAll(arbitrary[UserAnswers], arbitrary[Boolean])) {
               (answers, addItemsSameConsigneeForAllItems) =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage, false).success.value
-                  .set(AddItemsSameConsigneeForAllItemsPage, addItemsSameConsigneeForAllItems).success.value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
+                  .set(AddItemsSameConsigneeForAllItemsPage(index), addItemsSameConsigneeForAllItems).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage, NormalMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
             }
           }
@@ -217,9 +217,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsigneeForAllItemsPage, false).success.value
+                  .set(AddItemsSameConsigneeForAllItemsPage(index), false).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage, NormalMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
             }
           }
@@ -229,9 +229,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   val updatedAnswers = answers
-                    .set(TraderDetailsConsigneeEoriKnownPage, true).success.value
+                    .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
                   navigator
-                    .nextPage(TraderDetailsConsigneeEoriKnownPage, NormalMode, updatedAnswers)
+                    .nextPage(TraderDetailsConsigneeEoriKnownPage(index), NormalMode, updatedAnswers)
                     .mustBe(traderRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
               }
             }
@@ -240,9 +240,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   val updatedAnswers = answers
-                    .set(TraderDetailsConsigneeEoriKnownPage, false).success.value
+                    .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
                   navigator
-                    .nextPage(TraderDetailsConsigneeEoriKnownPage, NormalMode, updatedAnswers)
+                    .nextPage(TraderDetailsConsigneeEoriKnownPage(index), NormalMode, updatedAnswers)
                     .mustBe(traderRoutes.TraderDetailsConsigneeNameController.onPageLoad(updatedAnswers.id, index, NormalMode))
               }
             }
@@ -252,7 +252,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 navigator
-                  .nextPage(TraderDetailsConsigneeEoriNumberPage, NormalMode, answers)
+                  .nextPage(TraderDetailsConsigneeEoriNumberPage(index), NormalMode, answers)
                   .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, NormalMode))
             }
           }
@@ -261,7 +261,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 navigator
-                  .nextPage(TraderDetailsConsigneeNamePage, NormalMode, answers)
+                  .nextPage(TraderDetailsConsigneeNamePage(index), NormalMode, answers)
                   .mustBe(traderRoutes.TraderDetailsConsigneeAddressController.onPageLoad(answers.id, index, NormalMode))
             }
           }
@@ -270,7 +270,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 navigator
-                  .nextPage(TraderDetailsConsigneeAddressPage, NormalMode, answers)
+                  .nextPage(TraderDetailsConsigneeAddressPage(index), NormalMode, answers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
             }
           }
@@ -401,9 +401,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage, true).success.value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), true).success.value
                 navigator
-                  .nextPage(AddItemsSameConsignorForAllItemsPage, CheckMode, updatedAnswers)
+                  .nextPage(AddItemsSameConsignorForAllItemsPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(updatedAnswers.id, index, CheckMode))
             }
           }
@@ -412,10 +412,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage, false).success.value
-                  .remove(TraderDetailsConsignorEoriKnownPage).success.value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
+                  .remove(TraderDetailsConsignorEoriKnownPage(index)).success.value
                 navigator
-                  .nextPage(AddItemsSameConsignorForAllItemsPage, CheckMode, updatedAnswers)
+                  .nextPage(AddItemsSameConsignorForAllItemsPage(index), CheckMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(updatedAnswers.id, index, CheckMode))
             }
           }
@@ -424,10 +424,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage, false).success.value
-                  .set(TraderDetailsConsignorEoriNumberPage, eoriNumber.value).success.value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
+                  .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber.value).success.value
                 navigator
-                  .nextPage(AddItemsSameConsignorForAllItemsPage, CheckMode, updatedAnswers)
+                  .nextPage(AddItemsSameConsignorForAllItemsPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
             }
           }
@@ -438,10 +438,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage, true).success.value
-                  .remove(TraderDetailsConsignorEoriNumberPage).success.value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
+                  .remove(TraderDetailsConsignorEoriNumberPage(index)).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage, CheckMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(updatedAnswers.id, index, CheckMode))
             }
           }
@@ -450,10 +450,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage, true).success.value
-                  .set(TraderDetailsConsignorEoriNumberPage, eoriNumber.value).success.value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
+                  .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber.value).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage, CheckMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
             }
           }
@@ -462,10 +462,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage, false).success.value
-                  .remove(TraderDetailsConsignorNamePage).success.value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
+                  .remove(TraderDetailsConsignorNamePage(index)).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage, CheckMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
             }
           }
@@ -474,10 +474,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage, false).success.value
-                  .set(TraderDetailsConsignorNamePage, "name").success.value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
+                  .set(TraderDetailsConsignorNamePage(index), "name").success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage, CheckMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
             }
           }
@@ -487,7 +487,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(TraderDetailsConsignorEoriNumberPage, CheckMode, answers)
+                .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, answers)
                 .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
           }
         }
@@ -497,9 +497,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val userAnswers = answers
-                  .remove(TraderDetailsConsignorAddressPage).success.value
+                  .remove(TraderDetailsConsignorAddressPage(index)).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorNamePage, CheckMode, userAnswers)
+                  .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, userAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorAddressController.onPageLoad(userAnswers.id, index, CheckMode))
             }
           }
@@ -508,9 +508,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val userAnswers = answers
-                  .set(TraderDetailsConsignorAddressPage, "address").success.value //todo: move to correct model when page completed
+                  .set(TraderDetailsConsignorAddressPage(index), "address").success.value //todo: move to correct model when page completed
                 navigator
-                  .nextPage(TraderDetailsConsignorNamePage, CheckMode, userAnswers)
+                  .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, userAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index))
             }
           }
@@ -520,7 +520,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(TraderDetailsConsignorAddressPage, CheckMode, answers)
+                .nextPage(TraderDetailsConsignorAddressPage(index), CheckMode, answers)
                 .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, CheckMode))
           }
         }
@@ -531,10 +531,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage, true).success.value
-                  .set(AddItemsSameConsigneeForAllItemsPage, true).success.value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), true).success.value
+                  .set(AddItemsSameConsigneeForAllItemsPage(index), true).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage, CheckMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(updatedAnswers.id, index, CheckMode))
             }
           }
@@ -543,10 +543,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             (forAll(arbitrary[UserAnswers], arbitrary[Boolean])) {
               (answers, addItemsSameConsigneeForAllItems) =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage, false).success.value
-                  .set(AddItemsSameConsigneeForAllItemsPage, addItemsSameConsigneeForAllItems).success.value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
+                  .set(AddItemsSameConsigneeForAllItemsPage(index), addItemsSameConsigneeForAllItems).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage, CheckMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
             }
           }
@@ -555,9 +555,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsigneeForAllItemsPage, false).success.value
+                  .set(AddItemsSameConsigneeForAllItemsPage(index), false).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage, CheckMode, updatedAnswers)
+                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
             }
           }
@@ -567,10 +567,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   val updatedAnswers = answers
-                    .set(TraderDetailsConsigneeEoriKnownPage, true).success.value
-                    .remove(TraderDetailsConsigneeEoriNumberPage).success.value
+                    .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
+                    .remove(TraderDetailsConsigneeEoriNumberPage(index)).success.value
                   navigator
-                    .nextPage(TraderDetailsConsigneeEoriKnownPage, CheckMode, updatedAnswers)
+                    .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
                     .mustBe(traderRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(updatedAnswers.id, index, CheckMode))
               }
 
@@ -578,10 +578,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                     val updatedAnswers = answers
-                      .set(TraderDetailsConsigneeEoriKnownPage, true).success.value
-                      .set(TraderDetailsConsigneeEoriNumberPage, eoriNumber.value).success.value
+                      .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
+                      .set(TraderDetailsConsigneeEoriNumberPage(index), eoriNumber.value).success.value
                     navigator
-                      .nextPage(TraderDetailsConsigneeEoriKnownPage, CheckMode, updatedAnswers)
+                      .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
                       .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
                 }
 
@@ -591,10 +591,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                     val updatedAnswers = answers
-                      .set(TraderDetailsConsigneeEoriKnownPage, false).success.value
-                      .remove(TraderDetailsConsigneeNamePage).success.value
+                      .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
+                      .remove(TraderDetailsConsigneeNamePage(index)).success.value
                     navigator
-                      .nextPage(TraderDetailsConsigneeEoriKnownPage, CheckMode, updatedAnswers)
+                      .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
                       .mustBe(traderRoutes.TraderDetailsConsigneeNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
                 }
               }
@@ -603,10 +603,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                     val updatedAnswers = answers
-                      .set(TraderDetailsConsigneeEoriKnownPage, false).success.value
-                      .remove(TraderDetailsConsigneeNamePage).success.value
+                      .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
+                      .remove(TraderDetailsConsigneeNamePage(index)).success.value
                     navigator
-                      .nextPage(TraderDetailsConsigneeEoriKnownPage, CheckMode, updatedAnswers)
+                      .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
                       .mustBe(traderRoutes.TraderDetailsConsigneeNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
                 }
               }
@@ -617,7 +617,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                     navigator
-                      .nextPage(TraderDetailsConsigneeEoriNumberPage, CheckMode, answers)
+                      .nextPage(TraderDetailsConsigneeEoriNumberPage(index), CheckMode, answers)
                       .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, CheckMode))
                 }
               }
@@ -628,9 +628,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                   val userAnswers = answers
-                    .remove(TraderDetailsConsigneeAddressPage).success.value
+                    .remove(TraderDetailsConsigneeAddressPage(index)).success.value
                     navigator
-                      .nextPage(TraderDetailsConsigneeNamePage, CheckMode, userAnswers)
+                      .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, userAnswers)
                       .mustBe(traderRoutes.TraderDetailsConsigneeAddressController.onPageLoad(userAnswers.id, index, CheckMode))
                 }
               }
@@ -639,9 +639,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                     val userAnswers = answers
-                      .set(TraderDetailsConsigneeAddressPage, "address").success.value //todo: change to correct model
+                      .set(TraderDetailsConsigneeAddressPage(index), "address").success.value //todo: change to correct model
                     navigator
-                      .nextPage(TraderDetailsConsigneeNamePage, CheckMode, userAnswers)
+                      .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, userAnswers)
                       .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index))
                 }
               }
@@ -651,7 +651,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   navigator
-                    .nextPage(TraderDetailsConsigneeAddressPage, CheckMode, answers)
+                    .nextPage(TraderDetailsConsigneeAddressPage(index), CheckMode, answers)
                     .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
               }
             }

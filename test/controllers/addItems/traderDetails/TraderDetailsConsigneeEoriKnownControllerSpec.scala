@@ -88,7 +88,7 @@ class TraderDetailsConsigneeEoriKnownControllerSpec extends SpecBase with Mockit
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(TraderDetailsConsigneeEoriKnownPage, true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, traderDetailsConsigneeEoriKnownRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

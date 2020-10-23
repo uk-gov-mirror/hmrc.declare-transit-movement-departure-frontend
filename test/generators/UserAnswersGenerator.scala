@@ -31,8 +31,8 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(AddItemsSameConsignorForAllItemsPage.type, JsValue)] ::
-      arbitrary[(AddItemsSameConsigneeForAllItemsPage.type, JsValue)] ::
+    arbitrary[(AddItemsSameConsignorForAllItemsPage, JsValue)] ::
+      arbitrary[(AddItemsSameConsigneeForAllItemsPage, JsValue)] ::
       arbitrary[(HowManyPackagesPage.type, JsValue)] ::
       arbitrary[(AddAnotherPackagePage.type, JsValue)] ::
       arbitrary[(DeclareMarkPage.type, JsValue)] ::
@@ -43,14 +43,14 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(TotalNetMassPage, JsValue)] ::
       arbitrary[(CommodityCodePage, JsValue)] ::
       arbitrary[(TotalNetMassPage, JsValue)] ::
-      arbitrary[(TraderDetailsConsignorNamePage.type, JsValue)] ::
-      arbitrary[(TraderDetailsConsignorEoriNumberPage.type, JsValue)] ::
-      arbitrary[(TraderDetailsConsignorEoriKnownPage.type, JsValue)] ::
-      arbitrary[(TraderDetailsConsignorAddressPage.type, JsValue)] ::
-      arbitrary[(TraderDetailsConsigneeNamePage.type, JsValue)] ::
-      arbitrary[(TraderDetailsConsigneeEoriNumberPage.type, JsValue)] ::
-      arbitrary[(TraderDetailsConsigneeEoriKnownPage.type, JsValue)] ::
-      arbitrary[(TraderDetailsConsigneeAddressPage.type, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorNamePage, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorEoriNumberPage, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorEoriKnownPage, JsValue)] ::
+      arbitrary[(TraderDetailsConsignorAddressPage, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeNamePage, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeEoriNumberPage, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeEoriKnownPage, JsValue)] ::
+      arbitrary[(TraderDetailsConsigneeAddressPage, JsValue)] ::
       arbitrary[(TotalNetMassPage, JsValue)] ::
       arbitrary[(AddTotalNetMassPage, JsValue)] ::
       arbitrary[(IsCommodityCodeKnownPage, JsValue)] ::

@@ -21,8 +21,6 @@ import pages.behaviours.PageBehaviours
 
 class ItemTotalGrossMassPageSpec extends PageBehaviours {
 
-  private val index = Index(0)
-
   "ItemTotalGrossMassPage" - {
 
     beRetrievable[String](ItemTotalGrossMassPage(index))

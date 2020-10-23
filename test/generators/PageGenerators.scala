@@ -26,11 +26,13 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsPage: Arbitrary[AddItemsSameConsignorForAllItemsPage.type] =
-    Arbitrary(AddItemsSameConsignorForAllItemsPage)
+  private val index = Index(0)
 
-  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsPage: Arbitrary[AddItemsSameConsigneeForAllItemsPage.type] =
-    Arbitrary(AddItemsSameConsigneeForAllItemsPage)
+  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsPage: Arbitrary[AddItemsSameConsignorForAllItemsPage] =
+    Arbitrary(AddItemsSameConsignorForAllItemsPage(index))
+
+  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsPage: Arbitrary[AddItemsSameConsigneeForAllItemsPage] =
+    Arbitrary(AddItemsSameConsigneeForAllItemsPage(index))
 
   implicit lazy val arbitraryHowManyPackagesPage: Arbitrary[HowManyPackagesPage.type] =
     Arbitrary(HowManyPackagesPage)
@@ -51,49 +53,49 @@ trait PageGenerators {
     Arbitrary(DeclareNumberOfPackagesPage)
 
   implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
-    Arbitrary(addItems.CommodityCodePage(Index(0)))
+    Arbitrary(addItems.CommodityCodePage(index))
 
-  implicit lazy val arbitraryTraderDetailsConsignorNamePage: Arbitrary[TraderDetailsConsignorNamePage.type] =
-    Arbitrary(TraderDetailsConsignorNamePage)
+  implicit lazy val arbitraryTraderDetailsConsignorNamePage: Arbitrary[TraderDetailsConsignorNamePage] =
+    Arbitrary(TraderDetailsConsignorNamePage(index))
 
-  implicit lazy val arbitraryTraderDetailsConsignorEoriNumberPage: Arbitrary[TraderDetailsConsignorEoriNumberPage.type] =
-    Arbitrary(TraderDetailsConsignorEoriNumberPage)
+  implicit lazy val arbitraryTraderDetailsConsignorEoriNumberPage: Arbitrary[TraderDetailsConsignorEoriNumberPage] =
+    Arbitrary(TraderDetailsConsignorEoriNumberPage(index))
 
-  implicit lazy val arbitraryTraderDetailsConsignorEoriKnownPage: Arbitrary[TraderDetailsConsignorEoriKnownPage.type] =
-    Arbitrary(TraderDetailsConsignorEoriKnownPage)
+  implicit lazy val arbitraryTraderDetailsConsignorEoriKnownPage: Arbitrary[TraderDetailsConsignorEoriKnownPage] =
+    Arbitrary(TraderDetailsConsignorEoriKnownPage(index))
 
-  implicit lazy val arbitraryTraderDetailsConsignorAddressPage: Arbitrary[TraderDetailsConsignorAddressPage.type] =
-    Arbitrary(TraderDetailsConsignorAddressPage)
+  implicit lazy val arbitraryTraderDetailsConsignorAddressPage: Arbitrary[TraderDetailsConsignorAddressPage] =
+    Arbitrary(TraderDetailsConsignorAddressPage(index))
 
-  implicit lazy val arbitraryTraderDetailsConsigneeNamePage: Arbitrary[TraderDetailsConsigneeNamePage.type] =
-    Arbitrary(TraderDetailsConsigneeNamePage)
+  implicit lazy val arbitraryTraderDetailsConsigneeNamePage: Arbitrary[TraderDetailsConsigneeNamePage] =
+    Arbitrary(TraderDetailsConsigneeNamePage(index))
 
-  implicit lazy val arbitraryTraderDetailsConsigneeEoriNumberPage: Arbitrary[TraderDetailsConsigneeEoriNumberPage.type] =
-    Arbitrary(TraderDetailsConsigneeEoriNumberPage)
+  implicit lazy val arbitraryTraderDetailsConsigneeEoriNumberPage: Arbitrary[TraderDetailsConsigneeEoriNumberPage] =
+    Arbitrary(TraderDetailsConsigneeEoriNumberPage(index))
 
-  implicit lazy val arbitraryTraderDetailsConsigneeEoriKnownPage: Arbitrary[TraderDetailsConsigneeEoriKnownPage.type] =
-    Arbitrary(TraderDetailsConsigneeEoriKnownPage)
+  implicit lazy val arbitraryTraderDetailsConsigneeEoriKnownPage: Arbitrary[TraderDetailsConsigneeEoriKnownPage] =
+    Arbitrary(TraderDetailsConsigneeEoriKnownPage(index))
 
-  implicit lazy val arbitraryTraderDetailsConsigneeAddressPage: Arbitrary[TraderDetailsConsigneeAddressPage.type] =
-    Arbitrary(TraderDetailsConsigneeAddressPage)
+  implicit lazy val arbitraryTraderDetailsConsigneeAddressPage: Arbitrary[TraderDetailsConsigneeAddressPage] =
+    Arbitrary(TraderDetailsConsigneeAddressPage(index))
 
   implicit lazy val arbitraryPreLodgeDeclarationPage: Arbitrary[PreLodgeDeclarationPage.type] =
     Arbitrary(PreLodgeDeclarationPage)
 
   implicit lazy val arbitraryTotalNetMassPage: Arbitrary[TotalNetMassPage] =
-    Arbitrary(TotalNetMassPage(Index(0)))
+    Arbitrary(TotalNetMassPage(index))
 
   implicit lazy val arbitraryIsCommodityCodeKnownPage: Arbitrary[IsCommodityCodeKnownPage] =
-    Arbitrary(IsCommodityCodeKnownPage(Index(0)))
+    Arbitrary(IsCommodityCodeKnownPage(index))
 
   implicit lazy val arbitraryAddTotalNetMassPage: Arbitrary[AddTotalNetMassPage] =
-    Arbitrary(AddTotalNetMassPage(Index(0)))
+    Arbitrary(AddTotalNetMassPage(index))
 
   implicit lazy val arbitraryItemDescriptionPage: Arbitrary[ItemDescriptionPage] =
-    Arbitrary(ItemDescriptionPage(Index(0)))
+    Arbitrary(ItemDescriptionPage(index))
 
   implicit lazy val arbitraryItemTotalGrossMassPage: Arbitrary[ItemTotalGrossMassPage] =
-    Arbitrary(ItemTotalGrossMassPage(Index(0)))
+    Arbitrary(ItemTotalGrossMassPage(index))
 
   implicit lazy val arbitraryOtherReferenceLiabiityAmountPage: Arbitrary[OtherReferenceLiabilityAmountPage.type] =
     Arbitrary(OtherReferenceLiabilityAmountPage)
@@ -123,16 +125,16 @@ trait PageGenerators {
     Arbitrary(SealsInformationPage)
 
   implicit lazy val arbitraryAddAnotherTransitOfficePage: Arbitrary[AddAnotherTransitOfficePage] =
-    Arbitrary(AddAnotherTransitOfficePage(Index(0)))
+    Arbitrary(AddAnotherTransitOfficePage(index))
 
   implicit lazy val arbitraryArrivalTimesAtOfficePage: Arbitrary[ArrivalTimesAtOfficePage] =
-    Arbitrary(ArrivalTimesAtOfficePage(Index(0)))
+    Arbitrary(ArrivalTimesAtOfficePage(index))
 
   implicit lazy val arbitraryControlResultDateLimitPage: Arbitrary[ControlResultDateLimitPage.type] =
     Arbitrary(ControlResultDateLimitPage)
 
   implicit lazy val arbitrarySealIdDetailsPage: Arbitrary[SealIdDetailsPage] =
-    Arbitrary(SealIdDetailsPage(Index(0)))
+    Arbitrary(SealIdDetailsPage(index))
 
   implicit lazy val arbitraryAddSealsPage: Arbitrary[AddSealsPage.type] =
     Arbitrary(AddSealsPage)

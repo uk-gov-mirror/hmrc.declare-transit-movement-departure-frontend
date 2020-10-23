@@ -22,8 +22,6 @@ import pages.behaviours.PageBehaviours
 
 class CommodityCodePageSpec extends PageBehaviours {
 
-  private val index = Index(0)
-
   "CommodityCodePage" - {
 
     beRetrievable[String](CommodityCodePage(index))

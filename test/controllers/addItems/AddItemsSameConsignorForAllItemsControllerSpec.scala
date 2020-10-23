@@ -86,7 +86,7 @@ class AddItemsSameConsignorForAllItemsControllerSpec extends SpecBase with Mocki
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddItemsSameConsignorForAllItemsPage, true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddItemsSameConsignorForAllItemsPage(index), true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, addItemsSameConsignorForAllItemsRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

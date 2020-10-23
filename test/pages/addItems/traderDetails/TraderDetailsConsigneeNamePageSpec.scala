@@ -22,10 +22,10 @@ class TraderDetailsConsigneeNamePageSpec extends PageBehaviours {
 
   "TraderDetailsConsigneeNamePage" - {
 
-    beRetrievable[String](TraderDetailsConsigneeNamePage)
+    beRetrievable[String](TraderDetailsConsigneeNamePage(index))
 
-    beSettable[String](TraderDetailsConsigneeNamePage)
+    beSettable[String](TraderDetailsConsigneeNamePage(index))
 
-    beRemovable[String](TraderDetailsConsigneeNamePage)
+    beRemovable[String](TraderDetailsConsigneeNamePage(index))
   }
 }

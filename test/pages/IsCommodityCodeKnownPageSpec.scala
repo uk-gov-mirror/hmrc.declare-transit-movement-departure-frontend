@@ -21,8 +21,6 @@ import pages.behaviours.PageBehaviours
 
 class IsCommodityCodeKnownPageSpec extends PageBehaviours {
 
-  private val index = Index(0)
-
   "IsCommodityCodeKnownPage" - {
 
     beRetrievable[Boolean](IsCommodityCodeKnownPage(index))

@@ -22,10 +22,10 @@ class TraderDetailsConsignorEoriKnownPageSpec extends PageBehaviours {
 
   "TraderDetailsConsignorEoriKnownPage" - {
 
-    beRetrievable[Boolean](TraderDetailsConsignorEoriKnownPage)
+    beRetrievable[Boolean](TraderDetailsConsignorEoriKnownPage(index))
 
-    beSettable[Boolean](TraderDetailsConsignorEoriKnownPage)
+    beSettable[Boolean](TraderDetailsConsignorEoriKnownPage(index))
 
-    beRemovable[Boolean](TraderDetailsConsignorEoriKnownPage)
+    beRemovable[Boolean](TraderDetailsConsignorEoriKnownPage(index))
   }
 }

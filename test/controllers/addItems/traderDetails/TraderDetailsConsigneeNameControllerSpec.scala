@@ -87,7 +87,7 @@ class TraderDetailsConsigneeNameControllerSpec extends SpecBase with MockitoSuga
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(TraderDetailsConsigneeNamePage, "answer").success.value
+      val userAnswers    = emptyUserAnswers.set(TraderDetailsConsigneeNamePage(index), "answer").success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, traderDetailsConsigneeNameRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
