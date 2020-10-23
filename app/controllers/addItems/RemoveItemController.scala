@@ -19,13 +19,14 @@ package controllers.addItems
 import controllers.actions._
 import forms.RemoveItemFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.RemoveItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.ItemsQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -48,28 +49,24 @@ class RemoveItemController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "removeItem.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(RemoveItemPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
+      val form = formProvider()
       val json = Json.obj(
-        "form"   -> preparedForm,
+        "form"   -> form,
         "mode"   -> mode,
         "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
+        "radios" -> Radios.yesNo(form("value"))
       )
 
       renderer.render(template, json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      val form = formProvider()
       form
         .bindFromRequest()
         .fold(
@@ -85,10 +82,14 @@ class RemoveItemController @Inject()(
             renderer.render(template, json).map(BadRequest(_))
           },
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveItemPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(RemoveItemPage, mode, updatedAnswers))
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(ItemsQuery(index)))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(RemoveItemPage, mode, updatedAnswers))
+            } else {
+              Future.successful(Redirect(navigator.nextPage(RemoveItemPage, mode, request.userAnswers)))
+          }
         )
   }
 }

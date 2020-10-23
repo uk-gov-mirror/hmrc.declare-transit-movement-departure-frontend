@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package queries
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-class RemoveItemFormProvider @Inject() extends Mappings {
+final case class ItemsQuery(index: Index) extends QuestionPage[JsObject] {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("removeItem.error.required")
-    )
+  override def path: JsPath = JsPath \ Constants.Items \ index.position
+
 }

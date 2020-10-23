@@ -268,7 +268,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def removeItem: Option[Row] = userAnswers.get(RemoveItemPage) map {
+  def removeItem(index: Index): Option[Row] = userAnswers.get(RemoveItemPage) map {
     answer =>
       Row(
         key   = Key(msg"removeItem.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -276,7 +276,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.RemoveItemController.onPageLoad(lrn, CheckMode).url,
+            href               = routes.RemoveItemController.onPageLoad(lrn, index, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"removeItem.checkYourAnswersLabel"))
           )
         )

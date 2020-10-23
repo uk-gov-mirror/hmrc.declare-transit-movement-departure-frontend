@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.{routes => mainRoutes}
 import forms.RemoveItemFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -47,9 +47,7 @@ class RemoveItemControllerSpec extends SpecBase with MockitoSugar with NunjucksS
   private val form         = formProvider()
   private val template     = "removeItem.njk"
 
-  lazy val removeItemRoute = routes.RemoveItemController.onPageLoad(lrn, NormalMode).url
-
-  private val userAnswersWithIndex =  emptyUserAnswers.set((sealIndex), sealDomain).success.value
+  lazy val removeItemRoute = routes.RemoveItemController.onPageLoad(lrn, index: Index, NormalMode).url
 
   "RemoveItem Controller" - {
 
