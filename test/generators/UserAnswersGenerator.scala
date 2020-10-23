@@ -30,7 +30,7 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
-  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+  lazy val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(AddItemsSameConsignorForAllItemsPage.type, JsValue)] ::
       arbitrary[(AddItemsSameConsigneeForAllItemsPage.type, JsValue)] ::
       arbitrary[(HowManyPackagesPage.type, JsValue)] ::
@@ -183,15 +183,14 @@ trait UserAnswersGenerator extends TryValues {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
           case _   => Gen.mapOf(oneOf(generators))
         }
-      } yield
-        UserAnswers(
-          id         = id,
-          eoriNumber = eoriNumber,
-          data = data.foldLeft(Json.obj()) {
-            case (obj, (path, value)) =>
-              obj.setObject(path.path, value).get
-          }
-        )
+      } yield UserAnswers(
+        id = id,
+        eoriNumber = eoriNumber,
+        data = data.foldLeft(Json.obj()) {
+          case (obj, (path, value)) =>
+            obj.setObject(path.path, value).get
+        }
+      )
     }
   }
 }
