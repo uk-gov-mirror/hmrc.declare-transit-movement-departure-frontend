@@ -16,7 +16,9 @@
 
 package navigation
 
-import controllers.addItems.{routes => addItemsRoutes}
+import controllers.addItems.routes
+import controllers.{routes => mainRoutes}
+import derivable.DeriveNumberOfItems
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
@@ -27,40 +29,51 @@ import play.api.mvc.Call
 class AddItemsNavigator @Inject()() extends Navigator {
   // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ItemDescriptionPage(index) => ua => Some(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
-    case ItemTotalGrossMassPage(index) => ua => Some(addItemsRoutes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
-    case AddTotalNetMassPage(index) => ua=>   addTotalNessMassRoute(index, ua,  NormalMode)
-    case TotalNetMassPage(index) => ua => Some(addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
+    case ItemDescriptionPage(index) => ua => Some(routes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
+    case ItemTotalGrossMassPage(index) => ua => Some(routes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
+    case AddTotalNetMassPage(index) => ua=>   addTotalNetMassRoute(index, ua,  NormalMode)
+    case TotalNetMassPage(index) => ua => Some(routes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
     case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, NormalMode)
-    case CommodityCodePage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
+    case CommodityCodePage(index) => ua =>  Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
+    case AddAnotherItemPage => ua => Some(addAnotherPageRoute(ua))
 
   }
 
   //TODO: Need to refactor this code
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ItemDescriptionPage(index) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case ItemTotalGrossMassPage(index) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case AddTotalNetMassPage(index) => ua => addTotalNessMassRoute(index, ua,  CheckMode)
+    case ItemDescriptionPage(index) => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case ItemTotalGrossMassPage(index) => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case AddTotalNetMassPage(index) => ua => addTotalNetMassRoute(index, ua,  CheckMode)
     case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, CheckMode)
-    case CommodityCodePage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
-    case TotalNetMassPage(index) => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
+    case CommodityCodePage(index) => ua =>  Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
+    case TotalNetMassPage(index) => ua =>  Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
 
 
   }
 
-  def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
+  private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
     (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)), mode) match {
-      case (Some(true), _, NormalMode)       => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), _, NormalMode)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
-      case (Some(true), None, CheckMode)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
-      case _ => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (Some(true), _, NormalMode)       => Some(routes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), _, NormalMode)      => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
+      case (Some(true), None, CheckMode)    => Some(routes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
+      case _ => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
 
-  def addTotalNessMassRoute(index:Index, ua:UserAnswers, mode:Mode) = 
+  private def addTotalNetMassRoute(index:Index, ua:UserAnswers, mode:Mode) =
     (ua.get(AddTotalNetMassPage(index)), ua.get(TotalNetMassPage(index)), mode) match {
-      case (Some(false), _, NormalMode)    => Some(addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(true), None , _)           => Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, mode))
-      case _                               => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (Some(false), _, NormalMode)    => Some(routes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(true), None , _)           => Some(routes.TotalNetMassController.onPageLoad(ua.id, index, mode))
+      case _                               => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
     // format: on
+
+  private def addAnotherPageRoute(userAnswers: UserAnswers): Call = {
+    val count = userAnswers.get(DeriveNumberOfItems).getOrElse(0)
+    userAnswers.get(AddAnotherItemPage) match {
+      case Some(true) =>
+        routes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(count), NormalMode)
+      case _ =>
+        mainRoutes.DeclarationSummaryController.onPageLoad(userAnswers.id)
+    }
+  }
 }

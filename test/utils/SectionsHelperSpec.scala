@@ -367,7 +367,7 @@ class SectionsHelperSpec extends SpecBase {
 
         val sectionsHelper = new SectionsHelper(userAnswers)
 
-        val url              = addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(lrn, index).url
+        val url              = addItemsRoutes.AddAnotherItemController.onPageLoad(lrn).url
         val sectionName      = "declarationSummary.section.addItems"
         val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
 

@@ -51,6 +51,7 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(TraderDetailsConsigneeEoriNumberPage.type, JsValue)] ::
       arbitrary[(TraderDetailsConsigneeEoriKnownPage.type, JsValue)] ::
       arbitrary[(TraderDetailsConsigneeAddressPage.type, JsValue)] ::
+      arbitrary[(AddAnotherItemPage.type, JsValue)] ::
       arbitrary[(TotalNetMassPage, JsValue)] ::
       arbitrary[(AddTotalNetMassPage, JsValue)] ::
       arbitrary[(IsCommodityCodeKnownPage, JsValue)] ::

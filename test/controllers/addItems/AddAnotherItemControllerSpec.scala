@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.addItems.traderDetails
+package controllers.addItems
 
 import base.SpecBase
-import forms.addItems.traderDetails.TraderDetailsConsignorAddressFormProvider
+import controllers.{routes => mainRoutes}
+import forms.addItems.AddAnotherItemFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.traderDetails.TraderDetailsConsignorAddressPage
+import pages.ItemDescriptionPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -34,58 +34,28 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddAnotherItemControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new TraderDetailsConsignorAddressFormProvider()
-  private val form         = formProvider()
-  private val template     = "addItems/traderDetails/traderDetailsConsignorAddress.njk"
+  val formProvider = new AddAnotherItemFormProvider()
+  val form         = formProvider()
 
-  lazy val traderDetailsConsignorAddressRoute = routes.TraderDetailsConsignorAddressController.onPageLoad(lrn, index, NormalMode).url
+  lazy val addAnotherItemRoute = routes.AddAnotherItemController.onPageLoad(lrn).url
 
-  "TraderDetailsConsignorAddress Controller" - {
+  "AddAnotherItem Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, traderDetailsConsignorAddressRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
-      )
-
-      templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers    = emptyUserAnswers.set(TraderDetailsConsignorAddressPage, "answer").success.value
+      val userAnswers    = emptyUserAnswers.set(ItemDescriptionPage(index), "test").success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, traderDetailsConsignorAddressRoute)
+      val request        = FakeRequest(GET, addAnotherItemRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -95,15 +65,15 @@ class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockitoS
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
-
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"      -> form,
+        "lrn"       -> lrn,
+        "pageTitle" -> msg"addAnotherItem.title.singular".withArgs(1),
+        "heading"   -> msg"addAnotherItem.heading.singular".withArgs(1),
+        "radios"    -> Radios.yesNo(form("value"))
       )
 
-      templateCaptor.getValue mustEqual template
+      templateCaptor.getValue mustEqual "addItems/addAnotherItem.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -118,18 +88,19 @@ class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockitoS
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
       val request =
-        FakeRequest(POST, traderDetailsConsignorAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, addAnotherItemRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -140,8 +111,9 @@ class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockitoS
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, traderDetailsConsignorAddressRoute).withFormUrlEncodedBody(("value", ""))
+      val userAnswers    = emptyUserAnswers.set(ItemDescriptionPage(index), "test").success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(POST, addAnotherItemRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -153,12 +125,14 @@ class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockitoS
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"      -> boundForm,
+        "pageTitle" -> msg"addAnotherItem.title.singular".withArgs(1),
+        "heading"   -> msg"addAnotherItem.heading.singular".withArgs(1),
+        "lrn"       -> lrn,
+        "radios"    -> Radios.yesNo(boundForm("value"))
       )
 
-      templateCaptor.getValue mustEqual template
+      templateCaptor.getValue mustEqual "addItems/addAnotherItem.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -168,15 +142,13 @@ class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockitoS
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, traderDetailsConsignorAddressRoute)
+      val request = FakeRequest(GET, addAnotherItemRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -186,16 +158,14 @@ class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockitoS
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, traderDetailsConsignorAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, addAnotherItemRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import generators.Generators
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+case object AddAnotherItemPage extends QuestionPage[Boolean] {
 
-  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
+  override def path: JsPath = JsPath \ toString
 
-  "LiabilityAmountPage" - {
-
-    beRetrievable[String](LiabilityAmountPage)
-
-    beSettable[String](LiabilityAmountPage)
-
-    beRemovable[String](LiabilityAmountPage)
-  }
+  override def toString: String = "addAnotherItem"
 }
