@@ -151,13 +151,12 @@ trait MessagesModelGenerators extends Generators {
         grossMass           <- Gen.choose(0.0, 99999999.999).map(BigDecimal(_).bigDecimal.setScale(3, BigDecimal.RoundingMode.DOWN))
         decDatHEA383        <- arbitrary[LocalDate]
         decPlaHEA394        <- stringsWithMaxLength(Header.Constants.declarationPlace, alphaNumChar)
-
-        speCirIndHEA1      <- Gen.option(Gen.pick(Header.Constants.specificCircumstanceIndicatorLength, 'A' to 'Z').map(_.mkString))
-        traChaMetOfPayHEA1 <- Gen.option(Gen.pick(Header.Constants.methodOfPaymentLength, 'A' to 'Z').map(_.mkString))
-        comRefNumHEA       <- Gen.option(stringsWithMaxLength(Header.Constants.commercialReferenceNumberLength, alphaNumChar))
-        secHEA358          <- Gen.option(choose(min = 0: Int, 9: Int))
-        conRefNumHEA       <- Gen.option(stringsWithMaxLength(Header.Constants.conveyanceReferenceNumberLength, alphaNumChar))
-        codPlUnHEA357      <- Gen.option(stringsWithMaxLength(Header.Constants.placeOfUnloadingCodeLength, alphaNumChar))
+        speCirIndHEA1       <- Gen.option(Gen.pick(Header.Constants.specificCircumstanceIndicatorLength, 'A' to 'Z').map(_.mkString))
+        traChaMetOfPayHEA1  <- Gen.option(Gen.pick(Header.Constants.methodOfPaymentLength, 'A' to 'Z').map(_.mkString))
+        comRefNumHEA        <- Gen.option(stringsWithMaxLength(Header.Constants.commercialReferenceNumberLength, alphaNumChar))
+        secHEA358           <- Gen.option(choose(min = 0: Int, 9: Int))
+        conRefNumHEA        <- Gen.option(stringsWithMaxLength(Header.Constants.conveyanceReferenceNumberLength, alphaNumChar))
+        codPlUnHEA357       <- Gen.option(stringsWithMaxLength(Header.Constants.placeOfUnloadingCodeLength, alphaNumChar))
       } yield
         Header(
           refNumHEA4,
@@ -334,6 +333,9 @@ trait MessagesModelGenerators extends Generators {
         netMass              <- Gen.option(Gen.choose(0.0, 99999999.999).map(BigDecimal(_)))
         countryOfDispatch    <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
         countryOfDestination <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
+        metOfPayGDI12        <- Gen.option(Gen.pick(Header.Constants.methodOfPaymentLength, 'A' to 'Z').map(_.mkString))
+        comRefNumGIM1        <- Gen.option(stringsWithMaxLength(Header.Constants.commercialReferenceNumberLength, alphaNumChar))
+        uNDanGooCodGDI1      <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.dangerousGoodsCodeLength, alphaNumChar))
         previousAdministrativeReference <- listWithMaxLength(PreviousAdministrativeReference.Constants.previousAdministrativeReferenceCount,
                                                              arbitrary[PreviousAdministrativeReference])
         producedDocuments         <- listWithMaxLength(ProducedDocument.Constants.producedDocumentCount, arbitrary[ProducedDocument])
@@ -353,6 +355,9 @@ trait MessagesModelGenerators extends Generators {
           netMass,
           countryOfDispatch,
           countryOfDestination,
+          metOfPayGDI12,
+          comRefNumGIM1,
+          uNDanGooCodGDI1,
           previousAdministrativeReference,
           producedDocuments,
           specialMentions,
