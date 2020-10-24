@@ -196,8 +196,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .set(AddItemsSameConsignorForAllItemsPage(index), true).success.value
                   .set(AddItemsSameConsigneeForAllItemsPage(index), true).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
-                  .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(updatedAnswers.id, index, NormalMode))
+                  .nextPage(AddItemsSameConsigneeForAllItemsPage(index), NormalMode, updatedAnswers)
+                  .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id))
             }
           }
 
@@ -208,7 +208,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
                   .set(AddItemsSameConsigneeForAllItemsPage(index), addItemsSameConsigneeForAllItems).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
+                  .nextPage(AddItemsSameConsigneeForAllItemsPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
             }
           }
@@ -219,11 +219,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 val updatedAnswers = answers
                   .set(AddItemsSameConsigneeForAllItemsPage(index), false).success.value
                 navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
+                  .nextPage(AddItemsSameConsigneeForAllItemsPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
             }
           }
-
+        }
           "must go from ConsigneeEoriKnown to" - {
             "ConsigneeEoriNumber when true" in {
               forAll(arbitrary[UserAnswers]) {
@@ -274,7 +274,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
             }
           }
-        }
       }
     }
 
