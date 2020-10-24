@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package models.messages
+package models.messages.header
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
+import models.XMLWrites._
+import models.messages.escapeXml
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import models.XMLWrites._
 import utils.Format
 
 import scala.xml.NodeSeq
@@ -63,39 +64,32 @@ class HeaderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks
             value => <CusSubPlaHEA66>{escapeXml(value)}</CusSubPlaHEA66>
           )
 
-          val inlTraModHEA75 = header.inlTraModHEA75.map(
-            value => <InlTraModHEA75>{value.toString}</InlTraModHEA75>
-          )
-
-          val traModAtBorHEA76 = header.traModAtBorHEA76.map(
-            value => <TraModAtBorHEA76>{value.toString}</TraModAtBorHEA76>
-          )
-
-          val ideOfMeaOfTraAtDHEA78 = header.ideOfMeaOfTraAtDHEA78.map(
-            value => <IdeOfMeaOfTraAtDHEA78>{escapeXml(value)}</IdeOfMeaOfTraAtDHEA78>
-              <IdeOfMeaOfTraAtDHEA78LNG>EN</IdeOfMeaOfTraAtDHEA78LNG>
-          )
-
-          val natOfMeaOfTraAtDHEA80 = header.natOfMeaOfTraAtDHEA80.map(
-            value => <NatOfMeaOfTraAtDHEA80>{escapeXml(value)}</NatOfMeaOfTraAtDHEA80>
-          )
-
-          val ideOfMeaOfTraCroHEA85 = header.ideOfMeaOfTraCroHEA85.map(
-            value => <IdeOfMeaOfTraCroHEA85>{escapeXml(value)}</IdeOfMeaOfTraCroHEA85>
-              <IdeOfMeaOfTraCroHEA85LNG>EN</IdeOfMeaOfTraCroHEA85LNG>
-          )
-
-          val natOfMeaOfTraCroHEA87 = header.natOfMeaOfTraCroHEA87.map(
-            value => <NatOfMeaOfTraCroHEA87>{escapeXml(value)}</NatOfMeaOfTraCroHEA87>
-          )
-
-          val typOfMeaOfTraCroHEA88 = header.typOfMeaOfTraCroHEA88.map(
-            value => <TypOfMeaOfTraCroHEA88>{value.toString}</TypOfMeaOfTraCroHEA88>
-          )
-
           val totNumOfPacHEA306 = header.totNumOfPacHEA306.map(
             value => <TotNumOfPacHEA306>{value.toString}</TotNumOfPacHEA306>
           )
+
+          val speCirIndHEA1 = header.speCirIndHEA1.map(
+            value => <SpeCirIndHEA1>{value.toString}</SpeCirIndHEA1>
+          )
+
+          val traChaMetOfPayHEA1 = header.traChaMetOfPayHEA1.map(
+            value => <TraChaMetOfPayHEA1>{value.toString}</TraChaMetOfPayHEA1>
+          )
+
+          val comRefNumHEA = header.comRefNumHEA.map(
+            value => <ComRefNumHEA>{value.toString}</ComRefNumHEA>
+          )
+
+          val secHEA358 = header.secHEA358.map(
+            value => <SecHEA358>{value.toString}</SecHEA358>
+          )
+
+          val conRefNumHEA = header.conRefNumHEA.map(
+            value => <ConRefNumHEA>{value.toString}</ConRefNumHEA>
+          )
+
+          val codPlUnHEA357 = header.codPlUnHEA357.map(value => <CodPlUnHEA357>{value.toString}</CodPlUnHEA357>
+              <CodPlUnHEA357LNG>EN</CodPlUnHEA357LNG>)
 
           val expectedResult: NodeSeq =
             <HEAHEA>
@@ -108,13 +102,7 @@ class HeaderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks
               {plaOfLoaCodHEA46.getOrElse(NodeSeq.Empty)}
               {couOfDisCodHEA55.getOrElse(NodeSeq.Empty)}
               {cusSubPlaHEA66.getOrElse(NodeSeq.Empty)}
-              {inlTraModHEA75.getOrElse(NodeSeq.Empty)}
-              {traModAtBorHEA76.getOrElse(NodeSeq.Empty)}
-              {ideOfMeaOfTraAtDHEA78.getOrElse(NodeSeq.Empty)}
-              {natOfMeaOfTraAtDHEA80.getOrElse(NodeSeq.Empty)}
-              {ideOfMeaOfTraCroHEA85.getOrElse(NodeSeq.Empty)}
-              {natOfMeaOfTraCroHEA87.getOrElse(NodeSeq.Empty)}
-              {typOfMeaOfTraCroHEA88.getOrElse(NodeSeq.Empty)}
+              {header.transportDetails.toXml}
               <ConIndHEA96>{header.conIndHEA96.toString}</ConIndHEA96>
               <DiaLanIndAtDepHEA254>EN</DiaLanIndAtDepHEA254>
               <NCTSAccDocHEA601LNG>EN</NCTSAccDocHEA601LNG>
@@ -124,6 +112,12 @@ class HeaderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks
               <DecDatHEA383>{Format.dateFormatted(header.decDatHEA383)}</DecDatHEA383>
               <DecPlaHEA394>{escapeXml(header.decPlaHEA394)}</DecPlaHEA394>
               <DecPlaHEA394LNG>EN</DecPlaHEA394LNG>
+              {speCirIndHEA1.getOrElse(NodeSeq.Empty)}
+              {traChaMetOfPayHEA1.getOrElse(NodeSeq.Empty)}
+              {comRefNumHEA.getOrElse(NodeSeq.Empty)}
+              {secHEA358.getOrElse(NodeSeq.Empty)}
+              {conRefNumHEA.getOrElse(NodeSeq.Empty)}
+              {codPlUnHEA357.getOrElse(NodeSeq.Empty)}
             </HEAHEA>
 
           header.toXml.map(trim) mustEqual expectedResult.map(trim)
