@@ -16,6 +16,7 @@
 
 package pages
 
+import pages.addItems.DeclareMarkPage
 import pages.behaviours.PageBehaviours
 
 class DeclareMarkPageSpec extends PageBehaviours {

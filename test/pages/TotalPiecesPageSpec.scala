@@ -16,6 +16,7 @@
 
 package pages
 
+import pages.addItems.TotalPiecesPage
 import pages.behaviours.PageBehaviours
 
 class TotalPiecesPageSpec extends PageBehaviours {

@@ -20,5 +20,6 @@ object Constants {
   val RouteDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
   val seals                        = "seals"
   val Items                        = "items"
+  val packages                     = "packages"
 
 }

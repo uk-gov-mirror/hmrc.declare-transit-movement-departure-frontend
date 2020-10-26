@@ -16,6 +16,7 @@
 
 package pages
 
+import pages.addItems.AddAnotherPackagePage
 import pages.behaviours.PageBehaviours
 
 class AddAnotherPackagePageSpec extends PageBehaviours {
