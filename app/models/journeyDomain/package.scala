@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import generators.Generators
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import cats.data.ReaderT
+import play.api.libs.json.Reads
+import queries.Gettable
 
-class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+package object journeyDomain {
 
-  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
+  type UserAnswersReader[A] = ReaderT[Option, UserAnswers, A]
 
-  "LiabilityAmountPage" - {
-
-    beRetrievable[String](LiabilityAmountPage)
-
-    beSettable[String](LiabilityAmountPage)
-
-    beRemovable[String](LiabilityAmountPage)
+  private[models] object UserAnswersReader {
+    def apply[A: UserAnswersReader]: UserAnswersReader[A] = implicitly[UserAnswersReader[A]]
   }
+
+  implicit class GettableAsOptionalReaderOps[A](a: Gettable[A]) {
+
+    def reader(implicit reads: Reads[A]): UserAnswersReader[A] =
+      ReaderT[Option, UserAnswers, A](_.get(a))
+  }
+
 }

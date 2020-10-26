@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import generators.Generators
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.Items
 
-class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+case object DeriveNumberOfItems extends Derivable[List[JsObject], Int] {
 
-  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
+  override val derive: List[JsObject] => Int = _.size
 
-  "LiabilityAmountPage" - {
-
-    beRetrievable[String](LiabilityAmountPage)
-
-    beSettable[String](LiabilityAmountPage)
-
-    beRemovable[String](LiabilityAmountPage)
-  }
+  override def path: JsPath = JsPath \ Items
 }

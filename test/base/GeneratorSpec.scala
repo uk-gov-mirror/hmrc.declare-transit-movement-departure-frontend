@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package base
 
 import generators.Generators
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalacheck.{Arbitrary, Gen}
 
-class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+trait GeneratorSpec extends ScalaCheckPropertyChecks with Generators {
+  self: SpecBase =>
 
-  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
+  def arbitrary[A: Arbitrary]: Gen[A] = Arbitrary.arbitrary[A]
 
-  "LiabilityAmountPage" - {
-
-    beRetrievable[String](LiabilityAmountPage)
-
-    beSettable[String](LiabilityAmountPage)
-
-    beRemovable[String](LiabilityAmountPage)
-  }
 }

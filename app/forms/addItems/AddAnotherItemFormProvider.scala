@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package forms.addItems
 
-import generators.Generators
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import play.api.data.Form
 
-class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+class AddAnotherItemFormProvider extends Mappings {
 
-  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
-
-  "LiabilityAmountPage" - {
-
-    beRetrievable[String](LiabilityAmountPage)
-
-    beSettable[String](LiabilityAmountPage)
-
-    beRemovable[String](LiabilityAmountPage)
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addAnotherItem.error.required")
+    )
 }

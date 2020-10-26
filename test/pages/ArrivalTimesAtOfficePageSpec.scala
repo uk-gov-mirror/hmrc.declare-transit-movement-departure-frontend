@@ -32,14 +32,6 @@ class ArrivalTimesAtOfficePageSpec extends PageBehaviours {
     }
 
     val index = Index(0)
-    implicit lazy val arbitraryDateTimeWithAMPM: Arbitrary[LocalDateTimeWithAMPM] = {
-      Arbitrary {
-        for {
-          localDateTime <- arbitrary[LocalDateTime]
-          name          <- arbitrary[String]
-        } yield LocalDateTimeWithAMPM(localDateTime, name)
-      }
-    }
 
     beRetrievable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
 

@@ -17,8 +17,10 @@
 package navigation
 
 import base.SpecBase
-import controllers.addItems.{routes => addItemsRoutes}
+import controllers.addItems.routes
+import controllers.{routes => mainRoutes}
 import generators.Generators
+import models.{CheckMode, Index, NormalMode, UserAnswers}
 import models.reference.PackageType
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -38,7 +40,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           answers =>
             navigator
               .nextPage(ItemDescriptionPage(index), NormalMode, answers)
-              .mustBe(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(answers.id, index, NormalMode))
+              .mustBe(routes.ItemTotalGrossMassController.onPageLoad(answers.id, index, NormalMode))
         }
       }
 
@@ -48,7 +50,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           answers =>
             navigator
               .nextPage(ItemTotalGrossMassPage(index), NormalMode, answers)
-              .mustBe(addItemsRoutes.AddTotalNetMassController.onPageLoad(answers.id, index, NormalMode))
+              .mustBe(routes.AddTotalNetMassController.onPageLoad(answers.id, index, NormalMode))
         }
       }
 
@@ -65,7 +67,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(AddTotalNetMassPage(index), NormalMode, updatedAnswers)
-              .mustBe(addItemsRoutes.TotalNetMassController.onPageLoad(answers.id, index, NormalMode))
+              .mustBe(routes.TotalNetMassController.onPageLoad(answers.id, index, NormalMode))
         }
       }
       "must go from add total net mass page to IsCommodityCodeKnownPage if the answer is 'No'" in {
@@ -81,7 +83,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(AddTotalNetMassPage(index), NormalMode, updatedAnswers)
-              .mustBe(addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(answers.id, index, NormalMode))
+              .mustBe(routes.IsCommodityCodeKnownController.onPageLoad(answers.id, index, NormalMode))
         }
       }
       "must go from IsCommodityCodeKnownPage to CYA if the answer is 'No'" in { //todo update when trader details route built
@@ -94,7 +96,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
       "must go from IsCommodityCodeKnownPage to CommodityCodePage if the answer is 'Yes'" in {
@@ -107,7 +109,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
-              .mustBe(addItemsRoutes.CommodityCodeController.onPageLoad(answers.id, index, NormalMode))
+              .mustBe(routes.CommodityCodeController.onPageLoad(answers.id, index, NormalMode))
         }
       }
       "must go from CommodityCodePage to CYA page" in { //todo update when traderdetails pages built
@@ -116,7 +118,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           answers =>
             navigator
               .nextPage(CommodityCodePage(index), NormalMode, answers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
 
@@ -327,6 +329,34 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
         }
       }
+
+      "must go from AddAnotherItem page to ItemDescription page if the answer is 'Yes'" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswer = answers.set(AddAnotherItemPage, false).success.value
+            navigator
+              .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
+              .mustBe(mainRoutes.DeclarationSummaryController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from AddAnotherItem page to task list page if the answer is 'No'" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswer = answers
+              .set(AddAnotherItemPage, true)
+              .success
+              .value
+              .set(ItemDescriptionPage(index), "test")
+              .success
+              .value
+
+            navigator
+              .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
+              .mustBe(routes.ItemDescriptionController.onPageLoad(answers.id, Index(1), NormalMode))
+        }
+      }
+
     }
 
     "in check mode" - {
@@ -335,7 +365,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           answers =>
             navigator
               .nextPage(ItemDescriptionPage(index), CheckMode, answers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
 
@@ -345,7 +375,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             val updatedAnswers = answers.set(ItemTotalGrossMassPage(index), "100").success.value
             navigator
               .nextPage(ItemTotalGrossMassPage(index), CheckMode, updatedAnswers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
 
@@ -355,7 +385,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             val updatedAnswers = answers.set(TotalNetMassPage(index), "100").success.value
             navigator
               .nextPage(TotalNetMassPage(index), CheckMode, updatedAnswers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
 
@@ -372,7 +402,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(AddTotalNetMassPage(index), CheckMode, updatedAnswers)
-              .mustBe(addItemsRoutes.TotalNetMassController.onPageLoad(answers.id, index, CheckMode))
+              .mustBe(routes.TotalNetMassController.onPageLoad(answers.id, index, CheckMode))
         }
       }
 
@@ -389,7 +419,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(AddTotalNetMassPage(index), CheckMode, updatedAnswers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
       "must go from add total net mass page to CYA page if the answer is 'No' " in {
@@ -402,7 +432,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(AddTotalNetMassPage(index), CheckMode, updatedAnswers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
 
@@ -411,7 +441,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           answers =>
             navigator
               .nextPage(CommodityCodePage(index), CheckMode, answers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
 
@@ -428,7 +458,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), CheckMode, updatedAnswers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
 
@@ -445,7 +475,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), CheckMode, updatedAnswers)
-              .mustBe(addItemsRoutes.CommodityCodeController.onPageLoad(answers.id, index, CheckMode))
+              .mustBe(routes.CommodityCodeController.onPageLoad(answers.id, index, CheckMode))
         }
       }
 
@@ -462,7 +492,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), CheckMode, updatedAnswers)
-              .mustBe(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
 

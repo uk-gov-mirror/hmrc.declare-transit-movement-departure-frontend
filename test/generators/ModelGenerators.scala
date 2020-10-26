@@ -16,15 +16,17 @@
 
 package generators
 
+import java.time.LocalDateTime
+
 import models._
 import models.domain.SealDomain
 import models.domain.SealDomain.Constants
+import models.journeyDomain._
 import models.reference.{Country, CountryCode, CustomsOffice, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
-
   self: Generators =>
 
   // TODO turn PackageType into a trait with three sub classes for Bulk, Unpacked and normal
@@ -104,17 +106,20 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
     Arbitrary {
-      Gen.pick(CountryCode.Constants.countryCodeLength, 'A' to 'Z').map(code => CountryCode(code.mkString))
+      Gen
+        .pick(CountryCode.Constants.countryCodeLength, 'A' to 'Z')
+        .map(
+          code => CountryCode(code.mkString)
+        )
     }
 
-  implicit lazy val arbitraryCountry: Arbitrary[Country] = {
+  implicit lazy val arbitraryCountry: Arbitrary[Country] =
     Arbitrary {
       for {
         code <- arbitrary[CountryCode]
         name <- arbitrary[String]
       } yield Country(code, name)
     }
-  }
 
   implicit lazy val arbitraryConsignorAddress: Arbitrary[ConsignorAddress] =
     Arbitrary {
@@ -148,13 +153,12 @@ trait ModelGenerators {
       } yield new LocalReferenceNumber(lrn)
     }
 
-  implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] = {
+  implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
     Arbitrary {
       for {
         number <- stringsWithMaxLength(17)
       } yield EoriNumber(number)
     }
-  }
 
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] = {
 
@@ -169,4 +173,73 @@ trait ModelGenerators {
       } yield CustomsOffice(id, name, roles, phoneNumber)
     }
   }
+
+  implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =
+    Arbitrary(Gen.const(DeclarationForSelf))
+
+  implicit lazy val arbitraryDeclarationForSomeoneElse: Arbitrary[DeclarationForSomeoneElse] =
+    Arbitrary {
+      for {
+        companyName <- arbitrary[String]
+        capacity    <- arbitrary[RepresentativeCapacity]
+      } yield DeclarationForSomeoneElse(companyName, capacity)
+    }
+
+  implicit lazy val arbitraryDeclarationForSomeoneElseAnswer: Arbitrary[DeclarationForSomeoneElseAnswer] =
+    Arbitrary(Gen.oneOf(arbitrary[DeclarationForSelf.type], arbitrary[DeclarationForSomeoneElse]))
+
+  implicit lazy val arbitrarySimplifiedMovementDetails: Arbitrary[SimplifiedMovementDetails] =
+    Arbitrary {
+      for {
+        declarationType           <- arbitrary[DeclarationType]
+        containersUsed            <- arbitrary[Boolean]
+        declarationPlacePage      <- arbitrary[String]
+        declarationForSomeoneElse <- arbitrary[DeclarationForSomeoneElseAnswer]
+      } yield
+        SimplifiedMovementDetails(
+          declarationType,
+          containersUsed,
+          declarationPlacePage,
+          declarationForSomeoneElse
+        )
+    }
+
+  implicit lazy val arbitraryLocalDateTimeWithAMPM: Arbitrary[LocalDateTimeWithAMPM] =
+    Arbitrary {
+      for {
+        dateTime <- arbitrary[LocalDateTime]
+        amOrPm   <- Gen.oneOf("AM", "PM")
+      } yield LocalDateTimeWithAMPM(dateTime, amOrPm)
+    }
+
+  implicit lazy val arbitraryTransitInformation: Arbitrary[TransitInformation] =
+    Arbitrary {
+      for {
+        transitOffice <- arbitrary[String]
+        arrivalTime   <- arbitrary[LocalDateTime]
+      } yield
+        TransitInformation(
+          transitOffice,
+          arrivalTime
+        )
+    }
+
+  implicit lazy val arbitraryRouteDetails: Arbitrary[RouteDetails] =
+    Arbitrary {
+      for {
+        countryOfDispatch  <- arbitrary[CountryCode]
+        officeOfDeparture  <- arbitrary[String]
+        destinationCountry <- arbitrary[CountryCode]
+        destinationOffice  <- arbitrary[String]
+        transitInformation <- nonEmptyListOf[TransitInformation](10)
+      } yield
+        RouteDetails(
+          countryOfDispatch,
+          officeOfDeparture,
+          destinationCountry,
+          destinationOffice,
+          transitInformation
+        )
+    }
+
 }

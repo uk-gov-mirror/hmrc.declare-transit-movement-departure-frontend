@@ -45,8 +45,9 @@ class ItemsCheckYourAnswersController @Inject()(
     implicit request =>
       val sections: Seq[Section] = AddItemsCheckYourAnswersViewModel(request.userAnswers, index).sections
       val json = Json.obj(
-        "lrn"      -> lrn,
-        "sections" -> Json.toJson(sections)
+        "lrn"         -> lrn,
+        "sections"    -> Json.toJson(sections),
+        "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
       )
 
       renderer.render("itemsCheckYourAnswers.njk", json).map(Ok(_))
