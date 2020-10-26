@@ -42,7 +42,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.ItemTotalGrossMassController.onPageLoad(answers.id, index, NormalMode))
         }
       }
-
       "must go from total gross mass page to add total net mass page" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -52,7 +51,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.AddTotalNetMassController.onPageLoad(answers.id, index, NormalMode))
         }
       }
-
       "must go from add total net mass page to total net mass page if the answer is 'Yes' and no answer exists" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -120,7 +118,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
-
       "PackageJourney" - {
 
         "PackageType" - {
@@ -327,8 +324,30 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
         }
-      }
 
+        "AddAnotherPackage" - {
+
+          "must go to PackageType if the answer is 'Yes' and increment package index" in {
+            forAll(arbitrary[UserAnswers]) {
+              (answers) =>
+                val updatedAnswers = answers
+                  .set(AddAnotherPackagePage(index, index), true)
+                  .success
+                  .value
+
+                val nextPackageIndex = Index(index.position + 1)
+
+                navigator
+                  .nextPage(AddAnotherPackagePage(index, index), NormalMode, updatedAnswers)
+                  .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, nextPackageIndex, NormalMode))
+            }
+          }
+
+          "must go to ContainerNumber if containers use in overview journey is 'Yes' and answer is 'No'" ignore { ??? }
+
+          "must go to AddSpecialMentions if container use in overview journey is 'No' and answer is 'No'" ignore { ??? }
+        }
+      }
       "must go from AddAnotherItem page to ItemDescription page if the answer is 'Yes'" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -338,7 +357,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(mainRoutes.DeclarationSummaryController.onPageLoad(answers.id))
         }
       }
-
       "must go from AddAnotherItem page to task list page if the answer is 'No'" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -355,7 +373,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.ItemDescriptionController.onPageLoad(answers.id, Index(1), NormalMode))
         }
       }
-
     }
 
     "in check mode" - {

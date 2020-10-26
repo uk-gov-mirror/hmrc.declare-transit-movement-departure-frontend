@@ -17,6 +17,7 @@
 package controllers.addItems
 
 import controllers.actions._
+import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
 import forms.AddAnotherPackageFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
@@ -88,7 +89,6 @@ class AddAnotherPackageController @Inject()(
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPackagePage(itemIndex, packageIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(AddAnotherPackagePage(itemIndex, packageIndex), mode, updatedAnswers))
           )
     }
