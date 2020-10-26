@@ -46,7 +46,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockitoSugar with Nu
   val formProvider = new AddAnotherPackageFormProvider()
   val form         = formProvider()
 
-  lazy val addAnotherPackageRoute = routes.AddAnotherPackageController.onPageLoad(lrn, NormalMode).url
+  lazy val addAnotherPackageRoute = routes.AddAnotherPackageController.onPageLoad(lrn, index, index, NormalMode).url
 
   "AddAnotherPackage Controller" - {
 

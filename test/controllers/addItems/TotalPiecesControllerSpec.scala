@@ -48,7 +48,7 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
   val validAnswer = 1
 
-  lazy val totalPiecesRoute = routes.TotalPiecesController.onPageLoad(lrn, NormalMode).url
+  lazy val totalPiecesRoute = routes.TotalPiecesController.onPageLoad(lrn, index, index, NormalMode).url
 
   "TotalPieces Controller" - {
 

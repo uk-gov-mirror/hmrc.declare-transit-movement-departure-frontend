@@ -135,7 +135,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(PackageTypePage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.HowManyPackagesController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.HowManyPackagesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
 
@@ -150,7 +150,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(PackageTypePage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.DeclareNumberOfPackagesController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.DeclareNumberOfPackagesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
         }
@@ -167,7 +167,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(HowManyPackagesPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.DeclareMarkController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.DeclareMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
 
@@ -181,7 +181,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(HowManyPackagesPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
 
@@ -195,7 +195,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(HowManyPackagesPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.TotalPiecesController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.TotalPiecesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
 
@@ -213,7 +213,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(DeclareNumberOfPackagesPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.HowManyPackagesController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.HowManyPackagesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
 
@@ -230,7 +230,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(DeclareNumberOfPackagesPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
 
@@ -247,7 +247,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(DeclareNumberOfPackagesPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.TotalPiecesController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.TotalPiecesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
 
@@ -265,7 +265,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(TotalPiecesPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
         }
@@ -282,7 +282,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(AddMarkPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.DeclareMarkController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.DeclareMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
 
@@ -296,7 +296,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(AddMarkPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.AddAnotherPackageController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.AddAnotherPackageController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
         }
@@ -313,7 +313,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
                 navigator
                   .nextPage(DeclareMarkPage, NormalMode, updatedAnswers)
-                  .mustBe(addItemsRoutes.AddAnotherPackageController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(addItemsRoutes.AddAnotherPackageController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
         }

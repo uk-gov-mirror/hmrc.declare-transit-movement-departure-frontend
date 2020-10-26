@@ -46,7 +46,7 @@ class DeclareMarkControllerSpec extends SpecBase with MockitoSugar with Nunjucks
   val formProvider = new DeclareMarkFormProvider()
   val form         = formProvider()
 
-  lazy val declareMarkRoute = routes.DeclareMarkController.onPageLoad(lrn, NormalMode).url
+  lazy val declareMarkRoute = routes.DeclareMarkController.onPageLoad(lrn, index, index, NormalMode).url
 
   "DeclareMark Controller" - {
 

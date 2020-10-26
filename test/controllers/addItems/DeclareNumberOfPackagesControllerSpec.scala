@@ -46,7 +46,7 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
   val formProvider = new DeclareNumberOfPackagesFormProvider()
   val form         = formProvider()
 
-  lazy val declareNumberOfPackagesRoute = routes.DeclareNumberOfPackagesController.onPageLoad(lrn, NormalMode).url
+  lazy val declareNumberOfPackagesRoute = routes.DeclareNumberOfPackagesController.onPageLoad(lrn, index, index, NormalMode).url
 
   "DeclareNumberOfPackages Controller" - {
 

@@ -48,7 +48,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
 
   val validAnswer = 1
 
-  lazy val howManyPackagesRoute = routes.HowManyPackagesController.onPageLoad(lrn, NormalMode).url
+  lazy val howManyPackagesRoute = routes.HowManyPackagesController.onPageLoad(lrn, index, index, NormalMode).url
 
   "HowManyPackages Controller" - {
 

@@ -46,7 +46,7 @@ class AddMarkControllerSpec extends SpecBase with MockitoSugar with NunjucksSupp
   val formProvider = new AddMarkFormProvider()
   val form         = formProvider()
 
-  lazy val addMarkRoute = routes.AddMarkController.onPageLoad(lrn, NormalMode).url
+  lazy val addMarkRoute = routes.AddMarkController.onPageLoad(lrn, index, index, NormalMode).url
 
   "AddMark Controller" - {
 

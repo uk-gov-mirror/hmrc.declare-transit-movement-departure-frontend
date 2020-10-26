@@ -54,7 +54,7 @@ class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatc
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  lazy val packageTypeRoute: String = routes.PackageTypeController.onPageLoad(lrn, NormalMode).url
+  lazy val packageTypeRoute: String = routes.PackageTypeController.onPageLoad(lrn, index, index, NormalMode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
