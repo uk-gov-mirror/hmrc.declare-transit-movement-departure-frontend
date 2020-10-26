@@ -26,7 +26,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.TotalPiecesPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -36,6 +35,7 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import pages.addItems.TotalPiecesPage
 
 import scala.concurrent.Future
 
@@ -48,7 +48,7 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
 
   val validAnswer = 1
 
-  lazy val totalPiecesRoute = routes.TotalPiecesController.onPageLoad(lrn, NormalMode).url
+  lazy val totalPiecesRoute = routes.TotalPiecesController.onPageLoad(lrn, index, index, NormalMode).url
 
   "TotalPieces Controller" - {
 
@@ -85,7 +85,7 @@ class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(TotalPiecesPage, validAnswer).success.value
+      val userAnswers    = emptyUserAnswers.set(TotalPiecesPage(index, index), validAnswer).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, totalPiecesRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

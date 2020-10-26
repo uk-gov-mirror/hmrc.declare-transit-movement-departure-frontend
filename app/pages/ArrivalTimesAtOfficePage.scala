@@ -18,11 +18,11 @@ package pages
 
 import models.{Index, LocalDateTimeWithAMPM}
 import play.api.libs.json.JsPath
-import queries.Constants.RouteDetailsOfficesOfTransit
+import queries.Constants.routeDetailsOfficesOfTransit
 
 case class ArrivalTimesAtOfficePage(index: Index) extends QuestionPage[LocalDateTimeWithAMPM] {
 
-  override def path: JsPath = JsPath \ RouteDetailsOfficesOfTransit \ index.position \ toString
+  override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit \ index.position \ toString
 
   override def toString: String = ArrivalTimesAtOfficePage.key
 }

@@ -18,13 +18,13 @@ package pages
 
 import models.{Index, UserAnswers}
 import play.api.libs.json.JsPath
-import queries.Constants.Items
+import queries.Constants.items
 
 import scala.util.Try
 
 case class AddTotalNetMassPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ Items \ index.position \ toString
+  override def path: JsPath = JsPath \ items \ index.position \ toString
 
   override def toString: String = "addTotalNetMass"
 

@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms.addItems
 
-import play.api.libs.json.JsPath
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.Index
+import play.api.data.Form
 
-case object DeclareNumberOfPackagesPage extends QuestionPage[Boolean] {
+class AddTotalNetMassFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "declareNumberOfPackages"
+  def apply(index: Index): Form[Boolean] =
+    Form(
+      "value" -> boolean("addTotalNetMass.error.required", "error.boolean", Seq(index.display))
+    )
 }

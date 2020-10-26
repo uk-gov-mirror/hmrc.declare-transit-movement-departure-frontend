@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.{items, packages}
 
-class DeclareNumberOfPackagesPageSpec extends PageBehaviours {
+case class AddAnotherPackagePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
-  "DeclareNumberOfPackagesPage" - {
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
-    beRetrievable[Boolean](DeclareNumberOfPackagesPage)
-
-    beSettable[Boolean](DeclareNumberOfPackagesPage)
-
-    beRemovable[Boolean](DeclareNumberOfPackagesPage)
-  }
+  override def toString: String = "addAnotherPackage"
 }

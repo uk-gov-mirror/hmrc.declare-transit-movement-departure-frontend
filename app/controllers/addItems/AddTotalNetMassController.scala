@@ -17,6 +17,7 @@
 package controllers.addItems
 
 import controllers.actions._
+import forms.addItems.AddTotalNetMassFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
