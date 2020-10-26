@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package base
 
-import models.Index
-import play.api.libs.json.JsPath
-import queries.Constants.RouteDetailsOfficesOfTransit
+import generators.Generators
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalacheck.{Arbitrary, Gen}
 
-case class AddAnotherTransitOfficePage(index: Index) extends QuestionPage[String] {
+trait GeneratorSpec extends ScalaCheckPropertyChecks with Generators {
+  self: SpecBase =>
 
-  override def path: JsPath = JsPath \ RouteDetailsOfficesOfTransit \ index.position \ toString
+  def arbitrary[A: Arbitrary]: Gen[A] = Arbitrary.arbitrary[A]
 
-  override def toString: String = AddAnotherTransitOfficePage.key
-}
-
-object AddAnotherTransitOfficePage {
-  val key: String = "addAnotherTransitOffice"
 }
