@@ -27,7 +27,6 @@ trait ModelGenerators {
 
   self: Generators =>
 
-
   // TODO turn PackageType into a trait with three sub classes for Bulk, Unpacked and normal
   implicit lazy val arbitraryPackageType: Arbitrary[PackageType] = {
     Arbitrary {
@@ -40,7 +39,7 @@ trait ModelGenerators {
 
   lazy val arbitraryBulkPackageType: Arbitrary[PackageType] = {
 
-    val bulkCodes     = Seq("VQ", "VG", "VL", "VY", "VR", "VS", "VO")
+    val bulkCodes = Seq("VQ", "VG", "VL", "VY", "VR", "VS", "VO")
 
     Arbitrary {
       for {
@@ -65,9 +64,11 @@ trait ModelGenerators {
   lazy val arbitraryBulkOrUnpackedPackageType: Arbitrary[PackageType] = {
     Arbitrary {
       for {
-        bulk <- arbitraryBulkPackageType.arbitrary
-        unpacked <- arbitraryUnPackedPackageType.arbitrary
-      } yield Gen.oneOf(Seq(bulk, unpacked))
+        bulk           <- arbitraryBulkPackageType.arbitrary
+        unpacked       <- arbitraryUnPackedPackageType.arbitrary
+        bulkOrUnpacked <- Gen.oneOf(Seq(bulk, unpacked))
+      } yield bulkOrUnpacked
+    }
   }
 
   implicit lazy val arbitraryGuaranteeType: Arbitrary[GuaranteeType] =

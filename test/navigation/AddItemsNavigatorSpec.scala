@@ -128,7 +128,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
-
                 val updatedAnswers = answers
                   .set(PackageTypePage, packageType.code)
                   .success
@@ -144,7 +143,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
             forAll(arbitrary[UserAnswers], arbitraryBulkOrUnpackedPackageType.arbitrary) {
               (answers, packageType) =>
-
                 val updatedAnswers = answers
                   .set(PackageTypePage, packageType.code)
                   .success
@@ -162,7 +160,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           "must go to DeclareMark when PackageType code isn't bulk or unpacked" in {
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
-
                 val updatedAnswers = answers
                   .set(PackageTypePage, packageType.code)
                   .success
@@ -174,38 +171,151 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
 
-          "must go to AddMark when PackageType code is bulk" in {}
+          "must go to AddMark when PackageType code is bulk" in {
+            forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
+              (answers, packageType) =>
+                val updatedAnswers = answers
+                  .set(PackageTypePage, packageType.code)
+                  .success
+                  .value
 
-          "must go to TotalPieces when PackageType code is unpacked" in {}
+                navigator
+                  .nextPage(HowManyPackagesPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
+          "must go to TotalPieces when PackageType code is unpacked" in {
+            forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
+              (answers, packageType) =>
+                val updatedAnswers = answers
+                  .set(PackageTypePage, packageType.code)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(HowManyPackagesPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.TotalPiecesController.onPageLoad(answers.id, NormalMode))
+            }
+          }
 
         }
 
         "DeclareNumberOfPackages" - {
 
-          "must go to HowManyPackages if answer is 'Yes'" in {}
+          "must go to HowManyPackages if answer is 'Yes'" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(DeclareNumberOfPackagesPage, true)
+                  .success
+                  .value
 
-          "must go to AddMark if answer is 'No' and PackageType is bulk" in {}
+                navigator
+                  .nextPage(DeclareNumberOfPackagesPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.HowManyPackagesController.onPageLoad(answers.id, NormalMode))
+            }
+          }
 
-          "must go to TotalPieces if answer is 'No' and PackageType is unpacked" in {}
+          "must go to AddMark if answer is 'No' and PackageType is bulk" in {
+            forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
+              (answers, packageType) =>
+                val updatedAnswers = answers
+                  .set(DeclareNumberOfPackagesPage, false)
+                  .success
+                  .value
+                  .set(PackageTypePage, packageType.code)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(DeclareNumberOfPackagesPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
+          "must go to TotalPieces if answer is 'No' and PackageType is unpacked" in {
+            forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
+              (answers, packageType) =>
+                val updatedAnswers = answers
+                  .set(DeclareNumberOfPackagesPage, false)
+                  .success
+                  .value
+                  .set(PackageTypePage, packageType.code)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(DeclareNumberOfPackagesPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.TotalPiecesController.onPageLoad(answers.id, NormalMode))
+            }
+          }
 
         }
 
         "TotalPieces" - {
 
-          "must go to AddMark" in {}
+          "must go to AddMark" in {
+            forAll(arbitrary[UserAnswers], arbitrary[Int]) {
+              (answers, totalPieces) =>
+                val updatedAnswers = answers
+                  .set(TotalPackagesPage, totalPieces)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(TotalPiecesPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, NormalMode))
+            }
+          }
         }
 
         "AddMark" - {
 
-          "must go to DeclareMark if answers is 'Yes'" in {}
+          "must go to DeclareMark if answers is 'Yes'" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(AddMarkPage, true)
+                  .success
+                  .value
 
-          "must go to AddAnotherPackage if answers if 'No'" in {}
+                navigator
+                  .nextPage(AddMarkPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.DeclareMarkController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
+          "must go to AddAnotherPackage if answers if 'No'" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(AddMarkPage, false)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(AddMarkPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.AddAnotherPackageController.onPageLoad(answers.id, NormalMode))
+            }
+          }
         }
 
         "DeclareMark" - {
 
-          "must go to AddAnotherPackage" in {}
+          "must go to AddAnotherPackage" in {
+            forAll(arbitrary[UserAnswers], arbitrary[String]) {
+              (answers, declareMark) =>
+                val updatedAnswers = answers
+                  .set(DeclareMarkPage, declareMark)
+                  .success
+                  .value
 
+                navigator
+                  .nextPage(DeclareMarkPage, NormalMode, updatedAnswers)
+                  .mustBe(addItemsRoutes.AddAnotherPackageController.onPageLoad(answers.id, NormalMode))
+            }
+          }
         }
       }
     }
