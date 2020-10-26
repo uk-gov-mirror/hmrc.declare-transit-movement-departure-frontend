@@ -158,10 +158,13 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "HowManyPackages" - {
 
           "must go to DeclareMark when PackageType code isn't bulk or unpacked" in {
-            forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
-              (answers, packageType) =>
+            forAll(arbitrary[UserAnswers], arbitrary[PackageType], arbitrary[Int]) {
+              (answers, packageType, howManyPackages) =>
                 val updatedAnswers = answers
                   .set(PackageTypePage(index, index), packageType.code)
+                  .success
+                  .value
+                  .set(HowManyPackagesPage(index, index), howManyPackages)
                   .success
                   .value
 
@@ -172,10 +175,13 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
 
           "must go to AddMark when PackageType code is bulk" in {
-            forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
-              (answers, packageType) =>
+            forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary, arbitrary[Int]) {
+              (answers, packageType, howManyPackages) =>
                 val updatedAnswers = answers
                   .set(PackageTypePage(index, index), packageType.code)
+                  .success
+                  .value
+                  .set(HowManyPackagesPage(index, index), howManyPackages)
                   .success
                   .value
 
@@ -186,10 +192,13 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
 
           "must go to TotalPieces when PackageType code is unpacked" in {
-            forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
-              (answers, packageType) =>
+            forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary, arbitrary[Int]) {
+              (answers, packageType, howManyPackages) =>
                 val updatedAnswers = answers
                   .set(PackageTypePage(index, index), packageType.code)
+                  .success
+                  .value
+                  .set(HowManyPackagesPage(index, index), howManyPackages)
                   .success
                   .value
 
