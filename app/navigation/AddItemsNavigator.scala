@@ -36,6 +36,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TotalNetMassPage(index)                              => ua => Some(routes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
     case IsCommodityCodeKnownPage(index)                      => ua => isCommodityKnownRoute(index, ua, NormalMode)
     case AddAnotherItemPage                                   => ua => Some(addAnotherPageRoute(ua))
+    case ConfirmRemoveItemPage => ua => Some(removeItem(NormalMode)(ua))
     case CommodityCodePage(index)                             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case PackageTypePage(itemIndex, packageIndex)             => ua => packageType(itemIndex, packageIndex, ua) // TODO add modes functionality when tests are created
     case HowManyPackagesPage(itemIndex, packageIndex)         => ua => howManyPackages(itemIndex, packageIndex, ua)
@@ -81,6 +82,12 @@ class AddItemsNavigator @Inject()() extends Navigator {
         mainRoutes.DeclarationSummaryController.onPageLoad(userAnswers.id)
     }
   }
+
+  private def removeItem(mode: Mode)(ua: UserAnswers) =
+    ua.get(DeriveNumberOfItems) match {
+      case None | Some(0) => routes.ItemDescriptionController.onPageLoad(ua.id, Index(0), mode)
+      case _              => routes.AddAnotherItemController.onPageLoad(ua.id)
+    }
 
   // TODO add smarter PackageTypePage type for easier matching
   def packageType(itemIndex: Index, packageIndex: Index, ua: UserAnswers) =
