@@ -18,9 +18,10 @@ package navigation
 
 import controllers.addItems.routes
 import controllers.{routes => mainRoutes}
-import derivable.DeriveNumberOfItems
+import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
 import javax.inject.{Inject, Singleton}
 import models._
+import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCodes}
 import pages._
 import pages.addItems._
 import play.api.mvc.Call
@@ -29,20 +30,13 @@ import play.api.mvc.Call
 class AddItemsNavigator @Inject()() extends Navigator {
   // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ItemDescriptionPage(index) => ua => Some(routes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
-    case ItemTotalGrossMassPage(index) => ua => Some(routes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
-    case AddTotalNetMassPage(index) => ua=>   addTotalNetMassRoute(index, ua,  NormalMode)
-    case TotalNetMassPage(index) => ua => Some(routes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
-    case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, NormalMode)
-    case CommodityCodePage(index) => ua =>  Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
-    case AddAnotherItemPage => ua => Some(addAnotherPageRoute(ua))
-    case ConfirmRemoveItemPage => ua => Some(removeItem(NormalMode)(ua))
     case ItemDescriptionPage(index)                           => ua => Some(routes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
     case ItemTotalGrossMassPage(index)                        => ua => Some(routes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
     case AddTotalNetMassPage(index)                           => ua => addTotalNessMassRoute(index, ua, NormalMode)
     case TotalNetMassPage(index)                              => ua => Some(routes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
     case IsCommodityCodeKnownPage(index)                      => ua => isCommodityKnownRoute(index, ua, NormalMode)
     case AddAnotherItemPage                                   => ua => Some(addAnotherPageRoute(ua))
+    case ConfirmRemoveItemPage => ua => Some(removeItem(NormalMode)(ua))
     case CommodityCodePage(index)                             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case PackageTypePage(itemIndex, packageIndex)             => ua => packageType(itemIndex, packageIndex, ua) // TODO add modes functionality when tests are created
     case HowManyPackagesPage(itemIndex, packageIndex)         => ua => howManyPackages(itemIndex, packageIndex, ua)

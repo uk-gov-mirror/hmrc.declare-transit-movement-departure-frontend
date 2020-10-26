@@ -22,6 +22,6 @@ import play.api.libs.json.{JsObject, JsPath}
 
 final case class ItemsQuery(index: Index) extends QuestionPage[JsObject] {
 
-  override def path: JsPath = JsPath \ Constants.Items \ index.position
+  override def path: JsPath = JsPath \ Constants.items \ index.position
 
 }
