@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import play.api.libs.json.JsPath
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{items, packages}
 
-case object HowManyPackagesPage extends QuestionPage[Int] {
+final case class DeriveNumberOfPackages(itemIndex: Index) extends Derivable[List[JsObject], Int] {
 
-  override def path: JsPath = JsPath \ toString
+  override val derive: List[JsObject] => Int = _.size
 
-  override def toString: String = "howManyPackages"
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ packages
 }

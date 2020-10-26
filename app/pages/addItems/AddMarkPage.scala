@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
+import models.Index
+import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.{items, packages}
 
-case object DeclareNumberOfPackagesPage extends QuestionPage[Boolean] {
+case class AddMarkPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
-  override def toString: String = "declareNumberOfPackages"
+  override def toString: String = "addMark"
 }

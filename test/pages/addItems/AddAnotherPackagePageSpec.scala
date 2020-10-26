@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package derivable
+package pages.addItems
 
-import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.items
+import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-case object DeriveNumberOfItems extends Derivable[List[JsObject], Int] {
+class AddAnotherPackagePageSpec extends PageBehaviours with SpecBase {
 
-  override val derive: List[JsObject] => Int = _.size
+  "AddAnotherPackagePage" - {
 
-  override def path: JsPath = JsPath \ items
+    beRetrievable[Boolean](AddAnotherPackagePage(index, index))
+
+    beSettable[Boolean](AddAnotherPackagePage(index, index))
+
+    beRemovable[Boolean](AddAnotherPackagePage(index, index))
+  }
 }

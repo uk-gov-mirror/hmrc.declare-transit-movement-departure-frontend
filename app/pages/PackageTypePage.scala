@@ -16,11 +16,13 @@
 
 package pages
 
+import models.Index
 import play.api.libs.json.JsPath
+import queries.Constants.{items, packages}
 
-case object PackageTypePage extends QuestionPage[String] {
+case class PackageTypePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
   override def toString: String = "packageType"
 }

@@ -29,12 +29,47 @@ import org.scalacheck.{Arbitrary, Gen}
 trait ModelGenerators {
   self: Generators =>
 
+  // TODO turn PackageType into a trait with three sub classes for Bulk, Unpacked and normal
   implicit lazy val arbitraryPackageType: Arbitrary[PackageType] = {
     Arbitrary {
       for {
         code        <- arbitrary[String]
         description <- arbitrary[String]
       } yield PackageType(code, description)
+    }
+  }
+
+  lazy val arbitraryBulkPackageType: Arbitrary[PackageType] = {
+
+    val bulkCodes = Seq("VQ", "VG", "VL", "VY", "VR", "VS", "VO")
+
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf(bulkCodes)
+        description <- arbitrary[String]
+      } yield PackageType(code, description)
+    }
+  }
+
+  lazy val arbitraryUnPackedPackageType: Arbitrary[PackageType] = {
+
+    val unpackedCodes = Seq("NE", "NF", "NG")
+
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf(unpackedCodes)
+        description <- arbitrary[String]
+      } yield PackageType(code, description)
+    }
+  }
+
+  lazy val arbitraryBulkOrUnpackedPackageType: Arbitrary[PackageType] = {
+    Arbitrary {
+      for {
+        bulk           <- arbitraryBulkPackageType.arbitrary
+        unpacked       <- arbitraryUnPackedPackageType.arbitrary
+        bulkOrUnpacked <- Gen.oneOf(Seq(bulk, unpacked))
+      } yield bulkOrUnpacked
     }
   }
 
