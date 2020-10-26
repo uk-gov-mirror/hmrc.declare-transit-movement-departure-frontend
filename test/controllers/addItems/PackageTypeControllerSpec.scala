@@ -18,11 +18,12 @@ package controllers.addItems
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoute}
 import forms.PackageTypeFormProvider
 import matchers.JsonMatchers
 import models.reference.PackageType
 import models.{NormalMode, PackageTypeList}
-import navigation.annotations.{AddItems, RouteDetails}
+import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -37,7 +38,6 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoute}
 
 import scala.concurrent.Future
 
@@ -54,7 +54,7 @@ class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatc
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  lazy val packageTypeRoute: String = routes.PackageTypeController.onPageLoad(lrn, NormalMode).url
+  lazy val packageTypeRoute: String = routes.PackageTypeController.onPageLoad(lrn, index, index, NormalMode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -111,7 +111,7 @@ class PackageTypeControllerSpec extends SpecBase with MockitoSugar with JsonMatc
         .thenReturn(Future.successful(Html("")))
       when(mockRefDataConnector.getPackageTypes()(any(), any())).thenReturn(Future.successful(packageTypeList))
 
-      val userAnswers = emptyUserAnswers.set(PackageTypePage, "AB").success.value
+      val userAnswers = emptyUserAnswers.set(PackageTypePage(index, index), "AB").success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()

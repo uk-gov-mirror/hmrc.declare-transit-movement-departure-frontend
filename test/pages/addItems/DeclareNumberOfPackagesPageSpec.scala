@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import play.api.libs.json.JsPath
+import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-case object DeclareMarkPage extends QuestionPage[String] {
+class DeclareNumberOfPackagesPageSpec extends PageBehaviours with SpecBase {
 
-  override def path: JsPath = JsPath \ toString
+  "DeclareNumberOfPackagesPage" - {
 
-  override def toString: String = "declareMark"
+    beRetrievable[Boolean](DeclareNumberOfPackagesPage(index, index))
+
+    beSettable[Boolean](DeclareNumberOfPackagesPage(index, index))
+
+    beRemovable[Boolean](DeclareNumberOfPackagesPage(index, index))
+  }
 }

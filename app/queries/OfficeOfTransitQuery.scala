@@ -22,6 +22,6 @@ import play.api.libs.json.{JsObject, JsPath}
 
 final case class OfficeOfTransitQuery(index: Index) extends QuestionPage[JsObject] {
 
-  override def path: JsPath = JsPath \ Constants.RouteDetailsOfficesOfTransit \ index.position
+  override def path: JsPath = JsPath \ Constants.routeDetailsOfficesOfTransit \ index.position
 
 }
