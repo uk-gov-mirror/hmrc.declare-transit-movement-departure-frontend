@@ -50,10 +50,10 @@ class AddMarkController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(AddMarkPage) match {
+        val preparedForm = request.userAnswers.get(AddMarkPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -87,9 +87,9 @@ class AddMarkController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddMarkPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddMarkPage(itemIndex, packageItem), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddMarkPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddMarkPage(itemIndex, packageItem), mode, updatedAnswers))
           )
     }
 }

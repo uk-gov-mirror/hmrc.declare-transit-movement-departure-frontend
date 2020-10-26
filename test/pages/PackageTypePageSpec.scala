@@ -16,17 +16,18 @@
 
 package pages
 
+import base.SpecBase
 import models.reference.PackageType
 import pages.behaviours.PageBehaviours
 
-class PackageTypePageSpec extends PageBehaviours {
+class PackageTypePageSpec extends PageBehaviours with SpecBase {
 
   "PackageTypePage" - {
 
-    beRetrievable[String](PackageTypePage)
+    beRetrievable[String](PackageTypePage(index, index))
 
-    beSettable[String](PackageTypePage)
+    beSettable[String](PackageTypePage(index, index))
 
-    beRemovable[String](PackageTypePage)
+    beRemovable[String](PackageTypePage(index, index))
   }
 }

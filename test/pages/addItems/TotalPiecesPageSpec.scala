@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import pages.addItems.AddMarkPage
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class AddMarkPageSpec extends PageBehaviours {
+class TotalPiecesPageSpec extends PageBehaviours with SpecBase {
 
-  "AddMarkPage" - {
+  "TotalPiecesPage" - {
 
-    beRetrievable[Boolean](AddMarkPage)
+    beRetrievable[Int](TotalPiecesPage(index, index))
 
-    beSettable[Boolean](AddMarkPage)
+    beSettable[Int](TotalPiecesPage(index, index))
 
-    beRemovable[Boolean](AddMarkPage)
+    beRemovable[Int](TotalPiecesPage(index, index))
   }
 }

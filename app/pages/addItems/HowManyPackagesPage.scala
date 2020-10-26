@@ -16,12 +16,14 @@
 
 package pages.addItems
 
+import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.{items, packages}
 
-case object HowManyPackagesPage extends QuestionPage[Int] {
+case class HowManyPackagesPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Int] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
   override def toString: String = "howManyPackages"
 }

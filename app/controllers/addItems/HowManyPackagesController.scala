@@ -50,10 +50,10 @@ class HowManyPackagesController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(HowManyPackagesPage) match {
+        val preparedForm = request.userAnswers.get(HowManyPackagesPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -67,7 +67,7 @@ class HowManyPackagesController @Inject()(
         renderer.render("howManyPackages.njk", json).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         form
@@ -85,9 +85,9 @@ class HowManyPackagesController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(HowManyPackagesPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(HowManyPackagesPage(itemIndex, packageIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(HowManyPackagesPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(HowManyPackagesPage(itemIndex, packageIndex), mode, updatedAnswers))
           )
     }
 }

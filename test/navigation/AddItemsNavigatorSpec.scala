@@ -129,12 +129,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage, packageType.code)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
 
                 navigator
-                  .nextPage(PackageTypePage, NormalMode, updatedAnswers)
+                  .nextPage(PackageTypePage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.HowManyPackagesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -144,12 +144,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkOrUnpackedPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage, packageType.code)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
 
                 navigator
-                  .nextPage(PackageTypePage, NormalMode, updatedAnswers)
+                  .nextPage(PackageTypePage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.DeclareNumberOfPackagesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -161,12 +161,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage, packageType.code)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
 
                 navigator
-                  .nextPage(HowManyPackagesPage, NormalMode, updatedAnswers)
+                  .nextPage(HowManyPackagesPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.DeclareMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -175,12 +175,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage, packageType.code)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
 
                 navigator
-                  .nextPage(HowManyPackagesPage, NormalMode, updatedAnswers)
+                  .nextPage(HowManyPackagesPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -189,12 +189,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage, packageType.code)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
 
                 navigator
-                  .nextPage(HowManyPackagesPage, NormalMode, updatedAnswers)
+                  .nextPage(HowManyPackagesPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.TotalPiecesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -207,12 +207,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage, true)
+                  .set(DeclareNumberOfPackagesPage(index, index), true)
                   .success
                   .value
 
                 navigator
-                  .nextPage(DeclareNumberOfPackagesPage, NormalMode, updatedAnswers)
+                  .nextPage(DeclareNumberOfPackagesPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.HowManyPackagesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -221,15 +221,15 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage, false)
+                  .set(DeclareNumberOfPackagesPage(index, index), false)
                   .success
                   .value
-                  .set(PackageTypePage, packageType.code)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
 
                 navigator
-                  .nextPage(DeclareNumberOfPackagesPage, NormalMode, updatedAnswers)
+                  .nextPage(DeclareNumberOfPackagesPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -238,15 +238,15 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage, false)
+                  .set(DeclareNumberOfPackagesPage(index, index), false)
                   .success
                   .value
-                  .set(PackageTypePage, packageType.code)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
 
                 navigator
-                  .nextPage(DeclareNumberOfPackagesPage, NormalMode, updatedAnswers)
+                  .nextPage(DeclareNumberOfPackagesPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.TotalPiecesController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -264,7 +264,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .value
 
                 navigator
-                  .nextPage(TotalPiecesPage, NormalMode, updatedAnswers)
+                  .nextPage(TotalPiecesPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.AddMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -276,12 +276,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddMarkPage, true)
+                  .set(AddMarkPage(index, index), true)
                   .success
                   .value
 
                 navigator
-                  .nextPage(AddMarkPage, NormalMode, updatedAnswers)
+                  .nextPage(AddMarkPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.DeclareMarkController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -290,12 +290,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddMarkPage, false)
+                  .set(AddMarkPage(index, index), false)
                   .success
                   .value
 
                 navigator
-                  .nextPage(AddMarkPage, NormalMode, updatedAnswers)
+                  .nextPage(AddMarkPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.AddAnotherPackageController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
@@ -307,12 +307,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[String]) {
               (answers, declareMark) =>
                 val updatedAnswers = answers
-                  .set(DeclareMarkPage, declareMark)
+                  .set(DeclareMarkPage(index, index), declareMark)
                   .success
                   .value
 
                 navigator
-                  .nextPage(DeclareMarkPage, NormalMode, updatedAnswers)
+                  .nextPage(DeclareMarkPage(index, index), NormalMode, updatedAnswers)
                   .mustBe(addItemsRoutes.AddAnotherPackageController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }

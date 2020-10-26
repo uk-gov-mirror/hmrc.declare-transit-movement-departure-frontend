@@ -84,7 +84,7 @@ class AddMarkControllerSpec extends SpecBase with MockitoSugar with NunjucksSupp
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddMarkPage, true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddMarkPage(index, index), true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, addMarkRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

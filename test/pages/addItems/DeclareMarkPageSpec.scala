@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import pages.addItems.DeclareNumberOfPackagesPage
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class DeclareNumberOfPackagesPageSpec extends PageBehaviours {
+class DeclareMarkPageSpec extends PageBehaviours with SpecBase {
 
-  "DeclareNumberOfPackagesPage" - {
+  "DeclareMarkPage" - {
 
-    beRetrievable[Boolean](DeclareNumberOfPackagesPage)
+    beRetrievable[String](DeclareMarkPage(index, index))
 
-    beSettable[Boolean](DeclareNumberOfPackagesPage)
+    beSettable[String](DeclareMarkPage(index, index))
 
-    beRemovable[Boolean](DeclareNumberOfPackagesPage)
+    beRemovable[String](DeclareMarkPage(index, index))
   }
 }

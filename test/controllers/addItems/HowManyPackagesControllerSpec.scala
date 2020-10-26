@@ -85,7 +85,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(HowManyPackagesPage, validAnswer).success.value
+      val userAnswers    = emptyUserAnswers.set(HowManyPackagesPage(index, index), validAnswer).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, howManyPackagesRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

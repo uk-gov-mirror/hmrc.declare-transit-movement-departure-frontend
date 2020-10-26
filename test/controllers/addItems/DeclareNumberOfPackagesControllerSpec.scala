@@ -84,7 +84,7 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockitoSugar w
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(DeclareNumberOfPackagesPage, true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(DeclareNumberOfPackagesPage(index, index), true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, declareNumberOfPackagesRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

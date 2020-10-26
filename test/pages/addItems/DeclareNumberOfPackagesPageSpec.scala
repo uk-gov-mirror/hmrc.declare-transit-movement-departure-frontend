@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import pages.addItems.HowManyPackagesPage
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class HowManyPackagesPageSpec extends PageBehaviours {
+class DeclareNumberOfPackagesPageSpec extends PageBehaviours with SpecBase {
 
-  "HowManyPackagesPage" - {
+  "DeclareNumberOfPackagesPage" - {
 
-    beRetrievable[Int](HowManyPackagesPage)
+    beRetrievable[Boolean](DeclareNumberOfPackagesPage(index, index))
 
-    beSettable[Int](HowManyPackagesPage)
+    beSettable[Boolean](DeclareNumberOfPackagesPage(index, index))
 
-    beRemovable[Int](HowManyPackagesPage)
+    beRemovable[Boolean](DeclareNumberOfPackagesPage(index, index))
   }
 }

@@ -53,7 +53,7 @@ class PackageTypeController @Inject()(
     with NunjucksSupport
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         referenceDataConnector.getPackageTypes().flatMap {
@@ -61,7 +61,7 @@ class PackageTypeController @Inject()(
             val form = formProvider(packageTypes)
 
             val preparedForm: Form[PackageType] = request.userAnswers
-              .get(PackageTypePage)
+              .get(PackageTypePage(itemIndex, packageIndex))
               .flatMap(packageTypes.getPackageType)
               .map(form.fill)
               .getOrElse(form)
@@ -77,7 +77,7 @@ class PackageTypeController @Inject()(
         }
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         referenceDataConnector.getPackageTypes().flatMap {
@@ -98,9 +98,9 @@ class PackageTypeController @Inject()(
                 },
                 value =>
                   for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage, value.code))
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage(itemIndex, packageIndex), value.code))
                     _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(PackageTypePage, mode, updatedAnswers))
+                  } yield Redirect(navigator.nextPage(PackageTypePage(itemIndex, packageIndex), mode, updatedAnswers))
               )
         }
     }

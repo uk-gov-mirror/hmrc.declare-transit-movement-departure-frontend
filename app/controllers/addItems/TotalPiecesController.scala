@@ -50,10 +50,10 @@ class TotalPiecesController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(TotalPiecesPage) match {
+        val preparedForm = request.userAnswers.get(TotalPiecesPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -67,7 +67,7 @@ class TotalPiecesController @Inject()(
         renderer.render("totalPieces.njk", json).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         form
@@ -85,9 +85,9 @@ class TotalPiecesController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalPiecesPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalPiecesPage(itemIndex, packageIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(TotalPiecesPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(TotalPiecesPage(itemIndex, packageIndex), mode, updatedAnswers))
           )
     }
 }

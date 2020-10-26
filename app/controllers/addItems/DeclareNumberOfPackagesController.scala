@@ -50,10 +50,10 @@ class DeclareNumberOfPackagesController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(DeclareNumberOfPackagesPage) match {
+        val preparedForm = request.userAnswers.get(DeclareNumberOfPackagesPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -68,7 +68,7 @@ class DeclareNumberOfPackagesController @Inject()(
         renderer.render("declareNumberOfPackages.njk", json).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         form
@@ -87,9 +87,9 @@ class DeclareNumberOfPackagesController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareNumberOfPackagesPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareNumberOfPackagesPage(itemIndex, packageIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(DeclareNumberOfPackagesPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(DeclareNumberOfPackagesPage(itemIndex, packageIndex), mode, updatedAnswers))
           )
     }
 }

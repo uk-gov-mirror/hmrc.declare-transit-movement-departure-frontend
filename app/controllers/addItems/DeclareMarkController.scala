@@ -50,10 +50,10 @@ class DeclareMarkController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(DeclareMarkPage) match {
+        val preparedForm = request.userAnswers.get(DeclareMarkPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -85,9 +85,9 @@ class DeclareMarkController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareMarkPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareMarkPage(itemIndex, packageItem), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(DeclareMarkPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(DeclareMarkPage(itemIndex, packageItem), mode, updatedAnswers))
           )
     }
 }
