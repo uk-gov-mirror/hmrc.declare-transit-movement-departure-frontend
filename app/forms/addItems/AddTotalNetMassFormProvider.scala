@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.addItems
+package forms.addItems
 
 import forms.mappings.Mappings
 import javax.inject.Inject
