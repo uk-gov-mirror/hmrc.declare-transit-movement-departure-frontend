@@ -21,7 +21,17 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import pages.addItems.traderDetails._
-import pages.addItems.{AddAnotherPackagePage, AddItemsSameConsigneeForAllItemsPage, AddItemsSameConsignorForAllItemsPage, AddMarkPage, CommodityCodePage, DeclareMarkPage, DeclareNumberOfPackagesPage, HowManyPackagesPage, TotalPiecesPage}
+import pages.addItems.{
+  AddAnotherPackagePage,
+  AddItemsSameConsigneeForAllItemsPage,
+  AddItemsSameConsignorForAllItemsPage,
+  AddMarkPage,
+  CommodityCodePage,
+  DeclareMarkPage,
+  DeclareNumberOfPackagesPage,
+  HowManyPackagesPage,
+  TotalPiecesPage
+}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
