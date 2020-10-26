@@ -25,13 +25,16 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
+import queries.ItemsQuery
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new AddItemsNavigator
 
   "Add Items section" - {
+
     "in normal mode" - {
+
       "must go from item description page to total gross mass page" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -68,6 +71,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.TotalNetMassController.onPageLoad(answers.id, index, NormalMode))
         }
       }
+
       "must go from add total net mass page to IsCommodityCodeKnownPage if the answer is 'No'" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -84,6 +88,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.IsCommodityCodeKnownController.onPageLoad(answers.id, index, NormalMode))
         }
       }
+
       "must go from IsCommodityCodeKnownPage to CYA if the answer is 'No'" in { //todo update when trader details route built
 
         forAll(arbitrary[UserAnswers]) {
@@ -97,6 +102,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
         }
       }
+
       "must go from IsCommodityCodeKnownPage to CommodityCodePage if the answer is 'Yes'" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -110,6 +116,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.CommodityCodeController.onPageLoad(answers.id, index, NormalMode))
         }
       }
+
       "must go from CommodityCodePage to CYA page" in { //todo update when traderdetails pages built
 
         forAll(arbitrary[UserAnswers]) {
@@ -120,33 +127,95 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
       }
 
-      "must go from AddAnotherItem page to ItemDescription page if the answer is 'Yes'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswer = answers.set(AddAnotherItemPage, false).success.value
-            navigator
-              .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
-              .mustBe(mainRoutes.DeclarationSummaryController.onPageLoad(answers.id))
+      "must go from AddAnotherItem page to " - {
+
+        "to ItemDescription page if the answer is 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddAnotherItemPage, false).success.value
+              navigator
+                .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
+                .mustBe(mainRoutes.DeclarationSummaryController.onPageLoad(answers.id))
+          }
         }
+
+        "to task list page if the answer is 'No'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers
+                .set(AddAnotherItemPage, true)
+                .success
+                .value
+                .set(ItemDescriptionPage(index), "test")
+                .success
+                .value
+
+              navigator
+                .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
+                .mustBe(routes.ItemDescriptionController.onPageLoad(answers.id, Index(1), NormalMode))
+          }
+        }
+
       }
 
-      "must go from AddAnotherItem page to task list page if the answer is 'No'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswer = answers
-              .set(AddAnotherItemPage, true)
-              .success
-              .value
-              .set(ItemDescriptionPage(index), "test")
-              .success
-              .value
+      "must go from ConfirmRemoveItem page to " - {
 
-            navigator
-              .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
-              .mustBe(routes.ItemDescriptionController.onPageLoad(answers.id, Index(1), NormalMode))
+        "AddAnotherItem page when 'No' is selected and there are more than one item" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ItemDescriptionPage(index), "item1")
+                .success
+                .value
+                .set(ItemDescriptionPage(Index(1)), "item2")
+                .success
+                .value
+                .set(AddAnotherItemPage, true)
+                .success
+                .value
+                .set(ConfirmRemoveItemPage, false)
+                .success
+                .value
+              navigator
+                .nextPage(ConfirmRemoveItemPage, NormalMode, updatedAnswers)
+                .mustBe(routes.AddAnotherItemController.onPageLoad(updatedAnswers.id))
+          }
         }
-      }
 
+        "AddAnotherItem page when 'Yes' is selected and there are more than one item" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ItemDescriptionPage(index), "item1")
+                .success
+                .value
+                .set(ItemDescriptionPage(Index(1)), "item2")
+                .success
+                .value
+                .set(ConfirmRemoveItemPage, true)
+                .success
+                .value
+              navigator
+                .nextPage(ConfirmRemoveItemPage, NormalMode, updatedAnswers)
+                .mustBe(routes.AddAnotherItemController.onPageLoad(updatedAnswers.id))
+          }
+        }
+
+        "ItemDescription page when 'Yes' is selected and when all the items are removed" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .remove(ItemsQuery(index))
+            .success
+            .value
+            .set(ConfirmRemoveItemPage, true)
+            .success
+            .value
+          navigator
+            .nextPage(ConfirmRemoveItemPage, NormalMode, updatedAnswers)
+            .mustBe(routes.ItemDescriptionController.onPageLoad(updatedAnswers.id, index, NormalMode))
+        }
+
+      }
     }
 
     "in check mode" - {

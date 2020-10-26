@@ -53,7 +53,7 @@ class ConfirmRemoveItemController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val template = "confirmRemoveItem.njk"
+  private val template = "addItems/confirmRemoveItem.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -80,6 +80,7 @@ class ConfirmRemoveItemController @Inject()(
             val json = Json.obj(
               "form"   -> formWithErrors,
               "mode"   -> mode,
+              "index"  -> index.display,
               "lrn"    -> lrn,
               "radios" -> Radios.yesNo(formWithErrors("value"))
             )

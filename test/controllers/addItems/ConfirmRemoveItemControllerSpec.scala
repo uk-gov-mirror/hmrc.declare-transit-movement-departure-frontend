@@ -45,7 +45,7 @@ class ConfirmRemoveItemControllerSpec extends SpecBase with MockitoSugar with Nu
 
   private val formProvider = new ConfirmRemoveItemFormProvider()
   private val form         = formProvider()
-  private val template     = "confirmRemoveItem.njk"
+  private val template     = "addItems/confirmRemoveItem.njk"
 
   lazy val removeItemRoute = routes.ConfirmRemoveItemController.onPageLoad(lrn, index).url
 
@@ -135,6 +135,7 @@ class ConfirmRemoveItemControllerSpec extends SpecBase with MockitoSugar with Nu
       val expectedJson = Json.obj(
         "form"   -> boundForm,
         "mode"   -> NormalMode,
+        "index"  -> index.display,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(boundForm("value"))
       )
