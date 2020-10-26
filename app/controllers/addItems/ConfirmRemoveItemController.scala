@@ -17,15 +17,19 @@
 package controllers.addItems
 
 import controllers.actions._
-import forms.RemoveItemFormProvider
+import forms.addItems.ConfirmRemoveItemFormProvider
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.RemoveItemPage
+import pages.ItemDescriptionPage
+import pages.addItems.ConfirmRemoveItemPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
 import queries.ItemsQuery
 import renderer.Renderer
 import repositories.SessionRepository
@@ -34,14 +38,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveItemController @Inject()(
+class ConfirmRemoveItemController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: RemoveItemFormProvider,
+  formProvider: ConfirmRemoveItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -49,7 +53,7 @@ class RemoveItemController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val template = "removeItem.njk"
+  private val template = "confirmRemoveItem.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -86,9 +90,9 @@ class RemoveItemController @Inject()(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(ItemsQuery(index)))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(RemoveItemPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(ConfirmRemoveItemPage, mode, updatedAnswers))
             } else {
-              Future.successful(Redirect(navigator.nextPage(RemoveItemPage, mode, request.userAnswers)))
+              Future.successful(Redirect(navigator.nextPage(ConfirmRemoveItemPage, mode, request.userAnswers)))
           }
         )
   }

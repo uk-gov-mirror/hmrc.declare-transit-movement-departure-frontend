@@ -18,14 +18,14 @@ package pages.addItems
 
 import pages.behaviours.PageBehaviours
 
-class RemoveItemPageSpec extends PageBehaviours {
+class ConfirmRemoveItemPageSpec extends PageBehaviours {
 
   "RemoveItemPage" - {
 
-    beRetrievable[Boolean](RemoveItemPage)
+    beRetrievable[Boolean](ConfirmRemoveItemPage)
 
-    beSettable[Boolean](RemoveItemPage)
+    beSettable[Boolean](ConfirmRemoveItemPage)
 
-    beRemovable[Boolean](RemoveItemPage)
+    beRemovable[Boolean](ConfirmRemoveItemPage)
   }
 }

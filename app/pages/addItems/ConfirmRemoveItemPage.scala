@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.addItems
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class RemoveItemFormProvider @Inject() extends Mappings {
+case object ConfirmRemoveItemPage extends QuestionPage[Boolean] {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("removeItem.error.required")
-    )
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "removeItem"
 }

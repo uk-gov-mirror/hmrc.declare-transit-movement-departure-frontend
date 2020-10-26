@@ -18,16 +18,16 @@ package controllers.addItems
 
 import base.SpecBase
 import controllers.{routes => mainRoutes}
-import forms.RemoveItemFormProvider
+import forms.addItems.ConfirmRemoveItemFormProvider
 import matchers.JsonMatchers
-import models.{Index, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.RemoveItemPage
+import pages.ItemDescriptionPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -39,15 +39,15 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class RemoveItemControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ConfirmRemoveItemControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new RemoveItemFormProvider()
+  private val formProvider = new ConfirmRemoveItemFormProvider()
   private val form         = formProvider()
-  private val template     = "removeItem.njk"
+  private val template     = "confirmRemoveItem.njk"
 
-  lazy val removeItemRoute = routes.RemoveItemController.onPageLoad(lrn, index: Index, NormalMode).url
+  lazy val removeItemRoute = routes.ConfirmRemoveItemController.onPageLoad(lrn, index).url
 
   "RemoveItem Controller" - {
 
@@ -70,42 +70,9 @@ class RemoveItemControllerSpec extends SpecBase with MockitoSugar with NunjucksS
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
+        "index"  -> index.display,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(form("value"))
-      )
-
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
-
-      application.stop()
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(RemoveItemPage, true).success.value
-      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, removeItemRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -121,9 +88,11 @@ class RemoveItemControllerSpec extends SpecBase with MockitoSugar with NunjucksS
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val updatedUserAnswers                             = emptyUserAnswers.set(ItemDescriptionPage(index), "item1").success.value
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(updatedUserAnswers))
           .overrides(
             bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -137,6 +106,9 @@ class RemoveItemControllerSpec extends SpecBase with MockitoSugar with NunjucksS
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
+      verify(mockSessionRepository, times(1)).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.get(ItemDescriptionPage(index)) mustBe None
 
       redirectLocation(result).value mustEqual onwardRoute.url
 

@@ -16,11 +16,10 @@
 
 package utils
 
-import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.routes
+import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.{CommodityCodePage, RemoveItemPage}
 import pages.addItems.traderDetails._
 import pages.addItems.{AddItemsSameConsigneeForAllItemsPage, AddItemsSameConsignorForAllItemsPage, CommodityCodePage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -268,21 +267,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def removeItem(index: Index): Option[Row] = userAnswers.get(RemoveItemPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"removeItem.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.RemoveItemController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"removeItem.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def itemRows(index: Index): Option[Row] =
     userAnswers.get(ItemDescriptionPage(index)).map {
       answer =>
@@ -298,7 +282,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             ),
             Action(
               content            = msg"site.delete",
-              href               = routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index).url,
+              href               = routes.ConfirmRemoveItemController.onPageLoad(userAnswers.id, index).url,
               visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
               attributes         = Map("id" -> s"""remove-item-${index.display}""")
             )
