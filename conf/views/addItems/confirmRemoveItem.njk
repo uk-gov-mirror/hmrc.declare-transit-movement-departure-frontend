@@ -27,7 +27,7 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.addItems.RemoveItemController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.addItems.ConfirmRemoveItemController.onSubmit(lrn, index, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 

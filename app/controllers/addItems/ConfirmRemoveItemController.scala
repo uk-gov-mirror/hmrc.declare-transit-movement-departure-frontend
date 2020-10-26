@@ -61,6 +61,7 @@ class ConfirmRemoveItemController @Inject()(
       val json = Json.obj(
         "form"   -> form,
         "mode"   -> mode,
+        "index"  -> index.display,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(form("value"))
       )

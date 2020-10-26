@@ -36,7 +36,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, NormalMode)
     case CommodityCodePage(index) => ua =>  Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
     case AddAnotherItemPage => ua => Some(addAnotherPageRoute(ua))
-
+    case ConfirmRemoveItemPage => ua => Some(removeItem(NormalMode)(ua))
   }
 
   //TODO: Need to refactor this code
@@ -76,4 +76,10 @@ class AddItemsNavigator @Inject()() extends Navigator {
         mainRoutes.DeclarationSummaryController.onPageLoad(userAnswers.id)
     }
   }
+
+  private def removeItem(mode: Mode)(ua: UserAnswers) =
+    ua.get(DeriveNumberOfItems) match {
+      case None | Some(0) => routes.ItemDescriptionController.onPageLoad(ua.id, Index(0), mode)
+      case _              => routes.AddAnotherItemController.onPageLoad(ua.id)
+    }
 }
