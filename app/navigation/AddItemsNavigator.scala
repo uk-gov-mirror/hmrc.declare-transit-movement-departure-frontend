@@ -28,6 +28,7 @@ import play.api.mvc.Call
 
 @Singleton
 class AddItemsNavigator @Inject()() extends Navigator {
+
   // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(index)                           => ua => Some(routes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
@@ -36,7 +37,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TotalNetMassPage(index)                              => ua => Some(routes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
     case IsCommodityCodeKnownPage(index)                      => ua => isCommodityKnownRoute(index, ua, NormalMode)
     case AddAnotherItemPage                                   => ua => Some(addAnotherPageRoute(ua))
-    case ConfirmRemoveItemPage => ua => Some(removeItem(NormalMode)(ua))
+    case ConfirmRemoveItemPage                                => ua => Some(removeItem(NormalMode)(ua))
     case CommodityCodePage(index)                             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case PackageTypePage(itemIndex, packageIndex)             => ua => packageType(itemIndex, packageIndex, ua, NormalMode) // TODO add modes functionality when tests are created
     case HowManyPackagesPage(itemIndex, packageIndex)         => ua => howManyPackages(itemIndex, packageIndex, ua, NormalMode)

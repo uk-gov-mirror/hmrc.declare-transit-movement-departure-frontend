@@ -128,7 +128,97 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
       }
 
+      "must go from AddAnotherItem page to" - {
+
+        "ItemDescription page if the answer is 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddAnotherItemPage, false).success.value
+              navigator
+                .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
+                .mustBe(mainRoutes.DeclarationSummaryController.onPageLoad(answers.id))
+          }
+        }
+
+        "task list page if the answer is 'No'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers
+                .set(AddAnotherItemPage, true)
+                .success
+                .value
+                .set(ItemDescriptionPage(index), "test")
+                .success
+                .value
+
+              navigator
+                .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
+                .mustBe(routes.ItemDescriptionController.onPageLoad(answers.id, Index(1), NormalMode))
+          }
+        }
+      }
+
+      "must go from ConfirmRemoveItem page to " - {
+
+        "AddAnotherItem page when 'No' is selected and there are more than one item" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ItemDescriptionPage(index), "item1")
+                .success
+                .value
+                .set(ItemDescriptionPage(Index(1)), "item2")
+                .success
+                .value
+                .set(AddAnotherItemPage, true)
+                .success
+                .value
+                .set(ConfirmRemoveItemPage, false)
+                .success
+                .value
+              navigator
+                .nextPage(ConfirmRemoveItemPage, NormalMode, updatedAnswers)
+                .mustBe(routes.AddAnotherItemController.onPageLoad(updatedAnswers.id))
+          }
+        }
+
+        "AddAnotherItem page when 'Yes' is selected and there are more than one item" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ItemDescriptionPage(index), "item1")
+                .success
+                .value
+                .set(ItemDescriptionPage(Index(1)), "item2")
+                .success
+                .value
+                .set(ConfirmRemoveItemPage, true)
+                .success
+                .value
+              navigator
+                .nextPage(ConfirmRemoveItemPage, NormalMode, updatedAnswers)
+                .mustBe(routes.AddAnotherItemController.onPageLoad(updatedAnswers.id))
+          }
+        }
+
+        "ItemDescription page when 'Yes' is selected and when all the items are removed" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .remove(ItemsQuery(index))
+            .success
+            .value
+            .set(ConfirmRemoveItemPage, true)
+            .success
+            .value
+          navigator
+            .nextPage(ConfirmRemoveItemPage, NormalMode, updatedAnswers)
+            .mustBe(routes.ItemDescriptionController.onPageLoad(updatedAnswers.id, index, NormalMode))
+        }
+
+      }
+
       "PackageJourney" - {
+
         "PackageType" - {
 
           "must go to HowManyPackages when PackageType code isn't bulk or unpacked" in {
@@ -161,6 +251,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
         }
+
         "HowManyPackages" - {
 
           "must go to DeclareMark when PackageType code isn't bulk or unpacked" in {
