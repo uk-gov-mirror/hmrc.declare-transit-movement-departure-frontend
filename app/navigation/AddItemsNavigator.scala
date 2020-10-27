@@ -39,23 +39,30 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddAnotherItemPage                                   => ua => Some(addAnotherPageRoute(ua))
     case ConfirmRemoveItemPage                                => ua => Some(removeItem(NormalMode)(ua))
     case CommodityCodePage(index)                             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case PackageTypePage(itemIndex, packageIndex)             => ua => packageType(itemIndex, packageIndex, ua) // TODO add modes functionality when tests are created
-    case HowManyPackagesPage(itemIndex, packageIndex)         => ua => howManyPackages(itemIndex, packageIndex, ua)
-    case DeclareNumberOfPackagesPage(itemIndex, packageIndex) => ua => declareNumberOfPackages(itemIndex, packageIndex, ua)
+    case PackageTypePage(itemIndex, packageIndex)             => ua => packageType(itemIndex, packageIndex, ua, NormalMode) // TODO add modes functionality when tests are created
+    case HowManyPackagesPage(itemIndex, packageIndex)         => ua => howManyPackages(itemIndex, packageIndex, ua, NormalMode)
+    case DeclareNumberOfPackagesPage(itemIndex, packageIndex) => ua => declareNumberOfPackages(itemIndex, packageIndex, ua, NormalMode)
     case TotalPiecesPage(itemIndex, packageIndex)             => ua => Some(routes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
-    case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua)
+    case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, NormalMode)
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
-    case AddAnotherPackagePage(itemIndex, packageIndex)       => ua => addAnotherPackage(itemIndex, packageIndex, ua)
+    case AddAnotherPackagePage(itemIndex, packageIndex)       => ua => addAnotherPackage(itemIndex, packageIndex, ua, NormalMode)
   }
 
   //TODO: Need to refactor this code
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ItemDescriptionPage(index) => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case ItemTotalGrossMassPage(index) => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case AddTotalNetMassPage(index) => ua => addTotalNessMassRoute(index, ua, CheckMode)
-    case IsCommodityCodeKnownPage(index) => ua => isCommodityKnownRoute(index, ua, CheckMode)
-    case CommodityCodePage(index) => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case TotalNetMassPage(index) => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case ItemDescriptionPage(index)                           => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case ItemTotalGrossMassPage(index)                        => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case AddTotalNetMassPage(index)                           => ua => addTotalNessMassRoute(index, ua, CheckMode)
+    case IsCommodityCodeKnownPage(index)                      => ua => isCommodityKnownRoute(index, ua, CheckMode)
+    case CommodityCodePage(index)                             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case TotalNetMassPage(index)                              => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case PackageTypePage(itemIndex, packageIndex)             => ua => packageType(itemIndex, packageIndex, ua, CheckMode) // TODO add modes functionality when tests are created
+    case HowManyPackagesPage(itemIndex, packageIndex)         => ua => howManyPackages(itemIndex, packageIndex, ua, CheckMode)
+    case DeclareNumberOfPackagesPage(itemIndex, packageIndex) => ua => declareNumberOfPackages(itemIndex, packageIndex, ua, CheckMode)
+    case TotalPiecesPage(itemIndex, packageIndex)             => ua => Some(routes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, CheckMode))
+    case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, CheckMode)
+    case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+    case AddAnotherPackagePage(itemIndex, packageIndex)       => ua => addAnotherPackage(itemIndex, packageIndex, ua, CheckMode)
   }
 
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
@@ -72,7 +79,6 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (Some(true), None , _)          => Some(routes.TotalNetMassController.onPageLoad(ua.id, index, mode))
       case _                               => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
-    // format: on
 
   private def addAnotherPageRoute(userAnswers: UserAnswers): Call = {
     val count = userAnswers.get(DeriveNumberOfItems).getOrElse(0)
@@ -91,59 +97,58 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
   // TODO add smarter PackageTypePage type for easier matching
-  def packageType(itemIndex: Index, packageIndex: Index, ua: UserAnswers) =
+  def packageType(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode) =
     ua.get(PackageTypePage(itemIndex, packageIndex)) match {
       case Some(packageType) if bulkAndUnpackedCodes.contains(packageType) =>
-        Some(routes.DeclareNumberOfPackagesController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+        Some(routes.DeclareNumberOfPackagesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case Some(_) =>
-        Some(routes.HowManyPackagesController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+        Some(routes.HowManyPackagesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case _ =>
         Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  def howManyPackages(itemIndex: Index, packageIndex: Index, ua: UserAnswers) =
+  def howManyPackages(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode) =
     (ua.get(HowManyPackagesPage(itemIndex, packageIndex)), ua.get(PackageTypePage(itemIndex, packageIndex))) match {
       case (Some(_), Some(packageType)) if bulkCodes.contains(packageType) =>
-        Some(routes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+        Some(routes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case (Some(_), Some(packageType)) if unpackedCodes.contains(packageType) =>
-        Some(routes.TotalPiecesController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+        Some(routes.TotalPiecesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case (Some(_), Some(_)) =>
-        Some(routes.DeclareMarkController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+        Some(routes.DeclareMarkController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case _ =>
         Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  def declareNumberOfPackages(itemIndex: Index, packageIndex: Index, ua: UserAnswers) =
+  def declareNumberOfPackages(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode) =
     (ua.get(DeclareNumberOfPackagesPage(itemIndex, packageIndex)), ua.get(PackageTypePage(itemIndex, packageIndex))) match {
       case (Some(true), _) =>
-        Some(routes.HowManyPackagesController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+        Some(routes.HowManyPackagesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case (Some(false), Some(packageType)) if bulkCodes.contains(packageType) =>
-        Some(routes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+        Some(routes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case (Some(false), Some(packageType)) if unpackedCodes.contains(packageType) =>
-        Some(routes.TotalPiecesController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+        Some(routes.TotalPiecesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case _ =>
         Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  def addMark(itemIndex: Index, packageIndex: Index, ua: UserAnswers) =
-    ua.get(AddMarkPage(itemIndex, packageIndex)) match {
-      case Some(true) =>
-        Some(routes.DeclareMarkController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
-      case Some(false) =>
-        Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
-      case _ =>
-        Some(mainRoutes.SessionExpiredController.onPageLoad())
+  def addMark(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode) =
+    (ua.get(AddMarkPage(itemIndex, packageIndex)), mode) match {
+      case (Some(true), _)            => Some(routes.DeclareMarkController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
+      case (Some(false), NormalMode)  => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
+      case (Some(false), CheckMode)   => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+      case _                          => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  def addAnotherPackage(itemIndex: Index, packageIndex: Index, ua: UserAnswers) =
-    ua.get(AddAnotherPackagePage(itemIndex, packageIndex)) match {
-      case Some(true) =>
+  def addAnotherPackage(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode) =
+    (ua.get(AddAnotherPackagePage(itemIndex, packageIndex)), mode) match {
+      case (Some(true), _) =>
         val nextPackageIndex: Int = ua.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
-        Some(routes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(nextPackageIndex), NormalMode))
-      case Some(false) =>
+        Some(routes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(nextPackageIndex), mode))
+      case (Some(false), CheckMode) =>
+        Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+      case (Some(false), NormalMode) =>
         ??? //TODO hook into container journey
-      case _ =>
-        Some(mainRoutes.SessionExpiredController.onPageLoad())
+      case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
   // format: on
 }
