@@ -13,7 +13,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class $className$ControllerSpec extends SpecBase with NunjucksDependentSpec with MockitoSugar with JsonMatchers {
+class $className$ControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   "$className$ Controller" - {
 
