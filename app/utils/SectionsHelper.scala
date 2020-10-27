@@ -254,11 +254,13 @@ class SectionsHelper(userAnswers: UserAnswers) {
     } else { Seq.empty }
 
     Seq(
-      userAnswers.get(ItemDescriptionPage(index))      -> addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url,
-      userAnswers.get(ItemTotalGrossMassPage(index))   -> addItemsRoutes.ItemTotalGrossMassController.onPageLoad(lrn, index, NormalMode).url,
-      userAnswers.get(AddTotalNetMassPage(index))      -> addItemsRoutes.AddTotalNetMassController.onPageLoad(lrn, index, NormalMode).url,
-      userAnswers.get(IsCommodityCodeKnownPage(index)) -> addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(lrn, index, NormalMode).url
-    ) ++ addTotalGrossMassPages ++ commodityCodePages
+      userAnswers.get(ItemDescriptionPage(index))    -> addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url,
+      userAnswers.get(ItemTotalGrossMassPage(index)) -> addItemsRoutes.ItemTotalGrossMassController.onPageLoad(lrn, index, NormalMode).url,
+      userAnswers.get(AddTotalNetMassPage(index))    -> addItemsRoutes.AddTotalNetMassController.onPageLoad(lrn, index, NormalMode).url
+    ) ++
+      addTotalGrossMassPages ++
+      Seq(userAnswers.get(IsCommodityCodeKnownPage(index)) -> addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(lrn, index, NormalMode).url) ++
+      commodityCodePages
   }
 
   private val goodsSummaryPages: Seq[(Option[_], String)] = {
