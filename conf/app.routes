@@ -458,3 +458,8 @@ POST       /:lrn/add-items/item-details/:index/change-AddItemsSameConsignorForAl
 
 GET        /:lrn/add-items/add-items                        controllers.addItems.AddAnotherItemController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /:lrn/add-items/add-items                        controllers.addItems.AddAnotherItemController.onSubmit(lrn: LocalReferenceNumber)
+
+GET        /:lrn/addAdministrativeReference                        controllers.AddAdministrativeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addAdministrativeReference                        controllers.AddAdministrativeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddAdministrativeReference                  controllers.AddAdministrativeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddAdministrativeReference                  controllers.AddAdministrativeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

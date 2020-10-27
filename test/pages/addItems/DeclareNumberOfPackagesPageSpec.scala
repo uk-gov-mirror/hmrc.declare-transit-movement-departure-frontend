@@ -19,7 +19,6 @@ package pages.addItems
 import base.SpecBase
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
-import pages.PackageTypePage
 import pages.behaviours.PageBehaviours
 
 class DeclareNumberOfPackagesPageSpec extends PageBehaviours with SpecBase {

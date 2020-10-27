@@ -830,3 +830,7 @@ addItems.checkYourAnswersLabel.containers = Containers
 addItems.checkYourAnswersLabel.containers = Special mentions
 addItems.checkYourAnswersLabel.certificates = Produced documents and work certificates
 addItems.checkYourAnswersLabel.references = Previous administrative references
+addAdministrativeReference.title = addAdministrativeReference
+addAdministrativeReference.heading = addAdministrativeReference
+addAdministrativeReference.checkYourAnswersLabel = addAdministrativeReference
+addAdministrativeReference.error.required = Select yes if addAdministrativeReference
