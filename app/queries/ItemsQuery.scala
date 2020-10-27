@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.addItems
+package queries
 
-import forms.mappings.Mappings
-import javax.inject.Inject
 import models.Index
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-class AddTotalNetMassFormProvider @Inject() extends Mappings {
+final case class ItemsQuery(index: Index) extends QuestionPage[JsObject] {
 
-  def apply(index: Index): Form[Boolean] =
-    Form(
-      "value" -> boolean("addTotalNetMass.error.required", "error.boolean", Seq(index.display))
-    )
+  override def path: JsPath = JsPath \ Constants.items \ index.position
+
 }

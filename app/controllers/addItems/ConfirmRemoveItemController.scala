@@ -17,15 +17,20 @@
 package controllers.addItems
 
 import controllers.actions._
-import forms.addItems.AddTotalNetMassFormProvider
+import forms.addItems.ConfirmRemoveItemFormProvider
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.AddTotalNetMassPage
+import pages.ItemDescriptionPage
+import pages.addItems.ConfirmRemoveItemPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
+import queries.ItemsQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -33,14 +38,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddTotalNetMassController @Inject()(
+class ConfirmRemoveItemController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddTotalNetMassFormProvider,
+  formProvider: ConfirmRemoveItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -48,27 +53,26 @@ class AddTotalNetMassController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
+  private val template = "addItems/confirmRemoveItem.njk"
+
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddTotalNetMassPage(index)) match {
-        case None        => formProvider(index: Index)
-        case Some(value) => formProvider(index: Index).fill(value)
-      }
-
+      val form = formProvider()
       val json = Json.obj(
-        "form"   -> preparedForm,
+        "form"   -> form,
         "mode"   -> mode,
-        "lrn"    -> lrn,
         "index"  -> index.display,
-        "radios" -> Radios.yesNo(preparedForm("value"))
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(form("value"))
       )
 
-      renderer.render("addTotalNetMass.njk", json).map(Ok(_))
+      renderer.render(template, json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      formProvider(index: Index)
+      val form = formProvider()
+      form
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -76,18 +80,22 @@ class AddTotalNetMassController @Inject()(
             val json = Json.obj(
               "form"   -> formWithErrors,
               "mode"   -> mode,
-              "lrn"    -> lrn,
               "index"  -> index.display,
+              "lrn"    -> lrn,
               "radios" -> Radios.yesNo(formWithErrors("value"))
             )
 
-            renderer.render("addTotalNetMass.njk", json).map(BadRequest(_))
+            renderer.render(template, json).map(BadRequest(_))
           },
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTotalNetMassPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddTotalNetMassPage(index), mode, updatedAnswers))
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(ItemsQuery(index)))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(ConfirmRemoveItemPage, mode, updatedAnswers))
+            } else {
+              Future.successful(Redirect(navigator.nextPage(ConfirmRemoveItemPage, mode, request.userAnswers)))
+          }
         )
   }
 }

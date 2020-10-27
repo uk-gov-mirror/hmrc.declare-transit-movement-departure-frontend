@@ -802,6 +802,10 @@ traderDetailsConsignorName.checkYourAnswersLabel = traderDetailsConsignorName
 traderDetailsConsignorName.error.required = Enter traderDetailsConsignorName
 traderDetailsConsignorName.error.length = TraderDetailsConsignorName must be 100 characters or less
 
+removeItem.title = Are you sure you want to remove this item?
+removeItem.heading = Are you sure you want to remove this item?
+removeItem.error.required = Select yes if you are sure you want to remove this item
+
 addItemsSameConsigneeForAllItems.title = addItemsSameConsigneeForAllItems
 addItemsSameConsigneeForAllItems.heading = addItemsSameConsigneeForAllItems
 addItemsSameConsigneeForAllItems.checkYourAnswersLabel = addItemsSameConsigneeForAllItems

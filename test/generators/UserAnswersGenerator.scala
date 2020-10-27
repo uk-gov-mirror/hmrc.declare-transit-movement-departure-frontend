@@ -31,7 +31,8 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(AddItemsSameConsignorForAllItemsPage.type, JsValue)] ::
+    arbitrary[(ConfirmRemoveItemPage.type, JsValue)] ::
+      arbitrary[(AddItemsSameConsignorForAllItemsPage.type, JsValue)] ::
       arbitrary[(AddItemsSameConsigneeForAllItemsPage.type, JsValue)] ::
       arbitrary[(HowManyPackagesPage, JsValue)] ::
       arbitrary[(AddAnotherPackagePage, JsValue)] ::

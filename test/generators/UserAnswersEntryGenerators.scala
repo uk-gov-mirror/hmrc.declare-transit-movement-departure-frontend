@@ -20,6 +20,7 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
+import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage}
 import pages.addItems.traderDetails._
 import pages.addItems._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
@@ -41,6 +42,14 @@ trait UserAnswersEntryGenerators extends PageGenerators {
     Arbitrary {
       for {
         page  <- arbitrary[AddItemsSameConsigneeForAllItemsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRemoveItemUserAnswersEntry: Arbitrary[(ConfirmRemoveItemPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConfirmRemoveItemPage.type]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }

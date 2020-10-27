@@ -398,10 +398,10 @@ POST       /:lrn/add-items/item-details/:index/commodity-code                   
 GET        /:lrn/add-items/item-details/:index/change-commodity-code                  controllers.addItems.CommodityCodeController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/item-details/:index/change-commodity-code                  controllers.addItems.CommodityCodeController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 
-GET        /:lrn/add-items/item-details/:index/is-commodity-code-known                        controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/item-details/:index/is-commodity-code-known                         controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/item-details/:index/is-commodity-code-known                         controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
-GET        /:lrn/add-items/item-details/:index/change-is-commodity-code-known               controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
-POST       /:lrn/add-items/item-details/:index/change-is-commodity-code-known                 controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+GET        /:lrn/add-items/item-details/:index/change-is-commodity-code-known                  controllers.addItems.IsCommodityCodeKnownController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/item-details/:index/change-is-commodity-code-known                  controllers.addItems.IsCommodityCodeKnownController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 
 GET        /:lrn/add-items/item-details/:index/trader-details/consignee-address                     controllers.addItems.traderDetails.TraderDetailsConsigneeAddressController.onPageLoad(lrn: LocalReferenceNumber, index:Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/item-details/:index/trader-details/consignee-address                     controllers.addItems.traderDetails.TraderDetailsConsigneeAddressController.onSubmit(lrn: LocalReferenceNumber, index:Index, mode: Mode = NormalMode)
@@ -442,6 +442,9 @@ GET        /:lrn/add-items/item-details/:index/trader-details/consignor-name    
 POST       /:lrn/add-items/item-details/:index/trader-details/consignor-name                        controllers.addItems.traderDetails.TraderDetailsConsignorNameController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/item-details/:index/trader-details/change-consignor-name                 controllers.addItems.traderDetails.TraderDetailsConsignorNameController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/item-details/:index/trader-details/change-consignor-name                 controllers.addItems.traderDetails.TraderDetailsConsignorNameController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/add-items/item-details/:index/remove-item                                            controllers.addItems.ConfirmRemoveItemController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/item-details/:index/remove-item                                            controllers.addItems.ConfirmRemoveItemController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 
 GET        /:lrn/add-items/item-details/:index/addItemsSameConsigneeForAllItems                        controllers.addItems.AddItemsSameConsigneeForAllItemsController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/item-details/:index/addItemsSameConsigneeForAllItems                        controllers.addItems.AddItemsSameConsigneeForAllItemsController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
