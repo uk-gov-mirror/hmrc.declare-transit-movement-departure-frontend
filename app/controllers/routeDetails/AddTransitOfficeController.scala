@@ -21,7 +21,7 @@ import controllers.actions._
 import derivable.DeriveNumberOfOfficeOfTransits
 import forms.AddTransitOfficeFormProvider
 import javax.inject.Inject
-import controllers.requests.DataRequest
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails

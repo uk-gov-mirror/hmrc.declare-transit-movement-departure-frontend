@@ -17,7 +17,7 @@
 package controllers.actions
 
 import models.{LocalReferenceNumber, UserAnswers}
-import controllers.requests.{IdentifierRequest, OptionalDataRequest}
+import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
 
 import scala.concurrent.{ExecutionContext, Future}

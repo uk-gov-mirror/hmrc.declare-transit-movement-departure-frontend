@@ -32,7 +32,7 @@ trait ModelGenerators {
   val stringMaxLength = 256
 
   // TODO turn PackageType into a trait with three sub classes for Bulk, Unpacked and normal
-  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] = {
+  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
     Arbitrary {
       for {
         code        <- arbitrary[String]
@@ -64,7 +64,7 @@ trait ModelGenerators {
     }
   }
 
-  lazy val arbitraryBulkOrUnpackedPackageType: Arbitrary[PackageType] = {
+  lazy val arbitraryBulkOrUnpackedPackageType: Arbitrary[PackageType] =
     Arbitrary {
       for {
         bulk           <- arbitraryBulkPackageType.arbitrary
@@ -72,7 +72,6 @@ trait ModelGenerators {
         bulkOrUnpacked <- Gen.oneOf(Seq(bulk, unpacked))
       } yield bulkOrUnpacked
     }
-  }
 
   implicit lazy val arbitraryGuaranteeType: Arbitrary[GuaranteeType] =
     Arbitrary {
@@ -196,12 +195,13 @@ trait ModelGenerators {
         containersUsed            <- arbitrary[Boolean]
         declarationPlacePage      <- stringsWithMaxLength(stringMaxLength)
         declarationForSomeoneElse <- arbitrary[DeclarationForSomeoneElseAnswer]
-      } yield SimplifiedMovementDetails(
-        declarationType,
-        containersUsed,
-        declarationPlacePage,
-        declarationForSomeoneElse
-      )
+      } yield
+        SimplifiedMovementDetails(
+          declarationType,
+          containersUsed,
+          declarationPlacePage,
+          declarationForSomeoneElse
+        )
     }
 
   implicit lazy val arbitraryLocalDateTimeWithAMPM: Arbitrary[LocalDateTimeWithAMPM] =
@@ -217,10 +217,11 @@ trait ModelGenerators {
       for {
         transitOffice <- stringsWithMaxLength(stringMaxLength)
         arrivalTime   <- arbitrary[LocalDateTime]
-      } yield TransitInformation(
-        transitOffice,
-        arrivalTime
-      )
+      } yield
+        TransitInformation(
+          transitOffice,
+          arrivalTime
+        )
     }
 
   implicit lazy val arbitraryRouteDetails: Arbitrary[RouteDetails] =
@@ -231,13 +232,14 @@ trait ModelGenerators {
         destinationCountry <- arbitrary[CountryCode]
         destinationOffice  <- stringsWithMaxLength(stringMaxLength)
         transitInformation <- nonEmptyListOf[TransitInformation](10)
-      } yield RouteDetails(
-        countryOfDispatch,
-        officeOfDeparture,
-        destinationCountry,
-        destinationOffice,
-        transitInformation
-      )
+      } yield
+        RouteDetails(
+          countryOfDispatch,
+          officeOfDeparture,
+          destinationCountry,
+          destinationOffice,
+          transitInformation
+        )
     }
 
 }

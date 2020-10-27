@@ -20,7 +20,7 @@ import controllers.actions._
 import derivable.DeriveNumberOfSeals
 import forms.SealsInformationFormProvider
 import javax.inject.Inject
-import controllers.requests.DataRequest
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GoodsSummary

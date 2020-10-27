@@ -17,7 +17,7 @@
 package handlers
 
 import javax.inject.{Inject, Singleton}
-import controllers.requests.DataRequest
+import models.requests.DataRequest
 import play.api.http.HeaderNames.CACHE_CONTROL
 import play.api.http.HttpErrorHandler
 import play.api.http.Status._

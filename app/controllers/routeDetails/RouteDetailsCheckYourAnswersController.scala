@@ -22,7 +22,7 @@ import controllers.{routes => mainRoutes}
 import derivable.DeriveNumberOfOfficeOfTransits
 import javax.inject.Inject
 import models.reference.CountryCode
-import controllers.requests.DataRequest
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, NormalMode}
 import pages.DestinationCountryPage
 import play.api.Logger

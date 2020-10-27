@@ -21,7 +21,7 @@ import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import javax.inject.Inject
 import models.GuaranteeType.FlatRateVoucher
 import models.messages.guarantee.{GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
-import controllers.requests.DataRequest
+import models.requests.DataRequest
 import models.{LocalReferenceNumber, Mode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails

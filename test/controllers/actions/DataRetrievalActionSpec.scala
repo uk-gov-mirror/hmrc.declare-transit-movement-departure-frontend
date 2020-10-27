@@ -17,7 +17,7 @@
 package controllers.actions
 
 import generators.Generators
-import controllers.requests.{IdentifierRequest, OptionalDataRequest}
+import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
