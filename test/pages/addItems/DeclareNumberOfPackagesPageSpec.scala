@@ -17,6 +17,9 @@
 package pages.addItems
 
 import base.SpecBase
+import models.UserAnswers
+import org.scalacheck.Arbitrary.arbitrary
+import pages.PackageTypePage
 import pages.behaviours.PageBehaviours
 
 class DeclareNumberOfPackagesPageSpec extends PageBehaviours with SpecBase {
@@ -28,5 +31,30 @@ class DeclareNumberOfPackagesPageSpec extends PageBehaviours with SpecBase {
     beSettable[Boolean](DeclareNumberOfPackagesPage(index, index))
 
     beRemovable[Boolean](DeclareNumberOfPackagesPage(index, index))
+
+    "cleanup" - {
+
+      "must cleanup pages if answer changes to false" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result =
+              userAnswers
+                .set(HowManyPackagesPage(index, index), 123)
+                .success
+                .value
+                .set(TotalPiecesPage(index, index), 123)
+                .success
+                .value
+                .set(DeclareNumberOfPackagesPage(index, index), false)
+                .success
+                .value
+
+            result.get(HowManyPackagesPage(index, index)) must not be defined
+            result.get(TotalPiecesPage(index, index)) must not be defined
+        }
+      }
+    }
   }
+
 }
