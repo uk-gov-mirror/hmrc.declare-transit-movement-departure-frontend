@@ -16,14 +16,27 @@
 
 package pages.addItems
 
-import models.Index
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{items, packages}
+
+import scala.util.{Success, Try}
 
 case class DeclareNumberOfPackagesPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
   override def toString: String = "declareNumberOfPackages"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) =>
+        for {
+          ua <- userAnswers.remove(HowManyPackagesPage(itemIndex, packageIndex))
+          ua <- ua.remove(TotalPiecesPage(itemIndex, packageIndex))
+        } yield ua
+      case _ =>
+        Success(userAnswers)
+    }
 }

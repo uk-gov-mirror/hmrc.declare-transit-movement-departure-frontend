@@ -16,14 +16,22 @@
 
 package pages.addItems
 
-import models.Index
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{items, packages}
+
+import scala.util.{Success, Try}
 
 case class AddMarkPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
   override def toString: String = "addMark"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(DeclareMarkPage(itemIndex, packageIndex))
+      case _           => Success(userAnswers)
+    }
 }

@@ -18,7 +18,6 @@ package navigation
 
 import base.SpecBase
 import controllers.addItems.routes
-import controllers.{routes => mainRoutes}
 import generators.Generators
 import models.reference.PackageType
 import models.{CheckMode, Index, NormalMode, UserAnswers}
@@ -26,7 +25,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
-import queries.ItemsQuery
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -324,10 +322,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage(index, index), false)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
-                  .set(PackageTypePage(index, index), packageType.code)
+                  .set(DeclareNumberOfPackagesPage(index, index), false)
                   .success
                   .value
 
@@ -340,10 +338,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage(index, index), false)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
-                  .set(PackageTypePage(index, index), packageType.code)
+                  .set(DeclareNumberOfPackagesPage(index, index), false)
                   .success
                   .value
 
@@ -676,10 +674,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage(index, index), false)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
-                  .set(PackageTypePage(index, index), packageType.code)
+                  .set(DeclareNumberOfPackagesPage(index, index), false)
                   .success
                   .value
 
@@ -692,10 +690,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage(index, index), false)
+                  .set(PackageTypePage(index, index), packageType.code)
                   .success
                   .value
-                  .set(PackageTypePage(index, index), packageType.code)
+                  .set(DeclareNumberOfPackagesPage(index, index), false)
                   .success
                   .value
 
