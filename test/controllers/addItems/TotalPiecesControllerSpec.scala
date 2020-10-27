@@ -16,7 +16,7 @@
 
 package controllers.addItems
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.TotalPiecesFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -39,7 +39,7 @@ import pages.addItems.TotalPiecesPage
 
 import scala.concurrent.Future
 
-class TotalPiecesControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class TotalPiecesControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val formProvider = new TotalPiecesFormProvider()
   val form         = formProvider()

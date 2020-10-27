@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
@@ -39,7 +39,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class AuthActionSpec extends SpecBase {
+class AuthActionSpec extends SpecBase with MockNunjucksRendererApp {
 
   private def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 

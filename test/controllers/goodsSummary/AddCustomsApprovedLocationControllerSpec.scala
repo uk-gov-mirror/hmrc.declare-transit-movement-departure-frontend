@@ -16,7 +16,7 @@
 
 package controllers.goodsSummary
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.AddCustomsApprovedLocationFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -39,7 +39,7 @@ import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class AddCustomsApprovedLocationControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddCustomsApprovedLocationControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

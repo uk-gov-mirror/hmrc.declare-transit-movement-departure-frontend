@@ -18,7 +18,7 @@ package controllers.goodsSummary
 
 import java.time.{LocalDate, ZoneOffset}
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.ControlResultDateLimitFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -41,7 +41,7 @@ import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class ControlResultDateLimitControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ControlResultDateLimitControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val formProvider = new ControlResultDateLimitFormProvider()
   private def form = formProvider()

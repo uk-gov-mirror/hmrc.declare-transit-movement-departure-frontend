@@ -16,7 +16,7 @@
 
 package controllers.addItems
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.AddMarkFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -39,7 +39,7 @@ import pages.addItems.AddMarkPage
 
 import scala.concurrent.Future
 
-class AddMarkControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
