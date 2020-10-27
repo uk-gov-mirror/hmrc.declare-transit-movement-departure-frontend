@@ -18,7 +18,6 @@ package navigation
 
 import base.SpecBase
 import controllers.addItems.routes
-import controllers.{routes => mainRoutes}
 import generators.Generators
 import models.reference.PackageType
 import models.{CheckMode, Index, NormalMode, UserAnswers}
@@ -26,7 +25,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
-import queries.ItemsQuery
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
