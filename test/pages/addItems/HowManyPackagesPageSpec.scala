@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import play.api.libs.json.JsPath
+import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-case object AddAnotherPackagePage extends QuestionPage[Boolean] {
+class HowManyPackagesPageSpec extends PageBehaviours with SpecBase {
 
-  override def path: JsPath = JsPath \ toString
+  "HowManyPackagesPage" - {
 
-  override def toString: String = "addAnotherPackage"
+    beRetrievable[Int](HowManyPackagesPage(index, index))
+
+    beSettable[Int](HowManyPackagesPage(index, index))
+
+    beRemovable[Int](HowManyPackagesPage(index, index))
+  }
 }

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
+import models.Index
+import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.{items, packages}
 
-case object DeclareMarkPage extends QuestionPage[String] {
+case class DeclareMarkPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
   override def toString: String = "declareMark"
 }

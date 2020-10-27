@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.addItems
+package pages.addItems
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.Index
-import play.api.data.Form
+import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-class AddTotalNetMassFormProvider @Inject() extends Mappings {
+class TotalPiecesPageSpec extends PageBehaviours with SpecBase {
 
-  def apply(index: Index): Form[Boolean] =
-    Form(
-      "value" -> boolean("addTotalNetMass.error.required", "error.boolean", Seq(index.display))
-    )
+  "TotalPiecesPage" - {
+
+    beRetrievable[Int](TotalPiecesPage(index, index))
+
+    beSettable[Int](TotalPiecesPage(index, index))
+
+    beRemovable[Int](TotalPiecesPage(index, index))
+  }
 }

@@ -35,6 +35,7 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import controllers.{routes => mainRoutes}
+import forms.addItems.AddTotalNetMassFormProvider
 
 import scala.concurrent.Future
 

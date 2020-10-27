@@ -16,8 +16,8 @@
 
 package utils
 
-import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.routes
+import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.addItems.traderDetails._
@@ -282,7 +282,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             ),
             Action(
               content            = msg"site.delete",
-              href               = routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index).url,
+              href               = routes.ConfirmRemoveItemController.onPageLoad(userAnswers.id, index).url,
               visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
               attributes         = Map("id" -> s"""remove-item-${index.display}""")
             )

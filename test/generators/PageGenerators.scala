@@ -26,29 +26,32 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryRemoveItemPage: Arbitrary[ConfirmRemoveItemPage.type] =
+    Arbitrary(ConfirmRemoveItemPage)
+
   implicit lazy val arbitraryAddItemsSameConsignorForAllItemsPage: Arbitrary[AddItemsSameConsignorForAllItemsPage.type] =
     Arbitrary(AddItemsSameConsignorForAllItemsPage)
 
   implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsPage: Arbitrary[AddItemsSameConsigneeForAllItemsPage.type] =
     Arbitrary(AddItemsSameConsigneeForAllItemsPage)
 
-  implicit lazy val arbitraryHowManyPackagesPage: Arbitrary[HowManyPackagesPage.type] =
-    Arbitrary(HowManyPackagesPage)
+  implicit lazy val arbitraryHowManyPackagesPage: Arbitrary[HowManyPackagesPage] =
+    Arbitrary(HowManyPackagesPage(Index(0), Index(0)))
 
-  implicit lazy val arbitraryAddAnotherPackagePage: Arbitrary[AddAnotherPackagePage.type] =
-    Arbitrary(AddAnotherPackagePage)
+  implicit lazy val arbitraryAddAnotherPackagePage: Arbitrary[AddAnotherPackagePage] =
+    Arbitrary(AddAnotherPackagePage(Index(0), Index(0)))
 
-  implicit lazy val arbitraryDeclareMarkPage: Arbitrary[DeclareMarkPage.type] =
-    Arbitrary(DeclareMarkPage)
+  implicit lazy val arbitraryDeclareMarkPage: Arbitrary[DeclareMarkPage] =
+    Arbitrary(DeclareMarkPage(Index(0), Index(0)))
 
-  implicit lazy val arbitraryAddMarkPage: Arbitrary[AddMarkPage.type] =
-    Arbitrary(AddMarkPage)
+  implicit lazy val arbitraryAddMarkPage: Arbitrary[AddMarkPage] =
+    Arbitrary(AddMarkPage(Index(0), Index(0)))
 
-  implicit lazy val arbitraryTotalPiecesPage: Arbitrary[TotalPiecesPage.type] =
-    Arbitrary(TotalPiecesPage)
+  implicit lazy val arbitraryTotalPiecesPage: Arbitrary[TotalPiecesPage] =
+    Arbitrary(TotalPiecesPage(Index(0), Index(0)))
 
-  implicit lazy val arbitraryDeclareNumberOfPackagesPage: Arbitrary[DeclareNumberOfPackagesPage.type] =
-    Arbitrary(DeclareNumberOfPackagesPage)
+  implicit lazy val arbitraryDeclareNumberOfPackagesPage: Arbitrary[DeclareNumberOfPackagesPage] =
+    Arbitrary(DeclareNumberOfPackagesPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
     Arbitrary(addItems.CommodityCodePage(Index(0)))

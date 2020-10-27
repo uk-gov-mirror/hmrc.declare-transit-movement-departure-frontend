@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class AddAnotherPackagePageSpec extends PageBehaviours {
+case object ConfirmRemoveItemPage extends QuestionPage[Boolean] {
 
-  "AddAnotherPackagePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[Boolean](AddAnotherPackagePage)
-
-    beSettable[Boolean](AddAnotherPackagePage)
-
-    beRemovable[Boolean](AddAnotherPackagePage)
-  }
+  override def toString: String = "removeItem"
 }

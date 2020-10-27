@@ -18,8 +18,13 @@ package models.reference
 
 import play.api.libs.json.{Json, OFormat}
 
+// TODO seperate into sub types (BulkPackage, UnpackedPackage )
 case class PackageType(code: String, description: String)
 
 object PackageType {
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
+
+  val bulkCodes                         = Seq("VQ", "VG", "VL", "VY", "VR", "VS", "VO")
+  val unpackedCodes                     = Seq("NE", "NF", "NG")
+  val bulkAndUnpackedCodes: Seq[String] = bulkCodes ++ unpackedCodes
 }

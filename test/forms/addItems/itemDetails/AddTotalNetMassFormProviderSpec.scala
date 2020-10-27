@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems.itemDetails
 
 import base.SpecBase
-import controllers.addItems.AddTotalNetMassFormProvider
+import forms.addItems.AddTotalNetMassFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 

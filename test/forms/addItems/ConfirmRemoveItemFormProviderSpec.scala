@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms.addItems
 
-import pages.behaviours.PageBehaviours
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class AddMarkPageSpec extends PageBehaviours {
+class ConfirmRemoveItemFormProviderSpec extends BooleanFieldBehaviours {
 
-  "AddMarkPage" - {
+  val requiredKey = "removeItem.error.required"
+  val invalidKey  = "error.boolean"
 
-    beRetrievable[Boolean](AddMarkPage)
+  val form = new ConfirmRemoveItemFormProvider()()
 
-    beSettable[Boolean](AddMarkPage)
+  ".value" - {
 
-    beRemovable[Boolean](AddMarkPage)
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

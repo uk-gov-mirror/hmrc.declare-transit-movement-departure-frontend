@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
-import play.api.libs.json.JsPath
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-case object AddMarkPage extends QuestionPage[Boolean] {
+final case class ItemsQuery(index: Index) extends QuestionPage[JsObject] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ Constants.items \ index.position
 
-  override def toString: String = "addMark"
 }

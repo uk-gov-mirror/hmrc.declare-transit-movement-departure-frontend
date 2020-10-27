@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package derivable
+package forms.addItems
 
-import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.items
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case object DeriveNumberOfItems extends Derivable[List[JsObject], Int] {
+class ConfirmRemoveItemFormProvider @Inject() extends Mappings {
 
-  override val derive: List[JsObject] => Int = _.size
-
-  override def path: JsPath = JsPath \ items
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("removeItem.error.required")
+    )
 }
