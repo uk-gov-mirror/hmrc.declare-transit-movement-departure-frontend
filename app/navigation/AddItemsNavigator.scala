@@ -119,12 +119,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
 
   def addMark(itemIndex: Index, packageIndex: Index, ua: UserAnswers) =
     ua.get(AddMarkPage(itemIndex, packageIndex)) match {
-      case Some(true) =>
-        Some(routes.DeclareMarkController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
-      case Some(false) =>
-        Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
-      case _ =>
-        Some(mainRoutes.SessionExpiredController.onPageLoad())
+      case Some(true)  => Some(routes.DeclareMarkController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+      case Some(false) => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
+      case _           => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
   def addAnotherPackage(itemIndex: Index, packageIndex: Index, ua: UserAnswers) =
@@ -134,8 +131,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
         Some(routes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(nextPackageIndex), NormalMode))
       case Some(false) =>
         ??? //TODO hook into container journey
-      case _ =>
-        Some(mainRoutes.SessionExpiredController.onPageLoad())
+      case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
   // format: on
 }
