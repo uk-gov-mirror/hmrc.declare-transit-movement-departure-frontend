@@ -25,6 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
+import queries.ItemsQuery
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -134,7 +135,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val updatedAnswer = answers.set(AddAnotherItemPage, false).success.value
               navigator
                 .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
-                .mustBe(mainRoutes.DeclarationSummaryController.onPageLoad(answers.id))
+                .mustBe(routes.DeclarationSummaryController.onPageLoad(answers.id))
           }
         }
 
