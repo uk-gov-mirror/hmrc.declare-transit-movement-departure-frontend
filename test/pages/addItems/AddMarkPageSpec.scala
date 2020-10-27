@@ -17,6 +17,8 @@
 package pages.addItems
 
 import base.SpecBase
+import models.UserAnswers
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddMarkPageSpec extends PageBehaviours with SpecBase {
@@ -28,5 +30,22 @@ class AddMarkPageSpec extends PageBehaviours with SpecBase {
     beSettable[Boolean](AddMarkPage(index, index))
 
     beRemovable[Boolean](AddMarkPage(index, index))
+
+    "must cleanup pages if answer changes to false" in {
+
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val result =
+            userAnswers
+              .set(DeclareMarkPage(index, index), "mark")
+              .success
+              .value
+              .set(AddMarkPage(index, index), false)
+              .success
+              .value
+
+          result.get(DeclareMarkPage(index, index)) must not be defined
+      }
+    }
   }
 }
