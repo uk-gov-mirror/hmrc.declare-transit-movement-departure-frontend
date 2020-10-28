@@ -17,31 +17,30 @@
 package controllers.addItems.previousReferences
 
 import controllers.actions._
-import forms.AddAdministrativeReferenceFormProvider
+import forms.ReferenceTypeFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems
-import pages.addItems.AddAdministrativeReferencePage
+import pages.addItems.ReferenceTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAdministrativeReferenceController @Inject()(
+class ReferenceTypeController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddAdministrativeReferenceFormProvider,
+  formProvider: ReferenceTypeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -50,23 +49,22 @@ class AddAdministrativeReferenceController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "addItems/addAdministrativeReference.njk"
+  private val template = "addItems/referenceType.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(addItems.AddAdministrativeReferencePage(itemIndex, referenceIndex)) match {
+        val preparedForm = request.userAnswers.get(ReferenceTypePage(itemIndex, referenceIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
         val json = Json.obj(
           "form"           -> preparedForm,
-          "mode"           -> mode,
-          "lrn"            -> lrn,
           "index"          -> itemIndex.display,
           "referenceIndex" -> referenceIndex.display,
-          "radios"         -> Radios.yesNo(preparedForm("value"))
+          "lrn"            -> lrn,
+          "mode"           -> mode
         )
 
         renderer.render(template, json).map(Ok(_))
@@ -82,20 +80,19 @@ class AddAdministrativeReferenceController @Inject()(
 
               val json = Json.obj(
                 "form"           -> formWithErrors,
-                "mode"           -> mode,
-                "lrn"            -> lrn,
                 "index"          -> itemIndex.display,
                 "referenceIndex" -> referenceIndex.display,
-                "radios"         -> Radios.yesNo(formWithErrors("value"))
+                "lrn"            -> lrn,
+                "mode"           -> mode
               )
 
               renderer.render(template, json).map(BadRequest(_))
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(addItems.AddAdministrativeReferencePage(itemIndex, referenceIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(ReferenceTypePage(itemIndex, referenceIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(addItems.AddAdministrativeReferencePage(itemIndex, referenceIndex), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(ReferenceTypePage(itemIndex, referenceIndex), mode, updatedAnswers))
           )
     }
 }

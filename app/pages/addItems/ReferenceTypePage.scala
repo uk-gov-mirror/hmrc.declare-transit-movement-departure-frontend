@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
+import models.Index
+import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.{items, previousReferences}
 
-case object ReferenceTypePage extends QuestionPage[String] {
+case class ReferenceTypePage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences \ referenceIndex.position \ toString
 
   override def toString: String = "referenceType"
 }

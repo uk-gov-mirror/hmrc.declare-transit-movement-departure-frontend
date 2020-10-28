@@ -16,16 +16,21 @@
 
 package pages
 
+import models.Index
+import pages.addItems.ReferenceTypePage
 import pages.behaviours.PageBehaviours
 
 class ReferenceTypePageSpec extends PageBehaviours {
 
+  private val index          = Index(0)
+  private val referenceIndex = Index(0)
+
   "ReferenceTypePage" - {
 
-    beRetrievable[String](ReferenceTypePage)
+    beRetrievable[String](ReferenceTypePage(index, referenceIndex))
 
-    beSettable[String](ReferenceTypePage)
+    beSettable[String](ReferenceTypePage(index, referenceIndex))
 
-    beRemovable[String](ReferenceTypePage)
+    beRemovable[String](ReferenceTypePage(index, referenceIndex))
   }
 }

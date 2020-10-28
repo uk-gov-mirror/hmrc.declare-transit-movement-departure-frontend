@@ -17,6 +17,7 @@
 package pages
 
 import models.Index
+import pages.addItems.AddAdministrativeReferencePage
 import pages.behaviours.PageBehaviours
 
 class AddAdministrativeReferencePageSpec extends PageBehaviours {
@@ -28,8 +29,8 @@ class AddAdministrativeReferencePageSpec extends PageBehaviours {
 
     beRetrievable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
 
-    beSettable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
+    beSettable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
 
-    beRemovable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
+    beRemovable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
   }
 }

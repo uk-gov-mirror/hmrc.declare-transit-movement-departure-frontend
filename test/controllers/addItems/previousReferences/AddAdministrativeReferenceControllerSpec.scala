@@ -27,7 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddAdministrativeReferencePage
+import pages.addItems
+import pages.addItems.AddAdministrativeReferencePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -70,6 +71,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       val expectedJson = Json.obj(
         "form"   -> form,
         "index"  -> index.display,
+        "referenceIndex" -> referenceIndex.display,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(form("value"))
@@ -88,7 +90,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAdministrativeReferencePage(index, referenceIndex), true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(addItems.AddAdministrativeReferencePage(index, referenceIndex), true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, addAdministrativeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -105,6 +107,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       val expectedJson = Json.obj(
         "form"   -> filledForm,
         "index"  -> index.display,
+        "referenceIndex" -> referenceIndex.display,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(filledForm("value"))
@@ -166,6 +169,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
         "form"   -> boundForm,
         "mode"   -> NormalMode,
         "index"  -> index.display,
+        "referenceIndex" -> referenceIndex.display,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(boundForm("value"))
       )

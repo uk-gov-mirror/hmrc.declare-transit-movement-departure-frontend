@@ -18,7 +18,7 @@ package generators
 
 import models.Index
 import org.scalacheck.Arbitrary
-import pages._
+import pages.{addItems, _}
 import pages.addItems._
 import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
@@ -26,11 +26,11 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryReferenceTypePage: Arbitrary[ReferenceTypePage.type] =
-    Arbitrary(ReferenceTypePage)
+  implicit lazy val arbitraryReferenceTypePage: Arbitrary[ReferenceTypePage] =
+    Arbitrary(ReferenceTypePage(Index(0), Index(0)))
 
   implicit lazy val arbitraryAddAdministrativeReferencePage: Arbitrary[AddAdministrativeReferencePage] =
-    Arbitrary(AddAdministrativeReferencePage(Index(0), Index(0)))
+    Arbitrary(addItems.AddAdministrativeReferencePage(Index(0), Index(0)))
 
   implicit lazy val arbitraryRemoveItemPage: Arbitrary[ConfirmRemoveItemPage.type] =
     Arbitrary(ConfirmRemoveItemPage)
