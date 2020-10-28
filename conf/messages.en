@@ -835,7 +835,6 @@ addAdministrativeReference.heading = Do you need to add a previous administrativ
 addAdministrativeReference.checkYourAnswersLabel = Add previous administrative reference?
 addAdministrativeReference.error.required = Select yes if you need to add a previous administrative reference
 
-removePackage.title = removePackage
-removePackage.heading = removePackage
-removePackage.checkYourAnswersLabel = removePackage
-removePackage.error.required = Select yes if removePackage
+removePackage.title = Are you sure you want to remove the package?
+removePackage.heading = Are you sure you want to remove the package?
+removePackage.error.required = Select yes if you want to remove the package

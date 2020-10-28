@@ -27,6 +27,8 @@
           }) }}
         {% endif %}
 
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
+
         <form action="{{ routes.controllers.addItems.RemovePackageController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
