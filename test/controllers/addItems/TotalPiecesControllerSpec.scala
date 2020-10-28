@@ -74,7 +74,7 @@ class TotalPiecesControllerSpec extends SpecBase with MockNunjucksRendererApp wi
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "totalPieces.njk"
+      templateCaptor.getValue mustEqual "addItems/totalPieces.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -105,7 +105,7 @@ class TotalPiecesControllerSpec extends SpecBase with MockNunjucksRendererApp wi
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "totalPieces.njk"
+      templateCaptor.getValue mustEqual "addItems/totalPieces.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -161,7 +161,7 @@ class TotalPiecesControllerSpec extends SpecBase with MockNunjucksRendererApp wi
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "totalPieces.njk"
+      templateCaptor.getValue mustEqual "addItems/totalPieces.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
