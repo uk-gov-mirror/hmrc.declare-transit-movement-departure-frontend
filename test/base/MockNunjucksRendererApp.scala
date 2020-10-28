@@ -29,14 +29,18 @@ import org.mockito.Mockito
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import pages.AddCustomsApprovedLocationPage
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.Helpers
-import play.modules.reactivemongo.ReactiveMongoApi
+import repositories.SessionCollectionIndexManager
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
+
+import scala.concurrent.Future
+
+object FakeSessionCollectionIndexManager extends SessionCollectionIndexManager {
+  override def started: Future[Unit] = Future.successful(())
+}
 
 trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEach with MockitoSugar {
   self: TestSuite =>
@@ -58,7 +62,8 @@ trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEac
         bind[DataRetrievalActionProvider]
           .toInstance(new FakeDataRetrievalActionProvider(userAnswers)),
         bind[NunjucksRenderer].toInstance(mockRenderer),
-        bind[MessagesApi].toInstance(Helpers.stubMessagesApi())
+        bind[MessagesApi].toInstance(Helpers.stubMessagesApi()),
+        bind[SessionCollectionIndexManager].toInstance(FakeSessionCollectionIndexManager)
       )
 
 }
