@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import config.FrontendAppConfig
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
@@ -33,7 +33,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class DeclarationSummaryControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   "DeclarationSummary Controller" - {
 

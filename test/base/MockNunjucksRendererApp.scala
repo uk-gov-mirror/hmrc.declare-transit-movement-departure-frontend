@@ -1,0 +1,64 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package base
+
+import controllers.actions.{
+  DataRequiredAction,
+  DataRequiredActionImpl,
+  DataRetrievalActionProvider,
+  FakeDataRetrievalActionProvider,
+  FakeIdentifierAction,
+  IdentifierAction
+}
+import models.UserAnswers
+import org.mockito.Mockito
+import org.scalatest.{BeforeAndAfterEach, TestSuite}
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import pages.AddCustomsApprovedLocationPage
+import play.api.i18n.MessagesApi
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
+import play.api.test.Helpers
+import play.modules.reactivemongo.ReactiveMongoApi
+import uk.gov.hmrc.nunjucks.NunjucksRenderer
+
+trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEach with MockitoSugar {
+  self: TestSuite =>
+
+  val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
+
+  override def beforeEach {
+    Mockito.reset(
+      mockRenderer
+    )
+    super.beforeEach()
+  }
+
+  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[DataRequiredAction].to[DataRequiredActionImpl],
+        bind[IdentifierAction].to[FakeIdentifierAction],
+        bind[DataRetrievalActionProvider]
+          .toInstance(new FakeDataRetrievalActionProvider(userAnswers)),
+        bind[NunjucksRenderer].toInstance(mockRenderer),
+        bind[MessagesApi].toInstance(Helpers.stubMessagesApi())
+      )
+
+}

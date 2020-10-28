@@ -16,7 +16,7 @@
 
 package controllers.routeDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.AddTransitOfficeFormProvider
@@ -41,7 +41,13 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach {
+class AddTransitOfficeControllerSpec
+    extends SpecBase
+    with MockNunjucksRendererApp
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers
+    with BeforeAndAfterEach {
 
   def onwardRoute = Call("GET", "/foo")
 

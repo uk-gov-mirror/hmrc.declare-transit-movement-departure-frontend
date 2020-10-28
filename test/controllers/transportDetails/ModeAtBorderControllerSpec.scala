@@ -16,7 +16,7 @@
 
 package controllers.transportDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.ModeAtBorderFormProvider
@@ -42,7 +42,7 @@ import utils.transportModesAsJson
 
 import scala.concurrent.Future
 
-class ModeAtBorderControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ModeAtBorderControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
