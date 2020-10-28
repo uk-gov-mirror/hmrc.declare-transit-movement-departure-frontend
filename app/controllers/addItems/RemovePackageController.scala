@@ -19,7 +19,7 @@ package controllers.addItems
 import controllers.actions._
 import forms.addItems.RemovePackageFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.RemovePackagePage
@@ -54,7 +54,7 @@ class RemovePackageController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(RemovePackagePage) match {
+        val preparedForm = request.userAnswers.get(RemovePackagePage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -86,12 +86,19 @@ class RemovePackageController @Inject()(
 
               renderer.render(template, json).map(BadRequest(_))
             },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(RemovePackagePage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(RemovePackagePage, mode, updatedAnswers))
+            value => {
+              val updatedAnswers: Future[UserAnswers] =
+                if (value) {
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.remove(RemovePackagePage(itemIndex, packageIndex)))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield updatedAnswers
+                } else Future.successful(request.userAnswers)
+
+              updatedAnswers.map(
+                userAnswers => Redirect(navigator.nextPage(RemovePackagePage(itemIndex, packageIndex), mode, userAnswers))
+              )
+            }
           )
     }
-
 }

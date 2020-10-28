@@ -16,17 +16,18 @@
 
 package pages
 
+import base.SpecBase
 import pages.addItems.RemovePackagePage
 import pages.behaviours.PageBehaviours
 
-class RemovePackagePageSpec extends PageBehaviours {
+class RemovePackagePageSpec extends PageBehaviours with SpecBase {
 
   "RemovePackagePage" - {
 
-    beRetrievable[Boolean](RemovePackagePage)
+    beRetrievable[Boolean](RemovePackagePage(index, index))
 
-    beSettable[Boolean](RemovePackagePage)
+    beSettable[Boolean](RemovePackagePage(index, index))
 
-    beRemovable[Boolean](RemovePackagePage)
+    beRemovable[Boolean](RemovePackagePage(index, index))
   }
 }
