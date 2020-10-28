@@ -19,8 +19,8 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
-import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit, PackageType, TransportMode}
-import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, PackageTypeList, TransportModeList}
+import models.reference._
+import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, PackageTypeList, PreviousDocumentTypeList, TransportModeList}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -129,6 +129,20 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |    "activeFrom": "2015-07-01",
       |    "code": "CD",
       |    "description": "description 2"
+      |  }
+      |]
+      |""".stripMargin
+
+  private val previousDocumentJson: String =
+    """
+      |[
+      |  {
+      |    "code": "T1",
+      |    "description": "Description T1"
+      |  },
+      |  {
+      |    "code": "T2F",
+      |    "description": "Description T2F"
       |  }
       |]
       |""".stripMargin
@@ -319,6 +333,31 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return an exception when an error response is returned" in {
 
         checkErrorResponse(s"/$startUrl/kinds-of-package", connector.getPackageTypes())
+      }
+
+    }
+
+    "getPreviousDocumentType" - {
+
+      "must return list of previous document types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/previous-document-type"))
+            .willReturn(okJson(previousDocumentJson))
+        )
+
+        val expectResult = PreviousDocumentTypeList(
+          Seq(
+            PreviousDocumentType("T1", "Description T1"),
+            PreviousDocumentType("T2F", "Description T2F")
+          )
+        )
+
+        connector.getPreviousDocumentTypes().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/previous-document-type", connector.getPreviousDocumentTypes())
       }
 
     }

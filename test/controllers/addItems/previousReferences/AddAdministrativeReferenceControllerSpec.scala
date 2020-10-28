@@ -69,12 +69,12 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "index"  -> index.display,
+        "form"           -> form,
+        "index"          -> index.display,
         "referenceIndex" -> referenceIndex.display,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "radios"         -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -105,12 +105,12 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "index"  -> index.display,
+        "form"           -> filledForm,
+        "index"          -> index.display,
         "referenceIndex" -> referenceIndex.display,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "radios"         -> Radios.yesNo(filledForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -166,12 +166,12 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "index"  -> index.display,
+        "form"           -> boundForm,
+        "mode"           -> NormalMode,
+        "index"          -> index.display,
         "referenceIndex" -> referenceIndex.display,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "lrn"            -> lrn,
+        "radios"         -> Radios.yesNo(boundForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
