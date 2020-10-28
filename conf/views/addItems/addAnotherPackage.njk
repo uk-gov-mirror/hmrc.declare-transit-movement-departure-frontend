@@ -4,6 +4,7 @@
 {% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/summary-list/macro.njk"  import govukSummaryList %}
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
@@ -31,6 +32,11 @@
         <h1 class="govuk-heading-xl">
           {{ messages(heading, totalTypes) }}
         </h1>
+
+        {{ govukSummaryList({
+            classes: 'govuk-!-margin-bottom-9 ctc-add-to-a-list',
+            rows: packageRows
+        }) }}
 
         <form action="{{ routes.controllers.addItems.AddAnotherPackageController.onSubmit(lrn, mode).url }}" method="post">
 

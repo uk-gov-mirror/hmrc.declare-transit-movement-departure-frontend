@@ -18,7 +18,7 @@ package utils
 
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
 import pages._
 import pages.addItems.traderDetails._
 import pages.addItems.{AddItemsSameConsigneeForAllItemsPage, AddItemsSameConsignorForAllItemsPage, CommodityCodePage}
@@ -291,6 +291,29 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               href               = routes.ConfirmRemoveItemController.onPageLoad(userAnswers.id, index).url,
               visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
               attributes         = Map("id" -> s"""remove-item-${index.display}""")
+            )
+          )
+        )
+    }
+
+  def packageRows(itemIndex: Index, packageIndex: Index, mode: Mode): Option[Row] =
+    userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, mode).url,
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = "", // TODO Create page
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-package-${packageIndex.display}""")
             )
           )
         )
