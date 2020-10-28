@@ -835,3 +835,9 @@ addAdministrativeReference.title = Do you need to add a previous administrative 
 addAdministrativeReference.heading = Do you need to add a previous administrative reference?
 addAdministrativeReference.checkYourAnswersLabel = Add previous administrative reference?
 addAdministrativeReference.error.required = Select yes if you need to add a previous administrative reference
+
+referenceType.title = referenceType
+referenceType.heading = referenceType
+referenceType.checkYourAnswersLabel = referenceType
+referenceType.error.required = Enter referenceType
+referenceType.error.length = ReferenceType must be 12 characters or less

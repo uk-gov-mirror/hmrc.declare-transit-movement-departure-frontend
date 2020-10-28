@@ -30,6 +30,14 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators extends PageGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryReferenceTypeUserAnswersEntry: Arbitrary[(ReferenceTypePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ReferenceTypePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryAddAdministrativeReferenceUserAnswersEntry: Arbitrary[(AddAdministrativeReferencePage, JsValue)] =
     Arbitrary {
       for {
