@@ -19,14 +19,14 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
+  def addSecurityDetails(): Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(
         key   = Key(msg"addSecurityDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -62,7 +62,4 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
 }
 
-object CheckYourAnswersHelper {
-
-  private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-}
+object CheckYourAnswersHelper {}

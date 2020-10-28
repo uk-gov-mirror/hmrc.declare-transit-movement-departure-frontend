@@ -17,7 +17,6 @@
 package controllers.addItems.traderDetails
 
 import base.SpecBase
-import controllers.routes
 import forms.addItems.traderDetails.TraderDetailsConsignorAddressFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -42,7 +41,7 @@ import scala.concurrent.Future
 
 class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
   private val formProvider = new TraderDetailsConsignorAddressFormProvider()
   private val form         = formProvider()

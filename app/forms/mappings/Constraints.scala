@@ -20,7 +20,6 @@ import java.time.LocalDate
 
 import models.Index
 import play.api.data.validation.{Constraint, Invalid, Valid}
-import com.google.common.base.CharMatcher
 
 trait Constraints {
 

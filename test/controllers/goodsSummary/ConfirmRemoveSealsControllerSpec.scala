@@ -17,16 +17,17 @@
 package controllers.goodsSummary
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import forms.ConfirmRemoveSealsFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.annotations.GoodsSummary
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ConfirmRemoveSealsPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -35,18 +36,17 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
 class ConfirmRemoveSealsControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new ConfirmRemoveSealsFormProvider()
-  val form         = formProvider()
+  val formProvider        = new ConfirmRemoveSealsFormProvider()
+  val form: Form[Boolean] = formProvider()
 
-  lazy val confirmRemoveSealsRoute = routes.ConfirmRemoveSealsController.onPageLoad(lrn, NormalMode).url
+  lazy val confirmRemoveSealsRoute: String = routes.ConfirmRemoveSealsController.onPageLoad(lrn, NormalMode).url
 
   "ConfirmRemoveSeals Controller" - {
 

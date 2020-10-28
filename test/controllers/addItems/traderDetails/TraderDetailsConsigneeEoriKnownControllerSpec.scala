@@ -17,15 +17,11 @@
 package controllers.addItems.traderDetails
 
 import base.SpecBase
-import controllers.routes
 import forms.addItems.traderDetails.TraderDetailsConsigneeEoriKnownFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
-
-import navigation.FakeNavigator
-
+import navigation.annotations.AddItems
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}

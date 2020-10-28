@@ -19,11 +19,10 @@ package controllers.goodsSummary
 import base.SpecBase
 import controllers.{routes => mainRoutes}
 import forms.SealIdDetailsFormProvider
-import generators.ModelGenerators
 import matchers.JsonMatchers
-import models.{Index, NormalMode}
-import navigation.{FakeNavigator, Navigator}
+import models.NormalMode
 import navigation.annotations.GoodsSummary
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}

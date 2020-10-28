@@ -17,10 +17,10 @@
 package controllers
 
 import base.SpecBase
-import controllers.routes
 import forms.ProcedureTypeFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, ProcedureType}
+import navigation.annotations.PreTaskListDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -35,7 +35,6 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import navigation.annotations.{MovementDetails, PreTaskListDetails}
 
 import scala.concurrent.Future
 

@@ -20,8 +20,8 @@ import java.time.LocalDate
 
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.{LanguageCodeEnglish, LocalReferenceNumber, XMLWrites}
 import models.XMLReads._
+import models.{LanguageCodeEnglish, XMLWrites}
 import utils.Format
 
 import scala.xml.NodeSeq

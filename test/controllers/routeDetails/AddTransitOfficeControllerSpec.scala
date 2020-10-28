@@ -30,7 +30,7 @@ import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddAnotherTransitOfficePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -43,17 +43,17 @@ import scala.concurrent.Future
 
 class AddTransitOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new AddTransitOfficeFormProvider()
-  val form         = formProvider()
+  val formProvider        = new AddTransitOfficeFormProvider()
+  val form: Form[Boolean] = formProvider()
 
-  lazy val addTransitOfficeRoute               = routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url
+  lazy val addTransitOfficeRoute: String       = routes.AddTransitOfficeController.onPageLoad(lrn, NormalMode).url
   private val mockRefDataConnector             = mock[ReferenceDataConnector]
   val officeOfTransit: OfficeOfTransit         = OfficeOfTransit("1", "Transit1")
   val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))
 
-  override def beforeEach(): Unit = {
+  override def beforeEach: Unit = {
     super.beforeEach()
     Mockito.reset(mockRefDataConnector)
   }

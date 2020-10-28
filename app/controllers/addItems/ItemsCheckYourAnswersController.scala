@@ -18,13 +18,12 @@ package controllers.addItems
 
 import controllers.actions._
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, UserAnswers}
+import models.{Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.AddItemsCheckYourAnswersHelper
 import viewModels.AddItemsCheckYourAnswersViewModel
 import viewModels.sections.Section
 

@@ -22,36 +22,33 @@ import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode, TransportMode}
 import models.{CountryList, LocalReferenceNumber, TransportModeList}
-import navigation.annotations.TransportDetails
-import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.InlandModePage
-import play.api.Application
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Result}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 
 import scala.concurrent.Future
 
 class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
 
-  def onwardRoute(lrn: LocalReferenceNumber) = Call("GET", s"/common-transit-convention-departure/$lrn/task-list")
+  def onwardRoute(lrn: LocalReferenceNumber): Call =
+    Call("GET", s"/common-transit-convention-departure/$lrn/task-list")
 
-  lazy val transportDetailsRoute: String = routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
-  val mockReferenceDataConnector         = mock[ReferenceDataConnector]
-  val transportMode                      = TransportMode("1", "Sea transport")
-  val transportModes                     = TransportModeList(Seq(transportMode))
-  private val country                    = Country(CountryCode("GB"), "United Kingdom")
-  val countries                          = CountryList(Seq(country))
+  lazy val transportDetailsRoute: String                 = routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
+  val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  val transportMode: TransportMode                       = TransportMode("1", "Sea transport")
+  val transportModes: TransportModeList                  = TransportModeList(Seq(transportMode))
+  private val country                                    = Country(CountryCode("GB"), "United Kingdom")
+  val countries: CountryList                             = CountryList(Seq(country))
 
-  override def beforeEach(): Unit =
+  override def beforeEach: Unit =
     super.beforeEach()
 
   "TransportDetailsCheckYourAnswers Controller" - {
