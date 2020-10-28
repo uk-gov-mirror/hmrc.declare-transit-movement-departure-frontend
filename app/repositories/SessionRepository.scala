@@ -18,50 +18,23 @@ package repositories
 
 import java.time.LocalDateTime
 
-import akka.stream.Materializer
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import play.api.Configuration
 import play.api.libs.json._
-import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.bson.collection.BSONSerializationPack
-import reactivemongo.api.indexes.Index.Aux
-import reactivemongo.api.indexes.IndexType
-import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
-import reactivemongo.play.json.collection.JSONCollection
-import utils.IndexUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DefaultSessionRepository @Inject()(
-  mongo: ReactiveMongoApi,
+@Singleton
+private[repositories] class DefaultSessionRepository @Inject()(
+  sessionCollection: SessionCollection,
   config: Configuration
-)(implicit ec: ExecutionContext, m: Materializer)
+)(implicit ec: ExecutionContext)
     extends SessionRepository {
 
-  private val collectionName: String = "user-answers"
-
-  private val cacheTtl = config.get[Int]("mongodb.timeToLiveInSeconds")
-
-  private def collection: Future[JSONCollection] =
-    mongo.database.map(_.collection[JSONCollection](collectionName))
-
-  private val lastUpdatedIndex: Aux[BSONSerializationPack.type] = IndexUtils.index(
-    key     = Seq("lastUpdated" -> IndexType.Ascending),
-    name    = Some("user-answers-last-updated-index"),
-    options = BSONDocument("expireAfterSeconds" -> cacheTtl)
-  )
-
-  val started: Future[Unit] =
-    collection
-      .flatMap {
-        _.indexesManager.ensure(lastUpdatedIndex)
-      }
-      .map(_ => ())
-
   override def get(id: LocalReferenceNumber, eoriNumber: EoriNumber): Future[Option[UserAnswers]] =
-    collection.flatMap(_.find(Json.obj("_id" -> id.value, "eoriNumber" -> eoriNumber.value), None).one[UserAnswers])
+    sessionCollection().flatMap(_.find(Json.obj("_id" -> id.value, "eoriNumber" -> eoriNumber.value), None).one[UserAnswers])
 
   override def set(userAnswers: UserAnswers): Future[Boolean] = {
 
@@ -73,7 +46,7 @@ class DefaultSessionRepository @Inject()(
       "$set" -> (userAnswers copy (lastUpdated = LocalDateTime.now))
     )
 
-    collection.flatMap {
+    sessionCollection().flatMap {
       _.update(ordered = false)
         .one(selector, modifier, upsert = true)
         .map {
@@ -86,9 +59,8 @@ class DefaultSessionRepository @Inject()(
 
 trait SessionRepository {
 
-  val started: Future[Unit]
-
   def get(id: LocalReferenceNumber, eoriNumber: EoriNumber): Future[Option[UserAnswers]]
 
   def set(userAnswers: UserAnswers): Future[Boolean]
+
 }

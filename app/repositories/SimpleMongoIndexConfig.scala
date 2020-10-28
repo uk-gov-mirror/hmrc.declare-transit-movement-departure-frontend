@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package utils
+package repositories
 
-import reactivemongo.bson.BSONDocument
 import reactivemongo.api.bson.collection.BSONSerializationPack
 import reactivemongo.api.indexes.Index.Aux
-import reactivemongo.api.indexes.Index
-import reactivemongo.api.indexes.IndexType
+import reactivemongo.api.indexes.{Index, IndexType}
+import reactivemongo.bson.BSONDocument
 
-object IndexUtils {
+private[repositories] object SimpleMongoIndexConfig {
 
-  def index(key: Seq[(String, IndexType)],
+  def apply(key: Seq[(String, IndexType)],
             name: Option[String],
             unique: Boolean       = false,
             sparse: Boolean       = false,

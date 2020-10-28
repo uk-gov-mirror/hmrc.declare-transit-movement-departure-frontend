@@ -73,7 +73,7 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockNunjucksRe
         "radios" -> Radios.yesNo(form("value"))
       )
 
-      templateCaptor.getValue mustEqual "declareNumberOfPackages.njk"
+      templateCaptor.getValue mustEqual "addItems/declareNumberOfPackages.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -105,7 +105,7 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockNunjucksRe
         "radios" -> Radios.yesNo(filledForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "declareNumberOfPackages.njk"
+      templateCaptor.getValue mustEqual "addItems/declareNumberOfPackages.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -162,7 +162,7 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockNunjucksRe
         "radios" -> Radios.yesNo(boundForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "declareNumberOfPackages.njk"
+      templateCaptor.getValue mustEqual "addItems/declareNumberOfPackages.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
