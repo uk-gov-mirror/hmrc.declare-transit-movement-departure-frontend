@@ -14,33 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import forms.addItems.AddMarkFormProvider
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class AddMarkFormProviderSpec extends BooleanFieldBehaviours {
+class TotalPiecesFormProvider @Inject() extends Mappings {
 
-  val requiredKey = "addMark.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddMarkFormProvider()()
-
-  ".value" - {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+  def apply(): Form[Int] =
+    Form(
+      "value" -> int("totalPieces.error.required", "totalPieces.error.wholeNumber", "totalPieces.error.nonNumeric")
+        .verifying(inRange(1, 99999, "totalPieces.error.outOfRange"))
     )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
 }

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.addItems
+package controllers
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import base.SpecBase
+import forms.addItems.RemovePackageFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
+import navigation.annotations.AddItems
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.addItems.RemovePackagePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -33,22 +36,20 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
-import forms.addItems.AddAnotherPackageFormProvider
-import pages.addItems.AddAnotherPackagePage
 
 import scala.concurrent.Future
 
-class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new AddAnotherPackageFormProvider()
-  val form         = formProvider()
+  private val formProvider = new RemovePackageFormProvider()
+  private val form         = formProvider()
+  private val template     = "removePackage.njk"
 
-  lazy val addAnotherPackageRoute = routes.AddAnotherPackageController.onPageLoad(lrn, index, index, NormalMode).url
+  lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(lrn, NormalMode).url
 
-  "AddAnotherPackage Controller" - {
+  "RemovePackage Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -56,7 +57,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, addAnotherPackageRoute)
+      val request        = FakeRequest(GET, removePackageRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -73,8 +74,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
         "radios" -> Radios.yesNo(form("value"))
       )
 
-      templateCaptor.getValue mustEqual "addItems/addAnotherPackage.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -84,9 +87,9 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherPackagePage(index, index), true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(RemovePackagePage, true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, addAnotherPackageRoute)
+      val request        = FakeRequest(GET, removePackageRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -105,8 +108,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
         "radios" -> Radios.yesNo(filledForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "addItems/addAnotherPackage.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -126,7 +131,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
           .build()
 
       val request =
-        FakeRequest(POST, addAnotherPackageRoute)
+        FakeRequest(POST, removePackageRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -144,7 +149,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, addAnotherPackageRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, removePackageRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -162,8 +167,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
         "radios" -> Radios.yesNo(boundForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "addItems/addAnotherPackage.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -172,13 +179,13 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, addAnotherPackageRoute)
+      val request = FakeRequest(GET, removePackageRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -188,14 +195,14 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, addAnotherPackageRoute)
+        FakeRequest(POST, removePackageRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

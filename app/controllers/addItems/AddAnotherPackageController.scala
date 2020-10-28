@@ -18,7 +18,7 @@ package controllers.addItems
 
 import controllers.actions._
 import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
-import forms.AddAnotherPackageFormProvider
+import forms.addItems.AddAnotherPackageFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator

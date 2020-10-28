@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.addItems.PackageTypeFormProvider
 import forms.behaviours.StringFieldBehaviours
 import models.PackageTypeList
 import models.reference.PackageType

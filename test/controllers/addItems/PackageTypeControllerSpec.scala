@@ -19,7 +19,7 @@ package controllers.addItems
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
-import forms.PackageTypeFormProvider
+import forms.addItems.PackageTypeFormProvider
 import matchers.JsonMatchers
 import models.reference.PackageType
 import models.{NormalMode, PackageTypeList}

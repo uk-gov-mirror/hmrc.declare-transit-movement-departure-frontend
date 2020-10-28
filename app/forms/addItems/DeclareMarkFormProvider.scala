@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{CountryList, PackageTypeList}
-import models.reference.{Country, PackageType}
 import play.api.data.Form
 
-class PackageTypeFormProvider @Inject() extends Mappings {
+class DeclareMarkFormProvider @Inject() extends Mappings {
 
-  def apply(packageTypes: PackageTypeList): Form[PackageType] =
+  def apply(): Form[String] =
     Form(
-      "value" -> text("packageType.error.required")
-        .verifying("packageType.error.required", value => packageTypes.packageTypeList.exists(_.code == value))
-        .transform[PackageType](value => packageTypes.packageTypeList.find(_.code == value).get, _.code)
+      "value" -> text("declareMark.error.required")
+        .verifying(maxLength(42, "declareMark.error.length"))
     )
 }

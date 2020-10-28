@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.addItems.DeclareMarkFormProvider
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 

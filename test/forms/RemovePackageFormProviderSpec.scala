@@ -16,15 +16,31 @@
 
 package forms
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import forms.addItems.RemovePackageFormProvider
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class TotalPiecesFormProvider @Inject() extends Mappings {
+class RemovePackageFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(): Form[Int] =
-    Form(
-      "value" -> int("totalPieces.error.required", "totalPieces.error.wholeNumber", "totalPieces.error.nonNumeric")
-        .verifying(inRange(1, 99999, "totalPieces.error.outOfRange"))
+  val requiredKey = "removePackage.error.required"
+  val invalidKey  = "error.boolean"
+
+  val form = new RemovePackageFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

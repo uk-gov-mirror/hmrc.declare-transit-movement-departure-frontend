@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.addItems
 
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.PackageTypeList
+import models.reference.PackageType
 import play.api.data.Form
 
-class AddAnotherPackageFormProvider @Inject() extends Mappings {
+class PackageTypeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(packageTypes: PackageTypeList): Form[PackageType] =
     Form(
-      "value" -> boolean("addAnotherPackage.error.required")
+      "value" -> text("packageType.error.required")
+        .verifying("packageType.error.required", value => packageTypes.packageTypeList.exists(_.code == value))
+        .transform[PackageType](value => packageTypes.packageTypeList.find(_.code == value).get, _.code)
     )
 }

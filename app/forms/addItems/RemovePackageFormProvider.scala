@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.addItems
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
 
-class DeclareMarkFormProvider @Inject() extends Mappings {
+class RemovePackageFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> text("declareMark.error.required")
-        .verifying(maxLength(42, "declareMark.error.length"))
+      "value" -> boolean("removePackage.error.required")
     )
 }

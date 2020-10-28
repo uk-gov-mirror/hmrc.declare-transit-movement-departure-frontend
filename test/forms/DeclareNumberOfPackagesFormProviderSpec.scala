@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.addItems.DeclareNumberOfPackagesFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 

@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
+import pages.addItems.RemovePackagePage
+import pages.behaviours.PageBehaviours
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class RemovePackagePageSpec extends PageBehaviours {
 
-class AddMarkFormProvider @Inject() extends Mappings {
+  "RemovePackagePage" - {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("addMark.error.required")
-    )
+    beRetrievable[Boolean](RemovePackagePage)
+
+    beSettable[Boolean](RemovePackagePage)
+
+    beRemovable[Boolean](RemovePackagePage)
+  }
 }

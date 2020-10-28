@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.addItems
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
 
-class DeclareNumberOfPackagesFormProvider @Inject() extends Mappings {
+class AddAnotherPackageFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("declareNumberOfPackages.error.required")
+      "value" -> boolean("addAnotherPackage.error.required")
     )
 }

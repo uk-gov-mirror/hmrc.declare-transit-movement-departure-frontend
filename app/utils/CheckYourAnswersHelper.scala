@@ -21,10 +21,26 @@ import java.time.format.DateTimeFormatter
 import controllers.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.addItems.RemovePackagePage
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def removePackage: Option[Row] = userAnswers.get(RemovePackagePage) map {
+    answer =>
+      Row(
+        key   = Key(msg"removePackage.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.RemovePackageController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"removePackage.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
