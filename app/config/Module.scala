@@ -20,7 +20,6 @@ import com.google.inject.AbstractModule
 import controllers.actions._
 import navigation._
 import navigation.annotations._
-import repositories.{DefaultSessionRepository, SessionCollectionIndexManager, SessionCollectionIndexManagerImpl, SessionRepository}
 import services.{DateTimeService, DateTimeServiceImpl}
 
 class Module extends AbstractModule {
@@ -40,9 +39,6 @@ class Module extends AbstractModule {
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl])
 
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction])
-
-    bind(classOf[SessionRepository]).to(classOf[DefaultSessionRepository]).asEagerSingleton()
-
     bind(classOf[DateTimeService]).to(classOf[DateTimeServiceImpl]).asEagerSingleton()
   }
 }

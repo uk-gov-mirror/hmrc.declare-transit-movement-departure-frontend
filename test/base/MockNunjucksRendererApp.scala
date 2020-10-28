@@ -38,10 +38,6 @@ import uk.gov.hmrc.nunjucks.NunjucksRenderer
 
 import scala.concurrent.Future
 
-object FakeSessionCollectionIndexManager extends SessionCollectionIndexManager {
-  override def started: Future[Unit] = Future.successful(())
-}
-
 trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEach with MockitoSugar {
   self: TestSuite =>
 
@@ -62,8 +58,7 @@ trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEac
         bind[DataRetrievalActionProvider]
           .toInstance(new FakeDataRetrievalActionProvider(userAnswers)),
         bind[NunjucksRenderer].toInstance(mockRenderer),
-        bind[MessagesApi].toInstance(Helpers.stubMessagesApi()),
-        bind[SessionCollectionIndexManager].toInstance(FakeSessionCollectionIndexManager)
+        bind[MessagesApi].toInstance(Helpers.stubMessagesApi())
       )
 
 }
