@@ -27,6 +27,8 @@
           }) }}
         {% endif %}
 
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
+
         <form action="{{ routes.controllers.addItems.AddMarkController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
@@ -35,7 +37,7 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('addMark.heading'),
+                text: messages('addMark.heading', displayIndex),
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--xl"
               }

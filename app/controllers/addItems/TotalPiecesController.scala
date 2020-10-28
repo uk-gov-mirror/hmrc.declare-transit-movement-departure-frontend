@@ -59,9 +59,10 @@ class TotalPiecesController @Inject()(
         }
 
         val json = Json.obj(
-          "form" -> preparedForm,
-          "lrn"  -> lrn,
-          "mode" -> mode
+          "form"         -> preparedForm,
+          "lrn"          -> lrn,
+          "mode"         -> mode,
+          "displayIndex" -> itemIndex.display
         )
 
         renderer.render("addItems/totalPieces.njk", json).map(Ok(_))
@@ -76,9 +77,10 @@ class TotalPiecesController @Inject()(
             formWithErrors => {
 
               val json = Json.obj(
-                "form" -> formWithErrors,
-                "lrn"  -> lrn,
-                "mode" -> mode
+                "form"         -> formWithErrors,
+                "lrn"          -> lrn,
+                "mode"         -> mode,
+                "displayIndex" -> itemIndex.display
               )
 
               renderer.render("addItems/totalPieces.njk", json).map(BadRequest(_))

@@ -59,16 +59,17 @@ class AddMarkController @Inject()(
         }
 
         val json = Json.obj(
-          "form"   -> preparedForm,
-          "mode"   -> mode,
-          "lrn"    -> lrn,
-          "radios" -> Radios.yesNo(preparedForm("value"))
+          "form"         -> preparedForm,
+          "mode"         -> mode,
+          "lrn"          -> lrn,
+          "radios"       -> Radios.yesNo(preparedForm("value")),
+          "displayIndex" -> packageIndex.display
         )
 
         renderer.render("addItems/addMark.njk", json).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         form
@@ -77,19 +78,20 @@ class AddMarkController @Inject()(
             formWithErrors => {
 
               val json = Json.obj(
-                "form"   -> formWithErrors,
-                "mode"   -> mode,
-                "lrn"    -> lrn,
-                "radios" -> Radios.yesNo(formWithErrors("value"))
+                "form"         -> formWithErrors,
+                "mode"         -> mode,
+                "lrn"          -> lrn,
+                "radios"       -> Radios.yesNo(formWithErrors("value")),
+                "displayIndex" -> packageIndex.display
               )
 
               renderer.render("addItems/addMark.njk", json).map(BadRequest(_))
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddMarkPage(itemIndex, packageItem), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddMarkPage(itemIndex, packageIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddMarkPage(itemIndex, packageItem), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddMarkPage(itemIndex, packageIndex), mode, updatedAnswers))
           )
     }
 }

@@ -62,7 +62,7 @@ class HowManyPackagesController @Inject()(
           "form"         -> preparedForm,
           "lrn"          -> lrn,
           "mode"         -> mode,
-          "displayIndex" -> packageIndex.display
+          "displayIndex" -> itemIndex.display
         )
 
         renderer.render("addItems/howManyPackages.njk", json).map(Ok(_))
@@ -80,7 +80,7 @@ class HowManyPackagesController @Inject()(
                 "form"         -> formWithErrors,
                 "lrn"          -> lrn,
                 "mode"         -> mode,
-                "displayIndex" -> packageIndex.display
+                "displayIndex" -> itemIndex.display
               )
 
               renderer.render("addItems/howManyPackages.njk", json).map(BadRequest(_))

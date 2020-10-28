@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("totalPieces.title"), form.errors) }}
+  {{ title(messages("totalPieces.title", displayIndex), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -27,16 +27,16 @@
           }) }}
         {% endif %}
 
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
+        <h1 class="govuk-heading-xl">
+            {{ messages('totalPieces.heading', displayIndex) }}
+        </h1>
+
         <form action="{{ routes.controllers.addItems.TotalPiecesController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
           {{ govukInput({
-            label: {
-              text: messages('totalPieces.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
-            },
             id: "value",
             name: "value",
             type: "tel",
