@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import forms.addItems.PackageTypeFormProvider
 import forms.behaviours.StringFieldBehaviours
 import models.PackageTypeList
 import models.reference.PackageType

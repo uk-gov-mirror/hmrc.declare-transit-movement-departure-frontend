@@ -19,7 +19,7 @@ package controllers.addItems
 import controllers.actions._
 import forms.addItems.RemovePackageFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.RemovePackagePage
@@ -49,46 +49,49 @@ class RemovePackageController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "removePackage.njk"
+  private val template = "addItems/removePackage.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(RemovePackagePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(RemovePackagePage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(RemovePackagePage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(RemovePackagePage, mode, updatedAnswers))
+        val json = Json.obj(
+          "form"   -> preparedForm,
+          "mode"   -> mode,
+          "lrn"    -> lrn,
+          "radios" -> Radios.yesNo(preparedForm("value"))
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"   -> formWithErrors,
+                "mode"   -> mode,
+                "lrn"    -> lrn,
+                "radios" -> Radios.yesNo(formWithErrors("value"))
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(RemovePackagePage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(RemovePackagePage, mode, updatedAnswers))
+          )
+    }
+
 }

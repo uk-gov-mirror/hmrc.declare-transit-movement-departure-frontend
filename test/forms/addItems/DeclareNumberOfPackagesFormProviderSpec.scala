@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import forms.addItems.DeclareNumberOfPackagesFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 

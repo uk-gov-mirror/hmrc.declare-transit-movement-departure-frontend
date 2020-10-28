@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
+import forms.HowManyPackagesFormProvider
 import forms.behaviours.IntFieldBehaviours
 import play.api.data.FormError
 

@@ -14,41 +14,49 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import forms.addItems.DeclareMarkFormProvider
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.IntFieldBehaviours
 import play.api.data.FormError
 
-class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
+class TotalPiecesFormProviderSpec extends IntFieldBehaviours {
 
-  val requiredKey = "declareMark.error.required"
-  val lengthKey   = "declareMark.error.length"
-  val maxLength   = 42
-
-  val form = new DeclareMarkFormProvider()()
+  val form = new TotalPiecesFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
 
+    val minimum = 1
+    val maximum = 99999
+
+    val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
+
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      validDataGenerator
     )
 
-    behave like fieldWithMaxLength(
+    behave like intField(
       form,
       fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      nonNumericError  = FormError(fieldName, "totalPieces.error.nonNumeric"),
+      wholeNumberError = FormError(fieldName, "totalPieces.error.wholeNumber")
+    )
+
+    behave like intFieldWithRange(
+      form,
+      fieldName,
+      minimum       = minimum,
+      maximum       = maximum,
+      expectedError = FormError(fieldName, "totalPieces.error.outOfRange", Seq(minimum, maximum))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, "totalPieces.error.required")
     )
   }
 }

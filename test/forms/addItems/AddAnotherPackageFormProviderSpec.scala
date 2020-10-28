@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import forms.addItems.RemovePackageFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class RemovePackageFormProviderSpec extends BooleanFieldBehaviours {
+class AddAnotherPackageFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "removePackage.error.required"
+  val requiredKey = "addAnotherPackage.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new RemovePackageFormProvider()()
+  val form = new AddAnotherPackageFormProvider()()
 
   ".value" - {
 
