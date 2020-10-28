@@ -59,9 +59,10 @@ class HowManyPackagesController @Inject()(
         }
 
         val json = Json.obj(
-          "form" -> preparedForm,
-          "lrn"  -> lrn,
-          "mode" -> mode
+          "form"         -> preparedForm,
+          "lrn"          -> lrn,
+          "mode"         -> mode,
+          "displayIndex" -> packageIndex.display
         )
 
         renderer.render("addItems/howManyPackages.njk", json).map(Ok(_))
@@ -76,9 +77,10 @@ class HowManyPackagesController @Inject()(
             formWithErrors => {
 
               val json = Json.obj(
-                "form" -> formWithErrors,
-                "lrn"  -> lrn,
-                "mode" -> mode
+                "form"         -> formWithErrors,
+                "lrn"          -> lrn,
+                "mode"         -> mode,
+                "displayIndex" -> packageIndex.display
               )
 
               renderer.render("addItems/howManyPackages.njk", json).map(BadRequest(_))
