@@ -705,10 +705,9 @@ packageType.title = What package type has been used?
 packageType.heading = What package type has been used?
 packageType.error.required = Select the package type you want to add
 
-declareNumberOfPackages.title = declareNumberOfPackages
-declareNumberOfPackages.heading = declareNumberOfPackages
-declareNumberOfPackages.checkYourAnswersLabel = declareNumberOfPackages
-declareNumberOfPackages.error.required = Select yes if declareNumberOfPackages
+declareNumberOfPackages.title = Do you need to state how many of this package type has been used?
+declareNumberOfPackages.heading = Do you need to state how many of this package type has been used?
+declareNumberOfPackages.error.required = Select yes if you want to state Do you need to state how many of this package type has been used
 
 totalPieces.title = TotalPieces
 totalPieces.heading = TotalPieces
