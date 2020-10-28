@@ -72,7 +72,7 @@ class DeclareMarkControllerSpec extends SpecBase with MockNunjucksRendererApp wi
         "lrn"  -> lrn
       )
 
-      templateCaptor.getValue mustEqual "declareMark.njk"
+      templateCaptor.getValue mustEqual "addItems/declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -103,7 +103,7 @@ class DeclareMarkControllerSpec extends SpecBase with MockNunjucksRendererApp wi
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "declareMark.njk"
+      templateCaptor.getValue mustEqual "addItems/declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -158,7 +158,7 @@ class DeclareMarkControllerSpec extends SpecBase with MockNunjucksRendererApp wi
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "declareMark.njk"
+      templateCaptor.getValue mustEqual "addItems/declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()

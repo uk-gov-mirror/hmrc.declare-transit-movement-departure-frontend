@@ -65,7 +65,7 @@ class DeclareNumberOfPackagesController @Inject()(
           "radios" -> Radios.yesNo(preparedForm("value"))
         )
 
-        renderer.render("declareNumberOfPackages.njk", json).map(Ok(_))
+        renderer.render("addItems/declareNumberOfPackages.njk", json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
@@ -83,7 +83,7 @@ class DeclareNumberOfPackagesController @Inject()(
                 "radios" -> Radios.yesNo(formWithErrors("value"))
               )
 
-              renderer.render("declareNumberOfPackages.njk", json).map(BadRequest(_))
+              renderer.render("addItems/declareNumberOfPackages.njk", json).map(BadRequest(_))
             },
             value =>
               for {

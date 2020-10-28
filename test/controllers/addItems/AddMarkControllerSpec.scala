@@ -73,7 +73,7 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
         "radios" -> Radios.yesNo(form("value"))
       )
 
-      templateCaptor.getValue mustEqual "addMark.njk"
+      templateCaptor.getValue mustEqual "addItems/addMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -105,7 +105,7 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
         "radios" -> Radios.yesNo(filledForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "addMark.njk"
+      templateCaptor.getValue mustEqual "addItems/addMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -162,7 +162,7 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
         "radios" -> Radios.yesNo(boundForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "addMark.njk"
+      templateCaptor.getValue mustEqual "addItems/addMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()

@@ -59,12 +59,13 @@ class TotalPiecesController @Inject()(
         }
 
         val json = Json.obj(
-          "form" -> preparedForm,
-          "lrn"  -> lrn,
-          "mode" -> mode
+          "form"         -> preparedForm,
+          "lrn"          -> lrn,
+          "mode"         -> mode,
+          "displayIndex" -> itemIndex.display
         )
 
-        renderer.render("totalPieces.njk", json).map(Ok(_))
+        renderer.render("addItems/totalPieces.njk", json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
@@ -76,12 +77,13 @@ class TotalPiecesController @Inject()(
             formWithErrors => {
 
               val json = Json.obj(
-                "form" -> formWithErrors,
-                "lrn"  -> lrn,
-                "mode" -> mode
+                "form"         -> formWithErrors,
+                "lrn"          -> lrn,
+                "mode"         -> mode,
+                "displayIndex" -> itemIndex.display
               )
 
-              renderer.render("totalPieces.njk", json).map(BadRequest(_))
+              renderer.render("addItems/totalPieces.njk", json).map(BadRequest(_))
             },
             value =>
               for {
