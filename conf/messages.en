@@ -739,7 +739,7 @@ commodityCode.checkYourAnswersLabel = Commodity code for item {0}
 commodityCode.error.required = Enter the commodity code for item {0}
 commodityCode.error.length = Commodity Code must be 10 characters or less
 commodityCode.hintText = Commodity codes are 6, 8 or 10 numbers.
-commodityCode.errors.invalidCharacters = The commodity code must only include numbers 0 to 9
+commodityCode.errors.invalidCharacters = The commodity code for item {0} must only include letters a to z and numbers 0 to 9
 commodityCode.errors.invalidFormat =  Enter the commodity code for item {0} in the right format, like 123456, 12345678 or 1234567890
 
 
