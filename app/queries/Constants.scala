@@ -21,5 +21,5 @@ object Constants {
   val seals                        = "seals"
   val items                        = "items"
   val packages                     = "packages"
-
+  val previousReferences           = "previousReferences"
 }

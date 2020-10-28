@@ -16,16 +16,20 @@
 
 package pages
 
+import models.Index
 import pages.behaviours.PageBehaviours
 
 class AddAdministrativeReferencePageSpec extends PageBehaviours {
 
+  private val index         = Index(0)
+  private val refernceIndex = Index(0)
+
   "AddAdministrativeReferencePage" - {
 
-    beRetrievable[Boolean](AddAdministrativeReferencePage)
+    beRetrievable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
 
-    beSettable[Boolean](AddAdministrativeReferencePage)
+    beSettable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
 
-    beRemovable[Boolean](AddAdministrativeReferencePage)
+    beRemovable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
   }
 }

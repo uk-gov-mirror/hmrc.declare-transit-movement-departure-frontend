@@ -57,7 +57,8 @@ trait SpecBase
   val sealDomain: SealDomain    = SealDomain("sealNumber")
   val sealDomain2: SealDomain   = SealDomain("sealNumber2")
 
-  val index = Index(0)
+  val index          = Index(0)
+  val referenceIndex = Index(0)
 
   val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())
 

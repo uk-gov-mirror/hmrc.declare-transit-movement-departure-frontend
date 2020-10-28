@@ -16,11 +16,13 @@
 
 package pages
 
+import models.Index
 import play.api.libs.json.JsPath
+import queries.Constants.{items, previousReferences}
 
-case object AddAdministrativeReferencePage extends QuestionPage[Boolean] {
+case class AddAdministrativeReferencePage(index: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ index.position \ previousReferences \ referenceIndex.position \ toString
 
   override def toString: String = "addAdministrativeReference"
 }

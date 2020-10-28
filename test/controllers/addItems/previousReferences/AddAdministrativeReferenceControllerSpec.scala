@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems.previousReferences
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import forms.AddAdministrativeReferenceFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -44,9 +45,9 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockitoSuga
 
   private val formProvider = new AddAdministrativeReferenceFormProvider()
   private val form         = formProvider()
-  private val template     = "addAdministrativeReference.njk"
+  private val template     = "addItems/addAdministrativeReference.njk"
 
-  lazy val addAdministrativeReferenceRoute = routes.AddAdministrativeReferenceController.onPageLoad(lrn, NormalMode).url
+  lazy val addAdministrativeReferenceRoute = routes.AddAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
 
   "AddAdministrativeReference Controller" - {
 
@@ -68,6 +69,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockitoSuga
 
       val expectedJson = Json.obj(
         "form"   -> form,
+        "index"  -> index.display,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(form("value"))
@@ -86,7 +88,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockitoSuga
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAdministrativeReferencePage, true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAdministrativeReferencePage(index, referenceIndex), true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, addAdministrativeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -102,6 +104,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockitoSuga
 
       val expectedJson = Json.obj(
         "form"   -> filledForm,
+        "index"  -> index.display,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(filledForm("value"))
@@ -162,6 +165,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockitoSuga
       val expectedJson = Json.obj(
         "form"   -> boundForm,
         "mode"   -> NormalMode,
+        "index"  -> index.display,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(boundForm("value"))
       )
@@ -184,7 +188,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockitoSuga
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -201,7 +205,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockitoSuga
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

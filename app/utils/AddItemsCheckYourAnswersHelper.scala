@@ -18,6 +18,7 @@ package utils
 
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
+import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.addItems.traderDetails._
@@ -291,6 +292,22 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               href               = routes.ConfirmRemoveItemController.onPageLoad(userAnswers.id, index).url,
               visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
               attributes         = Map("id" -> s"""remove-item-${index.display}""")
+            )
+          )
+        )
+    }
+
+  def addAdministrativeReference(index: Index, referenceIndex: Index): Option[Row] =
+    userAnswers.get(AddAdministrativeReferencePage(index, referenceIndex)) map {
+      answer =>
+        Row(
+          key   = Key(msg"addAdministrativeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          value = Value(yesOrNo(answer)),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAdministrativeReference.checkYourAnswersLabel"))
             )
           )
         )

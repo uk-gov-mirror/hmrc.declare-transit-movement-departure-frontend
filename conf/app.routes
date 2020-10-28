@@ -459,7 +459,7 @@ POST       /:lrn/add-items/item-details/:index/change-AddItemsSameConsignorForAl
 GET        /:lrn/add-items/add-items                        controllers.addItems.AddAnotherItemController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /:lrn/add-items/add-items                        controllers.addItems.AddAnotherItemController.onSubmit(lrn: LocalReferenceNumber)
 
-GET        /:lrn/addAdministrativeReference                        controllers.AddAdministrativeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/addAdministrativeReference                        controllers.AddAdministrativeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeAddAdministrativeReference                  controllers.AddAdministrativeReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeAddAdministrativeReference                  controllers.AddAdministrativeReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/add-administrative-reference                         controllers.addItems.previousReferences.AddAdministrativeReferenceController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/add-administrative-reference                         controllers.addItems.previousReferences.AddAdministrativeReferenceController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/change-add-administrative-reference                  controllers.addItems.previousReferences.AddAdministrativeReferenceController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/change-add-administrative-reference                  controllers.addItems.previousReferences.AddAdministrativeReferenceController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index,  referenceIndex: Index, mode: Mode = CheckMode)
