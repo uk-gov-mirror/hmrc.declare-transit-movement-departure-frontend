@@ -40,6 +40,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
 
   val departureHost = configuration.get[Service]("microservice.services.departures").fullServiceUrl
 
+  // TODO: Move config values for IdentifierAction to it's own config class
+  // TODO: Make these values eagerly evaluated. I.e. non lazy
   lazy val authUrl: String                   = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String                  = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String          = configuration.get[String]("urls.loginContinue")

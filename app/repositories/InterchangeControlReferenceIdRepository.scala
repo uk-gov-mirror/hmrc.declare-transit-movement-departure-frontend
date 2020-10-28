@@ -19,31 +19,24 @@ package repositories
 import com.google.inject.{Inject, Singleton}
 import models.messages.InterchangeControlReference
 import play.api.libs.json.{Json, Reads}
-import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
-import reactivemongo.play.json.collection.JSONCollection
 import services.DateTimeService
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class InterchangeControlReferenceIdRepository @Inject()(
-  mongo: ReactiveMongoApi,
+  collection: InterchangeControlReferenceCollection,
   dateTimeService: DateTimeService
 ) {
 
   private val lastIndexKey = "last-index"
 
-  private val collectionName: String = "interchange-control-reference-ids"
-
   private val indexKeyReads: Reads[Int] = {
     import play.api.libs.json._
     (__ \ lastIndexKey).read[Int]
   }
-
-  private def collection: Future[JSONCollection] =
-    mongo.database.map(_.collection[JSONCollection](collectionName))
 
   def nextInterchangeControlReferenceId(): Future[InterchangeControlReference] = {
 
@@ -55,12 +48,13 @@ class InterchangeControlReferenceIdRepository @Inject()(
 
     val selector = Json.obj("_id" -> s"$date")
 
-    collection.flatMap {
+    collection().flatMap {
       _.findAndUpdate(selector, update, upsert = true, fetchNewObject = true)
         .map(
           _.result(indexKeyReads)
             .map(InterchangeControlReference(date, _))
-            .getOrElse(throw new Exception(s"Unable to generate InterchangeControlReferenceId for: $date")))
+            .getOrElse(throw new Exception(s"Unable to generate InterchangeControlReferenceId for: $date"))
+        )
     }
   }
 }
