@@ -64,7 +64,7 @@ class DeclareMarkController @Inject()(
           "mode" -> mode
         )
 
-        renderer.render("declareMark.njk", json).map(Ok(_))
+        renderer.render("addItems/declareMark.njk", json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
@@ -81,7 +81,7 @@ class DeclareMarkController @Inject()(
                 "mode" -> mode
               )
 
-              renderer.render("declareMark.njk", json).map(BadRequest(_))
+              renderer.render("addItems/declareMark.njk", json).map(BadRequest(_))
             },
             value =>
               for {

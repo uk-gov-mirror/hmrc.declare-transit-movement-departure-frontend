@@ -73,7 +73,7 @@ class PackageTypeController @Inject()(
               "packageTypes" -> packageTypeList(preparedForm.value, packageTypes.packageTypeList)
             )
 
-            renderer.render("packageType.njk", json).map(Ok(_))
+            renderer.render("addItems/packageType.njk", json).map(Ok(_))
         }
     }
 
@@ -94,7 +94,7 @@ class PackageTypeController @Inject()(
                     "packageTypes" -> packageTypeList(form.value, packageTypes.packageTypeList)
                   )
 
-                  renderer.render("packageType.njk", json).map(BadRequest(_))
+                  renderer.render("addItems/packageType.njk", json).map(BadRequest(_))
                 },
                 value =>
                   for {

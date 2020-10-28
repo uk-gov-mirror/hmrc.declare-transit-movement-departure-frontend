@@ -64,7 +64,7 @@ class HowManyPackagesController @Inject()(
           "mode" -> mode
         )
 
-        renderer.render("howManyPackages.njk", json).map(Ok(_))
+        renderer.render("addItems/howManyPackages.njk", json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
@@ -81,7 +81,7 @@ class HowManyPackagesController @Inject()(
                 "mode" -> mode
               )
 
-              renderer.render("howManyPackages.njk", json).map(BadRequest(_))
+              renderer.render("addItems/howManyPackages.njk", json).map(BadRequest(_))
             },
             value =>
               for {

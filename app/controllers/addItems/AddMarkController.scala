@@ -65,7 +65,7 @@ class AddMarkController @Inject()(
           "radios" -> Radios.yesNo(preparedForm("value"))
         )
 
-        renderer.render("addMark.njk", json).map(Ok(_))
+        renderer.render("addItems/addMark.njk", json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageItem: Index, mode: Mode): Action[AnyContent] =
@@ -83,7 +83,7 @@ class AddMarkController @Inject()(
                 "radios" -> Radios.yesNo(formWithErrors("value"))
               )
 
-              renderer.render("addMark.njk", json).map(BadRequest(_))
+              renderer.render("addItems/addMark.njk", json).map(BadRequest(_))
             },
             value =>
               for {
