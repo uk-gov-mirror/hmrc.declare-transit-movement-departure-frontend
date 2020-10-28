@@ -16,8 +16,6 @@
 
 package utils
 
-import java.time.format.DateTimeFormatter
-
 import controllers.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._

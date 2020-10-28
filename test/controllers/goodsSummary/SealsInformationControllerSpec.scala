@@ -17,6 +17,7 @@
 package controllers.goodsSummary
 
 import base.SpecBase
+import controllers.{routes => mainRoutes}
 import forms.SealsInformationFormProvider
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
@@ -26,6 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.SealIdDetailsPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -34,19 +37,17 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
-import pages.{AddSealsPage, SealIdDetailsPage}
 
 import scala.concurrent.Future
 
 class SealsInformationControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new SealsInformationFormProvider()
-  val form         = formProvider()
+  val formProvider        = new SealsInformationFormProvider()
+  val form: Form[Boolean] = formProvider()
 
-  lazy val sealsInformationRoute = routes.SealsInformationController.onPageLoad(lrn, NormalMode).url
+  lazy val sealsInformationRoute: String = routes.SealsInformationController.onPageLoad(lrn, NormalMode).url
 
   "SealsInformation Controller" - {
 
