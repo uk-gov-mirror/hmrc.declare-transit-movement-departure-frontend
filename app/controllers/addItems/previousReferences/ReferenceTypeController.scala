@@ -16,13 +16,16 @@
 
 package controllers.addItems.previousReferences
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.ReferenceTypeFormProvider
 import javax.inject.Inject
+import models.reference.PreviousDocumentType
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.ReferenceTypePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,6 +33,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.getPreviousDocumentsAsJson
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,6 +45,7 @@ class ReferenceTypeController @Inject()(
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: ReferenceTypeFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -48,51 +53,62 @@ class ReferenceTypeController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/referenceType.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(ReferenceTypePage(itemIndex, referenceIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+        referenceDataConnector.getPreviousDocumentTypes() flatMap {
+          previousDocuments =>
+            val form: Form[PreviousDocumentType] = formProvider(previousDocuments)
+
+            val preparedForm = request.userAnswers
+              .get(ReferenceTypePage(itemIndex, referenceIndex))
+              .flatMap(previousDocuments.getPreviousDocumentType)
+              .map(form.fill)
+              .getOrElse(form)
+
+            val json = Json.obj(
+              "form"              -> preparedForm,
+              "index"             -> itemIndex.display,
+              "referenceIndex"    -> referenceIndex.display,
+              "previousDocuments" -> getPreviousDocumentsAsJson(preparedForm.value, previousDocuments.previousDocumentTypes),
+              "lrn"               -> lrn,
+              "mode"              -> mode
+            )
+
+            renderer.render(template, json).map(Ok(_))
         }
-
-        val json = Json.obj(
-          "form"           -> preparedForm,
-          "index"          -> itemIndex.display,
-          "referenceIndex" -> referenceIndex.display,
-          "lrn"            -> lrn,
-          "mode"           -> mode
-        )
-
-        renderer.render(template, json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
+        referenceDataConnector.getPreviousDocumentTypes() flatMap {
+          previousDocuments =>
+            val form = formProvider(previousDocuments)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => {
 
-              val json = Json.obj(
-                "form"           -> formWithErrors,
-                "index"          -> itemIndex.display,
-                "referenceIndex" -> referenceIndex.display,
-                "lrn"            -> lrn,
-                "mode"           -> mode
+                  val json = Json.obj(
+                    "form"              -> formWithErrors,
+                    "index"             -> itemIndex.display,
+                    "referenceIndex"    -> referenceIndex.display,
+                    "previousDocuments" -> getPreviousDocumentsAsJson(form.value, previousDocuments.previousDocumentTypes),
+                    "lrn"               -> lrn,
+                    "mode"              -> mode
+                  )
+
+                  renderer.render(template, json).map(BadRequest(_))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(ReferenceTypePage(itemIndex, referenceIndex), value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(ReferenceTypePage(itemIndex, referenceIndex), mode, updatedAnswers))
               )
-
-              renderer.render(template, json).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(ReferenceTypePage(itemIndex, referenceIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ReferenceTypePage(itemIndex, referenceIndex), mode, updatedAnswers))
-          )
+        }
     }
 }

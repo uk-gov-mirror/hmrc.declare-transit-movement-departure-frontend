@@ -16,16 +16,18 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.PreviousDocumentTypeList
+import models.reference.PreviousDocumentType
 import play.api.data.Form
 
 class ReferenceTypeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(previousDocumentTypeList: PreviousDocumentTypeList): Form[PreviousDocumentType] =
     Form(
       "value" -> text("referenceType.error.required")
-        .verifying(maxLength(12, "referenceType.error.length"))
+        .verifying("referenceType.error.required", value => previousDocumentTypeList.previousDocumentTypes.exists(_.code == value))
+        .transform[PreviousDocumentType](value => previousDocumentTypeList.getPreviousDocumentType(value).get, _.code)
     )
 }

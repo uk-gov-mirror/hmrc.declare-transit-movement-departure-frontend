@@ -17,6 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.PreviousDocumentTypeList
+import models.reference.PreviousDocumentType
 import play.api.data.FormError
 
 class ReferenceTypeFormProviderSpec extends StringFieldBehaviours {
@@ -25,7 +27,14 @@ class ReferenceTypeFormProviderSpec extends StringFieldBehaviours {
   val lengthKey   = "referenceType.error.length"
   val maxLength   = 12
 
-  val form = new ReferenceTypeFormProvider()()
+  private val documentList = PreviousDocumentTypeList(
+    Seq(
+      PreviousDocumentType("T1", "Description T1"),
+      PreviousDocumentType("T2F", "Description T2F")
+    )
+  )
+
+  val form = new ReferenceTypeFormProvider()(documentList)
 
   ".value" - {
 
@@ -49,5 +58,19 @@ class ReferenceTypeFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind if previous document type that does not exist in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a document type code which is in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "T1"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
   }
 }
