@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package queries
+package pages
 
-object Constants {
-  val routeDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val items                        = "items"
-  val packages                     = "packages"
-  val previousReferences           = "previousReferences"
+import models.Index
+import pages.behaviours.PageBehaviours
+
+class AddAdministrativeReferencePageSpec extends PageBehaviours {
+
+  private val index         = Index(0)
+  private val refernceIndex = Index(0)
+
+  "AddAdministrativeReferencePage" - {
+
+    beRetrievable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
+
+    beSettable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
+
+    beRemovable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
+  }
 }

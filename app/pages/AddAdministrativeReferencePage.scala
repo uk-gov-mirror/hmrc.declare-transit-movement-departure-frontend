@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package queries
+package pages
 
-object Constants {
-  val routeDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val items                        = "items"
-  val packages                     = "packages"
-  val previousReferences           = "previousReferences"
+import models.Index
+import play.api.libs.json.JsPath
+import queries.Constants.{items, previousReferences}
+
+case class AddAdministrativeReferencePage(index: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ items \ index.position \ previousReferences \ referenceIndex.position \ toString
+
+  override def toString: String = "addAdministrativeReference"
 }

@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package queries
+package repositories
 
-object Constants {
-  val routeDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val items                        = "items"
-  val packages                     = "packages"
-  val previousReferences           = "previousReferences"
-}
+import play.api.inject._
+
+class RepositoryModule
+    extends SimpleModule(
+      (_, _) =>
+        Seq(
+          bind(classOf[SessionRepository]).to(classOf[DefaultSessionRepository]),
+          bind(classOf[SessionCollectionIndexManager]).to(classOf[SessionCollectionIndexManagerImpl]).eagerly()
+      )
+    )

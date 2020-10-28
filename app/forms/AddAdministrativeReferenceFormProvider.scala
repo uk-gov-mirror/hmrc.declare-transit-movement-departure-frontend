@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package queries
+package forms
 
-object Constants {
-  val routeDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val items                        = "items"
-  val packages                     = "packages"
-  val previousReferences           = "previousReferences"
+import javax.inject.Inject
+
+import forms.mappings.Mappings
+import play.api.data.Form
+
+class AddAdministrativeReferenceFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addAdministrativeReference.error.required")
+    )
 }

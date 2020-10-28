@@ -16,6 +16,7 @@
 
 package controllers.actions
 
+import com.google.inject.Singleton
 import javax.inject.Inject
 import models.LocalReferenceNumber
 import models.requests.{IdentifierRequest, OptionalDataRequest}
@@ -24,6 +25,7 @@ import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class DataRetrievalActionProviderImpl @Inject()(sessionRepository: SessionRepository, ec: ExecutionContext) extends DataRetrievalActionProvider {
 
   def apply(lrn: LocalReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest] =
