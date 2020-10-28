@@ -27,7 +27,6 @@ import models.messages.goodsitem.GoodsItem
 import models.messages.guarantee.Guarantee
 import models.messages.trader._
 import utils.NonEmptyListXMLReader._
-import json.NonEmptyListOps._
 
 import scala.xml.{Elem, Node, NodeSeq}
 
