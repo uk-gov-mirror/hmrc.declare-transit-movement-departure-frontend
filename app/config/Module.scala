@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule
 import controllers.actions._
 import navigation._
 import navigation.annotations._
-import repositories.{DefaultSessionRepository, SessionRepository}
+import repositories.{DefaultSessionRepository, SessionCollectionIndexManager, SessionCollectionIndexManagerImpl, SessionRepository}
 import services.{DateTimeService, DateTimeServiceImpl}
 
 class Module extends AbstractModule {
@@ -36,11 +36,10 @@ class Module extends AbstractModule {
     bind(classOf[Navigator]).annotatedWith(classOf[GuaranteeDetails]).to(classOf[GuaranteeDetailsNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[AddItems]).to(classOf[AddItemsNavigator])
 
-    bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
-    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
+    bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl])
+    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl])
 
-    // For session based storage instead of cred based, change to SessionIdentifierAction
-    bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
+    bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction])
 
     bind(classOf[SessionRepository]).to(classOf[DefaultSessionRepository]).asEagerSingleton()
 
