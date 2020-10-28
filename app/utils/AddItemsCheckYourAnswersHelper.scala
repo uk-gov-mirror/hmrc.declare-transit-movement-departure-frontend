@@ -324,13 +324,13 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             Action(
               content            = msg"site.change",
               href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, mode).url,
-              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
+              visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
               attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
             ),
             Action(
               content            = msg"site.delete",
-              href               = "", // TODO Create page
-              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
+              href               = routes.RemovePackageController.onPageLoad(userAnswers.id, itemIndex, packageIndex).url, // TODO Create page
+              visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
               attributes         = Map("id" -> s"""remove-package-${packageIndex.display}""")
             )
           )

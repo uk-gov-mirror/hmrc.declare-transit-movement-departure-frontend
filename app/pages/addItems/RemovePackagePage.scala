@@ -25,5 +25,4 @@ case class RemovePackagePage(itemIndex: Index, packageIndex: Index) extends Ques
 
   override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
-  override def toString: String = "removePackage"
 }
