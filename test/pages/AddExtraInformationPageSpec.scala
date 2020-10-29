@@ -16,26 +16,22 @@
 
 package pages
 
-import java.time.LocalDateTime
-
-import models.{Index, LocalDateTimeWithAMPM}
-import org.scalacheck.Arbitrary
+import models.Index
+import pages.addItems.AddExtraInformationPage
 import pages.behaviours.PageBehaviours
 
-class ArrivalTimesAtOfficePageSpec extends PageBehaviours {
+class AddExtraInformationPageSpec extends PageBehaviours {
 
-  "ArrivalTimesAtOfficePage" - {
+  val itemIndex: Index              = Index(0)
+  val referenceIndex: Index         = Index(0)
+  val page: AddExtraInformationPage = AddExtraInformationPage(itemIndex, referenceIndex)
 
-    implicit lazy val arbitraryLocalDateTime: Arbitrary[LocalDateTime] = Arbitrary {
-      LocalDateTime.of(1900, 1, 1, 12, 0, 0)
-    }
+  "AddExtraInformationPage" - {
 
-    val index = Index(0)
+    beRetrievable[Boolean](page)
 
-    beRetrievable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
+    beSettable[Boolean](page)
 
-    beSettable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
-
-    beRemovable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
+    beRemovable[Boolean](page)
   }
 }

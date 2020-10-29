@@ -16,16 +16,15 @@
 
 package forms
 
-import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class IsCommodityCodeKnownFormProviderSpec extends BooleanFieldBehaviours with SpecBase {
+class AddExtraInformationFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "isCommodityCodeKnown.error.required"
+  val requiredKey = "addExtraInformation.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new IsCommodityCodeKnownFormProvider()(index)
+  val form = new AddExtraInformationFormProvider()()
 
   ".value" - {
 
@@ -34,13 +33,13 @@ class IsCommodityCodeKnownFormProviderSpec extends BooleanFieldBehaviours with S
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey, Seq(index.display))
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

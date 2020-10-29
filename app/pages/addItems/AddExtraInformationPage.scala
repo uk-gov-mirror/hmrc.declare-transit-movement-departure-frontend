@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package forms.behaviours
+package pages.addItems
 
-import play.api.data.{Form, FormError}
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.{items, previousReferences}
 
-trait StringFieldBehaviours extends FieldBehaviours {
+case class AddExtraInformationPage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
 
-  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError, withoutExtendedAscii: Boolean = false): Unit =
-    s"must not bind strings longer than $maxLength characters" in {
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences \ referenceIndex.position \ toString
 
-      forAll(stringsLongerThan(maxLength, withoutExtendedAscii) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
-      }
-    }
+  override def toString: String = "addExtraInformation"
 }
