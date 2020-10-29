@@ -16,7 +16,7 @@
 
 package controllers.traderDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
 import forms.ConsigneeForAllItemsFormProvider
 import matchers.JsonMatchers
@@ -39,7 +39,7 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class ConsigneeForAllItemsControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ConsigneeForAllItemsControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
