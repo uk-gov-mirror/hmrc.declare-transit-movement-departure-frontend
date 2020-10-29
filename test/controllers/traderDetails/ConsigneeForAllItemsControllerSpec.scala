@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.addItems
+package controllers.traderDetails
 
-import base.{MockNunjucksRendererApp, SpecBase}
-import forms.AddMarkFormProvider
+import base.SpecBase
+import controllers.{routes => mainRoutes}
+import forms.ConsigneeForAllItemsFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.annotations.AddItems
+import navigation.annotations.TraderDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.ConsigneeForAllItemsPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -34,21 +36,20 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
-import pages.addItems.AddMarkPage
 
 import scala.concurrent.Future
 
-class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ConsigneeForAllItemsControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new AddMarkFormProvider()
-  val form         = formProvider()
+  private val formProvider = new ConsigneeForAllItemsFormProvider()
+  private val form         = formProvider()
+  private val template     = "consigneeForAllItems.njk"
 
-  lazy val addMarkRoute = routes.AddMarkController.onPageLoad(lrn, index, index, NormalMode).url
+  lazy val consigneeForAllItemsRoute = routes.ConsigneeForAllItemsController.onPageLoad(lrn, NormalMode).url
 
-  "AddMark Controller" - {
+  "ConsigneeForAllItems Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -56,7 +57,7 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, addMarkRoute)
+      val request        = FakeRequest(GET, consigneeForAllItemsRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -73,8 +74,10 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
         "radios" -> Radios.yesNo(form("value"))
       )
 
-      templateCaptor.getValue mustEqual "addItems/addMark.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -84,9 +87,9 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddMarkPage(index, index), true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(ConsigneeForAllItemsPage, true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, addMarkRoute)
+      val request        = FakeRequest(GET, consigneeForAllItemsRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -105,8 +108,10 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
         "radios" -> Radios.yesNo(filledForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "addItems/addMark.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -120,13 +125,13 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
+            bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
       val request =
-        FakeRequest(POST, addMarkRoute)
+        FakeRequest(POST, consigneeForAllItemsRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -144,7 +149,7 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, addMarkRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, consigneeForAllItemsRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -162,8 +167,10 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
         "radios" -> Radios.yesNo(boundForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "addItems/addMark.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -172,7 +179,7 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, addMarkRoute)
+      val request = FakeRequest(GET, consigneeForAllItemsRoute)
 
       val result = route(application, request).value
 
@@ -188,7 +195,7 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, addMarkRoute)
+        FakeRequest(POST, consigneeForAllItemsRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

@@ -35,11 +35,8 @@ trait PageGenerators {
   implicit lazy val arbitraryRemoveItemPage: Arbitrary[ConfirmRemoveItemPage.type] =
     Arbitrary(ConfirmRemoveItemPage)
 
-  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsPage: Arbitrary[AddItemsSameConsignorForAllItemsPage.type] =
-    Arbitrary(AddItemsSameConsignorForAllItemsPage)
-
-  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsPage: Arbitrary[AddItemsSameConsigneeForAllItemsPage.type] =
-    Arbitrary(AddItemsSameConsigneeForAllItemsPage)
+  implicit lazy val arbitraryConsigneeForAllItemsPage: Arbitrary[ConsigneeForAllItemsPage.type] =
+    Arbitrary(ConsigneeForAllItemsPage)
 
   implicit lazy val arbitraryHowManyPackagesPage: Arbitrary[HowManyPackagesPage] =
     Arbitrary(HowManyPackagesPage(Index(0), Index(0)))

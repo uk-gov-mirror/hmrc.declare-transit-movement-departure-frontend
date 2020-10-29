@@ -29,14 +29,14 @@ import org.mockito.Mockito
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import pages.AddCustomsApprovedLocationPage
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.Helpers
-import play.modules.reactivemongo.ReactiveMongoApi
+import repositories.SessionCollectionIndexManager
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
+
+import scala.concurrent.Future
 
 trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEach with MockitoSugar {
   self: TestSuite =>

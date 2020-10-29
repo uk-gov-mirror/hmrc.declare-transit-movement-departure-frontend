@@ -14,20 +14,32 @@
  * limitations under the License.
  */
 
-package forms.behaviours
+package forms
 
-import models.Index
-import play.api.data.{Form, FormError}
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-trait StringFieldBehaviours extends FieldBehaviours {
+class ConsignorForAllItemsFormProviderSpec extends BooleanFieldBehaviours {
 
-  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError, withoutExtendedAscii: Boolean = false): Unit =
-    s"must not bind strings longer than $maxLength characters" in {
+  val requiredKey = "consignorForAllItems.error.required"
+  val invalidKey  = "error.boolean"
 
-      forAll(stringsLongerThan(maxLength, withoutExtendedAscii) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
-      }
-    }
+  val form = new ConsignorForAllItemsFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

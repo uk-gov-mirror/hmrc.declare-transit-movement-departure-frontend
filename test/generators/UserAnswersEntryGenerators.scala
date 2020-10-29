@@ -46,18 +46,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry: Arbitrary[(AddItemsSameConsignorForAllItemsPage.type, JsValue)] =
+  implicit lazy val arbitraryConsigneeForAllItemsUserAnswersEntry: Arbitrary[(ConsigneeForAllItemsPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[AddItemsSameConsignorForAllItemsPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsUserAnswersEntry: Arbitrary[(AddItemsSameConsigneeForAllItemsPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[AddItemsSameConsigneeForAllItemsPage.type]
+        page  <- arbitrary[ConsigneeForAllItemsPage.type]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }

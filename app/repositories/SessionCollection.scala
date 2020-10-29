@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package forms.behaviours
+package repositories
 
-import models.Index
-import play.api.data.{Form, FormError}
+import javax.inject.{Inject, Singleton}
+import play.modules.reactivemongo.ReactiveMongoApi
+import reactivemongo.play.json.collection.JSONCollection
 
-trait StringFieldBehaviours extends FieldBehaviours {
+import scala.concurrent.{ExecutionContext, Future}
 
-  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError, withoutExtendedAscii: Boolean = false): Unit =
-    s"must not bind strings longer than $maxLength characters" in {
+@Singleton
+private[repositories] class SessionCollection @Inject()(mongo: ReactiveMongoApi)(implicit ec: ExecutionContext) extends (() => Future[JSONCollection]) {
+  import SessionCollection._
 
-      forAll(stringsLongerThan(maxLength, withoutExtendedAscii) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
-      }
-    }
+  override def apply(): Future[JSONCollection] = mongo.database.map(_.collection[JSONCollection](collectionName))
+
+}
+
+object SessionCollection {
+
+  val collectionName: String = "user-answers"
+
 }

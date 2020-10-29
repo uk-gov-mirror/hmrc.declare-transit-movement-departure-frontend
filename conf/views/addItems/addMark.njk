@@ -1,13 +1,13 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
-{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("itemTotalGrossMass.title", index), form.errors) }}
+  {{ title(messages("addMark.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -27,19 +27,23 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.addItems.ItemTotalGrossMassController.onSubmit(lrn, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
-        <h1 class="govuk-heading-xl"> {{ messages("itemTotalGrossMass.heading", index) }}  </h1>
-        <span class="govuk-hint"> {{messages('itemTotalGrossMass.hintText')}} </span>
+
+        <form action="{{ routes.controllers.addItems.AddMarkController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
-          {{ govukInput({
-            id: "value",
-            name: "value",
-            value: form.value.value,
-            errorMessage: form.value.error,
-            classes: "govuk-input--width-10"
+          {{ govukRadios({
+            name: 'value',
+            fieldset: {
+              legend: {
+                text: messages('addMark.heading', displayIndex),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl"
+              }
+            },
+            items: radios,
+            errorMessage: form.value.error
           }) }}
 
           {{ govukButton({

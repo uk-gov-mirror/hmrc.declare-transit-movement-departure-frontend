@@ -44,7 +44,7 @@ class ItemDescriptionFormProviderSpec extends StringFieldBehaviours with SpecBas
       form,
       fieldName,
       maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(index.display))
     )
 
     behave like mandatoryField(

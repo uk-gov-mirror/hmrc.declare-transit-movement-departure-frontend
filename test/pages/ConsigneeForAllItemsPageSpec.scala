@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package forms.behaviours
+package pages
 
-import models.Index
-import play.api.data.{Form, FormError}
+import pages.behaviours.PageBehaviours
 
-trait StringFieldBehaviours extends FieldBehaviours {
+class ConsigneeForAllItemsPageSpec extends PageBehaviours {
 
-  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError, withoutExtendedAscii: Boolean = false): Unit =
-    s"must not bind strings longer than $maxLength characters" in {
+  "ConsigneeForAllItemsPage" - {
 
-      forAll(stringsLongerThan(maxLength, withoutExtendedAscii) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
-      }
-    }
+    beRetrievable[Boolean](ConsigneeForAllItemsPage)
+
+    beSettable[Boolean](ConsigneeForAllItemsPage)
+
+    beRemovable[Boolean](ConsigneeForAllItemsPage)
+  }
 }

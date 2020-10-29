@@ -99,7 +99,7 @@ class PackageTypeControllerSpec extends SpecBase with MockNunjucksRendererApp wi
 
       val jsonCaptorWithoutConfig = jsonCaptor.getValue - configKey
 
-      templateCaptor.getValue mustEqual "packageType.njk"
+      templateCaptor.getValue mustEqual "addItems/packageType.njk"
       jsonCaptorWithoutConfig mustEqual expectedJson
 
       application.stop()
@@ -142,7 +142,7 @@ class PackageTypeControllerSpec extends SpecBase with MockNunjucksRendererApp wi
 
       val jsonCaptorWithoutConfig = jsonCaptor.getValue - configKey
 
-      templateCaptor.getValue mustEqual "packageType.njk"
+      templateCaptor.getValue mustEqual "addItems/packageType.njk"
       jsonCaptorWithoutConfig mustEqual expectedJson
 
       application.stop()
@@ -201,7 +201,7 @@ class PackageTypeControllerSpec extends SpecBase with MockNunjucksRendererApp wi
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "packageType.njk"
+      templateCaptor.getValue mustEqual "addItems/packageType.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()

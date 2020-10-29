@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package forms.behaviours
+package pages
 
-import models.Index
-import play.api.data.{Form, FormError}
+import play.api.libs.json.JsPath
 
-trait StringFieldBehaviours extends FieldBehaviours {
+case object ConsignorForAllItemsPage extends QuestionPage[Boolean] {
 
-  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError, withoutExtendedAscii: Boolean = false): Unit =
-    s"must not bind strings longer than $maxLength characters" in {
+  override def path: JsPath = JsPath \ toString
 
-      forAll(stringsLongerThan(maxLength, withoutExtendedAscii) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
-      }
-    }
+  override def toString: String = "consignorForAllItems"
 }

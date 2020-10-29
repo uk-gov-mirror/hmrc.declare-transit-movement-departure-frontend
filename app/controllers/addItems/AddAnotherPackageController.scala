@@ -31,6 +31,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import utils.AddItemsCheckYourAnswersHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -59,14 +60,28 @@ class AddAnotherPackageController @Inject()(
           case Some(value) => form.fill(value)
         }
 
+        val totalTypes            = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
+        val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
+        val indexList: Seq[Index] = List.range(0, totalTypes).map(Index(_))
+
+        val packageRows = indexList.map {
+          index =>
+            cyaHelper.packageRows(itemIndex, index, mode)
+        }
+
+        val singularOrPlural = if (totalTypes == 1) "singular" else "plural"
+
         val json = Json.obj(
-          "form"   -> preparedForm,
-          "mode"   -> mode,
-          "lrn"    -> lrn,
-          "radios" -> Radios.yesNo(preparedForm("value"))
+          "form"        -> preparedForm,
+          "mode"        -> mode,
+          "lrn"         -> lrn,
+          "radios"      -> Radios.yesNo(preparedForm("value")),
+          "pageTitle"   -> msg"addAnotherPackage.title.$singularOrPlural".withArgs(totalTypes),
+          "heading"     -> msg"addAnotherPackage.heading.$singularOrPlural".withArgs(totalTypes),
+          "packageRows" -> packageRows,
         )
 
-        renderer.render("addAnotherPackage.njk", json).map(Ok(_))
+        renderer.render("addItems/addAnotherPackage.njk", json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
@@ -77,14 +92,19 @@ class AddAnotherPackageController @Inject()(
           .fold(
             formWithErrors => {
 
+              val totalTypes       = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
+              val singularOrPlural = if (totalTypes == 1) "singular" else "plural"
+
               val json = Json.obj(
-                "form"   -> formWithErrors,
-                "mode"   -> mode,
-                "lrn"    -> lrn,
-                "radios" -> Radios.yesNo(formWithErrors("value"))
+                "form"      -> formWithErrors,
+                "mode"      -> mode,
+                "lrn"       -> lrn,
+                "radios"    -> Radios.yesNo(formWithErrors("value")),
+                "pageTitle" -> msg"addAnotherPackage.title.$singularOrPlural".withArgs(totalTypes),
+                "heading"   -> msg"addAnotherPackage.heading.$singularOrPlural".withArgs(totalTypes),
               )
 
-              renderer.render("addAnotherPackage.njk", json).map(BadRequest(_))
+              renderer.render("addItems/addAnotherPackage.njk", json).map(BadRequest(_))
             },
             value =>
               for {

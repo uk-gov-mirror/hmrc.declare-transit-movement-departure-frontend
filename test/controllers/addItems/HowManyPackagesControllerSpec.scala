@@ -74,7 +74,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockNunjucksRendererAp
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "howManyPackages.njk"
+      templateCaptor.getValue mustEqual "addItems/howManyPackages.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -105,7 +105,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockNunjucksRendererAp
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "howManyPackages.njk"
+      templateCaptor.getValue mustEqual "addItems/howManyPackages.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -161,7 +161,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockNunjucksRendererAp
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "howManyPackages.njk"
+      templateCaptor.getValue mustEqual "addItems/howManyPackages.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
