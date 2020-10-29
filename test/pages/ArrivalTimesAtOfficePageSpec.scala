@@ -20,7 +20,6 @@ import java.time.LocalDateTime
 
 import models.{Index, LocalDateTimeWithAMPM}
 import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class ArrivalTimesAtOfficePageSpec extends PageBehaviours {

@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.Index
-import play.api.libs.json.JsPath
-import queries.Constants.{items, previousReferences}
+import models.reference.PreviousDocumentType
 
-case class AddAdministrativeReferencePage(index: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
+case class PreviousDocumentTypeList(previousDocumentTypes: Seq[PreviousDocumentType]) {
 
-  override def path: JsPath = JsPath \ items \ index.position \ previousReferences \ referenceIndex.position \ toString
+  def getPreviousDocumentType(code: String): Option[PreviousDocumentType] =
+    previousDocumentTypes.find(_.code == code)
 
-  override def toString: String = "addAdministrativeReference"
 }
