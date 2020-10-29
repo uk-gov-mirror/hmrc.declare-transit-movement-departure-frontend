@@ -33,12 +33,13 @@ trait UserAnswersGenerator extends TryValues {
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(ConsigneeForAllItemsPage.type, JsValue)] ::
       arbitrary[(ConsignorForAllItemsPage.type, JsValue)] ::
-      arbitrary[(HowManyPackagesPage.type, JsValue)] ::
-      arbitrary[(AddAnotherPackagePage.type, JsValue)] ::
-      arbitrary[(DeclareMarkPage.type, JsValue)] ::
-      arbitrary[(AddMarkPage.type, JsValue)] ::
-      arbitrary[(TotalPiecesPage.type, JsValue)] ::
-      arbitrary[(DeclareNumberOfPackagesPage.type, JsValue)] ::
+      arbitrary[(HowManyPackagesPage, JsValue)] ::
+      arbitrary[(AddAnotherPackagePage, JsValue)] ::
+      arbitrary[(DeclareMarkPage, JsValue)] ::
+      arbitrary[(AddMarkPage, JsValue)] ::
+      arbitrary[(TotalPiecesPage, JsValue)] ::
+      arbitrary[(DeclareNumberOfPackagesPage, JsValue)] ::
+      arbitrary[(ReferenceTypePage, JsValue)] ::
       arbitrary[(AddAdministrativeReferencePage, JsValue)] ::
       arbitrary[(ConfirmRemoveItemPage.type, JsValue)] ::
       arbitrary[(TotalPackagesPage.type, JsValue)] ::

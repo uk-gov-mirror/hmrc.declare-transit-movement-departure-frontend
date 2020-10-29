@@ -17,20 +17,20 @@
 package pages
 
 import models.Index
-import pages.addItems.AddAdministrativeReferencePage
+import pages.addItems.ReferenceTypePage
 import pages.behaviours.PageBehaviours
 
-class AddAdministrativeReferencePageSpec extends PageBehaviours {
+class ReferenceTypePageSpec extends PageBehaviours {
 
-  private val index         = Index(0)
-  private val refernceIndex = Index(0)
+  private val index          = Index(0)
+  private val referenceIndex = Index(0)
 
-  "AddAdministrativeReferencePage" - {
+  "ReferenceTypePage" - {
 
-    beRetrievable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
+    beRetrievable[String](ReferenceTypePage(index, referenceIndex))
 
-    beSettable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
+    beSettable[String](ReferenceTypePage(index, referenceIndex))
 
-    beRemovable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
+    beRemovable[String](ReferenceTypePage(index, referenceIndex))
   }
 }

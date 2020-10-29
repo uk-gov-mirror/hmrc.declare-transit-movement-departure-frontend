@@ -22,7 +22,8 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.AddAdministrativeReferencePage
+import pages.addItems
+import pages.addItems.AddAdministrativeReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -51,26 +52,27 @@ class AddAdministrativeReferenceController @Inject()(
   private val form     = formProvider()
   private val template = "addItems/addAdministrativeReference.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(AddAdministrativeReferencePage(index, referenceIndex)) match {
+        val preparedForm = request.userAnswers.get(addItems.AddAdministrativeReferencePage(itemIndex, referenceIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
         val json = Json.obj(
-          "form"   -> preparedForm,
-          "mode"   -> mode,
-          "lrn"    -> lrn,
-          "index"  -> index.display,
-          "radios" -> Radios.yesNo(preparedForm("value"))
+          "form"           -> preparedForm,
+          "mode"           -> mode,
+          "lrn"            -> lrn,
+          "index"          -> itemIndex.display,
+          "referenceIndex" -> referenceIndex.display,
+          "radios"         -> Radios.yesNo(preparedForm("value"))
         )
 
         renderer.render(template, json).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         form
@@ -79,20 +81,21 @@ class AddAdministrativeReferenceController @Inject()(
             formWithErrors => {
 
               val json = Json.obj(
-                "form"   -> formWithErrors,
-                "mode"   -> mode,
-                "lrn"    -> lrn,
-                "index"  -> index.display,
-                "radios" -> Radios.yesNo(formWithErrors("value"))
+                "form"           -> formWithErrors,
+                "mode"           -> mode,
+                "lrn"            -> lrn,
+                "index"          -> itemIndex.display,
+                "referenceIndex" -> referenceIndex.display,
+                "radios"         -> Radios.yesNo(formWithErrors("value"))
               )
 
               renderer.render(template, json).map(BadRequest(_))
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAdministrativeReferencePage(index, referenceIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(addItems.AddAdministrativeReferencePage(itemIndex, referenceIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAdministrativeReferencePage(index, referenceIndex), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(addItems.AddAdministrativeReferencePage(itemIndex, referenceIndex), mode, updatedAnswers))
           )
     }
 }

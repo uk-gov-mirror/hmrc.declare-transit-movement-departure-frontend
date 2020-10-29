@@ -14,50 +14,70 @@
  * limitations under the License.
  */
 
-package controllers.traderDetails
+package controllers.addItems.previousReferences
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import controllers.{routes => mainRoutes}
-import forms.ConsignorForAllItemsFormProvider
+import connectors.ReferenceDataConnector
+import forms.ReferenceTypeFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
-import navigation.annotations.TraderDetails
+import models.{NormalMode, PreviousDocumentTypeList}
+import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ConsignorForAllItemsPage
+import pages.addItems.ReferenceTypePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import controllers.{routes => mainRoutes}
+import models.reference.PreviousDocumentType
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class ConsignorForAllItemsControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ReferenceTypeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new ConsignorForAllItemsFormProvider()
-  private val form         = formProvider()
-  private val template     = "consignorForAllItems.njk"
+  private val formProvider = new ReferenceTypeFormProvider()
+  private val documentTypeList = PreviousDocumentTypeList(
+    Seq(
+      PreviousDocumentType("T1", "Description T1"),
+      PreviousDocumentType("T2F", "Description T2F")
+    )
+  )
 
-  lazy val consignorForAllItemsRoute = routes.ConsignorForAllItemsController.onPageLoad(lrn, NormalMode).url
+  private val form     = formProvider(documentTypeList)
+  private val template = "addItems/referenceType.njk"
 
-  "ConsignorForAllItems Controller" - {
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+
+  lazy val referenceTypeRoute = routes.ReferenceTypeController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockRefDataConnector)
+  }
+
+  "ReferenceType Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, consignorForAllItemsRoute)
+      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request        = FakeRequest(GET, referenceTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -67,11 +87,19 @@ class ConsignorForAllItemsControllerSpec extends SpecBase with MockNunjucksRende
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val expectedPreviousDocumentTypeJson = Seq(
+        Json.obj("value" -> "", "text"    -> ""),
+        Json.obj("value" -> "T1", "text"  -> "(T1) Description T1", "selected" -> false),
+        Json.obj("value" -> "T2F", "text" -> "(T2F) Description T2F", "selected" -> false)
+      )
+
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form"              -> form,
+        "index"             -> index.display,
+        "referenceIndex"    -> referenceIndex.display,
+        "previousDocuments" -> expectedPreviousDocumentTypeJson,
+        "mode"              -> NormalMode,
+        "lrn"               -> lrn
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -87,9 +115,15 @@ class ConsignorForAllItemsControllerSpec extends SpecBase with MockNunjucksRende
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(ConsignorForAllItemsPage, true).success.value
-      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, consignorForAllItemsRoute)
+      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+
+      val userAnswers = emptyUserAnswers.set(ReferenceTypePage(index, referenceIndex), "T1").success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+
+      val request        = FakeRequest(GET, referenceTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -99,13 +133,21 @@ class ConsignorForAllItemsControllerSpec extends SpecBase with MockNunjucksRende
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> "T1"))
+
+      val expectedPreviousDocumentTypeJson = Seq(
+        Json.obj("value" -> "", "text"    -> ""),
+        Json.obj("value" -> "T1", "text"  -> "(T1) Description T1", "selected" -> true),
+        Json.obj("value" -> "T2F", "text" -> "(T2F) Description T2F", "selected" -> false)
+      )
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form"              -> filledForm,
+        "index"             -> index.display,
+        "referenceIndex"    -> referenceIndex.display,
+        "previousDocuments" -> expectedPreviousDocumentTypeJson,
+        "lrn"               -> lrn,
+        "mode"              -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -121,23 +163,24 @@ class ConsignorForAllItemsControllerSpec extends SpecBase with MockNunjucksRende
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
           )
           .build()
 
       val request =
-        FakeRequest(POST, consignorForAllItemsRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, referenceTypeRoute)
+          .withFormUrlEncodedBody(("value", "T1"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -148,8 +191,12 @@ class ConsignorForAllItemsControllerSpec extends SpecBase with MockNunjucksRende
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, consignorForAllItemsRoute).withFormUrlEncodedBody(("value", ""))
+      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+        .build()
+      val request        = FakeRequest(POST, referenceTypeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -161,16 +208,15 @@ class ConsignorForAllItemsControllerSpec extends SpecBase with MockNunjucksRende
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"           -> boundForm,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode
       )
 
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
     }
@@ -179,7 +225,7 @@ class ConsignorForAllItemsControllerSpec extends SpecBase with MockNunjucksRende
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, consignorForAllItemsRoute)
+      val request = FakeRequest(GET, referenceTypeRoute)
 
       val result = route(application, request).value
 
@@ -195,8 +241,8 @@ class ConsignorForAllItemsControllerSpec extends SpecBase with MockNunjucksRende
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, consignorForAllItemsRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, referenceTypeRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 

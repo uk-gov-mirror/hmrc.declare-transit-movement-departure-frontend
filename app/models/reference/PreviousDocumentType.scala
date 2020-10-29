@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package models.reference
 
-import models.Index
-import pages.addItems.AddAdministrativeReferencePage
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Format, Json}
 
-class AddAdministrativeReferencePageSpec extends PageBehaviours {
+case class PreviousDocumentType(code: String, description: String)
 
-  private val index         = Index(0)
-  private val refernceIndex = Index(0)
+object PreviousDocumentType {
 
-  "AddAdministrativeReferencePage" - {
-
-    beRetrievable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
-
-    beSettable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
-
-    beRemovable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
-  }
+  implicit lazy val format: Format[PreviousDocumentType] =
+    Json.format[PreviousDocumentType]
 }

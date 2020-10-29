@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import models.reference.{Country, CustomsOffice, OfficeOfTransit, PackageType, TransportMode}
+import models.reference._
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.viewmodels.{Content, MessageInterpolators}
 
@@ -87,6 +87,18 @@ package object utils {
         )
     }
     defaultOption +: officeOfTransitObjects
+  }
+
+  def getPreviousDocumentsAsJson(value: Option[PreviousDocumentType], documentList: Seq[PreviousDocumentType]): Seq[JsObject] = {
+    val documentObjects = documentList.map {
+      documentType =>
+        Json.obj(
+          "value"    -> documentType.code,
+          "text"     -> s"(${documentType.code}) ${documentType.description}",
+          "selected" -> value.contains(documentType)
+        )
+    }
+    defaultOption +: documentObjects
   }
 
   def yesOrNo(answer: Boolean): Content =

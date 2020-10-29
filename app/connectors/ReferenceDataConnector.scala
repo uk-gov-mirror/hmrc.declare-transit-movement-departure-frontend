@@ -18,8 +18,8 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.reference._
 import models._
+import models.reference._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -65,6 +65,11 @@ class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClie
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[PackageTypeList] = {
     val serviceUrl = s"${config.referenceDataUrl}/kinds-of-package"
     http.GET[Seq[PackageType]](serviceUrl).map(PackageTypeList(_))
+  }
+
+  def getPreviousDocumentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[PreviousDocumentTypeList] = {
+    val serviceUrl = s"${config.referenceDataUrl}/previous-document-type"
+    http.GET[Seq[PreviousDocumentType]](serviceUrl).map(PreviousDocumentTypeList)
   }
 
 }

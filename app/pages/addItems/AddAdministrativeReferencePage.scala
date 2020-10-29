@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
 import models.Index
-import pages.addItems.AddAdministrativeReferencePage
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.{items, previousReferences}
 
-class AddAdministrativeReferencePageSpec extends PageBehaviours {
+case class AddAdministrativeReferencePage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
 
-  private val index         = Index(0)
-  private val refernceIndex = Index(0)
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences \ referenceIndex.position \ toString
 
-  "AddAdministrativeReferencePage" - {
-
-    beRetrievable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
-
-    beSettable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
-
-    beRemovable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
-  }
+  override def toString: String = "addAdministrativeReference"
 }
