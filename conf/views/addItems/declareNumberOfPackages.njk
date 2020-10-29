@@ -1,13 +1,13 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
-{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("howManyPackages.title"), form.errors) }}
+  {{ title(messages("declareNumberOfPackages.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -27,21 +27,22 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.addItems.HowManyPackagesController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
+
+        <form action="{{ routes.controllers.addItems.DeclareNumberOfPackagesController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
-          {{ govukInput({
-            label: {
-              text: messages('howManyPackages.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
+          {{ govukRadios({
+            name: 'value',
+            fieldset: {
+              legend: {
+                text: messages('declareNumberOfPackages.heading'),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl"
+              }
             },
-            id: "value",
-            name: "value",
-            type: "tel",
-            value: form.value.value,
-            classes: "govuk-input--width-10",
+            items: radios,
             errorMessage: form.value.error
           }) }}
 

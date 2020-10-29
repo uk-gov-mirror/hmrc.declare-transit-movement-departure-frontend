@@ -26,20 +26,23 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryConsignorForAllItemsPage: Arbitrary[ConsignorForAllItemsPage.type] =
+    Arbitrary(ConsignorForAllItemsPage)
+
+  implicit lazy val arbitraryReferenceTypePage: Arbitrary[ReferenceTypePage] =
+    Arbitrary(ReferenceTypePage(Index(0), Index(0)))
+
   implicit lazy val arbitraryPreviousReferencePage: Arbitrary[PreviousReferencePage] =
     Arbitrary(PreviousReferencePage(Index(0), Index(0)))
 
   implicit lazy val arbitraryAddAdministrativeReferencePage: Arbitrary[AddAdministrativeReferencePage] =
-    Arbitrary(AddAdministrativeReferencePage(Index(0), Index(0)))
+    Arbitrary(addItems.AddAdministrativeReferencePage(Index(0), Index(0)))
 
   implicit lazy val arbitraryRemoveItemPage: Arbitrary[ConfirmRemoveItemPage.type] =
     Arbitrary(ConfirmRemoveItemPage)
 
-  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsPage: Arbitrary[AddItemsSameConsignorForAllItemsPage.type] =
-    Arbitrary(AddItemsSameConsignorForAllItemsPage)
-
-  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsPage: Arbitrary[AddItemsSameConsigneeForAllItemsPage.type] =
-    Arbitrary(AddItemsSameConsigneeForAllItemsPage)
+  implicit lazy val arbitraryConsigneeForAllItemsPage: Arbitrary[ConsigneeForAllItemsPage.type] =
+    Arbitrary(ConsigneeForAllItemsPage)
 
   implicit lazy val arbitraryHowManyPackagesPage: Arbitrary[HowManyPackagesPage] =
     Arbitrary(HowManyPackagesPage(Index(0), Index(0)))

@@ -59,12 +59,13 @@ class HowManyPackagesController @Inject()(
         }
 
         val json = Json.obj(
-          "form" -> preparedForm,
-          "lrn"  -> lrn,
-          "mode" -> mode
+          "form"         -> preparedForm,
+          "lrn"          -> lrn,
+          "mode"         -> mode,
+          "displayIndex" -> itemIndex.display
         )
 
-        renderer.render("howManyPackages.njk", json).map(Ok(_))
+        renderer.render("addItems/howManyPackages.njk", json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
@@ -76,12 +77,13 @@ class HowManyPackagesController @Inject()(
             formWithErrors => {
 
               val json = Json.obj(
-                "form" -> formWithErrors,
-                "lrn"  -> lrn,
-                "mode" -> mode
+                "form"         -> formWithErrors,
+                "lrn"          -> lrn,
+                "mode"         -> mode,
+                "displayIndex" -> itemIndex.display
               )
 
-              renderer.render("howManyPackages.njk", json).map(BadRequest(_))
+              renderer.render("addItems/howManyPackages.njk", json).map(BadRequest(_))
             },
             value =>
               for {

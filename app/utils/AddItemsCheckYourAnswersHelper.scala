@@ -18,11 +18,12 @@ package utils
 
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.addItems.traderDetails._
-import pages.addItems.{AddItemsSameConsigneeForAllItemsPage, AddItemsSameConsignorForAllItemsPage, CommodityCodePage}
+import pages.addItems._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
@@ -312,6 +313,44 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           )
         )
     }
+
+  def packageRows(itemIndex: Index, packageIndex: Index, mode: Mode): Option[Row] =
+    userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, mode).url,
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = "", // TODO Create page
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-package-${packageIndex.display}""")
+            )
+          )
+        )
+    }
+
+  def referenceType(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(ReferenceTypePage(itemIndex, referenceIndex)) map {
+    answer =>
+      Row(
+        key   = Key(msg"referenceType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"referenceType.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def previousReference(index: Index, referenceIndex: Index): Option[Row] = userAnswers.get(PreviousReferencePage(index, referenceIndex)) map {
     answer =>

@@ -30,10 +30,26 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators extends PageGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryConsignorForAllItemsUserAnswersEntry: Arbitrary[(ConsignorForAllItemsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConsignorForAllItemsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryPreviousReferenceUserAnswersEntry: Arbitrary[(PreviousReferencePage, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[PreviousReferencePage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryReferenceTypeUserAnswersEntry: Arbitrary[(ReferenceTypePage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ReferenceTypePage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -46,18 +62,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry: Arbitrary[(AddItemsSameConsignorForAllItemsPage.type, JsValue)] =
+  implicit lazy val arbitraryConsigneeForAllItemsUserAnswersEntry: Arbitrary[(ConsigneeForAllItemsPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[AddItemsSameConsignorForAllItemsPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsUserAnswersEntry: Arbitrary[(AddItemsSameConsigneeForAllItemsPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[AddItemsSameConsigneeForAllItemsPage.type]
+        page  <- arbitrary[ConsigneeForAllItemsPage.type]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }

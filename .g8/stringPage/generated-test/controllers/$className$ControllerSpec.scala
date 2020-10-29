@@ -1,6 +1,6 @@
 package controllers
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import matchers.JsonMatchers
 import forms.$className$FormProvider
 import models.{NormalMode, UserAnswers}

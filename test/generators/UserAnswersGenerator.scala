@@ -30,18 +30,19 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
-  lazy val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(PreviousReferencePage, JsValue)] ::
-      arbitrary[(AddAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(ConfirmRemoveItemPage.type, JsValue)] ::
-      arbitrary[(AddItemsSameConsignorForAllItemsPage.type, JsValue)] ::
-      arbitrary[(AddItemsSameConsigneeForAllItemsPage.type, JsValue)] ::
+      arbitrary[(ConsigneeForAllItemsPage.type, JsValue)] ::
+      arbitrary[(ConsignorForAllItemsPage.type, JsValue)] ::
       arbitrary[(HowManyPackagesPage, JsValue)] ::
       arbitrary[(AddAnotherPackagePage, JsValue)] ::
       arbitrary[(DeclareMarkPage, JsValue)] ::
       arbitrary[(AddMarkPage, JsValue)] ::
       arbitrary[(TotalPiecesPage, JsValue)] ::
       arbitrary[(DeclareNumberOfPackagesPage, JsValue)] ::
+      arbitrary[(ReferenceTypePage, JsValue)] ::
+      arbitrary[(AddAdministrativeReferencePage, JsValue)] ::
+      arbitrary[(ConfirmRemoveItemPage.type, JsValue)] ::
       arbitrary[(TotalPackagesPage.type, JsValue)] ::
       arbitrary[(TotalNetMassPage, JsValue)] ::
       arbitrary[(CommodityCodePage, JsValue)] ::
