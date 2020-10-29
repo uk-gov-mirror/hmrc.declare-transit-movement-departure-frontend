@@ -66,9 +66,7 @@ class AddTransitOfficeController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-            renderPage(lrn, mode, formWithErrors).map(BadRequest(_))
-          },
+          formWithErrors => renderPage(lrn, mode, formWithErrors).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTransitOfficePage, value))

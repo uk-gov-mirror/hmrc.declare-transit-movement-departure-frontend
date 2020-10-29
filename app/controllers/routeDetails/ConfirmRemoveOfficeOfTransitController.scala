@@ -95,7 +95,8 @@ class ConfirmRemoveOfficeOfTransitController @Inject()(
   }
 
   private def renderPage(lrn: LocalReferenceNumber, officeOfTransitId: String, mode: Mode, form: Form[Boolean])(
-    implicit request: DataRequest[AnyContent]): Future[Html] =
+    implicit
+    request: DataRequest[AnyContent]): Future[Html] =
     referenceDataConnector.getOfficeOfTransit(officeOfTransitId) flatMap {
       officeOfTransit =>
         val json = Json.obj(

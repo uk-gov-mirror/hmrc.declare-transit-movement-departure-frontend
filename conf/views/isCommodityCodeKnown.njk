@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("isCommodityCodeKnown.title"), form.errors) }}
+  {{ title(messages("isCommodityCodeKnown.title", index), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -33,7 +33,6 @@
           {{ csrf() | safe }}
 
           {{ govukRadios({
-            classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {

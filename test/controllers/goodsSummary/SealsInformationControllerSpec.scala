@@ -16,7 +16,7 @@
 
 package controllers.goodsSummary
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.SealsInformationFormProvider
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
@@ -39,7 +39,7 @@ import pages.{AddSealsPage, SealIdDetailsPage}
 
 import scala.concurrent.Future
 
-class SealsInformationControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class SealsInformationControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

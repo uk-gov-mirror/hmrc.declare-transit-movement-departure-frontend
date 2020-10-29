@@ -16,11 +16,29 @@
 
 package pages
 
+import models.{Index, UserAnswers}
+import pages.addItems._
 import play.api.libs.json.JsPath
+import queries.Constants.{items, packages}
 
-case object PackageTypePage extends QuestionPage[String] {
+import scala.util.{Success, Try}
 
-  override def path: JsPath = JsPath \ toString
+case class PackageTypePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
   override def toString: String = "packageType"
+
+  override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        for {
+          ua <- userAnswers.remove(DeclareNumberOfPackagesPage(itemIndex, packageIndex))
+          ua <- ua.remove(HowManyPackagesPage(itemIndex, packageIndex))
+          ua <- ua.remove(TotalPiecesPage(itemIndex, packageIndex))
+          ua <- ua.remove(AddMarkPage(itemIndex, packageIndex))
+          ua <- ua.remove(DeclareMarkPage(itemIndex, packageIndex))
+        } yield ua
+      case None => Success(userAnswers)
+    }
 }

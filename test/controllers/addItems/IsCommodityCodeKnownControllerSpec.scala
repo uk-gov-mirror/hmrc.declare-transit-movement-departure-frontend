@@ -16,7 +16,7 @@
 
 package controllers.addItems
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.IsCommodityCodeKnownFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -39,7 +39,7 @@ import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class IsCommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class IsCommodityCodeKnownControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

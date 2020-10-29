@@ -16,8 +16,10 @@
 
 package utils
 
-import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.routes
+import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
+import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.addItems.traderDetails._
@@ -186,7 +188,8 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.CommodityCodeController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"commodityCode.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"commodityCode.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-commodity-code")
           )
         )
       )
@@ -201,7 +204,8 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.TotalNetMassController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalNetMass.checkYourAnswersLabel".withArgs(index.display)))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"totalNetMass.checkYourAnswersLabel".withArgs(index.display))),
+            attributes         = Map("id" -> "change-total-net-mass")
           )
         )
       )
@@ -216,7 +220,8 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.IsCommodityCodeKnownController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"isCommodityCodeKnown.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"isCommodityCodeKnown.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-is-commodity-known")
           )
         )
       )
@@ -231,7 +236,8 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.AddTotalNetMassController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addTotalNetMass.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addTotalNetMass.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-add-total-net-mass")
           )
         )
       )
@@ -246,7 +252,8 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.ItemTotalGrossMassController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"itemTotalGrossMass.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"itemTotalGrossMass.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-item-total-gross-mass")
           )
         )
       )
@@ -261,7 +268,8 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.ItemDescriptionController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"itemDescription.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"itemDescription.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-item-description")
           )
         )
       )
@@ -282,9 +290,48 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             ),
             Action(
               content            = msg"site.delete",
-              href               = routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index).url,
+              href               = routes.ConfirmRemoveItemController.onPageLoad(userAnswers.id, index).url,
               visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
               attributes         = Map("id" -> s"""remove-item-${index.display}""")
+            )
+          )
+        )
+    }
+
+  def addAdministrativeReference(index: Index, referenceIndex: Index): Option[Row] =
+    userAnswers.get(AddAdministrativeReferencePage(index, referenceIndex)) map {
+      answer =>
+        Row(
+          key   = Key(msg"addAdministrativeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          value = Value(yesOrNo(answer)),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAdministrativeReference.checkYourAnswersLabel"))
+            )
+          )
+        )
+    }
+
+  def packageRows(itemIndex: Index, packageIndex: Index, mode: Mode): Option[Row] =
+    userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, mode).url,
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = "", // TODO Create page
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-package-${packageIndex.display}""")
             )
           )
         )

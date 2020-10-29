@@ -39,6 +39,8 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(AddMarkPage.type, JsValue)] ::
       arbitrary[(TotalPiecesPage.type, JsValue)] ::
       arbitrary[(DeclareNumberOfPackagesPage.type, JsValue)] ::
+      arbitrary[(AddAdministrativeReferencePage, JsValue)] ::
+      arbitrary[(ConfirmRemoveItemPage.type, JsValue)] ::
       arbitrary[(TotalPackagesPage.type, JsValue)] ::
       arbitrary[(TotalNetMassPage, JsValue)] ::
       arbitrary[(CommodityCodePage, JsValue)] ::

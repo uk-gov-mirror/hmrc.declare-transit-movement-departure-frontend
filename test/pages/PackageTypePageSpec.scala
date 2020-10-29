@@ -16,17 +16,57 @@
 
 package pages
 
-import models.reference.PackageType
+import base.SpecBase
+import models.UserAnswers
+import org.scalacheck.Arbitrary.arbitrary
+import pages.addItems._
 import pages.behaviours.PageBehaviours
 
-class PackageTypePageSpec extends PageBehaviours {
+class PackageTypePageSpec extends PageBehaviours with SpecBase {
 
   "PackageTypePage" - {
 
-    beRetrievable[String](PackageTypePage)
+    beRetrievable[String](PackageTypePage(index, index))
 
-    beSettable[String](PackageTypePage)
+    beSettable[String](PackageTypePage(index, index))
 
-    beRemovable[String](PackageTypePage)
+    beRemovable[String](PackageTypePage(index, index))
+
+    "cleanup" - {
+
+      "must cleanup pages when there is a change of answer" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result =
+              userAnswers
+                .set(DeclareNumberOfPackagesPage(index, index), true)
+                .success
+                .value
+                .set(HowManyPackagesPage(index, index), 123)
+                .success
+                .value
+                .set(TotalPiecesPage(index, index), 123)
+                .success
+                .value
+                .set(AddMarkPage(index, index), true)
+                .success
+                .value
+                .set(DeclareMarkPage(index, index), "mark")
+                .success
+                .value
+                .set(PackageTypePage(index, index), "AB")
+                .success
+                .value
+
+            result.get(DeclareNumberOfPackagesPage(index, index)) must not be defined
+            result.get(HowManyPackagesPage(index, index)) must not be defined
+            result.get(TotalPiecesPage(index, index)) must not be defined
+            result.get(AddMarkPage(index, index)) must not be defined
+            result.get(DeclareMarkPage(index, index)) must not be defined
+        }
+      }
+    }
   }
+
 }

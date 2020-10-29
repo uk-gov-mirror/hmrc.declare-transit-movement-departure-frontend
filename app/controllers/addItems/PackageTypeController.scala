@@ -21,10 +21,10 @@ import controllers.actions._
 import forms.PackageTypeFormProvider
 import javax.inject.Inject
 import models.reference.PackageType
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.{HowManyPackagesPage, PackageTypePage}
+import pages.PackageTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -53,53 +53,55 @@ class PackageTypeController @Inject()(
     with NunjucksSupport
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getPackageTypes().flatMap {
-        packageTypes =>
-          val form = formProvider(packageTypes)
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        referenceDataConnector.getPackageTypes().flatMap {
+          packageTypes =>
+            val form = formProvider(packageTypes)
 
-          val preparedForm: Form[PackageType] = request.userAnswers
-            .get(PackageTypePage)
-            .flatMap(packageTypes.getPackageType)
-            .map(form.fill)
-            .getOrElse(form)
+            val preparedForm: Form[PackageType] = request.userAnswers
+              .get(PackageTypePage(itemIndex, packageIndex))
+              .flatMap(packageTypes.getPackageType)
+              .map(form.fill)
+              .getOrElse(form)
 
-          val json = Json.obj(
-            "form"         -> preparedForm,
-            "lrn"          -> lrn,
-            "mode"         -> mode,
-            "packageTypes" -> packageTypeList(preparedForm.value, packageTypes.packageTypeList)
-          )
-
-          renderer.render("packageType.njk", json).map(Ok(_))
-      }
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getPackageTypes().flatMap {
-        packageTypes =>
-          val form = formProvider(packageTypes)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => {
-                val json = Json.obj(
-                  "form"         -> formWithErrors,
-                  "lrn"          -> lrn,
-                  "mode"         -> mode,
-                  "packageTypes" -> packageTypeList(form.value, packageTypes.packageTypeList)
-                )
-
-                renderer.render("packageType.njk", json).map(BadRequest(_))
-              },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage, value.code))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(PackageTypePage, mode, updatedAnswers))
+            val json = Json.obj(
+              "form"         -> preparedForm,
+              "lrn"          -> lrn,
+              "mode"         -> mode,
+              "packageTypes" -> packageTypeList(preparedForm.value, packageTypes.packageTypeList)
             )
-      }
-  }
+
+            renderer.render("addItems/packageType.njk", json).map(Ok(_))
+        }
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        referenceDataConnector.getPackageTypes().flatMap {
+          packageTypes =>
+            val form = formProvider(packageTypes)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => {
+                  val json = Json.obj(
+                    "form"         -> formWithErrors,
+                    "lrn"          -> lrn,
+                    "mode"         -> mode,
+                    "packageTypes" -> packageTypeList(form.value, packageTypes.packageTypeList)
+                  )
+
+                  renderer.render("addItems/packageType.njk", json).map(BadRequest(_))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage(itemIndex, packageIndex), value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(PackageTypePage(itemIndex, packageIndex), mode, updatedAnswers))
+              )
+        }
+    }
 }

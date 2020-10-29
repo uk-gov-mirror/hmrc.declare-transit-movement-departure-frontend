@@ -34,7 +34,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
   private val startUrl = "transit-movements-trader-reference-data"
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.referenceData.port" -> server.port()
     )
@@ -144,13 +144,13 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
             .willReturn(okJson(customsOfficeResponseJson))
         )
 
-        val expectedResult = {
+        val expectedResult =
           CustomsOfficeList(
             Seq(
               CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
               CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
-            ))
-        }
+            )
+          )
 
         connector.getCustomsOffices.futureValue mustBe expectedResult
       }
@@ -167,13 +167,13 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
             .willReturn(okJson(customsOfficeResponseJson))
         )
 
-        val expectedResult = {
+        val expectedResult =
           CustomsOfficeList(
             Seq(
               CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
               CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
-            ))
-        }
+            )
+          )
 
         connector.getCustomsOfficesOfTheCountry(CountryCode("GB")).futureValue mustBe expectedResult
       }

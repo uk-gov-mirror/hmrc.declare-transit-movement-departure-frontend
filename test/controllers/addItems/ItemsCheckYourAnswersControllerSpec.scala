@@ -16,7 +16,7 @@
 
 package controllers.addItems
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -29,7 +29,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   "ItemsCheckYourAnswers Controller" - {
 

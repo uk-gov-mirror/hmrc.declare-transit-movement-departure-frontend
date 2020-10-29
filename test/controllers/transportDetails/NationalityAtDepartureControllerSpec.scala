@@ -16,7 +16,7 @@
 
 package controllers.transportDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.NationalityAtDepartureFormProvider
@@ -41,7 +41,7 @@ import navigation.annotations.TransportDetails
 
 import scala.concurrent.Future
 
-class NationalityAtDepartureControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class NationalityAtDepartureControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 

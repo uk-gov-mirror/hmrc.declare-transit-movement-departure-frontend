@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.LocalReferenceNumberFormProvider
 import matchers.JsonMatchers
 import navigation.annotations.PreTaskListDetails
@@ -36,7 +36,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class LocalReferenceNumberControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
