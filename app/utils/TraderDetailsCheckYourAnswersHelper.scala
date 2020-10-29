@@ -130,7 +130,7 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.AddConsigneeController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignee.checkYourAnswersLabel")),
-            attributes         = Map("id" -> "change-add-consignee")
+            attributes         = Map("id" -> "change-consignee-same-for-all-items")
           )
         )
       )
@@ -180,7 +180,7 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.AddConsignorController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConsignor.checkYourAnswersLabel")),
-            attributes         = Map("id" -> "change-add-consignor")
+            attributes         = Map("id" -> "change-consignor-same-for-all-items")
           )
         )
       )
@@ -242,6 +242,38 @@ class TraderDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.WhatIsPrincipalEoriController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"whatIsPrincipalEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def consignorForAllItems: Option[Row] = userAnswers.get(ConsignorForAllItemsPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"consignorForAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsignorForAllItemsController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consignorForAllItems.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-consignor-for-all-items")
+          )
+        )
+      )
+  }
+
+  def consigneeForAllItems: Option[Row] = userAnswers.get(ConsigneeForAllItemsPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"consigneeForAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConsigneeForAllItemsController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"consigneeForAllItems.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-consignee-for-all-items")
           )
         )
       )
