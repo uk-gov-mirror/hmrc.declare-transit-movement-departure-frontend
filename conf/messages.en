@@ -847,6 +847,13 @@ referenceType.heading = What type of reference do you want to add
 referenceType.checkYourAnswersLabel = referenceType
 referenceType.error.required = What type of reference do you want to add
 
+previousReference.title = What is the previous document reference?
+previousReference.heading = What is the previous document reference?
+previousReference.checkYourAnswersLabel = What is the previous document reference?
+previousReference.error.required = Enter the previous document reference
+previousReference.error.invalidCharacters = The previous document reference must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+previousReference.error.length = The previous document reference must be 35 characters or less
+
 addExtraInformation.title = Do you need to add any extra information for this document?
 addExtraInformation.heading = Do you need to add any extra information for this document?
 addExtraInformation.checkYourAnswersLabel = addExtraInformation
