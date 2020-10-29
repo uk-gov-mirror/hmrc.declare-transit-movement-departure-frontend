@@ -16,14 +16,13 @@
 
 package utils
 
+import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
-import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages._
-import pages.addItems.traderDetails._
 import pages.addItems._
+import pages.addItems.traderDetails._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
@@ -313,6 +312,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           )
         )
     }
+
+  def addExtraInformation(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(AddExtraInformationPage(itemIndex, referenceIndex)) map {
+    answer =>
+      Row(
+        key   = Key(msg"addExtraInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = previousReferencesRoutes.AddExtraInformationController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addExtraInformation.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def packageRows(itemIndex: Index, packageIndex: Index, mode: Mode): Option[Row] =
     userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map {

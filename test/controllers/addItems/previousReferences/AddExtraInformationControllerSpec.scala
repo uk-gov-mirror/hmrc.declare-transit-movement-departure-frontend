@@ -1,16 +1,31 @@
-package controllers
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import base.SpecBase
+package controllers.addItems.previousReferences
+
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.AddExtraInformationFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddExtraInformationPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -18,6 +33,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
+import controllers.{routes => mainRoutes}
+import pages.addItems.AddExtraInformationPage
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
@@ -27,10 +44,10 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new AddExtraInformationFormProvider()
-  private val form = formProvider()
-  private val template = "addExtraInformation.njk"
+  private val form         = formProvider()
+  private val template     = "addItems/addExtraInformation.njk"
 
-  lazy val addExtraInformationRoute = routes.AddExtraInformationController.onPageLoad(lrn, NormalMode).url
+  lazy val addExtraInformationRoute = routes.AddExtraInformationController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
 
   "AddExtraInformation Controller" - {
 
@@ -39,10 +56,10 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, addExtraInformationRoute)
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(GET, addExtraInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -51,10 +68,12 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form"           -> form,
+        "mode"           -> NormalMode,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display,
+        "lrn"            -> lrn,
+        "radios"         -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -70,11 +89,11 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddExtraInformationPage, true).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request = FakeRequest(GET, addExtraInformationRoute)
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddExtraInformationPage(index, referenceIndex), true).success.value
+      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val request        = FakeRequest(GET, addExtraInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -85,10 +104,12 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
       val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form"           -> filledForm,
+        "mode"           -> NormalMode,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display,
+        "lrn"            -> lrn,
+        "radios"         -> Radios.yesNo(filledForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -131,11 +152,11 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(POST, addExtraInformationRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val request        = FakeRequest(POST, addExtraInformationRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(application, request).value
 
@@ -144,10 +165,12 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"           -> boundForm,
+        "mode"           -> NormalMode,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display,
+        "lrn"            -> lrn,
+        "radios"         -> Radios.yesNo(boundForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -168,7 +191,7 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -185,7 +208,7 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

@@ -17,9 +17,8 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
-import models.{DeclarationType, RepresentativeCapacity, UserAnswers}
+import models.UserAnswers
 import pages._
-import play.api.libs.json.JsValue
 
 class MovementDetailsSpec extends SpecBase with GeneratorSpec {
 

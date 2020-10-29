@@ -16,14 +16,7 @@
 
 package base
 
-import controllers.actions.{
-  DataRequiredAction,
-  DataRequiredActionImpl,
-  DataRetrievalActionProvider,
-  FakeDataRetrievalActionProvider,
-  FakeIdentifierAction,
-  IdentifierAction
-}
+import controllers.actions._
 import models.UserAnswers
 import org.mockito.Mockito
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -33,10 +26,7 @@ import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers
-import repositories.SessionCollectionIndexManager
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
-
-import scala.concurrent.Future
 
 trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEach with MockitoSugar {
   self: TestSuite =>
