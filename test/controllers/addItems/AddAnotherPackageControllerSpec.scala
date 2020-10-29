@@ -46,7 +46,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
   val formProvider = new AddAnotherPackageFormProvider()
   val form         = formProvider()
 
-  lazy val addAnotherPackageRoute = routes.AddAnotherPackageController.onPageLoad(lrn, index, index, NormalMode).url
+  lazy val addAnotherPackageRoute = routes.AddAnotherPackageController.onPageLoad(lrn, index, NormalMode).url
 
   "AddAnotherPackage Controller" - {
 
@@ -84,7 +84,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherPackagePage(index, index), true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherPackagePage(index), true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, addAnotherPackageRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

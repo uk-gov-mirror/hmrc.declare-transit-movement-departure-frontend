@@ -26,6 +26,7 @@ import pages.addItems.RemovePackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.PackagesQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -90,11 +91,10 @@ class RemovePackageController @Inject()(
               val updatedAnswers: Future[UserAnswers] =
                 if (value) {
                   for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.remove(RemovePackagePage(itemIndex, packageIndex)))
+                    updatedAnswers <- Future.fromTry(request.userAnswers.remove(PackagesQuery(itemIndex, packageIndex)))
                     _              <- sessionRepository.set(updatedAnswers)
                   } yield updatedAnswers
-                } else Future.successful(request.userAnswers)
-
+                } else { Future.successful(request.userAnswers) }
               updatedAnswers.map(
                 userAnswers => Redirect(navigator.nextPage(RemovePackagePage(itemIndex, packageIndex), mode, userAnswers))
               )

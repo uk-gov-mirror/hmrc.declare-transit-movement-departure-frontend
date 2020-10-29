@@ -29,23 +29,26 @@ trait PageGenerators {
   implicit lazy val arbitraryRemovePackagePage: Arbitrary[RemovePackagePage.type] =
     Arbitrary(RemovePackagePage)
 
+  implicit lazy val arbitraryConsignorForAllItemsPage: Arbitrary[ConsignorForAllItemsPage.type] =
+    Arbitrary(ConsignorForAllItemsPage)
+
+  implicit lazy val arbitraryReferenceTypePage: Arbitrary[ReferenceTypePage] =
+    Arbitrary(ReferenceTypePage(Index(0), Index(0)))
+
   implicit lazy val arbitraryAddAdministrativeReferencePage: Arbitrary[AddAdministrativeReferencePage] =
-    Arbitrary(AddAdministrativeReferencePage(Index(0), Index(0)))
+    Arbitrary(addItems.AddAdministrativeReferencePage(Index(0), Index(0)))
 
   implicit lazy val arbitraryRemoveItemPage: Arbitrary[ConfirmRemoveItemPage.type] =
     Arbitrary(ConfirmRemoveItemPage)
 
-  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsPage: Arbitrary[AddItemsSameConsignorForAllItemsPage.type] =
-    Arbitrary(AddItemsSameConsignorForAllItemsPage)
-
-  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsPage: Arbitrary[AddItemsSameConsigneeForAllItemsPage.type] =
-    Arbitrary(AddItemsSameConsigneeForAllItemsPage)
+  implicit lazy val arbitraryConsigneeForAllItemsPage: Arbitrary[ConsigneeForAllItemsPage.type] =
+    Arbitrary(ConsigneeForAllItemsPage)
 
   implicit lazy val arbitraryHowManyPackagesPage: Arbitrary[HowManyPackagesPage] =
     Arbitrary(HowManyPackagesPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryAddAnotherPackagePage: Arbitrary[AddAnotherPackagePage] =
-    Arbitrary(AddAnotherPackagePage(Index(0), Index(0)))
+    Arbitrary(AddAnotherPackagePage(Index(0)))
 
   implicit lazy val arbitraryDeclareMarkPage: Arbitrary[DeclareMarkPage] =
     Arbitrary(DeclareMarkPage(Index(0), Index(0)))

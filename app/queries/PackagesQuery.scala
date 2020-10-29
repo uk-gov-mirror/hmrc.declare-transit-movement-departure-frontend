@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package queries
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-class AddAnotherPackagePageSpec extends PageBehaviours with SpecBase {
+final case class PackagesQuery(itemIndex: Index, packageIndex: Index) extends QuestionPage[JsObject] {
 
-  "AddAnotherPackagePage" - {
+  override def path: JsPath = JsPath \ Constants.items \ itemIndex.position \ Constants.packages \ packageIndex.position
 
-    beRetrievable[Boolean](AddAnotherPackagePage(index))
-
-    beSettable[Boolean](AddAnotherPackagePage(index))
-
-    beRemovable[Boolean](AddAnotherPackagePage(index))
-  }
 }
