@@ -32,6 +32,9 @@ trait PageGenerators {
   implicit lazy val arbitraryReferenceTypePage: Arbitrary[ReferenceTypePage] =
     Arbitrary(ReferenceTypePage(Index(0), Index(0)))
 
+  implicit lazy val arbitraryPreviousReferencePage: Arbitrary[PreviousReferencePage] =
+    Arbitrary(PreviousReferencePage(Index(0), Index(0)))
+
   implicit lazy val arbitraryAddAdministrativeReferencePage: Arbitrary[AddAdministrativeReferencePage] =
     Arbitrary(addItems.AddAdministrativeReferencePage(Index(0), Index(0)))
 
