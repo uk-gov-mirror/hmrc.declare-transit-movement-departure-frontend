@@ -27,8 +27,6 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
 import pages.addItems.traderDetails._
-import queries.ItemsQuery
-import controllers.{routes => mainRoutes}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   // format: off
