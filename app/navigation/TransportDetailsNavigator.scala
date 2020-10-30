@@ -30,7 +30,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
         Some(addItAtDepartureLaterRoute(ua, NormalMode))
     case InlandModePage =>
       ua =>
-        Some(routes.AddIdAtDepartureController.onPageLoad(ua.id, NormalMode))
+        Some(inlandModeRoute(ua, NormalMode))
     case IdAtDeparturePage =>
       ua =>
         Some(routes.NationalityAtDepartureController.onPageLoad(ua.id, NormalMode))
@@ -63,7 +63,7 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case InlandModePage =>
       ua =>
-        Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
+        Some(inlandModeRoute(ua, CheckMode))
     case AddIdAtDeparturePage =>
       ua =>
         Some(addIdAtDepartureRoute(ua, CheckMode))
@@ -124,11 +124,18 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
       case (Some(x), _, NormalMode) if (x != "2" && x != "5" && x != "7")   => routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
       case (Some(x), None, CheckMode) if (x != "2" && x != "5" && x != "7") => routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
       case _                                                                => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
-
     }
+
   private def addItAtDepartureLaterRoute(ua: UserAnswers, mode: Mode): Call =
     ua.get(NationalityAtDeparturePage) match {
       case None => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
       case _    => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    }
+
+  private def inlandModeRoute(ua: UserAnswers, mode: Mode): Call =
+    (ua.get(InlandModePage), mode) match {
+      case (Some(x), _) if (x == "2" || x == "20")                          => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
+      case (Some(x), _) if (x == "5" || x == "50" || x == "7" || x == "70") => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case (_, _)                                                           => routes.AddIdAtDepartureController.onPageLoad(ua.id, mode)
     }
 }
