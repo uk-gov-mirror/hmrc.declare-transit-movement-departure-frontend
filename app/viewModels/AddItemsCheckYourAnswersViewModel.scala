@@ -34,22 +34,23 @@ object AddItemsCheckYourAnswersViewModel {
         Section(
           msg"addItems.checkYourAnswersLabel.itemDetails",
           Seq(
-          checkYourAnswersHelper.itemDescription(index),
-          checkYourAnswersHelper.itemTotalGrossMass(index),
-          checkYourAnswersHelper.addTotalNetMass(index),
-          checkYourAnswersHelper.totalNetMass(index),
-          checkYourAnswersHelper.isCommodityCodeKnown(index),
-          checkYourAnswersHelper.commodityCode(index),
-          checkYourAnswersHelper.addItemsSameConsigneeForAllItems(index),
-          checkYourAnswersHelper.addItemsSameConsignorForAllItems(index),
-          checkYourAnswersHelper.traderDetailsConsignorName(index),
-          checkYourAnswersHelper.traderDetailsConsignorEoriNumber(index),
-          checkYourAnswersHelper.traderDetailsConsignorEoriKnown(index),
-          checkYourAnswersHelper.traderDetailsConsignorAddress(index),
-          checkYourAnswersHelper.traderDetailsConsigneeName(index),
-          checkYourAnswersHelper.traderDetailsConsigneeEoriNumber(index),
-          checkYourAnswersHelper.traderDetailsConsigneeEoriKnown(index),
-          checkYourAnswersHelper.traderDetailsConsigneeAddress(index),
-        ).flatten)))
+            checkYourAnswersHelper.itemDescription(index),
+            checkYourAnswersHelper.itemTotalGrossMass(index),
+            checkYourAnswersHelper.addTotalNetMass(index),
+            checkYourAnswersHelper.totalNetMass(index),
+            checkYourAnswersHelper.isCommodityCodeKnown(index),
+            checkYourAnswersHelper.commodityCode(index),
+            checkYourAnswersHelper.addItemsSameConsigneeForAllItems(index),
+            checkYourAnswersHelper.addItemsSameConsignorForAllItems(index),
+            checkYourAnswersHelper.traderDetailsConsignorName(index),
+            checkYourAnswersHelper.traderDetailsConsignorEoriNumber(index),
+            checkYourAnswersHelper.traderDetailsConsignorEoriKnown(index),
+            checkYourAnswersHelper.traderDetailsConsignorAddress(index),
+            checkYourAnswersHelper.traderDetailsConsigneeName(index),
+            checkYourAnswersHelper.traderDetailsConsigneeEoriNumber(index),
+            checkYourAnswersHelper.traderDetailsConsigneeEoriKnown(index),
+            checkYourAnswersHelper.traderDetailsConsigneeAddress(index),
+          ).flatten
+        )))
   }
 }
