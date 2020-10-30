@@ -214,12 +214,35 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
     "in Check Mode" - {
 
-      "must go from InlandMode page to Add Id at Departure Page" in {
+      "must go from InlandMode page to Transport CYA if Add id at departure page was answered true" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.set(AddIdAtDeparturePage, true).toOption.value
             navigator
-              .nextPage(InlandModePage, CheckMode, answers)
+              .nextPage(InlandModePage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from InlandMode page to Transport CYA if Add id at departure page was answered false" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(AddIdAtDeparturePage, false).toOption.value
+            navigator
+              .nextPage(InlandModePage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from InlandMode page to Add Id at Departure Page if add id at departure page was not asked previously" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.remove(AddIdAtDeparturePage).success.value
+            navigator
+              .nextPage(InlandModePage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.AddIdAtDepartureController.onPageLoad(answers.id, CheckMode))
         }
       }

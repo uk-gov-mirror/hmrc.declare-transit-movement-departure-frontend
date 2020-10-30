@@ -133,9 +133,11 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     }
 
   private def inlandModeRoute(ua: UserAnswers, mode: Mode): Call =
-    (ua.get(InlandModePage), mode) match {
-      case (Some(x), _) if (x == "2" || x == "20")                          => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
-      case (Some(x), _) if (x == "5" || x == "50" || x == "7" || x == "70") => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
-      case (_, _)                                                           => routes.AddIdAtDepartureController.onPageLoad(ua.id, mode)
+    (ua.get(InlandModePage), ua.get(AddIdAtDeparturePage), mode) match {
+      case (Some(x), _, _) if (x == "2" || x == "20")                          => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
+      case (Some(x), _, _) if (x == "5" || x == "50" || x == "7" || x == "70") => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case (_, Some(false), CheckMode)                                         => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case (_, Some(true), CheckMode)                                          => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case (_, _, _)                                                           => routes.AddIdAtDepartureController.onPageLoad(ua.id, mode)
     }
 }
