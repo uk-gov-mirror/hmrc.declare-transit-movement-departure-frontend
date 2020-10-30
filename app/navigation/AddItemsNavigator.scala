@@ -40,7 +40,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case IsCommodityCodeKnownPage(index)                      => ua => isCommodityKnownRoute(index, ua, NormalMode)
     case AddAnotherItemPage                                   => ua => Some(addAnotherPageRoute(ua))
     case ConfirmRemoveItemPage                                => ua => Some(removeItem(NormalMode)(ua))
-    case CommodityCodePage(index)                             => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case CommodityCodePage(index)                             => ua => commodityCodeRoute(index, ua, NormalMode)
     case PackageTypePage(itemIndex, packageIndex)             => ua => packageType(itemIndex, packageIndex, ua, NormalMode) // TODO add modes functionality when tests are created
     case HowManyPackagesPage(itemIndex, packageIndex)         => ua => howManyPackages(itemIndex, packageIndex, ua, NormalMode)
     case DeclareNumberOfPackagesPage(itemIndex, packageIndex) => ua => declareNumberOfPackages(itemIndex, packageIndex, ua, NormalMode)
@@ -120,7 +120,11 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
   private def consignorAddress(ua: UserAnswers, index: Index, mode: Mode) =
-    Some(addItemsRoutes.AddItemsSameConsigneeForAllItemsController.onPageLoad(ua.id, index, mode))
+    (ua.get(ConsigneeForAllItemsPage), ua.get(AddConsignorPage), mode) match {
+      case (Some(false),Some(false),NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, mode))
+      case (Some(true),Some(true),NormalMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    }
+
 
   private def consignorName(ua: UserAnswers, index: Index, mode: Mode) =
     Some(traderDetailsRoutes.TraderDetailsConsignorAddressController.onPageLoad(ua.id, index, mode))
@@ -144,12 +148,75 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
+  private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
     (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)), mode) match {
-      case (Some(true), _, NormalMode)       => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), _, NormalMode)      => Some(addItemsRoutes.AddItemsSameConsignorForAllItemsController.onPageLoad(ua.id, index, NormalMode)) //todo  change when Trader Details Pages built
-      case (Some(true), None, CheckMode)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
-      case _ => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (Some(true), _, NormalMode)    => Some(routes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), _, NormalMode)   => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
+      case (Some(true), None, CheckMode)  => Some(routes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
+      case _                              => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    }
+
+  //TODO replace above with below and add logic to go into trader details instead of Items CYA
+//  private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
+//    (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)),
+//      ua.get(ConsignorForAllItemsPage), ua.get(AddConsignorPage),
+//      ua.get(ConsigneeForAllItemsPage), ua.get(AddConsignorPage),
+//      mode) match {
+//      case (Some(true), _,
+//      _,_,
+//      _,_,
+//      NormalMode)       => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
+//      case (Some(false), None,
+//      Some(false),Some(false),
+//      Some(false),Some(false),
+//      NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+//      case (Some(false), None,
+//      Some(true),None,
+//      Some(false),Some(false),
+//      NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+//      case (Some(false), None,
+//      Some(false),Some(true),
+//      Some(false),Some(false),
+//      NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+//      case (Some(false), None,
+//      Some(true),None,
+//      Some(true),None,
+//      NormalMode)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+//      case (Some(false), None,
+//      Some(false),Some(true),
+//      Some(true),None,
+//      NormalMode)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
+//      case (Some(true), None,
+//      _,_,
+//      _,_,
+//      CheckMode)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
+//    }
+
+  private def commodityCodeRoute(index:Index, ua:UserAnswers, mode:Mode) =
+    (ua.get(CommodityCodePage(index)),
+      ua.get(ConsignorForAllItemsPage), ua.get(AddConsignorPage),
+      ua.get(ConsigneeForAllItemsPage), ua.get(AddConsignorPage),
+      mode) match {
+      case (_,
+      Some(false),Some(false),
+      Some(false),Some(false),
+      NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      case (_,
+      Some(true),None,
+      Some(false),Some(false),
+      NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      case (_,
+      Some(false),Some(true),
+      Some(false),Some(false),
+      NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      case (_,
+      Some(true),None,
+      Some(true),None,
+      NormalMode)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (_,
+      Some(false),Some(true),
+      Some(true),None,
+      NormalMode)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
     }
 
   private def addTotalNessMassRoute(index: Index, ua: UserAnswers, mode: Mode) =
