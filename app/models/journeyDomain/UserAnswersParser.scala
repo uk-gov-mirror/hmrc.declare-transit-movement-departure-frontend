@@ -18,7 +18,6 @@ package models.journeyDomain
 
 import cats.data._
 import models.UserAnswers
-import pages.QuestionPage
 
 trait UserAnswersParser[F[_], A] {
 

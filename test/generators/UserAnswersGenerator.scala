@@ -40,14 +40,7 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(TotalPiecesPage, JsValue)] ::
       arbitrary[(DeclareNumberOfPackagesPage, JsValue)] ::
       arbitrary[(PreviousReferencePage, JsValue)] ::
-      arbitrary[(ConsigneeForAllItemsPage, JsValue)] ::
       arbitrary[(AddExtraInformationPage, JsValue)] ::
-      arbitrary[(HowManyPackagesPage, JsValue)] ::
-      arbitrary[(AddAnotherPackagePage, JsValue)] ::
-      arbitrary[(DeclareMarkPage, JsValue)] ::
-      arbitrary[(AddMarkPage, JsValue)] ::
-      arbitrary[(TotalPiecesPage, JsValue)] ::
-      arbitrary[(DeclareNumberOfPackagesPage, JsValue)] ::
       arbitrary[(ReferenceTypePage, JsValue)] ::
       arbitrary[(AddAdministrativeReferencePage, JsValue)] ::
       arbitrary[(ConfirmRemoveItemPage.type, JsValue)] ::

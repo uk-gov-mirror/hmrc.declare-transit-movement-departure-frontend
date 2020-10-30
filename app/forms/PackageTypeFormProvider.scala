@@ -18,8 +18,8 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{CountryList, PackageTypeList}
-import models.reference.{Country, PackageType}
+import models.PackageTypeList
+import models.reference.PackageType
 import play.api.data.Form
 
 class PackageTypeFormProvider @Inject() extends Mappings {
