@@ -17,6 +17,7 @@
 package controllers.addItems
 
 import controllers.actions._
+import controllers.{routes => mainRoutes}
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,7 +46,8 @@ class ItemsCheckYourAnswersController @Inject()(
       val sections: Seq[Section] = AddItemsCheckYourAnswersViewModel(request.userAnswers, index).sections
       val json = Json.obj(
         "lrn"      -> lrn,
-        "sections" -> Json.toJson(sections)
+        "sections" -> Json.toJson(sections),
+        "nextPage" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
       )
 
       renderer.render("itemsCheckYourAnswers.njk", json).map(Ok(_))

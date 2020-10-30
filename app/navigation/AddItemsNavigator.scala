@@ -35,7 +35,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddTotalNetMassPage(index)                  => ua=>  addTotalNessMassRoute(index, ua,  NormalMode)
     case TotalNetMassPage(index)                     => ua => Some(addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
     case IsCommodityCodeKnownPage(index)             => ua => isCommodityKnownRoute(index, ua, NormalMode)
-    case CommodityCodePage(index)                    => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
+    case CommodityCodePage(index)                    => ua => Some(addItemsRoutes.AddItemsSameConsignorForAllItemsController.onPageLoad(ua.id,index, NormalMode))
     case AddItemsSameConsignorForAllItemsPage(index) => ua => addItemsSameConsignorForAllItems(ua, index, NormalMode)
     case TraderDetailsConsignorEoriKnownPage(index)  => ua => consignorEoriKnown(ua, index, NormalMode)
     case TraderDetailsConsignorEoriNumberPage(index) => ua => consignorEoriNumber(ua, index, NormalMode)
@@ -120,7 +120,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
     (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)), mode) match {
       case (Some(true), _, NormalMode)       => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), _, NormalMode)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
+      case (Some(false), _, NormalMode)      => Some(addItemsRoutes.AddItemsSameConsignorForAllItemsController.onPageLoad(ua.id, index, NormalMode)) //todo  change when Trader Details Pages built
       case (Some(true), None, CheckMode)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
       case _ => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }

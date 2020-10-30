@@ -42,6 +42,18 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
+      "must go from InlandMode to Will these details change at border answer is  2/20, 5/50 or 7/70" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(InlandModePage, "2").success.value
+
+            navigator
+              .nextPage(InlandModePage, NormalMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.ChangeAtBorderController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
       "must go from AddIdAtDeparture page to AddIdAtDepartureLater page when user selects 'no' " in {
 
         forAll(arbitrary[UserAnswers]) {

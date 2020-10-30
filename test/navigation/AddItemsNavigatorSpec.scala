@@ -85,7 +85,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .set(IsCommodityCodeKnownPage(index), false).success.value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
-              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.AddItemsSameConsignorForAllItemsController.onPageLoad(answers.id, index))
         }
       }
       "must go from IsCommodityCodeKnownPage to CommodityCodePage if the answer is 'Yes'" in {
@@ -99,13 +99,13 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.CommodityCodeController.onPageLoad(answers.id, index, NormalMode))
         }
       }
-      "must go from CommodityCodePage to CYA page" in { //todo update when traderdetails pages built
+      "must go from CommodityCodePage to Trader details page" in { //todo update when traderdetails pages built
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(CommodityCodePage(index), NormalMode, answers)
-              .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+              .mustBe(routes.AddItemsSameConsignorForAllItemsController.onPageLoad(answers.id, index))
         }
       }
 
