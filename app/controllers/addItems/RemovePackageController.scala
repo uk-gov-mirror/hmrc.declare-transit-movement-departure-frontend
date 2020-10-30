@@ -55,7 +55,7 @@ class RemovePackageController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(RemovePackagePage(itemIndex, packageIndex)) match {
+        val preparedForm = request.userAnswers.get(RemovePackagePage(itemIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -96,7 +96,7 @@ class RemovePackageController @Inject()(
                   } yield updatedAnswers
                 } else { Future.successful(request.userAnswers) }
               updatedAnswers.map(
-                userAnswers => Redirect(navigator.nextPage(RemovePackagePage(itemIndex, packageIndex), mode, userAnswers))
+                userAnswers => Redirect(navigator.nextPage(RemovePackagePage(itemIndex), mode, userAnswers))
               )
             }
           )

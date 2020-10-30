@@ -24,10 +24,10 @@ class RemovePackagePageSpec extends PageBehaviours with SpecBase {
 
   "RemovePackagePage" - {
 
-    beRetrievable[Boolean](RemovePackagePage(index, index))
+    beRetrievable[Boolean](RemovePackagePage(index))
 
-    beSettable[Boolean](RemovePackagePage(index, index))
+    beSettable[Boolean](RemovePackagePage(index))
 
-    beRemovable[Boolean](RemovePackagePage(index, index))
+    beRemovable[Boolean](RemovePackagePage(index))
   }
 }

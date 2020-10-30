@@ -46,7 +46,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, NormalMode)
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, NormalMode)
-    case RemovePackagePage(itemIndex, packageIndex)           => ua => Some(removePackage(itemIndex, packageIndex, NormalMode)(ua))
+    case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
   }
 
   //TODO: Need to refactor this code
@@ -64,7 +64,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, CheckMode)
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
-    case RemovePackagePage(itemIndex, packageIndex)           => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
+    case RemovePackagePage(itemIndex)                         => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
   }
 
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
@@ -153,9 +153,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  private def removePackage(itemIndex: Index, packageIndex: Index, mode: Mode)(ua: UserAnswers) =
+  private def removePackage(itemIndex: Index, mode: Mode)(ua: UserAnswers) =
     ua.get(DeriveNumberOfPackages(itemIndex)) match {
-      case None|Some(0) => routes.PackageTypeController.onPageLoad(ua.id, itemIndex, packageIndex, mode)
+      case None|Some(0) => routes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(0), mode)
       case _            => routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, mode)
     }
   // format: on
