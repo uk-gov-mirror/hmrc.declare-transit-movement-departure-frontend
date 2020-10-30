@@ -28,6 +28,7 @@ import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
+
   self: Generators =>
 
   implicit lazy val arbitraryAddExtraInformationUserAnswersEntry: Arbitrary[(AddExtraInformationPage, JsValue)] =

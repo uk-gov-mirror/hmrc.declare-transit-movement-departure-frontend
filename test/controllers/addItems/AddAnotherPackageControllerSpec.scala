@@ -17,7 +17,6 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import forms.AddAnotherPackageFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
@@ -35,6 +34,7 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import controllers.{routes => mainRoutes}
+import forms.addItems.AddAnotherPackageFormProvider
 import pages.addItems.AddAnotherPackagePage
 
 import scala.concurrent.Future
@@ -46,7 +46,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
   val formProvider = new AddAnotherPackageFormProvider()
   val form         = formProvider()
 
-  lazy val addAnotherPackageRoute = routes.AddAnotherPackageController.onPageLoad(lrn, index, index, NormalMode).url
+  lazy val addAnotherPackageRoute = routes.AddAnotherPackageController.onPageLoad(lrn, index, NormalMode).url
 
   "AddAnotherPackage Controller" - {
 
@@ -84,7 +84,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with MockNunjucksRenderer
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherPackagePage(index, index), true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherPackagePage(index), true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, addAnotherPackageRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

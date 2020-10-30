@@ -17,7 +17,6 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import forms.DeclareMarkFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.AddItems
@@ -35,6 +34,7 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import forms.addItems.DeclareMarkFormProvider
 import pages.addItems.DeclareMarkPage
 
 import scala.concurrent.Future

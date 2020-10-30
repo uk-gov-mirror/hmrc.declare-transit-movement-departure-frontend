@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package forms.addItems
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class AddAnotherPackagePageSpec extends PageBehaviours with SpecBase {
+class DeclareNumberOfPackagesFormProvider @Inject() extends Mappings {
 
-  "AddAnotherPackagePage" - {
-
-    beRetrievable[Boolean](AddAnotherPackagePage(index))
-
-    beSettable[Boolean](AddAnotherPackagePage(index))
-
-    beRemovable[Boolean](AddAnotherPackagePage(index))
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("declareNumberOfPackages.error.required")
+    )
 }
