@@ -29,11 +29,17 @@ trait PageGenerators {
   implicit lazy val arbitraryRemovePackagePage: Arbitrary[RemovePackagePage.type] =
     Arbitrary(RemovePackagePage)
 
+  implicit lazy val arbitraryAddExtraInformationPage: Arbitrary[AddExtraInformationPage] =
+    Arbitrary(AddExtraInformationPage(Index(0), Index(0)))
+
   implicit lazy val arbitraryConsignorForAllItemsPage: Arbitrary[ConsignorForAllItemsPage.type] =
     Arbitrary(ConsignorForAllItemsPage)
 
   implicit lazy val arbitraryReferenceTypePage: Arbitrary[ReferenceTypePage] =
     Arbitrary(ReferenceTypePage(Index(0), Index(0)))
+
+  implicit lazy val arbitraryPreviousReferencePage: Arbitrary[PreviousReferencePage] =
+    Arbitrary(PreviousReferencePage(Index(0), Index(0)))
 
   implicit lazy val arbitraryAddAdministrativeReferencePage: Arbitrary[AddAdministrativeReferencePage] =
     Arbitrary(addItems.AddAdministrativeReferencePage(Index(0), Index(0)))
