@@ -68,10 +68,12 @@ class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form"         -> form,
+        "itemIndex"    -> itemIndex.display,
+        "packageIndex" -> packageIndex.display,
+        "mode"         -> NormalMode,
+        "lrn"          -> lrn,
+        "radios"       -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -127,10 +129,12 @@ class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"         -> boundForm,
+        "itemIndex"    -> itemIndex.display,
+        "packageIndex" -> packageIndex.display,
+        "mode"         -> NormalMode,
+        "lrn"          -> lrn,
+        "radios"       -> Radios.yesNo(boundForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey

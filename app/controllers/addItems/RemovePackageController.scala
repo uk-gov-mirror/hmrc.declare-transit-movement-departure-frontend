@@ -61,10 +61,12 @@ class RemovePackageController @Inject()(
         }
 
         val json = Json.obj(
-          "form"   -> preparedForm,
-          "mode"   -> mode,
-          "lrn"    -> lrn,
-          "radios" -> Radios.yesNo(preparedForm("value"))
+          "form"         -> preparedForm,
+          "itemIndex"    -> itemIndex.display,
+          "packageIndex" -> packageIndex.display,
+          "mode"         -> mode,
+          "lrn"          -> lrn,
+          "radios"       -> Radios.yesNo(preparedForm("value"))
         )
 
         renderer.render(template, json).map(Ok(_))
@@ -79,10 +81,12 @@ class RemovePackageController @Inject()(
             formWithErrors => {
 
               val json = Json.obj(
-                "form"   -> formWithErrors,
-                "mode"   -> mode,
-                "lrn"    -> lrn,
-                "radios" -> Radios.yesNo(formWithErrors("value"))
+                "form"         -> formWithErrors,
+                "itemIndex"    -> itemIndex.display,
+                "packageIndex" -> packageIndex.display,
+                "mode"         -> mode,
+                "lrn"          -> lrn,
+                "radios"       -> Radios.yesNo(formWithErrors("value"))
               )
 
               renderer.render(template, json).map(BadRequest(_))
