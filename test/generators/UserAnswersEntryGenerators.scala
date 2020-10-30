@@ -20,9 +20,8 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage}
+import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage, _}
 import pages.addItems.traderDetails._
-import pages.addItems._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -35,7 +34,47 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       for {
         page  <- arbitrary[AddItemsSameConsignorForAllItemsPage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
+      } yield page -> value
+    }
+
+  implicit lazy val arbConfirmRemoveItemPage: Arbitrary[(ConfirmRemoveItemPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConfirmRemoveItemPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield page -> value
+    }
+
+  implicit lazy val arbReferenceTypePage: Arbitrary[(ReferenceTypePage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ReferenceTypePage]
+        value <- arbitrary[String].map(Json.toJson(_))
+      } yield page -> value
+    }
+
+  implicit lazy val arbAddAdministrativeReferencePage: Arbitrary[(AddAdministrativeReferencePage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddAdministrativeReferencePage]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield page -> value
+    }
+
+  implicit lazy val arbitraryPreviousReferencePageUserAnswersEntry: Arbitrary[(PreviousReferencePage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[PreviousReferencePage]
+        value <- arbitrary[String].map(Json.toJson(_))
+      } yield page -> value
+    }
+
+  implicit lazy val arbitraryAddExtraInformationPageUserAnswersEntry: Arbitrary[(AddExtraInformationPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddExtraInformationPage]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield page -> value
     }
 
   implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsUserAnswersEntry: Arbitrary[(AddItemsSameConsigneeForAllItemsPage, JsValue)] =
