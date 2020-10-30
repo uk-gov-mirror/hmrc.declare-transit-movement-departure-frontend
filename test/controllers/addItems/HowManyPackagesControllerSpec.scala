@@ -16,7 +16,7 @@
 
 package controllers.addItems
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.HowManyPackagesFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -25,7 +25,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.HowManyPackagesPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -36,10 +35,11 @@ import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
 import navigation.annotations.AddItems
+import pages.addItems.HowManyPackagesPage
 
 import scala.concurrent.Future
 
-class HowManyPackagesControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class HowManyPackagesControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val formProvider = new HowManyPackagesFormProvider()
   val form         = formProvider()
@@ -48,7 +48,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
 
   val validAnswer = 1
 
-  lazy val howManyPackagesRoute = routes.HowManyPackagesController.onPageLoad(lrn, NormalMode).url
+  lazy val howManyPackagesRoute = routes.HowManyPackagesController.onPageLoad(lrn, index, index, NormalMode).url
 
   "HowManyPackages Controller" - {
 
@@ -74,7 +74,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "howManyPackages.njk"
+      templateCaptor.getValue mustEqual "addItems/howManyPackages.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -85,7 +85,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(HowManyPackagesPage, validAnswer).success.value
+      val userAnswers    = emptyUserAnswers.set(HowManyPackagesPage(index, index), validAnswer).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, howManyPackagesRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -105,7 +105,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "howManyPackages.njk"
+      templateCaptor.getValue mustEqual "addItems/howManyPackages.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -161,7 +161,7 @@ class HowManyPackagesControllerSpec extends SpecBase with MockitoSugar with Nunj
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "howManyPackages.njk"
+      templateCaptor.getValue mustEqual "addItems/howManyPackages.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()

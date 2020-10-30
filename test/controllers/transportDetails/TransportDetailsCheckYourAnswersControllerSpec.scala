@@ -16,7 +16,7 @@
 
 package controllers.transportDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
@@ -36,7 +36,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   def onwardRoute(lrn: LocalReferenceNumber): Call =
     Call("GET", s"/common-transit-convention-departure/$lrn/task-list")

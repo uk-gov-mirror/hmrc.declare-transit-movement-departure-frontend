@@ -94,7 +94,8 @@ class ConfirmRemoveSealController @Inject()(
     }
 
   private def renderPage(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode, form: Form[Boolean], seal: SealDomain)(
-    implicit request: DataRequest[AnyContent]): Future[Html] = {
+    implicit
+    request: DataRequest[AnyContent]): Future[Html] = {
     val json = Json.obj(
       "form"        -> form,
       "mode"        -> mode,
@@ -106,6 +107,7 @@ class ConfirmRemoveSealController @Inject()(
     renderer.render(confirmRemoveSealTemplate, json)
 
   }
+
   private def renderErrorPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfSeals()).contains(0)) "noSeal" else "multipleSeal"
     val redirectLink     = navigator.nextPage(ConfirmRemoveSealPage(), mode, request.userAnswers).url

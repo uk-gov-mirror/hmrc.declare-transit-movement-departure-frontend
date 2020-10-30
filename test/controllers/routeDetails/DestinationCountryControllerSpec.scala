@@ -16,7 +16,7 @@
 
 package controllers.routeDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
 import forms.DestinationCountryFormProvider
@@ -42,7 +42,13 @@ import navigation.annotations.RouteDetails
 
 import scala.concurrent.Future
 
-class DestinationCountryControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach {
+class DestinationCountryControllerSpec
+    extends SpecBase
+    with MockNunjucksRendererApp
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers
+    with BeforeAndAfterEach {
   val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   def onwardRoute = Call("GET", "/foo")

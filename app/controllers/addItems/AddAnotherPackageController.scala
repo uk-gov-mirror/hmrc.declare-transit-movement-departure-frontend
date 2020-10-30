@@ -17,12 +17,13 @@
 package controllers.addItems
 
 import controllers.actions._
+import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
 import forms.AddAnotherPackageFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.AddAnotherPackagePage
+import pages.addItems.AddAnotherPackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,6 +31,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import utils.AddItemsCheckYourAnswersHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -50,44 +52,64 @@ class AddAnotherPackageController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AddAnotherPackagePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AddAnotherPackagePage(itemIndex, packageIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
+        val totalTypes            = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
+        val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
+        val indexList: Seq[Index] = List.range(0, totalTypes).map(Index(_))
 
-      renderer.render("addAnotherPackage.njk", json).map(Ok(_))
-  }
+        val packageRows = indexList.map {
+          index =>
+            cyaHelper.packageRows(itemIndex, index, mode)
+        }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
+        val singularOrPlural = if (totalTypes == 1) "singular" else "plural"
 
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render("addAnotherPackage.njk", json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPackagePage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAnotherPackagePage, mode, updatedAnswers))
+        val json = Json.obj(
+          "form"        -> preparedForm,
+          "mode"        -> mode,
+          "lrn"         -> lrn,
+          "radios"      -> Radios.yesNo(preparedForm("value")),
+          "pageTitle"   -> msg"addAnotherPackage.title.$singularOrPlural".withArgs(totalTypes),
+          "heading"     -> msg"addAnotherPackage.heading.$singularOrPlural".withArgs(totalTypes),
+          "packageRows" -> packageRows,
         )
-  }
+
+        renderer.render("addItems/addAnotherPackage.njk", json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val totalTypes       = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
+              val singularOrPlural = if (totalTypes == 1) "singular" else "plural"
+
+              val json = Json.obj(
+                "form"      -> formWithErrors,
+                "mode"      -> mode,
+                "lrn"       -> lrn,
+                "radios"    -> Radios.yesNo(formWithErrors("value")),
+                "pageTitle" -> msg"addAnotherPackage.title.$singularOrPlural".withArgs(totalTypes),
+                "heading"   -> msg"addAnotherPackage.heading.$singularOrPlural".withArgs(totalTypes),
+              )
+
+              renderer.render("addItems/addAnotherPackage.njk", json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPackagePage(itemIndex, packageIndex), value))
+              } yield Redirect(navigator.nextPage(AddAnotherPackagePage(itemIndex, packageIndex), mode, updatedAnswers))
+          )
+    }
 }

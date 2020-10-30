@@ -17,8 +17,8 @@
 package repositories
 
 import java.time.LocalDateTime
-
-import javax.inject.Inject
+import utils.IndexUtils
+import javax.inject.Singleton
 import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import play.api.Configuration
 import play.api.libs.json._
@@ -27,13 +27,14 @@ import reactivemongo.api.bson.collection.BSONSerializationPack
 import reactivemongo.api.indexes.Index.Aux
 import reactivemongo.api.indexes.IndexType
 import reactivemongo.bson.BSONDocument
-import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
 import reactivemongo.play.json.collection.JSONCollection
-import utils.IndexUtils
+
 import scala.concurrent.{ExecutionContext, Future}
 
-class DefaultSessionRepository @Inject()(
+@Singleton
+private[repositories] class DefaultSessionRepository @Inject()(
   mongo: ReactiveMongoApi,
+  sessionCollection: SessionCollection,
   config: Configuration
 )(implicit ec: ExecutionContext)
     extends SessionRepository {
@@ -59,7 +60,7 @@ class DefaultSessionRepository @Inject()(
       .map(_ => ())
 
   override def get(id: LocalReferenceNumber, eoriNumber: EoriNumber): Future[Option[UserAnswers]] =
-    collection.flatMap(_.find(Json.obj("_id" -> id.value, "eoriNumber" -> eoriNumber.value), None).one[UserAnswers])
+    sessionCollection().flatMap(_.find(Json.obj("_id" -> id.value, "eoriNumber" -> eoriNumber.value), None).one[UserAnswers])
 
   override def set(userAnswers: UserAnswers): Future[Boolean] = {
 
@@ -71,7 +72,7 @@ class DefaultSessionRepository @Inject()(
       "$set" -> (userAnswers copy (lastUpdated = LocalDateTime.now))
     )
 
-    collection.flatMap {
+    sessionCollection().flatMap {
       _.update(ordered = false)
         .one(selector, modifier, upsert = true)
         .map {
@@ -80,13 +81,15 @@ class DefaultSessionRepository @Inject()(
         }
     }
   }
+
 }
 
 trait SessionRepository {
 
-  val started: Future[Unit]
+  def started: Future[Unit]
 
   def get(id: LocalReferenceNumber, eoriNumber: EoriNumber): Future[Option[UserAnswers]]
 
   def set(userAnswers: UserAnswers): Future[Boolean]
+
 }

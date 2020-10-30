@@ -16,7 +16,7 @@
 
 package controllers.transportDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.AddIdAtDepartureFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -39,7 +39,7 @@ import navigation.annotations.TransportDetails
 
 import scala.concurrent.Future
 
-class AddIdAtDepartureControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddIdAtDepartureControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

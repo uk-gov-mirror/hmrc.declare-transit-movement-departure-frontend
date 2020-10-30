@@ -94,10 +94,9 @@ class SectionsHelper(userAnswers: UserAnswers) {
   }
 
   private def itemsSection: SectionDetails = {
-    val startPage: String = addItemsRoutes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(0), NormalMode).url
-    val cyaPageAndStatus
-      : (String, Status) = (addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, Index(0)).url, Completed) // TODO Need to replace with Add another Item page CTCTRADERS-1187
-    val (page, status)   = getIncompletePage(startPage, addItemPages).getOrElse(cyaPageAndStatus)
+    val startPage: String                  = addItemsRoutes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(0), NormalMode).url
+    val cyaPageAndStatus: (String, Status) = (addItemsRoutes.AddAnotherItemController.onPageLoad(userAnswers.id).url, Completed)
+    val (page, status)                     = getIncompletePage(startPage, addItemPages).getOrElse(cyaPageAndStatus)
 
     SectionDetails("declarationSummary.section.addItems", page, status)
   }
@@ -255,11 +254,13 @@ class SectionsHelper(userAnswers: UserAnswers) {
     } else { Seq.empty }
 
     Seq(
-      userAnswers.get(ItemDescriptionPage(index))      -> addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url,
-      userAnswers.get(ItemTotalGrossMassPage(index))   -> addItemsRoutes.ItemTotalGrossMassController.onPageLoad(lrn, index, NormalMode).url,
-      userAnswers.get(AddTotalNetMassPage(index))      -> addItemsRoutes.AddTotalNetMassController.onPageLoad(lrn, index, NormalMode).url,
-      userAnswers.get(IsCommodityCodeKnownPage(index)) -> addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(lrn, index, NormalMode).url
-    ) ++ addTotalGrossMassPages ++ commodityCodePages
+      userAnswers.get(ItemDescriptionPage(index))    -> addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url,
+      userAnswers.get(ItemTotalGrossMassPage(index)) -> addItemsRoutes.ItemTotalGrossMassController.onPageLoad(lrn, index, NormalMode).url,
+      userAnswers.get(AddTotalNetMassPage(index))    -> addItemsRoutes.AddTotalNetMassController.onPageLoad(lrn, index, NormalMode).url
+    ) ++
+      addTotalGrossMassPages ++
+      Seq(userAnswers.get(IsCommodityCodeKnownPage(index)) -> addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(lrn, index, NormalMode).url) ++
+      commodityCodePages
   }
 
   private val goodsSummaryPages: Seq[(Option[_], String)] = {

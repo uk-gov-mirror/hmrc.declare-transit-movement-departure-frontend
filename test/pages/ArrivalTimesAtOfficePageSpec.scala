@@ -20,7 +20,6 @@ import java.time.LocalDateTime
 
 import models.{Index, LocalDateTimeWithAMPM}
 import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class ArrivalTimesAtOfficePageSpec extends PageBehaviours {
@@ -32,14 +31,6 @@ class ArrivalTimesAtOfficePageSpec extends PageBehaviours {
     }
 
     val index = Index(0)
-    implicit lazy val arbitraryDateTimeWithAMPM: Arbitrary[LocalDateTimeWithAMPM] = {
-      Arbitrary {
-        for {
-          localDateTime <- arbitrary[LocalDateTime]
-          name          <- arbitrary[String]
-        } yield LocalDateTimeWithAMPM(localDateTime, name)
-      }
-    }
 
     beRetrievable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
 

@@ -1,6 +1,6 @@
 package controllers
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import matchers.JsonMatchers
 import forms.$className$FormProvider
 import models.{NormalMode, UserAnswers}
@@ -22,7 +22,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class $className$ControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class $className$ControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

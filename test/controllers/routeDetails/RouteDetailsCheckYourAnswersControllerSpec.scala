@@ -16,7 +16,7 @@
 
 package controllers.routeDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
@@ -35,7 +35,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   private val countries                                = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
   private val customsOffice: CustomsOffice             = CustomsOffice("id", "name", Seq.empty, None)

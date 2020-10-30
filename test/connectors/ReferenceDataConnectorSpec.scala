@@ -19,8 +19,8 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
-import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit, TransportMode}
-import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, TransportModeList}
+import models.reference._
+import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, PackageTypeList, PreviousDocumentTypeList, TransportModeList}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -34,7 +34,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
   private val startUrl = "transit-movements-trader-reference-data"
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
+  lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       conf = "microservice.services.referenceData.port" -> server.port()
     )
@@ -115,6 +115,38 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |  }
       |""".stripMargin
 
+  private val packageTypeJson: String =
+    """
+      |[
+      |  {
+      |    "state": "valid",
+      |    "activeFrom": "2015-10-01",
+      |    "code": "AB",
+      |    "description": "description 1"
+      |  },
+      |  {
+      |    "state": "valid",
+      |    "activeFrom": "2015-07-01",
+      |    "code": "CD",
+      |    "description": "description 2"
+      |  }
+      |]
+      |""".stripMargin
+
+  private val previousDocumentJson: String =
+    """
+      |[
+      |  {
+      |    "code": "T1",
+      |    "description": "Description T1"
+      |  },
+      |  {
+      |    "code": "T2F",
+      |    "description": "Description T2F"
+      |  }
+      |]
+      |""".stripMargin
+
   val errorResponses: Gen[Int] = Gen.chooseNum(400, 599)
 
   "Reference Data" - {
@@ -126,13 +158,13 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
             .willReturn(okJson(customsOfficeResponseJson))
         )
 
-        val expectedResult = {
+        val expectedResult =
           CustomsOfficeList(
             Seq(
               CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
               CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
-            ))
-        }
+            )
+          )
 
         connector.getCustomsOffices.futureValue mustBe expectedResult
       }
@@ -149,13 +181,13 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
             .willReturn(okJson(customsOfficeResponseJson))
         )
 
-        val expectedResult = {
+        val expectedResult =
           CustomsOfficeList(
             Seq(
               CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
               CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
-            ))
-        }
+            )
+          )
 
         connector.getCustomsOfficesOfTheCountry(CountryCode("GB")).futureValue mustBe expectedResult
       }
@@ -278,6 +310,56 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
         checkErrorResponse(s"/$startUrl/office-transit/1", connector.getOfficeOfTransitList())
       }
+    }
+
+    "getPackageTypes" - {
+
+      "must return list of package types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/kinds-of-package"))
+            .willReturn(okJson(packageTypeJson))
+        )
+
+        val expectResult = PackageTypeList(
+          Seq(
+            PackageType("AB", "description 1"),
+            PackageType("CD", "description 2")
+          )
+        )
+
+        connector.getPackageTypes().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/kinds-of-package", connector.getPackageTypes())
+      }
+
+    }
+
+    "getPreviousDocumentType" - {
+
+      "must return list of previous document types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/previous-document-type"))
+            .willReturn(okJson(previousDocumentJson))
+        )
+
+        val expectResult = PreviousDocumentTypeList(
+          Seq(
+            PreviousDocumentType("T1", "Description T1"),
+            PreviousDocumentType("T2F", "Description T2F")
+          )
+        )
+
+        connector.getPreviousDocumentTypes().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/previous-document-type", connector.getPreviousDocumentTypes())
+      }
+
     }
   }
 

@@ -19,10 +19,10 @@ package controllers.addItems
 import controllers.actions._
 import forms.DeclareMarkFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.DeclareMarkPage
+import pages.addItems.DeclareMarkPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,42 +50,46 @@ class DeclareMarkController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(DeclareMarkPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(DeclareMarkPage(itemIndex, packageIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render("declareMark.njk", json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
-            )
-
-            renderer.render("declareMark.njk", json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareMarkPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DeclareMarkPage, mode, updatedAnswers))
+        val json = Json.obj(
+          "form"         -> preparedForm,
+          "lrn"          -> lrn,
+          "mode"         -> mode,
+          "displayIndex" -> packageIndex.display,
         )
-  }
+
+        renderer.render("addItems/declareMark.njk", json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"         -> formWithErrors,
+                "lrn"          -> lrn,
+                "mode"         -> mode,
+                "displayIndex" -> packageIndex.display
+              )
+
+              renderer.render("addItems/declareMark.njk", json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareMarkPage(itemIndex, packageIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(DeclareMarkPage(itemIndex, packageIndex), mode, updatedAnswers))
+          )
+    }
 }

@@ -18,6 +18,8 @@ package controllers.goodsSummary
 
 import base.SpecBase
 import controllers.{routes => mainRoutes}
+import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
 import forms.SealsInformationFormProvider
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
@@ -27,8 +29,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.SealIdDetailsPage
 import play.api.data.Form
+import pages.SealIdDetailsPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -40,7 +42,7 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class SealsInformationControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class SealsInformationControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute: Call = Call("GET", "/foo")
 

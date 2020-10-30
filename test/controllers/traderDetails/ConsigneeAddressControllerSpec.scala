@@ -16,7 +16,7 @@
 
 package controllers.traderDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.ConsigneeAddressFormProvider
@@ -41,7 +41,7 @@ import navigation.annotations.TraderDetails
 
 import scala.concurrent.Future
 
-class ConsigneeAddressControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ConsigneeAddressControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute                                        = Call("GET", "/foo")
   val country                                            = Country(CountryCode("GB"), "United Kingdom")

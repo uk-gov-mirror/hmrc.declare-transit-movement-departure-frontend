@@ -16,7 +16,7 @@
 
 package controllers.addItems
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.DeclareMarkFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -26,7 +26,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DeclareMarkPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -36,17 +35,18 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import pages.addItems.DeclareMarkPage
 
 import scala.concurrent.Future
 
-class DeclareMarkControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class DeclareMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new DeclareMarkFormProvider()
   val form         = formProvider()
 
-  lazy val declareMarkRoute = routes.DeclareMarkController.onPageLoad(lrn, NormalMode).url
+  lazy val declareMarkRoute = routes.DeclareMarkController.onPageLoad(lrn, index, index, NormalMode).url
 
   "DeclareMark Controller" - {
 
@@ -72,7 +72,7 @@ class DeclareMarkControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "lrn"  -> lrn
       )
 
-      templateCaptor.getValue mustEqual "declareMark.njk"
+      templateCaptor.getValue mustEqual "addItems/declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -83,7 +83,7 @@ class DeclareMarkControllerSpec extends SpecBase with MockitoSugar with Nunjucks
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(DeclareMarkPage, "answer").success.value
+      val userAnswers    = emptyUserAnswers.set(DeclareMarkPage(index, index), "answer").success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, declareMarkRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -103,7 +103,7 @@ class DeclareMarkControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "declareMark.njk"
+      templateCaptor.getValue mustEqual "addItems/declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()
@@ -158,7 +158,7 @@ class DeclareMarkControllerSpec extends SpecBase with MockitoSugar with Nunjucks
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "declareMark.njk"
+      templateCaptor.getValue mustEqual "addItems/declareMark.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
       application.stop()

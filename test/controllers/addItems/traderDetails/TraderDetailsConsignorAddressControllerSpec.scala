@@ -17,12 +17,12 @@
 package controllers.addItems.traderDetails
 
 import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.traderDetails.TraderDetailsConsignorAddressFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
-
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -39,7 +39,7 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute: Call = Call("GET", "/foo")
 

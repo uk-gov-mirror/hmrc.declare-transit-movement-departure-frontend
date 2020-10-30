@@ -16,7 +16,7 @@
 
 package controllers.goodsSummary
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
 import forms.ConfirmRemoveSealFormProvider
 import matchers.JsonMatchers
@@ -40,7 +40,7 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class ConfirmRemoveSealControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ConfirmRemoveSealControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute: Call = Call("GET", "/foo")
 

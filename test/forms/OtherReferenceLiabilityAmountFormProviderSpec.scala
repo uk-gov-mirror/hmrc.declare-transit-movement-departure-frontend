@@ -43,12 +43,10 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
 
     "must not bind strings that do not match invalid characters regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithLength(maxLength) suchThat (!_.matches(liabilityAmountCharactersRegex))
-      }
+      val expectedError     = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
+      val genMaxLengthAlpha = Gen.containerOfN[List, Char](maxLength, Gen.alphaChar).map(_.mkString)
 
-      forAll(genInvalidString) {
+      forAll(genMaxLengthAlpha) {
         invalidString =>
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors mustBe expectedError

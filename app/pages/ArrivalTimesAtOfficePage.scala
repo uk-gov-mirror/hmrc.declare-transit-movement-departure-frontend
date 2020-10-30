@@ -24,5 +24,9 @@ case class ArrivalTimesAtOfficePage(index: Index) extends QuestionPage[LocalDate
 
   override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit \ index.position \ toString
 
-  override def toString: String = "arrivalTimesAtOffice"
+  override def toString: String = ArrivalTimesAtOfficePage.key
+}
+
+object ArrivalTimesAtOfficePage {
+  val key: String = "arrivalTimesAtOffice"
 }

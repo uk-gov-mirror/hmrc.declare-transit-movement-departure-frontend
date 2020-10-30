@@ -49,7 +49,6 @@
           {{ csrf() | safe }}
 
           {{ govukRadios({
-            classes: "govuk-radios--inline",
             name: 'value',
             items: radios,
             errorMessage: form.value.error

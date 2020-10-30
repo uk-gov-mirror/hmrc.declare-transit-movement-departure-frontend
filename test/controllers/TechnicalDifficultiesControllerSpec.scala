@@ -17,6 +17,8 @@
 package controllers
 
 import base.SpecBase
+import base.MockNunjucksRendererApp
+import config.FrontendAppConfig
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -29,7 +31,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class TechnicalDifficultiesControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class TechnicalDifficultiesControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   "TechnicalDifficulties Controller" - {
 
@@ -38,7 +40,9 @@ class TechnicalDifficultiesControllerSpec extends SpecBase with MockitoSugar wit
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application       = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val frontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+
       val request        = FakeRequest(GET, routes.TechnicalDifficultiesController.onPageLoad().url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])

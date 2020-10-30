@@ -16,7 +16,7 @@
 
 package controllers.transportDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
 import forms.IdCrossingBorderFormProvider
 import matchers.JsonMatchers
@@ -39,7 +39,7 @@ import navigation.annotations.TransportDetails
 
 import scala.concurrent.Future
 
-class IdCrossingBorderControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class IdCrossingBorderControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

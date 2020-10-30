@@ -20,8 +20,8 @@ import base.SpecBase
 import forms.addItems.traderDetails.TraderDetailsConsigneeEoriKnownFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -38,7 +38,7 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class TraderDetailsConsigneeEoriKnownControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class TraderDetailsConsigneeEoriKnownControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -46,7 +46,7 @@ class TraderDetailsConsigneeEoriKnownControllerSpec extends SpecBase with Mockit
   private val form         = formProvider()
   private val template     = "addItems/traderDetails/traderDetailsConsigneeEoriKnown.njk"
 
-  lazy val traderDetailsConsigneeEoriKnownRoute = routes.TraderDetailsConsigneeEoriKnownController.onPageLoad(lrn, index, NormalMode).url
+  lazy val traderDetailsConsigneeEoriKnownRoute: String = routes.TraderDetailsConsigneeEoriKnownController.onPageLoad(lrn, index, NormalMode).url
 
   "TraderDetailsConsigneeEoriKnown Controller" - {
 

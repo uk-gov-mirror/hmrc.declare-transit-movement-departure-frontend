@@ -16,7 +16,7 @@
 
 package controllers.traderDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
 import forms.IsConsigneeEoriKnownFormProvider
 import matchers.JsonMatchers
@@ -39,7 +39,7 @@ import navigation.annotations.TraderDetails
 
 import scala.concurrent.Future
 
-class IsConsigneeEoriKnownControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class IsConsigneeEoriKnownControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 

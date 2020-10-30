@@ -17,6 +17,7 @@
 package viewModels
 
 import models.{Index, UserAnswers}
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.AddItemsCheckYourAnswersHelper
 import viewModels.sections.Section
 
@@ -30,7 +31,9 @@ object AddItemsCheckYourAnswersViewModel {
 
     AddItemsCheckYourAnswersViewModel(
       Seq(
-        Section(Seq(
+        Section(
+          msg"addItems.checkYourAnswersLabel.itemDetails",
+          Seq(
           checkYourAnswersHelper.itemDescription(index),
           checkYourAnswersHelper.itemTotalGrossMass(index),
           checkYourAnswersHelper.addTotalNetMass(index),

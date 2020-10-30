@@ -16,7 +16,7 @@
 
 package controllers.addItems
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -29,7 +29,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   "ItemsCheckYourAnswers Controller" - {
 
@@ -49,7 +49,10 @@ class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar wit
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn)
+      val expectedJson = Json.obj(
+        "lrn"         -> lrn,
+        "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
+      )
 
       templateCaptor.getValue mustEqual "itemsCheckYourAnswers.njk"
       jsonCaptor.getValue must containJson(expectedJson)

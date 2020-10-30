@@ -24,5 +24,9 @@ case class AddAnotherTransitOfficePage(index: Index) extends QuestionPage[String
 
   override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit \ index.position \ toString
 
-  override def toString: String = "addAnotherTransitOffice"
+  override def toString: String = AddAnotherTransitOfficePage.key
+}
+
+object AddAnotherTransitOfficePage {
+  val key: String = "addAnotherTransitOffice"
 }

@@ -16,7 +16,7 @@
 
 package controllers.traderDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import matchers.JsonMatchers
 import controllers.{routes => mainRoutes}
 import org.mockito.ArgumentCaptor
@@ -30,7 +30,7 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class TraderDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
+class TraderDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   "TraderDetailsCheckYourAnswers Controller" - {
 

@@ -18,7 +18,7 @@ package controllers.routeDetails
 
 import java.time.{LocalDateTime, ZoneOffset}
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.ArrivalTimesAtOfficeFormProvider
@@ -45,7 +45,13 @@ import viewModels.DateTimeInput
 
 import scala.concurrent.Future
 
-class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers with BeforeAndAfterEach {
+class ArrivalTimesAtOfficeControllerSpec
+    extends SpecBase
+    with MockNunjucksRendererApp
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers
+    with BeforeAndAfterEach {
 
   val formProvider                 = new ArrivalTimesAtOfficeFormProvider()
   private val officeOfTransit      = OfficeOfTransit("1", "name")

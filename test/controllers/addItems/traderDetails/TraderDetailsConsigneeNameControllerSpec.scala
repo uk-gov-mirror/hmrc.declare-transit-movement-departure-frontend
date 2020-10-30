@@ -17,6 +17,8 @@
 package controllers.addItems.traderDetails
 
 import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.routes
 import forms.addItems.traderDetails.TraderDetailsConsigneeNameFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -38,9 +40,9 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class TraderDetailsConsigneeNameControllerSpec extends SpecBase with MockitoSugar with NunjucksSupport with JsonMatchers {
+class TraderDetailsConsigneeNameControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
   private val formProvider = new TraderDetailsConsigneeNameFormProvider()
   private val form         = formProvider()

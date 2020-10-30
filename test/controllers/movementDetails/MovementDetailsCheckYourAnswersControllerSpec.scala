@@ -16,7 +16,7 @@
 
 package controllers.movementDetails
 
-import base.SpecBase
+import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
 import models.DeclarationType
@@ -33,8 +33,8 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with JsonMatchers {
-  // format: off
+// format: off
+class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
   "MovementDetailsCheckYourAnswers Controller" - {
 
     "return OK and the correct view for a GET" in {
