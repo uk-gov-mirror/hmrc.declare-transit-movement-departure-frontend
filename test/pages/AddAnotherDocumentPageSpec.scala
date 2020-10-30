@@ -16,21 +16,17 @@
 
 package pages
 
-import models.Index
-import pages.addItems.PreviousReferencePage
+import pages.addItems.AddAnotherDocumentPage
 import pages.behaviours.PageBehaviours
 
-class PreviousReferencePageSpec extends PageBehaviours {
+class AddAnotherDocumentPageSpec extends PageBehaviours {
 
-  private val index          = Index(0)
-  private val referenceIndex = Index(0)
+  "AddAnotherDocumentPage" - {
 
-  "PreviousReferencePage" - {
+    beRetrievable[Boolean](AddAnotherDocumentPage)
 
-    beRetrievable[String](PreviousReferencePage(index, referenceIndex))
+    beSettable[Boolean](AddAnotherDocumentPage)
 
-    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
-
-    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
+    beRemovable[Boolean](AddAnotherDocumentPage)
   }
 }

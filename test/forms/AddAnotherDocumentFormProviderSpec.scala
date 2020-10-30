@@ -14,23 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.Index
-import pages.addItems.PreviousReferencePage
-import pages.behaviours.PageBehaviours
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class PreviousReferencePageSpec extends PageBehaviours {
+class AddAnotherDocumentFormProviderSpec extends BooleanFieldBehaviours {
 
-  private val index          = Index(0)
-  private val referenceIndex = Index(0)
+  val requiredKey = "addAnotherDocument.error.required"
+  val invalidKey  = "error.boolean"
 
-  "PreviousReferencePage" - {
+  val form = new AddAnotherDocumentFormProvider()()
 
-    beRetrievable[String](PreviousReferencePage(index, referenceIndex))
+  ".value" - {
 
-    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
+    val fieldName = "value"
 
-    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

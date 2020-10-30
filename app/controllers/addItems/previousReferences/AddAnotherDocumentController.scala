@@ -17,31 +17,30 @@
 package controllers.addItems.previousReferences
 
 import controllers.actions._
-import forms.PreviousReferenceFormProvider
+import forms.AddAnotherDocumentFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems
-import pages.addItems.PreviousReferencePage
+import pages.addItems.AddAnotherDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviousReferenceController @Inject()(
+class AddAnotherDocumentController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: PreviousReferenceFormProvider,
+  formProvider: AddAnotherDocumentFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -50,22 +49,23 @@ class PreviousReferenceController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "addItems/previousReference.njk"
+  private val template = "addItems/addAnotherDocument.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(addItems.PreviousReferencePage(index, referenceIndex)) match {
+        val preparedForm = request.userAnswers.get(AddAnotherDocumentPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
         val json = Json.obj(
           "form"           -> preparedForm,
-          "lrn"            -> lrn,
           "mode"           -> mode,
+          "lrn"            -> lrn,
           "index"          -> index.display,
-          "referenceIndex" -> referenceIndex.display
+          "referenceIndex" -> referenceIndex.display,
+          "radios"         -> Radios.yesNo(preparedForm("value"))
         )
 
         renderer.render(template, json).map(Ok(_))
@@ -81,19 +81,20 @@ class PreviousReferenceController @Inject()(
 
               val json = Json.obj(
                 "form"           -> formWithErrors,
-                "lrn"            -> lrn,
                 "mode"           -> mode,
+                "lrn"            -> lrn,
                 "index"          -> index.display,
-                "referenceIndex" -> referenceIndex.display
+                "referenceIndex" -> referenceIndex.display,
+                "radios"         -> Radios.yesNo(formWithErrors("value"))
               )
 
               renderer.render(template, json).map(BadRequest(_))
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(addItems.PreviousReferencePage(index, referenceIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherDocumentPage, value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(addItems.PreviousReferencePage(index, referenceIndex), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddAnotherDocumentPage, mode, updatedAnswers))
           )
     }
 }

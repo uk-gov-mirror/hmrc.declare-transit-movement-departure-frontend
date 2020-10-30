@@ -20,7 +20,7 @@ import controllers.addItems.previousReferences.{routes => previousReferencesRout
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, Mode, UserAnswers}
-import pages._
+import pages.{addItems, _}
 import pages.addItems._
 import pages.addItems.traderDetails._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -366,7 +366,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def previousReference(index: Index, referenceIndex: Index): Option[Row] = userAnswers.get(PreviousReferencePage(index, referenceIndex)) map {
+  def previousReference(index: Index, referenceIndex: Index): Option[Row] = userAnswers.get(addItems.PreviousReferencePage(index, referenceIndex)) map {
     answer =>
       Row(
         key   = Key(msg"previousReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -376,6 +376,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = previousReferencesRoutes.PreviousReferenceController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"previousReference.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addAnotherDocument(index: Index, referenceIndex: Index): Option[Row] = userAnswers.get(AddAnotherDocumentPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"addAnotherDocument.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = previousReferencesRoutes.AddAnotherDocumentController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherDocument.checkYourAnswersLabel"))
           )
         )
       )

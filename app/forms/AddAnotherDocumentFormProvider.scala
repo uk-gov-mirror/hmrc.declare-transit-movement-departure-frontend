@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.Index
-import pages.addItems.PreviousReferencePage
-import pages.behaviours.PageBehaviours
+import javax.inject.Inject
 
-class PreviousReferencePageSpec extends PageBehaviours {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  private val index          = Index(0)
-  private val referenceIndex = Index(0)
+class AddAnotherDocumentFormProvider @Inject() extends Mappings {
 
-  "PreviousReferencePage" - {
-
-    beRetrievable[String](PreviousReferencePage(index, referenceIndex))
-
-    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
-
-    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addAnotherDocument.error.required")
+    )
 }

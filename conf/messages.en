@@ -858,3 +858,10 @@ addExtraInformation.title = Do you need to add any extra information for this do
 addExtraInformation.heading = Do you need to add any extra information for this document?
 addExtraInformation.checkYourAnswersLabel = addExtraInformation
 addExtraInformation.error.required = Select yes if you need to add any extra information for this document
+
+addAnotherDocument.title.singular = You have added 1 previous administrative reference
+addAnotherDocument.title.plural = You have added {0} previous administrative references
+addAnotherDocument.heading.singular = You have added 1 previous administrative reference
+addAnotherDocument.heading.plural = You have added {0} previous administrative references
+addAnotherDocument.paragraph = Do you need to add another previous administrative reference?
+addAnotherDocument.error.required = Select yes if you need to add another previous administrative reference

@@ -17,18 +17,16 @@
 package controllers.addItems.previousReferences
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import controllers.{routes => mainRoutes}
-import forms.PreviousReferenceFormProvider
+import forms.AddAnotherDocumentFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems
-import pages.addItems.PreviousReferencePage
+import pages.addItems.AddAnotherDocumentPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -36,21 +34,22 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new PreviousReferenceFormProvider()
+  private val formProvider = new AddAnotherDocumentFormProvider()
   private val form         = formProvider()
-  private val template     = "addItems/previousReference.njk"
+  private val template     = "addItems/addAnotherDocument.njk"
 
-  lazy val previousReferenceRoute = routes.PreviousReferenceController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
+  lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
 
-  "PreviousReference Controller" - {
+  "AddAnotherDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -58,7 +57,7 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, previousReferenceRoute)
+      val request        = FakeRequest(GET, addAnotherDocumentRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -73,7 +72,8 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
         "mode"           -> NormalMode,
         "lrn"            -> lrn,
         "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display
+        "referenceIndex" -> referenceIndex.display,
+        "radios"         -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -89,9 +89,9 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(addItems.PreviousReferencePage(index, referenceIndex), "answer").success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherDocumentPage, true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, previousReferenceRoute)
+      val request        = FakeRequest(GET, addAnotherDocumentRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -101,14 +101,15 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
         "form"           -> filledForm,
-        "lrn"            -> lrn,
         "mode"           -> NormalMode,
+        "lrn"            -> lrn,
         "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display
+        "referenceIndex" -> referenceIndex.display,
+        "radios"         -> Radios.yesNo(filledForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -134,12 +135,13 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
           .build()
 
       val request =
-        FakeRequest(POST, previousReferenceRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, addAnotherDocumentRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -151,7 +153,7 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, previousReferenceRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, addAnotherDocumentRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -164,14 +166,17 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
 
       val expectedJson = Json.obj(
         "form"           -> boundForm,
-        "lrn"            -> lrn,
         "mode"           -> NormalMode,
+        "lrn"            -> lrn,
         "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display
+        "referenceIndex" -> referenceIndex.display,
+        "radios"         -> Radios.yesNo(boundForm("value"))
       )
 
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
       templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonWithoutConfig mustBe expectedJson
 
       application.stop()
     }
@@ -180,7 +185,7 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, previousReferenceRoute)
+      val request = FakeRequest(GET, addAnotherDocumentRoute)
 
       val result = route(application, request).value
 
@@ -196,8 +201,8 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, previousReferenceRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, addAnotherDocumentRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
