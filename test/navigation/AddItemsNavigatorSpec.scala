@@ -94,7 +94,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
-              .mustBe(routes.AddItemsSameConsignorForAllItemsController.onPageLoad(answers.id, index))
+              .mustBe(routes.AddItemsSameConsignorForAllItemsController.onPageLoad(answers.id, index, NormalMode))
         }
       }
 
@@ -118,7 +118,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           answers =>
             navigator
               .nextPage(CommodityCodePage(index), NormalMode, answers)
-              .mustBe(routes.AddItemsSameConsignorForAllItemsController.onPageLoad(answers.id, index))
+              .mustBe(routes.AddItemsSameConsignorForAllItemsController.onPageLoad(answers.id, index, NormalMode))
         }
       }
 
@@ -210,7 +210,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .set(AddItemsSameConsigneeForAllItemsPage(index), true).success.value
                 navigator
                   .nextPage(AddItemsSameConsigneeForAllItemsPage(index), NormalMode, updatedAnswers)
-                  .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id))
+                  .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, Index(0), NormalMode))
             }
           }
 
@@ -456,469 +456,471 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
 
-      "PackageJourney" - {
-        "PackageType" - {
+          "PackageJourney" - {
+            "PackageType" - {
 
-          "must go to HowManyPackages when PackageType code isn't bulk or unpacked" in {
+              "must go to HowManyPackages when PackageType code isn't bulk or unpacked" in {
 
-            forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
-              (answers, packageType) =>
-                val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType.code)
-                  .success
-                  .value
+                forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
+                  (answers, packageType) =>
+                    val updatedAnswers = answers
+                      .set(PackageTypePage(index, index), packageType.code)
+                      .success
+                      .value
 
-                navigator
-                  .nextPage(PackageTypePage(index, index), CheckMode, updatedAnswers)
-                  .mustBe(routes.HowManyPackagesController.onPageLoad(answers.id, index, index, CheckMode))
-            }
-          }
-
-          "must go to DeclareNumberOfPackages when PackageType code is bulk or unpacked" in {
-
-            forAll(arbitrary[UserAnswers], arbitraryBulkOrUnpackedPackageType.arbitrary) {
-              (answers, packageType) =>
-                val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType.code)
-                  .success
-                  .value
-
-                navigator
-                  .nextPage(PackageTypePage(index, index), CheckMode, updatedAnswers)
-                  .mustBe(routes.DeclareNumberOfPackagesController.onPageLoad(answers.id, index, index, CheckMode))
-            }
-          }
-        }
-        "HowManyPackages" - {
-
-          "must go to DeclareMark when PackageType code isn't bulk or unpacked" in {
-            forAll(arbitrary[UserAnswers], arbitrary[PackageType], arbitrary[Int]) {
-              (answers, packageType, howManyPackages) =>
-                val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType.code)
-                  .success
-                  .value
-                  .set(HowManyPackagesPage(index, index), howManyPackages)
-                  .success
-                  .value
-
-                navigator
-                  .nextPage(HowManyPackagesPage(index, index), CheckMode, updatedAnswers)
-                  .mustBe(routes.DeclareMarkController.onPageLoad(answers.id, index, index, CheckMode))
-            }
-          }
-
-          "must go to AddMark when PackageType code is bulk" in {
-            forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary, arbitrary[Int]) {
-              (answers, packageType, howManyPackages) =>
-                val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType.code)
-                  .success
-                  .value
-                  .set(HowManyPackagesPage(index, index), howManyPackages)
-                  .success
-                  .value
-
-                navigator
-                  .nextPage(HowManyPackagesPage(index, index), CheckMode, updatedAnswers)
-                  .mustBe(routes.AddMarkController.onPageLoad(answers.id, index, index, CheckMode))
-            }
-          }
-
-          "must go to TotalPieces when PackageType code is unpacked" in {
-            forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary, arbitrary[Int]) {
-              (answers, packageType, howManyPackages) =>
-                val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType.code)
-                  .success
-                  .value
-                  .set(HowManyPackagesPage(index, index), howManyPackages)
-                  .success
-                  .value
-
-                navigator
-                  .nextPage(HowManyPackagesPage(index, index), CheckMode, updatedAnswers)
-                  .mustBe(routes.TotalPiecesController.onPageLoad(answers.id, index, index, CheckMode))
-            }
-          }
-
-        }
-        "DeclareNumberOfPackages" - {
-          "must go to HowManyPackages if answer is 'Yes'" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage(index, index), true)
-                  .success
-                  .value
-
-                navigator
-                  .nextPage(DeclareNumberOfPackagesPage(index, index), CheckMode, updatedAnswers)
-                  .mustBe(routes.HowManyPackagesController.onPageLoad(answers.id, index, index, CheckMode))
-            }
-
-          "Items CYA when false and ConsignorEoriKnown is answered" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
-                  .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber.value).success.value
-                navigator
-                  .nextPage(AddItemsSameConsignorForAllItemsPage(index), CheckMode, updatedAnswers)
-                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-            }
-          }
-
-            "must go to AddMark if answer is 'No' and PackageType is bulk" in {
-              forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
-                (answers, packageType) =>
-                  val updatedAnswers = answers
-                    .set(PackageTypePage(index, index), packageType.code)
-                    .success
-                    .value
-                    .set(DeclareNumberOfPackagesPage(index, index), false)
-                    .success
-                    .value
-
-                  navigator
-                    .nextPage(DeclareNumberOfPackagesPage(index, index), CheckMode, updatedAnswers)
-                    .mustBe(routes.AddMarkController.onPageLoad(answers.id, index, index, CheckMode))
-              }
-            }
-            "must go to TotalPieces if answer is 'No' and PackageType is unpacked" in {
-              forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
-                (answers, packageType) =>
-                  val updatedAnswers = answers
-                    .set(PackageTypePage(index, index), packageType.code)
-                    .success
-                    .value
-                    .set(DeclareNumberOfPackagesPage(index, index), false)
-                    .success
-                    .value
-
-                  navigator
-                    .nextPage(DeclareNumberOfPackagesPage(index, index), CheckMode, updatedAnswers)
-                    .mustBe(routes.TotalPiecesController.onPageLoad(answers.id, index, index, CheckMode))
-              }
-            }
-
-          }
-          "TotalPieces" - {
-            "must go to AddMark" in {
-              forAll(arbitrary[UserAnswers], arbitrary[Int]) {
-                (answers, totalPieces) =>
-                  val updatedAnswers = answers
-                    .set(TotalPackagesPage, totalPieces)
-                    .success
-                    .value
-
-                  navigator
-                    .nextPage(TotalPiecesPage(index, index), CheckMode, updatedAnswers)
-                    .mustBe(routes.AddMarkController.onPageLoad(answers.id, index, index, CheckMode))
-              }
-            }
-          }
-          "AddMark" - {
-            "must go to DeclareMark if answers is 'Yes'" in {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                  val updatedAnswers = answers
-                    .set(AddMarkPage(index, index), true)
-                    .success
-                    .value
-
-                  navigator
-                    .nextPage(AddMarkPage(index, index), CheckMode, updatedAnswers)
-                    .mustBe(routes.DeclareMarkController.onPageLoad(answers.id, index, index, CheckMode))
-              }
-            }
-            "must go to CheckYourAnswers if answers if 'No'" in {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                  val updatedAnswers = answers
-                    .set(AddMarkPage(index, index), false)
-                    .success
-                    .value
-
-                  navigator
-                    .nextPage(AddMarkPage(index, index), CheckMode, updatedAnswers)
-                    .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
-              }
-            }
-          }
-          "DeclareMark" - {
-            "must go to CheckYourAnswers" in {
-              forAll(arbitrary[UserAnswers], arbitrary[String]) {
-                (answers, declareMark) =>
-                  val updatedAnswers = answers
-                    .set(DeclareMarkPage(index, index), declareMark)
-                    .success
-                    .value
-
-                  navigator
-                    .nextPage(DeclareMarkPage(index, index), CheckMode, updatedAnswers)
-                    .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
-              }
-            }
-          }
-          "AddAnotherPackage" - {
-            "must go to PackageType if the answer is 'Yes' and increment package index" in {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                  val updatedAnswers = answers
-                    .set(AddAnotherPackagePage(index, index), true)
-                    .success
-                    .value
-
-                  val nextPackageIndex = Index(index.position + 1)
-
-                  navigator
-                    .nextPage(AddAnotherPackagePage(index, index), CheckMode, updatedAnswers)
-                    .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, nextPackageIndex, CheckMode))
-              }
-            }
-            "must go to CheckYourAnswers if'No'" in {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                  val updatedAnswers = answers
-                    .set(AddAnotherPackagePage(index, index), false)
-                    .success
-                    .value
-
-                  navigator
-                    .nextPage(AddAnotherPackagePage(index, index), CheckMode, updatedAnswers)
-                    .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
-              }
-            }
-          }
-        }
-
-        "must go from ConsignorEoriKnown to" - {
-          "ConsignorEoriNumber when true and EoriNumber is empty" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
-                  .remove(TraderDetailsConsignorEoriNumberPage(index)).success.value
-                navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
-                  .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(updatedAnswers.id, index, CheckMode))
-            }
-          }
-
-          "Items CYA  when true and EoriNumber is answered" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
-                  .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber.value).success.value
-                navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
-                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-            }
-          }
-
-          "ConsignorName when false and consignorName is empty" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
-                  .remove(TraderDetailsConsignorNamePage(index)).success.value
-                navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
-                  .mustBe(traderRoutes.TraderDetailsConsignorNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
-            }
-          }
-
-          "Items CYA when false and ConsignorName is answered" in { //todo: recheck this logic when we merge with packages
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
-                  .set(TraderDetailsConsignorNamePage(index), "name").success.value
-                navigator
-                  .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
-                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-            }
-          }
-        }
-
-        "must go from ConsignorEoriNumber to Items CYA" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, answers)
-                .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
-          }
-        }
-
-        "must go from ConsignorName to" - {
-          "ConsignorAddress when Address is empty" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val userAnswers = answers
-                  .remove(TraderDetailsConsignorAddressPage(index)).success.value
-                navigator
-                  .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, userAnswers)
-                  .mustBe(traderRoutes.TraderDetailsConsignorAddressController.onPageLoad(userAnswers.id, index, CheckMode))
-            }
-          }
-
-          "Items CYA when Address is Populated" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val userAnswers = answers
-                  .set(TraderDetailsConsignorAddressPage(index), "address").success.value //todo: move to correct model when page completed
-                navigator
-                  .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, userAnswers)
-                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index))
-            }
-          }
-        }
-
-        "must go from ConsignorAddress to AddItemsSameConsigneeForAllItems" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(TraderDetailsConsignorAddressPage(index), CheckMode, answers)
-                .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, CheckMode))
-          }
-        }
-
-        //Consignee
-        "must go from AddItemsSameConsigneeForAllItems to" - {
-          "PackageType when All items same Consignor and Consignee true " in { //todo: move to correct model when page completed
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage(index), true).success.value
-                  .set(AddItemsSameConsigneeForAllItemsPage(index), true).success.value
-                navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, updatedAnswers)
-                  .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(updatedAnswers.id, index, CheckMode))
-            }
-          }
-
-          "AddItems CYA when AddItemsSameConsignorForAllItems is false" in {
-            (forAll(arbitrary[UserAnswers], arbitrary[Boolean])) {
-              (answers, addItemsSameConsigneeForAllItems) =>
-                val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
-                  .set(AddItemsSameConsigneeForAllItemsPage(index), addItemsSameConsigneeForAllItems).success.value
-                navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, updatedAnswers)
-                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-            }
-          }
-
-          "AddItems CYA when AddItemsSameConsignorForAllItems is true but AddItemsSameConsigneeForAllItems is false" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(AddItemsSameConsigneeForAllItemsPage(index), false).success.value
-                navigator
-                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, updatedAnswers)
-                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-            }
-          }
-
-          "must go from ConsigneeEoriKnown to" - {
-            "ConsigneeEoriNumber when true and ConsigneeEoriNumber is empty" in {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                  val updatedAnswers = answers
-                    .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
-                    .remove(TraderDetailsConsigneeEoriNumberPage(index)).success.value
-                  navigator
-                    .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
-                    .mustBe(traderRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(updatedAnswers.id, index, CheckMode))
+                    navigator
+                      .nextPage(PackageTypePage(index, index), CheckMode, updatedAnswers)
+                      .mustBe(routes.HowManyPackagesController.onPageLoad(answers.id, index, index, CheckMode))
+                }
               }
 
-              "Items CYA when true and ConsigneeEoriNumber is populated" in {
+              "must go to DeclareNumberOfPackages when PackageType code is bulk or unpacked" in {
+
+                forAll(arbitrary[UserAnswers], arbitraryBulkOrUnpackedPackageType.arbitrary) {
+                  (answers, packageType) =>
+                    val updatedAnswers = answers
+                      .set(PackageTypePage(index, index), packageType.code)
+                      .success
+                      .value
+
+                    navigator
+                      .nextPage(PackageTypePage(index, index), CheckMode, updatedAnswers)
+                      .mustBe(routes.DeclareNumberOfPackagesController.onPageLoad(answers.id, index, index, CheckMode))
+                }
+              }
+            }
+            "HowManyPackages" - {
+
+              "must go to DeclareMark when PackageType code isn't bulk or unpacked" in {
+                forAll(arbitrary[UserAnswers], arbitrary[PackageType], arbitrary[Int]) {
+                  (answers, packageType, howManyPackages) =>
+                    val updatedAnswers = answers
+                      .set(PackageTypePage(index, index), packageType.code)
+                      .success
+                      .value
+                      .set(HowManyPackagesPage(index, index), howManyPackages)
+                      .success
+                      .value
+
+                    navigator
+                      .nextPage(HowManyPackagesPage(index, index), CheckMode, updatedAnswers)
+                      .mustBe(routes.DeclareMarkController.onPageLoad(answers.id, index, index, CheckMode))
+                }
+              }
+
+              "must go to AddMark when PackageType code is bulk" in {
+                forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary, arbitrary[Int]) {
+                  (answers, packageType, howManyPackages) =>
+                    val updatedAnswers = answers
+                      .set(PackageTypePage(index, index), packageType.code)
+                      .success
+                      .value
+                      .set(HowManyPackagesPage(index, index), howManyPackages)
+                      .success
+                      .value
+
+                    navigator
+                      .nextPage(HowManyPackagesPage(index, index), CheckMode, updatedAnswers)
+                      .mustBe(routes.AddMarkController.onPageLoad(answers.id, index, index, CheckMode))
+                }
+              }
+
+              "must go to TotalPieces when PackageType code is unpacked" in {
+                forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary, arbitrary[Int]) {
+                  (answers, packageType, howManyPackages) =>
+                    val updatedAnswers = answers
+                      .set(PackageTypePage(index, index), packageType.code)
+                      .success
+                      .value
+                      .set(HowManyPackagesPage(index, index), howManyPackages)
+                      .success
+                      .value
+
+                    navigator
+                      .nextPage(HowManyPackagesPage(index, index), CheckMode, updatedAnswers)
+                      .mustBe(routes.TotalPiecesController.onPageLoad(answers.id, index, index, CheckMode))
+                }
+              }
+
+            }
+            "DeclareNumberOfPackages" - {
+              "must go to HowManyPackages if answer is 'Yes'" in {
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                     val updatedAnswers = answers
-                      .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
-                      .set(TraderDetailsConsigneeEoriNumberPage(index), eoriNumber.value).success.value
+                      .set(DeclareNumberOfPackagesPage(index, index), true)
+                      .success
+                      .value
+
                     navigator
-                      .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
+                      .nextPage(DeclareNumberOfPackagesPage(index, index), CheckMode, updatedAnswers)
+                      .mustBe(routes.HowManyPackagesController.onPageLoad(answers.id, index, index, CheckMode))
+                }
+
+                "Items CYA when false and ConsignorEoriKnown is answered" in {
+                  forAll(arbitrary[UserAnswers]) {
+                    answers =>
+                      val updatedAnswers = answers
+                        .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
+                        .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber.value).success.value
+                      navigator
+                        .nextPage(AddItemsSameConsignorForAllItemsPage(index), CheckMode, updatedAnswers)
+                        .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+                  }
+                }
+
+                "must go to AddMark if answer is 'No' and PackageType is bulk" in {
+                  forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
+                    (answers, packageType) =>
+                      val updatedAnswers = answers
+                        .set(PackageTypePage(index, index), packageType.code)
+                        .success
+                        .value
+                        .set(DeclareNumberOfPackagesPage(index, index), false)
+                        .success
+                        .value
+
+                      navigator
+                        .nextPage(DeclareNumberOfPackagesPage(index, index), CheckMode, updatedAnswers)
+                        .mustBe(routes.AddMarkController.onPageLoad(answers.id, index, index, CheckMode))
+                  }
+                }
+                "must go to TotalPieces if answer is 'No' and PackageType is unpacked" in {
+                  forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
+                    (answers, packageType) =>
+                      val updatedAnswers = answers
+                        .set(PackageTypePage(index, index), packageType.code)
+                        .success
+                        .value
+                        .set(DeclareNumberOfPackagesPage(index, index), false)
+                        .success
+                        .value
+
+                      navigator
+                        .nextPage(DeclareNumberOfPackagesPage(index, index), CheckMode, updatedAnswers)
+                        .mustBe(routes.TotalPiecesController.onPageLoad(answers.id, index, index, CheckMode))
+                  }
+                }
+
+              }
+              "TotalPieces" - {
+                "must go to AddMark" in {
+                  forAll(arbitrary[UserAnswers], arbitrary[Int]) {
+                    (answers, totalPieces) =>
+                      val updatedAnswers = answers
+                        .set(TotalPackagesPage, totalPieces)
+                        .success
+                        .value
+
+                      navigator
+                        .nextPage(TotalPiecesPage(index, index), CheckMode, updatedAnswers)
+                        .mustBe(routes.AddMarkController.onPageLoad(answers.id, index, index, CheckMode))
+                  }
+                }
+              }
+              "AddMark" - {
+                "must go to DeclareMark if answers is 'Yes'" in {
+                  forAll(arbitrary[UserAnswers]) {
+                    answers =>
+                      val updatedAnswers = answers
+                        .set(AddMarkPage(index, index), true)
+                        .success
+                        .value
+
+                      navigator
+                        .nextPage(AddMarkPage(index, index), CheckMode, updatedAnswers)
+                        .mustBe(routes.DeclareMarkController.onPageLoad(answers.id, index, index, CheckMode))
+                  }
+                }
+                "must go to CheckYourAnswers if answers if 'No'" in {
+                  forAll(arbitrary[UserAnswers]) {
+                    answers =>
+                      val updatedAnswers = answers
+                        .set(AddMarkPage(index, index), false)
+                        .success
+                        .value
+
+                      navigator
+                        .nextPage(AddMarkPage(index, index), CheckMode, updatedAnswers)
+                        .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+                  }
+                }
+              }
+              "DeclareMark" - {
+                "must go to CheckYourAnswers" in {
+                  forAll(arbitrary[UserAnswers], arbitrary[String]) {
+                    (answers, declareMark) =>
+                      val updatedAnswers = answers
+                        .set(DeclareMarkPage(index, index), declareMark)
+                        .success
+                        .value
+
+                      navigator
+                        .nextPage(DeclareMarkPage(index, index), CheckMode, updatedAnswers)
+                        .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+                  }
+                }
+              }
+              "AddAnotherPackage" - {
+                "must go to PackageType if the answer is 'Yes' and increment package index" in {
+                  forAll(arbitrary[UserAnswers]) {
+                    answers =>
+                      val updatedAnswers = answers
+                        .set(AddAnotherPackagePage(index, index), true)
+                        .success
+                        .value
+
+                      val nextPackageIndex = Index(index.position + 1)
+
+                      navigator
+                        .nextPage(AddAnotherPackagePage(index, index), CheckMode, updatedAnswers)
+                        .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, nextPackageIndex, CheckMode))
+                  }
+                }
+                "must go to CheckYourAnswers if'No'" in {
+                  forAll(arbitrary[UserAnswers]) {
+                    answers =>
+                      val updatedAnswers = answers
+                        .set(AddAnotherPackagePage(index, index), false)
+                        .success
+                        .value
+
+                      navigator
+                        .nextPage(AddAnotherPackagePage(index, index), CheckMode, updatedAnswers)
+                        .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+                  }
+                }
+              }
+            }
+
+            "must go from ConsignorEoriKnown to" - {
+              "ConsignorEoriNumber when true and EoriNumber is empty" in {
+                forAll(arbitrary[UserAnswers]) {
+                  answers =>
+                    val updatedAnswers = answers
+                      .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
+                      .remove(TraderDetailsConsignorEoriNumberPage(index)).success.value
+                    navigator
+                      .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
+                      .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(updatedAnswers.id, index, CheckMode))
+                }
+              }
+
+              "Items CYA  when true and EoriNumber is answered" in {
+                forAll(arbitrary[UserAnswers]) {
+                  answers =>
+                    val updatedAnswers = answers
+                      .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
+                      .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber.value).success.value
+                    navigator
+                      .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
                       .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
                 }
-
               }
 
-              "ConsigneeName when false and ConsigneeName is empty" in {
+              "ConsignorName when false and consignorName is empty" in {
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                     val updatedAnswers = answers
-                      .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
-                      .remove(TraderDetailsConsigneeNamePage(index)).success.value
+                      .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
+                      .remove(TraderDetailsConsignorNamePage(index)).success.value
                     navigator
-                      .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
-                      .mustBe(traderRoutes.TraderDetailsConsigneeNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
+                      .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
+                      .mustBe(traderRoutes.TraderDetailsConsignorNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
                 }
               }
 
-              "Items CYA when false and ConsigneeName is empty" in {
+              "Items CYA when false and ConsignorName is answered" in { //todo: recheck this logic when we merge with packages
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                     val updatedAnswers = answers
-                      .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
-                      .remove(TraderDetailsConsigneeNamePage(index)).success.value
+                      .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
+                      .set(TraderDetailsConsignorNamePage(index), "name").success.value
                     navigator
-                      .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
-                      .mustBe(traderRoutes.TraderDetailsConsigneeNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
+                      .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
+                      .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
                 }
               }
             }
 
-            "must go from ConsigneeEoriNumber to" - { //todo: Check logic when packages added
-              "CYA" in {
-                forAll(arbitrary[UserAnswers]) {
-                  answers =>
-                    navigator
-                      .nextPage(TraderDetailsConsigneeEoriNumberPage(index), CheckMode, answers)
-                      .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, CheckMode))
-                }
+            "must go from ConsignorEoriNumber to Items CYA" in {
+              forAll(arbitrary[UserAnswers]) {
+                answers =>
+                  navigator
+                    .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, answers)
+                    .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
               }
             }
 
-            "must go from ConsigneeName to" - {
-              "ConsigneeAddress when address is empty" in {
-                forAll(arbitrary[UserAnswers]) {
-                  answers =>
-                  val userAnswers = answers
-                    .remove(TraderDetailsConsigneeAddressPage(index)).success.value
-                    navigator
-                      .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, userAnswers)
-                      .mustBe(traderRoutes.TraderDetailsConsigneeAddressController.onPageLoad(userAnswers.id, index, CheckMode))
-                }
-              }
-
-              "Items CYA when address is populated" in {
+            "must go from ConsignorName to" - {
+              "ConsignorAddress when Address is empty" in {
                 forAll(arbitrary[UserAnswers]) {
                   answers =>
                     val userAnswers = answers
-                      .set(TraderDetailsConsigneeAddressPage(index), "address").success.value //todo: change to correct model
+                      .remove(TraderDetailsConsignorAddressPage(index)).success.value
                     navigator
-                      .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, userAnswers)
+                      .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, userAnswers)
+                      .mustBe(traderRoutes.TraderDetailsConsignorAddressController.onPageLoad(userAnswers.id, index, CheckMode))
+                }
+              }
+
+              "Items CYA when Address is Populated" in {
+                forAll(arbitrary[UserAnswers]) {
+                  answers =>
+                    val userAnswers = answers
+                      .set(TraderDetailsConsignorAddressPage(index), "address").success.value //todo: move to correct model when page completed
+                    navigator
+                      .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, userAnswers)
                       .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index))
                 }
               }
             }
 
-            "must go from ConsigneeAddress to ItemsCYA" in {
+            "must go from ConsignorAddress to AddItemsSameConsigneeForAllItems" in {
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   navigator
-                    .nextPage(TraderDetailsConsigneeAddressPage(index), CheckMode, answers)
-                    .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+                    .nextPage(TraderDetailsConsignorAddressPage(index), CheckMode, answers)
+                    .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, CheckMode))
+              }
+            }
+
+            //Consignee
+            "must go from AddItemsSameConsigneeForAllItems to" - {
+              "PackageType when All items same Consignor and Consignee true " in { //todo: move to correct model when page completed
+                forAll(arbitrary[UserAnswers]) {
+                  answers =>
+                    val updatedAnswers = answers
+                      .set(AddItemsSameConsignorForAllItemsPage(index), true).success.value
+                      .set(AddItemsSameConsigneeForAllItemsPage(index), true).success.value
+                    navigator
+                      .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, updatedAnswers)
+                      .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(updatedAnswers.id, index, CheckMode))
+                }
+              }
+
+              "AddItems CYA when AddItemsSameConsignorForAllItems is false" in {
+                (forAll(arbitrary[UserAnswers], arbitrary[Boolean])) {
+                  (answers, addItemsSameConsigneeForAllItems) =>
+                    val updatedAnswers = answers
+                      .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
+                      .set(AddItemsSameConsigneeForAllItemsPage(index), addItemsSameConsigneeForAllItems).success.value
+                    navigator
+                      .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, updatedAnswers)
+                      .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+                }
+              }
+
+              "AddItems CYA when AddItemsSameConsignorForAllItems is true but AddItemsSameConsigneeForAllItems is false" in {
+                forAll(arbitrary[UserAnswers]) {
+                  answers =>
+                    val updatedAnswers = answers
+                      .set(AddItemsSameConsigneeForAllItemsPage(index), false).success.value
+                    navigator
+                      .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, updatedAnswers)
+                      .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+                }
+              }
+
+              "must go from ConsigneeEoriKnown to" - {
+                "ConsigneeEoriNumber when true and ConsigneeEoriNumber is empty" in {
+                  forAll(arbitrary[UserAnswers]) {
+                    answers =>
+                      val updatedAnswers = answers
+                        .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
+                        .remove(TraderDetailsConsigneeEoriNumberPage(index)).success.value
+                      navigator
+                        .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
+                        .mustBe(traderRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(updatedAnswers.id, index, CheckMode))
+                  }
+
+                  "Items CYA when true and ConsigneeEoriNumber is populated" in {
+                    forAll(arbitrary[UserAnswers]) {
+                      answers =>
+                        val updatedAnswers = answers
+                          .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
+                          .set(TraderDetailsConsigneeEoriNumberPage(index), eoriNumber.value).success.value
+                        navigator
+                          .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
+                          .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+                    }
+
+                  }
+
+                  "ConsigneeName when false and ConsigneeName is empty" in {
+                    forAll(arbitrary[UserAnswers]) {
+                      answers =>
+                        val updatedAnswers = answers
+                          .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
+                          .remove(TraderDetailsConsigneeNamePage(index)).success.value
+                        navigator
+                          .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
+                          .mustBe(traderRoutes.TraderDetailsConsigneeNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
+                    }
+                  }
+
+                  "Items CYA when false and ConsigneeName is empty" in {
+                    forAll(arbitrary[UserAnswers]) {
+                      answers =>
+                        val updatedAnswers = answers
+                          .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
+                          .remove(TraderDetailsConsigneeNamePage(index)).success.value
+                        navigator
+                          .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
+                          .mustBe(traderRoutes.TraderDetailsConsigneeNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
+                    }
+                  }
+                }
+
+                "must go from ConsigneeEoriNumber to" - { //todo: Check logic when packages added
+                  "CYA" in {
+                    forAll(arbitrary[UserAnswers]) {
+                      answers =>
+                        navigator
+                          .nextPage(TraderDetailsConsigneeEoriNumberPage(index), CheckMode, answers)
+                          .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, CheckMode))
+                    }
+                  }
+                }
+
+                "must go from ConsigneeName to" - {
+                  "ConsigneeAddress when address is empty" in {
+                    forAll(arbitrary[UserAnswers]) {
+                      answers =>
+                        val userAnswers = answers
+                          .remove(TraderDetailsConsigneeAddressPage(index)).success.value
+                        navigator
+                          .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, userAnswers)
+                          .mustBe(traderRoutes.TraderDetailsConsigneeAddressController.onPageLoad(userAnswers.id, index, CheckMode))
+                    }
+                  }
+
+                  "Items CYA when address is populated" in {
+                    forAll(arbitrary[UserAnswers]) {
+                      answers =>
+                        val userAnswers = answers
+                          .set(TraderDetailsConsigneeAddressPage(index), "address").success.value //todo: change to correct model
+                        navigator
+                          .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, userAnswers)
+                          .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index))
+                    }
+                  }
+                }
+
+                "must go from ConsigneeAddress to ItemsCYA" in {
+                  forAll(arbitrary[UserAnswers]) {
+                    answers =>
+                      navigator
+                        .nextPage(TraderDetailsConsigneeAddressPage(index), CheckMode, answers)
+                        .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+                  }
+                }
               }
             }
           }
         }
+        // format: on
       }
     }
-    // format: on
   }
 }

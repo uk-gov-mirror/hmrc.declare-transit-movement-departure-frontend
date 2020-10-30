@@ -210,7 +210,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
         Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  def addMark(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode: Option[Call]  =
+  def addMark(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode): Option[Call]  =
     (ua.get(AddMarkPage(itemIndex, packageIndex)), mode) match {
       case (Some(true), _)            => Some(addItemsRoutes.DeclareMarkController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case (Some(false), NormalMode)  => Some(addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
