@@ -41,7 +41,7 @@ class ControlResultSpec
         controlResult =>
           val expectedResult =
             <CONRESERS>
-              <ConResCodERS16>{controlResult.conResCodERS16}</ConResCodERS16>
+              <ConResCodERS16>A3</ConResCodERS16>
               <DatLimERS69>{Format.dateFormatted(controlResult.datLimERS69)}</DatLimERS69>
             </CONRESERS>
 
