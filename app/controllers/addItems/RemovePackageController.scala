@@ -17,15 +17,16 @@
 package controllers.addItems
 
 import controllers.actions._
-import forms.addItems.DeclareNumberOfPackagesFormProvider
+import forms.addItems.RemovePackageFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.DeclareNumberOfPackagesPage
+import pages.addItems.RemovePackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.PackagesQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -33,14 +34,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclareNumberOfPackagesController @Inject()(
+class RemovePackageController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: DeclareNumberOfPackagesFormProvider,
+  formProvider: RemovePackageFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -48,24 +49,27 @@ class DeclareNumberOfPackagesController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form = formProvider()
+  private val form     = formProvider()
+  private val template = "addItems/removePackage.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(DeclareNumberOfPackagesPage(itemIndex, packageIndex)) match {
+        val preparedForm = request.userAnswers.get(RemovePackagePage(itemIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
         val json = Json.obj(
-          "form"   -> preparedForm,
-          "mode"   -> mode,
-          "lrn"    -> lrn,
-          "radios" -> Radios.yesNo(preparedForm("value"))
+          "form"         -> preparedForm,
+          "itemIndex"    -> itemIndex.display,
+          "packageIndex" -> packageIndex.display,
+          "mode"         -> mode,
+          "lrn"          -> lrn,
+          "radios"       -> Radios.yesNo(preparedForm("value"))
         )
 
-        renderer.render("addItems/declareNumberOfPackages.njk", json).map(Ok(_))
+        renderer.render(template, json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
@@ -77,19 +81,28 @@ class DeclareNumberOfPackagesController @Inject()(
             formWithErrors => {
 
               val json = Json.obj(
-                "form"   -> formWithErrors,
-                "mode"   -> mode,
-                "lrn"    -> lrn,
-                "radios" -> Radios.yesNo(formWithErrors("value"))
+                "form"         -> formWithErrors,
+                "itemIndex"    -> itemIndex.display,
+                "packageIndex" -> packageIndex.display,
+                "mode"         -> mode,
+                "lrn"          -> lrn,
+                "radios"       -> Radios.yesNo(formWithErrors("value"))
               )
 
-              renderer.render("addItems/declareNumberOfPackages.njk", json).map(BadRequest(_))
+              renderer.render(template, json).map(BadRequest(_))
             },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareNumberOfPackagesPage(itemIndex, packageIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(DeclareNumberOfPackagesPage(itemIndex, packageIndex), mode, updatedAnswers))
+            value => {
+              val updatedAnswers: Future[UserAnswers] =
+                if (value) {
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.remove(PackagesQuery(itemIndex, packageIndex)))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield updatedAnswers
+                } else { Future.successful(request.userAnswers) }
+              updatedAnswers.map(
+                userAnswers => Redirect(navigator.nextPage(RemovePackagePage(itemIndex), mode, userAnswers))
+              )
+            }
           )
     }
 }

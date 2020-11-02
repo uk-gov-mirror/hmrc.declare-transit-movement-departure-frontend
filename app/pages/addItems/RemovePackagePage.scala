@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package pages.addItems
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.{CountryList, PackageTypeList}
-import models.reference.{Country, PackageType}
-import play.api.data.Form
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.{items, packages}
 
-class PackageTypeFormProvider @Inject() extends Mappings {
+case class RemovePackagePage(itemIndex: Index) extends QuestionPage[Boolean] {
 
-  def apply(packageTypes: PackageTypeList): Form[PackageType] =
-    Form(
-      "value" -> text("packageType.error.required")
-        .verifying("packageType.error.required", value => packageTypes.packageTypeList.exists(_.code == value))
-        .transform[PackageType](value => packageTypes.packageTypeList.find(_.code == value).get, _.code)
-    )
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ toString
+
+  override def toString: String = "removePackage"
+
 }

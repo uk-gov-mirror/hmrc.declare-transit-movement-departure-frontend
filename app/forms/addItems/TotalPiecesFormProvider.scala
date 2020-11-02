@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package forms.addItems
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class AddAnotherPackagePageSpec extends PageBehaviours with SpecBase {
+class TotalPiecesFormProvider @Inject() extends Mappings {
 
-  "AddAnotherPackagePage" - {
-
-    beRetrievable[Boolean](AddAnotherPackagePage(index))
-
-    beSettable[Boolean](AddAnotherPackagePage(index))
-
-    beRemovable[Boolean](AddAnotherPackagePage(index))
-  }
+  def apply(): Form[Int] =
+    Form(
+      "value" -> int("totalPieces.error.required", "totalPieces.error.wholeNumber", "totalPieces.error.nonNumeric")
+        .verifying(inRange(1, 99999, "totalPieces.error.outOfRange"))
+    )
 }

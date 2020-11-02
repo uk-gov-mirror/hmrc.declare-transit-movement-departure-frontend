@@ -18,7 +18,7 @@ package controllers.addItems
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import forms.PackageTypeFormProvider
+import forms.addItems.PackageTypeFormProvider
 import javax.inject.Inject
 import models.reference.PackageType
 import models.{Index, LocalReferenceNumber, Mode}

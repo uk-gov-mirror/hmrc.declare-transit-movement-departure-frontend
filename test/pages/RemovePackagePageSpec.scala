@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
+import base.SpecBase
+import pages.addItems.RemovePackagePage
+import pages.behaviours.PageBehaviours
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class RemovePackagePageSpec extends PageBehaviours with SpecBase {
 
-class DeclareNumberOfPackagesFormProvider @Inject() extends Mappings {
+  "RemovePackagePage" - {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("declareNumberOfPackages.error.required")
-    )
+    beRetrievable[Boolean](RemovePackagePage(index))
+
+    beSettable[Boolean](RemovePackagePage(index))
+
+    beRemovable[Boolean](RemovePackagePage(index))
+  }
 }

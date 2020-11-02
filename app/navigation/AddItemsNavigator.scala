@@ -35,7 +35,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(index)                           => ua => Some(routes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
     case ItemTotalGrossMassPage(index)                        => ua => Some(routes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
-    case AddTotalNetMassPage(index)                           => ua => addTotalNetMassRoute(index, ua, NormalMode)
+    case AddTotalNetMassPage(index)                           => ua => addTotalNessMassRoute(index, ua, NormalMode)
     case TotalNetMassPage(index)                              => ua => Some(routes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
     case IsCommodityCodeKnownPage(index)                      => ua => isCommodityKnownRoute(index, ua, NormalMode)
     case AddAnotherItemPage                                   => ua => Some(addAnotherPageRoute(ua))
@@ -46,20 +46,22 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case DeclareNumberOfPackagesPage(itemIndex, packageIndex) => ua => declareNumberOfPackages(itemIndex, packageIndex, ua, NormalMode)
     case TotalPiecesPage(itemIndex, packageIndex)             => ua => Some(routes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
     case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, NormalMode)
-    case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
-    case AddAnotherPackagePage(itemIndex, packageIndex)       => ua => addAnotherPackage(itemIndex, packageIndex, ua, NormalMode)
+    case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, NormalMode))
+    case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, NormalMode)
+    case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
     case DummyPage(itemIndex, packageIndex)                   => ua => directToPreviousReferencesPage(itemIndex, packageIndex, ua, NormalMode) //TODO replace dummy page with add another document page
     case AddAdministrativeReferencePage(itemIndex, referenceIndex) => ua => addAdministrativeReferencePage(itemIndex, referenceIndex, ua, NormalMode)
     case ReferenceTypePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.PreviousReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, NormalMode))
     case PreviousReferencePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.AddExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, NormalMode))
     case AddExtraInformationPage(itemIndex, referenceIndex) => ua => addExtraInformationPage(ua, itemIndex, referenceIndex, NormalMode)
+
   }
 
   //TODO: Need to refactor this code
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(index)                           => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case ItemTotalGrossMassPage(index)                        => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case AddTotalNetMassPage(index)                           => ua => addTotalNetMassRoute(index, ua, CheckMode)
+    case AddTotalNetMassPage(index)                           => ua => addTotalNessMassRoute(index, ua, CheckMode)
     case IsCommodityCodeKnownPage(index)                      => ua => isCommodityKnownRoute(index, ua, CheckMode)
     case CommodityCodePage(index)                             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case TotalNetMassPage(index)                              => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
@@ -69,7 +71,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TotalPiecesPage(itemIndex, packageIndex)             => ua => Some(routes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, CheckMode))
     case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, CheckMode)
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
-    case AddAnotherPackagePage(itemIndex, packageIndex)       => ua => addAnotherPackage(itemIndex, packageIndex, ua, CheckMode)
+    case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
+    case RemovePackagePage(itemIndex)                         => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
   }
 
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
@@ -141,13 +144,13 @@ class AddItemsNavigator @Inject()() extends Navigator {
   def addMark(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode) =
     (ua.get(AddMarkPage(itemIndex, packageIndex)), mode) match {
       case (Some(true), _)            => Some(routes.DeclareMarkController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
-      case (Some(false), NormalMode)  => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
+      case (Some(false), NormalMode)  => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, mode))
       case (Some(false), CheckMode)   => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
       case _                          => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  def addAnotherPackage(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode) =
-    (ua.get(AddAnotherPackagePage(itemIndex, packageIndex)), mode) match {
+  def addAnotherPackage(itemIndex: Index, ua: UserAnswers, mode: Mode) =
+    (ua.get(AddAnotherPackagePage(itemIndex)), mode) match {
       case (Some(true), _) =>
         val nextPackageIndex: Int = ua.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
         Some(routes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(nextPackageIndex), mode))
@@ -156,6 +159,12 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (Some(false), NormalMode) =>
         ??? //TODO hook into container journey
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
+    }
+
+  private def removePackage(itemIndex: Index, mode: Mode)(ua: UserAnswers) =
+    ua.get(DeriveNumberOfPackages(itemIndex)) match {
+      case None|Some(0) => routes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(0), mode)
+      case _            => routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, mode)
     }
 
   def directToPreviousReferencesPage(itemIndex: Index, referenceIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] = {
@@ -175,7 +184,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _ => routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
     }
 
-  private def addExtraInformationPage(ua: UserAnswers, itemIndex: Index, referenceIndex: Index, mode: Mode): Option[Call] = 
+  private def addExtraInformationPage(ua: UserAnswers, itemIndex: Index, referenceIndex: Index, mode: Mode): Option[Call] =
     ua.get(AddExtraInformationPage(itemIndex, referenceIndex)) map {
       case true => previousReferencesRoutes.AddExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, mode) // TODO need to replace with Extra information controller
       case false => previousReferencesRoutes.AddExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, mode) // TODO need to replace with add another reference controller
