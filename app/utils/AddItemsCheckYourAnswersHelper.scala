@@ -381,6 +381,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
+  def extraInformation(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(ExtraInformationPage(itemIndex, referenceIndex)) map {
+    answer =>
+      Row(
+        key   = Key(msg"extraInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = previousReferencesRoutes.ExtraInformationController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"extraInformation.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def lrn: LocalReferenceNumber = userAnswers.id
 
 }

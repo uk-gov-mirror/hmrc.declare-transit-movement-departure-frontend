@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
 import models.Index
-import pages.addItems.ExtraInformationPage
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.{items, previousReferences}
 
-class ExtraInformationPageSpec extends PageBehaviours {
+case class ExtraInformationPage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[String] {
 
-  private val index = Index(0)
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences \ referenceIndex.position \ toString
 
-  "ExtraInformationPage" - {
-
-    beRetrievable[String](ExtraInformationPage(index, index))
-
-    beSettable[String](ExtraInformationPage(index, index))
-
-    beRemovable[String](ExtraInformationPage(index, index))
-  }
+  override def toString: String = "extraInformation"
 }
