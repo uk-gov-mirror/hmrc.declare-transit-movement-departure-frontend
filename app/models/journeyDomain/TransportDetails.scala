@@ -22,7 +22,8 @@ import cats.implicits._
 import models.reference.CountryCode
 import TransportDetails._
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
-import pages.{ChangeAtBorderPage, InlandModePage}
+import models.journeyDomain.TransportDetails.InlandMode.Mode5or7
+import pages.{AddIdAtDeparturePage, ChangeAtBorderPage, IdAtDeparturePage, InlandModePage, NationalityAtDeparturePage}
 
 case class TransportDetails(
   inlandMode: InlandMode,
@@ -44,25 +45,71 @@ object TransportDetails {
   object InlandMode {
 
     implicit val userAnswersReader: UserAnswersReader[InlandMode] =
-      ???
+      UserAnswersReader[Rail.type].widen[InlandMode] orElse
+        UserAnswersReader[Mode5or7].widen[InlandMode] orElse
+        UserAnswersReader[NonSpecialMode].widen[InlandMode]
 
-    object Rail extends InlandMode {
+    case object Rail extends InlandMode {
 
       object Constants {
         val codes: Seq[String] = Seq("2", "20")
       }
+
+      implicit val userAnswersReaderRail: UserAnswersReader[Rail.type] =
+        InlandModePage.reader.andThen(
+          code =>
+            Rail.Constants.codes
+              .find(_ == code)
+              .productR(Rail.some)
+        )
+
     }
 
     final case class Mode5or7(nationalityAtDeparture: CountryCode) extends InlandMode
 
-    object Mode5or7 {
+    case object Mode5or7 {
 
       object Constants {
         val codes: Seq[String] = Seq("5", "50", "7", "70")
       }
+
+      implicit val userAnswersReaderMode5or7: UserAnswersReader[Mode5or7] = {
+
+        val mode5or7 = ReaderT[Option, (String, CountryCode), Mode5or7] {
+          x =>
+            val (code, nationalityAtDeparture) = x
+            Mode5or7.Constants.codes
+              .find(_ == code)
+              .productR(Mode5or7(nationalityAtDeparture).some)
+        }
+
+        (
+          InlandModePage.reader,
+          NationalityAtDeparturePage.reader
+        ).tupled
+          .andThen(mode5or7)
+
+      }
     }
 
     final case class NonSpecialMode(nationalityAtDeparture: CountryCode, departureId: Option[String]) extends InlandMode
+
+    object NonSpecialMode {
+
+      implicit val userAnswersReaderNonSpecialMode: UserAnswersReader[NonSpecialMode] =
+        (
+          InlandModePage.reader,
+          AddIdAtDeparturePage.reader,
+          IdAtDeparturePage.optionalReader,
+          NationalityAtDeparturePage.reader
+        ).tupled
+          .map {
+            case (_, _, optionalIdAtDeparture, nationalityAtDeparture) =>
+              NonSpecialMode(nationalityAtDeparture, optionalIdAtDeparture)
+          }
+
+    }
+
   }
 
   sealed trait DetailsAtBorder

@@ -21,6 +21,7 @@ import models.journeyDomain.TransportDetails._
 import models.journeyDomain.TransportDetails.InlandMode._
 import models.journeyDomain.TransportDetails.DetailsAtBorder._
 import models.journeyDomain.TransportDetails.ModeCrossingBorder._
+import models.reference.CountryCode
 import models.{Index, LocalDateTimeWithAMPM, UserAnswers}
 import org.scalacheck.Gen
 import org.scalatest.TryValues
@@ -54,20 +55,50 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
       "when inland mode is 'Postal Consignment' or 'Fixed transport installations'" in {
         val modeGen = Gen.oneOf(Mode5or7.Constants.codes)
 
-        forAll(willNotChangeAnswers, modeGen) {
-          (baseUserAnswers, mode) =>
+        forAll(willNotChangeAnswers, modeGen, arbitrary[CountryCode]) {
+          (baseUserAnswers, mode, countryCode) =>
             val userAnswers = baseUserAnswers
               .set(InlandModePage, mode)
+              .success
+              .value
+              .set(NationalityAtDeparturePage, countryCode)
               .success
               .value
 
             val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
 
-            result mustEqual TransportDetails(inlandMode = Rail, detailsAtBorder = SameDetailsAtBorder)
+            result mustEqual TransportDetails(inlandMode = Mode5or7(countryCode), detailsAtBorder = SameDetailsAtBorder)
 
         }
       }
 
+      "when inland mode is anything other than 'Rail', 'Postal Consignment' or 'Fixed transport installations'" in {
+        val modeGen = stringsExceptSpecificValues(Rail.Constants.codes ++ Mode5or7.Constants.codes)
+
+        forAll(willNotChangeAnswers, modeGen, arbitrary[CountryCode], Gen.option(stringsWithMaxLength(stringMaxLength))) {
+          (baseUserAnswers, mode, countryCode, optionalIdAtDeparture) =>
+            val tmp = baseUserAnswers
+              .set(InlandModePage, mode)
+              .success
+              .value
+              .set(NationalityAtDeparturePage, countryCode)
+              .success
+              .value
+              .set(AddIdAtDeparturePage, optionalIdAtDeparture.isDefined)
+              .success
+              .value
+
+            val userAnswers =
+              optionalIdAtDeparture.fold(tmp)(
+                idAtDeparture => tmp.set(IdAtDeparturePage, idAtDeparture).success.value
+              )
+
+            val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
+
+            result mustEqual TransportDetails(inlandMode = NonSpecialMode(countryCode, optionalIdAtDeparture), detailsAtBorder = SameDetailsAtBorder)
+
+        }
+      }
     }
   }
 
