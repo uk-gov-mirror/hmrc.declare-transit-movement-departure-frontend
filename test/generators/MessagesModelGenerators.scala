@@ -24,6 +24,7 @@ import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, Cus
 import models.messages.goodsitem._
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.trader._
+import models.messages.header.{Header, Transport}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.{alphaNumChar, choose}
 import org.scalacheck.{Arbitrary, Gen}
@@ -87,7 +88,7 @@ trait MessagesModelGenerators extends Generators {
         representative            <- Gen.option(arbitrary[Representative])
         seals                     <- Gen.option(arbitrary[Seals])
         guarantee                 <- arbitrary[Guarantee]
-        goodsItems                <- nonEmptyListWithMaxSize(GoodsItem.Constants.itemCount, arbitrary[GoodsItem])
+        goodsItems                <- nonEmptyListWithMaxSize(10, arbitrary[GoodsItem])
       } yield
         DeclarationRequest(
           meta,
@@ -108,31 +109,54 @@ trait MessagesModelGenerators extends Generators {
     }
   }
 
+  implicit lazy val arbitraryTransport: Arbitrary[Transport] = {
+    Arbitrary {
+      for {
+        inlTraModHEA75        <- Gen.option(choose(min = 1: Int, 99: Int))
+        traModAtBorHEA76      <- Gen.option(choose(min = 1: Int, 99: Int))
+        ideOfMeaOfTraAtDHEA78 <- Gen.option(stringsWithMaxLength(Transport.Constants.identityMeansOfTransport, alphaNumChar))
+        natOfMeaOfTraAtDHEA80 <- Gen.option(stringsWithMaxLength(Header.Constants.countryLength, alphaNumChar))
+        ideOfMeaOfTraCroHEA85 <- Gen.option(stringsWithMaxLength(Transport.Constants.identityMeansOfTransport, alphaNumChar))
+        natOfMeaOfTraCroHEA87 <- Gen.option(stringsWithMaxLength(Header.Constants.countryLength, alphaNumChar))
+        typOfMeaOfTraCroHEA88 <- Gen.option(choose(min = 1: Int, 99: Int))
+      } yield
+        Transport(
+          inlTraModHEA75,
+          traModAtBorHEA76,
+          ideOfMeaOfTraAtDHEA78,
+          natOfMeaOfTraAtDHEA80.map(_.mkString),
+          ideOfMeaOfTraCroHEA85,
+          natOfMeaOfTraCroHEA87.map(_.mkString),
+          typOfMeaOfTraCroHEA88
+        )
+    }
+  }
+
   implicit lazy val arbitraryHeader: Arbitrary[Header] = {
     Arbitrary {
       for {
-        refNumHEA4            <- arbitrary[LocalReferenceNumber].map(_.toString())
-        typOfDecHEA24         <- Gen.pick(Header.Constants.typeOfDeclarationLength, 'A' to 'Z')
-        couOfDesCodHEA30      <- Gen.option(stringsWithMaxLength(Header.Constants.countryLength, alphaNumChar))
-        agrLocOfGooCodHEA38   <- Gen.option(stringsWithMaxLength(Header.Constants.agreedLocationOfGoodsCodeLength, alphaNumChar))
-        agrLocOfGooHEA39      <- Gen.option(stringsWithMaxLength(Header.Constants.agreedLocationOfGoodsLength, alphaNumChar))
-        autLocOfGooCodHEA41   <- Gen.option(stringsWithMaxLength(Header.Constants.authorisedLocationOfGoodsCodeLength, alphaNumChar))
-        plaOfLoaCodHEA46      <- Gen.option(stringsWithMaxLength(Header.Constants.placeOfLoadingGoodsCodeLength, alphaNumChar))
-        couOfDisCodHEA55      <- Gen.option(stringsWithMaxLength(Header.Constants.countryLength, alphaNumChar))
-        cusSubPlaHEA66        <- Gen.option(stringsWithMaxLength(Header.Constants.customsSubPlaceLength, alphaNumChar))
-        inlTraModHEA75        <- Gen.option(choose(min = 1: Int, 99: Int))
-        traModAtBorHEA76      <- Gen.option(choose(min = 1: Int, 99: Int))
-        ideOfMeaOfTraAtDHEA78 <- Gen.option(stringsWithMaxLength(Header.Constants.identityMeansOfTransport, alphaNumChar))
-        natOfMeaOfTraAtDHEA80 <- Gen.option(stringsWithMaxLength(Header.Constants.countryLength, alphaNumChar))
-        ideOfMeaOfTraCroHEA85 <- Gen.option(stringsWithMaxLength(Header.Constants.identityMeansOfTransport, alphaNumChar))
-        natOfMeaOfTraCroHEA87 <- Gen.option(stringsWithMaxLength(Header.Constants.countryLength, alphaNumChar))
-        typOfMeaOfTraCroHEA88 <- Gen.option(choose(min = 1: Int, 99: Int))
-        conIndHEA96           <- choose(min = 0: Int, 1: Int)
-        totNumOfIteHEA305     <- choose(min = 1: Int, 100: Int)
-        totNumOfPacHEA306     <- Gen.option(choose(min = 1: Int, 100: Int))
-        grossMass             <- Gen.choose(0.0, 99999999.999).map(BigDecimal(_).bigDecimal.setScale(3, BigDecimal.RoundingMode.DOWN))
-        decDatHEA383          <- arbitrary[LocalDate]
-        decPlaHEA394          <- stringsWithMaxLength(Header.Constants.declarationPlace, alphaNumChar)
+        refNumHEA4          <- arbitrary[LocalReferenceNumber].map(_.toString())
+        typOfDecHEA24       <- Gen.pick(Header.Constants.typeOfDeclarationLength, 'A' to 'Z')
+        couOfDesCodHEA30    <- Gen.option(stringsWithMaxLength(Header.Constants.countryLength, alphaNumChar))
+        agrLocOfGooCodHEA38 <- Gen.option(stringsWithMaxLength(Header.Constants.agreedLocationOfGoodsCodeLength, alphaNumChar))
+        agrLocOfGooHEA39    <- Gen.option(stringsWithMaxLength(Header.Constants.agreedLocationOfGoodsLength, alphaNumChar))
+        autLocOfGooCodHEA41 <- Gen.option(stringsWithMaxLength(Header.Constants.authorisedLocationOfGoodsCodeLength, alphaNumChar))
+        plaOfLoaCodHEA46    <- Gen.option(stringsWithMaxLength(Header.Constants.placeOfLoadingGoodsCodeLength, alphaNumChar))
+        couOfDisCodHEA55    <- Gen.option(stringsWithMaxLength(Header.Constants.countryLength, alphaNumChar))
+        cusSubPlaHEA66      <- Gen.option(stringsWithMaxLength(Header.Constants.customsSubPlaceLength, alphaNumChar))
+        transportDetails    <- arbitrary[Transport]
+        conIndHEA96         <- choose(min = 0: Int, 1: Int)
+        totNumOfIteHEA305   <- choose(min = 1: Int, 100: Int)
+        totNumOfPacHEA306   <- Gen.option(choose(min = 1: Int, 100: Int))
+        grossMass           <- Gen.choose(0.0, 99999999.999).map(BigDecimal(_).bigDecimal.setScale(3, BigDecimal.RoundingMode.DOWN))
+        decDatHEA383        <- arbitrary[LocalDate]
+        decPlaHEA394        <- stringsWithMaxLength(Header.Constants.declarationPlace, alphaNumChar)
+        speCirIndHEA1       <- Gen.option(Gen.pick(Header.Constants.specificCircumstanceIndicatorLength, 'A' to 'Z').map(_.mkString))
+        traChaMetOfPayHEA1  <- Gen.option(Gen.pick(Header.Constants.methodOfPaymentLength, 'A' to 'Z').map(_.mkString))
+        comRefNumHEA        <- Gen.option(stringsWithMaxLength(Header.Constants.commercialReferenceNumberLength, alphaNumChar))
+        secHEA358           <- Gen.option(choose(min = 0: Int, 9: Int))
+        conRefNumHEA        <- Gen.option(stringsWithMaxLength(Header.Constants.conveyanceReferenceNumberLength, alphaNumChar))
+        codPlUnHEA357       <- Gen.option(stringsWithMaxLength(Header.Constants.placeOfUnloadingCodeLength, alphaNumChar))
       } yield
         Header(
           refNumHEA4,
@@ -144,19 +168,19 @@ trait MessagesModelGenerators extends Generators {
           plaOfLoaCodHEA46,
           couOfDisCodHEA55.map(_.mkString),
           cusSubPlaHEA66,
-          inlTraModHEA75,
-          traModAtBorHEA76,
-          ideOfMeaOfTraAtDHEA78,
-          natOfMeaOfTraAtDHEA80.map(_.mkString),
-          ideOfMeaOfTraCroHEA85,
-          natOfMeaOfTraCroHEA87.map(_.mkString),
-          typOfMeaOfTraCroHEA88,
+          transportDetails,
           conIndHEA96,
           totNumOfIteHEA305,
           totNumOfPacHEA306,
           grossMass.toString,
           decDatHEA383,
-          decPlaHEA394
+          decPlaHEA394,
+          speCirIndHEA1,
+          traChaMetOfPayHEA1,
+          comRefNumHEA,
+          secHEA358,
+          conRefNumHEA,
+          codPlUnHEA357
         )
     }
   }
@@ -256,9 +280,8 @@ trait MessagesModelGenerators extends Generators {
   implicit lazy val arbitraryControlResult: Arbitrary[ControlResult] =
     Arbitrary {
       for {
-        controlResultCode <- Gen.pick(2, 'A' to 'Z')
-        dateLimit         <- localDateGen
-      } yield ControlResult(controlResultCode.mkString, dateLimit)
+        dateLimit <- localDateGen
+      } yield ControlResult(dateLimit)
     }
 
   implicit lazy val arbitrarySeals: Arbitrary[Seals] =
@@ -309,6 +332,9 @@ trait MessagesModelGenerators extends Generators {
         netMass              <- Gen.option(Gen.choose(0.0, 99999999.999).map(BigDecimal(_)))
         countryOfDispatch    <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
         countryOfDestination <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.countryLength, alphaNumChar))
+        metOfPayGDI12        <- Gen.option(Gen.pick(Header.Constants.methodOfPaymentLength, 'A' to 'Z').map(_.mkString))
+        comRefNumGIM1        <- Gen.option(stringsWithMaxLength(Header.Constants.commercialReferenceNumberLength, alphaNumChar))
+        uNDanGooCodGDI1      <- Gen.option(stringsWithMaxLength(GoodsItem.Constants.dangerousGoodsCodeLength, alphaNumChar))
         previousAdministrativeReference <- listWithMaxLength(PreviousAdministrativeReference.Constants.previousAdministrativeReferenceCount,
                                                              arbitrary[PreviousAdministrativeReference])
         producedDocuments         <- listWithMaxLength(ProducedDocument.Constants.producedDocumentCount, arbitrary[ProducedDocument])
@@ -328,6 +354,9 @@ trait MessagesModelGenerators extends Generators {
           netMass,
           countryOfDispatch,
           countryOfDestination,
+          metOfPayGDI12,
+          comRefNumGIM1,
+          uNDanGooCodGDI1,
           previousAdministrativeReference,
           producedDocuments,
           specialMentions,

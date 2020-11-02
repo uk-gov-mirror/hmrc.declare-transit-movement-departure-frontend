@@ -21,6 +21,7 @@ import controllers.{routes => mainRoutes}
 import forms.PrincipalAddressFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
+import navigation.annotations.TraderDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -28,25 +29,29 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{PrincipalAddressPage, PrincipalNamePage}
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import navigation.annotations.TraderDetails
 
 import scala.concurrent.Future
 
 class PrincipalAddressControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new PrincipalAddressFormProvider()
-  val form         = formProvider(principalName)
+  private val formProvider = new PrincipalAddressFormProvider()
+  private val form         = formProvider(principalName)
 
-  lazy val principalAddressRoute = routes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url
+  private lazy val principalAddressRoute = routes.PrincipalAddressController.onPageLoad(lrn, NormalMode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)))
 
   "PrincipalAddress Controller" - {
 
@@ -55,17 +60,14 @@ class PrincipalAddressControllerSpec extends SpecBase with MockNunjucksRendererA
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers
-        .set(PrincipalNamePage, "foo")
-        .success
-        .value
+      val userAnswers = emptyUserAnswers.set(PrincipalNamePage, "foo").success.value
+      dataRetrievalWithData(userAnswers)
 
-      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, principalAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -79,8 +81,6 @@ class PrincipalAddressControllerSpec extends SpecBase with MockNunjucksRendererA
 
       templateCaptor.getValue mustEqual "principalAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -95,13 +95,13 @@ class PrincipalAddressControllerSpec extends SpecBase with MockNunjucksRendererA
         .set(PrincipalAddressPage, principalAddress)
         .success
         .value
+      dataRetrievalWithData(userAnswers)
 
-      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, principalAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -124,28 +124,14 @@ class PrincipalAddressControllerSpec extends SpecBase with MockNunjucksRendererA
 
       templateCaptor.getValue mustEqual "principalAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers
-        .set(PrincipalNamePage, principalName)
-        .success
-        .value
-
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      val userAnswers = emptyUserAnswers.set(PrincipalNamePage, principalName).success.value
+      dataRetrievalWithData(userAnswers)
 
       val request =
         FakeRequest(POST, principalAddressRoute)
@@ -155,13 +141,11 @@ class PrincipalAddressControllerSpec extends SpecBase with MockNunjucksRendererA
             ("postcode", principalAddress.postcode)
           )
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      application.stop()
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -169,18 +153,15 @@ class PrincipalAddressControllerSpec extends SpecBase with MockNunjucksRendererA
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers
-        .set(PrincipalNamePage, principalName)
-        .success
-        .value
+      val userAnswers = emptyUserAnswers.set(PrincipalNamePage, principalName).success.value
+      dataRetrievalWithData(userAnswers)
 
-      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(POST, principalAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -194,39 +175,33 @@ class PrincipalAddressControllerSpec extends SpecBase with MockNunjucksRendererA
 
       templateCaptor.getValue mustEqual "principalAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request = FakeRequest(GET, principalAddressRoute)
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request =
         FakeRequest(POST, principalAddressRoute)
           .withFormUrlEncodedBody(("Number and street", "value 1"), ("Town", "value 2"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
   }
 }

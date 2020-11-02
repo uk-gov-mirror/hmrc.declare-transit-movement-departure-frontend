@@ -32,13 +32,41 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
   "TransportDetailsNavigator" - {
 
     "in Normal Mode" - {
-      "must go from InlandMode page to AddIdAtDeparture Page" in {
+      "must go from InlandMode page to AddIdAtDeparture Page if value is not 2,5,7 or 20,50,70" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(InlandModePage, NormalMode, answers)
               .mustBe(transportDetailsRoute.AddIdAtDepartureController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from InlandMode page to Will these details change at border Page if value is 2/20" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            Seq("2", "20") foreach {
+              inlandModeAnswer =>
+                val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer).success.value
+                navigator
+                  .nextPage(InlandModePage, NormalMode, updatedAnswers)
+                  .mustBe(transportDetailsRoute.ChangeAtBorderController.onPageLoad(answers.id, NormalMode))
+            }
+        }
+      }
+
+      "must go from InlandMode page to Will these details change at border Page if value is 5/50 or 7/70" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            Seq("5", "50", "7", "70") foreach {
+              inlandModeAnswer =>
+                val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer).success.value
+                navigator
+                  .nextPage(InlandModePage, NormalMode, updatedAnswers)
+                  .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(answers.id, NormalMode))
+            }
         }
       }
 
@@ -186,13 +214,64 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
     "in Check Mode" - {
 
-      "must go from InlandMode page to TransportDetailsCheckYourAnswers Page" in {
+      "must go from InlandMode page to Transport CYA if Add id at departure page was answered true" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.set(AddIdAtDeparturePage, true).toOption.value
             navigator
-              .nextPage(InlandModePage, CheckMode, answers)
+              .nextPage(InlandModePage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from InlandMode page to Transport CYA if Add id at departure page was answered false" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(AddIdAtDeparturePage, false).toOption.value
+            navigator
+              .nextPage(InlandModePage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from InlandMode page to Add Id at Departure Page if add id at departure page was not asked previously" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.remove(AddIdAtDeparturePage).success.value
+            navigator
+              .nextPage(InlandModePage, CheckMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.AddIdAtDepartureController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "must go from InlandMode page to Will these details change at border Page if 2/20 selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            Seq("2", "20") foreach {
+              inlandModeAnswer =>
+                val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer).success.value
+                navigator
+                  .nextPage(InlandModePage, CheckMode, updatedAnswers)
+                  .mustBe(transportDetailsRoute.ChangeAtBorderController.onPageLoad(answers.id, CheckMode))
+            }
+        }
+      }
+
+      "must go from InlandMode page to What is the nationality at Departure Page if 5/50 or 7/70" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            Seq("5", "50", "7", "70") foreach {
+              inlandModeAnswer =>
+                val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer).success.value
+                navigator
+                  .nextPage(InlandModePage, CheckMode, updatedAnswers)
+                  .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(answers.id, CheckMode))
+            }
         }
       }
 
