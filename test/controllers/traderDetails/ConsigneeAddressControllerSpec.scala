@@ -22,59 +22,44 @@ import controllers.{routes => mainRoutes}
 import forms.ConsigneeAddressFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
-import models.{ConsigneeAddress, CountryList, NormalMode, UserAnswers}
+import models.{ConsigneeAddress, CountryList, NormalMode}
+import navigation.annotations.TraderDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{ConsigneeAddressPage, ConsigneeNamePage}
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import navigation.annotations.TraderDetails
 
 import scala.concurrent.Future
 
 class ConsigneeAddressControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute                                        = Call("GET", "/foo")
-  val country                                            = Country(CountryCode("GB"), "United Kingdom")
-  val countries                                          = CountryList(Seq(country))
-  val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private def onwardRoute                                        = Call("GET", "/foo")
+  private val country                                            = Country(CountryCode("GB"), "United Kingdom")
+  private val countries                                          = CountryList(Seq(country))
+  private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  val formProvider = new ConsigneeAddressFormProvider()
-  val form         = formProvider(countries)
+  private val formProvider = new ConsigneeAddressFormProvider()
+  private val form         = formProvider(countries)
 
-  lazy val consigneeAddressRoute = routes.ConsigneeAddressController.onPageLoad(lrn, NormalMode).url
+  private lazy val consigneeAddressRoute = routes.ConsigneeAddressController.onPageLoad(lrn, NormalMode).url
 
-  val userAnswers = UserAnswers(
-    lrn,
-    eoriNumber,
-    Json.obj(
-      ConsigneeAddressPage.toString -> Json.obj(
-        "AddressLine1" -> "value 1",
-        "AddressLine2" -> "value 2",
-        "AddressLine3" -> "value 3",
-        "country"      -> country
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)),
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
-    )
-  )
-
-  def jsonCountryList(preSelected: Boolean): Seq[JsObject] = Seq(
-    Json.obj("text" -> "", "value"               -> ""),
-    Json.obj("text" -> "United Kingdom", "value" -> "GB", "selected" -> preSelected)
-  )
-
-  override def beforeEach: Unit = {
-    reset(mockReferenceDataConnector)
-    super.beforeEach
-  }
 
   "ConsigneeAddress Controller" - {
 
@@ -82,21 +67,18 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockNunjucksRendererA
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, "foo")
-        .success
-        .value
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
-        .build()
+      val userAnswers = emptyUserAnswers.set(ConsigneeNamePage, "foo").success.value
+      dataRetrievalWithData(userAnswers)
+
       val request        = FakeRequest(GET, consigneeAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -110,15 +92,15 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockNunjucksRendererA
 
       templateCaptor.getValue mustEqual "consigneeAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
 
       val consigneeAddress: ConsigneeAddress = ConsigneeAddress("Address line 1", "Address line 2", "Address line 3", country)
 
@@ -129,15 +111,13 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockNunjucksRendererA
         .set(ConsigneeAddressPage, consigneeAddress)
         .success
         .value
+      dataRetrievalWithData(userAnswers)
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
-        .build()
       val request        = FakeRequest(GET, consigneeAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -160,64 +140,46 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockNunjucksRendererA
 
       templateCaptor.getValue mustEqual "consigneeAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, "consigneeName")
-        .success
-        .value
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
-          .build()
+      val userAnswers = emptyUserAnswers.set(ConsigneeNamePage, "consigneeName").success.value
+      dataRetrievalWithData(userAnswers)
 
       val request =
         FakeRequest(POST, consigneeAddressRoute)
           .withFormUrlEncodedBody(("AddressLine1", "value 1"), ("AddressLine2", "value 2"), ("AddressLine3", "value 3"), ("country", "GB"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      application.stop()
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val userAnswers = emptyUserAnswers
-        .set(ConsigneeNamePage, "consigneeName")
-        .success
-        .value
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
-        .build()
+      val userAnswers = emptyUserAnswers.set(ConsigneeNamePage, "consigneeName").success.value
+      dataRetrievalWithData(userAnswers)
+
       val request        = FakeRequest(POST, consigneeAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -231,39 +193,33 @@ class ConsigneeAddressControllerSpec extends SpecBase with MockNunjucksRendererA
 
       templateCaptor.getValue mustEqual "consigneeAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request = FakeRequest(GET, consigneeAddressRoute)
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request =
         FakeRequest(POST, consigneeAddressRoute)
           .withFormUrlEncodedBody(("Address line 1", "value 1"), ("Address line 2", "value 2"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
   }
 }
