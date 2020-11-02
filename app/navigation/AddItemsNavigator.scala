@@ -150,10 +150,10 @@ class AddItemsNavigator @Inject()() extends Navigator {
 
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
     (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)), mode) match {
-      case (Some(true), _, NormalMode)    => Some(routes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), _, NormalMode)   => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
-      case (Some(true), None, CheckMode)  => Some(routes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
-      case _                              => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (Some(true), _, NormalMode)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), _, NormalMode)   => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
+      case (Some(true), None, CheckMode)  => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, CheckMode))
+      case _                              => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
 
   //TODO replace above with below and add logic to go into trader details instead of Items CYA
