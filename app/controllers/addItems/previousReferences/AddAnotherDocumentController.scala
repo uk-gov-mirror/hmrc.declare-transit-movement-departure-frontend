@@ -59,10 +59,13 @@ class AddAnotherDocumentController @Inject()(
           case Some(value) => form.fill(value)
         }
 
+        val singularOrPlural = if (index.display == 1) "singular" else "plural"
+
         val json = Json.obj(
           "form"           -> preparedForm,
           "mode"           -> mode,
           "lrn"            -> lrn,
+          "heading"        -> msg"addAnotherItem.heading.$singularOrPlural".withArgs(index.display),
           "index"          -> index.display,
           "referenceIndex" -> referenceIndex.display,
           "radios"         -> Radios.yesNo(preparedForm("value"))

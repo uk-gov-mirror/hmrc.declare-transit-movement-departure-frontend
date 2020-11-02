@@ -29,21 +29,23 @@
 
         <form action="{{ routes.controllers.addItems.previousReferences.AddAnotherDocumentController.onSubmit(lrn, index, referenceIndex, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
+        <h1 class="govuk-heading-xl"> {{ heading }} </h1>
 
           {{ csrf() | safe }}
 
           {{ govukRadios({
-            name: 'value',
-            fieldset: {
-              legend: {
-                text: messages('addAnotherDocument.heading'),
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--xl"
-              }
-            },
-            items: radios,
-            errorMessage: form.value.error
-          }) }}
+                      classes: "govuk-radios--inline",
+                      name: 'value',
+                      fieldset: {
+                        legend: {
+                            text: messages('addAnotherDocument.paragraph'),
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--m"
+                          }
+                      },
+                      items: radios,
+                      errorMessage: form.value.error
+                    }) }}
 
           {{ govukButton({
             text: messages("site.continue"),
