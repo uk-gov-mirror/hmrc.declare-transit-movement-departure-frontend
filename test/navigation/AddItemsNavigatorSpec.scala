@@ -17,16 +17,17 @@
 package navigation
 
 import base.SpecBase
+import controllers.addItems.previousReferences.{routes => previousReferencesRoute}
 import controllers.addItems.routes
+import controllers.{routes => mainRoutes}
 import generators.Generators
-import models.reference.PackageType
-import models.{CheckMode, Index, NormalMode, UserAnswers}
+import models.reference.{CountryCode, PackageType}
+import models.{CheckMode, DeclarationType, Index, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
 import queries.ItemsQuery
-import controllers.{routes => mainRoutes}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -429,6 +430,115 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
         }
+      }
+
+      "PreviousReferences journey" - {
+        "must go from add another document page to add administrative reference page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(DeclarationTypePage, DeclarationType.Option1)
+                .success
+                .value
+                .set(CountryOfDispatchPage, CountryCode("UK"))
+                .success
+                .value
+
+              navigator
+                .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
+                .mustBe(previousReferencesRoute.AddAdministrativeReferenceController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+          }
+        }
+
+        "must go from add another document page to reference type page" +
+          "when declaration type is T2 and dispatch country is non-EU" in {
+          val dispatchCountries = Seq("AD", "IS", "LI", "NO", "SM", "SJ", "CH")
+          for (countryCode <- dispatchCountries) {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(DeclarationTypePage, DeclarationType.Option2)
+                  .success
+                  .value
+                  .set(CountryOfDispatchPage, CountryCode(countryCode))
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
+                  .mustBe(previousReferencesRoute.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+            }
+          }
+        }
+
+        "must go from 'add administrative reference' page to 'reference type' page when selected 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(AddAdministrativeReferencePage(index, referenceIndex), true)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswers)
+                .mustBe(previousReferencesRoute.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+          }
+        }
+
+        "must go from 'add administrative reference' page to 'user selected yes for safety and security' page when selected 'No'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(AddAdministrativeReferencePage(index, referenceIndex), false)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswers)
+                .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index)) // TODO need to replace with  user selected yes for safety and security
+          }
+        }
+
+        "must go from 'reference-type page' to 'previous reference' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(ReferenceTypePage(index, referenceIndex), NormalMode, answers)
+                .mustBe(previousReferencesRoute.PreviousReferenceController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+          }
+        }
+
+        "must go from 'previous reference' page to 'add extra information' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(PreviousReferencePage(index, referenceIndex), NormalMode, answers)
+                .mustBe(previousReferencesRoute.AddExtraInformationController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+          }
+        }
+
+        "must go from 'add extra information' page to 'extra information' page on selecting 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddExtraInformationPage(index, referenceIndex), true).success.value
+
+              navigator
+                .nextPage(AddExtraInformationPage(index, referenceIndex), NormalMode, updatedAnswer)
+                .mustBe(previousReferencesRoute.AddExtraInformationController.onPageLoad(answers.id, index, referenceIndex, NormalMode)) //TODO replace with ExtraInformation controller
+          }
+        }
+
+        "must go from 'add extra information' page to 'Add another reference' page on selecting 'No'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddExtraInformationPage(index, referenceIndex), false).success.value
+
+              navigator
+                .nextPage(AddExtraInformationPage(index, referenceIndex), NormalMode, updatedAnswer)
+                .mustBe(previousReferencesRoute.AddExtraInformationController.onPageLoad(answers.id, index, referenceIndex, NormalMode)) //TODO replace with Add another reference controller
+          }
+        }
+
       }
     }
 

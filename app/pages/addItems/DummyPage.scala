@@ -16,28 +16,15 @@
 
 package pages.addItems
 
-import models.{Index, UserAnswers}
-import pages.{PreviousReferencePage, QuestionPage}
+import models.Index
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{items, previousReferences}
 
-import scala.util.Try
-
-case class AddAdministrativeReferencePage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
+//TODO Please remove this page once we get actual add another document page. its only for testing temporarily.
+case class DummyPage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences \ referenceIndex.position \ toString
 
-  override def toString: String = "addAdministrativeReference"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-
-      case Some(false) =>
-        userAnswers
-          .remove(ReferenceTypePage(itemIndex, referenceIndex))
-          .flatMap(_.remove(PreviousReferencePage(itemIndex, referenceIndex)))
-          .flatMap(_.remove(AddExtraInformationPage(itemIndex, referenceIndex)))
-
-      case _ => super.cleanup(value, userAnswers)
-    }
+  override def toString: String = "dummyValue"
 }
