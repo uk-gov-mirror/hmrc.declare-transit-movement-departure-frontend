@@ -20,13 +20,18 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
 import models.DeclarationType
+import navigation.{FakeNavigator, Navigator}
+import navigation.annotations.MovementDetails
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DeclarationTypePage
 import pages.movementDetails.PreLodgeDeclarationPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -35,19 +40,26 @@ import scala.concurrent.Future
 
 // format: off
 class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
+
+  def onwardRoute = Call("GET", "/foo")
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[MovementDetails]).toInstance(new FakeNavigator(onwardRoute)))
   "MovementDetailsCheckYourAnswers Controller" - {
 
     "return OK and the correct view for a GET" in {
+      dataRetrievalWithData(emptyUserAnswers)
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request        = FakeRequest(GET, routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -63,7 +75,6 @@ class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNu
       templateCaptor.getValue mustEqual "movementDetailsCheckYourAnswers.njk"
       jsonCaptorWithoutConfig mustBe expectedJson
 
-      application.stop()
     }
 
     "must contain correct number of rows and keys when passed answers" in {
@@ -75,12 +86,12 @@ class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNu
         .set(DeclarationTypePage, DeclarationType.Option1).success.value
         .set(PreLodgeDeclarationPage, true).success.value
 
-      val application    = applicationBuilder(userAnswers = Some(ua)).build()
+      dataRetrievalWithData(ua)
       val request        = FakeRequest(GET, routes.MovementDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
       status(result)
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
@@ -95,7 +106,6 @@ class MovementDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNu
       rows(0)("text").as[String] mustBe "declarationType.checkYourAnswersLabel"
       rows(1)("text").as[String] mustBe "preLodgeDeclaration.checkYourAnswersLabel"
 
-      application.stop()
     }
   }
   // format: on
