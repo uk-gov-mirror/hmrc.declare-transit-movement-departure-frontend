@@ -195,7 +195,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
   private def commodityCodeRoute(index:Index, ua:UserAnswers, mode:Mode) =
     (ua.get(CommodityCodePage(index)),
       ua.get(ConsignorForAllItemsPage), ua.get(AddConsignorPage),
-      ua.get(ConsigneeForAllItemsPage), ua.get(AddConsignorPage),
+      ua.get(ConsigneeForAllItemsPage), ua.get(AddConsigneePage),
       mode) match {
       case (_,
       Some(false),Some(false),
@@ -217,6 +217,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
       Some(false),Some(true),
       Some(true),None,
       NormalMode)      => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built
+      case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
   private def addTotalNessMassRoute(index: Index, ua: UserAnswers, mode: Mode) =
