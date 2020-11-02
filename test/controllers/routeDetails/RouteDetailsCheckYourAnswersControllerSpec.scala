@@ -22,12 +22,15 @@ import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit}
 import models.{CountryList, CustomsOfficeList, NormalMode, OfficeOfTransitList}
+import navigation.annotations.RouteDetails
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DestinationCountryPage
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,13 +46,18 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunju
   private val officeOfTransit                          = OfficeOfTransit("1", "name")
   private val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))
   lazy val routeDetailsCheckYourAnswersRoute           = mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+  val mockReferenceDataConnector                       = mock[ReferenceDataConnector]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockReferenceDataConnector))
 
   "RouteDetailsCheckYourAnswers Controller" - {
 
     "return OK and the correct view for a GET" in {
       val userAnswers = emptyUserAnswers.set(DestinationCountryPage, CountryCode("GB")).toOption.value
       dataRetrievalWithData(userAnswers)
-      val mockReferenceDataConnector = mock[ReferenceDataConnector]
       when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
       when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any())).thenReturn(Future.successful(customsOffices))
