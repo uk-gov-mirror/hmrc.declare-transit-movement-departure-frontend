@@ -111,7 +111,7 @@ class PackageTypeControllerSpec extends SpecBase with MockNunjucksRendererApp wi
         .thenReturn(Future.successful(Html("")))
       when(mockRefDataConnector.getPackageTypes()(any(), any())).thenReturn(Future.successful(packageTypeList))
 
-      val userAnswers = emptyUserAnswers.set(PackageTypePage(index, index), "AB").success.value
+      val userAnswers = emptyUserAnswers.set(PackageTypePage(index, index), packageType1).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
         .build()
