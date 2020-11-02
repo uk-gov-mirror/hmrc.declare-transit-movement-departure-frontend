@@ -37,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherPackageController @Inject()(
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
@@ -64,10 +63,7 @@ class AddAnotherPackageController @Inject()(
         val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
         val indexList: Seq[Index] = List.range(0, totalTypes).map(Index(_))
 
-        val packageRows = indexList.map {
-          index =>
-            cyaHelper.packageRows(itemIndex, index, mode)
-        }
+        val packageRows = indexList.map(index => cyaHelper.packageRows(itemIndex, index, mode))
 
         val singularOrPlural = if (totalTypes == 1) "singular" else "plural"
 

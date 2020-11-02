@@ -20,12 +20,10 @@ import java.time.LocalDate
 
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLWrites
-import cats.syntax.all._
 import utils.Format
 import models.XMLReads._
 
-case class ControlResult(conResCodERS16: String, //an2 form CL047 Control Result ref data
-                         datLimERS69: LocalDate)
+case class ControlResult(datLimERS69: LocalDate)
 
 object ControlResult {
 
@@ -34,12 +32,12 @@ object ControlResult {
   }
 
   implicit val xmlReader: XmlReader[ControlResult] =
-    ((__ \ "ConResCodERS16").read[String], (__ \ "DatLimERS69").read[LocalDate]).mapN(apply)
+    (__ \ "DatLimERS69").read[LocalDate].map(apply)
 
   implicit def writes: XMLWrites[ControlResult] = XMLWrites[ControlResult] {
     controlResult =>
       <CONRESERS>
-        <ConResCodERS16>{controlResult.conResCodERS16}</ConResCodERS16>
+        <ConResCodERS16>A3</ConResCodERS16>
         <DatLimERS69>{Format.dateFormatted(controlResult.datLimERS69)}</DatLimERS69>
       </CONRESERS>
   }

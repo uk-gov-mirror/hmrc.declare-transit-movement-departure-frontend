@@ -38,6 +38,7 @@ import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import models.GuaranteeType.{FlatRateVoucher, GuaranteeWaiver}
 import models.messages.guarantee.GuaranteeReferenceWithGrn
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 
@@ -50,19 +51,23 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockNunjucksRendere
 
   lazy val guaranteeReferenceRoute = routes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url
 
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[GuaranteeDetails]).toInstance(new FakeNavigator(onwardRoute)))
+
   "GuaranteeReference Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request        = FakeRequest(GET, guaranteeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -76,22 +81,20 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockNunjucksRendere
 
       templateCaptor.getValue mustEqual "guaranteeDetails/guaranteeReference.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+      val userAnswers = emptyUserAnswers.set(GuaranteeReferencePage, "123456789012345678901234").success.value
 
+      dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = emptyUserAnswers.set(GuaranteeReferencePage, "123456789012345678901234").success.value
-      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, guaranteeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -107,77 +110,51 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockNunjucksRendere
 
       templateCaptor.getValue mustEqual "guaranteeDetails/guaranteeReference.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
-    "must redirect to the next page when valid data is submitted for te that takes 24 chars" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+    "must redirect to the next page when valid data is submitted for type that takes 24 chars" in {
+      val userAnswers = emptyUserAnswers.set(GuaranteeTypePage, FlatRateVoucher).success.value
+      dataRetrievalWithData(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application = {
-        val updatedAnswers = emptyUserAnswers.set(GuaranteeTypePage, FlatRateVoucher).success.value
-        applicationBuilder(userAnswers = Some(updatedAnswers))
-          .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[GuaranteeDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-      }
 
       val request =
         FakeRequest(POST, guaranteeReferenceRoute)
           .withFormUrlEncodedBody(("value", "123456789012345678901234"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      application.stop()
     }
-    "must redirect to the next page when valid data is submitted for type that takes 17 chars" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+    "must redirect to the next page when valid data is submitted for type that takes 17 chars" in {
+      val userAnswers = emptyUserAnswers.set(GuaranteeTypePage, GuaranteeWaiver).success.value
+      dataRetrievalWithData(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application = {
-        val updatedAnswers = emptyUserAnswers.set(GuaranteeTypePage, GuaranteeWaiver).success.value
-        applicationBuilder(userAnswers = Some(updatedAnswers))
-          .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[GuaranteeDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-      }
 
       val request =
         FakeRequest(POST, guaranteeReferenceRoute)
           .withFormUrlEncodedBody(("value", "12345678901234567"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      application.stop()
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request        = FakeRequest(POST, guaranteeReferenceRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -191,40 +168,32 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockNunjucksRendere
 
       templateCaptor.getValue mustEqual "guaranteeDetails/guaranteeReference.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request = FakeRequest(GET, guaranteeReferenceRoute)
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request =
         FakeRequest(POST, guaranteeReferenceRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
   }
 }
