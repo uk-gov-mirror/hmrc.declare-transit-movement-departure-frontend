@@ -863,3 +863,9 @@ addExtraInformation.title = Do you need to add any extra information for this do
 addExtraInformation.heading = Do you need to add any extra information for this document?
 addExtraInformation.checkYourAnswersLabel = addExtraInformation
 addExtraInformation.error.required = Select yes if you need to add any extra information for this document
+
+extraInformation.title = extraInformation
+extraInformation.heading = extraInformation
+extraInformation.checkYourAnswersLabel = extraInformation
+extraInformation.error.required = Enter extraInformation
+extraInformation.error.length = ExtraInformation must be 20 characters or less
