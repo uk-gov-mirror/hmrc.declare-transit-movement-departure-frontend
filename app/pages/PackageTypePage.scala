@@ -16,6 +16,7 @@
 
 package pages
 
+import models.reference.PackageType
 import models.{Index, UserAnswers}
 import pages.addItems._
 import play.api.libs.json.JsPath
@@ -23,13 +24,13 @@ import queries.Constants.{items, packages}
 
 import scala.util.{Success, Try}
 
-case class PackageTypePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
+case class PackageTypePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[PackageType] {
 
   override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
 
   override def toString: String = "packageType"
 
-  override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[PackageType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(_) =>
         for {

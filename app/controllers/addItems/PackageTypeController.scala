@@ -62,7 +62,7 @@ class PackageTypeController @Inject()(
 
             val preparedForm: Form[PackageType] = request.userAnswers
               .get(PackageTypePage(itemIndex, packageIndex))
-              .flatMap(packageTypes.getPackageType)
+              .flatMap(packageType => packageTypes.getPackageType(packageType.code))
               .map(form.fill)
               .getOrElse(form)
 
@@ -87,6 +87,7 @@ class PackageTypeController @Inject()(
               .bindFromRequest()
               .fold(
                 formWithErrors => {
+
                   val json = Json.obj(
                     "form"         -> formWithErrors,
                     "lrn"          -> lrn,
@@ -98,7 +99,7 @@ class PackageTypeController @Inject()(
                 },
                 value =>
                   for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage(itemIndex, packageIndex), value.code))
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage(itemIndex, packageIndex), value))
                     _              <- sessionRepository.set(updatedAnswers)
                   } yield Redirect(navigator.nextPage(PackageTypePage(itemIndex, packageIndex), mode, updatedAnswers))
               )
