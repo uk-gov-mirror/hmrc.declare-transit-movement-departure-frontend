@@ -17,15 +17,22 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ExtraInformationFormProvider @Inject() extends Mappings {
+
+  val maxLength = 26
+  val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("extraInformation.error.required")
-        .verifying(maxLength(20, "extraInformation.error.length"))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "extraInformation.error.length"),
+            regexp(regex, "extraInformation.error.invalid")
+          ))
     )
 }

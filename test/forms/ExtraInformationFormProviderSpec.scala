@@ -17,13 +17,16 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class ExtraInformationFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "extraInformation.error.required"
   val lengthKey   = "extraInformation.error.length"
-  val maxLength   = 20
+  val maxLength   = 26
+  val validRegex  = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
+  val invalidKey  = "extraInformation.error.invalid"
 
   val form = new ExtraInformationFormProvider()()
 
@@ -49,5 +52,18 @@ class ExtraInformationFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind invalid input" in {
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(validRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe List(FormError(fieldName, invalidKey, Seq(validRegex)))
+      }
+    }
   }
 }
