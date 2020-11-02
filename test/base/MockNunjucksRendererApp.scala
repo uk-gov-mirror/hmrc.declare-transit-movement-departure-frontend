@@ -77,7 +77,7 @@ trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEac
   }
 
   override def fakeApplication(): Application =
-    guiceApplicationBuilder
+    guiceApplicationBuilder()
       .build()
 
   // Override to provide custom binding
