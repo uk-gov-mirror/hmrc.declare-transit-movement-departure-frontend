@@ -17,30 +17,35 @@
 package controllers.addItems.previousReferences
 
 import controllers.actions._
-import forms.AddAnotherDocumentFormProvider
+import derivable.DeriveNumberOfPreviousAdministrativeReferences
+import forms.AddAnotherPreviousAdministrativeReferenceFormProvider
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.AddAnotherDocumentPage
+import pages.addItems.AddAnotherPreviousAdministrativeReferencePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import utils.AddItemsCheckYourAnswersHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAnotherDocumentController @Inject()(
+class AddAnotherPreviousAdministrativeReferenceController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddAnotherDocumentFormProvider,
+  formProvider: AddAnotherPreviousAdministrativeReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -48,30 +53,12 @@ class AddAnotherDocumentController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
-  private val template = "addItems/addAnotherDocument.njk"
+  private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(AddAnotherDocumentPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-
-        val singularOrPlural = if (index.display == 1) "singular" else "plural"
-
-        val json = Json.obj(
-          "form"           -> preparedForm,
-          "mode"           -> mode,
-          "lrn"            -> lrn,
-          "heading"        -> msg"addAnotherItem.heading.$singularOrPlural".withArgs(index.display),
-          "index"          -> index.display,
-          "referenceIndex" -> referenceIndex.display,
-          "radios"         -> Radios.yesNo(preparedForm("value"))
-        )
-
-        renderer.render(template, json).map(Ok(_))
+        renderPage(lrn, index, referenceIndex, form).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
@@ -80,24 +67,39 @@ class AddAnotherDocumentController @Inject()(
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"           -> formWithErrors,
-                "mode"           -> mode,
-                "lrn"            -> lrn,
-                "index"          -> index.display,
-                "referenceIndex" -> referenceIndex.display,
-                "radios"         -> Radios.yesNo(formWithErrors("value"))
-              )
-
-              renderer.render(template, json).map(BadRequest(_))
-            },
+            formWithErrors => renderPage(lrn, index, referenceIndex, formWithErrors).map(BadRequest(_)),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherDocumentPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPreviousAdministrativeReferencePage, value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAnotherDocumentPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddAnotherPreviousAdministrativeReferencePage, mode, updatedAnswers))
           )
     }
+
+  private def renderPage(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, form: Form[Boolean])(
+    implicit request: DataRequest[AnyContent]): Future[Html] = {
+
+    val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
+    val numberOfReferences    = request.userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences).getOrElse(0)
+    val indexList: Seq[Index] = List.range(0, numberOfReferences).map(Index(_))
+
+    val referenceRows = indexList.map {
+      index =>
+        cyaHelper.previousAdminstrativeReferenceRows(index, referenceIndex)
+    }
+
+    val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"
+    val json = Json.obj(
+      "form"           -> form,
+      "lrn"            -> lrn,
+      "pageTitle"      -> msg"addAnotherPreviousAdministrativeReference.title.$singularOrPlural".withArgs(numberOfReferences),
+      "heading"        -> msg"addAnotherPreviousAdministrativeReference.heading.$singularOrPlural".withArgs(numberOfReferences),
+      "referenceRows"  -> referenceRows,
+      "index"          -> index.display,
+      "referenceIndex" -> referenceIndex.display,
+      "radios"         -> Radios.yesNo(form("value"))
+    )
+
+    renderer.render("addItems/addAnotherPreviousAdministrativeReference.njk", json)
+  }
 }

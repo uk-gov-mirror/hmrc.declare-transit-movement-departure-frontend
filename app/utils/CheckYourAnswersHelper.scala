@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import controllers.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.AddAnotherDocumentPage
+import pages.addItems.AddAnotherPreviousAdministrativeReferencePage
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 

@@ -17,7 +17,7 @@
 package controllers.addItems.previousReferences
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import forms.AddAnotherDocumentFormProvider
+import forms.AddAnotherPreviousAdministrativeReferenceFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
@@ -26,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.AddAnotherDocumentPage
+import pages.addItems.AddAnotherPreviousAdministrativeReferencePage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -39,17 +39,23 @@ import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddAnotherPreviousAdministrativeReferenceControllerSpec
+    extends SpecBase
+    with MockNunjucksRendererApp
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new AddAnotherDocumentFormProvider()
+  private val formProvider = new AddAnotherPreviousAdministrativeReferenceFormProvider()
   private val form         = formProvider()
-  private val template     = "addItems/addAnotherDocument.njk"
+  private val template     = "addItems/addAnotherPreviousAdministrativeReference.njk"
 
-  lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
+  lazy val addAnotherPreviousAdministrativeReferenceRoute =
+    routes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
 
-  "AddAnotherDocument Controller" - {
+  "AddAnotherPreviousAdministrativeReference Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -57,7 +63,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(GET, addAnotherDocumentRoute)
+      val request        = FakeRequest(GET, addAnotherPreviousAdministrativeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -89,9 +95,9 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherDocumentPage, true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherPreviousAdministrativeReferencePage, true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val request        = FakeRequest(GET, addAnotherDocumentRoute)
+      val request        = FakeRequest(GET, addAnotherPreviousAdministrativeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -135,7 +141,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
           .build()
 
       val request =
-        FakeRequest(POST, addAnotherDocumentRoute)
+        FakeRequest(POST, addAnotherPreviousAdministrativeReferenceRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -153,7 +159,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
         .thenReturn(Future.successful(Html("")))
 
       val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request        = FakeRequest(POST, addAnotherDocumentRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, addAnotherPreviousAdministrativeReferenceRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -185,7 +191,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, addAnotherDocumentRoute)
+      val request = FakeRequest(GET, addAnotherPreviousAdministrativeReferenceRoute)
 
       val result = route(application, request).value
 
@@ -201,7 +207,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, addAnotherDocumentRoute)
+        FakeRequest(POST, addAnotherPreviousAdministrativeReferenceRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

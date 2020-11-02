@@ -297,6 +297,30 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
+  def previousAdminstrativeReferenceRows(index: Index, referenceIndex: Index): Option[Row] =
+    userAnswers.get(PreviousReferencePage(index, referenceIndex)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content = msg"site.change",
+              href =
+                previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-item-${index.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = "#", //TODO removal
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-item-${index.display}""")
+            )
+          )
+        )
+    }
+
   def addAdministrativeReference(index: Index, referenceIndex: Index): Option[Row] =
     userAnswers.get(AddAdministrativeReferencePage(index, referenceIndex)) map {
       answer =>

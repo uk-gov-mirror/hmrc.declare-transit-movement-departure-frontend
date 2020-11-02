@@ -14,32 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package derivable
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.previousReferences
 
-class AddAnotherDocumentFormProviderSpec extends BooleanFieldBehaviours {
+case object DeriveNumberOfPreviousAdministrativeReferences extends Derivable[List[JsObject], Int] {
 
-  val requiredKey = "addAnotherDocument.error.required"
-  val invalidKey  = "error.boolean"
+  override val derive: List[JsObject] => Int = _.size
 
-  val form = new AddAnotherDocumentFormProvider()()
-
-  ".value" - {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
+  override def path: JsPath = JsPath \ previousReferences
 }

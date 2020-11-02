@@ -16,17 +16,17 @@
 
 package pages
 
-import pages.addItems.AddAnotherDocumentPage
+import pages.addItems.AddAnotherPreviousAdministrativeReferencePage
 import pages.behaviours.PageBehaviours
 
-class AddAnotherDocumentPageSpec extends PageBehaviours {
+class AddAnotherPreviousAdministrativeReferencePageSpec extends PageBehaviours {
 
-  "AddAnotherDocumentPage" - {
+  "AddAnotherPreviousAdministrativeReferencePage" - {
 
-    beRetrievable[Boolean](AddAnotherDocumentPage)
+    beRetrievable[Boolean](AddAnotherPreviousAdministrativeReferencePage)
 
-    beSettable[Boolean](AddAnotherDocumentPage)
+    beSettable[Boolean](AddAnotherPreviousAdministrativeReferencePage)
 
-    beRemovable[Boolean](AddAnotherDocumentPage)
+    beRemovable[Boolean](AddAnotherPreviousAdministrativeReferencePage)
   }
 }
