@@ -47,6 +47,8 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunju
   "RouteDetailsCheckYourAnswers Controller" - {
 
     "return OK and the correct view for a GET" in {
+      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, CountryCode("GB")).toOption.value
+      dataRetrievalWithData(userAnswers)
       val mockReferenceDataConnector = mock[ReferenceDataConnector]
       when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
@@ -57,16 +59,11 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, CountryCode("GB")).toOption.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
-        .build()
       val request        = FakeRequest(GET, routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -82,21 +79,17 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunju
 
       templateCaptor.getValue mustEqual "routeDetailsCheckYourAnswers.njk"
       jsonCaptorWithoutConfig mustBe expectedJson
-
-      application.stop()
     }
 
     "must redirect to session reset page if DestinationCountry data is empty" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .build()
+      dataRetrievalWithData(emptyUserAnswers)
+
       val request = FakeRequest(GET, routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url)
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
   }
 }

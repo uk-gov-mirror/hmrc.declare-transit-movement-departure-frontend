@@ -39,16 +39,11 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import navigation.annotations.RouteDetails
+import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 
-class CountryOfDispatchControllerSpec
-    extends SpecBase
-    with MockNunjucksRendererApp
-    with MockitoSugar
-    with NunjucksSupport
-    with JsonMatchers
-    with BeforeAndAfterEach {
+class CountryOfDispatchControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
@@ -65,28 +60,25 @@ class CountryOfDispatchControllerSpec
     Json.obj("text" -> "United Kingdom", "value" -> "GB", "selected" -> preSelected)
   )
 
-  override def beforeEach: Unit = {
-    reset(mockReferenceDataConnector)
-    super.beforeEach
-  }
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockReferenceDataConnector))
 
   "CountryOfDispatch Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
       when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
-        .build()
 
       val request        = FakeRequest(GET, countryOfDispatchRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -102,25 +94,21 @@ class CountryOfDispatchControllerSpec
 
       templateCaptor.getValue mustEqual "countryOfDispatch.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
+      val userAnswers = emptyUserAnswers.set(CountryOfDispatchPage, CountryCode("GB")).success.value
+      dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
       when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val application = applicationBuilder(userAnswers = emptyUserAnswers.set(CountryOfDispatchPage, CountryCode("GB")).toOption)
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
-        .build()
       val request        = FakeRequest(GET, countryOfDispatchRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -142,54 +130,36 @@ class CountryOfDispatchControllerSpec
 
       templateCaptor.getValue mustEqual "countryOfDispatch.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
-          )
-          .build()
 
       val request =
         FakeRequest(POST, countryOfDispatchRoute)
           .withFormUrlEncodedBody(("value", "GB"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      application.stop()
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
       when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
-        .build()
       val request        = FakeRequest(POST, countryOfDispatchRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -203,39 +173,31 @@ class CountryOfDispatchControllerSpec
 
       templateCaptor.getValue mustEqual "countryOfDispatch.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request = FakeRequest(GET, countryOfDispatchRoute)
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request =
         FakeRequest(POST, countryOfDispatchRoute)
           .withFormUrlEncodedBody(("value", "value 1"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
   }
 }

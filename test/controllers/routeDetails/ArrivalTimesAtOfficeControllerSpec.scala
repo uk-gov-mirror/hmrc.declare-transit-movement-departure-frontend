@@ -34,6 +34,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{AddAnotherTransitOfficePage, ArrivalTimesAtOfficePage}
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
@@ -45,13 +46,7 @@ import viewModels.DateTimeInput
 
 import scala.concurrent.Future
 
-class ArrivalTimesAtOfficeControllerSpec
-    extends SpecBase
-    with MockNunjucksRendererApp
-    with MockitoSugar
-    with NunjucksSupport
-    with JsonMatchers
-    with BeforeAndAfterEach {
+class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val formProvider                 = new ArrivalTimesAtOfficeFormProvider()
   private val officeOfTransit      = OfficeOfTransit("1", "name")
@@ -64,10 +59,11 @@ class ArrivalTimesAtOfficeControllerSpec
 
   lazy val arrivalTimesAtOfficeRoute = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, index, NormalMode).url
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    Mockito.reset(mockRefDataConnector)
-  }
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockRefDataConnector))
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, arrivalTimesAtOfficeRoute)
@@ -86,19 +82,16 @@ class ArrivalTimesAtOfficeControllerSpec
   "ArrivalTimesAtOffice Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
+      dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
       when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
-        .build()
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, getRequest).value
+      val result = route(app, getRequest).value
 
       status(result) mustEqual OK
 
@@ -115,15 +108,9 @@ class ArrivalTimesAtOfficeControllerSpec
 
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
       val userAnswers = emptyUserAnswers
         .set(AddAnotherTransitOfficePage(index), officeOfTransit.id)
         .toOption
@@ -131,13 +118,15 @@ class ArrivalTimesAtOfficeControllerSpec
         .set(ArrivalTimesAtOfficePage(index), validAnswer)
         .success
         .value
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
-        .build()
+      dataRetrievalWithData(userAnswers)
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, getRequest).value
+      val result = route(app, getRequest).value
 
       status(result) mustEqual OK
 
@@ -164,52 +153,34 @@ class ArrivalTimesAtOfficeControllerSpec
       )
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
+      dataRetrievalWithData(userAnswers)
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[ReferenceDataConnector].toInstance(mockRefDataConnector),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-
-      val result = route(application, postRequest).value
+      val result = route(app, postRequest).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      application.stop()
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
+      dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
       when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
-        .build()
       val request        = FakeRequest(POST, arrivalTimesAtOfficeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -226,33 +197,25 @@ class ArrivalTimesAtOfficeControllerSpec
 
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
+      dataRetrievalNoData()
 
-      val application = applicationBuilder(userAnswers = None).build()
-
-      val result = route(application, getRequest).value
+      val result = route(app, getRequest).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
+      dataRetrievalNoData()
 
-      val application = applicationBuilder(userAnswers = None).build()
-
-      val result = route(application, postRequest).value
+      val result = route(app, postRequest).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
   }
 }
