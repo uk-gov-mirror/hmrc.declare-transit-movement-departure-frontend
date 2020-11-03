@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{items, previousReferences}
 
-class ConfirmRemovePreviousAdministrativeReferencePageSpec extends PageBehaviours {
+case class DeriveNumberOfPreviousAdministrativeReferences(itemIndex: Index) extends Derivable[List[JsObject], Int] {
 
-  "ConfirmRemovePreviousAdministrativeReferencePage" - {
+  override val derive: List[JsObject] => Int = _.size
 
-    beRetrievable[Boolean](ConfirmRemovePreviousAdministrativeReferencePage)
-
-    beSettable[Boolean](ConfirmRemovePreviousAdministrativeReferencePage)
-
-    beRemovable[Boolean](ConfirmRemovePreviousAdministrativeReferencePage)
-  }
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences
 }
