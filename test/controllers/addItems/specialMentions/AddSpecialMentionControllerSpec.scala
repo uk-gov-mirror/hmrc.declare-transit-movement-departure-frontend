@@ -43,7 +43,7 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new AddSpecialMentionFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(itemIndex)
   private val template     = "addItems/specialMentions/addSpecialMention.njk"
 
   lazy val addSpecialMentionRoute = routes.AddSpecialMentionController.onPageLoad(lrn, index, NormalMode).url
@@ -73,10 +73,11 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form"      -> form,
+        "mode"      -> NormalMode,
+        "lrn"       -> lrn,
+        "radios"    -> Radios.yesNo(form("value")),
+        "itemIndex" -> itemIndex.display
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -107,10 +108,11 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
       val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form"      -> filledForm,
+        "mode"      -> NormalMode,
+        "lrn"       -> lrn,
+        "radios"    -> Radios.yesNo(filledForm("value")),
+        "itemIndex" -> itemIndex.display
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -157,10 +159,11 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"      -> boundForm,
+        "mode"      -> NormalMode,
+        "lrn"       -> lrn,
+        "radios"    -> Radios.yesNo(boundForm("value")),
+        "itemIndex" -> itemIndex.display
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey

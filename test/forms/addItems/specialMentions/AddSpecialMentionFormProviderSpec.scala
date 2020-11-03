@@ -16,15 +16,16 @@
 
 package forms.addItems.specialMentions
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddSpecialMentionFormProviderSpec extends BooleanFieldBehaviours {
+class AddSpecialMentionFormProviderSpec extends BooleanFieldBehaviours with SpecBase {
 
   val requiredKey = "addSpecialMention.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddSpecialMentionFormProvider()()
+  val form = new AddSpecialMentionFormProvider()(itemIndex)
 
   ".value" - {
 
@@ -33,13 +34,13 @@ class AddSpecialMentionFormProviderSpec extends BooleanFieldBehaviours {
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      invalidError = FormError(fieldName, invalidKey, Seq(itemIndex.display))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(itemIndex.display))
     )
   }
 }

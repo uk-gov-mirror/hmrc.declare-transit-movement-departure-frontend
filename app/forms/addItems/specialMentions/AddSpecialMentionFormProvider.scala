@@ -18,12 +18,13 @@ package forms.addItems.specialMentions
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
 
 class AddSpecialMentionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(index: Index): Form[Boolean] =
     Form(
-      "value" -> boolean("addSpecialMention.error.required")
+      "value" -> boolean("addSpecialMention.error.required", args = Seq(index.display))
     )
 }

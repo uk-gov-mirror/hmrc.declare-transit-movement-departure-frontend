@@ -48,21 +48,21 @@ class AddSpecialMentionController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/specialMentions/addSpecialMention.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(AddSpecialMentionPage(itemIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(itemIndex)
+        case Some(value) => formProvider(itemIndex).fill(value)
       }
 
       val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
+        "form"      -> preparedForm,
+        "mode"      -> mode,
+        "lrn"       -> lrn,
+        "radios"    -> Radios.yesNo(preparedForm("value")),
+        "itemIndex" -> itemIndex.display
       )
 
       renderer.render(template, json).map(Ok(_))
@@ -70,16 +70,17 @@ class AddSpecialMentionController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(itemIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => {
 
             val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
+              "form"      -> formWithErrors,
+              "mode"      -> mode,
+              "lrn"       -> lrn,
+              "radios"    -> Radios.yesNo(formWithErrors("value")),
+              "itemIndex" -> itemIndex.display
             )
 
             renderer.render(template, json).map(BadRequest(_))
