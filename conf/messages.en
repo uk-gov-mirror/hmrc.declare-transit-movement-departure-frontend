@@ -883,3 +883,9 @@ addSpecialMention.title = addSpecialMention
 addSpecialMention.heading = addSpecialMention
 addSpecialMention.checkYourAnswersLabel = addSpecialMention
 addSpecialMention.error.required = Select yes if addSpecialMention
+
+specialMentionType.title = specialMentionType
+specialMentionType.heading = specialMentionType
+specialMentionType.checkYourAnswersLabel = specialMentionType
+specialMentionType.error.required = Enter specialMentionType
+specialMentionType.error.length = SpecialMentionType must be 100 characters or less
