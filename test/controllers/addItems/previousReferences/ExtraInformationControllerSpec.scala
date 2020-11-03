@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.addItems
+package controllers.addItems.previousReferences
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import controllers.{routes => mainRoutes}
-import forms.addItems.RemovePackageFormProvider
+import forms.ExtraInformationFormProvider
 import matchers.JsonMatchers
+import controllers.{routes => mainItems}
 import models.NormalMode
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
@@ -27,6 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.addItems.ExtraInformationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -34,32 +35,33 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import repositories.SessionRepository
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ExtraInformationControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new RemovePackageFormProvider()
+  private val formProvider = new ExtraInformationFormProvider()
   private val form         = formProvider()
-  private val template     = "addItems/removePackage.njk"
+  private val template     = "addItems/extraInformation.njk"
 
-  lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(lrn, index, index, NormalMode).url
+  lazy val extraInformationRoute = routes.ExtraInformationController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "RemovePackage Controller" - {
+  "ExtraInformation Controller" - {
 
     "must return OK and the correct view for a GET" in {
       dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(GET, removePackageRoute)
+      val request        = FakeRequest(GET, extraInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -70,12 +72,44 @@ class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"         -> form,
-        "itemIndex"    -> itemIndex.display,
-        "packageIndex" -> packageIndex.display,
-        "mode"         -> NormalMode,
-        "lrn"          -> lrn,
-        "radios"       -> Radios.yesNo(form("value"))
+        "form"           -> form,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn
+      )
+
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+
+      val userAnswers = emptyUserAnswers.set(ExtraInformationPage(index, referenceIndex), "answer").success.value
+      dataRetrievalWithData(userAnswers)
+      val request        = FakeRequest(GET, extraInformationRoute)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(app, request).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      val filledForm = form.bind(Map("value" -> "answer"))
+
+      val expectedJson = Json.obj(
+        "form"           -> filledForm,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -90,13 +124,12 @@ class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request =
-        FakeRequest(POST, removePackageRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, extraInformationRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
@@ -105,7 +138,7 @@ class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(POST, removePackageRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, extraInformationRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -117,31 +150,28 @@ class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"         -> boundForm,
-        "itemIndex"    -> itemIndex.display,
-        "packageIndex" -> packageIndex.display,
-        "mode"         -> NormalMode,
-        "lrn"          -> lrn,
-        "radios"       -> Radios.yesNo(boundForm("value"))
+        "form"           -> boundForm,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode
       )
 
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonCaptor.getValue must containJson(expectedJson)
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, removePackageRoute)
+      val request = FakeRequest(GET, extraInformationRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainItems.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -149,14 +179,14 @@ class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp 
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, removePackageRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, extraInformationRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainItems.SessionExpiredController.onPageLoad().url
     }
   }
 }

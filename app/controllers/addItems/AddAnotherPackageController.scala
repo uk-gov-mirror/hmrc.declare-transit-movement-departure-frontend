@@ -32,6 +32,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.AddItemsCheckYourAnswersHelper
+import viewModels.PackageViewModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -59,11 +60,8 @@ class AddAnotherPackageController @Inject()(
           case Some(value) => form.fill(value)
         }
 
-        val totalTypes            = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
-        val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
-        val indexList: Seq[Index] = List.range(0, totalTypes).map(Index(_))
-
-        val packageRows = indexList.map(index => cyaHelper.packageRows(itemIndex, index, mode))
+        val totalTypes  = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
+        val packageRows = PackageViewModel.packageRows(itemIndex, totalTypes, request.userAnswers, mode)
 
         val singularOrPlural = if (totalTypes == 1) "singular" else "plural"
 
