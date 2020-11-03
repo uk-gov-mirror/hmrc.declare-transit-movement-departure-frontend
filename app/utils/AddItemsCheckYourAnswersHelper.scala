@@ -19,12 +19,13 @@ package utils
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.addItems._
 import pages.addItems.traderDetails._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
+import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
@@ -328,29 +329,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def packageRows(itemIndex: Index, packageIndex: Index, mode: Mode): Option[Row] =
-    userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map {
-      answer =>
-        Row(
-          key   = Key(lit"$answer"),
-          value = Value(lit""),
-          actions = List(
-            Action(
-              content            = msg"site.change",
-              href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, mode).url,
-              visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
-              attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
-            ),
-            Action(
-              content            = msg"site.delete",
-              href               = routes.RemovePackageController.onPageLoad(userAnswers.id, itemIndex, packageIndex).url, // TODO Create page
-              visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
-              attributes         = Map("id" -> s"""remove-package-${packageIndex.display}""")
-            )
-          )
-        )
-    }
-
   def referenceType(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(ReferenceTypePage(itemIndex, referenceIndex)) map {
     answer =>
       Row(
@@ -379,6 +357,30 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           )
         )
       )
+  }
+
+  def packageRow(itemIndex: Index, packageIndex: Index, userAnswers: UserAnswers): Option[Row] =
+    userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
+              attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
+            )
+          )
+        )
+    }
+
+  def addAnotherPackage(itemIndex: Index, content: Text): AddAnotherViewModel = {
+
+    val addAnotherPackageHref = routes.AddAnotherPackageController.onPageLoad(lrn, itemIndex, CheckMode).url
+
+    AddAnotherViewModel(addAnotherPackageHref, content)
   }
 
   def extraInformation(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(ExtraInformationPage(itemIndex, referenceIndex)) map {

@@ -18,7 +18,8 @@ package models.journeyDomain
 
 import cats.data._
 import models.UserAnswers
-import pages.QuestionPage
+
+import scala.language.higherKinds
 
 trait UserAnswersParser[F[_], A] {
 
