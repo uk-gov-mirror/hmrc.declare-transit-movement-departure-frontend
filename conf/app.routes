@@ -393,9 +393,9 @@ POST       /:lrn/add-items/:itemIndex/packages/:packageIndex/total-packages     
 GET        /:lrn/add-items/:itemIndex/packages/:packageIndex/change-total-packages                         controllers.addItems.HowManyPackagesController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/packages/:packageIndex/change-total-packages                         controllers.addItems.HowManyPackagesController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode = CheckMode)
 
-GET        /:lrn/add-items/:itemIndex/packages/:packageIndex/remove-package                        controllers.addItems.RemovePackageController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode = NormalMode)
-POST       /:lrn/add-items/:itemIndex/packages/:packageIndex/remove-package                        controllers.addItems.RemovePackageController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode = NormalMode)
-GET        /:lrn/add-items/:itemIndex/packages/:packageIndex/change-remove-package                        controllers.addItems.RemovePackageController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode = CheckMode)
+GET        /:lrn/add-items/:itemIndex/packages/:packageIndex/remove-package                               controllers.addItems.RemovePackageController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/packages/:packageIndex/remove-package                               controllers.addItems.RemovePackageController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/packages/:packageIndex/change-remove-package                        controllers.addItems.RemovePackageController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/packages/:packageIndex/change-remove-package                        controllers.addItems.RemovePackageController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode = CheckMode)
 
 GET        /:lrn/add-items/item-details/:index/commodity-code                        controllers.addItems.CommodityCodeController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
@@ -471,8 +471,8 @@ POST       /:lrn/add-items/item-details/:index/addItemsSameConsignorForAllItems 
 GET        /:lrn/add-items/item-details/:index/change-AddItemsSameConsignorForAllItems                 controllers.addItems.AddItemsSameConsignorForAllItemsController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/item-details/:index/change-AddItemsSameConsignorForAllItems                 controllers.addItems.AddItemsSameConsignorForAllItemsController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 
-GET        /:lrn/add-items/add-items                        controllers.addItems.AddAnotherItemController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /:lrn/add-items/add-items                        controllers.addItems.AddAnotherItemController.onSubmit(lrn: LocalReferenceNumber)
+GET        /:lrn/add-items/add-items                                                                    controllers.addItems.AddAnotherItemController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/add-items/add-items                                                                    controllers.addItems.AddAnotherItemController.onSubmit(lrn: LocalReferenceNumber)
 
 GET        /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/add-administrative-reference                         controllers.addItems.previousReferences.AddAdministrativeReferenceController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/add-administrative-reference                         controllers.addItems.previousReferences.AddAdministrativeReferenceController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = NormalMode)
@@ -493,3 +493,8 @@ GET        /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/add-ex
 POST       /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/add-extra-information                        controllers.addItems.previousReferences.AddExtraInformationController.onSubmit(lrn: LocalReferenceNumber,itemIndex: Index, referenceIndex: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/change-add-extra-information                  controllers.addItems.previousReferences.AddExtraInformationController.onPageLoad(lrn: LocalReferenceNumber,itemIndex: Index, referenceIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/change-add-extra-information                  controllers.addItems.previousReferences.AddExtraInformationController.onSubmit(lrn: LocalReferenceNumber,itemIndex: Index, referenceIndex: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/extra-information                        controllers.addItems.previousReferences.ExtraInformationController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/extra-information                        controllers.addItems.previousReferences.ExtraInformationController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index,  mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/change-extra-information                 controllers.addItems.previousReferences.ExtraInformationController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/change-extra-information                 controllers.addItems.previousReferences.ExtraInformationController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = CheckMode)

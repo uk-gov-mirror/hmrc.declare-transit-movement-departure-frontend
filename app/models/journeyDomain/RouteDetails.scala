@@ -69,5 +69,5 @@ object RouteDetails {
         DestinationOfficePage.reader,
         UserAnswersReader[NonEmptyList[TransitInformation]]
       ).tupled
-    )(RouteDetails.apply _ tupled)
+    )((RouteDetails.apply _).tupled)
 }

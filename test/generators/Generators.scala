@@ -67,6 +67,13 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       .suchThat(!_.isValidInt)
       .map(_.formatted("%f"))
 
+  def decimalsPositive: Gen[String] =
+    arbitrary[BigDecimal]
+      .suchThat(x => x.signum >= 0)
+      .suchThat(x => x.abs <= Int.MaxValue)
+      .suchThat(!_.isValidInt)
+      .map(_.formatted("%f"))
+
   def intsBelowValue(value: Int): Gen[Int] =
     arbitrary[Int] suchThat (_ < value)
 

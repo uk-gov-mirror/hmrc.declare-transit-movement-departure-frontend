@@ -39,12 +39,13 @@ class TraderDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      dataRetrievalWithData(emptyUserAnswers)
+
       val request        = FakeRequest(GET, routes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -59,8 +60,6 @@ class TraderDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunj
 
       templateCaptor.getValue mustEqual "traderDetailsCheckYourAnswers.njk"
       jsonCaptorWithoutConfig mustBe expectedJson
-
-      application.stop()
     }
   }
 }
