@@ -105,13 +105,11 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
-
       val expectedJson = Json.obj(
         "form"      -> form,
         "lrn"       -> lrn,
-        "pageTitle" -> msg"addAnotherPreviousAdministrativeReference.title.singular".withArgs(1),
-        "heading"   -> msg"addAnotherPreviousAdministrativeReference.heading.singular".withArgs(1),
+        "pageTitle" -> msg"addAnotherPreviousAdministrativeReference.title.plural".withArgs(1),
+        "heading"   -> msg"addAnotherPreviousAdministrativeReference.heading.plural".withArgs(1),
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey

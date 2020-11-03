@@ -300,22 +300,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
-  def addPreviousAdminstrativeReference(index: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(addItems.AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex)) map {
-      answer =>
-        Row(
-          key   = Key(msg"addAnotherDocument.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-          value = Value(yesOrNo(answer)),
-          actions = List(
-            Action(
-              content            = msg"site.edit",
-              href               = previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherDocument.checkYourAnswersLabel"))
-            )
-          )
-        )
-    }
-
   def previousAdministrativeReferenceRows(index: Index, referenceIndex: Index): Option[Row] =
     userAnswers.get(PreviousReferencePage(index, referenceIndex)).map { //TODO NEED TO REPLACE WITH REF TYPE PAGE
       answer =>
