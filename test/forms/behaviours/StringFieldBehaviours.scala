@@ -16,6 +16,7 @@
 
 package forms.behaviours
 
+import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
 trait StringFieldBehaviours extends FieldBehaviours {
@@ -24,6 +25,22 @@ trait StringFieldBehaviours extends FieldBehaviours {
     s"must not bind strings longer than $maxLength characters" in {
 
       forAll(stringsLongerThan(maxLength, withoutExtendedAscii) -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+
+  def fieldWithMaxLength(
+    form: Form[_],
+    fieldName: String,
+    maxLength: Int,
+    lengthError: FormError,
+    gen: Gen[String]
+  ): Unit =
+    s"must not bind strings longer than $maxLength characters" in {
+
+      forAll(gen -> "longString") {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
           result.errors mustEqual Seq(lengthError)
