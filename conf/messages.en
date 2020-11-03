@@ -895,3 +895,8 @@ specialMentionAdditionalInfo.heading = specialMentionAdditionalInfo
 specialMentionAdditionalInfo.checkYourAnswersLabel = specialMentionAdditionalInfo
 specialMentionAdditionalInfo.error.required = Enter specialMentionAdditionalInfo
 specialMentionAdditionalInfo.error.length = SpecialMentionAdditionalInfo must be 70 characters or less
+
+addAnotherSpecialMention.title = addAnotherSpecialMention
+addAnotherSpecialMention.heading = addAnotherSpecialMention
+addAnotherSpecialMention.checkYourAnswersLabel = addAnotherSpecialMention
+addAnotherSpecialMention.error.required = Select yes if addAnotherSpecialMention
