@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
 
 import controllers.routes
 import controllers.addItems.specialMentions.{routes => specialMentionRoutes}
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -74,7 +74,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def addSpecialMention: Option[Row] = userAnswers.get(AddSpecialMentionPage) map {
+  def addSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(AddSpecialMentionPage(itemIndex)) map {
     answer =>
       Row(
         key   = Key(msg"addSpecialMention.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -82,7 +82,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = specialMentionRoutes.AddSpecialMentionController.onPageLoad(lrn, CheckMode).url,
+            href               = specialMentionRoutes.AddSpecialMentionController.onPageLoad(lrn, itemIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSpecialMention.checkYourAnswersLabel"))
           )
         )

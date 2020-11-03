@@ -46,7 +46,7 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
   private val form         = formProvider()
   private val template     = "addItems/specialMentions/addSpecialMention.njk"
 
-  lazy val addSpecialMentionRoute = routes.AddSpecialMentionController.onPageLoad(lrn, NormalMode).url
+  lazy val addSpecialMentionRoute = routes.AddSpecialMentionController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -91,7 +91,7 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddSpecialMentionPage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddSpecialMentionPage(itemIndex), true).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, addSpecialMentionRoute)

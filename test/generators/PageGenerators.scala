@@ -36,8 +36,8 @@ trait PageGenerators {
   implicit lazy val arbitrarySpecialMentionTypePage: Arbitrary[SpecialMentionTypePage.type] =
     Arbitrary(SpecialMentionTypePage)
 
-  implicit lazy val arbitraryAddSpecialMentionPage: Arbitrary[AddSpecialMentionPage.type] =
-    Arbitrary(AddSpecialMentionPage)
+  implicit lazy val arbitraryAddSpecialMentionPage: Arbitrary[AddSpecialMentionPage] =
+    Arbitrary(AddSpecialMentionPage(Index(0)))
 
   implicit lazy val arbitraryAddAnotherPreviousAdministrativeReferencePage: Arbitrary[AddAnotherPreviousAdministrativeReferencePage] =
     Arbitrary(AddAnotherPreviousAdministrativeReferencePage(Index(0), Index(0)))

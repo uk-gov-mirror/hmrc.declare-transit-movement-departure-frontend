@@ -19,7 +19,7 @@ package controllers.addItems.specialMentions
 import controllers.actions._
 import forms.addItems.specialMentions.AddSpecialMentionFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.PreTaskListDetails
 import pages.addItems.specialMentions.AddSpecialMentionPage
@@ -51,9 +51,9 @@ class AddSpecialMentionController @Inject()(
   private val form     = formProvider()
   private val template = "addItems/specialMentions/addSpecialMention.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddSpecialMentionPage) match {
+      val preparedForm = request.userAnswers.get(AddSpecialMentionPage(itemIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -68,7 +68,7 @@ class AddSpecialMentionController @Inject()(
       renderer.render(template, json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
@@ -86,9 +86,9 @@ class AddSpecialMentionController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSpecialMentionPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSpecialMentionPage(itemIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddSpecialMentionPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddSpecialMentionPage(itemIndex), mode, updatedAnswers))
         )
   }
 }
