@@ -19,9 +19,10 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import controllers.specialMentions.{routes => specialMentionRoutes}
+import controllers.addItems.specialMentions.{routes => specialMentionRoutes}
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
