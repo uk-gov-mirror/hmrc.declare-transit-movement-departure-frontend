@@ -23,8 +23,6 @@ import play.api.data.FormError
 
 class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey   = "traderDetailsConsignorAddress.error.required"
-  val lengthKey     = "traderDetailsConsignorAddress.error.length"
   val consignorName = "TestConsignor"
   val form          = new TraderDetailsConsignorAddressFormProvider()(consignorName)
 
