@@ -26,6 +26,9 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryExtraInformationPage: Arbitrary[ExtraInformationPage] =
+    Arbitrary(ExtraInformationPage(Index(0), Index(0)))
+
   implicit lazy val arbitraryRemovePackagePage: Arbitrary[RemovePackagePage.type] =
     Arbitrary(RemovePackagePage)
 
