@@ -35,16 +35,15 @@ class GuaranteeDetailsCheckYourAnswersControllerSpec extends SpecBase with MockN
   "GuaranteeDetailsCheckYourAnswers Controller" - {
 
     "return OK and the correct view for a GET" in {
-
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request        = FakeRequest(GET, routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -59,8 +58,6 @@ class GuaranteeDetailsCheckYourAnswersControllerSpec extends SpecBase with MockN
 
       templateCaptor.getValue mustEqual "guaranteeDetailsCheckYourAnswers.njk"
       jsonCaptorWithoutConfig mustBe expectedJson
-
-      application.stop()
     }
   }
 }

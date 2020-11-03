@@ -17,6 +17,7 @@
 package controllers.addItems.previousReferences
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
 import forms.AddExtraInformationFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
@@ -26,15 +27,14 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.addItems.AddExtraInformationPage
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
-import controllers.{routes => mainRoutes}
-import pages.addItems.AddExtraInformationPage
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
@@ -47,21 +47,25 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
   private val form         = formProvider()
   private val template     = "addItems/addExtraInformation.njk"
 
-  lazy val addExtraInformationRoute = routes.AddExtraInformationController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
+  lazy val addExtraInformationRoute        = routes.AddExtraInformationController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
+  lazy val addAdministrativeReferenceRoute = routes.AddAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
   "AddExtraInformation Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request        = FakeRequest(GET, addExtraInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -80,8 +84,6 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
 
       templateCaptor.getValue mustEqual template
       jsonWithoutConfig mustBe expectedJson
-
-      application.stop()
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -89,13 +91,13 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddExtraInformationPage(index, referenceIndex), true).success.value
-      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddExtraInformationPage(index, referenceIndex), true).success.value
+      dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, addExtraInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -116,49 +118,35 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
 
       templateCaptor.getValue mustEqual template
       jsonWithoutConfig mustBe expectedJson
-
-      application.stop()
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      dataRetrievalWithData(emptyUserAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
 
       val request =
         FakeRequest(POST, addExtraInformationRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      application.stop()
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val request        = FakeRequest(POST, addExtraInformationRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
@@ -177,40 +165,34 @@ class AddExtraInformationControllerSpec extends SpecBase with MockNunjucksRender
 
       templateCaptor.getValue mustEqual template
       jsonWithoutConfig mustBe expectedJson
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request = FakeRequest(GET, addExtraInformationRoute)
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request =
         FakeRequest(POST, addExtraInformationRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
-
-      application.stop()
     }
   }
 }
