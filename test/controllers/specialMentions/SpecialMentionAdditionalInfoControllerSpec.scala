@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.specialMentions
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
-import forms.AddAnotherSpecialMentionFormProvider
+import base.{MockNunjucksRendererApp, SpecBase}
+import forms.SpecialMentionAdditionalInfoFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import models.NormalMode
 import navigation.annotations.PreTaskListDetails
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddAnotherSpecialMentionPage
+import pages.SpecialMentionAdditionalInfoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -35,27 +34,26 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new AddAnotherSpecialMentionFormProvider()
+  private val formProvider = new SpecialMentionAdditionalInfoFormProvider()
   private val form         = formProvider()
-  private val template     = "addAnotherSpecialMention.njk"
+  private val template     = "specialMentionAdditionalInfo.njk"
 
-  lazy val addAnotherSpecialMentionRoute = routes.AddAnotherSpecialMentionController.onPageLoad(lrn, NormalMode).url
+  lazy val specialMentionAdditionalInfoRoute = routes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "AddAnotherSpecialMention Controller" - {
+  "SpecialMentionAdditionalInfo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -64,7 +62,7 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, addAnotherSpecialMentionRoute)
+      val request        = FakeRequest(GET, specialMentionAdditionalInfoRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -75,10 +73,9 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -93,10 +90,10 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddAnotherSpecialMentionPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(SpecialMentionAdditionalInfoPage, "answer").success.value
       dataRetrievalWithData(userAnswers)
 
-      val request        = FakeRequest(GET, addAnotherSpecialMentionRoute)
+      val request        = FakeRequest(GET, specialMentionAdditionalInfoRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -106,13 +103,12 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -129,13 +125,12 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, addAnotherSpecialMentionRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, specialMentionAdditionalInfoRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
     }
@@ -147,7 +142,7 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, addAnotherSpecialMentionRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, specialMentionAdditionalInfoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -159,16 +154,13 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonCaptor.getValue must containJson(expectedJson)
 
     }
 
@@ -176,13 +168,13 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, addAnotherSpecialMentionRoute)
+      val request = FakeRequest(GET, specialMentionAdditionalInfoRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -191,14 +183,14 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, addAnotherSpecialMentionRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, specialMentionAdditionalInfoRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
     }
   }

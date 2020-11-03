@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.specialMentions
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import forms.AddSpecialMentionFormProvider
+import forms.AddAnotherSpecialMentionFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.PreTaskListDetails
@@ -26,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddSpecialMentionPage
+import pages.AddAnotherSpecialMentionPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -38,22 +38,22 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new AddSpecialMentionFormProvider()
+  private val formProvider = new AddAnotherSpecialMentionFormProvider()
   private val form         = formProvider()
-  private val template     = "addSpecialMention.njk"
+  private val template     = "addAnotherSpecialMention.njk"
 
-  lazy val addSpecialMentionRoute = routes.AddSpecialMentionController.onPageLoad(lrn, NormalMode).url
+  lazy val addAnotherSpecialMentionRoute = routes.AddAnotherSpecialMentionController.onPageLoad(lrn, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "AddSpecialMention Controller" - {
+  "AddAnotherSpecialMention Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -62,7 +62,7 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, addSpecialMentionRoute)
+      val request        = FakeRequest(GET, addAnotherSpecialMentionRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -91,10 +91,10 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddSpecialMentionPage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddAnotherSpecialMentionPage, true).success.value
       dataRetrievalWithData(userAnswers)
 
-      val request        = FakeRequest(GET, addSpecialMentionRoute)
+      val request        = FakeRequest(GET, addAnotherSpecialMentionRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -127,7 +127,7 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, addSpecialMentionRoute)
+        FakeRequest(POST, addAnotherSpecialMentionRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -145,7 +145,7 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, addSpecialMentionRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, addAnotherSpecialMentionRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -174,13 +174,13 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, addSpecialMentionRoute)
+      val request = FakeRequest(GET, addAnotherSpecialMentionRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -189,14 +189,14 @@ class AddSpecialMentionControllerSpec extends SpecBase with MockNunjucksRenderer
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, addSpecialMentionRoute)
+        FakeRequest(POST, addAnotherSpecialMentionRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
     }
   }

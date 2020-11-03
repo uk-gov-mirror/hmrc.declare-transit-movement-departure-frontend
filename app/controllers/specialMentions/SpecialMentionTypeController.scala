@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.specialMentions
 
 import controllers.actions._
-import forms.AddSpecialMentionFormProvider
+import forms.SpecialMentionTypeFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.PreTaskListDetails
-import pages.AddSpecialMentionPage
+import pages.SpecialMentionTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddSpecialMentionController @Inject()(
+class SpecialMentionTypeController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @PreTaskListDetails navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddSpecialMentionFormProvider,
+  formProvider: SpecialMentionTypeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -49,20 +49,19 @@ class AddSpecialMentionController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "addSpecialMention.njk"
+  private val template = "specialMentionType.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddSpecialMentionPage) match {
+      val preparedForm = request.userAnswers.get(SpecialMentionTypePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
       val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
+        "form" -> preparedForm,
+        "lrn"  -> lrn,
+        "mode" -> mode
       )
 
       renderer.render(template, json).map(Ok(_))
@@ -76,19 +75,18 @@ class AddSpecialMentionController @Inject()(
           formWithErrors => {
 
             val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
+              "form" -> formWithErrors,
+              "lrn"  -> lrn,
+              "mode" -> mode
             )
 
             renderer.render(template, json).map(BadRequest(_))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSpecialMentionPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SpecialMentionTypePage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddSpecialMentionPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(SpecialMentionTypePage, mode, updatedAnswers))
         )
   }
 }

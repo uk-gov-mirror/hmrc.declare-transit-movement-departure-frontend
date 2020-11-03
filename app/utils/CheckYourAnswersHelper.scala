@@ -19,6 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
+import controllers.specialMentions.{routes => specialMentionRoutes}
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -26,6 +27,7 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  //TODO: These should be moved
   def addAnotherSpecialMention: Option[Row] = userAnswers.get(AddAnotherSpecialMentionPage) map {
     answer =>
       Row(
@@ -34,7 +36,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.AddAnotherSpecialMentionController.onPageLoad(lrn, CheckMode).url,
+            href               = specialMentionRoutes.AddAnotherSpecialMentionController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherSpecialMention.checkYourAnswersLabel"))
           )
         )
@@ -49,7 +51,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, CheckMode).url,
+            href               = specialMentionRoutes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionAdditionalInfo.checkYourAnswersLabel"))
           )
         )
@@ -64,7 +66,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.SpecialMentionTypeController.onPageLoad(lrn, CheckMode).url,
+            href               = specialMentionRoutes.SpecialMentionTypeController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionType.checkYourAnswersLabel"))
           )
         )
@@ -79,7 +81,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.AddSpecialMentionController.onPageLoad(lrn, CheckMode).url,
+            href               = specialMentionRoutes.AddSpecialMentionController.onPageLoad(lrn, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSpecialMention.checkYourAnswersLabel"))
           )
         )

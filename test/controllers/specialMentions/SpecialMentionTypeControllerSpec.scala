@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.specialMentions
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
-import matchers.JsonMatchers
+import base.{MockNunjucksRendererApp, SpecBase}
 import forms.SpecialMentionTypeFormProvider
-import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import matchers.JsonMatchers
+import models.NormalMode
 import navigation.annotations.PreTaskListDetails
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -30,12 +29,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.SpecialMentionTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
@@ -176,7 +174,7 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -192,7 +190,7 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
     }
   }
