@@ -98,6 +98,7 @@ class TraderDetailsConsigneeAddressControllerSpec
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
+      val address = arbitrary[Address].sample.value
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
@@ -110,9 +111,7 @@ class TraderDetailsConsigneeAddressControllerSpec
         .value
 
       dataRetrievalWithData(userAnswers)
-      val address = arbitrary[Address].sample.value
 
-      val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, traderDetailsConsigneeAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])

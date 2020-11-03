@@ -83,7 +83,7 @@ class TraderDetailsConsigneeNameControllerSpec extends SpecBase with MockNunjuck
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(TraderDetailsConsigneeNamePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(TraderDetailsConsigneeNamePage(itemIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, traderDetailsConsigneeNameRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
