@@ -26,6 +26,9 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryAddSpecialMentionPage: Arbitrary[AddSpecialMentionPage.type] =
+    Arbitrary(AddSpecialMentionPage)
+
   implicit lazy val arbitraryAddAnotherPreviousAdministrativeReferencePage: Arbitrary[AddAnotherPreviousAdministrativeReferencePage] =
     Arbitrary(AddAnotherPreviousAdministrativeReferencePage(Index(0), Index(0)))
 
