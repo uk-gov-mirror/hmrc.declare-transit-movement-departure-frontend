@@ -16,12 +16,13 @@
 
 package derivable
 
+import models.Index
 import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.previousReferences
+import queries.Constants.{items, previousReferences}
 
-case object DeriveNumberOfPreviousAdministrativeReferences extends Derivable[List[JsObject], Int] {
+case class DeriveNumberOfPreviousAdministrativeReferences(itemIndex: Index) extends Derivable[List[JsObject], Int] {
 
   override val derive: List[JsObject] => Int = _.size
 
-  override def path: JsPath = JsPath \ previousReferences
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences
 }

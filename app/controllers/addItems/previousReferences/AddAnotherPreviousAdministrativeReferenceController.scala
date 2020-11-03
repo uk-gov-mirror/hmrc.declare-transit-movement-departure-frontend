@@ -80,7 +80,7 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
     implicit request: DataRequest[AnyContent]): Future[Html] = {
 
     val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
-    val numberOfReferences    = request.userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences).getOrElse(0)
+    val numberOfReferences    = request.userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
     val indexList: Seq[Index] = List.range(0, numberOfReferences).map(Index(_))
 
     val referenceRows = indexList.map {

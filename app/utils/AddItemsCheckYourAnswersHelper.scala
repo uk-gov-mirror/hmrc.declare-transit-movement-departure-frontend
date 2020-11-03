@@ -314,7 +314,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     }
 
   def previousAdminstrativeReferenceRows(index: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(PreviousReferencePage(index, referenceIndex)).map {
+    userAnswers.get(PreviousReferencePage(index, referenceIndex)).map { //TODO NEED TO REPLACE WITH REF TYPE PAGE
       answer =>
         Row(
           key   = Key(lit"$answer"),
@@ -323,7 +323,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             Action(
               content = msg"site.change",
               href =
-                previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
+                previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
               visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
               attributes         = Map("id" -> s"""change-item-${index.display}""")
             ),
