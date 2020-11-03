@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
 import models.Index
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{items, previousReferences}
 
