@@ -28,6 +28,8 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
 import queries.{ItemsQuery, PackagesQuery}
+import controllers.{routes => mainRoutes}
+import controllers.addItems.previousReferences.{routes => previousReferenceRoutes}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -498,6 +500,39 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, index, NormalMode))
           }
 
+        }
+
+        "AddExtraInformationPage" - {
+
+          "must go to AddAnotherPreviousAdministrativeReferencePage when customer selects 'No'" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(AddExtraInformationPage(index, index), false)
+                  .success
+                  .value
+
+                val nextPackageIndex = Index(index.position)
+
+                navigator
+                  .nextPage(AddExtraInformationPage(index, index), NormalMode, updatedAnswers)
+                  .mustBe(
+                    previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, nextPackageIndex, NormalMode))
+
+            }
+          }
+        }
+
+        "AddAnotherPreviousAdministrativeReferencePage" - {
+          "must go to ReferenceType page when user selects 'Yes'" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswer = answers.set(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
+                navigator
+                  .nextPage(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
+                  .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+            }
+          }
         }
       }
 

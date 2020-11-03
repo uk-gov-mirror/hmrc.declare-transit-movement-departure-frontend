@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
 import models.Index
-import pages.addItems.PreviousReferencePage
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{items, previousReferences}
 
-class PreviousReferencePageSpec extends PageBehaviours {
+case class DeriveNumberOfPreviousAdministrativeReferences(itemIndex: Index) extends Derivable[List[JsObject], Int] {
 
-  private val index          = Index(0)
-  private val referenceIndex = Index(0)
+  override val derive: List[JsObject] => Int = _.size
 
-  "PreviousReferencePage" - {
-
-    beRetrievable[String](PreviousReferencePage(index, referenceIndex))
-
-    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
-
-    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
-  }
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences
 }

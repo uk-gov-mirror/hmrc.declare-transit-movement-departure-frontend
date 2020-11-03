@@ -866,6 +866,13 @@ addExtraInformation.heading = Do you need to add any extra information for this 
 addExtraInformation.checkYourAnswersLabel = addExtraInformation
 addExtraInformation.error.required = Select yes if you need to add any extra information for this document
 
+addAnotherPreviousAdministrativeReference.title.singular = You have added 1 previous administrative reference
+addAnotherPreviousAdministrativeReference.title.plural = You have added {0} previous administrative references
+addAnotherPreviousAdministrativeReference.heading.singular = You have added 1 previous administrative reference
+addAnotherPreviousAdministrativeReference.heading.plural = You have added {0} previous administrative references
+addAnotherPreviousAdministrativeReference.paragraph = Do you need to add another previous administrative reference?
+addAnotherPreviousAdministrativeReference.error.required = Select yes if you need to add another previous administrative reference
+
 extraInformation.title = What extra information for this document do you need to add?
 extraInformation.heading = What extra information for this document do you need to add?
 extraInformation.checkYourAnswersLabel = extraInformation
