@@ -43,7 +43,7 @@ object PackageViewModel {
                 ),
                 Action(
                   content            = msg"site.delete",
-                  href               = routes.RemovePackageController.onPageLoad(userAnswers.id, itemIndex, packageIndex).url, // TODO Create page
+                  href               = routes.RemovePackageController.onPageLoad(userAnswers.id, itemIndex, packageIndex, mode).url,
                   visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
                   attributes         = Map("id" -> s"""remove-package-${packageIndex.display}""")
                 )
