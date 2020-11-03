@@ -1,6 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk"  import govukSummaryList %}
 
-{% macro section(sectionTitle, rows) %}
+{% macro section(sectionTitle, rows, href) %}
 
   {% if rows | length %}
 
@@ -15,6 +15,11 @@
         classes:"govuk-summary-list govuk-!-margin-bottom-9"
       }) }}
 
+      {% if href %}
+        <p class="govuk-body">
+            <a href={{ href }}>Add or remove packages</a>
+        </p>
+      {%  endif %}
     </div>
   
   {% endif %}

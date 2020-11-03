@@ -19,7 +19,7 @@
         </h1>
 
         {% for section in sections %}
-             {{ sectionMacro(section.sectionTitle, section.rows) }}
+             {{ sectionMacro(section.sectionTitle, section.rows, section.href) }}
         {% endfor %}
 
          {{ csrf() | safe }}

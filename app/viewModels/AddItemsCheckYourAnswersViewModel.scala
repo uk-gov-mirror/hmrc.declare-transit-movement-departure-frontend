@@ -30,13 +30,12 @@ object AddItemsCheckYourAnswersViewModel {
 
     val checkYourAnswersHelper = new AddItemsCheckYourAnswersHelper(userAnswers)
 
-    val packageRows: Seq[SummaryList.Row] = {
-      val totalTypes = userAnswers.get(DeriveNumberOfPackages(index)).getOrElse(0)
-      List.range(0, totalTypes).map {
-        packagePosition =>
-          checkYourAnswersHelper.packageRow(index, Index(packagePosition), userAnswers)
-      }
-    }.flatten
+    val totalTypes = userAnswers.get(DeriveNumberOfPackages(index)).getOrElse(0)
+
+    val packageRows: Seq[SummaryList.Row] = List.range(0, totalTypes).flatMap {
+      packagePosition =>
+        checkYourAnswersHelper.packageRow(index, Index(packagePosition), userAnswers)
+    }
 
     AddItemsCheckYourAnswersViewModel(
       Seq(
@@ -51,7 +50,7 @@ object AddItemsCheckYourAnswersViewModel {
             checkYourAnswersHelper.commodityCode(index)
           ).flatten
         ),
-        Section(msg"addItems.checkYourAnswersLabel.packages", packageRows)
+        Section(msg"addItems.checkYourAnswersLabel.packages", packageRows, "Add Another")
       )
     )
   }

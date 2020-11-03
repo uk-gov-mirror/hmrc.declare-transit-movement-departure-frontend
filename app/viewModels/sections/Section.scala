@@ -22,17 +22,20 @@ import play.api.libs.json.{__, OWrites}
 import uk.gov.hmrc.viewmodels.SummaryList.Row
 import uk.gov.hmrc.viewmodels.Text
 
-case class Section(sectionTitle: Option[Text], rows: Seq[Row])
+case class Section(sectionTitle: Option[Text], rows: Seq[Row], href: Option[String])
 
 object Section {
-  def apply(sectionTitle: Text, rows: Seq[Row]): Section = new Section(Some(sectionTitle), rows)
+  def apply(sectionTitle: Text, rows: Seq[Row]): Section = new Section(Some(sectionTitle), rows, None)
 
-  def apply(rows: Seq[Row]): Section = new Section(None, rows)
+  def apply(rows: Seq[Row]): Section = new Section(None, rows, None)
+
+  def apply(sectionTitle: Text, rows: Seq[Row], href: String): Section = new Section(Some(sectionTitle), rows, Some(href))
 
   implicit def sectionWrites(implicit messages: Messages): OWrites[Section] =
     (
       (__ \ "sectionTitle").write[Option[Text]] and
-        (__ \ "rows").write[Seq[Row]]
+        (__ \ "rows").write[Seq[Row]] and
+        (__ \ "href").write[Option[String]]
     )(unlift(Section.unapply))
 
 }
