@@ -19,7 +19,7 @@ package controllers.addItems.traderDetails
 import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.traderDetails.TraderDetailsConsigneeEoriKnownFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -85,7 +85,7 @@ class TraderDetailsConsigneeEoriKnownControllerSpec extends SpecBase with MockNu
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(TraderDetailsConsigneeEoriKnownPage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(TraderDetailsConsigneeEoriKnownPage(Index(0)), true).success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, traderDetailsConsigneeEoriKnownRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
