@@ -47,7 +47,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TotalPiecesPage(itemIndex, packageIndex)             => ua => Some(addItemsRoutes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
     case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, NormalMode)
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, packageIndex, NormalMode))
-    case AddAnotherPackagePage(itemIndex, packageIndex)       => ua => addAnotherPackage(itemIndex, packageIndex, ua, NormalMode)
+    case AddAnotherPackagePage(itemIndex)       => ua => addAnotherPackage(itemIndex, ua, NormalMode)
     case CommodityCodePage(index)                    => ua => Some(addItemsRoutes.AddItemsSameConsignorForAllItemsController.onPageLoad(ua.id,index, NormalMode))
     case AddItemsSameConsignorForAllItemsPage(index) => ua => addItemsSameConsignorForAllItems(ua, index, NormalMode)
     case TraderDetailsConsignorEoriKnownPage(index)  => ua => consignorEoriKnown(ua, index, NormalMode)
@@ -59,7 +59,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TraderDetailsConsigneeEoriNumberPage(index) => ua => consigneeEoriNumber(ua, index, NormalMode)
     case TraderDetailsConsigneeNamePage(index)       => ua => consigneeName(ua, index, NormalMode)
     case TraderDetailsConsigneeAddressPage(index)    => ua => consigneeAddress(ua, index, NormalMode)
-    case DeclareMarkPage(itemIndex, _)                        => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, NormalMode))
+    case DeclareMarkPage(itemIndex, _)                        => ua => Some(addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, NormalMode)
     case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
   }
@@ -78,7 +78,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TotalPiecesPage(itemIndex, packageIndex)             => ua => Some(addItemsRoutes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, CheckMode))
     case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, CheckMode)
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
-    case AddAnotherPackagePage(itemIndex, packageIndex)       => ua => addAnotherPackage(itemIndex, packageIndex, ua, CheckMode)
+    case AddAnotherPackagePage(itemIndex)       => ua => addAnotherPackage(itemIndex, ua, CheckMode)
     case ItemDescriptionPage(index)                  => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case ItemTotalGrossMassPage(index)               => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case AddTotalNetMassPage(index)                  => ua => addTotalNessMassRoute(index, ua,  CheckMode)
@@ -95,9 +95,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TraderDetailsConsigneeEoriNumberPage(index) => ua => consigneeEoriNumber(ua, index, CheckMode)
     case TraderDetailsConsigneeNamePage(index)       => ua => consigneeName(ua, index, CheckMode)
     case TraderDetailsConsigneeAddressPage(index)    => ua => consigneeAddress(ua, index, CheckMode)
-    case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+    case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
-    case RemovePackagePage(itemIndex)                         => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
+    case RemovePackagePage(itemIndex)                         => ua => Some(addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
   }
 
   private def consigneeAddress(ua: UserAnswers, index: Index, mode: Mode) =
@@ -306,8 +306,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
 
   private def removePackage(itemIndex: Index, mode: Mode)(ua: UserAnswers) =
     ua.get(DeriveNumberOfPackages(itemIndex)) match {
-      case None|Some(0) => routes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(0), mode)
-      case _            => routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, mode)
+      case None|Some(0) => addItemsRoutes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(0), mode)
+      case _            => addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, mode)
     }
   // format: on
 }
