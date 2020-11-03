@@ -28,7 +28,6 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
 import queries.{ItemsQuery, PackagesQuery}
-import controllers.{routes => mainRoutes}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -594,7 +593,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
               navigator
                 .nextPage(AddExtraInformationPage(index, referenceIndex), NormalMode, updatedAnswer)
-                .mustBe(previousReferencesRoute.AddExtraInformationController.onPageLoad(answers.id, index, referenceIndex, NormalMode)) //TODO replace with ExtraInformation controller
+                .mustBe(previousReferencesRoute.ExtraInformationController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
           }
         }
 

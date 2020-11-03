@@ -17,7 +17,7 @@
 package pages.addItems
 
 import models.{Index, UserAnswers}
-import pages.{PreviousReferencePage, QuestionPage}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{items, previousReferences}
 
@@ -33,7 +33,7 @@ case class AddExtraInformationPage(itemIndex: Index, referenceIndex: Index) exte
     value match {
       case Some(false) =>
         userAnswers
-          .remove(PreviousReferencePage(itemIndex, referenceIndex)) //TODO ExtraInformation page
+          .remove(ExtraInformationPage(itemIndex, referenceIndex))
       case _ => super.cleanup(value, userAnswers)
     }
 }

@@ -19,7 +19,7 @@ package pages
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.addItems.AddExtraInformationPage
+import pages.addItems.{AddExtraInformationPage, ExtraInformationPage}
 import pages.behaviours.PageBehaviours
 
 class AddExtraInformationPageSpec extends PageBehaviours with ScalaCheckPropertyChecks {
@@ -42,14 +42,14 @@ class AddExtraInformationPageSpec extends PageBehaviours with ScalaCheckProperty
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val result = answers
-              .set(PreviousReferencePage(itemIndex, referenceIndex), "test")
+              .set(ExtraInformationPage(itemIndex, referenceIndex), "test")
               .success
               .value
               .set(AddExtraInformationPage(itemIndex, referenceIndex), false)
               .success
               .value
 
-            result.get(PreviousReferencePage(itemIndex, referenceIndex)) must not be defined
+            result.get(ExtraInformationPage(itemIndex, referenceIndex)) must not be defined
         }
       }
 
@@ -57,14 +57,14 @@ class AddExtraInformationPageSpec extends PageBehaviours with ScalaCheckProperty
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val result = answers
-              .set(PreviousReferencePage(itemIndex, referenceIndex), "test")
+              .set(ExtraInformationPage(itemIndex, referenceIndex), "test")
               .success
               .value
               .set(AddExtraInformationPage(itemIndex, referenceIndex), true)
               .success
               .value
 
-            result.get(PreviousReferencePage(itemIndex, referenceIndex)) mustBe defined
+            result.get(ExtraInformationPage(itemIndex, referenceIndex)) mustBe defined
         }
       }
 

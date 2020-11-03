@@ -186,7 +186,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
 
   private def addExtraInformationPage(ua: UserAnswers, itemIndex: Index, referenceIndex: Index, mode: Mode): Option[Call] =
     ua.get(AddExtraInformationPage(itemIndex, referenceIndex)) map {
-      case true => previousReferencesRoutes.AddExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, mode) // TODO need to replace with Extra information controller
+      case true => previousReferencesRoutes.ExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, mode)
       case false => previousReferencesRoutes.AddExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, mode) // TODO need to replace with add another reference controller
     }
 

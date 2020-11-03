@@ -36,6 +36,12 @@ object AddItemsCheckYourAnswersViewModel {
           checkYourAnswersHelper.packageRow(index, Index(packagePosition), userAnswers)
       }
 
+    val referencesRows: Seq[SummaryList.Row] =
+      List.range(0, userAnswers.get(DeriveNumberOfPackages(index)).getOrElse(0)).flatMap {
+        packagePosition =>
+          checkYourAnswersHelper.packageRow(index, Index(packagePosition), userAnswers)
+      }
+
     AddItemsCheckYourAnswersViewModel(
       Seq(
         Section(
@@ -53,6 +59,11 @@ object AddItemsCheckYourAnswersViewModel {
           msg"addItems.checkYourAnswersLabel.packages",
           packageRows,
           checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.packages.addRemove")
+        ),
+        Section(
+          msg"addItems.checkYourAnswersLabel.references",
+          referencesRows,
+          checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
         )
       )
     )
