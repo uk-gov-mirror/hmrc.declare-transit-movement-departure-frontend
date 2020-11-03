@@ -16,8 +16,9 @@
 
 package viewModels
 
+import derivable.DeriveNumberOfPackages
 import models.{Index, UserAnswers}
-import uk.gov.hmrc.viewmodels.MessageInterpolators
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.AddItemsCheckYourAnswersHelper
 import viewModels.sections.Section
 
@@ -28,6 +29,12 @@ object AddItemsCheckYourAnswersViewModel {
   def apply(userAnswers: UserAnswers, index: Index): AddItemsCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper = new AddItemsCheckYourAnswersHelper(userAnswers)
+
+    val packageRows: Seq[SummaryList.Row] =
+      List.range(0, userAnswers.get(DeriveNumberOfPackages(index)).getOrElse(0)).flatMap {
+        packagePosition =>
+          checkYourAnswersHelper.packageRow(index, Index(packagePosition), userAnswers)
+      }
 
     AddItemsCheckYourAnswersViewModel(
       Seq(
@@ -41,6 +48,13 @@ object AddItemsCheckYourAnswersViewModel {
             checkYourAnswersHelper.isCommodityCodeKnown(index),
             checkYourAnswersHelper.commodityCode(index)
           ).flatten
-        )))
+        ),
+        Section(
+          msg"addItems.checkYourAnswersLabel.packages",
+          packageRows,
+          checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.packages.addRemove")
+        )
+      )
+    )
   }
 }
