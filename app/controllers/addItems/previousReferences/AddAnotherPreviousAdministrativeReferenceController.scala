@@ -85,19 +85,17 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
 
     val referenceRows = indexList.map {
       index =>
-        cyaHelper.previousAdminstrativeReferenceRows(index, referenceIndex)
+        cyaHelper.previousAdministrativeReferenceRows(index, referenceIndex)
     }
 
     val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"
     val json = Json.obj(
-      "form"           -> form,
-      "lrn"            -> lrn,
-      "pageTitle"      -> msg"addAnotherPreviousAdministrativeReference.title.$singularOrPlural".withArgs(numberOfReferences),
-      "heading"        -> msg"addAnotherPreviousAdministrativeReference.heading.$singularOrPlural".withArgs(numberOfReferences),
-      "referenceRows"  -> referenceRows,
-      "index"          -> index.display,
-      "referenceIndex" -> referenceIndex.display,
-      "radios"         -> Radios.yesNo(form("value"))
+      "form"          -> form,
+      "lrn"           -> lrn,
+      "pageTitle"     -> msg"addAnotherPreviousAdministrativeReference.title.$singularOrPlural".withArgs(numberOfReferences),
+      "heading"       -> msg"addAnotherPreviousAdministrativeReference.heading.$singularOrPlural".withArgs(numberOfReferences),
+      "referenceRows" -> referenceRows,
+      "radios"        -> Radios.yesNo(form("value"))
     )
 
     renderer.render("addItems/addAnotherPreviousAdministrativeReference.njk", json)

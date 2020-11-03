@@ -74,18 +74,16 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"           -> form,
-        "mode"           -> NormalMode,
-        "lrn"            -> lrn,
-        "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display,
-        "radios"         -> Radios.yesNo(form("value"))
+        "form"      -> form,
+        "lrn"       -> lrn,
+        "pageTitle" -> msg"addAnotherPreviousAdministrativeReference.title.plural".withArgs(1),
+        "heading"   -> msg"addAnotherPreviousAdministrativeReference.heading.plural".withArgs(1),
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonWithoutConfig must containJson(expectedJson)
 
       application.stop()
     }
@@ -110,18 +108,16 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
       val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form"           -> filledForm,
-        "mode"           -> NormalMode,
-        "lrn"            -> lrn,
-        "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display,
-        "radios"         -> Radios.yesNo(filledForm("value"))
+        "form"      -> form,
+        "lrn"       -> lrn,
+        "pageTitle" -> msg"addAnotherPreviousAdministrativeReference.title.singular".withArgs(1),
+        "heading"   -> msg"addAnotherPreviousAdministrativeReference.heading.singular".withArgs(1),
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonWithoutConfig must containJson(expectedJson)
 
       application.stop()
     }
@@ -171,18 +167,16 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"           -> boundForm,
-        "mode"           -> NormalMode,
-        "lrn"            -> lrn,
-        "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display,
-        "radios"         -> Radios.yesNo(boundForm("value"))
+        "form"      -> boundForm,
+        "lrn"       -> lrn,
+        "pageTitle" -> msg"addAnotherPreviousAdministrativeReference.title.plural".withArgs(1),
+        "heading"   -> msg"addAnotherPreviousAdministrativeReference.heading.plural".withArgs(1),
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonWithoutConfig must containJson(expectedJson)
 
       application.stop()
     }

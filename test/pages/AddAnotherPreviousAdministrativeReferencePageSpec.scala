@@ -22,8 +22,8 @@ import pages.behaviours.PageBehaviours
 
 class AddAnotherPreviousAdministrativeReferencePageSpec extends PageBehaviours {
 
-  val index          = Index(1)
-  val referenceIndex = Index(1)
+  val index          = Index(0)
+  val referenceIndex = Index(0)
   "AddAnotherPreviousAdministrativeReferencePage" - {
 
     beRetrievable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex))
