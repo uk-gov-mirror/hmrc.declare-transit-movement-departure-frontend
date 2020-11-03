@@ -95,7 +95,7 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherPreviousAdministrativeReferencePage, true).success.value
+      val userAnswers    = UserAnswers(lrn, eoriNumber).set(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, addAnotherPreviousAdministrativeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

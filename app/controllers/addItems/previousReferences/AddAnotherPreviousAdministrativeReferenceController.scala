@@ -70,9 +70,9 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
             formWithErrors => renderPage(lrn, index, referenceIndex, formWithErrors).map(BadRequest(_)),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPreviousAdministrativeReferencePage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAnotherPreviousAdministrativeReferencePage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), mode, updatedAnswers))
           )
     }
 

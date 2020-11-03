@@ -297,6 +297,22 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
+  def addPreviousAdminstrativeReference(index: Index, referenceIndex: Index): Option[Row] =
+    userAnswers.get(addItems.AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex)) map {
+      answer =>
+        Row(
+          key   = Key(msg"addAnotherDocument.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          value = Value(yesOrNo(answer)),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherDocument.checkYourAnswersLabel"))
+            )
+          )
+        )
+    }
+
   def previousAdminstrativeReferenceRows(index: Index, referenceIndex: Index): Option[Row] =
     userAnswers.get(PreviousReferencePage(index, referenceIndex)).map {
       answer =>
@@ -400,21 +416,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = previousReferencesRoutes.PreviousReferenceController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"previousReference.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addAnotherDocument(index: Index, referenceIndex: Index): Option[Row] = userAnswers.get(AddAnotherDocumentPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addAnotherDocument.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = previousReferencesRoutes.AddAnotherDocumentController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherDocument.checkYourAnswersLabel"))
           )
         )
       )
