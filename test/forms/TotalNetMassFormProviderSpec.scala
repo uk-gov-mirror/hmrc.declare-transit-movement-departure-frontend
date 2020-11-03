@@ -71,7 +71,7 @@ class TotalNetMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
         List(FormError(fieldName, invalidFormatKeyNetMass, Seq(index.display)))
 
       val genInvalidString: Gen[String] = {
-        decimals
+        decimalsPositive
           .suchThat(_.length < 16)
           .suchThat(_.matches(totalNetMassInvalidCharactersRegex))
           .suchThat(!_.matches(totalNetMassInvalidFormatRegex))
