@@ -17,10 +17,12 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
+import generators.JourneyModelGenerators
+import models.journeyDomain.RouteDetails.TransitInformation
 import models.{Index, LocalDateTimeWithAMPM, UserAnswers}
 import pages._
 
-class RouteDetailsSpec extends SpecBase with GeneratorSpec {
+class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
   "RouteDetails" - {
     "can be constructed when all the answers have been answered" in {

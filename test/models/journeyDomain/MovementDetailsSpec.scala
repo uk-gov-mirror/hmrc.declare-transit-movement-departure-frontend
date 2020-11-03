@@ -17,10 +17,12 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
+import generators.JourneyModelGenerators
 import models.UserAnswers
+import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, SimplifiedMovementDetails}
 import pages._
 
-class MovementDetailsSpec extends SpecBase with GeneratorSpec {
+class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
   "SimplifiedMovementDetails" - {
     "ParseUserAnswers parseNoDetails" - {
