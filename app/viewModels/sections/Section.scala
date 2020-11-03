@@ -21,21 +21,22 @@ import play.api.libs.functional.syntax.{unlift, _}
 import play.api.libs.json.{__, OWrites}
 import uk.gov.hmrc.viewmodels.SummaryList.Row
 import uk.gov.hmrc.viewmodels.Text
+import viewModels.AddAnotherViewModel
 
-case class Section(sectionTitle: Option[Text], rows: Seq[Row], href: Option[String])
+case class Section(sectionTitle: Option[Text], rows: Seq[Row], addAnother: Option[AddAnotherViewModel])
 
 object Section {
   def apply(sectionTitle: Text, rows: Seq[Row]): Section = new Section(Some(sectionTitle), rows, None)
 
   def apply(rows: Seq[Row]): Section = new Section(None, rows, None)
 
-  def apply(sectionTitle: Text, rows: Seq[Row], href: String): Section = new Section(Some(sectionTitle), rows, Some(href))
+  def apply(sectionTitle: Text, rows: Seq[Row], addAnother: AddAnotherViewModel): Section = new Section(Some(sectionTitle), rows, Some(addAnother))
 
   implicit def sectionWrites(implicit messages: Messages): OWrites[Section] =
     (
       (__ \ "sectionTitle").write[Option[Text]] and
         (__ \ "rows").write[Seq[Row]] and
-        (__ \ "href").write[Option[String]]
+        (__ \ "addAnother").write[Option[AddAnotherViewModel]]
     )(unlift(Section.unapply))
 
 }

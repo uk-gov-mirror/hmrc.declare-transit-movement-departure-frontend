@@ -19,12 +19,13 @@ package utils
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.addItems._
 import pages.addItems.traderDetails._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
+import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
@@ -374,6 +375,13 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           )
         )
     }
+
+  def addAnotherPackage(itemIndex: Index, content: Text): AddAnotherViewModel = {
+
+    val addAnotherPackageHref = routes.AddAnotherPackageController.onPageLoad(lrn, itemIndex, CheckMode).url
+
+    AddAnotherViewModel(addAnotherPackageHref, content)
+  }
 
   def lrn: LocalReferenceNumber = userAnswers.id
 
