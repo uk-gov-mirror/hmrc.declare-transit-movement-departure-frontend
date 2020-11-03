@@ -32,9 +32,7 @@ package object journeyDomain {
   implicit class GettableAsOptionalReaderOps[A](a: Gettable[A]) {
 
     def optionalReader(implicit reads: Reads[A]): UserAnswersReader[Option[A]] =
-      ReaderT[Option, UserAnswers, Option[A]](
-        x => Option(x.get(a))
-      )
+      reader.lower
 
     def reader(implicit reads: Reads[A]): UserAnswersReader[A] =
       ReaderT[Option, UserAnswers, A](_.get(a))

@@ -19,7 +19,10 @@ package models
 import models.reference.Country
 import play.api.libs.json._
 
-case class ConsigneeAddress(AddressLine1: String, AddressLine2: String, AddressLine3: String, country: Country)
+case class ConsigneeAddress(AddressLine1: String, AddressLine2: String, AddressLine3: String, country: Country) {
+  // TODO: DO NOT MERGE! This is a temp workaround for all the address types
+  def principalAddressDoNotMerge: PrincipalAddress = PrincipalAddress(AddressLine1: String, AddressLine2: String, AddressLine3: String)
+}
 
 object ConsigneeAddress {
   implicit val format = Json.format[ConsigneeAddress]

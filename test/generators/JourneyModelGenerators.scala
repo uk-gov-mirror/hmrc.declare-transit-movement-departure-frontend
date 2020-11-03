@@ -50,12 +50,13 @@ trait JourneyModelGenerators {
         containersUsed            <- arbitrary[Boolean]
         declarationPlacePage      <- stringsWithMaxLength(stringMaxLength)
         declarationForSomeoneElse <- arbitrary[DeclarationForSomeoneElseAnswer]
-      } yield SimplifiedMovementDetails(
-        declarationType,
-        containersUsed,
-        declarationPlacePage,
-        declarationForSomeoneElse
-      )
+      } yield
+        SimplifiedMovementDetails(
+          declarationType,
+          containersUsed,
+          declarationPlacePage,
+          declarationForSomeoneElse
+        )
     }
 
   implicit lazy val arbitraryTransitInformation: Arbitrary[TransitInformation] =
@@ -63,10 +64,11 @@ trait JourneyModelGenerators {
       for {
         transitOffice <- stringsWithMaxLength(stringMaxLength)
         arrivalTime   <- arbitrary[LocalDateTime]
-      } yield TransitInformation(
-        transitOffice,
-        arrivalTime
-      )
+      } yield
+        TransitInformation(
+          transitOffice,
+          arrivalTime
+        )
     }
 
   implicit lazy val arbitraryRouteDetails: Arbitrary[RouteDetails] =
@@ -77,12 +79,13 @@ trait JourneyModelGenerators {
         destinationCountry <- arbitrary[CountryCode]
         destinationOffice  <- stringsWithMaxLength(stringMaxLength)
         transitInformation <- nonEmptyListOf[TransitInformation](10)
-      } yield RouteDetails(
-        countryOfDispatch,
-        officeOfDeparture,
-        destinationCountry,
-        destinationOffice,
-        transitInformation
-      )
+      } yield
+        RouteDetails(
+          countryOfDispatch,
+          officeOfDeparture,
+          destinationCountry,
+          destinationOffice,
+          transitInformation
+        )
     }
 }

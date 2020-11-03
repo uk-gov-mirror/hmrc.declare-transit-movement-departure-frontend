@@ -26,7 +26,7 @@ class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGene
 
   "RouteDetails" - {
     "can be constructed when all the answers have been answered" in {
-      forAll(arbitrary[RouteDetails], arbitrary[UserAnswers]) {
+      forAll(arb[RouteDetails], arb[UserAnswers]) {
         (expected, baseUserAnswers) =>
           val interstitialUserAnswers = baseUserAnswers
             .set(CountryOfDispatchPage, expected.countryOfDispatch)

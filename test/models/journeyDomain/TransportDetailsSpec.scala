@@ -32,7 +32,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
   "TransportDetail can be parser from UserAnswers" - {
     "when there are no change at the border" - {
       val willNotChangeAnswers: Gen[UserAnswers] =
-        arbitrary[UserAnswers].map(_.set(ChangeAtBorderPage, false).success.value)
+        arb[UserAnswers].map(_.set(ChangeAtBorderPage, false).success.value)
 
       "when inland mode is 'Rail'" in {
         val railModeGen = Gen.oneOf(Rail.Constants.codes)
@@ -55,7 +55,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
       "when inland mode is 'Postal Consignment' or 'Fixed transport installations'" in {
         val modeGen = Gen.oneOf(Mode5or7.Constants.codes)
 
-        forAll(willNotChangeAnswers, modeGen, arbitrary[CountryCode]) {
+        forAll(willNotChangeAnswers, modeGen, arb[CountryCode]) {
           (baseUserAnswers, mode, countryCode) =>
             val userAnswers = baseUserAnswers
               .set(InlandModePage, mode)
@@ -75,7 +75,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
       "when inland mode is anything other than 'Rail', 'Postal Consignment' or 'Fixed transport installations'" in {
         val modeGen = stringsExceptSpecificValues(Rail.Constants.codes ++ Mode5or7.Constants.codes)
 
-        forAll(willNotChangeAnswers, modeGen, arbitrary[CountryCode], Gen.option(stringsWithMaxLength(stringMaxLength))) {
+        forAll(willNotChangeAnswers, modeGen, arb[CountryCode], Gen.option(stringsWithMaxLength(stringMaxLength))) {
           (baseUserAnswers, mode, countryCode, optionalIdAtDeparture) =>
             val tmp = baseUserAnswers
               .set(InlandModePage, mode)

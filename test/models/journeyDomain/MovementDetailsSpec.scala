@@ -28,7 +28,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
     "ParseUserAnswers parseNoDetails" - {
 
       "can be constructed when all the answers have been answered" in {
-        forAll(arbitrary[SimplifiedMovementDetails], arbitrary[UserAnswers]) {
+        forAll(arb[SimplifiedMovementDetails], arb[UserAnswers]) {
           (expected, baseUserAnswers) =>
             val interstitialUserAnswers = baseUserAnswers
               .set(DeclarationTypePage, expected.declarationType)
