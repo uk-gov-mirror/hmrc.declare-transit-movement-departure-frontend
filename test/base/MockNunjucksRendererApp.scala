@@ -18,26 +18,81 @@ package base
 
 import controllers.actions._
 import models.UserAnswers
+import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.Mockito
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers._
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.ActionTransformer
 import play.api.test.Helpers
+import repositories.SessionRepository
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
+
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEach with MockitoSugar {
   self: TestSuite =>
 
   val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 
+  val mockDataRetrievalActionProvider: DataRetrievalActionProvider = mock[DataRetrievalActionProvider]
+
+  val mockSessionRepository: SessionRepository = mock[SessionRepository]
+
   override def beforeEach {
+    Mockito.reset(
+      mockRenderer,
+      mockDataRetrievalActionProvider,
+      mockSessionRepository
+    )
     super.beforeEach()
-    Mockito.reset(mockRenderer)
   }
 
+  def dataRetrievalWithData(userAnswers: UserAnswers): Unit = {
+    val fakeDataRetrievalAction = new ActionTransformer[IdentifierRequest, OptionalDataRequest] {
+      override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+        Future.successful(OptionalDataRequest(request.request, request.eoriNumber, Some(userAnswers)))
+
+      override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
+    }
+
+    when(mockDataRetrievalActionProvider.apply(any())).thenReturn(fakeDataRetrievalAction)
+  }
+
+  def dataRetrievalNoData(): Unit = {
+    val fakeDataRetrievalAction = new ActionTransformer[IdentifierRequest, OptionalDataRequest] {
+      override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+        Future.successful(OptionalDataRequest(request.request, request.eoriNumber, None))
+
+      override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
+    }
+
+    when(mockDataRetrievalActionProvider.apply(any())).thenReturn(fakeDataRetrievalAction)
+  }
+
+  override def fakeApplication(): Application =
+    guiceApplicationBuilder()
+      .build()
+
+  // Override to provide custom binding
+  def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[DataRequiredAction].to[DataRequiredActionImpl],
+        bind[IdentifierAction].to[FakeIdentifierAction],
+        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
+        bind[NunjucksRenderer].toInstance(mockRenderer),
+        bind[MessagesApi].toInstance(Helpers.stubMessagesApi()),
+        bind[SessionRepository].toInstance(mockSessionRepository)
+      )
+
+  @deprecated("Use app from GuiceOneAppPerSuite instead", "next")
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(

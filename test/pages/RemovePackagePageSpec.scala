@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.PackageTypeList
-import models.reference.PackageType
-import play.api.data.Form
+import base.SpecBase
+import pages.addItems.RemovePackagePage
+import pages.behaviours.PageBehaviours
 
-class PackageTypeFormProvider @Inject() extends Mappings {
+class RemovePackagePageSpec extends PageBehaviours with SpecBase {
 
-  def apply(packageTypes: PackageTypeList): Form[PackageType] =
-    Form(
-      "value" -> text("packageType.error.required")
-        .verifying("packageType.error.required", value => packageTypes.packageTypeList.exists(_.code == value))
-        .transform[PackageType](value => packageTypes.packageTypeList.find(_.code == value).get, _.code)
-    )
+  "RemovePackagePage" - {
+
+    beRetrievable[Boolean](RemovePackagePage(index))
+
+    beSettable[Boolean](RemovePackagePage(index))
+
+    beRemovable[Boolean](RemovePackagePage(index))
+  }
 }

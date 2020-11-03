@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package models.messages
+package models.messages.header
 
 import java.time.LocalDate
 
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLReads._
+import models.XMLWrites._
+import models.messages.escapeXml
 import models.{LanguageCodeEnglish, XMLWrites}
 import utils.Format
 
@@ -36,22 +38,20 @@ case class Header(
   plaOfLoaCodHEA46: Option[String],
   couOfDisCodHEA55: Option[String],
   cusSubPlaHEA66: Option[String],
-  inlTraModHEA75: Option[Int],
-  traModAtBorHEA76: Option[Int],
-  ideOfMeaOfTraAtDHEA78: Option[String],
-  natOfMeaOfTraAtDHEA80: Option[String],
-  ideOfMeaOfTraCroHEA85: Option[String],
-  natOfMeaOfTraCroHEA87: Option[String],
-  typOfMeaOfTraCroHEA88: Option[Int],
+  transportDetails: Transport,
   conIndHEA96: Int, //TODO: If user specifies they're using a container, this is set to 1 (Containerised indicator)
   totNumOfIteHEA305: Int,
   totNumOfPacHEA306: Option[Int],
   totGroMasHEA307: String,
   decDatHEA383: LocalDate,
-  decPlaHEA394: String
+  decPlaHEA394: String,
+  speCirIndHEA1: Option[String],
+  traChaMetOfPayHEA1: Option[String],
+  comRefNumHEA: Option[String],
+  secHEA358: Option[Int],
+  conRefNumHEA: Option[String],
+  codPlUnHEA357: Option[String]
 )
-
-//TODO: NumOfLoaLisHEA304 not found in spec or appendix R. Optional field so doesn't need to be sent. What is it??
 
 object Header {
 
@@ -65,6 +65,12 @@ object Header {
     val identityMeansOfTransport            = 27
     val placeOfLoadingGoodsCodeLength       = 17
     val customsSubPlaceLength               = 17
+
+    val specificCircumstanceIndicatorLength = 1
+    val methodOfPaymentLength               = 1
+    val commercialReferenceNumberLength     = 70
+    val conveyanceReferenceNumberLength     = 35
+    val placeOfUnloadingCodeLength          = 35
   }
 
   // scalastyle:off
@@ -95,30 +101,7 @@ object Header {
           ) ++
           header.cusSubPlaHEA66.fold(NodeSeq.Empty) ( value =>
             <CusSubPlaHEA66>{escapeXml(value)}</CusSubPlaHEA66>
-          ) ++
-          header.inlTraModHEA75.fold(NodeSeq.Empty) ( value =>
-            <InlTraModHEA75>{value.toString}</InlTraModHEA75>
-          ) ++
-          header.traModAtBorHEA76.fold(NodeSeq.Empty) ( value =>
-            <TraModAtBorHEA76>{value.toString}</TraModAtBorHEA76>
-          ) ++
-          header.ideOfMeaOfTraAtDHEA78.fold(NodeSeq.Empty) (value =>
-            <IdeOfMeaOfTraAtDHEA78>{escapeXml(value)}</IdeOfMeaOfTraAtDHEA78>
-            <IdeOfMeaOfTraAtDHEA78LNG>{LanguageCodeEnglish.code}</IdeOfMeaOfTraAtDHEA78LNG>
-          ) ++
-          header.natOfMeaOfTraAtDHEA80.fold(NodeSeq.Empty) (value =>
-            <NatOfMeaOfTraAtDHEA80>{escapeXml(value)}</NatOfMeaOfTraAtDHEA80>
-          ) ++
-          header.ideOfMeaOfTraCroHEA85.fold(NodeSeq.Empty) (value =>
-            <IdeOfMeaOfTraCroHEA85>{escapeXml(value)}</IdeOfMeaOfTraCroHEA85>
-            <IdeOfMeaOfTraCroHEA85LNG>{LanguageCodeEnglish.code}</IdeOfMeaOfTraCroHEA85LNG>
-          ) ++
-          header.natOfMeaOfTraCroHEA87.fold(NodeSeq.Empty) (value =>
-            <NatOfMeaOfTraCroHEA87>{escapeXml(value)}</NatOfMeaOfTraCroHEA87>
-          ) ++
-          header.typOfMeaOfTraCroHEA88.fold(NodeSeq.Empty) (value =>
-            <TypOfMeaOfTraCroHEA88>{value.toString}</TypOfMeaOfTraCroHEA88>
-          )
+          ) ++ header.transportDetails.toXml
         }
         <ConIndHEA96>{header.conIndHEA96.toString}</ConIndHEA96>
         <DiaLanIndAtDepHEA254>{LanguageCodeEnglish.code}</DiaLanIndAtDepHEA254>
@@ -133,9 +116,39 @@ object Header {
         <DecDatHEA383>{Format.dateFormatted(header.decDatHEA383)}</DecDatHEA383>
         <DecPlaHEA394>{escapeXml(header.decPlaHEA394)}</DecPlaHEA394>
         <DecPlaHEA394LNG>{LanguageCodeEnglish.code}</DecPlaHEA394LNG>
+        {
+          header.speCirIndHEA1.fold(NodeSeq.Empty) (value =>
+            <SpeCirIndHEA1>{value.toString}</SpeCirIndHEA1>
+          ) ++
+          header.traChaMetOfPayHEA1.fold(NodeSeq.Empty) (value =>
+            <TraChaMetOfPayHEA1>{value}</TraChaMetOfPayHEA1>
+          ) ++
+          header.comRefNumHEA.fold(NodeSeq.Empty) (value =>
+            <ComRefNumHEA>{value}</ComRefNumHEA>
+          ) ++
+          header.secHEA358.fold(NodeSeq.Empty) (value =>
+            <SecHEA358>{value.toString}</SecHEA358>
+          ) ++
+            header.conRefNumHEA.fold(NodeSeq.Empty) (value =>
+            <ConRefNumHEA>{value}</ConRefNumHEA>
+          ) ++
+          header.codPlUnHEA357.fold(NodeSeq.Empty) (value =>
+            <CodPlUnHEA357>{value}</CodPlUnHEA357>
+            <CodPlUnHEA357LNG>{LanguageCodeEnglish.code}</CodPlUnHEA357LNG>
+          )
+        }
       </HEAHEA>
   }
   // scalastyle:on
+
+  //TODO: Following need adding
+  //<xs:element name="SpeCirIndHEA1" type="xs:string" minOccurs="0"/>
+  //<xs:element name="TraChaMetOfPayHEA1" type="xs:string" minOccurs="0"/>
+  //<xs:element name="ComRefNumHEA" type="xs:string" minOccurs="0"/>
+  //<xs:element name="SecHEA358" type="xs:string" minOccurs="0"/>
+  //<xs:element name="ConRefNumHEA" type="xs:string" minOccurs="0"/>
+  //<xs:element name="CodPlUnHEA357" type="xs:string" minOccurs="0"/>
+  //<xs:element name="CodPlUnHEA357LNG" type="xs:string" minOccurs="0"/>
 
   implicit val reads: XmlReader[Header] = (
     (__ \ "RefNumHEA4").read[String],
@@ -147,18 +160,24 @@ object Header {
     (__ \ "PlaOfLoaCodHEA46").read[String].optional,
     (__ \ "CouOfDisCodHEA55").read[String].optional,
     (__ \ "CusSubPlaHEA66").read[String].optional,
-    (__ \ "InlTraModHEA75").read[Int].optional,
-    (__ \ "TraModAtBorHEA76").read[Int].optional,
-    (__ \ "IdeOfMeaOfTraAtDHEA78").read[String].optional,
-    (__ \ "NatOfMeaOfTraAtDHEA80").read[String].optional,
-    (__ \ "IdeOfMeaOfTraCroHEA85").read[String].optional,
-    (__ \ "NatOfMeaOfTraCroHEA87").read[String].optional,
-    (__ \ "TypOfMeaOfTraCroHEA88").read[Int].optional,
+    (__).read[Transport],
     (__ \ "ConIndHEA96").read[Int],
     (__ \ "TotNumOfIteHEA305").read[Int],
     (__ \ "TotNumOfPacHEA306").read[Int].optional,
     (__ \ "TotGroMasHEA307").read[String],
     (__ \ "DecDatHEA383").read[LocalDate],
-    (__ \ "DecPlaHEA394").read[String]
+    (__ \ "DecPlaHEA394").read[String],
+    (__ \ "SpeCirIndHEA1").read[String].optional,
+    (__ \ "TraChaMetOfPayHEA1").read[String].optional,
+    (__ \ "ComRefNumHEA").read[String].optional,
+    (__ \ "SecHEA358").read[Int].optional,
+    (__ \ "ConRefNumHEA").read[String].optional,
+    (__ \ "CodPlUnHEA357").read[String].optional
   ).mapN(apply)
 }
+//<xs:element name="SpeCirIndHEA1" type="xs:string" minOccurs="0"/>
+//<xs:element name="TraChaMetOfPayHEA1" type="xs:string" minOccurs="0"/>
+//<xs:element name="ComRefNumHEA" type="xs:string" minOccurs="0"/>
+//<xs:element name="SecHEA358" type="xs:string" minOccurs="0"/>
+//<xs:element name="ConRefNumHEA" type="xs:string" minOccurs="0"/>
+//<xs:element name="CodPlUnHEA357" type="xs:string" minOccurs="0"/>

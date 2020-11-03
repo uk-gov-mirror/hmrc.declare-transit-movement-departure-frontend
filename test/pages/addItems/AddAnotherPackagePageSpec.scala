@@ -23,10 +23,10 @@ class AddAnotherPackagePageSpec extends PageBehaviours with SpecBase {
 
   "AddAnotherPackagePage" - {
 
-    beRetrievable[Boolean](AddAnotherPackagePage(index, index))
+    beRetrievable[Boolean](AddAnotherPackagePage(index))
 
-    beSettable[Boolean](AddAnotherPackagePage(index, index))
+    beSettable[Boolean](AddAnotherPackagePage(index))
 
-    beRemovable[Boolean](AddAnotherPackagePage(index, index))
+    beRemovable[Boolean](AddAnotherPackagePage(index))
   }
 }

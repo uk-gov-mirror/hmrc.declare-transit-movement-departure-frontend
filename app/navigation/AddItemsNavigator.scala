@@ -59,6 +59,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TraderDetailsConsigneeEoriNumberPage(index) => ua => consigneeEoriNumber(ua, index, NormalMode)
     case TraderDetailsConsigneeNamePage(index)       => ua => consigneeName(ua, index, NormalMode)
     case TraderDetailsConsigneeAddressPage(index)    => ua => consigneeAddress(ua, index, NormalMode)
+    case DeclareMarkPage(itemIndex, _)                        => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, NormalMode))
+    case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, NormalMode)
+    case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
   }
 
   //TODO: Need to refactor this code
@@ -92,6 +95,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TraderDetailsConsigneeEoriNumberPage(index) => ua => consigneeEoriNumber(ua, index, CheckMode)
     case TraderDetailsConsigneeNamePage(index)       => ua => consigneeName(ua, index, CheckMode)
     case TraderDetailsConsigneeAddressPage(index)    => ua => consigneeAddress(ua, index, CheckMode)
+    case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+    case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
+    case RemovePackagePage(itemIndex)                         => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
   }
 
   private def consigneeAddress(ua: UserAnswers, index: Index, mode: Mode) =
@@ -246,7 +252,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
   // TODO add smarter PackageTypePage type for easier matching
   def packageType(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] =
     ua.get(PackageTypePage(itemIndex, packageIndex)) match {
-      case Some(packageType) if bulkAndUnpackedCodes.contains(packageType) =>
+      case Some(packageType) if bulkAndUnpackedCodes.contains(packageType.code) =>
         Some(addItemsRoutes.DeclareNumberOfPackagesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case Some(_) =>
         Some(addItemsRoutes.HowManyPackagesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
@@ -286,8 +292,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _                          => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  def addAnotherPackage(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(AddAnotherPackagePage(itemIndex, packageIndex)), mode) match {
+  def addAnotherPackage(itemIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] =
+    (ua.get(AddAnotherPackagePage(itemIndex)), mode) match {
       case (Some(true), _) =>
         val nextPackageIndex: Int = ua.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
         Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(nextPackageIndex), mode))
@@ -296,6 +302,12 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (Some(false), NormalMode) =>
         ??? //TODO hook into container journey
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
+    }
+
+  private def removePackage(itemIndex: Index, mode: Mode)(ua: UserAnswers) =
+    ua.get(DeriveNumberOfPackages(itemIndex)) match {
+      case None|Some(0) => routes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(0), mode)
+      case _            => routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, mode)
     }
   // format: on
 }

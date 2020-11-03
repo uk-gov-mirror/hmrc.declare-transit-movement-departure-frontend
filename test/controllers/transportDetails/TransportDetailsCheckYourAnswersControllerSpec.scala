@@ -24,10 +24,11 @@ import models.reference.{Country, CountryCode, TransportMode}
 import models.{CountryList, LocalReferenceNumber, TransportModeList}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.InlandModePage
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -38,8 +39,7 @@ import scala.concurrent.Future
 
 class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
-  def onwardRoute(lrn: LocalReferenceNumber): Call =
-    Call("GET", s"/common-transit-convention-departure/$lrn/task-list")
+  def onwardRoute(lrn: LocalReferenceNumber) = Call("GET", s"/common-transit-convention-departure/$lrn/task-list")
 
   lazy val transportDetailsRoute: String                 = routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
   val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
@@ -48,27 +48,37 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with MockN
   private val country                                    = Country(CountryCode("GB"), "United Kingdom")
   val countries: CountryList                             = CountryList(Seq(country))
 
-  override def beforeEach: Unit =
-    super.beforeEach()
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockReferenceDataConnector))
+
+  override def beforeEach: Unit = {
+    reset(mockReferenceDataConnector)
+    super.beforeEach
+  }
 
   "TransportDetailsCheckYourAnswers Controller" - {
 
     "return OK and the correct view for a GET" in {
 
+      val userAnswers = emptyUserAnswers.set(InlandModePage, "1").success.value
+      dataRetrievalWithData(userAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransportModes()(any(), any())).thenReturn(Future.successful(transportModes))
-      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val updatedAnswers = emptyUserAnswers.set(InlandModePage, "1").success.value
-      val application = applicationBuilder(userAnswers = Some(updatedAnswers))
-        .overrides(bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector))
-        .build()
+      when(mockReferenceDataConnector.getTransportModes()(any(), any()))
+        .thenReturn(Future.successful(transportModes))
+
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
       val request        = FakeRequest(GET, routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -83,8 +93,6 @@ class TransportDetailsCheckYourAnswersControllerSpec extends SpecBase with MockN
 
       templateCaptor.getValue mustEqual "transportDetailsCheckYourAnswers.njk"
       jsonCaptorWithoutConfig mustBe expectedJson
-
-      application.stop()
     }
   }
 }

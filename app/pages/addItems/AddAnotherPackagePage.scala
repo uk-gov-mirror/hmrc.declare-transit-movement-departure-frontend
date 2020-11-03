@@ -21,9 +21,9 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{items, packages}
 
-case class AddAnotherPackagePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
+case class AddAnotherPackagePage(itemIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ packages \ packageIndex.position \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ toString
 
   override def toString: String = "addAnotherPackage"
 }
