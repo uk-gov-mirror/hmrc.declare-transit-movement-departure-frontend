@@ -26,12 +26,6 @@ import models.domain.TraderDomain.inputRegex
 
 class TraderDetailsConsigneeAddressFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("traderDetailsConsigneeAddress.error.required")
-        .verifying(maxLength(100, "traderDetailsConsigneeAddress.error.length"))
-    )
-
   def apply(consigneeName: String): Form[Address] = Form(
     mapping(
       "buildingAndStreet" -> text(

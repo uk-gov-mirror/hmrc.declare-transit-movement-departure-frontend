@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.traderDetails.TraderDetailsConsignorAddressPage
+import pages.addItems.traderDetails.{TraderDetailsConsignorAddressPage, TraderDetailsConsignorNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,11 +48,13 @@ class TraderDetailsConsignorAddressController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/traderDetails/traderDetailsConsignorAddress.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      val name = request.userAnswers.get(TraderDetailsConsignorNamePage(index)).getOrElse("")
+      val form = formProvider(name)
+
       val preparedForm = request.userAnswers.get(TraderDetailsConsignorAddressPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -69,6 +71,9 @@ class TraderDetailsConsignorAddressController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
+      val name = request.userAnswers.get(TraderDetailsConsignorNamePage(index)).getOrElse("")
+      val form = formProvider(name)
+
       form
         .bindFromRequest()
         .fold(
