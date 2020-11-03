@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package queries
 
-import javax.inject.Inject
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-import forms.mappings.Mappings
-import play.api.data.Form
+final case class PackagesQuery(itemIndex: Index, packageIndex: Index) extends QuestionPage[JsObject] {
 
-class AddMarkFormProvider @Inject() extends Mappings {
+  override def path: JsPath = JsPath \ Constants.items \ itemIndex.position \ Constants.packages \ packageIndex.position
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("addMark.error.required")
-    )
 }

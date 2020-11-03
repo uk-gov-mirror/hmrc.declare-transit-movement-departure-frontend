@@ -18,6 +18,7 @@ package pages
 
 import base.SpecBase
 import models.UserAnswers
+import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import pages.addItems._
 import pages.behaviours.PageBehaviours
@@ -26,11 +27,11 @@ class PackageTypePageSpec extends PageBehaviours with SpecBase {
 
   "PackageTypePage" - {
 
-    beRetrievable[String](PackageTypePage(index, index))
+    beRetrievable[PackageType](PackageTypePage(index, index))
 
-    beSettable[String](PackageTypePage(index, index))
+    beSettable[PackageType](PackageTypePage(index, index))
 
-    beRemovable[String](PackageTypePage(index, index))
+    beRemovable[PackageType](PackageTypePage(index, index))
 
     "cleanup" - {
 
@@ -55,7 +56,7 @@ class PackageTypePageSpec extends PageBehaviours with SpecBase {
                 .set(DeclareMarkPage(index, index), "mark")
                 .success
                 .value
-                .set(PackageTypePage(index, index), "AB")
+                .set(PackageTypePage(index, index), PackageType("AB", "description"))
                 .success
                 .value
 

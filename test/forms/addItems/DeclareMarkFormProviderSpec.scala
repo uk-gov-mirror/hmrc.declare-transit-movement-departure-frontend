@@ -14,49 +14,40 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import forms.behaviours.IntFieldBehaviours
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class HowManyPackagesFormProviderSpec extends IntFieldBehaviours {
+class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new HowManyPackagesFormProvider()()
+  val requiredKey = "declareMark.error.required"
+  val lengthKey   = "declareMark.error.length"
+  val maxLength   = 42
+
+  val form = new DeclareMarkFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
 
-    val minimum = 1
-    val maximum = 9999
-
-    val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
-
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      validDataGenerator
+      stringsWithMaxLength(maxLength)
     )
 
-    behave like intField(
+    behave like fieldWithMaxLength(
       form,
       fieldName,
-      nonNumericError  = FormError(fieldName, "howManyPackages.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "howManyPackages.error.wholeNumber")
-    )
-
-    behave like intFieldWithRange(
-      form,
-      fieldName,
-      minimum       = minimum,
-      maximum       = maximum,
-      expectedError = FormError(fieldName, "howManyPackages.error.outOfRange", Seq(minimum, maximum))
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "howManyPackages.error.required")
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

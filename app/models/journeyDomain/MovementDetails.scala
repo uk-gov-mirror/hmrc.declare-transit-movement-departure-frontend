@@ -40,7 +40,7 @@ object DeclarationForSomeoneElse {
     (
       RepresentativeNamePage.reader,
       RepresentativeCapacityPage.reader
-    ).tupled.map(DeclarationForSomeoneElse.apply _ tupled)
+    ).tupled.map((DeclarationForSomeoneElse.apply _).tupled)
 }
 
 sealed trait MovementDetails
@@ -81,7 +81,7 @@ object SimplifiedMovementDetails {
         DeclarationPlacePage.reader,
         declarationForSomeoneElseAnswer
       ).tupled
-    )(SimplifiedMovementDetails.apply _ tupled)
+    )((SimplifiedMovementDetails.apply _).tupled)
   }
 
 }

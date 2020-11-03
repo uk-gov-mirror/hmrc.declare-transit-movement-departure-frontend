@@ -655,6 +655,7 @@ accessCode.error.required = Enter the access code
 accessCode.error.length = Access code must be 4 characters
 accessCode.error.invalidCharacters = Access code must only include letters a to z and numbers 0 to 9
 
+
 guaranteeDetailsCheckYourAnswers.title = Check your answers
 guaranteeDetailsCheckYourAnswers.heading = Check your answers
 guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount = EUR 10,000
@@ -751,6 +752,10 @@ howManyPackages.error.nonNumeric = How many of this package type must only inclu
 howManyPackages.error.required = Enter how many packages you are declaring using whole numbers
 howManyPackages.error.wholeNumber = Enter how many packages you are declaring using whole numbers
 howManyPackages.error.outOfRange = How many packages you are declaring must be between {0} and {1}
+
+removePackage.title = Are you sure you want to remove the package?
+removePackage.heading = Are you sure you want to remove the package?
+removePackage.error.required = Select yes if you want to remove the package
 
 consignorForAllItems.title = Are you the consignor for all items?
 consignorForAllItems.heading = Are you the consignor for all items?

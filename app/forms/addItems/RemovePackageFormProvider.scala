@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class TotalPiecesFormProvider @Inject() extends Mappings {
+class RemovePackageFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Int] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> int("totalPieces.error.required", "totalPieces.error.wholeNumber", "totalPieces.error.nonNumeric")
-        .verifying(inRange(1, 99999, "totalPieces.error.outOfRange"))
+      "value" -> boolean("removePackage.error.required")
     )
 }

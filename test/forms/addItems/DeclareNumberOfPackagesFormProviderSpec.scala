@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddMarkFormProviderSpec extends BooleanFieldBehaviours {
+class DeclareNumberOfPackagesFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addMark.error.required"
+  val requiredKey = "declareNumberOfPackages.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddMarkFormProvider()()
+  val form = new DeclareNumberOfPackagesFormProvider()()
 
   ".value" - {
 

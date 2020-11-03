@@ -18,7 +18,7 @@ package controllers.addItems
 
 import controllers.actions._
 import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
-import forms.AddAnotherPackageFormProvider
+import forms.addItems.AddAnotherPackageFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
@@ -37,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherPackageController @Inject()(
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
@@ -52,10 +51,10 @@ class AddAnotherPackageController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(AddAnotherPackagePage(itemIndex, packageIndex)) match {
+        val preparedForm = request.userAnswers.get(AddAnotherPackagePage(itemIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -64,10 +63,7 @@ class AddAnotherPackageController @Inject()(
         val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
         val indexList: Seq[Index] = List.range(0, totalTypes).map(Index(_))
 
-        val packageRows = indexList.map {
-          index =>
-            cyaHelper.packageRows(itemIndex, index, mode)
-        }
+        val packageRows = indexList.map(index => cyaHelper.packageRows(itemIndex, index, mode))
 
         val singularOrPlural = if (totalTypes == 1) "singular" else "plural"
 
@@ -84,7 +80,7 @@ class AddAnotherPackageController @Inject()(
         renderer.render("addItems/addAnotherPackage.njk", json).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         form
@@ -108,8 +104,8 @@ class AddAnotherPackageController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPackagePage(itemIndex, packageIndex), value))
-              } yield Redirect(navigator.nextPage(AddAnotherPackagePage(itemIndex, packageIndex), mode, updatedAnswers))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPackagePage(itemIndex), value))
+              } yield Redirect(navigator.nextPage(AddAnotherPackagePage(itemIndex), mode, updatedAnswers))
           )
     }
 }

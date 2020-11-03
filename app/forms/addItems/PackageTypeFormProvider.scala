@@ -14,32 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.PackageTypeList
+import models.reference.PackageType
+import play.api.data.Form
 
-class AddAnotherPackageFormProviderSpec extends BooleanFieldBehaviours {
+class PackageTypeFormProvider @Inject() extends Mappings {
 
-  val requiredKey = "addAnotherPackage.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddAnotherPackageFormProvider()()
-
-  ".value" - {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+  def apply(packageTypes: PackageTypeList): Form[PackageType] =
+    Form(
+      "value" -> text("packageType.error.required")
+        .verifying("packageType.error.required", value => packageTypes.packageTypeList.exists(_.code == value))
+        .transform[PackageType](value => packageTypes.packageTypeList.find(_.code == value).get, _.code)
     )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
 }
