@@ -513,3 +513,8 @@ GET        /:lrn/specialMentionType                        controllers.SpecialMe
 POST       /:lrn/specialMentionType                        controllers.SpecialMentionTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeSpecialMentionType                  controllers.SpecialMentionTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeSpecialMentionType                  controllers.SpecialMentionTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/specialMentionAdditionalInfo                        controllers.SpecialMentionAdditionalInfoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/specialMentionAdditionalInfo                        controllers.SpecialMentionAdditionalInfoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSpecialMentionAdditionalInfo                  controllers.SpecialMentionAdditionalInfoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSpecialMentionAdditionalInfo                  controllers.SpecialMentionAdditionalInfoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

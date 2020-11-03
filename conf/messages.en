@@ -889,3 +889,9 @@ specialMentionType.heading = specialMentionType
 specialMentionType.checkYourAnswersLabel = specialMentionType
 specialMentionType.error.required = Enter specialMentionType
 specialMentionType.error.length = SpecialMentionType must be 100 characters or less
+
+specialMentionAdditionalInfo.title = specialMentionAdditionalInfo
+specialMentionAdditionalInfo.heading = specialMentionAdditionalInfo
+specialMentionAdditionalInfo.checkYourAnswersLabel = specialMentionAdditionalInfo
+specialMentionAdditionalInfo.error.required = Enter specialMentionAdditionalInfo
+specialMentionAdditionalInfo.error.length = SpecialMentionAdditionalInfo must be 70 characters or less

@@ -31,7 +31,8 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(SpecialMentionTypePage.type, JsValue)] ::
+    arbitrary[(SpecialMentionAdditionalInfoPage.type, JsValue)] ::
+      arbitrary[(SpecialMentionTypePage.type, JsValue)] ::
       arbitrary[(AddSpecialMentionPage.type, JsValue)] ::
       arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
       arbitrary[(PreviousReferencePage, JsValue)] ::

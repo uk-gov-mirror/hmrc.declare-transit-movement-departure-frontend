@@ -26,6 +26,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def specialMentionAdditionalInfo: Option[Row] = userAnswers.get(SpecialMentionAdditionalInfoPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"specialMentionAdditionalInfo.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionAdditionalInfo.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def specialMentionType: Option[Row] = userAnswers.get(SpecialMentionTypePage) map {
     answer =>
       Row(
