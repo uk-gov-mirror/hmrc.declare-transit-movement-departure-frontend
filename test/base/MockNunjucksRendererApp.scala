@@ -34,10 +34,8 @@ trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEac
   val mockRenderer: NunjucksRenderer = mock[NunjucksRenderer]
 
   override def beforeEach {
-    Mockito.reset(
-      mockRenderer
-    )
     super.beforeEach()
+    Mockito.reset(mockRenderer)
   }
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =

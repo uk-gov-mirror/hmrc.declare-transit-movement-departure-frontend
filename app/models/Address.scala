@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package pages.addItems.traderDetails
+package models
 
-import models.{Address, Index}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.{items, traderDetails}
+import play.api.libs.json._
 
-case class TraderDetailsConsignorAddressPage(index: Index) extends QuestionPage[Address] {
+case class Address(buildingAndStreet: String, city: String, postcode: String)
 
-  override def path: JsPath = JsPath \ items \ index.position \ traderDetails \ toString
+object Address {
 
-  override def toString: String = "traderDetailsConsignorAddress"
+  object Constants {
+    val buildingAndStreetLength = 35
+    val cityLength              = 35
+    val postcodeLength          = 9
+
+    object Fields {
+      val buildingAndStreetName = "building and street name"
+      val city                  = "city"
+      val postcode              = "postcode"
+    }
+  }
+
+  implicit val format: OFormat[Address] = Json.format[Address]
 }
