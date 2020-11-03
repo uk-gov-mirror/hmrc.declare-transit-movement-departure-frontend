@@ -48,11 +48,15 @@ class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviour
         stringsWithMaxLength(maxLength)
       )
 
+      val error = FormError(fieldName, lengthKey, args)
+
+      Console.println(error)
+
       behave like fieldWithMaxLength(
         form,
         fieldName,
         maxLength   = maxLength,
-        lengthError = FormError(fieldName, lengthKey, args),
+        lengthError = error,
         validAdressOverLength
       )
 
