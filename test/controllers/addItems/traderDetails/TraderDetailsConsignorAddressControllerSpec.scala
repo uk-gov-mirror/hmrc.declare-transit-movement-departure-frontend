@@ -95,7 +95,6 @@ class TraderDetailsConsignorAddressControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-
       val address = arbitrary[Address].sample.value
 
       val userAnswers = emptyUserAnswers

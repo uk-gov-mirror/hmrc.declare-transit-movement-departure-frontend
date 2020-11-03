@@ -75,8 +75,6 @@ class TraderDetailsConsigneeAddressControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-
-
       val application    = applicationBuilder(userAnswers = Some(answers)).build()
       val request        = FakeRequest(GET, traderDetailsConsigneeAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -113,7 +111,6 @@ class TraderDetailsConsigneeAddressControllerSpec
 
       dataRetrievalWithData(userAnswers)
       val address = arbitrary[Address].sample.value
-
 
       val application    = applicationBuilder(userAnswers = Some(userAnswers)).build()
       val request        = FakeRequest(GET, traderDetailsConsigneeAddressRoute)
