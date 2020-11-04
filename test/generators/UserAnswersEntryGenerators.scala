@@ -50,10 +50,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddAnotherSpecialMentionUserAnswersEntry: Arbitrary[(AddAnotherSpecialMentionPage.type, JsValue)] =
+  implicit lazy val arbitraryAddAnotherSpecialMentionUserAnswersEntry: Arbitrary[(AddAnotherSpecialMentionPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[AddAnotherSpecialMentionPage.type]
+        page  <- arbitrary[AddAnotherSpecialMentionPage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
