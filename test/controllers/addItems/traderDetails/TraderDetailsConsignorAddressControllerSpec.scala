@@ -116,7 +116,14 @@ class TraderDetailsConsignorAddressControllerSpec
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm =
+        form.bind(
+          Map(
+            "buildingAndStreet" -> address.buildingAndStreet,
+            "city"              -> address.city,
+            "postcode"          -> address.postcode
+          )
+        )
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
