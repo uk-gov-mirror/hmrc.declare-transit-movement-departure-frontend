@@ -145,7 +145,7 @@ class PackageTypeControllerSpec extends SpecBase with MockNunjucksRendererApp wi
       jsonCaptorWithoutConfig mustEqual expectedJson
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted and set to UserAnswers if there is no previous answers" in {
       dataRetrievalWithData(emptyUserAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -158,6 +158,27 @@ class PackageTypeControllerSpec extends SpecBase with MockNunjucksRendererApp wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      verify(mockSessionRepository, times(1)).set(any())
+    }
+
+    "must redirect to the next page when valid data is submitted and not set to UserAnswers if answer is the same" in {
+
+      val userAnswers = emptyUserAnswers.set(PackageTypePage(index, index), PackageType("AB", "Description 1")).success.value
+
+      dataRetrievalWithData(userAnswers)
+
+      when(mockRefDataConnector.getPackageTypes()(any(), any())).thenReturn(Future.successful(packageTypeList))
+
+      val request = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "AB"))
+
+      val result: Future[Result] = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verify(mockSessionRepository, times(0)).set(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

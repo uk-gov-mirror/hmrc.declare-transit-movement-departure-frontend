@@ -85,11 +85,21 @@ class DeclareNumberOfPackagesController @Inject()(
 
               renderer.render("addItems/declareNumberOfPackages.njk", json).map(BadRequest(_))
             },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareNumberOfPackagesPage(itemIndex, packageIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(DeclareNumberOfPackagesPage(itemIndex, packageIndex), mode, updatedAnswers))
+            value => {
+              val userAnswers = request.userAnswers.get(DeclareNumberOfPackagesPage(itemIndex, packageIndex)).map(_ == value) match {
+                case Some(true) => Future.successful(request.userAnswers)
+                case _ =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclareNumberOfPackagesPage(itemIndex, packageIndex), value))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield updatedAnswers
+              }
+
+              userAnswers.map {
+                ua =>
+                  Redirect(navigator.nextPage(DeclareNumberOfPackagesPage(itemIndex, packageIndex), mode, ua))
+              }
+            }
           )
     }
 }
