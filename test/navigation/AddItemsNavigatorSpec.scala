@@ -413,34 +413,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       //Trader details
       "Trader Details" - {
         //Consignor
-        "must go from addItemsSameConsignorForAllItems to" - {
-          "AddItemsSameConsigneeForAllItems when true" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage(index), true)
-                  .success
-                  .value
-                navigator
-                  .nextPage(AddItemsSameConsignorForAllItemsPage(index), NormalMode, updatedAnswers)
-                  .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(updatedAnswers.id, index, NormalMode))
-            }
-          }
-
-          "ConsignorEoriKnown when false" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage(index), false)
-                  .success
-                  .value
-                navigator
-                  .nextPage(AddItemsSameConsignorForAllItemsPage(index), NormalMode, updatedAnswers)
-                  .mustBe(traderRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(updatedAnswers.id, index, NormalMode))
-            }
-          }
-        }
-
         "must go from ConsignorEoriKnown to" - {
           "ConsignorEoriNumber when true" in {
             forAll(arbitrary[UserAnswers]) {
@@ -454,7 +426,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
             }
           }
-
           "ConsignorName when false" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
@@ -467,15 +438,41 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(traderRoutes.TraderDetailsConsignorNameController.onPageLoad(updatedAnswers.id, index, NormalMode))
             }
           }
+          //TODO: Add more specs for consignorEoriKnown navigation
         }
 
-        "must go from ConsignorEoriNumber to AddItemsSameConsigneeForAllItems" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, answers)
-                .mustBe(routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(answers.id, index, NormalMode))
+        "must go from ConsignorEoriNumber to" - {
+          "TraderDetailsConsigneeEoriKnownController when Consignee for all, and Consignee is user are 'False'" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(ConsigneeForAllItemsPage, false)
+                  .success
+                  .value
+                  .set(AddConsigneePage, false)
+                  .success
+                  .value
+                navigator
+                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
+                  .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
+            }
           }
+          "TraderDetailsConsigneeEoriKnownController when Header Consignee questions not answered" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .remove(ConsigneeForAllItemsPage)
+                  .success
+                  .value
+                  .remove(AddConsigneePage)
+                  .success
+                  .value
+                navigator
+                  .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
+                  .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
+            }
+          }
+          //TODO: Add more specs for consignorEoriNumber navigation
         }
 
         "must go from ConsignorName to ConsignorAddress" in {
