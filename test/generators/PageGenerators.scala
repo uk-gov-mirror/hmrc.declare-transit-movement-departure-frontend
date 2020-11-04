@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary
 import pages._
 import pages.addItems._
 import pages.addItems.specialMentions._
+import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
@@ -41,6 +42,12 @@ trait PageGenerators {
 
   implicit lazy val arbitraryAddSpecialMentionPage: Arbitrary[AddSpecialMentionPage] =
     Arbitrary(AddSpecialMentionPage(Index(0)))
+
+  implicit lazy val arbitraryAddAnotherContainerPage: Arbitrary[AddAnotherContainerPage.type] =
+    Arbitrary(AddAnotherContainerPage)
+
+  implicit lazy val arbitraryContainerNumberPage: Arbitrary[ContainerNumberPage.type] =
+    Arbitrary(ContainerNumberPage)
 
   implicit lazy val arbitraryAddAnotherPreviousAdministrativeReferencePage: Arbitrary[AddAnotherPreviousAdministrativeReferencePage] =
     Arbitrary(AddAnotherPreviousAdministrativeReferencePage(Index(0), Index(0)))

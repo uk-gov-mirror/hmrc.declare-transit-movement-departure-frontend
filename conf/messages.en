@@ -905,3 +905,14 @@ removeSpecialMention.title = removeSpecialMention
 removeSpecialMention.heading = removeSpecialMention
 removeSpecialMention.checkYourAnswersLabel = removeSpecialMention
 removeSpecialMention.error.required = Select yes if removeSpecialMention
+
+containerNumber.title = containerNumber
+containerNumber.heading = containerNumber
+containerNumber.checkYourAnswersLabel = containerNumber
+containerNumber.error.required = Enter containerNumber
+containerNumber.error.length = ContainerNumber must be 100 characters or less
+
+addAnotherContainer.title = addAnotherContainer
+addAnotherContainer.heading = addAnotherContainer
+addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
+addAnotherContainer.error.required = Select yes if addAnotherContainer
