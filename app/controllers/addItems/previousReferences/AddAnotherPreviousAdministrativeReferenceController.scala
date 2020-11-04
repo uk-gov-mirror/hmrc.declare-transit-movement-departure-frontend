@@ -22,7 +22,7 @@ import derivable.DeriveNumberOfPreviousAdministrativeReferences
 import forms.addItems.AddAnotherPreviousAdministrativeReferenceFormProvider
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, NormalMode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.AddAnotherPreviousAdministrativeReferencePage
@@ -88,7 +88,7 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
       previousDocuments =>
         val referenceRows = indexList.map {
           referenceIndex =>
-            cyaHelper.previousAdministrativeReferenceRows(index, referenceIndex, previousDocuments)
+            cyaHelper.previousAdministrativeReferenceRows(index, referenceIndex, previousDocuments, NormalMode)
         }
 
         val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"

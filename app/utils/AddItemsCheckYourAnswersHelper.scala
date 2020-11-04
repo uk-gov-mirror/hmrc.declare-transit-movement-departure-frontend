@@ -320,7 +320,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         }
     }
 
-  def previousAdministrativeReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList): Option[Row] =
+  def previousAdministrativeReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList, mode: Mode): Option[Row] =
     userAnswers.get(ReferenceTypePage(index, referenceIndex)) flatMap {
       answer =>
         previousDocumentType.getPreviousDocumentType(answer) map {
@@ -331,13 +331,14 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               actions = List(
                 Action(
                   content            = msg"site.change",
-                  href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
+                  href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, mode).url,
                   visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
                   attributes         = Map("id" -> s"""change-item-${index.display}""")
                 ),
                 Action(
-                  content            = msg"site.delete",
-                  href               = "#", //TODO removal
+                  content = msg"site.delete",
+                  href =
+                    previousReferencesRoutes.ConfirmRemovePreviousAdministrativeReferenceController.onPageLoad(userAnswers.id, index, referenceIndex, mode).url,
                   visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
                   attributes         = Map("id" -> s"""remove-item-${index.display}""")
                 )
@@ -405,6 +406,13 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           )
         )
       )
+  }
+
+  def addAnotherPreviousReferences(itemIndex: Index, content: Text): AddAnotherViewModel = {
+
+    val addAnotherPackageHref = previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, itemIndex, CheckMode).url
+
+    AddAnotherViewModel(addAnotherPackageHref, content)
   }
 
   def packageRow(itemIndex: Index, packageIndex: Index, userAnswers: UserAnswers): Option[Row] =

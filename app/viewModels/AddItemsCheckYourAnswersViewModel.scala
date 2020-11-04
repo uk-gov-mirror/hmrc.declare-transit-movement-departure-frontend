@@ -63,7 +63,7 @@ object AddItemsCheckYourAnswersViewModel {
         Section(
           msg"addItems.checkYourAnswersLabel.references",
           Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
-          checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
+          checkYourAnswersHelper.addAnotherPreviousReferences(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
         )
       )
     )
