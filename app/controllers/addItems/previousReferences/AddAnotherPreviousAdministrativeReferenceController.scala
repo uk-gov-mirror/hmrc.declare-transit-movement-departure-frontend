@@ -60,7 +60,7 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        renderPage(lrn, index, form, mode).map(Ok(_))
+        renderPage(lrn, index, form).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
@@ -69,7 +69,7 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => renderPage(lrn, index, formWithErrors, mode).map(BadRequest(_)),
+            formWithErrors => renderPage(lrn, index, formWithErrors).map(BadRequest(_)),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPreviousAdministrativeReferencePage(index), value))
@@ -78,7 +78,7 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
           )
     }
 
-  private def renderPage(lrn: LocalReferenceNumber, index: Index, form: Form[Boolean], mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Html] = {
+  private def renderPage(lrn: LocalReferenceNumber, index: Index, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
 
     val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
     val numberOfReferences    = request.userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
@@ -88,7 +88,7 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
       previousDocuments =>
         val referenceRows = indexList.map {
           referenceIndex =>
-            cyaHelper.previousAdministrativeReferenceRows(index, referenceIndex, previousDocuments, mode)
+            cyaHelper.previousAdministrativeReferenceRows(index, referenceIndex, previousDocuments, NormalMode)
         }
 
         val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"

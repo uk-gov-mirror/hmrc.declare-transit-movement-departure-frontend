@@ -20,7 +20,7 @@ import controllers.addItems.previousReferences.{routes => previousReferencesRout
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import models.reference.PreviousDocumentType
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, NormalMode, PreviousDocumentTypeList, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, PreviousDocumentTypeList, UserAnswers}
 import pages._
 import pages.{addItems, _}
 import pages.addItems._
@@ -410,7 +410,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def addAnotherPreviousReferences(itemIndex: Index, content: Text): AddAnotherViewModel = {
 
-    val addAnotherPackageHref = previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, itemIndex, NormalMode).url
+    val addAnotherPackageHref = previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, itemIndex, CheckMode).url
 
     AddAnotherViewModel(addAnotherPackageHref, content)
   }
