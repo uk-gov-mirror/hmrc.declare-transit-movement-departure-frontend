@@ -50,7 +50,7 @@ class ConfirmRemovePreviousAdministrativeReferenceControllerSpec
 
   private val formProvider = new ConfirmRemovePreviousAdministrativeReferenceFormProvider()
   private val form         = formProvider()
-  private val template     = "confirmRemovePreviousAdministrativeReference.njk"
+  private val template     = "addItems/confirmRemovePreviousAdministrativeReference.njk"
 
   lazy val confirmRemovePreviousAdministrativeReferenceRoute =
     routes.ConfirmRemovePreviousAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
@@ -100,7 +100,7 @@ class ConfirmRemovePreviousAdministrativeReferenceControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemovePreviousAdministrativeReferencePage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, confirmRemovePreviousAdministrativeReferenceRoute)

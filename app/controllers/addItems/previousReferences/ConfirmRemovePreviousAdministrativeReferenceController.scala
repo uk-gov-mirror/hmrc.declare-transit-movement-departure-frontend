@@ -49,12 +49,12 @@ class ConfirmRemovePreviousAdministrativeReferenceController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "confirmRemovePreviousAdministrativeReference.njk"
+  private val template = "addItems/confirmRemovePreviousAdministrativeReference.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(ConfirmRemovePreviousAdministrativeReferencePage) match {
+        val preparedForm = request.userAnswers.get(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -92,9 +92,9 @@ class ConfirmRemovePreviousAdministrativeReferenceController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(ConfirmRemovePreviousAdministrativeReferencePage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ConfirmRemovePreviousAdministrativeReferencePage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), mode, updatedAnswers))
           )
     }
 }

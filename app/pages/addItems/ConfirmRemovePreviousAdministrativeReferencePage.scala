@@ -16,12 +16,13 @@
 
 package pages.addItems
 
+import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object ConfirmRemovePreviousAdministrativeReferencePage extends QuestionPage[Boolean] {
+case class ConfirmRemovePreviousAdministrativeReferencePage(index: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "confirmRemovePreviousAdministrativeReference"
+  override def toString: String = "addItems/confirmRemovePreviousAdministrativeReference"
 }

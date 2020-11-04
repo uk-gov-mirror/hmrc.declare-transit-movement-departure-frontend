@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 import models._
 import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCodes}
 import pages._
-import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
+import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, ConfirmRemovePreviousAdministrativeReferencePage, _}
 import play.api.mvc.Call
 
 @Singleton
@@ -50,6 +50,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
     case AddExtraInformationPage(itemIndex, referenceIndex)   => ua => addExtraInformationRoute(itemIndex, referenceIndex, ua)
     case AddAnotherPreviousAdministrativeReferencePage(itemIndex, referenceIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, referenceIndex, ua)
+    case ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)     => ua => Some(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, index, referenceIndex,  NormalMode))
   }
 
   //TODO: Need to refactor this code

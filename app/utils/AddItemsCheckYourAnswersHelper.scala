@@ -32,7 +32,7 @@ import viewModels.AddAnotherViewModel
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def confirmRemovePreviousAdministrativeReference(index: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(ConfirmRemovePreviousAdministrativeReferencePage) map {
+    userAnswers.get(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)) map {
       answer =>
         Row(
           key   = Key(msg"confirmRemovePreviousAdministrativeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),

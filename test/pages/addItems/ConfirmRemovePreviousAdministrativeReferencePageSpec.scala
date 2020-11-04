@@ -16,16 +16,17 @@
 
 package pages.addItems
 
+import models.Index
 import pages.behaviours.PageBehaviours
 
-class ConfirmRemovePreviousAdministrativeReferencePageSpec extends PageBehaviours {
+class ConfirmRemovePreviousAdministrativeReferencePageSpec(index: Index, referenceIndex: Index) extends PageBehaviours {
 
   "ConfirmRemovePreviousAdministrativeReferencePage" - {
 
-    beRetrievable[Boolean](ConfirmRemovePreviousAdministrativeReferencePage)
+    beRetrievable[Boolean](ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex))
 
-    beSettable[Boolean](ConfirmRemovePreviousAdministrativeReferencePage)
+    beSettable[Boolean](ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex))
 
-    beRemovable[Boolean](ConfirmRemovePreviousAdministrativeReferencePage)
+    beRemovable[Boolean](ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex))
   }
 }
