@@ -16,7 +16,10 @@
 
 package models.journeyDomain
 
+import cats._
+import cats.data._
 import cats.implicits._
+import models.ProcedureType.{Normal, Simplified}
 import models.{DeclarationType, RepresentativeCapacity}
 import pages._
 import pages.movementDetails.PreLodgeDeclarationPage
@@ -25,6 +28,10 @@ sealed trait MovementDetails
 
 object MovementDetails {
 
+  implicit val parserMovementDetails: UserAnswersParser[Option, MovementDetails] =
+    (UserAnswersParser[Option, NormalMovementDetails]: UserAnswersParser[Option, MovementDetails]) combine
+      UserAnswersParser[Option, SimplifiedMovementDetails]
+
   private val declarationForSomeoneElseAnswer: UserAnswersReader[DeclarationForSomeoneElseAnswer] =
     DeclarationForSomeoneElsePage.reader.flatMap(
       bool =>
@@ -32,7 +39,7 @@ object MovementDetails {
           UserAnswersReader[DeclarationForSomeoneElse].widen[DeclarationForSomeoneElseAnswer]
         } else {
           UserAnswersReader[DeclarationForSelf.type].widen[DeclarationForSomeoneElseAnswer]
-        }
+      }
     )
 
   final case class NormalMovementDetails(
@@ -47,13 +54,18 @@ object MovementDetails {
 
     implicit val parseSimplifiedMovementDetails: UserAnswersParser[Option, NormalMovementDetails] =
       UserAnswersOptionalParser(
-        (
-          DeclarationTypePage.reader,
-          PreLodgeDeclarationPage.reader,
-          ContainersUsedPage.reader,
-          DeclarationPlacePage.reader,
-          declarationForSomeoneElseAnswer
-        ).tupled
+        ProcedureTypePage.reader
+          .filter(_ == Normal)
+          .flatMap(
+            _ =>
+              (
+                DeclarationTypePage.reader,
+                PreLodgeDeclarationPage.reader,
+                ContainersUsedPage.reader,
+                DeclarationPlacePage.reader,
+                declarationForSomeoneElseAnswer
+              ).tupled
+          )
       )((NormalMovementDetails.apply _).tupled)
   }
 
@@ -68,14 +80,18 @@ object MovementDetails {
 
     implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, SimplifiedMovementDetails] =
       UserAnswersOptionalParser(
-        (
-          DeclarationTypePage.reader,
-          ContainersUsedPage.reader,
-          DeclarationPlacePage.reader,
-          declarationForSomeoneElseAnswer
-        ).tupled
+        ProcedureTypePage.reader
+          .filter(_ == Simplified)
+          .flatMap(
+            _ =>
+              (
+                DeclarationTypePage.reader,
+                ContainersUsedPage.reader,
+                DeclarationPlacePage.reader,
+                declarationForSomeoneElseAnswer
+              ).tupled
+          )
       )((SimplifiedMovementDetails.apply _).tupled)
-
   }
 
   sealed trait DeclarationForSomeoneElseAnswer
