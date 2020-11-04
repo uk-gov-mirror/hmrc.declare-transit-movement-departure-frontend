@@ -544,6 +544,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
         }
+
       }
     }
 
