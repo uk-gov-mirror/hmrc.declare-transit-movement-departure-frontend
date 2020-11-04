@@ -26,6 +26,36 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def addAnotherContainer: Option[Row] = userAnswers.get(AddAnotherContainerPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"addAnotherContainer.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddAnotherContainerController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherContainer.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def containerNumber: Option[Row] = userAnswers.get(ContainerNumberPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"containerNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ContainerNumberController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"containerNumber.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(

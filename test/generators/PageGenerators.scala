@@ -26,6 +26,12 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryAddAnotherContainerPage: Arbitrary[AddAnotherContainerPage.type] =
+    Arbitrary(AddAnotherContainerPage)
+
+  implicit lazy val arbitraryContainerNumberPage: Arbitrary[ContainerNumberPage.type] =
+    Arbitrary(ContainerNumberPage)
+
   implicit lazy val arbitraryAddAnotherPreviousAdministrativeReferencePage: Arbitrary[AddAnotherPreviousAdministrativeReferencePage] =
     Arbitrary(AddAnotherPreviousAdministrativeReferencePage(Index(0), Index(0)))
 
