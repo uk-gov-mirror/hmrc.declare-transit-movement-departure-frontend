@@ -287,11 +287,11 @@ class AddItemsNavigator @Inject()() extends Navigator {
         Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  def howManyPackages(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode): Option[Call]  =
+  def howManyPackages(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode) =
     (ua.get(HowManyPackagesPage(itemIndex, packageIndex)), ua.get(PackageTypePage(itemIndex, packageIndex))) match {
-      case (Some(_), Some(packageType)) if bulkCodes.contains(packageType) =>
+      case (Some(_), Some(packageType)) if bulkCodes.contains(packageType.code) =>
         Some(addItemsRoutes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
-      case (Some(_), Some(packageType)) if unpackedCodes.contains(packageType) =>
+      case (Some(_), Some(packageType)) if unpackedCodes.contains(packageType.code) =>
         Some(addItemsRoutes.TotalPiecesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case (Some(_), Some(_)) =>
         Some(addItemsRoutes.DeclareMarkController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
@@ -299,13 +299,13 @@ class AddItemsNavigator @Inject()() extends Navigator {
         Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  def declareNumberOfPackages(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode): Option[Call]  =
+  def declareNumberOfPackages(itemIndex: Index, packageIndex: Index, ua: UserAnswers, mode: Mode) =
     (ua.get(DeclareNumberOfPackagesPage(itemIndex, packageIndex)), ua.get(PackageTypePage(itemIndex, packageIndex))) match {
       case (Some(true), _) =>
         Some(addItemsRoutes.HowManyPackagesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
-      case (Some(false), Some(packageType)) if bulkCodes.contains(packageType) =>
+      case (Some(false), Some(packageType)) if bulkCodes.contains(packageType.code) =>
         Some(addItemsRoutes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
-      case (Some(false), Some(packageType)) if unpackedCodes.contains(packageType) =>
+      case (Some(false), Some(packageType)) if unpackedCodes.contains(packageType.code) =>
         Some(addItemsRoutes.TotalPiecesController.onPageLoad(ua.id, itemIndex, packageIndex, mode))
       case _ =>
         Some(mainRoutes.SessionExpiredController.onPageLoad())
