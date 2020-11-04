@@ -18,7 +18,7 @@ package controllers.addItems.previousReferences
 
 import controllers.actions._
 import derivable.DeriveNumberOfPreviousAdministrativeReferences
-import forms.AddAnotherPreviousAdministrativeReferenceFormProvider
+import forms.addItems.AddAnotherPreviousAdministrativeReferenceFormProvider
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}

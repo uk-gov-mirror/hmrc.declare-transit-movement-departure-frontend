@@ -314,8 +314,10 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               attributes         = Map("id" -> s"""change-item-${index.display}""")
             ),
             Action(
-              content            = msg"site.delete",
-              href               = "#", //TODO removal
+              content = msg"site.delete",
+              href = previousReferencesRoutes.ConfirmRemovePreviousAdministrativeReferenceController
+                .onPageLoad(userAnswers.id, index, referenceIndex, CheckMode)
+                .url,
               visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
               attributes         = Map("id" -> s"""remove-item-${index.display}""")
             )
@@ -394,7 +396,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             Action(
               content            = msg"site.change",
               href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer.toString)),
               attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
             )
           )

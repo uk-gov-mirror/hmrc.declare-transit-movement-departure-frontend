@@ -97,12 +97,23 @@ class PackageTypeController @Inject()(
 
                   renderer.render("addItems/packageType.njk", json).map(BadRequest(_))
                 },
-                value =>
-                  for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage(itemIndex, packageIndex), value))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(PackageTypePage(itemIndex, packageIndex), mode, updatedAnswers))
+                value => {
+                  val userAnswers = request.userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map(_ == value) match {
+                    case Some(true) => Future.successful(request.userAnswers)
+                    case _ =>
+                      for {
+                        updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage(itemIndex, packageIndex), value))
+                        _              <- sessionRepository.set(updatedAnswers)
+                      } yield updatedAnswers
+                  }
+
+                  userAnswers.map {
+                    ua =>
+                      Redirect(navigator.nextPage(PackageTypePage(itemIndex, packageIndex), mode, ua))
+                  }
+                }
               )
         }
     }
+
 }

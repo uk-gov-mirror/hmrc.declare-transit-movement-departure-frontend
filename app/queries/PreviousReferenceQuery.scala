@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package models.reference
+package queries
 
-import play.api.libs.json.{Json, OFormat}
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-case class PackageType(code: String, description: String) {
-  override def toString: String = s"$description ($code)"
-}
+final case class PreviousReferenceQuery(index: Index, referenceIndex: Index) extends QuestionPage[JsObject] {
 
-object PackageType {
-  implicit val format: OFormat[PackageType] = Json.format[PackageType]
+  override def path: JsPath = JsPath \ Constants.items \ index.position \ Constants.previousReferences \ referenceIndex.position
 
-  val bulkCodes                         = Seq("VQ", "VG", "VL", "VY", "VR", "VS", "VO")
-  val unpackedCodes                     = Seq("NE", "NF", "NG")
-  val bulkAndUnpackedCodes: Seq[String] = bulkCodes ++ unpackedCodes
 }

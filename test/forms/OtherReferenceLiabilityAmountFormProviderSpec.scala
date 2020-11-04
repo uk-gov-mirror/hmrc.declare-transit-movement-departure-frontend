@@ -57,7 +57,7 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
 
       val expectedError = List(FormError(fieldName, invalidFormatKey, Seq(liabilityAmountFormatRegex)))
       val genInvalidString: Gen[String] = {
-        decimals
+        decimalsPositive
           .suchThat(_.matches(liabilityAmountCharactersRegex))
           .suchThat(!_.matches(liabilityAmountFormatRegex))
       }

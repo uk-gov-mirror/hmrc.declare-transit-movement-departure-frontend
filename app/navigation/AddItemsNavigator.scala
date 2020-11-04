@@ -66,6 +66,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
     case AddExtraInformationPage(itemIndex, referenceIndex)   => ua => addExtraInformationRoute(itemIndex, referenceIndex, ua)
     case AddAnotherPreviousAdministrativeReferencePage(itemIndex, referenceIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, referenceIndex, ua)
+    case ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)     => ua => Some(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, index, referenceIndex,  NormalMode))
   }
 
   //TODO: Need to refactor this code
@@ -101,7 +102,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TraderDetailsConsigneeAddressPage(index)    => ua => consigneeAddress(ua, index, CheckMode)
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
-    case RemovePackagePage(itemIndex)                         => ua => Some(addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
+    case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, CheckMode)(ua))
+    case ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)     => ua => Some(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, index, referenceIndex,  CheckMode))
   }
 
   private def consigneeAddress(ua: UserAnswers, index: Index, mode: Mode) =
@@ -225,26 +227,26 @@ class AddItemsNavigator @Inject()() extends Navigator {
       ua.get(ConsigneeForAllItemsPage), ua.get(AddConsigneePage),
       mode) match {
       case (_,
-      Some(false),Some(false),
-      Some(false),Some(false),
-      NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      Some(false), Some(false),
+      Some(false), Some(false),
+      NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode))
       case (_,
-      Some(true),None,
-      Some(false),Some(false),
-      NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      Some(true), None,
+      Some(false), Some(false),
+      NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
       case (_,
-      Some(false),Some(true),
-      Some(false),Some(false),
-      NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      Some(false), Some(true),
+      Some(false), Some(false),
+      NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
       case (_,
-      Some(true),None,
-      Some(true),None,
-      NormalMode)      => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
+      Some(true), None,
+      Some(true), None,
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
       case (_,
-      Some(false),Some(true),
-      Some(true),None,
-      NormalMode)      => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
-      case _           => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode)) //TODO: Confirm design with Adam
+      Some(false), Some(true),
+      Some(true), None,
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
+      case _ => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode)) //TODO: Confirm design with Adam
     }
 
   private def addTotalNetMassRoute(index: Index, ua: UserAnswers, mode: Mode) =
