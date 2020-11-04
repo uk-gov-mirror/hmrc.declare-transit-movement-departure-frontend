@@ -50,7 +50,7 @@ trait PageGenerators {
     Arbitrary(ContainerNumberPage)
 
   implicit lazy val arbitraryAddAnotherPreviousAdministrativeReferencePage: Arbitrary[AddAnotherPreviousAdministrativeReferencePage] =
-    Arbitrary(AddAnotherPreviousAdministrativeReferencePage(Index(0), Index(0)))
+    Arbitrary(AddAnotherPreviousAdministrativeReferencePage(Index(0)))
 
   implicit lazy val arbitraryConfirmRemovePreviousAdministrativeReferencePage: Arbitrary[ConfirmRemovePreviousAdministrativeReferencePage] =
     Arbitrary(ConfirmRemovePreviousAdministrativeReferencePage(Index(0), Index(0)))
@@ -74,7 +74,7 @@ trait PageGenerators {
     Arbitrary(addItems.PreviousReferencePage(Index(0), Index(0)))
 
   implicit lazy val arbitraryAddAdministrativeReferencePage: Arbitrary[AddAdministrativeReferencePage] =
-    Arbitrary(addItems.AddAdministrativeReferencePage(Index(0), Index(0)))
+    Arbitrary(addItems.AddAdministrativeReferencePage(Index(0)))
 
   implicit lazy val arbitraryRemoveItemPage: Arbitrary[ConfirmRemoveItemPage.type] =
     Arbitrary(ConfirmRemoveItemPage)

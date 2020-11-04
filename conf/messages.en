@@ -845,6 +845,7 @@ addItems.checkYourAnswersLabel.containers = Containers
 addItems.checkYourAnswersLabel.containers = Special mentions
 addItems.checkYourAnswersLabel.certificates = Produced documents and work certificates
 addItems.checkYourAnswersLabel.references = Previous administrative references
+addItems.checkYourAnswersLabel.references.addRemove = Add or remove previous administrative references
 
 addAdministrativeReference.title = Do you need to add a previous administrative reference?
 addAdministrativeReference.heading = Do you need to add a previous administrative reference?
