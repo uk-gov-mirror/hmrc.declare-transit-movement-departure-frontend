@@ -22,11 +22,26 @@ import controllers.routes
 import controllers.addItems.specialMentions.{routes => specialMentionRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
+import pages.addItems.specialMentions._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def removeSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(RemoveSpecialMentionPage(itemIndex)) map {
+    answer =>
+      Row(
+        key   = Key(msg"removeSpecialMention.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = specialMentionRoutes.RemoveSpecialMentionController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"removeSpecialMention.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   //TODO: These should be moved
   def addAnotherSpecialMention: Option[Row] = userAnswers.get(AddAnotherSpecialMentionPage) map {

@@ -900,3 +900,8 @@ addAnotherSpecialMention.title = addAnotherSpecialMention
 addAnotherSpecialMention.heading = addAnotherSpecialMention
 addAnotherSpecialMention.checkYourAnswersLabel = addAnotherSpecialMention
 addAnotherSpecialMention.error.required = Select yes if addAnotherSpecialMention
+
+removeSpecialMention.title = removeSpecialMention
+removeSpecialMention.heading = removeSpecialMention
+removeSpecialMention.checkYourAnswersLabel = removeSpecialMention
+removeSpecialMention.error.required = Select yes if removeSpecialMention

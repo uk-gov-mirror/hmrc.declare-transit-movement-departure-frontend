@@ -20,12 +20,15 @@ import models.Index
 import org.scalacheck.Arbitrary
 import pages._
 import pages.addItems._
-import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
+import pages.addItems.specialMentions._
 import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryRemoveSpecialMentionPage: Arbitrary[RemoveSpecialMentionPage] =
+    Arbitrary(RemoveSpecialMentionPage(Index(0)))
 
   implicit lazy val arbitraryAddAnotherSpecialMentionPage: Arbitrary[AddAnotherSpecialMentionPage.type] =
     Arbitrary(AddAnotherSpecialMentionPage)

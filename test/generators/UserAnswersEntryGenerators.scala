@@ -23,7 +23,7 @@ import pages._
 import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage}
 import pages.addItems.traderDetails._
 import pages.addItems._
-import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
+import pages.addItems.specialMentions._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -31,6 +31,14 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators extends PageGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryRemoveSpecialMentionUserAnswersEntry: Arbitrary[(RemoveSpecialMentionPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RemoveSpecialMentionPage]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryAddAnotherSpecialMentionUserAnswersEntry: Arbitrary[(AddAnotherSpecialMentionPage.type, JsValue)] =
     Arbitrary {
