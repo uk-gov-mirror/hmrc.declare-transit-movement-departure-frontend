@@ -26,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.ConfirmRemovePreviousAdministrativeReferencePage
+import pages.addItems.{ConfirmRemovePreviousAdministrativeReferencePage, ReferenceTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -36,6 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import controllers.{routes => mainRoutes}
+import pages.ItemDescriptionPage
 
 import scala.concurrent.Future
 
@@ -95,47 +96,13 @@ class ConfirmRemovePreviousAdministrativeReferenceControllerSpec
 
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
-      dataRetrievalWithData(userAnswers)
-
-      val request        = FakeRequest(GET, confirmRemovePreviousAdministrativeReferenceRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val expectedJson = Json.obj(
-        "form"           -> filledForm,
-        "mode"           -> NormalMode,
-        "lrn"            -> lrn,
-        "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display,
-        "radios"         -> Radios.yesNo(filledForm("value"))
-      )
-
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
-
-    }
-
     "must redirect to the next page when valid data is submitted" in {
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val updatedUserAnswers                             = emptyUserAnswers.set(ReferenceTypePage(index, referenceIndex), "item1").success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      dataRetrievalWithData(emptyUserAnswers)
+      dataRetrievalWithData(updatedUserAnswers)
 
       val request =
         FakeRequest(POST, confirmRemovePreviousAdministrativeReferenceRoute)
@@ -144,6 +111,9 @@ class ConfirmRemovePreviousAdministrativeReferenceControllerSpec
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
+      verify(mockSessionRepository, times(1)).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.get(ReferenceTypePage(index, referenceIndex)) mustBe None
 
       redirectLocation(result).value mustEqual onwardRoute.url
 

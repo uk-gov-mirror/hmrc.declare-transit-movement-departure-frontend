@@ -31,22 +31,6 @@ import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def confirmRemovePreviousAdministrativeReference(index: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)) map {
-      answer =>
-        Row(
-          key   = Key(msg"confirmRemovePreviousAdministrativeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-          value = Value(yesOrNo(answer)),
-          actions = List(
-            Action(
-              content            = msg"site.edit",
-              href               = previousReferencesRoutes.ConfirmRemovePreviousAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemovePreviousAdministrativeReference.checkYourAnswersLabel"))
-            )
-          )
-        )
-    }
-
   def addItemsSameConsignorForAllItems(index: Index): Option[Row] = userAnswers.get(AddItemsSameConsignorForAllItemsPage) map {
     answer =>
       Row(

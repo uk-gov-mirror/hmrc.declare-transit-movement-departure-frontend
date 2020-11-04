@@ -22,10 +22,11 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.ConfirmRemovePreviousAdministrativeReferencePage
+import pages.addItems.{ConfirmRemovePreviousAdministrativeReferencePage, PreviousReferencePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.{ItemsQuery, PreviousReferenceQuery}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -93,7 +94,7 @@ class ConfirmRemovePreviousAdministrativeReferenceController @Inject()(
             value =>
               if (value) {
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(PreviousReferenceQuery(index, referenceIndex)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), mode, updatedAnswers))
               } else {
