@@ -23,7 +23,14 @@ import controllers.routes
 import controllers.addItems.containers.{routes => containerRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, RemoveSpecialMentionPage, SpecialMentionAdditionalInfoPage}
+import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
+import pages.addItems.specialMentions.{
+  AddAnotherSpecialMentionPage,
+  AddSpecialMentionPage,
+  RemoveSpecialMentionPage,
+  SpecialMentionAdditionalInfoPage,
+  SpecialMentionTypePage
+}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
