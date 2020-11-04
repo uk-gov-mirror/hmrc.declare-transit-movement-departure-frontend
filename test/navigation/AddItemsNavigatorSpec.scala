@@ -641,16 +641,60 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
+
+          "must go to ReferenceType page when user selects 'No'" ignore {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswer = answers
+                  .remove(PreviousReferencesQuery(index))
+                  .success
+                  .value
+                  .set(AddAnotherPreviousAdministrativeReferencePage(index), false)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(AddAnotherPreviousAdministrativeReferencePage(index), NormalMode, updatedAnswer)
+                  .mustBe(???) //TODO must got to safety and security journey
+            }
+          }
+
         }
 
         "ConfirmRemovePreviousAdministrativeReference page" - {
-          "must go to AddAnotherPreviousAdministrativeReference page when user selects 'Yes'" in {
+          "must go to AddAnotherPreviousAdministrativeReference page" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
-                val updatedAnswer = answers.set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
+                val updatedAnswer = answers
+                  .set(ReferenceTypePage(index, referenceIndex), "T1")
+                  .success
+                  .value
+                  .set(ReferenceTypePage(index, Index(1)), "T1")
+                  .success
+                  .value
+                  .set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true)
+                  .success
+                  .value
                 navigator
                   .nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
-                  .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+                  .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
+            }
+          }
+
+          "must go to reference type page when there are no previous references" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswer = answers
+                  .remove(PreviousReferencesQuery(index))
+                  .success
+                  .value
+                  .set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
+                  .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
         }
@@ -1118,7 +1162,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
           }
         }
-
 
         "RemovePackage" - {
 
