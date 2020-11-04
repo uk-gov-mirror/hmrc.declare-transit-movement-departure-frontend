@@ -91,10 +91,15 @@ class ConfirmRemovePreviousAdministrativeReferenceController @Inject()(
               renderer.render(template, json).map(BadRequest(_))
             },
             value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), mode, updatedAnswers))
+              if (value) {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), mode, updatedAnswers))
+              } else {
+                Future.successful(
+                  Redirect((navigator.nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), mode, request.userAnswers))))
+            }
           )
     }
 }

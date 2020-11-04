@@ -24,5 +24,5 @@ case class ConfirmRemovePreviousAdministrativeReferencePage(index: Index, refere
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "addItems/confirmRemovePreviousAdministrativeReference"
+  override def toString: String = "confirmRemovePreviousAdministrativeReference"
 }
