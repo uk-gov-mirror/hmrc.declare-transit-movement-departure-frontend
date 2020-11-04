@@ -19,14 +19,16 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import controllers.addItems.containers.{routes => containerRoutes}
+import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def addAnotherContainer: Option[Row] = userAnswers.get(AddAnotherContainerPage) map {
+  def addAnotherContainer(itemIndex: Index): Option[Row] = userAnswers.get(AddAnotherContainerPage) map {
     answer =>
       Row(
         key   = Key(msg"addAnotherContainer.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -34,14 +36,14 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.AddAnotherContainerController.onPageLoad(lrn, CheckMode).url,
+            href               = containerRoutes.AddAnotherContainerController.onPageLoad(lrn, itemIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherContainer.checkYourAnswersLabel"))
           )
         )
       )
   }
 
-  def containerNumber: Option[Row] = userAnswers.get(ContainerNumberPage) map {
+  def containerNumber(itemIndex: Index): Option[Row] = userAnswers.get(ContainerNumberPage) map {
     answer =>
       Row(
         key   = Key(msg"containerNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -49,7 +51,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.ContainerNumberController.onPageLoad(lrn, CheckMode).url,
+            href               = containerRoutes.ContainerNumberController.onPageLoad(lrn, itemIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"containerNumber.checkYourAnswersLabel"))
           )
         )

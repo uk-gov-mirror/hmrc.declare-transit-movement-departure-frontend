@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems.containers
 
 import controllers.actions._
-import forms.ContainerNumberFormProvider
+import forms.addItems.containers.ContainerNumberFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.ContainerNumberPage
+import pages.addItems.containers.ContainerNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,9 +49,9 @@ class ContainerNumberController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "containerNumber.njk"
+  private val template = "addItems/containers/containerNumber.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(ContainerNumberPage) match {
         case None        => form
@@ -67,7 +67,7 @@ class ContainerNumberController @Inject()(
       renderer.render(template, json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()

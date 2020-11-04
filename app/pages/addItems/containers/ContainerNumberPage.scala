@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems.containers
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class AddAnotherContainerPageSpec extends PageBehaviours {
+case object ContainerNumberPage extends QuestionPage[String] {
 
-  "AddAnotherContainerPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[Boolean](AddAnotherContainerPage)
-
-    beSettable[Boolean](AddAnotherContainerPage)
-
-    beRemovable[Boolean](AddAnotherContainerPage)
-  }
+  override def toString: String = "containerNumber"
 }

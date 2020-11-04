@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems.containers
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
-import forms.AddAnotherContainerFormProvider
+import base.{MockNunjucksRendererApp, SpecBase}
+import forms.addItems.containers.AddAnotherContainerFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddAnotherContainerPage
+import pages.addItems.containers.AddAnotherContainerPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -35,7 +34,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
@@ -46,9 +44,9 @@ class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRender
 
   private val formProvider = new AddAnotherContainerFormProvider()
   private val form         = formProvider()
-  private val template     = "addAnotherContainer.njk"
+  private val template     = "addItems/containers/addAnotherContainer.njk"
 
-  lazy val addAnotherContainerRoute = routes.AddAnotherContainerController.onPageLoad(lrn, NormalMode).url
+  lazy val addAnotherContainerRoute = routes.AddAnotherContainerController.onPageLoad(lrn, itemIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -182,7 +180,7 @@ class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRender
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -198,7 +196,7 @@ class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRender
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
     }
   }

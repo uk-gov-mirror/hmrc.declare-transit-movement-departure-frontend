@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package forms.addItems.containers
 
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class ContainerNumberPageSpec extends PageBehaviours {
+class AddAnotherContainerFormProvider @Inject() extends Mappings {
 
-  "ContainerNumberPage" - {
-
-    beRetrievable[String](ContainerNumberPage)
-
-    beSettable[String](ContainerNumberPage)
-
-    beRemovable[String](ContainerNumberPage)
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addAnotherContainer.error.required")
+    )
 }

@@ -22,6 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
 import pages.addItems._
+import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage

@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems.containers
 
-import forms.behaviours.BooleanFieldBehaviours
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class AddAnotherContainerFormProviderSpec extends BooleanFieldBehaviours {
+class ContainerNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "addAnotherContainer.error.required"
-  val invalidKey  = "error.boolean"
+  val requiredKey = "containerNumber.error.required"
+  val lengthKey   = "containerNumber.error.length"
+  val maxLength   = 100
 
-  val form = new AddAnotherContainerFormProvider()()
+  val form = new ContainerNumberFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
 
-    behave like booleanField(
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(

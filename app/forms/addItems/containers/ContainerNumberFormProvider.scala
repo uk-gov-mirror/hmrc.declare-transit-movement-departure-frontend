@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.addItems.containers
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
 
-class AddAnotherContainerFormProvider @Inject() extends Mappings {
+class ContainerNumberFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(): Form[String] =
     Form(
-      "value" -> boolean("addAnotherContainer.error.required")
+      "value" -> text("containerNumber.error.required")
+        .verifying(maxLength(100, "containerNumber.error.length"))
     )
 }
