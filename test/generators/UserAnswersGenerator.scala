@@ -22,6 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
 import pages.addItems._
+import pages.addItems.specialMentions._
 import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
@@ -31,7 +32,12 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
+    arbitrary[(RemoveSpecialMentionPage, JsValue)] ::
+      arbitrary[(AddAnotherSpecialMentionPage.type, JsValue)] ::
+      arbitrary[(SpecialMentionAdditionalInfoPage.type, JsValue)] ::
+      arbitrary[(SpecialMentionTypePage.type, JsValue)] ::
+      arbitrary[(AddSpecialMentionPage, JsValue)] ::
+      arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
       arbitrary[(PreviousReferencePage, JsValue)] ::
       arbitrary[(ExtraInformationPage, JsValue)] ::
       arbitrary[(PreviousReferencePage, JsValue)] ::
