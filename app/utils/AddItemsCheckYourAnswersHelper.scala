@@ -369,7 +369,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             Action(
               content            = msg"site.change",
               href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer.toString)),
               attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
             )
           )

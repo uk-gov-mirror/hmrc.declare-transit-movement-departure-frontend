@@ -62,9 +62,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case DeclareNumberOfPackagesPage(itemIndex, packageIndex) => ua => declareNumberOfPackages(itemIndex, packageIndex, ua, CheckMode)
     case TotalPiecesPage(itemIndex, packageIndex)             => ua => Some(routes.AddMarkController.onPageLoad(ua.id, itemIndex, packageIndex, CheckMode))
     case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, CheckMode)
-    case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+    case DeclareMarkPage(itemIndex, _)                        => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
-    case RemovePackagePage(itemIndex)                         => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
+    case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, CheckMode)(ua))
   }
 
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
