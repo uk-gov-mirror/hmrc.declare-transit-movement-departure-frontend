@@ -136,12 +136,26 @@ class TraderDetailsConsignorAddressControllerSpec
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      dataRetrievalWithData(emptyUserAnswers)
+      val address = arbitrary[Address].sample.value
+
+      val userAnswers = emptyUserAnswers
+        .set(TraderDetailsConsignorNamePage(index), consignorName)
+        .success
+        .value
+        .set(TraderDetailsConsignorAddressPage(index), address)
+        .success
+        .value
+
+      dataRetrievalWithData(userAnswers)
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request =
         FakeRequest(POST, traderDetailsConsignorAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(
+            ("buildingAndStreet", address.buildingAndStreet),
+            ("city", address.city),
+            ("postcode", address.postcode)
+          )
 
       val result = route(app, request).value
 
