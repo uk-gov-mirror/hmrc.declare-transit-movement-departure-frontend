@@ -27,7 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.PreviousReferencePage
+import pages.addItems
+import pages.addItems.PreviousReferencePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -71,10 +72,11 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> form,
-        "mode"  -> NormalMode,
-        "lrn"   -> lrn,
-        "index" -> index.display
+        "form"           -> form,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -103,10 +105,11 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form"  -> filledForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form"           -> filledForm,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -146,10 +149,11 @@ class PreviousReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> boundForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form"           -> boundForm,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display
       )
 
       templateCaptor.getValue mustEqual template

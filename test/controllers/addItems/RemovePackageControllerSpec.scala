@@ -46,7 +46,7 @@ class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp 
   private val form         = formProvider()
   private val template     = "addItems/removePackage.njk"
 
-  lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(lrn, index, index).url
+  lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(lrn, index, index, NormalMode).url
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()

@@ -22,7 +22,8 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.PreviousReferencePage
+import pages.addItems
+import pages.addItems.PreviousReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,16 +55,17 @@ class PreviousReferenceController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(PreviousReferencePage(index, referenceIndex)) match {
+        val preparedForm = request.userAnswers.get(addItems.PreviousReferencePage(index, referenceIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
         val json = Json.obj(
-          "form"  -> preparedForm,
-          "lrn"   -> lrn,
-          "mode"  -> mode,
-          "index" -> index.display
+          "form"           -> preparedForm,
+          "lrn"            -> lrn,
+          "mode"           -> mode,
+          "index"          -> index.display,
+          "referenceIndex" -> referenceIndex.display
         )
 
         renderer.render(template, json).map(Ok(_))
@@ -78,19 +80,20 @@ class PreviousReferenceController @Inject()(
             formWithErrors => {
 
               val json = Json.obj(
-                "form"  -> formWithErrors,
-                "lrn"   -> lrn,
-                "mode"  -> mode,
-                "index" -> index.display
+                "form"           -> formWithErrors,
+                "lrn"            -> lrn,
+                "mode"           -> mode,
+                "index"          -> index.display,
+                "referenceIndex" -> referenceIndex.display
               )
 
               renderer.render(template, json).map(BadRequest(_))
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(PreviousReferencePage(index, referenceIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(addItems.PreviousReferencePage(index, referenceIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(PreviousReferencePage(index, referenceIndex), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(addItems.PreviousReferencePage(index, referenceIndex), mode, updatedAnswers))
           )
     }
 }

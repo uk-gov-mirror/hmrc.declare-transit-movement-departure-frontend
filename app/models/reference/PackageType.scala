@@ -18,7 +18,6 @@ package models.reference
 
 import play.api.libs.json.{Json, OFormat}
 
-// TODO seperate into sub types (BulkPackage, UnpackedPackage etc)
 case class PackageType(code: String, description: String) {
   override def toString: String = s"$description ($code)"
 }
