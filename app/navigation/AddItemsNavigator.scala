@@ -19,6 +19,7 @@ package navigation
 import controllers.{routes => mainRoutes}
 import controllers.addItems.{routes => addItemsRoutes}
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
+import controllers.addItems.previousReferences.{routes => previousReferenceRoutes}
 import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
 import javax.inject.{Inject, Singleton}
 import models._
@@ -26,6 +27,7 @@ import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCo
 import pages._
 import pages.addItems._
 import pages.addItems.traderDetails._
+import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
 import play.api.mvc.Call
 
 @Singleton
@@ -62,6 +64,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case DeclareMarkPage(itemIndex, _)                        => ua => Some(addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, NormalMode)
     case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
+    case AddExtraInformationPage(itemIndex, referenceIndex)   => ua => addExtraInformationRoute(itemIndex, referenceIndex, ua)
+    case AddAnotherPreviousAdministrativeReferencePage(itemIndex, referenceIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, referenceIndex, ua)
   }
 
   //TODO: Need to refactor this code
@@ -154,7 +158,18 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
+  private def addAnotherPreviousAdministrativeReferenceRoute(index:Index, referenceIndex:Index, ua:UserAnswers) =
+    ua.get(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex)) match {
+      case Some(true) => Some(previousReferenceRoutes.ReferenceTypeController.onPageLoad(ua.id, index, referenceIndex, NormalMode))
+      case Some(false) => ???
+    }
+
+  private def addExtraInformationRoute(index:Index, referenceIndex:Index, ua:UserAnswers) =
+    ua.get(AddExtraInformationPage(index, referenceIndex)) match  {
+      case Some(true) => ???
+      case Some(false) =>  Some(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, index, referenceIndex, NormalMode))
+    }
+    private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
     (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)), mode) match {
       case (Some(true), _, NormalMode)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
       case (Some(false), _, NormalMode)   => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo  change when Trader Details Pages built

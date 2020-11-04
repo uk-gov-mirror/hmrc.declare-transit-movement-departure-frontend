@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("previousReference.title"), form.errors) }}
+  {{ title(messages("specialMentionAdditionalInfo.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -27,14 +27,13 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.addItems.previousReferences.PreviousReferenceController.onSubmit(lrn, index, referenceIndex, mode).url }}" method="post">
-        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
+        <form action="{{ routes.controllers.addItems.specialMentions.SpecialMentionAdditionalInfoController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
           {{ govukInput({
             label: {
-              text: messages('previousReference.heading'),
+              text: messages('specialMentionAdditionalInfo.heading'),
               isPageHeading: true,
               classes: "govuk-label--xl"
             },

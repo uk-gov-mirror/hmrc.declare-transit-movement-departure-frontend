@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems.specialMentions
 
 import models.Index
-import pages.addItems.PreviousReferencePage
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.items
 
-class PreviousReferencePageSpec extends PageBehaviours {
+case class AddSpecialMentionPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
-  private val index          = Index(0)
-  private val referenceIndex = Index(0)
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ toString
 
-  "PreviousReferencePage" - {
-
-    beRetrievable[String](PreviousReferencePage(index, referenceIndex))
-
-    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
-
-    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
-  }
+  override def toString: String = "addSpecialMention"
 }

@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms.addItems.specialMentions
 
-import models.Index
-import pages.addItems.PreviousReferencePage
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class PreviousReferencePageSpec extends PageBehaviours {
+class SpecialMentionTypeFormProvider @Inject() extends Mappings {
 
-  private val index          = Index(0)
-  private val referenceIndex = Index(0)
-
-  "PreviousReferencePage" - {
-
-    beRetrievable[String](PreviousReferencePage(index, referenceIndex))
-
-    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
-
-    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
-  }
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("specialMentionType.error.required")
+        .verifying(maxLength(100, "specialMentionType.error.length"))
+    )
 }

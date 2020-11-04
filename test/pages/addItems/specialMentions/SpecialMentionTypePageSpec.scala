@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems.specialMentions
 
-import models.Index
-import pages.addItems.PreviousReferencePage
 import pages.behaviours.PageBehaviours
 
-class PreviousReferencePageSpec extends PageBehaviours {
+class SpecialMentionTypePageSpec extends PageBehaviours {
 
-  private val index          = Index(0)
-  private val referenceIndex = Index(0)
+  "SpecialMentionTypePage" - {
 
-  "PreviousReferencePage" - {
+    beRetrievable[String](SpecialMentionTypePage)
 
-    beRetrievable[String](PreviousReferencePage(index, referenceIndex))
+    beSettable[String](SpecialMentionTypePage)
 
-    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
-
-    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
+    beRemovable[String](SpecialMentionTypePage)
   }
 }
