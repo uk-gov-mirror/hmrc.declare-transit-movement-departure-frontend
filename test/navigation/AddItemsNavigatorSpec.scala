@@ -17,20 +17,19 @@
 package navigation
 
 import base.SpecBase
+import controllers.addItems.previousReferences.{routes => previousReferenceRoutes}
 import controllers.addItems.routes
-import controllers.{routes => mainRoutes}
 import controllers.addItems.traderDetails.{routes => traderRoutes}
+import controllers.{routes => mainRoutes}
 import generators.Generators
-import models.reference.PackageType
-import models.{CheckMode, Index, NormalMode, UserAnswers}
+import models.reference.{CountryCode, PackageType}
+import models.{CheckMode, DeclarationType, Index, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
-import queries.{ItemsQuery, PackagesQuery}
-import controllers.{routes => mainRoutes}
-import controllers.addItems.previousReferences.{routes => previousReferenceRoutes}
 import pages.addItems.traderDetails._
+import queries.{ItemsQuery, PackagesQuery, PreviousReferencesQuery}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -891,24 +890,128 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
         }
 
-        "AddExtraInformationPage" - {
+      }
 
-          "must go to AddAnotherPreviousAdministrativeReferencePage when customer selects 'No'" in {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .set(AddExtraInformationPage(index, index), false)
-                  .success
-                  .value
+      "previous references journey" - {
+        "must go from add another document page to add administrative reference page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(DeclarationTypePage, DeclarationType.Option1)
+                .success
+                .value
+                .set(CountryOfDispatchPage, CountryCode("UK"))
+                .success
+                .value
 
-                val nextPackageIndex = Index(index.position)
+              navigator
+                .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
+                .mustBe(previousReferenceRoutes.AddAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
+          }
+        }
 
-                navigator
-                  .nextPage(AddExtraInformationPage(index, index), NormalMode, updatedAnswers)
-                  .mustBe(
-                    previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, nextPackageIndex, NormalMode))
+        "must go from add another document page to reference type page" - {
+          "when declaration type is T2 and dispatch country is non-EU" in {
+            val dispatchCountries =
+              Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
+            for (countryCode <- dispatchCountries) {
+              forAll(arbitrary[UserAnswers]) {
+                answers =>
+                  val updatedAnswers = answers
+                    .set(DeclarationTypePage, DeclarationType.Option2)
+                    .success
+                    .value
+                    .set(CountryOfDispatchPage, countryCode)
+                    .success
+                    .value
 
+                  navigator
+                    .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
+                    .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+              }
             }
+          }
+        }
+
+        "must go from 'add administrative reference' page to 'reference type' page when selected 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .remove(PreviousReferencesQuery(index))
+                .success
+                .value
+                .set(AddAdministrativeReferencePage(index), true)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
+                .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+          }
+        }
+
+        "must go from 'add administrative reference' page to 'user selected yes for safety and security' page when selected 'No'" ignore {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(AddAdministrativeReferencePage(index), false)
+                .success
+                .value
+
+              navigator
+                .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
+                .mustBe(???) // TODO need to replace with  user selected yes for safety and security
+          }
+        }
+
+        "must go from 'reference-type page' to 'previous reference' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(ReferenceTypePage(index, referenceIndex), NormalMode, answers)
+                .mustBe(previousReferenceRoutes.PreviousReferenceController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+          }
+        }
+
+        "must go from 'previous reference' page to 'add extra information' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(PreviousReferencePage(index, referenceIndex), NormalMode, answers)
+                .mustBe(previousReferenceRoutes.AddExtraInformationController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+          }
+        }
+
+        "must go from 'add extra information' page to 'extra information' page on selecting 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddExtraInformationPage(index, referenceIndex), true).success.value
+
+              navigator
+                .nextPage(AddExtraInformationPage(index, referenceIndex), NormalMode, updatedAnswer)
+                .mustBe(previousReferenceRoutes.ExtraInformationController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+          }
+        }
+
+        "must go from 'add extra information' page to 'Add another reference' page on selecting 'No'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddExtraInformationPage(index, referenceIndex), false).success.value
+
+              navigator
+                .nextPage(AddExtraInformationPage(index, referenceIndex), NormalMode, updatedAnswer)
+                .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
+          }
+        }
+
+        "must go from 'extra information' page to 'Add another reference' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(ExtraInformationPage(index, referenceIndex), "text").success.value
+
+              navigator
+                .nextPage(ExtraInformationPage(index, referenceIndex), NormalMode, updatedAnswer)
+                .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
           }
         }
 
@@ -916,12 +1019,37 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           "must go to ReferenceType page when user selects 'Yes'" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
-                val updatedAnswer = answers.set(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
+                val updatedAnswer = answers
+                  .remove(PreviousReferencesQuery(index))
+                  .success
+                  .value
+                  .set(AddAnotherPreviousAdministrativeReferencePage(index), true)
+                  .success
+                  .value
+
                 navigator
-                  .nextPage(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
-                  .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+                  .nextPage(AddAnotherPreviousAdministrativeReferencePage(index), NormalMode, updatedAnswer)
+                  .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
+
+          "must go to ReferenceType page when user selects 'No'" ignore {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswer = answers
+                  .remove(PreviousReferencesQuery(index))
+                  .success
+                  .value
+                  .set(AddAnotherPreviousAdministrativeReferencePage(index), false)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(AddAnotherPreviousAdministrativeReferencePage(index), NormalMode, updatedAnswer)
+                  .mustBe(???) //TODO must got to safety and security journey
+            }
+          }
+
         }
 
         "must go from AddAnotherItem page to" - {
@@ -1015,13 +1143,39 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
 
         "ConfirmRemovePreviousAdministrativeReference page" - {
-          "must go to AddAnotherPreviousAdministrativeReference page when user selects 'Yes'" in {
+          "must go to AddAnotherPreviousAdministrativeReference page" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
-                val updatedAnswer = answers.set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
+                val updatedAnswer = answers
+                  .set(ReferenceTypePage(index, referenceIndex), "T1")
+                  .success
+                  .value
+                  .set(ReferenceTypePage(index, Index(1)), "T1")
+                  .success
+                  .value
+                  .set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true)
+                  .success
+                  .value
                 navigator
                   .nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
-                  .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+                  .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
+            }
+          }
+
+          "must go to reference type page when there are no previous references" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswer = answers
+                  .remove(PreviousReferencesQuery(index))
+                  .success
+                  .value
+                  .set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true)
+                  .success
+                  .value
+
+                navigator
+                  .nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
+                  .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
         }
@@ -1719,6 +1873,95 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .nextPage(AddAnotherPackagePage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
             }
+          }
+        }
+      }
+
+      "previous references journey" - {
+        "must go from add administrative reference page to CYA page when selected 'No'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(AddAdministrativeReferencePage(index), false).success.value
+              navigator
+                .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
+                .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+          }
+        }
+
+        "must go from add administrative reference page to reference type page when selected 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .remove(PreviousReferencesQuery(index))
+                .success
+                .value
+                .set(AddAdministrativeReferencePage(index), true)
+                .success
+                .value
+              navigator
+                .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
+                .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
+          }
+        }
+
+        "must go from add administrative reference page to safety and security page when selected 'No' and mode is NormalMode" ignore {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(AddAdministrativeReferencePage(index), true).success.value
+              navigator
+                .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
+                .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, CheckMode)) //TODO must got to first page of safety n security
+          }
+        }
+
+        "must go from 'reference-type page' to 'previous reference' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(ReferenceTypePage(index, referenceIndex), CheckMode, answers)
+                .mustBe(previousReferenceRoutes.PreviousReferenceController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
+          }
+        }
+
+        "must go from 'previous reference' page to 'add extra information' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(PreviousReferencePage(index, referenceIndex), CheckMode, answers)
+                .mustBe(previousReferenceRoutes.AddExtraInformationController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
+          }
+        }
+
+        "must go from 'add extra information' page to 'extra information' page on selecting 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddExtraInformationPage(index, referenceIndex), true).success.value
+
+              navigator
+                .nextPage(AddExtraInformationPage(index, referenceIndex), CheckMode, updatedAnswer)
+                .mustBe(previousReferenceRoutes.ExtraInformationController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
+          }
+        }
+
+        "must go from 'add extra information' page to 'Add another reference' page on selecting 'No'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddExtraInformationPage(index, referenceIndex), false).success.value
+
+              navigator
+                .nextPage(AddExtraInformationPage(index, referenceIndex), CheckMode, updatedAnswer)
+                .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, CheckMode))
+          }
+        }
+
+        "must go from 'extra information' page to 'Add another reference' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(ExtraInformationPage(index, referenceIndex), "text").success.value
+
+              navigator
+                .nextPage(ExtraInformationPage(index, referenceIndex), CheckMode, updatedAnswer)
+                .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
           }
         }
 

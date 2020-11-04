@@ -17,10 +17,14 @@
 package viewModels
 
 import base.SpecBase
+import models.PreviousDocumentTypeList
+import models.reference.PreviousDocumentType
 import pages._
 import pages.addItems._
 
 class AddItemsCheckYourAnswersViewModelSpec extends SpecBase {
+
+  private val previousDocumentTypeList = PreviousDocumentTypeList(Seq(PreviousDocumentType("code", "name")))
 
   "AddItemsCheckYourAnswersViewModel" - {
 
@@ -45,10 +49,10 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase {
         .success
         .value
 
-      val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index)
+      val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, previousDocumentTypeList)
 
       data.sections.head.sectionTitle mustBe defined
-      data.sections.length mustEqual 2
+      data.sections.length mustEqual 3
       data.sections.head.rows.length mustEqual 6
     }
   }

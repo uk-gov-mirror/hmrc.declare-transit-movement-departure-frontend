@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package queries
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-class ExtraInformationFormProvider @Inject() extends Mappings {
+final case class PreviousReferencesQuery(index: Index) extends QuestionPage[JsObject] {
 
-  val maxLength = 26
-  val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
+  override def path: JsPath = JsPath \ Constants.items \ index.position \ Constants.previousReferences
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("extraInformation.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(maxLength, "extraInformation.error.length"),
-            regexp(regex, "extraInformation.error.invalid")
-          ))
-    )
 }

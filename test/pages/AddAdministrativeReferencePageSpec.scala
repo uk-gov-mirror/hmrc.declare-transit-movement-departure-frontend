@@ -16,21 +16,60 @@
 
 package pages
 
-import models.Index
-import pages.addItems.AddAdministrativeReferencePage
+import models.{Index, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.addItems.{AddAdministrativeReferencePage, AddExtraInformationPage, PreviousReferencePage, ReferenceTypePage}
 import pages.behaviours.PageBehaviours
 
-class AddAdministrativeReferencePageSpec extends PageBehaviours {
+class AddAdministrativeReferencePageSpec extends PageBehaviours with ScalaCheckPropertyChecks {
 
-  private val index         = Index(0)
-  private val refernceIndex = Index(0)
+  private val index          = Index(0)
+  private val referenceIndex = Index(0)
 
   "AddAdministrativeReferencePage" - {
 
-    beRetrievable[Boolean](AddAdministrativeReferencePage(index, refernceIndex))
+    beRetrievable[Boolean](AddAdministrativeReferencePage(index))
 
-    beSettable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
+    beSettable[Boolean](addItems.AddAdministrativeReferencePage(index))
 
-    beRemovable[Boolean](addItems.AddAdministrativeReferencePage(index, refernceIndex))
+    beRemovable[Boolean](addItems.AddAdministrativeReferencePage(index))
+
+    "cleanup" - {
+
+      "must clean up the previous references pages on selecting option 'No' " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val result = answers
+              .set(ReferenceTypePage(index, referenceIndex), "test")
+              .success
+              .value
+              .set(PreviousReferencePage(index, referenceIndex), "test")
+              .success
+              .value
+              .set(AddExtraInformationPage(index, referenceIndex), false)
+              .success
+              .value
+              .set(AddAdministrativeReferencePage(index), false)
+              .success
+              .value
+
+            result.get(ReferenceTypePage(index, index)) must not be defined
+            result.get(AddExtraInformationPage(index, index)) must not be defined
+            result.get(PreviousReferencePage(index, index)) must not be defined
+        }
+      }
+
+      "must keep the previous references pages on selecting option 'No' " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val result = answers.set(PreviousReferencePage(index, referenceIndex), "test").success.value
+            answers.set(AddAdministrativeReferencePage(index), true).success.value
+
+            result.get(PreviousReferencePage(index, index)) mustBe defined
+        }
+      }
+
+    }
   }
 }

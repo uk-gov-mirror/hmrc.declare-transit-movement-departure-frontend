@@ -16,12 +16,13 @@
 
 package controllers.addItems.previousReferences
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import derivable.DeriveNumberOfPreviousAdministrativeReferences
 import forms.addItems.AddAnotherPreviousAdministrativeReferenceFormProvider
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, NormalMode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.AddAnotherPreviousAdministrativeReferencePage
@@ -45,6 +46,7 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
   formProvider: AddAnotherPreviousAdministrativeReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -55,49 +57,51 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        renderPage(lrn, index, referenceIndex, form).map(Ok(_))
+        renderPage(lrn, index, form).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => renderPage(lrn, index, referenceIndex, formWithErrors).map(BadRequest(_)),
+            formWithErrors => renderPage(lrn, index, formWithErrors).map(BadRequest(_)),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPreviousAdministrativeReferencePage(index), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddAnotherPreviousAdministrativeReferencePage(index), mode, updatedAnswers))
           )
     }
 
-  private def renderPage(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, form: Form[Boolean])(
-    implicit request: DataRequest[AnyContent]): Future[Html] = {
+  private def renderPage(lrn: LocalReferenceNumber, index: Index, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
 
     val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
     val numberOfReferences    = request.userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
     val indexList: Seq[Index] = List.range(0, numberOfReferences).map(Index(_))
 
-    val referenceRows = indexList.map {
-      index =>
-        cyaHelper.previousAdministrativeReferenceRows(index, referenceIndex)
+    referenceDataConnector.getPreviousDocumentTypes() flatMap {
+      previousDocuments =>
+        val referenceRows = indexList.map {
+          referenceIndex =>
+            cyaHelper.previousAdministrativeReferenceRows(index, referenceIndex, previousDocuments, NormalMode)
+        }
+
+        val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"
+        val json = Json.obj(
+          "form"          -> form,
+          "lrn"           -> lrn,
+          "pageTitle"     -> msg"addAnotherPreviousAdministrativeReference.title.$singularOrPlural".withArgs(numberOfReferences),
+          "heading"       -> msg"addAnotherPreviousAdministrativeReference.heading.$singularOrPlural".withArgs(numberOfReferences),
+          "referenceRows" -> referenceRows,
+          "radios"        -> Radios.yesNo(form("value"))
+        )
+
+        renderer.render("addItems/addAnotherPreviousAdministrativeReference.njk", json)
     }
-
-    val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"
-    val json = Json.obj(
-      "form"          -> form,
-      "lrn"           -> lrn,
-      "pageTitle"     -> msg"addAnotherPreviousAdministrativeReference.title.$singularOrPlural".withArgs(numberOfReferences),
-      "heading"       -> msg"addAnotherPreviousAdministrativeReference.heading.$singularOrPlural".withArgs(numberOfReferences),
-      "referenceRows" -> referenceRows,
-      "radios"        -> Radios.yesNo(form("value"))
-    )
-
-    renderer.render("addItems/addAnotherPreviousAdministrativeReference.njk", json)
   }
 }

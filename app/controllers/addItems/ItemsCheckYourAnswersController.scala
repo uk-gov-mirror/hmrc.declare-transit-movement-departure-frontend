@@ -16,6 +16,7 @@
 
 package controllers.addItems
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
@@ -35,6 +36,7 @@ class ItemsCheckYourAnswersController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -43,13 +45,16 @@ class ItemsCheckYourAnswersController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = AddItemsCheckYourAnswersViewModel(request.userAnswers, index).sections
-      val json = Json.obj(
-        "lrn"      -> lrn,
-        "sections" -> Json.toJson(sections),
-        "nextPage" -> routes.AddAnotherItemController.onPageLoad(lrn).url
-      )
+      referenceDataConnector.getPreviousDocumentTypes() flatMap {
+        documentTypes =>
+          val sections: Seq[Section] = AddItemsCheckYourAnswersViewModel(request.userAnswers, index, documentTypes).sections
+          val json = Json.obj(
+            "lrn"         -> lrn,
+            "sections"    -> Json.toJson(sections),
+            "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
+          )
 
-      renderer.render("itemsCheckYourAnswers.njk", json).map(Ok(_))
+          renderer.render("itemsCheckYourAnswers.njk", json).map(Ok(_))
+      }
   }
 }
