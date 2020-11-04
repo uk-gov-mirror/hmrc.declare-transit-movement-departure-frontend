@@ -921,3 +921,8 @@ addAnotherContainer.title = addAnotherContainer
 addAnotherContainer.heading = addAnotherContainer
 addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
 addAnotherContainer.error.required = Select yes if addAnotherContainer
+
+addDocuments.title = Do you need to add any produced documents or work certificates for item {0}?
+addDocuments.heading = Do you need to add any produced documents or work certificates for item {0}?
+addDocuments.checkYourAnswersLabel = Do you need to add any produced documents or work certificates for item {0}?
+addDocuments.error.required = Select yes if you need to add any produced documents or work certificates for item {0}
