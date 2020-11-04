@@ -16,34 +16,47 @@
 
 package models.journeyDomain
 
+import cats._
 import cats.data._
 import cats.implicits._
+import cats.kernel.Monoid
 import models.UserAnswers
 
 import scala.language.higherKinds
 
-trait UserAnswersParser[F[_], A] {
-
-  def run(ua: UserAnswers): F[A]
-
+trait UserAnswersParser[F[_], +A] {
+  def run[AA >: A](ua: UserAnswers): F[AA]
 }
 
 object UserAnswersParser {
 
   def apply[F[_], A](implicit parser: UserAnswersParser[F, A]): UserAnswersParser[F, A] = parser
 
+  implicit def monoid[A]: Monoid[UserAnswersParser[Option, A]] =
+    Monoid.instance(
+      UserAnswersOptionalParser.empty[A],
+      (l, r) =>
+        new UserAnswersOptionalParser[A] {
+
+          override def run[AA >: A](ua: UserAnswers): Option[AA] =
+            l.run(ua) orElse r.run(ua)
+      }
+    )
 }
 
-class UserAnswersOptionalParser[A](reader: ReaderT[Option, UserAnswers, A]) extends UserAnswersParser[Option, A] {
-  self =>
-
-  override def run(ua: UserAnswers): Option[A] =
-    reader.run(ua)
-
-}
+abstract class UserAnswersOptionalParser[A] extends UserAnswersParser[Option, A]
 
 object UserAnswersOptionalParser {
 
   def apply[A, B](reader: ReaderT[Option, UserAnswers, A])(f: A => B): UserAnswersOptionalParser[B] =
-    new UserAnswersOptionalParser(reader.map(f))
+    new UserAnswersOptionalParser[B] {
+
+      override def run[AA >: B](ua: UserAnswers): Option[AA] =
+        reader.map(f.widen[AA]).run(ua)
+    }
+
+  def empty[A]: UserAnswersOptionalParser[A] =
+    new UserAnswersOptionalParser[A] {
+      override def run[AA >: A](ua: UserAnswers): Option[AA] = none[A]
+    }
 }

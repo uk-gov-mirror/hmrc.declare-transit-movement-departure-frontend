@@ -45,7 +45,10 @@ lazy val root = (project in file("."))
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting  := true,
     useSuperShell in ThisBuild          := false,
-    scalacOptions ++= Seq("-feature"),
+    scalacOptions ++= Seq(
+      "-feature",
+      "-Ypartial-unification"
+    ),
     libraryDependencies ++= AppDependencies(),
     dependencyOverrides += "commons-codec" % "commons-codec" % "1.12", //added for reactive mongo issues
     retrieveManaged                        := true,
