@@ -19,9 +19,9 @@ package utils
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
+import models.reference.PreviousDocumentType
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, PreviousDocumentTypeList, UserAnswers}
 import pages._
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages.{addItems, _}
 import pages.addItems._
 import pages.addItems.traderDetails._
@@ -300,31 +300,54 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
-  def previousAdministrativeReferenceRows(index: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(PreviousReferencePage(index, referenceIndex)).map { //TODO NEED TO REPLACE WITH REF TYPE PAGE
+  def previousReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList): Option[Row] =
+    userAnswers.get(ReferenceTypePage(index, referenceIndex)) flatMap {
       answer =>
-        Row(
-          key   = Key(lit"$answer"),
-          value = Value(lit""),
-          actions = List(
-            Action(
-              content            = msg"site.change",
-              href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""change-item-${index.display}""")
-            ),
-            Action(
-              content            = msg"site.delete",
-              href               = "#", //TODO removal
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""remove-item-${index.display}""")
+        previousDocumentType.getPreviousDocumentType(answer) map {
+          referenceType =>
+            Row(
+              key   = Key(lit"${referenceType.code}) ${referenceType.description}"),
+              value = Value(lit""),
+              actions = List(
+                Action(
+                  content            = msg"site.change",
+                  href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""change-item-${index.display}""")
+                )
+              )
             )
-          )
-        )
+        }
     }
 
-  def addAdministrativeReference(index: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(AddAdministrativeReferencePage(index, referenceIndex)) map {
+  def previousAdministrativeReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList): Option[Row] =
+    userAnswers.get(ReferenceTypePage(index, referenceIndex)) flatMap {
+      answer =>
+        previousDocumentType.getPreviousDocumentType(answer) map {
+          referenceType =>
+            Row(
+              key   = Key(lit"(${referenceType.code}) ${referenceType.description}"),
+              value = Value(lit""),
+              actions = List(
+                Action(
+                  content            = msg"site.change",
+                  href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""change-item-${index.display}""")
+                ),
+                Action(
+                  content            = msg"site.delete",
+                  href               = "#", //TODO removal
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""remove-item-${index.display}""")
+                )
+              )
+            )
+        }
+    }
+
+  def addAdministrativeReference(index: Index): Option[Row] =
+    userAnswers.get(AddAdministrativeReferencePage(index)) map {
       answer =>
         Row(
           key   = Key(msg"addAdministrativeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -332,7 +355,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           actions = List(
             Action(
               content            = msg"site.edit",
-              href               = previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
+              href               = previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(lrn, index, CheckMode).url,
               visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAdministrativeReference.checkYourAnswersLabel"))
             )
           )

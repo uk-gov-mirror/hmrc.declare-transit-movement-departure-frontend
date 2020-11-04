@@ -16,6 +16,7 @@
 
 package controllers.addItems.previousReferences
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import derivable.DeriveNumberOfPreviousAdministrativeReferences
 import forms.AddAnotherPreviousAdministrativeReferenceFormProvider
@@ -45,6 +46,7 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
   formProvider: AddAnotherPreviousAdministrativeReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -83,21 +85,24 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
     val numberOfReferences    = request.userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
     val indexList: Seq[Index] = List.range(0, numberOfReferences).map(Index(_))
 
-    val referenceRows = indexList.map {
-      index =>
-        cyaHelper.previousAdministrativeReferenceRows(index, referenceIndex)
+    referenceDataConnector.getPreviousDocumentTypes() flatMap {
+      previousDocuments =>
+        val referenceRows = indexList.map {
+          index =>
+            cyaHelper.previousAdministrativeReferenceRows(index, referenceIndex, previousDocuments)
+        }
+
+        val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"
+        val json = Json.obj(
+          "form"          -> form,
+          "lrn"           -> lrn,
+          "pageTitle"     -> msg"addAnotherPreviousAdministrativeReference.title.$singularOrPlural".withArgs(numberOfReferences),
+          "heading"       -> msg"addAnotherPreviousAdministrativeReference.heading.$singularOrPlural".withArgs(numberOfReferences),
+          "referenceRows" -> referenceRows,
+          "radios"        -> Radios.yesNo(form("value"))
+        )
+
+        renderer.render("addItems/addAnotherPreviousAdministrativeReference.njk", json)
     }
-
-    val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"
-    val json = Json.obj(
-      "form"          -> form,
-      "lrn"           -> lrn,
-      "pageTitle"     -> msg"addAnotherPreviousAdministrativeReference.title.$singularOrPlural".withArgs(numberOfReferences),
-      "heading"       -> msg"addAnotherPreviousAdministrativeReference.heading.$singularOrPlural".withArgs(numberOfReferences),
-      "referenceRows" -> referenceRows,
-      "radios"        -> Radios.yesNo(form("value"))
-    )
-
-    renderer.render("addItems/addAnotherPreviousAdministrativeReference.njk", json)
   }
 }

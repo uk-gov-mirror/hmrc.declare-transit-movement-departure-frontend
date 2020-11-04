@@ -19,7 +19,7 @@ package pages
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.addItems.{AddAdministrativeReferencePage, AddExtraInformationPage, ReferenceTypePage}
+import pages.addItems.{AddAdministrativeReferencePage, AddExtraInformationPage, PreviousReferencePage, ReferenceTypePage}
 import pages.behaviours.PageBehaviours
 
 class AddAdministrativeReferencePageSpec extends PageBehaviours with ScalaCheckPropertyChecks {
@@ -29,11 +29,11 @@ class AddAdministrativeReferencePageSpec extends PageBehaviours with ScalaCheckP
 
   "AddAdministrativeReferencePage" - {
 
-    beRetrievable[Boolean](AddAdministrativeReferencePage(index, referenceIndex))
+    beRetrievable[Boolean](AddAdministrativeReferencePage(index))
 
-    beSettable[Boolean](addItems.AddAdministrativeReferencePage(index, referenceIndex))
+    beSettable[Boolean](addItems.AddAdministrativeReferencePage(index))
 
-    beRemovable[Boolean](addItems.AddAdministrativeReferencePage(index, referenceIndex))
+    beRemovable[Boolean](addItems.AddAdministrativeReferencePage(index))
 
     "cleanup" - {
 
@@ -50,7 +50,7 @@ class AddAdministrativeReferencePageSpec extends PageBehaviours with ScalaCheckP
               .set(AddExtraInformationPage(index, referenceIndex), false)
               .success
               .value
-              .set(AddAdministrativeReferencePage(index, referenceIndex), false)
+              .set(AddAdministrativeReferencePage(index), false)
               .success
               .value
 
@@ -64,7 +64,7 @@ class AddAdministrativeReferencePageSpec extends PageBehaviours with ScalaCheckP
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val result = answers.set(PreviousReferencePage(index, referenceIndex), "test").success.value
-            answers.set(AddAdministrativeReferencePage(index, referenceIndex), true).success.value
+            answers.set(AddAdministrativeReferencePage(index), true).success.value
 
             result.get(PreviousReferencePage(index, index)) mustBe defined
         }

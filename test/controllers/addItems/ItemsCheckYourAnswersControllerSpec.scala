@@ -17,11 +17,15 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import matchers.JsonMatchers
+import models.PreviousDocumentTypeList
+import models.reference.PreviousDocumentType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
@@ -32,9 +36,24 @@ import scala.concurrent.Future
 
 class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
+  private val mockRefDataConnector = mock[ReferenceDataConnector]
+
+  private val documentTypeList = PreviousDocumentTypeList(
+    Seq(
+      PreviousDocumentType("T1", "Description T1"),
+      PreviousDocumentType("T2F", "Description T2F")
+    )
+  )
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+
+  override def beforeEach: Unit = {
+    reset(mockRefDataConnector)
+    super.beforeEach
+  }
 
   "ItemsCheckYourAnswers Controller" - {
 
@@ -42,6 +61,8 @@ class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRend
       dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val request        = FakeRequest(GET, routes.ItemsCheckYourAnswersController.onPageLoad(lrn, index).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
