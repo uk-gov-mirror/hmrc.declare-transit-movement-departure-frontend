@@ -47,7 +47,7 @@ class ItemsCheckYourAnswersController @Inject()(
       val json = Json.obj(
         "lrn"      -> lrn,
         "sections" -> Json.toJson(sections),
-        "nextPage" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+        "nextPage" -> routes.AddAnotherItemController.onPageLoad(lrn).url
       )
 
       renderer.render("itemsCheckYourAnswers.njk", json).map(Ok(_))
