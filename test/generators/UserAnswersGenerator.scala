@@ -39,7 +39,7 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(RemoveSpecialMentionPage, JsValue)] ::
       arbitrary[(AddAnotherSpecialMentionPage.type, JsValue)] ::
       arbitrary[(SpecialMentionAdditionalInfoPage.type, JsValue)] ::
-      arbitrary[(SpecialMentionTypePage.type, JsValue)] ::
+      arbitrary[(SpecialMentionTypePage, JsValue)] ::
       arbitrary[(AddSpecialMentionPage, JsValue)] ::
       arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
       arbitrary[(AddAnotherContainerPage.type, JsValue)] ::
