@@ -532,6 +532,19 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
         }
+
+        "ConfirmRemovePreviousAdministrativeReference page" - {
+          "must go to AddAnotherPreviousAdministrativeReference page when user selects 'Yes'" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswer = answers.set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
+                navigator
+                  .nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
+                  .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+            }
+          }
+        }
+
       }
     }
 

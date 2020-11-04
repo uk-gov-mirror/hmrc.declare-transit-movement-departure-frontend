@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
 import models.Index
-import pages.addItems.AddAnotherPreviousAdministrativeReferencePage
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class AddAnotherPreviousAdministrativeReferencePageSpec extends PageBehaviours {
+case class ConfirmRemovePreviousAdministrativeReferencePage(index: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
 
-  val index          = Index(0)
-  val referenceIndex = Index(0)
-  "AddAnotherPreviousAdministrativeReferencePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex))
-
-    beSettable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex))
-
-    beRemovable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex))
-  }
+  override def toString: String = "confirmRemovePreviousAdministrativeReference"
 }
