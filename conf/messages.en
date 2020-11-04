@@ -879,3 +879,41 @@ extraInformation.checkYourAnswersLabel = extraInformation
 extraInformation.error.required = Enter the extra information for this document
 extraInformation.error.length = The extra information for this document must be 26 characters or less
 extraInformation.error.invalid = The extra information for this document must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
+addSpecialMention.title = Do you need to add special mentions for item {0}?
+addSpecialMention.heading = Do you need to add special mentions for item {0}?
+addSpecialMention.checkYourAnswersLabel = Did you need to add special mentions for item {0}?
+addSpecialMention.error.required = Select yes if you need to add special mentions for item {0}?
+
+specialMentionType.title = specialMentionType
+specialMentionType.heading = specialMentionType
+specialMentionType.checkYourAnswersLabel = specialMentionType
+specialMentionType.error.required = Enter specialMentionType
+specialMentionType.error.length = SpecialMentionType must be 100 characters or less
+
+specialMentionAdditionalInfo.title = specialMentionAdditionalInfo
+specialMentionAdditionalInfo.heading = specialMentionAdditionalInfo
+specialMentionAdditionalInfo.checkYourAnswersLabel = specialMentionAdditionalInfo
+specialMentionAdditionalInfo.error.required = Enter specialMentionAdditionalInfo
+specialMentionAdditionalInfo.error.length = SpecialMentionAdditionalInfo must be 70 characters or less
+
+addAnotherSpecialMention.title = addAnotherSpecialMention
+addAnotherSpecialMention.heading = addAnotherSpecialMention
+addAnotherSpecialMention.checkYourAnswersLabel = addAnotherSpecialMention
+addAnotherSpecialMention.error.required = Select yes if addAnotherSpecialMention
+
+removeSpecialMention.title = removeSpecialMention
+removeSpecialMention.heading = removeSpecialMention
+removeSpecialMention.checkYourAnswersLabel = removeSpecialMention
+removeSpecialMention.error.required = Select yes if removeSpecialMention
+
+containerNumber.title = containerNumber
+containerNumber.heading = containerNumber
+containerNumber.checkYourAnswersLabel = containerNumber
+containerNumber.error.required = Enter containerNumber
+containerNumber.error.length = ContainerNumber must be 100 characters or less
+
+addAnotherContainer.title = addAnotherContainer
+addAnotherContainer.heading = addAnotherContainer
+addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
+addAnotherContainer.error.required = Select yes if addAnotherContainer
