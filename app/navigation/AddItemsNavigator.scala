@@ -74,7 +74,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
     case RemovePackagePage(itemIndex)                         => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
-    case AddAdministrativeReferencePage(itemIndex)            => ua =>  Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+    case AddAdministrativeReferencePage(itemIndex)            => ua =>  addAdministrativeReferencePage(itemIndex, ua, CheckMode)
     case ReferenceTypePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.PreviousReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, CheckMode))
     case PreviousReferencePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.AddExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, CheckMode))
     case AddExtraInformationPage(itemIndex, referenceIndex) => ua => addExtraInformationPage(ua, itemIndex, referenceIndex, CheckMode)
@@ -189,7 +189,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
     val referenceIndex = ua.get(DeriveNumberOfPreviousAdministrativeReferences(itemIndex)).getOrElse(0)
     ua.get(AddAdministrativeReferencePage(itemIndex)) map {
       case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, itemIndex, Index(referenceIndex), mode)
-      case _ => ???
+      case _ if mode == CheckMode => routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
+      case _ => ??? //TODO must go to 'Has the user selected yes for safety and security?'
     }
   }
 
@@ -202,12 +203,12 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
 
-  private def addAnotherPreviousAdministrativeReferenceRoute(index: Index, ua: UserAnswers, mode: Mode) = {
+  private def addAnotherPreviousAdministrativeReferenceRoute(index: Index, ua: UserAnswers, mode: Mode): Option[Call] = {
     val newReferenceIndex = ua.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
     ua.get(AddAnotherPreviousAdministrativeReferencePage(index)) map {
       case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, index, Index(newReferenceIndex), mode)
       case false if mode == NormalMode => ??? //TODO must go to 'Has the user selected yes for safety and security?'
-      case false if mode == CheckMode => routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)
+      case _ => routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)
     }
   }
 

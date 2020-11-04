@@ -1021,12 +1021,39 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
 
       "previous references journey" - {
-        "must go from add administrative reference page to CYA page" in {
+        "must go from add administrative reference page to CYA page when selected 'No'" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
+              val updatedAnswers = answers.set(AddAdministrativeReferencePage(index), false).success.value
               navigator
-                .nextPage(AddAdministrativeReferencePage(index), CheckMode, answers)
+                .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
                 .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+          }
+        }
+
+        "must go from add administrative reference page to reference type page when selected 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .remove(PreviousReferencesQuery(index))
+                .success
+                .value
+                .set(AddAdministrativeReferencePage(index), true)
+                .success
+                .value
+              navigator
+                .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
+                .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
+          }
+        }
+
+        "must go from add administrative reference page to safety and security page when selected 'No' and mode is NormalMode" ignore {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers.set(AddAdministrativeReferencePage(index), true).success.value
+              navigator
+                .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
+                .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, CheckMode)) //TODO must got to first page of safety n security
           }
         }
 

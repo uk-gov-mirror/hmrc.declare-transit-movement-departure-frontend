@@ -306,7 +306,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         previousDocumentType.getPreviousDocumentType(answer) map {
           referenceType =>
             Row(
-              key   = Key(lit"${referenceType.code}) ${referenceType.description}"),
+              key   = Key(lit"(${referenceType.code}) ${referenceType.description}"),
               value = Value(lit""),
               actions = List(
                 Action(

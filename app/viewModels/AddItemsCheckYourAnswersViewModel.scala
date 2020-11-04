@@ -57,12 +57,12 @@ object AddItemsCheckYourAnswersViewModel {
         ),
         Section(
           msg"addItems.checkYourAnswersLabel.packages",
-          Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, packageRows).flatten,
+          packageRows,
           checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.packages.addRemove")
         ),
         Section(
           msg"addItems.checkYourAnswersLabel.references",
-          referencesRows,
+          Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
           checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
         )
       )
