@@ -17,6 +17,7 @@
 package pages
 
 import models.Index
+import pages.addItems.PreviousReferencePage
 import pages.behaviours.PageBehaviours
 
 class PreviousReferencePageSpec extends PageBehaviours {
@@ -28,8 +29,8 @@ class PreviousReferencePageSpec extends PageBehaviours {
 
     beRetrievable[String](PreviousReferencePage(index, referenceIndex))
 
-    beSettable[String](PreviousReferencePage(index, referenceIndex))
+    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
 
-    beRemovable[String](PreviousReferencePage(index, referenceIndex))
+    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
   }
 }

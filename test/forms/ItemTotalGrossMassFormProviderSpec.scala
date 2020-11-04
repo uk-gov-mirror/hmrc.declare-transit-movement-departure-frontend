@@ -19,7 +19,6 @@ package forms
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import models.domain.GrossMass.Constants._
-import models.messages.guarantee.Guarantee.Constants.maxLength
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -70,7 +69,7 @@ class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with Spec
         List(FormError(fieldName, invalidFormatKeyGrossMass, Seq(index.display)))
 
       val genInvalidString: Gen[String] = {
-        decimals
+        decimalsPositive
           .suchThat(_.length < 16)
           .suchThat(_.matches(totalGrossMassInvalidCharactersRegex))
           .suchThat(!_.matches(totalGrossMassInvalidFormatRegex))

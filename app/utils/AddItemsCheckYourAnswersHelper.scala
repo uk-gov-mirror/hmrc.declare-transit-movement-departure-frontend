@@ -21,6 +21,8 @@ import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, UserAnswers}
+import pages.{addItems, _}
 import pages.addItems._
 import pages.addItems.traderDetails._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -298,6 +300,31 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
+  def previousAdministrativeReferenceRows(index: Index, referenceIndex: Index): Option[Row] =
+    userAnswers.get(PreviousReferencePage(index, referenceIndex)).map { //TODO NEED TO REPLACE WITH REF TYPE PAGE
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-item-${index.display}""")
+            ),
+            Action(
+              content = msg"site.delete",
+              href = previousReferencesRoutes.ConfirmRemovePreviousAdministrativeReferenceController
+                .onPageLoad(userAnswers.id, index, referenceIndex, CheckMode)
+                .url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-item-${index.display}""")
+            )
+          )
+        )
+    }
+
   def addAdministrativeReference(index: Index, referenceIndex: Index): Option[Row] =
     userAnswers.get(AddAdministrativeReferencePage(index, referenceIndex)) map {
       answer =>
@@ -344,7 +371,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def previousReference(index: Index, referenceIndex: Index): Option[Row] = userAnswers.get(PreviousReferencePage(index, referenceIndex)) map {
+  def previousReference(index: Index, referenceIndex: Index): Option[Row] = userAnswers.get(addItems.PreviousReferencePage(index, referenceIndex)) map {
     answer =>
       Row(
         key   = Key(msg"previousReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -381,6 +408,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     val addAnotherPackageHref = routes.AddAnotherPackageController.onPageLoad(lrn, itemIndex, CheckMode).url
 
     AddAnotherViewModel(addAnotherPackageHref, content)
+  }
+
+  def extraInformation(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(ExtraInformationPage(itemIndex, referenceIndex)) map {
+    answer =>
+      Row(
+        key   = Key(msg"extraInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = previousReferencesRoutes.ExtraInformationController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"extraInformation.checkYourAnswersLabel"))
+          )
+        )
+      )
   }
 
   def lrn: LocalReferenceNumber = userAnswers.id
