@@ -730,6 +730,9 @@ addAnotherPackage.heading.plural = You have added {0} types of packages
 addAnotherPackage.heading.singular = You have added {0} type of package
 addAnotherPackage.yesNo = Do you need to add another type of package?
 addAnotherPackage.error.required = Select yes if you want to add another type of package
+addAnotherPackage.change.hidden = Change {0}
+
+
 
 commodityCode.title = What is the commodity code for item {0}?
 commodityCode.heading = What is the commodity code for item {0}?

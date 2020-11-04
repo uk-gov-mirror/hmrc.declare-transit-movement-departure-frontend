@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 import models._
 import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCodes}
 import pages._
-import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, ConfirmRemovePreviousAdministrativeReferencePage, _}
+import pages.addItems._
 import play.api.mvc.Call
 
 @Singleton
@@ -68,9 +68,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, CheckMode)
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
-    case RemovePackagePage(itemIndex)                         => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
+    case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, CheckMode)(ua))
     case ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)     => ua => Some(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, index, referenceIndex,  CheckMode))
-
   }
 
   private def addAnotherPreviousAdministrativeReferenceRoute(index:Index, referenceIndex:Index, ua:UserAnswers) =
@@ -84,6 +83,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case Some(true) => ???
       case Some(false) =>  Some(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, index, referenceIndex, NormalMode))
     }
+
     private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
     (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)), mode) match {
       case (Some(true), _, NormalMode)    => Some(routes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))

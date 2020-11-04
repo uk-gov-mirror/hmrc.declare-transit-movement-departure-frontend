@@ -439,9 +439,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
         }
 
-        "must go from ConfirmRemovePackage page to " - {
+        "RemovePackage" - {
 
-          "AddAnotherPackage page when 'No' is selected and there are more than one package" in {
+          "must go to AddAnotherPackage page when 'No' is selected and there are more than one package" in {
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
@@ -463,7 +463,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
 
-          "AddAnotherPackage page when 'Yes' is selected and there are more than one package" in {
+          "must go to AddAnotherPackage page when 'Yes' is selected and there are more than one package" in {
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
@@ -485,7 +485,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
 
-          "PackageType page when 'Yes' is selected and all the packages are removed" in {
+          "must go to PackageType page when 'Yes' is selected and all the packages are removed" in {
             val updatedAnswers = emptyUserAnswers
               .remove(PackagesQuery(index, index))
               .success
@@ -497,7 +497,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               .nextPage(RemovePackagePage(index), NormalMode, updatedAnswers)
               .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, index, NormalMode))
           }
-
         }
 
         "AddExtraInformationPage" - {
@@ -917,6 +916,66 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .nextPage(AddAnotherPackagePage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
             }
+          }
+        }
+
+        "RemovePackage" - {
+
+          "must go to AddAnotherPackage page when 'No' is selected and there are more than one package" in {
+            forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
+              (answers, packageType) =>
+                val updatedAnswers = answers
+                  .set(PackageTypePage(index, index), packageType)
+                  .success
+                  .value
+                  .set(PackageTypePage(index, index), packageType)
+                  .success
+                  .value
+                  .set(AddAnotherPackagePage(index), true)
+                  .success
+                  .value
+                  .set(RemovePackagePage(index), false)
+                  .success
+                  .value
+                navigator
+                  .nextPage(RemovePackagePage(index), CheckMode, updatedAnswers)
+                  .mustBe(routes.AddAnotherPackageController.onPageLoad(answers.id, index, CheckMode))
+            }
+          }
+
+          "must go to AddAnotherPackage page when 'Yes' is selected and there are more than one package" in {
+            forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
+              (answers, packageType) =>
+                val updatedAnswers = answers
+                  .set(PackageTypePage(index, index), packageType)
+                  .success
+                  .value
+                  .set(PackageTypePage(index, index), packageType)
+                  .success
+                  .value
+                  .set(AddAnotherPackagePage(index), true)
+                  .success
+                  .value
+                  .set(RemovePackagePage(index), true)
+                  .success
+                  .value
+                navigator
+                  .nextPage(RemovePackagePage(index), CheckMode, updatedAnswers)
+                  .mustBe(routes.AddAnotherPackageController.onPageLoad(answers.id, index, CheckMode))
+            }
+          }
+
+          "must go to PackageType page when 'Yes' is selected and all the packages are removed" in {
+            val updatedAnswers = emptyUserAnswers
+              .remove(PackagesQuery(index, index))
+              .success
+              .value
+              .set(RemovePackagePage(index), true)
+              .success
+              .value
+            navigator
+              .nextPage(RemovePackagePage(index), CheckMode, updatedAnswers)
+              .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, index, CheckMode))
           }
         }
       }
