@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package models.reference
+package forms
 
-import play.api.libs.json.{Json, OFormat}
+import javax.inject.Inject
 
-case class PackageType(code: String, description: String) {
-  override def toString: String = s"$description ($code)"
-}
+import forms.mappings.Mappings
+import play.api.data.Form
 
-object PackageType {
-  implicit val format: OFormat[PackageType] = Json.format[PackageType]
+class ConfirmRemovePreviousAdministrativeReferenceFormProvider @Inject() extends Mappings {
 
-  val bulkCodes                         = Seq("VQ", "VG", "VL", "VY", "VR", "VS", "VO")
-  val unpackedCodes                     = Seq("NE", "NF", "NG")
-  val bulkAndUnpackedCodes: Seq[String] = bulkCodes ++ unpackedCodes
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmRemovePreviousAdministrativeReference.error.required")
+    )
 }
