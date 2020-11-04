@@ -61,20 +61,21 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def specialMentionAdditionalInfo: Option[Row] = userAnswers.get(SpecialMentionAdditionalInfoPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"specialMentionAdditionalInfo.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = specialMentionRoutes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionAdditionalInfo.checkYourAnswersLabel"))
+  def specialMentionAdditionalInfo(itemIndex: Index, referenceIndex: Index): Option[Row] =
+    userAnswers.get(SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex)) map {
+      answer =>
+        Row(
+          key   = Key(msg"specialMentionAdditionalInfo.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          value = Value(lit"$answer"),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = specialMentionRoutes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionAdditionalInfo.checkYourAnswersLabel"))
+            )
           )
         )
-      )
-  }
+    }
 
   def specialMentionType(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(SpecialMentionTypePage(itemIndex, referenceIndex)) map {
     answer =>
