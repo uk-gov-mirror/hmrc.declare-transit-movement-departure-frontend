@@ -40,7 +40,7 @@ class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviour
         list <- Gen.listOfN(num, Gen.alphaNumChar)
       } yield list.mkString("")
 
-      val args = Seq(Address.Constants.Fields.buildingAndStreetName, consignorName)
+      val args: Seq[Any] = Seq(Address.Constants.Fields.buildingAndStreetName, consignorName)
 
       behave like fieldThatBindsValidData(
         form,
@@ -48,9 +48,7 @@ class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviour
         stringsWithMaxLength(maxLength)
       )
 
-      val error = FormError(fieldName, lengthKey, args)
-
-      Console.println(error)
+      val error = FormError(fieldName, lengthKey, Array(args))
 
       behave like fieldWithMaxLength(
         form,
@@ -87,11 +85,13 @@ class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviour
         stringsWithMaxLength(maxLength)
       )
 
+      val error = FormError(fieldName, lengthKey, Array(args))
+
       behave like fieldWithMaxLength(
         form,
         fieldName,
         maxLength   = maxLength,
-        lengthError = FormError(fieldName, lengthKey, args),
+        lengthError = error,
         validAdressOverLength
       )
 
@@ -120,11 +120,13 @@ class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviour
         stringsWithMaxLength(maxLength)
       )
 
+      val error = FormError(fieldName, lengthKey, Array(Seq(consignorName)))
+
       behave like fieldWithMaxLength(
         form,
         fieldName,
         maxLength   = maxLength,
-        lengthError = FormError(fieldName, lengthKey, Seq(consignorName)),
+        lengthError = error,
         validAdressOverLength
       )
 

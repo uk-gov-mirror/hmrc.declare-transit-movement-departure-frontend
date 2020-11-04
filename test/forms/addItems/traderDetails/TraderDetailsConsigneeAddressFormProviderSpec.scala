@@ -51,11 +51,13 @@ class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviour
         stringsWithMaxLength(maxLength)
       )
 
+      val error = FormError(fieldName, lengthKey, Array(Seq(args)))
+
       behave like fieldWithMaxLength(
         form,
         fieldName,
         maxLength   = maxLength,
-        lengthError = FormError(fieldName, lengthKey, args),
+        lengthError = error,
         validAdressOverLength
       )
 
@@ -86,11 +88,13 @@ class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviour
         stringsWithMaxLength(maxLength)
       )
 
+      val error = FormError(fieldName, lengthKey, Array(Seq(args)))
+
       behave like fieldWithMaxLength(
         form,
         fieldName,
         maxLength   = maxLength,
-        lengthError = FormError(fieldName, lengthKey, args),
+        lengthError = error,
         validAdressOverLength
       )
 
@@ -119,11 +123,13 @@ class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviour
         stringsWithMaxLength(maxLength)
       )
 
+      val error = FormError(fieldName, lengthKey, Array(Seq(consigneeName)))
+
       behave like fieldWithMaxLength(
         form,
         fieldName,
         maxLength   = maxLength,
-        lengthError = FormError(fieldName, lengthKey, Seq(consigneeName)),
+        lengthError = error,
         validAdressOverLength
       )
 
