@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import controllers.actions._
-import forms.AddDocumentsFormProvider
+import forms.addItems.AddDocumentsFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.AddDocumentsPage
+import pages.addItems.AddDocumentsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,20 +48,20 @@ class AddDocumentsController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
-  private val template = "addDocuments.njk"
+  private val template = "addItems/addDocuments.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(AddDocumentsPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(itemIndex)
+        case Some(value) => formProvider(itemIndex).fill(value)
       }
 
       val json = Json.obj(
         "form"   -> preparedForm,
         "mode"   -> mode,
         "lrn"    -> lrn,
+        "index"  -> itemIndex.display,
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
@@ -70,7 +70,7 @@ class AddDocumentsController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(itemIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -79,6 +79,7 @@ class AddDocumentsController @Inject()(
               "form"   -> formWithErrors,
               "mode"   -> mode,
               "lrn"    -> lrn,
+              "index"  -> itemIndex.display,
               "radios" -> Radios.yesNo(formWithErrors("value"))
             )
 

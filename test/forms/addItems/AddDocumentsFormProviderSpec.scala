@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddDocumentsFormProviderSpec extends BooleanFieldBehaviours {
+class AddDocumentsFormProviderSpec extends SpecBase with BooleanFieldBehaviours {
 
   val requiredKey = "addDocuments.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddDocumentsFormProvider()()
+  val form = new AddDocumentsFormProvider()(index)
 
   ".value" - {
 
@@ -33,13 +34,13 @@ class AddDocumentsFormProviderSpec extends BooleanFieldBehaviours {
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      invalidError = FormError(fieldName, invalidKey, Seq(index.display))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
   }
 }

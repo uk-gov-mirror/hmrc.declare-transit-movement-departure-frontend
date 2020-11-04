@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
-import forms.AddDocumentsFormProvider
+import base.{MockNunjucksRendererApp, SpecBase}
+import forms.addItems.AddDocumentsFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddDocumentsPage
+import pages.addItems.AddDocumentsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -35,8 +34,8 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -45,8 +44,8 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new AddDocumentsFormProvider()
-  private val form         = formProvider()
-  private val template     = "addDocuments.njk"
+  private val form         = formProvider(index)
+  private val template     = "addItems/addDocuments.njk"
 
   lazy val addDocumentsRoute = routes.AddDocumentsController.onPageLoad(lrn, itemIndex, NormalMode).url
 
@@ -78,6 +77,7 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
         "form"   -> form,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
+        "index"  -> itemIndex.display,
         "radios" -> Radios.yesNo(form("value"))
       )
 
@@ -112,6 +112,7 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
         "form"   -> filledForm,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
+        "index"  -> itemIndex.display,
         "radios" -> Radios.yesNo(filledForm("value"))
       )
 
@@ -162,6 +163,7 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
         "form"   -> boundForm,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
+        "index"  -> itemIndex.display,
         "radios" -> Radios.yesNo(boundForm("value"))
       )
 
@@ -182,7 +184,7 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -198,7 +200,7 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }

@@ -31,6 +31,21 @@ import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def addDocuments(itemIndex: Index): Option[Row] = userAnswers.get(AddDocumentsPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"addDocuments.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddDocumentsController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addDocuments.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addItemsSameConsignorForAllItems(index: Index): Option[Row] = userAnswers.get(AddItemsSameConsignorForAllItemsPage) map {
     answer =>
       Row(

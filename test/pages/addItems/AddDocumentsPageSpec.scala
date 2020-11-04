@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
 import pages.behaviours.PageBehaviours
 

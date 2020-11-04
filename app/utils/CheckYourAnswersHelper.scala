@@ -23,27 +23,13 @@ import controllers.addItems.specialMentions.{routes => specialMentionRoutes}
 import controllers.addItems.containers.{routes => containerRoutes}
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
-
-  def addDocuments(itemIndex: Index): Option[Row] = userAnswers.get(AddDocumentsPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addDocuments.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddDocumentsController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addDocuments.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
 
   def removeSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(RemoveSpecialMentionPage(itemIndex)) map {
     answer =>
