@@ -61,7 +61,7 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
     ))
 
   lazy val addAnotherPreviousAdministrativeReferenceRoute =
-    routes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
+    routes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -113,7 +113,7 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddAnotherPreviousAdministrativeReferencePage(index), true).success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, addAnotherPreviousAdministrativeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

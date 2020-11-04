@@ -54,8 +54,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ReferenceTypePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.PreviousReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, NormalMode))
     case PreviousReferencePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.AddExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, NormalMode))
     case AddExtraInformationPage(itemIndex, referenceIndex) => ua => addExtraInformationPage(ua, itemIndex, referenceIndex, NormalMode)
-    case ExtraInformationPage(itemIndex, referenceIndex)    => ua => Some(previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, NormalMode))
-    case AddAnotherPreviousAdministrativeReferencePage(itemIndex, referenceIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, referenceIndex, ua)
+    case ExtraInformationPage(itemIndex, _)    => ua => Some(previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, NormalMode))
+    case AddAnotherPreviousAdministrativeReferencePage(itemIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, ua, NormalMode)
   }
 
   //TODO: Need to refactor this code
@@ -75,6 +75,11 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
     case RemovePackagePage(itemIndex)                         => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
     case AddAdministrativeReferencePage(itemIndex)            => ua =>  Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+    case ReferenceTypePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.PreviousReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, CheckMode))
+    case PreviousReferencePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.AddExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, CheckMode))
+    case AddExtraInformationPage(itemIndex, referenceIndex) => ua => addExtraInformationPage(ua, itemIndex, referenceIndex, CheckMode)
+    case ExtraInformationPage(itemIndex, referenceIndex)    => ua =>  Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+
   }
 
     private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
@@ -193,15 +198,16 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case true =>
         previousReferencesRoutes.ExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, mode)
       case false =>
-        previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, mode)
+        previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, mode)
     }
 
 
-  private def addAnotherPreviousAdministrativeReferenceRoute(index:Index, referenceIndex:Index, ua:UserAnswers) = {
-    val newReferenceIndex = ua.get(DeriveNumberOfItems).getOrElse(0)
-    ua.get(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex)) match {
-      case Some(true) => Some(previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, index, Index(newReferenceIndex), NormalMode))
-      case _ => ??? //TODO must go to 'Has the user selected yes for safety and security?'
+  private def addAnotherPreviousAdministrativeReferenceRoute(index: Index, ua: UserAnswers, mode: Mode) = {
+    val newReferenceIndex = ua.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
+    ua.get(AddAnotherPreviousAdministrativeReferencePage(index)) map {
+      case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, index, Index(newReferenceIndex), mode)
+      case false if mode == NormalMode => ??? //TODO must go to 'Has the user selected yes for safety and security?'
+      case false if mode == CheckMode => routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)
     }
   }
 

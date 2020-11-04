@@ -26,10 +26,10 @@ class AddAnotherPreviousAdministrativeReferencePageSpec extends PageBehaviours {
   val referenceIndex = Index(0)
   "AddAnotherPreviousAdministrativeReferencePage" - {
 
-    beRetrievable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex))
+    beRetrievable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index))
 
-    beSettable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex))
+    beSettable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index))
 
-    beRemovable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex))
+    beRemovable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index))
   }
 }

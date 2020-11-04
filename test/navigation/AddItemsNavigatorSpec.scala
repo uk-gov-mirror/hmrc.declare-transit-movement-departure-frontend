@@ -610,7 +610,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
               navigator
                 .nextPage(AddExtraInformationPage(index, referenceIndex), NormalMode, updatedAnswer)
-                .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+                .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
           }
         }
 
@@ -621,7 +621,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
               navigator
                 .nextPage(ExtraInformationPage(index, referenceIndex), NormalMode, updatedAnswer)
-                .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
+                .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
           }
         }
 
@@ -633,13 +633,13 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .remove(PreviousReferencesQuery(index))
                   .success
                   .value
-                  .set(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), true)
+                  .set(AddAnotherPreviousAdministrativeReferencePage(index), true)
                   .success
                   .value
 
                 navigator
-                  .nextPage(AddAnotherPreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
-                  .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, Index(1), NormalMode))
+                  .nextPage(AddAnotherPreviousAdministrativeReferencePage(index), NormalMode, updatedAnswer)
+                  .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, index, NormalMode))
             }
           }
         }
@@ -1030,7 +1030,56 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
         }
 
-        "from reference type page to  " in {}
+        "must go from 'reference-type page' to 'previous reference' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(ReferenceTypePage(index, referenceIndex), CheckMode, answers)
+                .mustBe(previousReferenceRoutes.PreviousReferenceController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
+          }
+        }
+
+        "must go from 'previous reference' page to 'add extra information' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(PreviousReferencePage(index, referenceIndex), CheckMode, answers)
+                .mustBe(previousReferenceRoutes.AddExtraInformationController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
+          }
+        }
+
+        "must go from 'add extra information' page to 'extra information' page on selecting 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddExtraInformationPage(index, referenceIndex), true).success.value
+
+              navigator
+                .nextPage(AddExtraInformationPage(index, referenceIndex), CheckMode, updatedAnswer)
+                .mustBe(previousReferenceRoutes.ExtraInformationController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
+          }
+        }
+
+        "must go from 'add extra information' page to 'Add another reference' page on selecting 'No'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(AddExtraInformationPage(index, referenceIndex), false).success.value
+
+              navigator
+                .nextPage(AddExtraInformationPage(index, referenceIndex), CheckMode, updatedAnswer)
+                .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, CheckMode))
+          }
+        }
+
+        "must go from 'extra information' page to 'Add another reference' page" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers.set(ExtraInformationPage(index, referenceIndex), "text").success.value
+
+              navigator
+                .nextPage(ExtraInformationPage(index, referenceIndex), CheckMode, updatedAnswer)
+                .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+          }
+        }
 
       }
     }
