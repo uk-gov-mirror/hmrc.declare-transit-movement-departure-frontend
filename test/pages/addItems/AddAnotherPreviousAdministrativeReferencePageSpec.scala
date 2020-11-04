@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.addItems
 
-import play.api.libs.json.{Json, OFormat}
+import models.Index
+import pages.behaviours.PageBehaviours
 
-case class PackageType(code: String, description: String) {
-  override def toString: String = s"$description ($code)"
-}
+class AddAnotherPreviousAdministrativeReferencePageSpec extends PageBehaviours {
 
-object PackageType {
-  implicit val format: OFormat[PackageType] = Json.format[PackageType]
+  val index          = Index(0)
+  val referenceIndex = Index(0)
+  "AddAnotherPreviousAdministrativeReferencePage" - {
 
-  val bulkCodes                         = Seq("VQ", "VG", "VL", "VY", "VR", "VS", "VO")
-  val unpackedCodes                     = Seq("NE", "NF", "NG")
-  val bulkAndUnpackedCodes: Seq[String] = bulkCodes ++ unpackedCodes
+    beRetrievable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index))
+
+    beSettable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index))
+
+    beRemovable[Boolean](AddAnotherPreviousAdministrativeReferencePage(index))
+  }
 }

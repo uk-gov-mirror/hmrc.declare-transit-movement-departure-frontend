@@ -25,7 +25,7 @@ import models._
 import models.reference.CountryCode
 import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCodes}
 import pages._
-import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
+import pages.addItems._
 import play.api.mvc.Call
 
 @Singleton
@@ -49,6 +49,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case DeclareMarkPage(itemIndex, _)                        => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, NormalMode)
     case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
+    case AddExtraInformationPage(itemIndex, referenceIndex)   => ua => addExtraInformationRoute(itemIndex, referenceIndex, ua)
+    case AddAnotherPreviousAdministrativeReferencePage(itemIndex, referenceIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, referenceIndex, ua)
+    case ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)     => ua => Some(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, index, referenceIndex,  NormalMode))
     case DummyPage(itemIndex, packageIndex)                   => ua => directToPreviousReferencesPage(itemIndex, packageIndex, ua, NormalMode) //TODO replace dummy page with add another document page
     case AddAdministrativeReferencePage(itemIndex) => ua => addAdministrativeReferencePage(itemIndex, ua, NormalMode)
     case ReferenceTypePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.PreviousReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, NormalMode))
@@ -73,6 +76,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddMarkPage(itemIndex, packageIndex)                 => ua => addMark(itemIndex, packageIndex, ua, CheckMode)
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
+    case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, CheckMode)(ua))
+    case ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)     => ua => Some(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, index, referenceIndex,  CheckMode))
     case RemovePackagePage(itemIndex)                         => ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, CheckMode))
     case AddAdministrativeReferencePage(itemIndex)            => ua =>  addAdministrativeReferencePage(itemIndex, ua, CheckMode)
     case ReferenceTypePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.PreviousReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, CheckMode))
@@ -81,6 +86,12 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ExtraInformationPage(itemIndex, referenceIndex)    => ua =>  Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
 
   }
+
+  private def addExtraInformationRoute(index:Index, referenceIndex:Index, ua:UserAnswers) =
+    ua.get(AddExtraInformationPage(index, referenceIndex)) match  {
+      case Some(true) => ???
+      case Some(false) =>  Some(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, index, referenceIndex, NormalMode))
+    }
 
     private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode): Option[Call] =
     (ua.get(IsCommodityCodeKnownPage(index)), ua.get(CommodityCodePage(index)), mode) match {

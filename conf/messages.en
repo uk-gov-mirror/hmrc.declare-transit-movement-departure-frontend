@@ -730,6 +730,9 @@ addAnotherPackage.heading.plural = You have added {0} types of packages
 addAnotherPackage.heading.singular = You have added {0} type of package
 addAnotherPackage.yesNo = Do you need to add another type of package?
 addAnotherPackage.error.required = Select yes if you want to add another type of package
+addAnotherPackage.change.hidden = Change {0}
+
+
 
 commodityCode.title = What is the commodity code for item {0}?
 commodityCode.heading = What is the commodity code for item {0}?
@@ -879,6 +882,11 @@ extraInformation.checkYourAnswersLabel = extraInformation
 extraInformation.error.required = Enter the extra information for this document
 extraInformation.error.length = The extra information for this document must be 26 characters or less
 extraInformation.error.invalid = The extra information for this document must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
+confirmRemovePreviousAdministrativeReference.title = Are you sure you want to remove this previous administrative reference?
+confirmRemovePreviousAdministrativeReference.heading = Are you sure you want to remove this previous administrative reference?
+confirmRemovePreviousAdministrativeReference.checkYourAnswersLabel = confirmRemovePreviousAdministrativeReference
+confirmRemovePreviousAdministrativeReference.error.required = Select yes if you want to remove this previous administrative reference
 
 addSpecialMention.title = Do you need to add special mentions for item {0}?
 addSpecialMention.heading = Do you need to add special mentions for item {0}?

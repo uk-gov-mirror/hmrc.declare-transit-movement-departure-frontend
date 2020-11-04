@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.addItems
+package controllers.addItems.previousReferences
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import controllers.{routes => mainRoutes}
-import forms.addItems.AddMarkFormProvider
+import forms.ConfirmRemovePreviousAdministrativeReferenceFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
@@ -27,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.AddMarkPage
+import pages.addItems.{ConfirmRemovePreviousAdministrativeReferencePage, ReferenceTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -36,32 +35,42 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoutes}
+import pages.ItemDescriptionPage
 
 import scala.concurrent.Future
 
-class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ConfirmRemovePreviousAdministrativeReferenceControllerSpec
+    extends SpecBase
+    with MockNunjucksRendererApp
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new AddMarkFormProvider()
-  val form         = formProvider()
+  private val formProvider = new ConfirmRemovePreviousAdministrativeReferenceFormProvider()
+  private val form         = formProvider()
+  private val template     = "addItems/confirmRemovePreviousAdministrativeReference.njk"
 
-  lazy val addMarkRoute = routes.AddMarkController.onPageLoad(lrn, index, index, NormalMode).url
+  lazy val confirmRemovePreviousAdministrativeReferenceRoute =
+    routes.ConfirmRemovePreviousAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "AddMark Controller" - {
+  "ConfirmRemovePreviousAdministrativeReference Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      dataRetrievalWithData(emptyUserAnswers)
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(GET, addMarkRoute)
+      dataRetrievalWithData(emptyUserAnswers)
+
+      val request        = FakeRequest(GET, confirmRemovePreviousAdministrativeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -72,91 +81,52 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form"           -> form,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display,
+        "radios"         -> Radios.yesNo(form("value"))
       )
 
-      templateCaptor.getValue mustEqual "addItems/addMark.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
-    }
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddMarkPage(index, index), true).success.value
-      dataRetrievalWithData(userAnswers)
-      val request        = FakeRequest(GET, addMarkRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
-      )
-
-      templateCaptor.getValue mustEqual "addItems/addMark.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
     }
 
-    "must redirect to the next page when valid data is submitted and set to UserAnswers if there is no previous answers" in {
-
-      dataRetrievalWithData(emptyUserAnswers)
+    "must redirect to the next page when valid data is submitted" in {
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val updatedUserAnswers                             = emptyUserAnswers.set(ReferenceTypePage(index, referenceIndex), "item1").success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      dataRetrievalWithData(updatedUserAnswers)
+
       val request =
-        FakeRequest(POST, addMarkRoute)
+        FakeRequest(POST, confirmRemovePreviousAdministrativeReferenceRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
-
-      verify(mockSessionRepository, times(1)).set(any())
-    }
-
-    "must redirect to the next page when valid data is submitted and not set to UserAnswers if answer is the same" in {
-
-      val userAnswers = emptyUserAnswers.set(AddMarkPage(index, index), true).success.value
-
-      dataRetrievalWithData(userAnswers)
-
-      val request =
-        FakeRequest(POST, addMarkRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
+      verify(mockSessionRepository, times(1)).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.get(ReferenceTypePage(index, referenceIndex)) mustBe None
 
       redirectLocation(result).value mustEqual onwardRoute.url
 
-      verify(mockSessionRepository, times(0)).set(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(POST, addMarkRoute).withFormUrlEncodedBody(("value", ""))
+      dataRetrievalWithData(emptyUserAnswers)
+
+      val request        = FakeRequest(POST, confirmRemovePreviousAdministrativeReferenceRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -168,20 +138,26 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"           -> boundForm,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "index"          -> index.display,
+        "referenceIndex" -> referenceIndex.display,
+        "radios"         -> Radios.yesNo(boundForm("value"))
       )
 
-      templateCaptor.getValue mustEqual "addItems/addMark.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
 
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
+
       dataRetrievalNoData()
-      val request = FakeRequest(GET, addMarkRoute)
+
+      val request = FakeRequest(GET, confirmRemovePreviousAdministrativeReferenceRoute)
 
       val result = route(app, request).value
 
@@ -192,9 +168,11 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
+
       dataRetrievalNoData()
+
       val request =
-        FakeRequest(POST, addMarkRoute)
+        FakeRequest(POST, confirmRemovePreviousAdministrativeReferenceRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
