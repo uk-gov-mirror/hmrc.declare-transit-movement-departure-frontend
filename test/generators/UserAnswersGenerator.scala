@@ -24,6 +24,7 @@ import pages._
 import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
+import pages.addItems.specialMentions.RemoveSpecialMentionPage
 import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
@@ -42,13 +43,12 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(AddAnotherContainerPage.type, JsValue)] ::
       arbitrary[(ContainerNumberPage.type, JsValue)] ::
       arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
+    arbitrary[(AddItemsSameConsignorForAllItemsPage, JsValue)] ::
+      arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
       arbitrary[(PreviousReferencePage, JsValue)] ::
       arbitrary[(ExtraInformationPage, JsValue)] ::
       arbitrary[(PreviousReferencePage, JsValue)] ::
-      arbitrary[(ConsigneeForAllItemsPage.type, JsValue)] ::
       arbitrary[(AddExtraInformationPage, JsValue)] ::
-      arbitrary[(ConsigneeForAllItemsPage.type, JsValue)] ::
-      arbitrary[(ConsignorForAllItemsPage.type, JsValue)] ::
     arbitrary[(AddItemsSameConsignorForAllItemsPage, JsValue)] ::
       arbitrary[(HowManyPackagesPage, JsValue)] ::
       arbitrary[(AddAnotherPackagePage, JsValue)] ::
