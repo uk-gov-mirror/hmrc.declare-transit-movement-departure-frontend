@@ -22,6 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
 import pages.addItems._
+import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import pages.addItems.traderDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
@@ -32,7 +33,13 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(AddAnotherContainerPage.type, JsValue)] ::
+    arbitrary[(RemoveSpecialMentionPage, JsValue)] ::
+      arbitrary[(AddAnotherSpecialMentionPage.type, JsValue)] ::
+      arbitrary[(SpecialMentionAdditionalInfoPage.type, JsValue)] ::
+      arbitrary[(SpecialMentionTypePage.type, JsValue)] ::
+      arbitrary[(AddSpecialMentionPage, JsValue)] ::
+      arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
+      arbitrary[(AddAnotherContainerPage.type, JsValue)] ::
       arbitrary[(ContainerNumberPage.type, JsValue)] ::
       arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
       arbitrary[(PreviousReferencePage, JsValue)] ::

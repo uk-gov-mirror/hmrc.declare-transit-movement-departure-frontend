@@ -504,6 +504,31 @@ POST       /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/extra-
 GET        /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/change-extra-information                 controllers.addItems.previousReferences.ExtraInformationController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/previous-references/:referenceIndex/change-extra-information                 controllers.addItems.previousReferences.ExtraInformationController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode = CheckMode)
 
+GET        /:lrn/add-items/:itemIndex/add-special-mentions                        controllers.addItems.specialMentions.AddSpecialMentionController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/add-special-mentions                        controllers.addItems.specialMentions.AddSpecialMentionController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/change-add-special-mentions                 controllers.addItems.specialMentions.AddSpecialMentionController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/:itemIndex/change-add-special-mentions                 controllers.addItems.specialMentions.AddSpecialMentionController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/special-mention-type                        controllers.addItems.specialMentions.SpecialMentionTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/special-mention-type                        controllers.addItems.specialMentions.SpecialMentionTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-special-mention-type               controllers.addItems.specialMentions.SpecialMentionTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-special-mention-type                  controllers.addItems.specialMentions.SpecialMentionTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/special-mentions-additional-info                        controllers.addItems.specialMentions.SpecialMentionAdditionalInfoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/special-mentions-additional-info                        controllers.addItems.specialMentions.SpecialMentionAdditionalInfoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-special-mentions-additional-info                  controllers.addItems.specialMentions.SpecialMentionAdditionalInfoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-special-mentions-additional-info                  controllers.addItems.specialMentions.SpecialMentionAdditionalInfoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/add-another-special-mention                        controllers.addItems.specialMentions.AddAnotherSpecialMentionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/add-another-special-mention                        controllers.addItems.specialMentions.AddAnotherSpecialMentionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-add-another-special-mention                  controllers.addItems.specialMentions.AddAnotherSpecialMentionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-add-another-special-mention                  controllers.addItems.specialMentions.AddAnotherSpecialMentionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/add-items/:itemIndex/remove-special-mention                        controllers.addItems.specialMentions.RemoveSpecialMentionController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/remove-special-mention                        controllers.addItems.specialMentions.RemoveSpecialMentionController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/change-remove-special-mention                  controllers.addItems.specialMentions.RemoveSpecialMentionController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/:itemIndex/change-remove-special-mention                  controllers.addItems.specialMentions.RemoveSpecialMentionController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+
 GET        /:lrn/add-items/:itemIndex/containers/container-number                                                        controllers.addItems.containers.ContainerNumberController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/:itemIndex/containers/container-number                                                        controllers.addItems.containers.ContainerNumberController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/:itemIndex/containers/change-container-number                                                 controllers.addItems.containers.ContainerNumberController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
