@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
+import models.domain.Address
 import models.journeyDomain.TraderDetails.{PersonalInformation, TraderEori}
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, UserAnswers}
 import org.scalatest.TryValues
@@ -71,7 +72,9 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
-          result mustEqual TraderDetails(PersonalInformation(name, principalAddress), None, None)
+          val expectedAddress = Address.prismAddressToPrincipalAddress(principalAddress)
+
+          result mustEqual TraderDetails(PersonalInformation(name, expectedAddress), None, None)
 
       }
     }
@@ -134,7 +137,9 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
-          result.consignor.value mustEqual PersonalInformation(name, address.principalAddressDoNotMerge)
+          val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
+
+          result.consignor.value mustEqual PersonalInformation(name, expectedAddress)
 
       }
     }
@@ -197,7 +202,9 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
-          result.consignee.value mustEqual PersonalInformation(name, address.principalAddressDoNotMerge)
+          val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
+
+          result.consignee.value mustEqual PersonalInformation(name, expectedAddress)
 
       }
     }

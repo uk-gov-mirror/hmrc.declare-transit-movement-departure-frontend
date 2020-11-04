@@ -16,11 +16,11 @@
 
 package models.journeyDomain
 
-import cats._
 import cats.data._
 import cats.implicits._
-import models.{EoriNumber, PrincipalAddress, UserAnswers}
+import models.{EoriNumber, UserAnswers}
 import TraderDetails.RequiredDetails
+import models.domain.Address
 import pages.{
   AddConsigneePage,
   AddConsignorPage,
@@ -49,11 +49,11 @@ object TraderDetails {
   sealed trait RequiredDetails
 
   object RequiredDetails {
-    def apply(eori: EoriNumber): RequiredDetails                        = TraderEori(eori)
-    def apply(name: String, address: PrincipalAddress): RequiredDetails = PersonalInformation(name, address)
+    def apply(eori: EoriNumber): RequiredDetails               = TraderEori(eori)
+    def apply(name: String, address: Address): RequiredDetails = PersonalInformation(name, address)
   }
 
-  final case class PersonalInformation(name: String, address: PrincipalAddress) extends RequiredDetails
+  final case class PersonalInformation(name: String, address: Address) extends RequiredDetails
   final case class TraderEori(eori: EoriNumber) extends RequiredDetails
 
   val principalTraderDetails: UserAnswersReader[RequiredDetails] = {
@@ -65,7 +65,11 @@ object TraderDetails {
     val useNameAndAddress: UserAnswersReader[RequiredDetails] = (
       PrincipalNamePage.reader,
       PrincipalAddressPage.reader
-    ).tupled.map((PersonalInformation.apply _).tupled)
+    ).tupled.map {
+      case (name, principalAddress) =>
+        val address = Address.prismAddressToPrincipalAddress(principalAddress)
+        PersonalInformation(name, address)
+    }
 
     IsPrincipalEoriKnownPage.reader.flatMap {
       isPrincipalEoriKnown =>
@@ -85,7 +89,9 @@ object TraderDetails {
         ConsignorAddressPage.reader
       ).tupled
         .map {
-          case (name, address) => RequiredDetails(name, address.principalAddressDoNotMerge)
+          case (name, consignorAddress) =>
+            val address = Address.prismAddressToConsignorAddress(consignorAddress)
+            RequiredDetails(name, address)
         }
 
     val asdf: UserAnswersReader[RequiredDetails] =
@@ -114,7 +120,9 @@ object TraderDetails {
         ConsigneeAddressPage.reader
       ).tupled
         .map {
-          case (name, address) => RequiredDetails(name, address.principalAddressDoNotMerge)
+          case (name, consigneeAddress) =>
+            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
+            RequiredDetails(name, address)
         }
 
     val asdf: UserAnswersReader[RequiredDetails] =
