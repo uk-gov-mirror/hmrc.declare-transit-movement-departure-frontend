@@ -19,10 +19,21 @@ package models.journeyDomain
 import cats.implicits._
 import models.{DeclarationType, RepresentativeCapacity}
 import pages._
+import pages.movementDetails.PreLodgeDeclarationPage
 
 sealed trait MovementDetails
 
 object MovementDetails {
+
+  private val declarationForSomeoneElseAnswer: UserAnswersReader[DeclarationForSomeoneElseAnswer] =
+    DeclarationForSomeoneElsePage.reader.flatMap(
+      bool =>
+        if (bool) {
+          UserAnswersReader[DeclarationForSomeoneElse].widen[DeclarationForSomeoneElseAnswer]
+        } else {
+          UserAnswersReader[DeclarationForSelf.type].widen[DeclarationForSomeoneElseAnswer]
+        }
+    )
 
   final case class NormalMovementDetails(
     declarationType: DeclarationType,
@@ -31,6 +42,20 @@ object MovementDetails {
     declarationPlacePage: String,
     declarationForSomeoneElse: DeclarationForSomeoneElseAnswer
   ) extends MovementDetails
+
+  object NormalMovementDetails {
+
+    implicit val parseSimplifiedMovementDetails: UserAnswersParser[Option, NormalMovementDetails] =
+      UserAnswersOptionalParser(
+        (
+          DeclarationTypePage.reader,
+          PreLodgeDeclarationPage.reader,
+          ContainersUsedPage.reader,
+          DeclarationPlacePage.reader,
+          declarationForSomeoneElseAnswer
+        ).tupled
+      )((NormalMovementDetails.apply _).tupled)
+  }
 
   final case class SimplifiedMovementDetails(
     declarationType: DeclarationType,
@@ -41,18 +66,7 @@ object MovementDetails {
 
   object SimplifiedMovementDetails {
 
-    implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, SimplifiedMovementDetails] = {
-
-      val declarationForSomeoneElseAnswer: UserAnswersReader[DeclarationForSomeoneElseAnswer] =
-        DeclarationForSomeoneElsePage.reader.flatMap(
-          bool =>
-            if (bool) {
-              UserAnswersReader[DeclarationForSomeoneElse].widen[DeclarationForSomeoneElseAnswer]
-            } else {
-              UserAnswersReader[DeclarationForSelf.type].widen[DeclarationForSomeoneElseAnswer]
-          }
-        )
-
+    implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, SimplifiedMovementDetails] =
       UserAnswersOptionalParser(
         (
           DeclarationTypePage.reader,
@@ -61,7 +75,6 @@ object MovementDetails {
           declarationForSomeoneElseAnswer
         ).tupled
       )((SimplifiedMovementDetails.apply _).tupled)
-    }
 
   }
 

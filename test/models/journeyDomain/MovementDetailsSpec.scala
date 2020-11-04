@@ -19,15 +19,61 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
 import models.UserAnswers
-import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, SimplifiedMovementDetails}
+import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, NormalMovementDetails, SimplifiedMovementDetails}
 import pages._
+import pages.movementDetails.PreLodgeDeclarationPage
 
 class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
-  "SimplifiedMovementDetails" - {
-    "ParseUserAnswers parseNoDetails" - {
+  "NormalMovmentDetails" - {
+    "can be parsed UserAnswers" - {
+      "when all details for section have been answered" in {
 
-      "can be constructed when all the answers have been answered" in {
+        forAll(arb[NormalMovementDetails], arb[UserAnswers]) {
+          (expected, baseUserAnswers) =>
+            val interstitialUserAnswers = baseUserAnswers
+              .set(DeclarationTypePage, expected.declarationType)
+              .toOption
+              .value
+              .set(PreLodgeDeclarationPage, expected.prelodge)
+              .toOption
+              .value
+              .set(ContainersUsedPage, expected.containersUsed)
+              .toOption
+              .value
+              .set(DeclarationPlacePage, expected.declarationPlacePage)
+              .toOption
+              .value
+              .set(DeclarationForSomeoneElsePage, expected.declarationForSomeoneElse != DeclarationForSelf)
+              .toOption
+              .value
+
+            val userAnswers = expected.declarationForSomeoneElse match {
+              case DeclarationForSelf =>
+                interstitialUserAnswers
+              case DeclarationForSomeoneElse(companyName, capacity) =>
+                interstitialUserAnswers
+                  .set(RepresentativeNamePage, companyName)
+                  .toOption
+                  .value
+                  .set(RepresentativeCapacityPage, capacity)
+                  .toOption
+                  .value
+            }
+
+            val result = UserAnswersParser[Option, NormalMovementDetails].run(userAnswers).value
+
+            result mustEqual expected
+
+        }
+      }
+
+    }
+  }
+
+  "SimplifiedMovementDetails" - {
+    "can be parsed from UserAnswers" - {
+      "when all the answers have been answered" in {
         forAll(arb[SimplifiedMovementDetails], arb[UserAnswers]) {
           (expected, baseUserAnswers) =>
             val interstitialUserAnswers = baseUserAnswers
