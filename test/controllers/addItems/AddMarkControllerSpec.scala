@@ -113,8 +113,10 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
 
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted and set to UserAnswers if there is no previous answers" in {
+
       dataRetrievalWithData(emptyUserAnswers)
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request =
@@ -127,6 +129,26 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
 
       redirectLocation(result).value mustEqual onwardRoute.url
 
+      verify(mockSessionRepository, times(1)).set(any())
+    }
+
+    "must redirect to the next page when valid data is submitted and not set to UserAnswers if answer is the same" in {
+
+      val userAnswers = emptyUserAnswers.set(AddMarkPage(index, index), true).success.value
+
+      dataRetrievalWithData(userAnswers)
+
+      val request =
+        FakeRequest(POST, addMarkRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verify(mockSessionRepository, times(0)).set(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
