@@ -59,7 +59,7 @@ class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRend
       )
 
       templateCaptor.getValue mustEqual "itemsCheckYourAnswers.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsTraderDetailsConsignorAddressonCaptor.getValue must containJson(expectedJson)
     }
   }
 }
