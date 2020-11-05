@@ -24,7 +24,7 @@ class RemovePackageFormProviderSpec extends BooleanFieldBehaviours {
   val requiredKey = "removePackage.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new RemovePackageFormProvider()()
+  val form = new RemovePackageFormProvider()(1)
 
   ".value" - {
 
@@ -33,13 +33,13 @@ class RemovePackageFormProviderSpec extends BooleanFieldBehaviours {
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      invalidError = FormError(fieldName, invalidKey, "1")
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, "1")
     )
   }
 }

@@ -24,7 +24,7 @@ class DeclareNumberOfPackagesFormProviderSpec extends BooleanFieldBehaviours {
   val requiredKey = "declareNumberOfPackages.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new DeclareNumberOfPackagesFormProvider()()
+  val form = new DeclareNumberOfPackagesFormProvider()(1)
 
   ".value" - {
 
@@ -33,13 +33,13 @@ class DeclareNumberOfPackagesFormProviderSpec extends BooleanFieldBehaviours {
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      invalidError = FormError(fieldName, invalidKey, Seq(1))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(1))
     )
   }
 }
