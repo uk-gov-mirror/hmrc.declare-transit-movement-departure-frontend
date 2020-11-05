@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("removePackage.title"), form.errors) }}
+  {{ title(messages("removePackage.title", packageIndex), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
