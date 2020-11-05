@@ -351,7 +351,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     ua.get(AddAdministrativeReferencePage(itemIndex)) map {
       case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, itemIndex, Index(referenceIndex), mode)
       case _ if mode == CheckMode => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
-      case _ => ??? //TODO must go to 'Has the user selected yes for safety and security?'
+      case _ => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex) //TODO must go to 'Has the user selected yes for safety and security?'
     }
   }
 
@@ -368,7 +368,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     val newReferenceIndex = ua.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
     ua.get(AddAnotherPreviousAdministrativeReferencePage(index)) map {
       case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, index, Index(newReferenceIndex), mode)
-      case false if mode == NormalMode => ??? //TODO must go to 'Has the user selected yes for safety and security?'
+      case false if mode == NormalMode => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index) //TODO must go to 'Has the user selected yes for safety and security?'
       case _ => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)
     }
   }

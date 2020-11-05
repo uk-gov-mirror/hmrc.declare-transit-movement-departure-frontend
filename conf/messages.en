@@ -912,10 +912,10 @@ addAdministrativeReference.heading = Do you need to add a previous administrativ
 addAdministrativeReference.checkYourAnswersLabel = Add previous administrative reference?
 addAdministrativeReference.error.required = Select yes if you need to add a previous administrative reference
 
-referenceType.title = What type of reference do you want to add
-referenceType.heading = What type of reference do you want to add
+referenceType.title = What type of reference do you want to add?
+referenceType.heading = What type of reference do you want to add?
 referenceType.checkYourAnswersLabel = referenceType
-referenceType.error.required = What type of reference do you want to add
+referenceType.error.required = Enter the type of reference you want to add
 
 previousReference.title = What is the previous document reference?
 previousReference.heading = What is the previous document reference?
