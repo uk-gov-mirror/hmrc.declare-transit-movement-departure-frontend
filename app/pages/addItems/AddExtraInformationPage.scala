@@ -16,14 +16,24 @@
 
 package pages.addItems
 
-import models.Index
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{items, previousReferences}
+
+import scala.util.Try
 
 case class AddExtraInformationPage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences \ referenceIndex.position \ toString
 
   override def toString: String = "addExtraInformation"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) =>
+        userAnswers
+          .remove(ExtraInformationPage(itemIndex, referenceIndex))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

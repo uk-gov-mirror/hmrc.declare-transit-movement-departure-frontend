@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class ExtraInformationFormProvider @Inject() extends Mappings {
 
   val maxLength = 26
-  val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
+  val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
 
   def apply(): Form[String] =
     Form(

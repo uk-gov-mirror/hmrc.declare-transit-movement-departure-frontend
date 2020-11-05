@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
-import pages.addItems.AddItemsSameConsignorForAllItemsPage
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-class AddItemsSameConsignorForAllItemsPageSpec extends PageBehaviours {
+final case class PreviousReferencesQuery(index: Index) extends QuestionPage[JsObject] {
 
-  "AddItemsSameConsignorForAllItemsPage" - {
+  override def path: JsPath = JsPath \ Constants.items \ index.position \ Constants.previousReferences
 
-    beRetrievable[Boolean](AddItemsSameConsignorForAllItemsPage)
-
-    beSettable[Boolean](AddItemsSameConsignorForAllItemsPage)
-
-    beRemovable[Boolean](AddItemsSameConsignorForAllItemsPage)
-  }
 }
