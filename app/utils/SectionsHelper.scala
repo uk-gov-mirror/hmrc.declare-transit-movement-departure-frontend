@@ -16,13 +16,13 @@
 
 package utils
 
+import controllers.addItems.{routes => addItemsRoutes}
 import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import controllers.guaranteeDetails.{routes => guaranteetDetailsRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
-import controllers.addItems.{routes => addItemsRoutes}
 import models.GuaranteeType.{guaranteeReferenceRoute, nonGuaranteeReferenceRoute}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
@@ -38,9 +38,10 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
   def getSections: Seq[SectionDetails] = {
 
-    val optionalSecurityDetailsSection: Option[SectionDetails] = userAnswers.get(AddSecurityDetailsPage) map {
-      case true => safetyAndSecuritySection
-    }
+    val optionalSecurityDetailsSection: Option[SectionDetails] =
+      if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
+        Some(safetyAndSecuritySection)
+      } else None
 
     Seq(
       Some(movementDetailsSection),
