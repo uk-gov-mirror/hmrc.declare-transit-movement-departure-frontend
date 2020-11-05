@@ -94,7 +94,7 @@ class AddExtraDocumentInformationControllerSpec extends SpecBase with MockNunjuc
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddExtraDocumentInformationPage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddExtraDocumentInformationPage(index, documentIndex), true).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, addExtraDocumentInformationRoute)

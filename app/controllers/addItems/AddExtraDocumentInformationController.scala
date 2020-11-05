@@ -53,7 +53,7 @@ class AddExtraDocumentInformationController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(AddExtraDocumentInformationPage) match {
+        val preparedForm = request.userAnswers.get(AddExtraDocumentInformationPage(index, documentIndex)) match {
           case None        => formProvider(index)
           case Some(value) => formProvider(index).fill(value)
         }
@@ -91,9 +91,9 @@ class AddExtraDocumentInformationController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddExtraDocumentInformationPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddExtraDocumentInformationPage(index, documentIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddExtraDocumentInformationPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddExtraDocumentInformationPage(index, documentIndex), mode, updatedAnswers))
           )
     }
 }

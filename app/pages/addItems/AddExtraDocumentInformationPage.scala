@@ -16,10 +16,11 @@
 
 package pages.addItems
 
+import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object AddExtraDocumentInformationPage extends QuestionPage[Boolean] {
+case class AddExtraDocumentInformationPage(index: Index, documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
