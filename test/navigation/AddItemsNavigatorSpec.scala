@@ -293,7 +293,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
         }
 
-        "Do you know the consignor eori page when there are no answers in Header Trader Details" ignore {
+        "Do you know the consignor eori page when there are no answers in Header Trader Details" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -312,7 +312,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 .value
               navigator
                 .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
-                .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(answers.id, index, NormalMode))
+                .mustBe(traderRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(answers.id, index, NormalMode))
           }
         }
 
@@ -413,10 +413,22 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       "Trader Details" - {
         //Consignor
         "must go from ConsignorEoriKnown to" - {
-          "ConsignorEoriNumber when true" ignore {
+          "ConsignorEoriNumber when true" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
+                  .remove(ConsignorForAllItemsPage)
+                  .success
+                  .value
+                  .remove(AddConsignorPage)
+                  .success
+                  .value
+                  .remove(ConsigneeForAllItemsPage)
+                  .success
+                  .value
+                  .remove(AddConsigneePage)
+                  .success
+                  .value
                   .set(TraderDetailsConsignorEoriKnownPage(index), true)
                   .success
                   .value
@@ -425,10 +437,22 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
             }
           }
-          "ConsignorName when false" ignore {
+          "ConsignorName when false" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
+                  .remove(ConsignorForAllItemsPage)
+                  .success
+                  .value
+                  .remove(AddConsignorPage)
+                  .success
+                  .value
+                  .remove(ConsigneeForAllItemsPage)
+                  .success
+                  .value
+                  .remove(AddConsigneePage)
+                  .success
+                  .value
                   .set(TraderDetailsConsignorEoriKnownPage(index), false)
                   .success
                   .value
