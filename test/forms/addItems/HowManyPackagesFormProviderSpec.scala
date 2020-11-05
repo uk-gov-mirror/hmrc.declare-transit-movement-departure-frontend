@@ -28,7 +28,7 @@ class HowManyPackagesFormProviderSpec extends IntFieldBehaviours {
 
     val fieldName = "value"
 
-    val minimum = 1
+    val minimum = 0
     val maximum = 9999
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)

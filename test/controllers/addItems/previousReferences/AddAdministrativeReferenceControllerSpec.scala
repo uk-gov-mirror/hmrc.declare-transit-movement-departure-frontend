@@ -47,7 +47,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
   private val form         = formProvider()
   private val template     = "addItems/addAdministrativeReference.njk"
 
-  lazy val addAdministrativeReferenceRoute = routes.AddAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, NormalMode).url
+  lazy val addAdministrativeReferenceRoute = routes.AddAdministrativeReferenceController.onPageLoad(lrn, index, NormalMode).url
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
@@ -71,12 +71,11 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"           -> form,
-        "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display,
-        "mode"           -> NormalMode,
-        "lrn"            -> lrn,
-        "radios"         -> Radios.yesNo(form("value"))
+        "form"   -> form,
+        "index"  -> index.display,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -90,7 +89,7 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(addItems.AddAdministrativeReferencePage(index, referenceIndex), true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(addItems.AddAdministrativeReferencePage(index), true).success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, addAdministrativeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -105,12 +104,11 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form"           -> filledForm,
-        "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display,
-        "mode"           -> NormalMode,
-        "lrn"            -> lrn,
-        "radios"         -> Radios.yesNo(filledForm("value"))
+        "form"   -> filledForm,
+        "index"  -> index.display,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(filledForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -151,12 +149,11 @@ class AddAdministrativeReferenceControllerSpec extends SpecBase with MockNunjuck
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"           -> boundForm,
-        "mode"           -> NormalMode,
-        "index"          -> index.display,
-        "referenceIndex" -> referenceIndex.display,
-        "lrn"            -> lrn,
-        "radios"         -> Radios.yesNo(boundForm("value"))
+        "form"   -> boundForm,
+        "mode"   -> NormalMode,
+        "index"  -> index.display,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(boundForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey

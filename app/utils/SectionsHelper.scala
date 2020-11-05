@@ -38,21 +38,21 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
   def getSections: Seq[SectionDetails] = {
 
-    val mandatorySections = Seq(
-      movementDetailsSection,
-      routesSection,
-      transportSection,
-      tradersDetailsSection,
-      itemsSection,
-      goodsSummarySection,
-      guaranteeSection
-    )
-
-    if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
-      mandatorySections :+ safetyAndSecuritySection
-    } else {
-      mandatorySections
+    val optionalSecurityDetailsSection: Option[SectionDetails] = userAnswers.get(AddSecurityDetailsPage) map {
+      case true => safetyAndSecuritySection
     }
+
+    Seq(
+      Some(movementDetailsSection),
+      Some(routesSection),
+      Some(transportSection),
+      Some(tradersDetailsSection),
+      optionalSecurityDetailsSection,
+      Some(itemsSection),
+      Some(goodsSummarySection),
+      Some(guaranteeSection)
+    ).flatten
+
   }
 
   private def getIncompletePage(startPage: String, pages: Seq[(Option[_], String)]): Option[(String, Status)] =

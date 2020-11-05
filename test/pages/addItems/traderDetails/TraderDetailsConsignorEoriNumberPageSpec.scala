@@ -16,16 +16,17 @@
 
 package pages.addItems.traderDetails
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class TraderDetailsConsignorEoriNumberPageSpec extends PageBehaviours {
+class TraderDetailsConsignorEoriNumberPageSpec extends PageBehaviours with SpecBase {
 
   "TraderDetailsConsignorEoriNumberPage" - {
 
-    beRetrievable[String](TraderDetailsConsignorEoriNumberPage)
+    beRetrievable[String](TraderDetailsConsignorEoriNumberPage(index))
 
-    beSettable[String](TraderDetailsConsignorEoriNumberPage)
+    beSettable[String](TraderDetailsConsignorEoriNumberPage(index))
 
-    beRemovable[String](TraderDetailsConsignorEoriNumberPage)
+    beRemovable[String](TraderDetailsConsignorEoriNumberPage(index))
   }
 }
