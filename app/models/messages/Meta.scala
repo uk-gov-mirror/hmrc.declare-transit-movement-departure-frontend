@@ -18,11 +18,11 @@ package models.messages
 
 import java.time.{LocalDate, LocalTime}
 
-import com.lucidchart.open.xtract.{__, XmlReader}
 import cats.syntax.all._
+import com.lucidchart.open.xtract.{__, XmlReader}
+import models.XMLReads._
 import models.XMLWrites
 import models.XMLWrites._
-import models.XMLReads._
 import utils.Format
 
 import scala.xml.NodeSeq

@@ -16,12 +16,12 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.reference.Country
+import models.{ConsignorAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms._
-import models.{ConsignorAddress, CountryList}
-import models.reference.Country
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ConsignorAddressFormProvider @Inject() extends Mappings {

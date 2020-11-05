@@ -19,10 +19,10 @@ package forms.addItems.traderDetails
 import forms.mappings.Mappings
 import javax.inject.Inject
 import models.Address
-import play.api.data.Form
-import play.api.data.Forms.mapping
 import models.domain.TraderDomain.Constants._
 import models.domain.TraderDomain.inputRegex
+import play.api.data.Form
+import play.api.data.Forms.mapping
 
 class TraderDetailsConsigneeAddressFormProvider @Inject() extends Mappings {
 

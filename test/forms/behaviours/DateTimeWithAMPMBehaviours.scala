@@ -16,8 +16,8 @@
 
 package forms.behaviours
 
-import java.time.{LocalDateTime, ZoneOffset}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneOffset}
 
 import models.LocalDateTimeWithAMPM
 import org.scalacheck.Gen

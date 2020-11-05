@@ -21,13 +21,8 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.when
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.AnyContentAsEmpty
-import play.api.mvc.BodyParsers
-import play.api.mvc.Results
+import org.mockito.Mockito.{reset, when}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
@@ -36,8 +31,7 @@ import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec extends SpecBase with MockNunjucksRendererApp {
 

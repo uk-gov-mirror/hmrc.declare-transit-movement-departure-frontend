@@ -5,9 +5,9 @@ import org.scalatest.TestSuite
 import play.api.Configuration
 import reactivemongo.api.{DefaultDB, MongoConnection, MongoDriver}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Try
-import scala.concurrent.ExecutionContext.Implicits.global
 
 object MongoSuite {
 

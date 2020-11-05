@@ -16,9 +16,10 @@
 
 package models.messages.guarantee
 
+import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLWrites
-import cats.syntax.all._
+
 import scala.xml.NodeSeq
 
 sealed trait GuaranteeReference

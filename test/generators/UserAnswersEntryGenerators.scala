@@ -20,11 +20,10 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage, _}
-import pages.addItems.traderDetails._
-import pages.addItems._
-import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
+import pages.addItems.specialMentions._
+import pages.addItems.traderDetails._
+import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage, _}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}

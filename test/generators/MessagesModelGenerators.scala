@@ -23,8 +23,8 @@ import models.messages._
 import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem._
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
-import models.messages.trader._
 import models.messages.header.{Header, Transport}
+import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.{alphaNumChar, choose}
 import org.scalacheck.{Arbitrary, Gen}

@@ -16,10 +16,10 @@
 
 package models.messages.goodsitem
 
-import com.lucidchart.open.xtract.XmlReader
-import play.api.libs.json._
 import cats.syntax.all._
+import com.lucidchart.open.xtract.XmlReader
 import models.XMLWrites
+import play.api.libs.json._
 
 import scala.xml.NodeSeq
 

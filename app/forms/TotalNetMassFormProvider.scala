@@ -16,11 +16,11 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.Index
-import play.api.data.Form
 import models.domain.NetMass.Constants._
+import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class TotalNetMassFormProvider @Inject() extends Mappings {

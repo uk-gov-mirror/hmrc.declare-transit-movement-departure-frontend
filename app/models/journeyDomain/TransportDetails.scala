@@ -16,14 +16,12 @@
 
 package models.journeyDomain
 
-import cats._
 import cats.data._
 import cats.implicits._
-import models.reference.CountryCode
-import TransportDetails._
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
-import models.journeyDomain.TransportDetails.InlandMode.Mode5or7
-import pages.{AddIdAtDeparturePage, ChangeAtBorderPage, IdAtDeparturePage, InlandModePage, NationalityAtDeparturePage}
+import models.journeyDomain.TransportDetails._
+import models.reference.CountryCode
+import pages.{AddIdAtDeparturePage, IdAtDeparturePage, InlandModePage, NationalityAtDeparturePage}
 
 case class TransportDetails(
   inlandMode: InlandMode,

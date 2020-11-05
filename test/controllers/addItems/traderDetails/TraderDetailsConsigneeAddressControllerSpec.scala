@@ -18,9 +18,9 @@ package controllers.addItems.traderDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.traderDetails.TraderDetailsConsigneeAddressFormProvider
-import generators.{Generators, ModelGenerators}
+import generators.Generators
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{Address, NormalMode}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -39,7 +39,6 @@ import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
-import models.Address
 
 class TraderDetailsConsigneeAddressControllerSpec
     extends SpecBase

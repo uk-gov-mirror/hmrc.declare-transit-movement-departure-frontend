@@ -17,9 +17,9 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.messages.guarantee.Guarantee.Constants._
 import org.scalacheck.Gen
 import play.api.data.FormError
-import models.messages.guarantee.Guarantee.Constants._
 
 class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 

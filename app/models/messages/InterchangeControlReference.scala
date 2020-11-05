@@ -16,7 +16,7 @@
 
 package models.messages
 
-import com.lucidchart.open.xtract.{ParseError, ParseFailure, ParseResult, ParseSuccess, XmlReader}
+import com.lucidchart.open.xtract._
 import models.XMLWrites
 
 import scala.util.matching.Regex

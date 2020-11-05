@@ -17,9 +17,9 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.domain.GrossMass.Constants._
 import org.scalacheck.Gen
 import play.api.data.FormError
-import models.domain.GrossMass.Constants._
 
 class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
 

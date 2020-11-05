@@ -16,10 +16,10 @@
 
 package models.messages
 
+import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import models.LanguageCodeEnglish
 import models.XMLWrites._
-import com.lucidchart.open.xtract.XmlReader
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers

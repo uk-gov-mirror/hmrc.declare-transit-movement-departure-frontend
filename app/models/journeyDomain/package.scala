@@ -17,7 +17,6 @@
 package models
 
 import cats.data.ReaderT
-import models.journeyDomain.UserAnswersReader
 import play.api.libs.json.Reads
 import queries.Gettable
 

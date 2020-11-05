@@ -16,19 +16,18 @@
 
 package models.messages
 
-import generators.MessagesModelGenerators
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalacheck.Arbitrary._
 import com.lucidchart.open.xtract.XmlReader
-
-import scala.xml.{Node, NodeSeq}
+import generators.MessagesModelGenerators
 import models.XMLWrites._
 import models.messages.trader.{TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
+import org.scalacheck.Arbitrary._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, StreamlinedXmlEquality}
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.xml.Utility.trim
+import scala.xml.{Node, NodeSeq}
 
 class DeclarationRequestSpec
     extends AnyFreeSpec

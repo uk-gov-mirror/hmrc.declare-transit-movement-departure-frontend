@@ -19,8 +19,8 @@ package forms
 import forms.mappings.Mappings
 import javax.inject.Inject
 import models.Index
-import play.api.data.Form
 import models.domain.GrossMass.Constants._
+import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ItemTotalGrossMassFormProvider @Inject() extends Mappings {
