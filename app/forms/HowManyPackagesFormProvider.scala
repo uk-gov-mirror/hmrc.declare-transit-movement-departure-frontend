@@ -24,7 +24,10 @@ class HowManyPackagesFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Int] =
     Form(
-      "value" -> int("howManyPackages.error.required", "howManyPackages.error.wholeNumber", "howManyPackages.error.nonNumeric")
-        .verifying(inRange(1, 9999, "howManyPackages.error.outOfRange"))
+      "value" -> int(
+        "howManyPackages.error.required",
+        "howManyPackages.error.wholeNumber",
+        "howManyPackages.error.nonNumeric"
+      ).verifying(inRange(0, 9999, "howManyPackages.error.outOfRange"))
     )
 }
