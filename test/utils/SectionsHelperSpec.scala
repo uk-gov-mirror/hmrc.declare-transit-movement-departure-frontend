@@ -41,13 +41,12 @@ class SectionsHelperSpec extends SpecBase {
     "GetSections" - {
       "must include SafetyAndSecurity section when answer Yes to AddSecurityDetailsPage" in {
 
-        val userAnswers              = emptyUserAnswers.set(AddSecurityDetailsPage, true).toOption.value
-        val sectionsHelper           = new SectionsHelper(userAnswers)
-        val url                      = movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
-        val sectionName              = "declarationSummary.section.movementDetails"
-        val safetyAndSecuritySection = "declarationSummary.section.safetyAndSecurity"
-        val expectedSections: Seq[SectionDetails] = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted)) :+
-          SectionDetails(safetyAndSecuritySection, "", NotStarted)
+        val userAnswers                           = emptyUserAnswers.set(AddSecurityDetailsPage, true).toOption.value
+        val sectionsHelper                        = new SectionsHelper(userAnswers)
+        val url                                   = movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
+        val sectionName                           = "declarationSummary.section.movementDetails"
+        val safetyAndSecuritySection              = "declarationSummary.section.safetyAndSecurity"
+        val expectedSections: Seq[SectionDetails] = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted), true)
 
         sectionsHelper.getSections mustBe expectedSections
 
@@ -565,18 +564,27 @@ class SectionsHelperSpec extends SpecBase {
 
   }
 
-  private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails): Seq[SectionDetails] = {
+  private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails, showSafetyAndSecurity: Boolean = false): Seq[SectionDetails] = {
+    val optionalSafetyAnsSecuritySection =
+      if (showSafetyAndSecurity) Some(SectionDetails("declarationSummary.section.safetyAndSecurity", "", NotStarted)) else None
+
     val sections: Seq[SectionDetails] = Seq(
-      SectionDetails("declarationSummary.section.movementDetails", movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.routes", routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.transport", transportDetailsRoutes.InlandModeController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.tradersDetails",
-                     traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
-                     NotStarted),
-      SectionDetails("declarationSummary.section.addItems", addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.goodsSummary", goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url, NotStarted),
-      SectionDetails("declarationSummary.section.guarantee", guaranteeDetailsRoutes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url, NotStarted)
-    )
+      Some(
+        SectionDetails("declarationSummary.section.movementDetails",
+                       movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url,
+                       NotStarted)),
+      Some(SectionDetails("declarationSummary.section.routes", routeDetailsRoutes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url, NotStarted)),
+      Some(SectionDetails("declarationSummary.section.transport", transportDetailsRoutes.InlandModeController.onPageLoad(lrn, NormalMode).url, NotStarted)),
+      Some(
+        SectionDetails("declarationSummary.section.tradersDetails",
+                       traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
+                       NotStarted)),
+      optionalSafetyAnsSecuritySection,
+      Some(SectionDetails("declarationSummary.section.addItems", addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url, NotStarted)),
+      Some(SectionDetails("declarationSummary.section.goodsSummary", goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url, NotStarted)),
+      Some(SectionDetails("declarationSummary.section.guarantee", guaranteeDetailsRoutes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url, NotStarted))
+    ).flatten
+
     sections.map {
       section =>
         if (section.name == sectionDtls.name) sectionDtls else section
