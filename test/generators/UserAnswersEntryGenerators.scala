@@ -33,6 +33,14 @@ trait UserAnswersEntryGenerators extends PageGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryAddExtraDocumentInformationUserAnswersEntry: Arbitrary[(AddExtraDocumentInformationPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddExtraDocumentInformationPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry
     : Arbitrary[(ConfirmRemovePreviousAdministrativeReferencePage, JsValue)] =
     Arbitrary {

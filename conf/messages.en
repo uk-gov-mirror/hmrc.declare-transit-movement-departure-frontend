@@ -985,3 +985,8 @@ addAnotherContainer.title = addAnotherContainer
 addAnotherContainer.heading = addAnotherContainer
 addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
 addAnotherContainer.error.required = Select yes if addAnotherContainer
+
+addExtraDocumentInformation.title = addExtraDocumentInformation
+addExtraDocumentInformation.heading = addExtraDocumentInformation
+addExtraDocumentInformation.checkYourAnswersLabel = addExtraDocumentInformation
+addExtraDocumentInformation.error.required = Select yes if addExtraDocumentInformation
