@@ -38,7 +38,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
   def getSections: Seq[SectionDetails] = {
 
-    val optionalSection: Option[SectionDetails] = userAnswers.get(AddSecurityDetailsPage) map {
+    val optionalSecurityDetailsSection: Option[SectionDetails] = userAnswers.get(AddSecurityDetailsPage) map {
       case true => safetyAndSecuritySection
     }
 
@@ -47,7 +47,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
       Some(routesSection),
       Some(transportSection),
       Some(tradersDetailsSection),
-      optionalSection,
+      optionalSecurityDetailsSection,
       Some(itemsSection),
       Some(goodsSummarySection),
       Some(guaranteeSection)

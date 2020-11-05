@@ -45,7 +45,6 @@ class SectionsHelperSpec extends SpecBase {
         val sectionsHelper                        = new SectionsHelper(userAnswers)
         val url                                   = movementDetailsRoutes.DeclarationTypeController.onPageLoad(lrn, NormalMode).url
         val sectionName                           = "declarationSummary.section.movementDetails"
-        val safetyAndSecuritySection              = "declarationSummary.section.safetyAndSecurity"
         val expectedSections: Seq[SectionDetails] = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, NotStarted), true)
 
         sectionsHelper.getSections mustBe expectedSections
