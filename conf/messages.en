@@ -985,3 +985,10 @@ addAnotherContainer.title = addAnotherContainer
 addAnotherContainer.heading = addAnotherContainer
 addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
 addAnotherContainer.error.required = Select yes if addAnotherContainer
+
+documentReference.title = What is the document reference?
+documentReference.heading = What is the document reference?
+documentReference.checkYourAnswersLabel = Document reference
+documentReference.error.required = Enter the document reference
+documentReference.error.length = The document reference must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+documentReference.error.invalidCharacters = The document reference must be 35 characters or less
