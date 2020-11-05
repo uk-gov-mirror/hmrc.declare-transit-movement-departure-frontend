@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object AddExtraDocumentInformationPage extends QuestionPage[Boolean] {
+class AddExtraDocumentInformationPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "AddExtraDocumentInformationPage" - {
 
-  override def toString: String = "addExtraDocumentInformation"
+    beRetrievable[Boolean](AddExtraDocumentInformationPage)
+
+    beSettable[Boolean](AddExtraDocumentInformationPage)
+
+    beRemovable[Boolean](AddExtraDocumentInformationPage)
+  }
 }

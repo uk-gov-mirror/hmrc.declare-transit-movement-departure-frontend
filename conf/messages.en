@@ -986,7 +986,6 @@ addAnotherContainer.heading = addAnotherContainer
 addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
 addAnotherContainer.error.required = Select yes if addAnotherContainer
 
-addExtraDocumentInformation.title = addExtraDocumentInformation
-addExtraDocumentInformation.heading = addExtraDocumentInformation
-addExtraDocumentInformation.checkYourAnswersLabel = addExtraDocumentInformation
-addExtraDocumentInformation.error.required = Select yes if addExtraDocumentInformation
+addExtraDocumentInformation.title = Do you need to add any extra information for document {0}?
+addExtraDocumentInformation.heading = Do you need to add any extra information for document {0}?
+addExtraDocumentInformation.error.required = Select yes if you need to add any extra information for document {0}

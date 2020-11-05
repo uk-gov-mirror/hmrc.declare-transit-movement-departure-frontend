@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import controllers.actions._
-import forms.AddExtraDocumentInformationFormProvider
+import forms.addItems.AddExtraDocumentInformationFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.AddExtraDocumentInformationPage
+import pages.addItems.AddExtraDocumentInformationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,15 +48,14 @@ class AddExtraDocumentInformationController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/addExtraDocumentInformation.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(AddExtraDocumentInformationPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+          case None        => formProvider(index)
+          case Some(value) => formProvider(index).fill(value)
         }
 
         val json = Json.obj(
@@ -74,7 +73,7 @@ class AddExtraDocumentInformationController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        form
+        formProvider(index)
           .bindFromRequest()
           .fold(
             formWithErrors => {

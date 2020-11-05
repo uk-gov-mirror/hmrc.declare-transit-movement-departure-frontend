@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.addItems
 
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.Index
 import play.api.data.Form
 
 class AddExtraDocumentInformationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(index: Index): Form[Boolean] =
     Form(
-      "value" -> boolean("addExtraDocumentInformation.error.required")
+      "value" -> boolean("addExtraDocumentInformation.error.required", "error.boolean", Seq(index.display))
     )
 }
