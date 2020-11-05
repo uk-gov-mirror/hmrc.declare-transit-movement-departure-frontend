@@ -28,8 +28,8 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryDocumentExtraInformationPage: Arbitrary[DocumentExtraInformationPage.type] =
-    Arbitrary(DocumentExtraInformationPage)
+  implicit lazy val arbitraryDocumentExtraInformationPage: Arbitrary[DocumentExtraInformationPage] =
+    Arbitrary(DocumentExtraInformationPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryRemoveSpecialMentionPage: Arbitrary[RemoveSpecialMentionPage] =
     Arbitrary(RemoveSpecialMentionPage(Index(0)))

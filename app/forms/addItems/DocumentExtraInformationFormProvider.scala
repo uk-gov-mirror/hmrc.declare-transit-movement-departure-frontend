@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.Index
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
@@ -26,13 +27,13 @@ class DocumentExtraInformationFormProvider @Inject() extends Mappings {
   val maxLength = 26
   val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
 
-  def apply(): Form[String] =
+  def apply(index: Index): Form[String] =
     Form(
-      "value" -> text("documentExtraInformation.error.required")
+      "value" -> text("documentExtraInformation.error.required", Seq(index.display))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(maxLength, "documentExtraInformation.error.length"),
-            regexp(regex, "documentExtraInformation.error.invalid")
+            maxLength(maxLength, "documentExtraInformation.error.length", index.display),
+            regexp(regex, "documentExtraInformation.error.invalid", index.display)
           ))
     )
 }

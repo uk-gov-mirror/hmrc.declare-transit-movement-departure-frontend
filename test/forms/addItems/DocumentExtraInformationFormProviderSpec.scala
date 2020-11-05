@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class DocumentExtraInformationFormProviderSpec extends StringFieldBehaviours {
+class DocumentExtraInformationFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
   val requiredKey = "documentExtraInformation.error.required"
   val lengthKey   = "documentExtraInformation.error.length"
   val maxLength   = 26
+  val validRegex  = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
+  val invalidKey  = "documentExtraInformation.error.invalid"
 
-  val form = new DocumentExtraInformationFormProvider()()
+  val form = new DocumentExtraInformationFormProvider()(index)
 
   ".value" - {
 
@@ -41,13 +44,13 @@ class DocumentExtraInformationFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(index.display))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
   }
 }

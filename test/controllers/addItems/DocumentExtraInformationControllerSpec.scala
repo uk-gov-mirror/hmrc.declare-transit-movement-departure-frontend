@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
+import base.{MockNunjucksRendererApp, SpecBase}
+import forms.addItems.DocumentExtraInformationFormProvider
 import matchers.JsonMatchers
-import forms.DocumentExtraInformationFormProvider
-import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import models.NormalMode
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DocumentExtraInformationPage
+import pages.addItems.DocumentExtraInformationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -45,7 +44,7 @@ class DocumentExtraInformationControllerSpec extends SpecBase with MockNunjucksR
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new DocumentExtraInformationFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(index)
   private val template     = "addItems/documentExtraInformation.njk"
 
   lazy val documentExtraInformationRoute = routes.DocumentExtraInformationController.onPageLoad(lrn, index, documentIndex, NormalMode).url
@@ -75,9 +74,11 @@ class DocumentExtraInformationControllerSpec extends SpecBase with MockNunjucksR
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"          -> form,
+        "mode"          -> NormalMode,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -92,7 +93,7 @@ class DocumentExtraInformationControllerSpec extends SpecBase with MockNunjucksR
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(DocumentExtraInformationPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(DocumentExtraInformationPage(index, documentIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, documentExtraInformationRoute)
@@ -108,9 +109,11 @@ class DocumentExtraInformationControllerSpec extends SpecBase with MockNunjucksR
       val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"          -> filledForm,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "mode"          -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -156,9 +159,11 @@ class DocumentExtraInformationControllerSpec extends SpecBase with MockNunjucksR
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"          -> boundForm,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "mode"          -> NormalMode
       )
 
       templateCaptor.getValue mustEqual template
@@ -176,7 +181,7 @@ class DocumentExtraInformationControllerSpec extends SpecBase with MockNunjucksR
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -192,7 +197,7 @@ class DocumentExtraInformationControllerSpec extends SpecBase with MockNunjucksR
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }

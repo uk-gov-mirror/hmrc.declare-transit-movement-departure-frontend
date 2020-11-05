@@ -991,3 +991,4 @@ documentExtraInformation.heading = What extra information do you need to add for
 documentExtraInformation.checkYourAnswersLabel = Extra information for document {0}
 documentExtraInformation.error.required = Enter the extra information for document {0}
 documentExtraInformation.error.length = Document extra information must be 26 characters or less
+documentExtraInformation.error.invalid = The extra information for this document must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
+import models.Index
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object DocumentExtraInformationPage extends QuestionPage[String] {
+case class DocumentExtraInformationPage(index: Index, documentIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
