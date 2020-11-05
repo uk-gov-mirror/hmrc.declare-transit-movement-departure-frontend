@@ -16,11 +16,17 @@
 
 package pages
 
-import play.api.libs.json.JsPath
+import pages.addItems.DocumentReferencePage
+import pages.behaviours.PageBehaviours
 
-case object DocumentReferencePage extends QuestionPage[String] {
+class DocumentReferencePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "DocumentReferencePage" - {
 
-  override def toString: String = "documentReference"
+    beRetrievable[String](DocumentReferencePage)
+
+    beSettable[String](DocumentReferencePage)
+
+    beRemovable[String](DocumentReferencePage)
+  }
 }

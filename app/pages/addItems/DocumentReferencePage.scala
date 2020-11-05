@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class DocumentReferencePageSpec extends PageBehaviours {
+case object DocumentReferencePage extends QuestionPage[String] {
 
-  "DocumentReferencePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](DocumentReferencePage)
-
-    beSettable[String](DocumentReferencePage)
-
-    beRemovable[String](DocumentReferencePage)
-  }
+  override def toString: String = "documentReference"
 }

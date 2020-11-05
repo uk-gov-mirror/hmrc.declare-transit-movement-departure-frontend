@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.Index
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class DocumentReferenceFormProvider @Inject() extends Mappings {
+
+  val maxLength                        = 35
+  val documentReferenceCharactersRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]$"
 
   def apply(index: Index): Form[String] =
     Form(
       "value" -> text("documentReference.error.required")
-        .verifying(maxLength(35, "documentReference.error.length"))
-    )
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "documentReference.error.length"),
+            regexp(documentReferenceCharactersRegex, "documentReference.error.invalidCharacters")
+          )
+        ))
 }

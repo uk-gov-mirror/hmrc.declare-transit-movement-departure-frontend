@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class DocumentReferenceFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "documentReference.error.required"
-  val lengthKey   = "documentReference.error.length"
-  val maxLength   = 35
+  val requiredKey                           = "documentReference.error.required"
+  val lengthKey                             = "documentReference.error.length"
+  val maxLength                             = 35
+  val documentReferenceCharactersRegex      = "^[a-zA-Z0-9&'@\\/.\\-%?<>]$"
+  val documentReferenceInvalidCharactersKey = "documentReference.error.invalidCharacters"
 
   val form = new DocumentReferenceFormProvider()(index)
 
@@ -50,5 +53,21 @@ class DocumentReferenceFormProviderSpec extends SpecBase with StringFieldBehavio
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the previous reference invalid characters regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, documentReferenceInvalidCharactersKey, Seq(documentReferenceCharactersRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(documentReferenceCharactersRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }
