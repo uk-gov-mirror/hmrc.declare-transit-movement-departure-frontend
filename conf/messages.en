@@ -985,3 +985,9 @@ addAnotherContainer.title = addAnotherContainer
 addAnotherContainer.heading = addAnotherContainer
 addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
 addAnotherContainer.error.required = Select yes if addAnotherContainer
+
+documentExtraInformation.title = What extra information do you need to add for document {0}?
+documentExtraInformation.heading = What extra information do you need to add for document {0}?
+documentExtraInformation.checkYourAnswersLabel = Extra information for document {0}
+documentExtraInformation.error.required = Enter the extra information for document {0}
+documentExtraInformation.error.length = Document extra information must be 26 characters or less
