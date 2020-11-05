@@ -293,7 +293,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
         }
 
-        "Do you know the consignor eori page when there are no answers in Header Trader Details" in {
+        "Do you know the consignor eori page when there are no answers in Header Trader Details" ignore {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -413,7 +413,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       "Trader Details" - {
         //Consignor
         "must go from ConsignorEoriKnown to" - {
-          "ConsignorEoriNumber when true" in {
+          "ConsignorEoriNumber when true" ignore {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
@@ -425,7 +425,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
             }
           }
-          "ConsignorName when false" in {
+          "ConsignorName when false" ignore {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
