@@ -18,6 +18,7 @@ package forms.addItems
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
 
@@ -25,29 +26,49 @@ class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
   val lengthKey   = "declareMark.error.length"
   val maxLength   = 42
 
-  val form = new DeclareMarkFormProvider()()
+  def form(totalPackages: Option[Int] = None) = new DeclareMarkFormProvider()(totalPackages)
 
   ".value" - {
 
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
-      form,
+      form(),
       fieldName,
       stringsWithMaxLength(maxLength)
     )
 
     behave like fieldWithMaxLength(
-      form,
+      form(),
       fieldName,
       maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
-      form,
+      form(),
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must fail to bind if total packages are 0 and declare mark is 0" in {
+
+      val result = form(Some(0)).bind(Map(fieldName -> "0")).apply(fieldName)
+
+      result.errors must contain only FormError(fieldName, "declareMark.error.emptyNumberOfPackages")
+    }
+
+    "must not bind invalid input" in {
+
+      val expectedRegex: String  = "^[a-zA-Z0-9]*$"
+      val invalidCharacters      = "^[$&+,:;=?@#|'<>.^*()%!-]{1,42}$"
+      val invalidStringGenerator = RegexpGen.from(invalidCharacters)
+
+      forAll(invalidStringGenerator) {
+        invalidString =>
+          val result = form().bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe List(FormError(fieldName, "declareMark.error.format", Seq(expectedRegex)))
+      }
+    }
   }
 }

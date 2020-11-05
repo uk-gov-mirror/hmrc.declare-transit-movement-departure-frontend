@@ -723,6 +723,8 @@ declareMark.title = What is the mark or number for package type {0}?
 declareMark.heading = What is the mark or number for package type {0}?
 declareMark.error.required = Enter the mark or number
 declareMark.error.length = Mark or number must be 42 characters or less
+declareMark.error.emptyNumberOfPackages = Mark or number must be 1 or more
+declareMark.error.format = Mark or number must only include letters a to z, numbers 0 to 9 or blank spaces.
 
 addAnotherPackage.title.plural = You have added {0} types of packages
 addAnotherPackage.title.singular = You have added {0} type of package
@@ -731,8 +733,6 @@ addAnotherPackage.heading.singular = You have added {0} type of package
 addAnotherPackage.yesNo = Do you need to add another type of package?
 addAnotherPackage.error.required = Select yes if you want to add another type of package
 addAnotherPackage.change.hidden = Change {0}
-
-
 
 commodityCode.title = What is the commodity code for item {0}?
 commodityCode.heading = What is the commodity code for item {0}?
@@ -751,7 +751,7 @@ isCommodityCodeKnown.error.required = Select yes if you know the commodity code 
 howManyPackages.title = How many of this package type have you used for item {0}?
 howManyPackages.heading = How many of this package type have you used for item {0}?
 howManyPackages.checkYourAnswersLabel = How many of this package type have you used for item {0}?
-howManyPackages.error.nonNumeric = How many of this package type must only include numbers 0 to 9
+howManyPackages.error.nonNumeric = The packages you are declaring must only include numbers 0 to 9
 howManyPackages.error.required = Enter how many packages you are declaring using whole numbers
 howManyPackages.error.wholeNumber = Enter how many packages you are declaring using whole numbers
 howManyPackages.error.outOfRange = How many packages you are declaring must be between {0} and {1}
