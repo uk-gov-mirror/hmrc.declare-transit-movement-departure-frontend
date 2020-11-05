@@ -564,7 +564,7 @@ class SectionsHelperSpec extends SpecBase {
   }
 
   private def updateSectionsWithExpectedValue(sectionDtls: SectionDetails, showSafetyAndSecurity: Boolean = false): Seq[SectionDetails] = {
-    val optionalSafetyAnsSecuritySection =
+    val optionalSafetyAndSecuritySection =
       if (showSafetyAndSecurity) Some(SectionDetails("declarationSummary.section.safetyAndSecurity", "", NotStarted)) else None
 
     val sections: Seq[SectionDetails] = Seq(
@@ -578,7 +578,7 @@ class SectionsHelperSpec extends SpecBase {
         SectionDetails("declarationSummary.section.tradersDetails",
                        traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
                        NotStarted)),
-      optionalSafetyAnsSecuritySection,
+      optionalSafetyAndSecuritySection,
       Some(SectionDetails("declarationSummary.section.addItems", addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url, NotStarted)),
       Some(SectionDetails("declarationSummary.section.goodsSummary", goodsSummaryRoutes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url, NotStarted)),
       Some(SectionDetails("declarationSummary.section.guarantee", guaranteeDetailsRoutes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url, NotStarted))

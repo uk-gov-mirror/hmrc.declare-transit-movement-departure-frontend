@@ -92,7 +92,7 @@ trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEac
         bind[SessionRepository].toInstance(mockSessionRepository)
       )
 
-  @deprecated("Use app from GuiceOneAppPerSuite instead", "next")
+  // TODO: Remove and use app from GuiceOneAppPerSuite instead
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(

@@ -39,6 +39,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with OptionValues with TryValue
 
   val index          = Index(0)
   val referenceIndex = Index(0)
+  val documentIndex  = Index(0)
 
   val itemIndex    = Index(0)
   val packageIndex = Index(0)
