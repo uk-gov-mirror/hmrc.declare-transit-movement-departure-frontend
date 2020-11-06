@@ -20,7 +20,7 @@ import controllers.addItems.previousReferences.{routes => previousReferencesRout
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import models.reference.PreviousDocumentType
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, PreviousDocumentTypeList, UserAnswers}
+import models._
 import pages._
 import pages.{addItems, _}
 import pages.addItems._
@@ -30,6 +30,51 @@ import uk.gov.hmrc.viewmodels._
 import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def addDocuments(itemIndex: Index): Option[Row] = userAnswers.get(AddDocumentsPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"addDocuments.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddDocumentsController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addDocuments.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def documentReference(itemIndex: Index): Option[Row] = userAnswers.get(DocumentReferencePage(itemIndex: Index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"documentReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.DocumentReferenceController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"documentReference.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def documentExtraInformation(index: Index, documentIndex: Index): Option[Row] = userAnswers.get(DocumentExtraInformationPage(index, documentIndex)) map {
+    answer =>
+      Row(
+        key   = Key(msg"documentExtraInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.DocumentExtraInformationController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"documentExtraInformation.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def addItemsSameConsignorForAllItems(index: Index): Option[Row] = userAnswers.get(AddItemsSameConsignorForAllItemsPage(index)) map {
     answer =>

@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages.addItems.specialMentions
+package pages.addItems
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class SpecialMentionTypePageSpec extends PageBehaviours with SpecBase {
+case object AddDocumentsPage extends QuestionPage[Boolean] {
 
-  "SpecialMentionTypePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beSettable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beRemovable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-  }
+  override def toString: String = "addDocuments"
 }

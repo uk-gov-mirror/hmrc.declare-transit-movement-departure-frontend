@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import forms.ProcedureTypeFormProvider
+import forms.addItems.DocumentReferenceFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, ProcedureType}
-import navigation.annotations.PreTaskListDetails
+import models.NormalMode
+import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ProcedureTypePage
+import pages.addItems.DocumentReferencePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -34,36 +34,36 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class ProcedureTypeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val procedureTypeRoute =
-    routes.ProcedureTypeController.onPageLoad(lrn, NormalMode).url
+  private val formProvider = new DocumentReferenceFormProvider()
+  private val form         = formProvider(index)
+  private val template     = "addItems/documentReference.njk"
 
-  val formProvider = new ProcedureTypeFormProvider()
-  val form         = formProvider()
+  lazy val documentReferenceRoute = routes.DocumentReferenceController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "ProcedureType Controller" - {
+  "DocumentReference Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      dataRetrievalWithData(emptyUserAnswers)
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(GET, procedureTypeRoute)
+      dataRetrievalWithData(emptyUserAnswers)
+
+      val request        = FakeRequest(GET, documentReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -71,33 +71,30 @@ class ProcedureTypeControllerSpec extends SpecBase with MockNunjucksRendererApp 
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> ProcedureType.radios(form)
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
-      templateCaptor.getValue mustEqual "procedureType.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
+
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
-        .set(ProcedureTypePage, ProcedureType.values.head)
-        .success
-        .value
-
-      dataRetrievalWithData(userAnswers)
-
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(GET, procedureTypeRoute)
+      val userAnswers = emptyUserAnswers.set(DocumentReferencePage(index), "answer").success.value
+      dataRetrievalWithData(userAnswers)
+
+      val request        = FakeRequest(GET, documentReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -105,50 +102,49 @@ class ProcedureTypeControllerSpec extends SpecBase with MockNunjucksRendererApp 
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm =
-        form.bind(Map("value" -> ProcedureType.values.head.toString))
+      val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> ProcedureType.radios(filledForm)
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "procedureType.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
+      templateCaptor.getValue mustEqual template
+      jsonWithoutConfig mustBe expectedJson
+
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      dataRetrievalWithData(emptyUserAnswers)
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      dataRetrievalWithData(emptyUserAnswers)
+
       val request =
-        FakeRequest(POST, procedureTypeRoute)
-          .withFormUrlEncodedBody(("value", ProcedureType.values.head.toString))
+        FakeRequest(POST, documentReferenceRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
+
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      dataRetrievalWithData(emptyUserAnswers)
-
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request = FakeRequest(POST, procedureTypeRoute)
-        .withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm      = form.bind(Map("value" -> "invalid value"))
+      dataRetrievalWithData(emptyUserAnswers)
+
+      val request        = FakeRequest(POST, documentReferenceRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -156,30 +152,31 @@ class ProcedureTypeControllerSpec extends SpecBase with MockNunjucksRendererApp 
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1))
-        .render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> ProcedureType.radios(boundForm)
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual "procedureType.njk"
+      templateCaptor.getValue mustEqual template
       jsonCaptor.getValue must containJson(expectedJson)
+
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, procedureTypeRoute)
+      val request = FakeRequest(GET, documentReferenceRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -187,14 +184,15 @@ class ProcedureTypeControllerSpec extends SpecBase with MockNunjucksRendererApp 
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, procedureTypeRoute)
-          .withFormUrlEncodedBody(("value", ProcedureType.values.head.toString))
+        FakeRequest(POST, documentReferenceRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+
     }
   }
 }

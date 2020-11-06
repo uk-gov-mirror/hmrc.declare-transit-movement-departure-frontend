@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages.addItems.specialMentions
+package pages.addItems
 
-import base.SpecBase
+import models.Index
 import pages.behaviours.PageBehaviours
 
-class SpecialMentionTypePageSpec extends PageBehaviours with SpecBase {
+class DocumentExtraInformationPageSpec(index: Index, documentIndex: Index) extends PageBehaviours {
 
-  "SpecialMentionTypePage" - {
+  "DocumentExtraInformationPage" - {
 
-    beRetrievable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
+    beRetrievable[String](DocumentExtraInformationPage(index, documentIndex))
 
-    beSettable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
+    beSettable[String](DocumentExtraInformationPage(index, documentIndex))
 
-    beRemovable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
+    beRemovable[String](DocumentExtraInformationPage(index, documentIndex))
   }
 }

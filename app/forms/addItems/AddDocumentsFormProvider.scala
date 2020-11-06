@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages.addItems.specialMentions
+package forms.addItems
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.Index
+import play.api.data.Form
 
-class SpecialMentionTypePageSpec extends PageBehaviours with SpecBase {
+class AddDocumentsFormProvider @Inject() extends Mappings {
 
-  "SpecialMentionTypePage" - {
-
-    beRetrievable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beSettable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beRemovable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-  }
+  def apply(index: Index): Form[Boolean] =
+    Form(
+      "value" -> boolean("addDocuments.error.required", "error.boolean", Seq(index.display))
+    )
 }

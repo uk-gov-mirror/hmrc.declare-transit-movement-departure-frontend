@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.addItems.specialMentions
+package controllers.addItems
 
 import controllers.actions._
-import forms.addItems.specialMentions.AddAnotherSpecialMentionFormProvider
+import forms.addItems.AddDocumentsFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.PreTaskListDetails
-import pages.addItems.specialMentions.AddAnotherSpecialMentionPage
+import navigation.annotations.AddItems
+import pages.addItems.AddDocumentsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,14 +33,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAnotherSpecialMentionController @Inject()(
+class AddDocumentsController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @PreTaskListDetails navigator: Navigator,
+  @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddAnotherSpecialMentionFormProvider,
+  formProvider: AddDocumentsFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -48,20 +48,20 @@ class AddAnotherSpecialMentionController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
-  private val template = "addItems/specialMentions/addAnotherSpecialMention.njk"
+  private val template = "addItems/addDocuments.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddAnotherSpecialMentionPage(itemIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(AddDocumentsPage) match {
+        case None        => formProvider(itemIndex)
+        case Some(value) => formProvider(itemIndex).fill(value)
       }
 
       val json = Json.obj(
         "form"   -> preparedForm,
         "mode"   -> mode,
         "lrn"    -> lrn,
+        "index"  -> itemIndex.display,
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
@@ -70,7 +70,7 @@ class AddAnotherSpecialMentionController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(itemIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -79,6 +79,7 @@ class AddAnotherSpecialMentionController @Inject()(
               "form"   -> formWithErrors,
               "mode"   -> mode,
               "lrn"    -> lrn,
+              "index"  -> itemIndex.display,
               "radios" -> Radios.yesNo(formWithErrors("value"))
             )
 
@@ -86,9 +87,9 @@ class AddAnotherSpecialMentionController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSpecialMentionPage(itemIndex), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDocumentsPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAnotherSpecialMentionPage(itemIndex), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddDocumentsPage, mode, updatedAnswers))
         )
   }
 }
