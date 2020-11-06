@@ -34,6 +34,8 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(DocumentReferencePage.type, JsValue)] ::
+      arbitrary[(ConfirmRemovePreviousAdministrativeReferencePage, JsValue)] ::
     arbitrary[(AddExtraDocumentInformationPage, JsValue)] ::
       arbitrary[(ConfirmRemovePreviousAdministrativeReferencePage, JsValue)] ::
       arbitrary[(AddDocumentsPage.type, JsValue)] ::

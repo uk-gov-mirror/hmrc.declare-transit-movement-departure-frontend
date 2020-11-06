@@ -20,7 +20,7 @@ import controllers.addItems.previousReferences.{routes => previousReferencesRout
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import models.reference.PreviousDocumentType
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, PreviousDocumentTypeList, UserAnswers}
+import models._
 import pages._
 import pages.{addItems, _}
 import pages.addItems._
@@ -41,6 +41,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.AddDocumentsController.onPageLoad(lrn, itemIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addDocuments.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def documentReference(itemIndex: Index): Option[Row] = userAnswers.get(DocumentReferencePage) map {
+    answer =>
+      Row(
+        key   = Key(msg"documentReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.DocumentReferenceController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"documentReference.checkYourAnswersLabel"))
           )
         )
       )
