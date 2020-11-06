@@ -21,12 +21,9 @@ import config.FrontendAppConfig
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.JsObject
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -38,17 +35,19 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendere
   "DeclarationSummary Controller" - {
 
     "return OK and the correct view for a GET" in {
+
+      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application       = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val frontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
       val request        = FakeRequest(GET, routes.DeclarationSummaryController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -62,8 +61,6 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendere
 
       templateCaptor.getValue mustEqual "declarationSummary.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
   }
 

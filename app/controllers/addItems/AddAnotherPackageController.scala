@@ -86,16 +86,19 @@ class AddAnotherPackageController @Inject()(
           .fold(
             formWithErrors => {
 
-              val totalTypes       = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
+              val totalTypes  = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
+              val packageRows = PackageViewModel.packageRows(itemIndex, totalTypes, request.userAnswers, mode)
+
               val singularOrPlural = if (totalTypes == 1) "singular" else "plural"
 
               val json = Json.obj(
-                "form"      -> formWithErrors,
-                "mode"      -> mode,
-                "lrn"       -> lrn,
-                "radios"    -> Radios.yesNo(formWithErrors("value")),
-                "pageTitle" -> msg"addAnotherPackage.title.$singularOrPlural".withArgs(totalTypes),
-                "heading"   -> msg"addAnotherPackage.heading.$singularOrPlural".withArgs(totalTypes),
+                "form"        -> formWithErrors,
+                "mode"        -> mode,
+                "lrn"         -> lrn,
+                "radios"      -> Radios.yesNo(formWithErrors("value")),
+                "pageTitle"   -> msg"addAnotherPackage.title.$singularOrPlural".withArgs(totalTypes),
+                "heading"     -> msg"addAnotherPackage.heading.$singularOrPlural".withArgs(totalTypes),
+                "packageRows" -> packageRows
               )
 
               renderer.render("addItems/addAnotherPackage.njk", json).map(BadRequest(_))

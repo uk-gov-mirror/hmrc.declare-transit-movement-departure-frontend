@@ -26,7 +26,7 @@ class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
   val lengthKey   = "declareMark.error.length"
   val maxLength   = 42
 
-  def form(totalPackages: Option[Int] = None) = new DeclareMarkFormProvider()(totalPackages)
+  def form(totalPackages: Option[Int] = None) = new DeclareMarkFormProvider()(totalPackages, 1)
 
   ".value" - {
 
@@ -42,32 +42,31 @@ class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
       form(),
       fieldName,
       maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(1, maxLength))
     )
 
     behave like mandatoryField(
       form(),
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(1))
     )
 
     "must fail to bind if total packages are 0 and declare mark is 0" in {
 
       val result = form(Some(0)).bind(Map(fieldName -> "0")).apply(fieldName)
 
-      result.errors must contain only FormError(fieldName, "declareMark.error.emptyNumberOfPackages")
+      result.errors must contain only FormError(fieldName, "declareMark.error.emptyNumberOfPackages", Seq(1))
     }
 
     "must not bind invalid input" in {
 
-      val expectedRegex: String  = "^[a-zA-Z0-9]*$"
       val invalidCharacters      = "^[$&+,:;=?@#|'<>.^*()%!-]{1,42}$"
       val invalidStringGenerator = RegexpGen.from(invalidCharacters)
 
       forAll(invalidStringGenerator) {
         invalidString =>
           val result = form().bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe List(FormError(fieldName, "declareMark.error.format", Seq(expectedRegex)))
+          result.errors mustBe List(FormError(fieldName, "declareMark.error.format", Seq(1)))
       }
     }
   }

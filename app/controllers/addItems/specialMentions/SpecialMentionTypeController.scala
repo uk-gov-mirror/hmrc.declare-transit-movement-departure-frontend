@@ -19,7 +19,7 @@ package controllers.addItems.specialMentions
 import controllers.actions._
 import forms.addItems.specialMentions.SpecialMentionTypeFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.PreTaskListDetails
 import pages.addItems.specialMentions.SpecialMentionTypePage
@@ -51,42 +51,44 @@ class SpecialMentionTypeController @Inject()(
   private val form     = formProvider()
   private val template = "addItems/specialMentions/specialMentionType.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(SpecialMentionTypePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(SpecialMentionTypePage(itemIndex, referenceIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(SpecialMentionTypePage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(SpecialMentionTypePage, mode, updatedAnswers))
+        val json = Json.obj(
+          "form" -> preparedForm,
+          "lrn"  -> lrn,
+          "mode" -> mode
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form" -> formWithErrors,
+                "lrn"  -> lrn,
+                "mode" -> mode
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(SpecialMentionTypePage(itemIndex, referenceIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(SpecialMentionTypePage(itemIndex, referenceIndex), mode, updatedAnswers))
+          )
+    }
 }

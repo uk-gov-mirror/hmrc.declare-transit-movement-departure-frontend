@@ -22,8 +22,8 @@ import play.api.data.Form
 
 class DeclareNumberOfPackagesFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(itemIndex: Int): Form[Boolean] =
     Form(
-      "value" -> boolean("declareNumberOfPackages.error.required")
+      "value" -> boolean("declareNumberOfPackages.error.required", args = Seq(itemIndex))
     )
 }

@@ -52,7 +52,7 @@ class DeclareMarkController @Inject()(
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         val getNumberOfPackages = request.userAnswers.get(HowManyPackagesPage(itemIndex, packageIndex))
-        val form                = formProvider(getNumberOfPackages)
+        val form                = formProvider(getNumberOfPackages, packageIndex.display)
 
         val preparedForm = request.userAnswers.get(DeclareMarkPage(itemIndex, packageIndex)) match {
           case None        => form
@@ -73,7 +73,7 @@ class DeclareMarkController @Inject()(
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         val getNumberOfPackages = request.userAnswers.get(HowManyPackagesPage(itemIndex, packageIndex))
-        val form                = formProvider(getNumberOfPackages)
+        val form                = formProvider(getNumberOfPackages, packageIndex.display)
 
         form
           .bindFromRequest()

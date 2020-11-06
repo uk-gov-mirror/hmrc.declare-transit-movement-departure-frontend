@@ -16,12 +16,14 @@
 
 package pages.addItems.specialMentions
 
+import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.{items, specialMentions}
 
-case object SpecialMentionTypePage extends QuestionPage[String] {
+case class SpecialMentionTypePage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ specialMentions \ referenceIndex.position \ toString
 
   override def toString: String = "specialMentionType"
 }

@@ -43,7 +43,7 @@ import scala.concurrent.Future
 class TotalPiecesControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val formProvider = new TotalPiecesFormProvider()
-  val form         = formProvider()
+  val form         = formProvider(index.display)
 
   def onwardRoute = Call("GET", "/foo")
 
