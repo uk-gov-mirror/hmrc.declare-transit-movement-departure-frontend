@@ -24,7 +24,7 @@ class AddMarkFormProviderSpec extends BooleanFieldBehaviours {
   val requiredKey = "addMark.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddMarkFormProvider()()
+  val form = new AddMarkFormProvider()(1)
 
   ".value" - {
 
@@ -33,13 +33,13 @@ class AddMarkFormProviderSpec extends BooleanFieldBehaviours {
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      invalidError = FormError(fieldName, invalidKey, Seq(1))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(1))
     )
   }
 }

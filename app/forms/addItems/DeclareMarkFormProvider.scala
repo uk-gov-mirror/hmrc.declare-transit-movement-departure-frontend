@@ -27,23 +27,23 @@ class DeclareMarkFormProvider @Inject() extends Mappings {
   val regex: String = "^[a-zA-Z0-9]*$"
   val maxLength     = 42
 
-  def apply(totalPackages: Option[Int]): Form[String] =
+  def apply(totalPackages: Option[Int], packageIndex: Int): Form[String] =
     Form(
-      "value" -> text("declareMark.error.required")
+      "value" -> text("declareMark.error.required", Seq(packageIndex))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(maxLength, "declareMark.error.length"),
-            regexp(regex, "declareMark.error.format"),
-            emptyNumberOfPackages(totalPackages)
+            maxLength(maxLength, "declareMark.error.length", packageIndex, maxLength),
+            regexp(regex, "declareMark.error.format", packageIndex),
+            emptyNumberOfPackages(totalPackages, packageIndex)
           )
         )
     )
 
-  private def emptyNumberOfPackages(totalPackages: Option[Int]): Constraint[String] =
+  private def emptyNumberOfPackages(totalPackages: Option[Int], packageIndex: Int): Constraint[String] =
     Constraint {
       value =>
         totalPackages match {
-          case Some(0) if value == "0" => Invalid("declareMark.error.emptyNumberOfPackages")
+          case Some(0) if value == "0" => Invalid("declareMark.error.emptyNumberOfPackages", packageIndex)
           case _                       => Valid
         }
     }

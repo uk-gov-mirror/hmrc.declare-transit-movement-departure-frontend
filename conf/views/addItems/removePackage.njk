@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("removePackage.title"), form.errors) }}
+  {{ title(messages("removePackage.title", packageIndex), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -37,7 +37,7 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('removePackage.heading'),
+                text: messages('removePackage.heading', packageIndex),
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--xl"
               }

@@ -17,7 +17,6 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import forms.HowManyPackagesFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
@@ -34,6 +33,7 @@ import play.twirl.api.Html
 import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import forms.addItems.HowManyPackagesFormProvider
 import navigation.annotations.AddItems
 import pages.addItems.HowManyPackagesPage
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -43,7 +43,7 @@ import scala.concurrent.Future
 class HowManyPackagesControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val formProvider = new HowManyPackagesFormProvider()
-  val form         = formProvider()
+  val form         = formProvider(index.display)
 
   def onwardRoute = Call("GET", "/foo")
 
