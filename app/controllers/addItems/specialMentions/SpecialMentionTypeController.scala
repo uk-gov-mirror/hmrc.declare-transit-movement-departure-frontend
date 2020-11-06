@@ -21,7 +21,7 @@ import forms.addItems.specialMentions.SpecialMentionTypeFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.PreTaskListDetails
+import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.SpecialMentionTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SpecialMentionTypeController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @PreTaskListDetails navigator: Navigator,
+  @SpecialMentions navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,

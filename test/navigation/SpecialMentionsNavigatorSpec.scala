@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.addItems.specialMentions.routes
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 
@@ -29,11 +29,24 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   "Special Mentions section" - {
 
+    "in check mode" - {
+
+      "must go from SpecialMentionType to SpecialMentionAdditionalInfo" in {
+        navigator
+          .nextPage(SpecialMentionTypePage(index, index), CheckMode, emptyUserAnswers)
+          .mustBe(routes.SpecialMentionAdditionalInfoController.onPageLoad(emptyUserAnswers.id, index, index, CheckMode))
+      }
+
+      "must go from SpecialMentionAdditionalInfo to AddAnotherSpecialMention" in {
+        navigator
+          .nextPage(SpecialMentionAdditionalInfoPage(index, index), CheckMode, emptyUserAnswers)
+          .mustBe(routes.AddAnotherSpecialMentionController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
+      }
+    }
+
     "in normal mode" - {
 
       "must go from AddSpecialMention to SpecialMentionType" in {
-
-        //        val userAnswers = emptyUserAnswers.remove(PackagesQuery(index, index))
         navigator
           .nextPage(AddSpecialMentionPage(index), NormalMode, emptyUserAnswers)
           .mustBe(routes.SpecialMentionTypeController.onPageLoad(emptyUserAnswers.id, index, index, NormalMode))
@@ -42,14 +55,12 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       "must go from AddSpecialMention to [PRODUCED DOCUMENTS NOT YET IN]" ignore {}
 
       "must go from SpecialMentionType to SpecialMentionAdditionalInfo" in {
-
         navigator
           .nextPage(SpecialMentionTypePage(index, index), NormalMode, emptyUserAnswers)
           .mustBe(routes.SpecialMentionAdditionalInfoController.onPageLoad(emptyUserAnswers.id, index, index, NormalMode))
       }
 
       "must go from SpecialMentionAdditionalInfo to AddAnotherSpecialMention" in {
-
         navigator
           .nextPage(SpecialMentionAdditionalInfoPage(index, index), NormalMode, emptyUserAnswers)
           .mustBe(routes.AddAnotherSpecialMentionController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
@@ -76,7 +87,5 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         }
       }
     }
-
   }
-
 }

@@ -20,7 +20,7 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.specialMentions.SpecialMentionTypeFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
-import navigation.annotations.PreTaskListDetails
+import navigation.annotations.{PreTaskListDetails, SpecialMentions}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -51,7 +51,7 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SpecialMentions]).toInstance(new FakeNavigator(onwardRoute)))
 
   "SpecialMentionType Controller" - {
 
