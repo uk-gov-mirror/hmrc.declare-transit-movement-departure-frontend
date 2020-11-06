@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package pages.addItems.specialMentions
+package models.reference
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Json, OFormat}
 
-class SpecialMentionTypePageSpec extends PageBehaviours with SpecBase {
+case class DocumentType(code: String, description: String, transportDocument: Boolean)
 
-  "SpecialMentionTypePage" - {
-
-    beRetrievable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beSettable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beRemovable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-  }
+object DocumentType {
+  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
 }

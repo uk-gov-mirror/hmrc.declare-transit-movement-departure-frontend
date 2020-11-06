@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package pages.addItems.specialMentions
+package derivable
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{items, specialMentions}
 
-class SpecialMentionTypePageSpec extends PageBehaviours with SpecBase {
+final case class DeriveNumberOfSpecialMentions(itemIndex: Index) extends Derivable[List[JsObject], Int] {
 
-  "SpecialMentionTypePage" - {
+  override val derive: List[JsObject] => Int = _.size
 
-    beRetrievable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beSettable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beRemovable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-  }
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ specialMentions
 }

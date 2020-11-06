@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package pages.addItems.specialMentions
+package models
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import models.reference.DocumentType
 
-class SpecialMentionTypePageSpec extends PageBehaviours with SpecBase {
+case class DocumentTypeList(documentTypes: Seq[DocumentType]) {
 
-  "SpecialMentionTypePage" - {
+  def getDocumentType(code: String): Option[DocumentType] =
+    documentTypes.find(_.code == code)
 
-    beRetrievable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beSettable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-
-    beRemovable[String](SpecialMentionTypePage(itemIndex, referenceIndex))
-  }
 }

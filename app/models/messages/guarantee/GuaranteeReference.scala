@@ -23,7 +23,6 @@ import scala.xml.NodeSeq
 
 sealed trait GuaranteeReference
 
-//TODO: Find out what happens with VALLIMECVLE and VALLIMNONECLIM nodes
 object GuaranteeReference {
 
   object Constants {
