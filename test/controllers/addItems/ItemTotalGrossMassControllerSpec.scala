@@ -17,6 +17,7 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
 import forms.ItemTotalGrossMassFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -28,15 +29,13 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.ItemTotalGrossMassPage
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
-import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 

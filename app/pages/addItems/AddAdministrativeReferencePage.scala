@@ -16,11 +16,10 @@
 
 package pages.addItems
 
-import derivable.{DeriveNumberOfItems, DeriveNumberOfPreviousAdministrativeReferences}
 import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import queries.Constants.{items, previousReferences}
+import queries.Constants.items
 import queries.PreviousReferencesQuery
 
 import scala.util.Try

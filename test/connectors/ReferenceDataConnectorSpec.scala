@@ -398,7 +398,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$startUrl/previous-document-type", connector.getDocumentTypes())
+        checkErrorResponse(s"/$startUrl/document-type", connector.getDocumentTypes())
       }
 
     }

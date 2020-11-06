@@ -17,9 +17,9 @@
 package controllers.addItems.previousReferences
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainItems}
 import forms.ExtraInformationFormProvider
 import matchers.JsonMatchers
-import controllers.{routes => mainItems}
 import models.NormalMode
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
@@ -35,7 +35,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
