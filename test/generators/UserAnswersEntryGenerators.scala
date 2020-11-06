@@ -29,7 +29,7 @@ import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
 
-trait UserAnswersEntryGenerators extends PageGenerators {
+trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
@@ -80,21 +80,21 @@ trait UserAnswersEntryGenerators extends PageGenerators {
     Arbitrary {
       for {
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (AddAnotherSpecialMentionPage, value)
+      } yield (AddAnotherSpecialMentionPage(Index(0)), value)
     }
 
   implicit lazy val arbitrarySpecialMentionAdditionalInfoUserAnswersEntry: Arbitrary[(SpecialMentionAdditionalInfoPage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (SpecialMentionAdditionalInfoPage, value)
+      } yield (SpecialMentionAdditionalInfoPage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitrarySpecialMentionTypeUserAnswersEntry: Arbitrary[(SpecialMentionTypePage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (SpecialMentionTypePage, value)
+      } yield (SpecialMentionTypePage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitraryAddSpecialMentionUserAnswersEntry: Arbitrary[(AddSpecialMentionPage, JsValue)] =

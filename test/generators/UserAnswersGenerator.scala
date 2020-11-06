@@ -229,14 +229,15 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
         id         <- arbitrary[LocalReferenceNumber]
         eoriNumber <- arbitrary[EoriNumber]
         data       <- answers
-      } yield UserAnswers(
-        id = id,
-        eoriNumber = eoriNumber,
-        data = data.foldLeft(Json.obj()) {
-          case (obj, (path, value)) =>
-            obj.setObject(path.path, value).get
-        }
-      )
+      } yield
+        UserAnswers(
+          id         = id,
+          eoriNumber = eoriNumber,
+          data = data.foldLeft(Json.obj()) {
+            case (obj, (path, value)) =>
+              obj.setObject(path.path, value).get
+          }
+        )
     }
   }
 }
