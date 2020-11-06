@@ -17,7 +17,7 @@
 package controllers.addItems
 
 import controllers.actions._
-import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
+import derivable.DeriveNumberOfPackages
 import forms.addItems.AddAnotherPackageFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
@@ -28,10 +28,8 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.AddItemsCheckYourAnswersHelper
 import viewModels.PackageViewModel
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -86,16 +84,19 @@ class AddAnotherPackageController @Inject()(
           .fold(
             formWithErrors => {
 
-              val totalTypes       = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
+              val totalTypes  = request.userAnswers.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
+              val packageRows = PackageViewModel.packageRows(itemIndex, totalTypes, request.userAnswers, mode)
+
               val singularOrPlural = if (totalTypes == 1) "singular" else "plural"
 
               val json = Json.obj(
-                "form"      -> formWithErrors,
-                "mode"      -> mode,
-                "lrn"       -> lrn,
-                "radios"    -> Radios.yesNo(formWithErrors("value")),
-                "pageTitle" -> msg"addAnotherPackage.title.$singularOrPlural".withArgs(totalTypes),
-                "heading"   -> msg"addAnotherPackage.heading.$singularOrPlural".withArgs(totalTypes),
+                "form"        -> formWithErrors,
+                "mode"        -> mode,
+                "lrn"         -> lrn,
+                "radios"      -> Radios.yesNo(formWithErrors("value")),
+                "pageTitle"   -> msg"addAnotherPackage.title.$singularOrPlural".withArgs(totalTypes),
+                "heading"     -> msg"addAnotherPackage.heading.$singularOrPlural".withArgs(totalTypes),
+                "packageRows" -> packageRows
               )
 
               renderer.render("addItems/addAnotherPackage.njk", json).map(BadRequest(_))

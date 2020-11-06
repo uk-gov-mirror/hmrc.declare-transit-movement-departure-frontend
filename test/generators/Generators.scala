@@ -24,9 +24,10 @@ import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 
 // TODO: Move away from mixing style to using objects
-trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators with JourneyModelGenerators {
+trait Generators extends UserAnswersGenerator with ModelGenerators {
 
-  val stringMaxLength = 256
+  lazy val stringMaxLength = 128
+  require(stringMaxLength > 1, "Value for `stringMaxLength` must be greater than 1")
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
 
@@ -72,8 +73,12 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
 
   def decimalsPositive: Gen[String] =
     arbitrary[BigDecimal]
-      .suchThat(x => x.signum >= 0)
-      .suchThat(x => x.abs <= Int.MaxValue)
+      .suchThat(
+        x => x.signum >= 0
+      )
+      .suchThat(
+        x => x.abs <= Int.MaxValue
+      )
       .suchThat(!_.isValidInt)
       .map(_.formatted("%f"))
 
@@ -89,17 +94,13 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     )
 
   def nonBooleans: Gen[String] =
-    arbitrary[String]
-      .suchThat(_.nonEmpty)
+    nonEmptyString
       .suchThat(_ != "true")
       .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
-    arbitrary[String] suchThat (_.nonEmpty)
-
-  def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
-      length <- choose(1, maxLength)
+      length <- choose(1, stringMaxLength)
       chars  <- listOfN(length, arbitrary[Char])
     } yield chars.mkString
 
@@ -107,6 +108,18 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     for {
       length <- choose(1, maxLength)
       chars  <- listOfN(length, characters)
+    } yield chars.mkString
+
+  def stringsWithMaxLength(maxLength: Int): Gen[String] =
+    for {
+      length <- choose(1, maxLength)
+      chars  <- listOfN(length, arbitrary[Char])
+    } yield chars.mkString
+
+  def alphaStringsWithMaxLength(maxLength: Int): Gen[String] =
+    for {
+      length <- choose(1, maxLength)
+      chars  <- listOfN(length, Gen.alphaNumChar)
     } yield chars.mkString
 
   def stringsWithLength(length: Int): Gen[String] =

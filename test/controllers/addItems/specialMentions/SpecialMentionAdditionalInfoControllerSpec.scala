@@ -46,7 +46,7 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
   private val form         = formProvider()
   private val template     = "addItems/specialMentions/specialMentionAdditionalInfo.njk"
 
-  lazy val specialMentionAdditionalInfoRoute = routes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, NormalMode).url
+  lazy val specialMentionAdditionalInfoRoute = routes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, itemIndex, referenceIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -90,7 +90,7 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(SpecialMentionAdditionalInfoPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, specialMentionAdditionalInfoRoute)

@@ -16,19 +16,18 @@
 
 package forms.addItems
 
-import forms.HowManyPackagesFormProvider
 import forms.behaviours.IntFieldBehaviours
 import play.api.data.FormError
 
 class HowManyPackagesFormProviderSpec extends IntFieldBehaviours {
 
-  val form = new HowManyPackagesFormProvider()()
+  val form = new HowManyPackagesFormProvider()(1)
 
   ".value" - {
 
     val fieldName = "value"
 
-    val minimum = 1
+    val minimum = 0
     val maximum = 9999
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
@@ -42,8 +41,8 @@ class HowManyPackagesFormProviderSpec extends IntFieldBehaviours {
     behave like intField(
       form,
       fieldName,
-      nonNumericError  = FormError(fieldName, "howManyPackages.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "howManyPackages.error.wholeNumber")
+      nonNumericError  = FormError(fieldName, "howManyPackages.error.nonNumeric", Seq("1")),
+      wholeNumberError = FormError(fieldName, "howManyPackages.error.wholeNumber", Seq("1"))
     )
 
     behave like intFieldWithRange(
@@ -51,13 +50,13 @@ class HowManyPackagesFormProviderSpec extends IntFieldBehaviours {
       fieldName,
       minimum       = minimum,
       maximum       = maximum,
-      expectedError = FormError(fieldName, "howManyPackages.error.outOfRange", Seq(minimum, maximum))
+      expectedError = FormError(fieldName, "howManyPackages.error.outOfRange", Seq(0, maximum))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "howManyPackages.error.required")
+      requiredError = FormError(fieldName, "howManyPackages.error.required", Seq("1"))
     )
   }
 }

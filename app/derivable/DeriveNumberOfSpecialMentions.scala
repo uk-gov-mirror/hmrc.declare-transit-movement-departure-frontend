@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package derivable
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{items, specialMentions}
 
-class HowManyPackagesFormProvider @Inject() extends Mappings {
+final case class DeriveNumberOfSpecialMentions(itemIndex: Index) extends Derivable[List[JsObject], Int] {
 
-  def apply(): Form[Int] =
-    Form(
-      "value" -> int("howManyPackages.error.required", "howManyPackages.error.wholeNumber", "howManyPackages.error.nonNumeric")
-        .verifying(inRange(1, 9999, "howManyPackages.error.outOfRange"))
-    )
+  override val derive: List[JsObject] => Int = _.size
+
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ specialMentions
 }

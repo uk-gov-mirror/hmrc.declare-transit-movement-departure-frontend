@@ -19,10 +19,7 @@ package models.journeyDomain
 import cats._
 import cats.data._
 import cats.implicits._
-import cats.kernel.Monoid
 import models.UserAnswers
-
-import scala.language.higherKinds
 
 trait UserAnswersParser[F[_], +A] {
   def run[AA >: A](ua: UserAnswers): F[AA]
@@ -40,7 +37,7 @@ object UserAnswersParser {
 
           override def run[AA >: A](ua: UserAnswers): Option[AA] =
             l.run(ua) orElse r.run(ua)
-      }
+        }
     )
 }
 

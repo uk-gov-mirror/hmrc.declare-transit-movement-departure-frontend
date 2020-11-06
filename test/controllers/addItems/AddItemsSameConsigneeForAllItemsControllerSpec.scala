@@ -15,11 +15,10 @@
  */
 
 package controllers.addItems
-
 import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.AddItemsSameConsigneeForAllItemsFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -34,7 +33,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
@@ -90,7 +88,7 @@ class AddItemsSameConsigneeForAllItemsControllerSpec extends SpecBase with MockN
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddItemsSameConsigneeForAllItemsPage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddItemsSameConsigneeForAllItemsPage(Index(0)), true).success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, addItemsSameConsigneeForAllItemsRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

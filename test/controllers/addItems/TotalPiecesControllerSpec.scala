@@ -17,6 +17,8 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
+import forms.addItems.TotalPiecesFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.AddItems
@@ -25,25 +27,22 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.addItems.TotalPiecesPage
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
-import forms.addItems.TotalPiecesFormProvider
-import pages.addItems.TotalPiecesPage
-import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 
 class TotalPiecesControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   val formProvider = new TotalPiecesFormProvider()
-  val form         = formProvider()
+  val form         = formProvider(index.display)
 
   def onwardRoute = Call("GET", "/foo")
 

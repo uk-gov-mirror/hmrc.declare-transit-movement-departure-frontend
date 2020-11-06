@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import pages.addItems.AddItemsSameConsignorForAllItemsPage
 import pages.behaviours.PageBehaviours
 
-class AddItemsSameConsignorForAllItemsPageSpec extends PageBehaviours {
+class AddDocumentsPageSpec extends PageBehaviours {
 
-  "AddItemsSameConsignorForAllItemsPage" - {
+  "AddDocumentsPage" - {
 
-    beRetrievable[Boolean](AddItemsSameConsignorForAllItemsPage)
+    beRetrievable[Boolean](AddDocumentsPage)
 
-    beSettable[Boolean](AddItemsSameConsignorForAllItemsPage)
+    beSettable[Boolean](AddDocumentsPage)
 
-    beRemovable[Boolean](AddItemsSameConsignorForAllItemsPage)
+    beRemovable[Boolean](AddDocumentsPage)
   }
 }

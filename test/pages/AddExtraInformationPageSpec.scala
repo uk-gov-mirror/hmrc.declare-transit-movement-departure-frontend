@@ -16,11 +16,13 @@
 
 package pages
 
-import models.Index
-import pages.addItems.AddExtraInformationPage
+import models.{Index, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.addItems.{AddExtraInformationPage, ExtraInformationPage}
 import pages.behaviours.PageBehaviours
 
-class AddExtraInformationPageSpec extends PageBehaviours {
+class AddExtraInformationPageSpec extends PageBehaviours with ScalaCheckPropertyChecks {
 
   val itemIndex: Index              = Index(0)
   val referenceIndex: Index         = Index(0)
@@ -33,5 +35,39 @@ class AddExtraInformationPageSpec extends PageBehaviours {
     beSettable[Boolean](page)
 
     beRemovable[Boolean](page)
+
+    "cleanup" - {
+
+      "must clean up the extra information page on selecting option 'No' " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val result = answers
+              .set(ExtraInformationPage(itemIndex, referenceIndex), "test")
+              .success
+              .value
+              .set(AddExtraInformationPage(itemIndex, referenceIndex), false)
+              .success
+              .value
+
+            result.get(ExtraInformationPage(itemIndex, referenceIndex)) must not be defined
+        }
+      }
+
+      "must keep extra information page on selecting option 'No' " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val result = answers
+              .set(ExtraInformationPage(itemIndex, referenceIndex), "test")
+              .success
+              .value
+              .set(AddExtraInformationPage(itemIndex, referenceIndex), true)
+              .success
+              .value
+
+            result.get(ExtraInformationPage(itemIndex, referenceIndex)) mustBe defined
+        }
+      }
+
+    }
   }
 }

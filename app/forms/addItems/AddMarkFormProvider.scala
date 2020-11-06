@@ -22,8 +22,8 @@ import play.api.data.Form
 
 class AddMarkFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(itemIndex: Int): Form[Boolean] =
     Form(
-      "value" -> boolean("addMark.error.required")
+      "value" -> boolean("addMark.error.required", args = Seq(itemIndex))
     )
 }

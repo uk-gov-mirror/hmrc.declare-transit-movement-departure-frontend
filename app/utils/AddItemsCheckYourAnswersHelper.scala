@@ -19,19 +19,62 @@ package utils
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
-import pages._
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, UserAnswers}
-import pages.{addItems, _}
+import models._
 import pages.addItems._
 import pages.addItems.traderDetails._
+import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def addItemsSameConsignorForAllItems(index: Index): Option[Row] = userAnswers.get(AddItemsSameConsignorForAllItemsPage) map {
+  def addDocuments(itemIndex: Index): Option[Row] = userAnswers.get(AddDocumentsPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"addDocuments.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddDocumentsController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addDocuments.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def documentReference(itemIndex: Index): Option[Row] = userAnswers.get(DocumentReferencePage(itemIndex: Index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"documentReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.DocumentReferenceController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"documentReference.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def documentExtraInformation(index: Index, documentIndex: Index): Option[Row] = userAnswers.get(DocumentExtraInformationPage(index, documentIndex)) map {
+    answer =>
+      Row(
+        key   = Key(msg"documentExtraInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.DocumentExtraInformationController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"documentExtraInformation.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addItemsSameConsignorForAllItems(index: Index): Option[Row] = userAnswers.get(AddItemsSameConsignorForAllItemsPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"addItemsSameConsignorForAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -46,7 +89,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def addItemsSameConsigneeForAllItems(index: Index): Option[Row] = userAnswers.get(AddItemsSameConsigneeForAllItemsPage) map {
+  def addItemsSameConsigneeForAllItems(index: Index): Option[Row] = userAnswers.get(AddItemsSameConsigneeForAllItemsPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"addItemsSameConsigneeForAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -61,7 +104,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def traderDetailsConsignorName(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorNamePage) map {
+  def traderDetailsConsignorName(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorNamePage(index)) map {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsignorName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -76,7 +119,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def traderDetailsConsignorEoriNumber(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorEoriNumberPage) map {
+  def traderDetailsConsignorEoriNumber(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorEoriNumberPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsignorEoriNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -91,7 +134,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def traderDetailsConsignorEoriKnown(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorEoriKnownPage) map {
+  def traderDetailsConsignorEoriKnown(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorEoriKnownPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsignorEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -106,7 +149,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def traderDetailsConsignorAddress(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorAddressPage) map {
+  def traderDetailsConsignorAddress(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorAddressPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -121,7 +164,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def traderDetailsConsigneeName(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsigneeNamePage) map {
+  def traderDetailsConsigneeName(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsigneeNamePage(index)) map {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsigneeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -136,7 +179,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def traderDetailsConsigneeEoriNumber(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsigneeEoriNumberPage) map {
+  def traderDetailsConsigneeEoriNumber(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsigneeEoriNumberPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsigneeEoriNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -151,7 +194,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def traderDetailsConsigneeEoriKnown(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsigneeEoriKnownPage) map {
+  def traderDetailsConsigneeEoriKnown(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsigneeEoriKnownPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsigneeEoriKnown.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -166,7 +209,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def traderDetailsConsigneeAddress(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsigneeAddressPage) map {
+  def traderDetailsConsigneeAddress(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsigneeAddressPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -300,33 +343,55 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
-  def previousAdministrativeReferenceRows(index: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(PreviousReferencePage(index, referenceIndex)).map { //TODO NEED TO REPLACE WITH REF TYPE PAGE
+  def previousReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList): Option[Row] =
+    userAnswers.get(ReferenceTypePage(index, referenceIndex)) flatMap {
       answer =>
-        Row(
-          key   = Key(lit"$answer"),
-          value = Value(lit""),
-          actions = List(
-            Action(
-              content            = msg"site.change",
-              href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""change-item-${index.display}""")
-            ),
-            Action(
-              content = msg"site.delete",
-              href = previousReferencesRoutes.ConfirmRemovePreviousAdministrativeReferenceController
-                .onPageLoad(userAnswers.id, index, referenceIndex, CheckMode)
-                .url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""remove-item-${index.display}""")
+        previousDocumentType.getPreviousDocumentType(answer) map {
+          referenceType =>
+            Row(
+              key   = Key(lit"(${referenceType.code}) ${referenceType.description}"),
+              value = Value(lit""),
+              actions = List(
+                Action(
+                  content            = msg"site.change",
+                  href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, CheckMode).url,
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""change-item-${index.display}""")
+                )
+              )
             )
-          )
-        )
+        }
     }
 
-  def addAdministrativeReference(index: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(AddAdministrativeReferencePage(index, referenceIndex)) map {
+  def previousAdministrativeReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList, mode: Mode): Option[Row] =
+    userAnswers.get(ReferenceTypePage(index, referenceIndex)) flatMap {
+      answer =>
+        previousDocumentType.getPreviousDocumentType(answer) map {
+          referenceType =>
+            Row(
+              key   = Key(lit"(${referenceType.code}) ${referenceType.description}"),
+              value = Value(lit""),
+              actions = List(
+                Action(
+                  content            = msg"site.change",
+                  href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, mode).url,
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""change-reference-document-type-${index.display}""")
+                ),
+                Action(
+                  content = msg"site.delete",
+                  href =
+                    previousReferencesRoutes.ConfirmRemovePreviousAdministrativeReferenceController.onPageLoad(userAnswers.id, index, referenceIndex, mode).url,
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""remove-reference-document-type-${index.display}""")
+                )
+              )
+            )
+        }
+    }
+
+  def addAdministrativeReference(index: Index): Option[Row] =
+    userAnswers.get(AddAdministrativeReferencePage(index)) map {
       answer =>
         Row(
           key   = Key(msg"addAdministrativeReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -334,7 +399,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           actions = List(
             Action(
               content            = msg"site.edit",
-              href               = previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(lrn, index, referenceIndex, CheckMode).url,
+              href               = previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(lrn, index, CheckMode).url,
               visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAdministrativeReference.checkYourAnswersLabel"))
             )
           )
@@ -386,6 +451,13 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
+  def addAnotherPreviousReferences(itemIndex: Index, content: Text): AddAnotherViewModel = {
+
+    val addAnotherPackageHref = previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, itemIndex, CheckMode).url
+
+    AddAnotherViewModel(addAnotherPackageHref, content)
+  }
+
   def packageRow(itemIndex: Index, packageIndex: Index, userAnswers: UserAnswers): Option[Row] =
     userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map {
       answer =>
@@ -396,7 +468,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             Action(
               content            = msg"site.change",
               href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer.toString)),
               attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
             )
           )
@@ -424,6 +496,22 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
       )
   }
+
+  def addExtraDocumentInformation(index: Index, documentIndex: Index): Option[Row] =
+    userAnswers.get(AddExtraDocumentInformationPage(index, documentIndex)) map {
+      answer =>
+        Row(
+          key   = Key(msg"addExtraDocumentInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          value = Value(yesOrNo(answer)),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = routes.AddExtraDocumentInformationController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addExtraDocumentInformation.checkYourAnswersLabel"))
+            )
+          )
+        )
+    }
 
   def lrn: LocalReferenceNumber = userAnswers.id
 

@@ -38,13 +38,13 @@ object PackageViewModel {
                 Action(
                   content            = msg"site.change",
                   href               = routes.PackageTypeController.onPageLoad(userAnswers.id, itemIndex, packageIndex, mode).url,
-                  visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer.toString)),
                   attributes         = Map("id" -> s"""change-package-${packageIndex.display}""")
                 ),
                 Action(
                   content            = msg"site.delete",
                   href               = routes.RemovePackageController.onPageLoad(userAnswers.id, itemIndex, packageIndex, mode).url,
-                  visuallyHiddenText = Some(msg"???"), //TODO Add hidden content
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer.toString)),
                   attributes         = Map("id" -> s"""remove-package-${packageIndex.display}""")
                 )
               )

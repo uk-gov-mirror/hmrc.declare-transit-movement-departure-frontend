@@ -18,15 +18,17 @@ package controllers.addItems.traderDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.traderDetails.TraderDetailsConsigneeAddressFormProvider
+import generators.Generators
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{Address, NormalMode}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.traderDetails.TraderDetailsConsigneeAddressPage
+import pages.addItems.traderDetails.{TraderDetailsConsigneeAddressPage, TraderDetailsConsigneeNamePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -38,12 +40,20 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class TraderDetailsConsigneeAddressControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class TraderDetailsConsigneeAddressControllerSpec
+    extends SpecBase
+    with MockNunjucksRendererApp
+    with MockitoSugar
+    with NunjucksSupport
+    with JsonMatchers
+    with Generators {
 
   def onwardRoute = Call("GET", "/foo")
 
+  val consigneeName = "Test consignee"
+
   private val formProvider = new TraderDetailsConsigneeAddressFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(consigneeName = consigneeName)
   private val template     = "addItems/traderDetails/traderDetailsConsigneeAddress.njk"
 
   lazy val traderDetailsConsigneeAddressRoute = routes.TraderDetailsConsigneeAddressController.onPageLoad(lrn, index, NormalMode).url
@@ -55,7 +65,12 @@ class TraderDetailsConsigneeAddressControllerSpec extends SpecBase with MockNunj
   "TraderDetailsConsigneeAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      dataRetrievalWithData(emptyUserAnswers)
+      val answers = emptyUserAnswers
+        .set(TraderDetailsConsigneeNamePage(index), consigneeName)
+        .success
+        .value
+      dataRetrievalWithData(answers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
@@ -81,11 +96,20 @@ class TraderDetailsConsigneeAddressControllerSpec extends SpecBase with MockNunj
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
+      val address = arbitrary[Address].sample.value
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(TraderDetailsConsigneeAddressPage, "answer").success.value
+      val userAnswers = emptyUserAnswers
+        .set(TraderDetailsConsigneeNamePage(index), consigneeName)
+        .success
+        .value
+        .set(TraderDetailsConsigneeAddressPage(index), address)
+        .success
+        .value
+
       dataRetrievalWithData(userAnswers)
+
       val request        = FakeRequest(GET, traderDetailsConsigneeAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -96,7 +120,14 @@ class TraderDetailsConsigneeAddressControllerSpec extends SpecBase with MockNunj
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm =
+        form.bind(
+          Map(
+            "buildingAndStreet" -> address.buildingAndStreet,
+            "city"              -> address.city,
+            "postcode"          -> address.postcode
+          )
+        )
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -109,12 +140,25 @@ class TraderDetailsConsigneeAddressControllerSpec extends SpecBase with MockNunj
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      dataRetrievalWithData(emptyUserAnswers)
+      val address = arbitrary[Address].sample.value
+      val userAnswers = emptyUserAnswers
+        .set(TraderDetailsConsigneeNamePage(index), consigneeName)
+        .success
+        .value
+        .set(TraderDetailsConsigneeAddressPage(index), address)
+        .success
+        .value
+
+      dataRetrievalWithData(userAnswers)
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request =
         FakeRequest(POST, traderDetailsConsigneeAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(
+            ("buildingAndStreet", address.buildingAndStreet),
+            ("city", address.city),
+            ("postcode", address.postcode)
+          )
 
       val result = route(app, request).value
 

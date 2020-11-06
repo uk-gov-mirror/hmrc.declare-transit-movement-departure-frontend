@@ -16,8 +16,8 @@
 
 package viewModels
 
-import derivable.DeriveNumberOfPackages
-import models.{Index, UserAnswers}
+import derivable.{DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
+import models.{Index, PreviousDocumentTypeList, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.AddItemsCheckYourAnswersHelper
 import viewModels.sections.Section
@@ -26,7 +26,7 @@ case class AddItemsCheckYourAnswersViewModel(sections: Seq[Section])
 
 object AddItemsCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, index: Index): AddItemsCheckYourAnswersViewModel = {
+  def apply(userAnswers: UserAnswers, index: Index, documentTypes: PreviousDocumentTypeList): AddItemsCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper = new AddItemsCheckYourAnswersHelper(userAnswers)
 
@@ -34,6 +34,12 @@ object AddItemsCheckYourAnswersViewModel {
       List.range(0, userAnswers.get(DeriveNumberOfPackages(index)).getOrElse(0)).flatMap {
         packagePosition =>
           checkYourAnswersHelper.packageRow(index, Index(packagePosition), userAnswers)
+      }
+
+    val referencesRows: Seq[SummaryList.Row] =
+      List.range(0, userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)).flatMap {
+        position =>
+          checkYourAnswersHelper.previousReferenceRows(index, Index(position), documentTypes)
       }
 
     AddItemsCheckYourAnswersViewModel(
@@ -46,13 +52,28 @@ object AddItemsCheckYourAnswersViewModel {
             checkYourAnswersHelper.addTotalNetMass(index),
             checkYourAnswersHelper.totalNetMass(index),
             checkYourAnswersHelper.isCommodityCodeKnown(index),
-            checkYourAnswersHelper.commodityCode(index)
+            checkYourAnswersHelper.commodityCode(index),
+            checkYourAnswersHelper.addItemsSameConsigneeForAllItems(index),
+            checkYourAnswersHelper.addItemsSameConsignorForAllItems(index),
+            checkYourAnswersHelper.traderDetailsConsignorName(index),
+            checkYourAnswersHelper.traderDetailsConsignorEoriNumber(index),
+            checkYourAnswersHelper.traderDetailsConsignorEoriKnown(index),
+            checkYourAnswersHelper.traderDetailsConsignorAddress(index),
+            checkYourAnswersHelper.traderDetailsConsigneeName(index),
+            checkYourAnswersHelper.traderDetailsConsigneeEoriNumber(index),
+            checkYourAnswersHelper.traderDetailsConsigneeEoriKnown(index),
+            checkYourAnswersHelper.traderDetailsConsigneeAddress(index),
           ).flatten
         ),
         Section(
           msg"addItems.checkYourAnswersLabel.packages",
           packageRows,
           checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.packages.addRemove")
+        ),
+        Section(
+          msg"addItems.checkYourAnswersLabel.references",
+          Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
+          checkYourAnswersHelper.addAnotherPreviousReferences(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
         )
       )
     )
