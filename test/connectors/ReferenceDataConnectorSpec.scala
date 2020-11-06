@@ -344,6 +344,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         )
 
         connector.getPackageTypes().futureValue mustEqual expectResult
+
       }
 
       "must return an exception when an error response is returned" in {
@@ -382,7 +383,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return list of document types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/document-type"))
+          get(urlEqualTo(s"/$startUrl/document-types"))
             .willReturn(okJson(documentJson))
         )
 
@@ -398,7 +399,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$startUrl/previous-document-type", connector.getDocumentTypes())
+        checkErrorResponse(s"/$startUrl/document-types", connector.getDocumentTypes())
       }
 
     }

@@ -59,6 +59,8 @@ class DocumentTypeController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        println("\n\n\n88888888888888888888\n\n\n\n")
+
         referenceDataConnector.getDocumentTypes() flatMap {
           documents =>
             val form: Form[DocumentType] = formProvider(documents)
@@ -77,7 +79,7 @@ class DocumentTypeController @Inject()(
               "lrn"           -> lrn,
               "mode"          -> mode
             )
-
+            println("\n\n\n88888888888888888888\n\n\n\n")
             renderer.render(template, json).map(Ok(_))
         }
     }
