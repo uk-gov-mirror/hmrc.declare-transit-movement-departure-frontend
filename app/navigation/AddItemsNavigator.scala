@@ -125,7 +125,11 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
   private def consigneeName(ua: UserAnswers, index: Index, mode: Mode) =
-    Some(traderDetailsRoutes.TraderDetailsConsigneeAddressController.onPageLoad(ua.id, index, mode))
+    (ua.get(TraderDetailsConsigneeAddressPage(index)), mode) match {
+      case (Some(_), CheckMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
+      case (_, _) => Some(traderDetailsRoutes.TraderDetailsConsigneeAddressController.onPageLoad(ua.id, index, mode))
+    }
+
 
   private def consigneeEoriNumber(ua: UserAnswers, index: Index, mode: Mode) =
     mode match {

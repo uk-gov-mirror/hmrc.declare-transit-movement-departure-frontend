@@ -23,7 +23,7 @@ import controllers.addItems.traderDetails.{routes => traderRoutes}
 import controllers.{routes => mainRoutes}
 import generators.Generators
 import models.reference.{CountryCode, PackageType}
-import models.{CheckMode, DeclarationType, Index, NormalMode, UserAnswers}
+import models.{Address, CheckMode, DeclarationType, Index, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -1542,13 +1542,15 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(traderRoutes.TraderDetailsConsignorAddressController.onPageLoad(userAnswers.id, index, CheckMode))
             }
           }
-          "Items CYA when Address is Populated" ignore {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-//                                val userAnswers = answers
-//                                  .set(TraderDetailsConsignorAddressPage(index), "address").success.value //todo: move to correct model when page completed
+          "Items CYA when Address is Populated" in {
+            forAll(arbitrary[UserAnswers], arbitrary[Address]) {
+              (answers, address) =>
+                val userAnswers = answers
+                  .set(TraderDetailsConsignorAddressPage(index), address)
+                  .success
+                  .value //todo: move to correct model when page completed
                 navigator
-                  .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, answers)
+                  .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, userAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
             }
           }
@@ -1651,11 +1653,15 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(traderRoutes.TraderDetailsConsigneeAddressController.onPageLoad(userAnswers.id, index, CheckMode))
             }
           }
-          "Items CYA when address is populated" ignore {
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
+          "Items CYA when address is populated" in {
+            forAll(arbitrary[UserAnswers], arbitrary[Address]) {
+              (answers, address) =>
+                val userAnswers = answers
+                  .set(TraderDetailsConsigneeAddressPage(index), address)
+                  .success
+                  .value //todo: move to correct model when page completed
                 navigator
-                  .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, answers)
+                  .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, userAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
             }
           }
