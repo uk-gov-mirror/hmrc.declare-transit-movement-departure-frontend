@@ -17,16 +17,18 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
+import generators.JourneyModelGenerators
 import models.UserAnswers
+import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, SimplifiedMovementDetails}
 import pages._
 
-class MovementDetailsSpec extends SpecBase with GeneratorSpec {
+class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
   "SimplifiedMovementDetails" - {
     "ParseUserAnswers parseNoDetails" - {
 
       "can be constructed when all the answers have been answered" in {
-        forAll(arbitrary[SimplifiedMovementDetails], arbitrary[UserAnswers]) {
+        forAll(arb[SimplifiedMovementDetails], arb[UserAnswers]) {
           (expected, baseUserAnswers) =>
             val interstitialUserAnswers = baseUserAnswers
               .set(DeclarationTypePage, expected.declarationType)

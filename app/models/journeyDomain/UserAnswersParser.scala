@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import cats.data._
+import cats.implicits._
 import models.UserAnswers
 
 trait UserAnswersParser[F[_], A] {

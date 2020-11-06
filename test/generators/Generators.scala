@@ -23,6 +23,7 @@ import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 
+// TODO: Move away from mixing style to using objects
 trait Generators extends UserAnswersGenerator with ModelGenerators {
 
   lazy val stringMaxLength = 128
