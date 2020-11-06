@@ -1636,18 +1636,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
             }
           }
-          "Package type when package type is empty" ignore { //todo: Check logic when packages added
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .remove(PackageTypePage(index, packageIndex))
-                  .success
-                  .value
-                navigator
-                  .nextPage(TraderDetailsConsigneeEoriNumberPage(index), CheckMode, updatedAnswers)
-                  .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, packageIndex, CheckMode))
-            }
-          }
         }
 
         "must go from ConsigneeName to" - {
@@ -1680,18 +1668,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 navigator
                   .nextPage(TraderDetailsConsigneeAddressPage(index), CheckMode, answers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
-            }
-          }
-          "Package type when package type is empty" ignore { //todo: Check logic when packages added
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                val updatedAnswers = answers
-                  .remove(PackageTypePage(index, packageIndex))
-                  .success
-                  .value
-                navigator
-                  .nextPage(TraderDetailsConsigneeAddressPage(index), CheckMode, updatedAnswers)
-                  .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, packageIndex, CheckMode))
             }
           }
         }
