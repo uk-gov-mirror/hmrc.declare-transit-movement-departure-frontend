@@ -17,28 +17,27 @@
 package controllers.guaranteeDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
+import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import matchers.JsonMatchers
+import models.GuaranteeType.{FlatRateVoucher, GuaranteeWaiver}
 import models.NormalMode
+import models.messages.guarantee.GuaranteeReferenceWithGrn
 import navigation.annotations.GuaranteeDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
-import forms.guaranteeDetails.GuaranteeReferenceFormProvider
-import models.GuaranteeType.{FlatRateVoucher, GuaranteeWaiver}
-import models.messages.guarantee.GuaranteeReferenceWithGrn
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
-import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 

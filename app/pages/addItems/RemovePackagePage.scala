@@ -19,7 +19,7 @@ package pages.addItems
 import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import queries.Constants.{items, packages}
+import queries.Constants.items
 
 case class RemovePackagePage(itemIndex: Index) extends QuestionPage[Boolean] {
 
