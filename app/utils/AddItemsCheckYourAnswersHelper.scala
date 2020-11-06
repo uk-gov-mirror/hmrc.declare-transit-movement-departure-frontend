@@ -378,14 +378,14 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
                   content            = msg"site.change",
                   href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, mode).url,
                   visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
-                  attributes         = Map("id" -> s"""change-item-${index.display}""")
+                  attributes         = Map("id" -> s"""change-reference-document-type-${index.display}""")
                 ),
                 Action(
                   content = msg"site.delete",
                   href =
                     previousReferencesRoutes.ConfirmRemovePreviousAdministrativeReferenceController.onPageLoad(userAnswers.id, index, referenceIndex, mode).url,
                   visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
-                  attributes         = Map("id" -> s"""remove-item-${index.display}""")
+                  attributes         = Map("id" -> s"""remove-reference-document-type-${index.display}""")
                 )
               )
             )
