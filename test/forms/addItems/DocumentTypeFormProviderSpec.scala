@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
 import models.DocumentTypeList
 import models.reference.DocumentType
+import play.api.data.FormError
 
 class DocumentTypeFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
@@ -47,17 +47,24 @@ class DocumentTypeFormProviderSpec extends SpecBase with StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind if previous document type that does not exist in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a document type code which is in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "955"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
   }
 }

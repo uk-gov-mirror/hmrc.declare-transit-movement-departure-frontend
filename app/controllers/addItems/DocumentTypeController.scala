@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import forms.DocumentTypeFormProvider
+import forms.addItems.DocumentTypeFormProvider
 import javax.inject.Inject
 import models.reference.DocumentType
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.DocumentTypePage
+import pages.addItems
+import pages.addItems.DocumentTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -53,7 +54,7 @@ class DocumentTypeController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val template = "documentType.njk"
+  private val template = "addItems/documentType.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
@@ -63,7 +64,7 @@ class DocumentTypeController @Inject()(
             val form: Form[DocumentType] = formProvider(documents)
 
             val preparedForm = request.userAnswers
-              .get(DocumentTypePage(index, documentIndex))
+              .get(addItems.DocumentTypePage(index, documentIndex))
               .flatMap(documents.getDocumentType)
               .map(form.fill)
               .getOrElse(form)
@@ -105,9 +106,9 @@ class DocumentTypeController @Inject()(
                 },
                 value =>
                   for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentTypePage(index, documentIndex), value.code))
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(addItems.DocumentTypePage(index, documentIndex), value.code))
                     _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(DocumentTypePage(index, documentIndex), mode, updatedAnswers))
+                  } yield Redirect(navigator.nextPage(addItems.DocumentTypePage(index, documentIndex), mode, updatedAnswers))
               )
         }
     }

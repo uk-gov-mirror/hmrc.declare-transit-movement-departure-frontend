@@ -18,7 +18,7 @@ package generators
 
 import models.Index
 import org.scalacheck.Arbitrary
-import pages._
+import pages.{addItems, _}
 import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
@@ -29,7 +29,7 @@ import pages.movementDetails.PreLodgeDeclarationPage
 trait PageGenerators {
 
   implicit lazy val arbitraryDocumentTypePage: Arbitrary[DocumentTypePage] =
-    Arbitrary(DocumentTypePage(Index(0), Index(0)))
+    Arbitrary(addItems.DocumentTypePage(Index(0), Index(0)))
 
   implicit lazy val arbitraryDocumentReferencePage: Arbitrary[DocumentReferencePage.type] =
     Arbitrary(DocumentReferencePage)

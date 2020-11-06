@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages.addItems
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import models.{DocumentTypeList, Index}
-import play.api.data.Form
-import models.reference.DocumentType
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class DocumentTypeFormProvider @Inject() extends Mappings {
+case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
 
-  def apply(documentTypeList: DocumentTypeList): Form[DocumentType] =
-    Form(
-      "value" -> text("documentType.error.required")
-        .verifying("documentType.error.required", value => documentTypeList.documentTypes.exists(_.code == value))
-        .transform[DocumentType](value => documentTypeList.getDocumentType(value).get, _.code)
-    )
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "documentType"
 }

@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
-import forms.DocumentTypeFormProvider
+import forms.addItems.DocumentTypeFormProvider
 import matchers.JsonMatchers
 import models.reference.DocumentType
 import models.{DocumentTypeList, NormalMode}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DocumentTypePage
+import pages.addItems
+import pages.addItems.DocumentTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -37,6 +38,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -52,7 +54,7 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
     )
   )
   private val form     = formProvider(documentTypeList)
-  private val template = "documentType.njk"
+  private val template = "addItems/documentType.njk"
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
@@ -114,8 +116,9 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
-      val userAnswers = emptyUserAnswers.set(DocumentTypePage(itemIndex, documentIndex), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(addItems.DocumentTypePage(itemIndex, documentIndex), "955").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, documentTypeRoute)
@@ -128,12 +131,20 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "955"))
 
+      val expectedDocumentTypeJson = Seq(
+        Json.obj("value" -> "", "text"    -> ""),
+        Json.obj("value" -> "955", "text" -> "(955) ATA carnet", "selected" -> true),
+        Json.obj("value" -> "740", "text" -> "(740) Air waybill", "selected" -> false)
+      )
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"          -> filledForm,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "documents"     -> expectedDocumentTypeJson,
+        "lrn"           -> lrn,
+        "mode"          -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -144,14 +155,14 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      dataRetrievalWithData(emptyUserAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      dataRetrievalWithData(emptyUserAnswers)
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val request =
         FakeRequest(POST, documentTypeRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "955"))
 
       val result = route(app, request).value
 
@@ -162,10 +173,11 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      dataRetrievalWithData(emptyUserAnswers)
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val request        = FakeRequest(POST, documentTypeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
@@ -179,9 +191,11 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"          -> boundForm,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "lrn"           -> lrn,
+        "mode"          -> NormalMode
       )
 
       templateCaptor.getValue mustEqual template
@@ -199,7 +213,7 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -215,7 +229,7 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }

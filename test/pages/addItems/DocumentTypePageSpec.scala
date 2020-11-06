@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import models.Index
-import play.api.libs.json.JsPath
+import base.SpecBase
+import pages.addItems
+import pages.behaviours.PageBehaviours
 
-case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
+class DocumentTypePageSpec extends SpecBase with PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "DocumentTypePage" - {
 
-  override def toString: String = "documentType"
+    beRetrievable[String](addItems.DocumentTypePage(index, documentIndex))
+
+    beSettable[String](addItems.DocumentTypePage(index, documentIndex))
+
+    beRemovable[String](addItems.DocumentTypePage(index, documentIndex))
+  }
 }

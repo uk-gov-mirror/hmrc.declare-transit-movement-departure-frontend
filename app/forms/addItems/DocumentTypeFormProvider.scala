@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package forms.addItems
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.DocumentTypeList
+import models.reference.DocumentType
+import play.api.data.Form
 
-class DocumentTypePageSpec extends SpecBase with PageBehaviours {
+class DocumentTypeFormProvider @Inject() extends Mappings {
 
-  "DocumentTypePage" - {
-
-    beRetrievable[String](DocumentTypePage(index, documentIndex))
-
-    beSettable[String](DocumentTypePage(index, documentIndex))
-
-    beRemovable[String](DocumentTypePage(index, documentIndex))
-  }
+  def apply(documentTypeList: DocumentTypeList): Form[DocumentType] =
+    Form(
+      "value" -> text("documentType.error.required")
+        .verifying("documentType.error.required", value => documentTypeList.documentTypes.exists(_.code == value))
+        .transform[DocumentType](value => documentTypeList.getDocumentType(value).get, _.code)
+    )
 }
