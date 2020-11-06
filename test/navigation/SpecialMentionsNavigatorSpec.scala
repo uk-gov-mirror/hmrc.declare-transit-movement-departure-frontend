@@ -21,7 +21,7 @@ import controllers.addItems.specialMentions.routes
 import generators.Generators
 import models.NormalMode
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.addItems.specialMentions.AddSpecialMentionPage
+import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 
 class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -33,7 +33,7 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       "must go from AddSpecialMention to SpecialMentionType" in {
 
-//        val userAnswers = emptyUserAnswers.remove(PackagesQuery(index, index))
+        //        val userAnswers = emptyUserAnswers.remove(PackagesQuery(index, index))
         navigator
           .nextPage(AddSpecialMentionPage(index), NormalMode, emptyUserAnswers)
           .mustBe(routes.SpecialMentionTypeController.onPageLoad(emptyUserAnswers.id, index, index, NormalMode))
@@ -41,6 +41,40 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       "must go from AddSpecialMention to [PRODUCED DOCUMENTS NOT YET IN]" ignore {}
 
+      "must go from SpecialMentionType to SpecialMentionAdditionalInfo" in {
+
+        navigator
+          .nextPage(SpecialMentionTypePage(index, index), NormalMode, emptyUserAnswers)
+          .mustBe(routes.SpecialMentionAdditionalInfoController.onPageLoad(emptyUserAnswers.id, index, index, NormalMode))
+      }
+
+      "must go from SpecialMentionAdditionalInfo to AddAnotherSpecialMention" in {
+
+        navigator
+          .nextPage(SpecialMentionAdditionalInfoPage(index, index), NormalMode, emptyUserAnswers)
+          .mustBe(routes.AddAnotherSpecialMentionController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
+      }
+
+      "must go from AddAnotherSpecialMention" - {
+
+        "to SpecialMentionType when set to true" in {
+
+          val userAnswers = emptyUserAnswers.set(AddAnotherSpecialMentionPage(index), true).success.value
+
+          navigator
+            .nextPage(AddAnotherSpecialMentionPage(index), NormalMode, userAnswers)
+            .mustBe(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, index, NormalMode))
+        }
+
+        "to [PRODUCED DOCUMENTS NOT YET IN] when set to false" ignore {
+
+          val userAnswers = emptyUserAnswers.set(AddAnotherSpecialMentionPage(index), true).success.value
+
+          navigator
+            .nextPage(AddAnotherSpecialMentionPage(index), NormalMode, userAnswers)
+            .mustBe(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, index, NormalMode))
+        }
+      }
     }
 
   }

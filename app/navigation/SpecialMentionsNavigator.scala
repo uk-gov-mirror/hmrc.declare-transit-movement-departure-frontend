@@ -21,7 +21,7 @@ import derivable.DeriveNumberOfSpecialMentions
 import javax.inject.{Inject, Singleton}
 import models.{Index, NormalMode, UserAnswers}
 import pages.Page
-import pages.addItems.specialMentions.AddSpecialMentionPage
+import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 import play.api.mvc.Call
 
 @Singleton
@@ -30,11 +30,21 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddSpecialMentionPage(index) =>
       userAnswers =>
-        {
-          val count = userAnswers.get(DeriveNumberOfSpecialMentions(index)).getOrElse(0)
-          Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, Index(count), NormalMode))
-        }
+        Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, Index(count(index)(userAnswers)), NormalMode))
+    case SpecialMentionTypePage(itemIndex, referenceIndex) =>
+      userAnswers =>
+        Some(routes.SpecialMentionAdditionalInfoController.onPageLoad(userAnswers.id, itemIndex, referenceIndex, NormalMode))
+    case SpecialMentionAdditionalInfoPage(itemIndex, _) =>
+      userAnswers =>
+        Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+    case AddAnotherSpecialMentionPage(itemIndex) =>
+      userAnswers =>
+        Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), NormalMode))
+
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+
+  private val count: Index => UserAnswers => Int =
+    index => userAnswers => userAnswers.get(DeriveNumberOfSpecialMentions(index)).getOrElse(0)
 }
