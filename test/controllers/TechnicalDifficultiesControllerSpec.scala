@@ -16,8 +16,7 @@
 
 package controllers
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
+import base.{MockNunjucksRendererApp, SpecBase}
 import config.FrontendAppConfig
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
@@ -37,17 +36,18 @@ class TechnicalDifficultiesControllerSpec extends SpecBase with MockNunjucksRend
 
     "return OK and the correct view for a GET" in {
 
+      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application       = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val frontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
       val request        = FakeRequest(GET, routes.TechnicalDifficultiesController.onPageLoad().url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -59,8 +59,6 @@ class TechnicalDifficultiesControllerSpec extends SpecBase with MockNunjucksRend
 
       templateCaptor.getValue mustEqual "technicalDifficulties.njk"
       jsonCaptor.getValue must containJson(expectedJson)
-
-      application.stop()
     }
   }
 }
