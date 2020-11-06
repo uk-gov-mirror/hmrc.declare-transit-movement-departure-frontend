@@ -16,14 +16,26 @@
 
 package pages.addItems
 
-import models.Index
+import derivable.{DeriveNumberOfItems, DeriveNumberOfPreviousAdministrativeReferences}
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{items, previousReferences}
+import queries.PreviousReferencesQuery
 
-case class AddAdministrativeReferencePage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
+import scala.util.Try
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences \ referenceIndex.position \ toString
+case class AddAdministrativeReferencePage(itemIndex: Index) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ toString
 
   override def toString: String = "addAdministrativeReference"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+
+      case Some(false) =>
+        userAnswers.remove(PreviousReferencesQuery(itemIndex))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

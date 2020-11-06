@@ -48,21 +48,22 @@ class DeclareNumberOfPackagesController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        val form = formProvider(itemIndex.display)
+
         val preparedForm = request.userAnswers.get(DeclareNumberOfPackagesPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
         val json = Json.obj(
-          "form"   -> preparedForm,
-          "mode"   -> mode,
-          "lrn"    -> lrn,
-          "radios" -> Radios.yesNo(preparedForm("value"))
+          "form"      -> preparedForm,
+          "mode"      -> mode,
+          "lrn"       -> lrn,
+          "radios"    -> Radios.yesNo(preparedForm("value")),
+          "itemIndex" -> itemIndex.display
         )
 
         renderer.render("addItems/declareNumberOfPackages.njk", json).map(Ok(_))
@@ -71,16 +72,19 @@ class DeclareNumberOfPackagesController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        val form = formProvider(itemIndex.display)
+
         form
           .bindFromRequest()
           .fold(
             formWithErrors => {
 
               val json = Json.obj(
-                "form"   -> formWithErrors,
-                "mode"   -> mode,
-                "lrn"    -> lrn,
-                "radios" -> Radios.yesNo(formWithErrors("value"))
+                "form"      -> formWithErrors,
+                "mode"      -> mode,
+                "lrn"       -> lrn,
+                "radios"    -> Radios.yesNo(formWithErrors("value")),
+                "itemIndex" -> itemIndex.display
               )
 
               renderer.render("addItems/declareNumberOfPackages.njk", json).map(BadRequest(_))

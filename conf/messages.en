@@ -702,34 +702,37 @@ totalNetMass.error.invalidFormat =  The total net mass for item {0} in kilograms
 
 packageType.title = What package type has been used?
 packageType.heading = What package type has been used?
-packageType.error.required = Select the package type you want to add
+packageType.error.required = Enter the package type that has been used
 
-declareNumberOfPackages.title = Do you need to state how many of this package type has been used?
-declareNumberOfPackages.heading = Do you need to state how many of this package type has been used?
-declareNumberOfPackages.error.required = Select yes if you want to state how many of this package type has been used
+declareNumberOfPackages.title = Do you need to state how many of this package or item {0} has been used?
+declareNumberOfPackages.heading = Do you need to state how many of this package for item {0} has been used?
+declareNumberOfPackages.error.required = Select yes if you want to state how many of this package for item {0} has been used
 
 totalPieces.title = How many pieces have been used for item {0}?
 totalPieces.heading = How many pieces have been used for item {0}?
-totalPieces.error.nonNumeric = How many pieces have been used must only include numbers 0 to 9
-totalPieces.error.required = Enter how many pieces have been used
-totalPieces.error.wholeNumber = Enter how many pieces you have used using whole numbers
-totalPieces.error.outOfRange = How many pieces you have used must be between {0} and {1}
+totalPieces.error.nonNumeric = How many pieces have been used for item {0} must only include numbers 0 to 9
+totalPieces.error.required = Enter how many pieces have been used for item {0}
+totalPieces.error.wholeNumber = How many pieces have been used for item {0} using whole numbers
+totalPieces.error.outOfRange = The pieces used for item {0} must be {1} or less
 
 addMark.title = Do you need to add a mark or number for package {0}?
 addMark.heading = Do you need to add a mark or number for package {0}?
-addMark.error.required = Select yes if you need to add a mark or number
+addMark.error.required = Select yes if you need to add a mark or number for package {0}
 
-declareMark.title = What is the mark or number for package type {0}?
-declareMark.heading = What is the mark or number for package type {0}?
-declareMark.error.required = Enter the mark or number
-declareMark.error.length = Mark or number must be 42 characters or less
+declareMark.title = What is the mark or number for package {0}?
+declareMark.heading = What is the mark or number for package {0}?
+declareMark.error.required = Enter the mark or number for package {0}
+declareMark.error.length = The mark or number for package {0} must be {1} characters or less
+declareMark.error.emptyNumberOfPackages = Mark or number for package {0} must be 1 or more
+declareMark.error.format = The mark or number for package {0} must only include letters a to z, numbers 0 to 9
 
-addAnotherPackage.title.plural = You have added {0} types of packages
-addAnotherPackage.title.singular = You have added {0} type of package
-addAnotherPackage.heading.plural = You have added {0} types of packages
-addAnotherPackage.heading.singular = You have added {0} type of package
-addAnotherPackage.yesNo = Do you need to add another type of package?
-addAnotherPackage.error.required = Select yes if you want to add another type of package
+addAnotherPackage.title.plural = You have added {0} packages
+addAnotherPackage.title.singular = You have added {0} package
+addAnotherPackage.heading.plural = You have added {0} packages
+addAnotherPackage.heading.singular = You have added {0} package
+addAnotherPackage.yesNo = Do you need to add another of package?
+addAnotherPackage.error.required = Select yes if you need to add another package
+addAnotherPackage.change.hidden = Change {0}
 
 commodityCode.title = What is the commodity code for item {0}?
 commodityCode.heading = What is the commodity code for item {0}?
@@ -745,17 +748,17 @@ isCommodityCodeKnown.heading = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.checkYourAnswersLabel = Do you know the commodity code for item {0}?
 isCommodityCodeKnown.error.required = Select yes if you know the commodity code for item {0}
 
-howManyPackages.title = How many of this package type have you used for item {0}?
-howManyPackages.heading = How many of this package type have you used for item {0}?
-howManyPackages.checkYourAnswersLabel = How many of this package type have you used for item {0}?
-howManyPackages.error.nonNumeric = How many of this package type must only include numbers 0 to 9
-howManyPackages.error.required = Enter how many packages you are declaring using whole numbers
-howManyPackages.error.wholeNumber = Enter how many packages you are declaring using whole numbers
-howManyPackages.error.outOfRange = How many packages you are declaring must be between {0} and {1}
+howManyPackages.title = How many packages have been used for item {0}?
+howManyPackages.heading = How many packages have been used for item {0}?
+howManyPackages.checkYourAnswersLabel = How many packages have been used for item {0}?
+howManyPackages.error.nonNumeric = How many packages have been used for item {0} must only include numbers 0 to 9
+howManyPackages.error.required = Enter how many packages have been used for item {0}
+howManyPackages.error.wholeNumber = Enter how many packages have been used for item {0} using whole numbers
+howManyPackages.error.outOfRange = The packages used for item {0} must be {1} or less
 
-removePackage.title = Are you sure you want to remove the package?
-removePackage.heading = Are you sure you want to remove the package?
-removePackage.error.required = Select yes if you want to remove the package
+removePackage.title = Are you sure you want to remove package {0}?
+removePackage.heading = Are you sure you want to remove package {0}?
+removePackage.error.required = Select yes if you want to remove package {0}
 
 consignorForAllItems.title = Are you the consignor for all items?
 consignorForAllItems.heading = Are you the consignor for all items?
@@ -767,51 +770,111 @@ consigneeForAllItems.heading = Are you the consignee for all items?
 consigneeForAllItems.checkYourAnswersLabel = Are you the consignee for all items?
 consigneeForAllItems.error.required = Select yes if you are the consignee for all items
 
-traderDetailsConsigneeAddress.title = traderDetailsConsigneeAddress
-traderDetailsConsigneeAddress.heading = traderDetailsConsigneeAddress
-traderDetailsConsigneeAddress.checkYourAnswersLabel = traderDetailsConsigneeAddress
-traderDetailsConsigneeAddress.error.required = Enter traderDetailsConsigneeAddress
-traderDetailsConsigneeAddress.error.length = TraderDetailsConsigneeAddress must be 100 characters or less
+traderDetailsConsigneeAddress.title = What is the consignee’s address for item {0}
+traderDetailsConsigneeAddress.heading = What is {0}’s address?
+traderDetailsConsigneeAddress.checkYourAnswersLabel = {0}'s address
 
-traderDetailsConsigneeEoriKnown.title = traderDetailsConsigneeEoriKnown
-traderDetailsConsigneeEoriKnown.heading = traderDetailsConsigneeEoriKnown
-traderDetailsConsigneeEoriKnown.checkYourAnswersLabel = traderDetailsConsigneeEoriKnown
-traderDetailsConsigneeEoriKnown.error.required = Select yes if traderDetailsConsigneeEoriKnown
+traderDetailsConsigneeAddress.error.line.required = Enter address line {0} of {1}’s address for item {2}
+traderDetailsConsigneeAddress.error.line.invalid = Address line {0} of {1}’s address for item {2} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+traderDetailsConsigneeAddress.error.line.length = Address line {0} of {1}’s address for item {2} must be 35 characters or less
+traderDetailsConsigneeAddress.error.line.country.required = Enter the country of {0}’s address for item {1}
 
-traderDetailsConsigneeEoriNumber.title = traderDetailsConsigneeEoriNumber
-traderDetailsConsigneeEoriNumber.heading = traderDetailsConsigneeEoriNumber
-traderDetailsConsigneeEoriNumber.checkYourAnswersLabel = traderDetailsConsigneeEoriNumber
-traderDetailsConsigneeEoriNumber.error.required = Enter traderDetailsConsigneeEoriNumber
-traderDetailsConsigneeEoriNumber.error.length = TraderDetailsConsigneeEoriNumber must be 100 characters or less
+traderDetailsConsigneeAddress.title = What is the consignee’s address for item {0}
+traderDetailsConsigneeAddress.heading =  What is {0}’s address?
+traderDetailsConsigneeAddress.checkYourAnswersLabel =  {0}’s address
+traderDetailsConsigneeAddress.error.required = Enter {0}’s Address
+traderDetailsConsigneeAddress.error.length = The address for {0} must be 100 characters or less
 
-traderDetailsConsigneeName.title = traderDetailsConsigneeName
-traderDetailsConsigneeName.heading = traderDetailsConsigneeName
-traderDetailsConsigneeName.checkYourAnswersLabel = traderDetailsConsigneeName
-traderDetailsConsigneeName.error.required = Enter traderDetailsConsigneeName
-traderDetailsConsigneeName.error.length = TraderDetailsConsigneeName must be 100 characters or less
+traderDetailsConsigneeAddress.buildingAndStreet = Building and street
+traderDetailsConsigneeAddress.city = Town or city
+traderDetailsConsigneeAddress.postcode = Postcode
 
-traderDetailsConsignorAddress.title = traderDetailsConsignorAddress
-traderDetailsConsignorAddress.heading = traderDetailsConsignorAddress
-traderDetailsConsignorAddress.checkYourAnswersLabel = traderDetailsConsignorAddress
-traderDetailsConsignorAddress.error.required = Enter traderDetailsConsignorAddress
-traderDetailsConsignorAddress.error.length = TraderDetailsConsignorAddress must be 100 characters or less
+traderDetailsConsigneeAddress.error.buildingAndStreet.required = Enter the building and street
+traderDetailsConsigneeAddress.error.buildingAndStreet.length = Building and street must be 35 characters or less
 
-traderDetailsConsignorEoriKnown.title = traderDetailsConsignorEoriKnown
-traderDetailsConsignorEoriKnown.heading = traderDetailsConsignorEoriKnown
-traderDetailsConsignorEoriKnown.checkYourAnswersLabel = traderDetailsConsignorEoriKnown
-traderDetailsConsignorEoriKnown.error.required = Select yes if traderDetailsConsignorEoriKnown
+traderDetailsConsigneeAddress.error.city.required = Enter the town or city
+traderDetailsConsigneeAddress.error.city.length = Town or city must be 35 characters or less
+traderDetailsConsigneeAddress.checkYourAnswersLabel.visuallyHidden = change [{0}'s address]
 
-traderDetailsConsignorEoriNumber.title = traderDetailsConsignorEoriNumber
-traderDetailsConsignorEoriNumber.heading = traderDetailsConsignorEoriNumber
-traderDetailsConsignorEoriNumber.checkYourAnswersLabel = traderDetailsConsignorEoriNumber
-traderDetailsConsignorEoriNumber.error.required = Enter traderDetailsConsignorEoriNumber
-traderDetailsConsignorEoriNumber.error.length = TraderDetailsConsignorEoriNumber must be 100 characters or less
+traderDetailsConsigneeAddress.error.postcode.required = Enter the postcode of {0}’s address
+traderDetailsConsigneeAddress.error.postcode.length = Postcode must be 9 characters or less
+traderDetailsConsigneeAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters A to Z and numbers 0 to 9
 
-traderDetailsConsignorName.title = traderDetailsConsignorName
-traderDetailsConsignorName.heading = traderDetailsConsignorName
-traderDetailsConsignorName.checkYourAnswersLabel = traderDetailsConsignorName
-traderDetailsConsignorName.error.required = Enter traderDetailsConsignorName
-traderDetailsConsignorName.error.length = TraderDetailsConsignorName must be 100 characters or less
+traderDetailsConsigneeAddress.error.invalid = The {0} of {1}’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
+traderDetailsConsigneeAddress.error.required = Enter the {0} of {1}’s address
+traderDetailsConsigneeAddress.error.max_length = The {0} of {1}’s address must be 35 characters or less
+
+
+traderDetailsConsigneeEoriKnown.title = Do you know the consignee’s EORI number for item {0}?
+traderDetailsConsigneeEoriKnown.heading = Do you know the consignee’s EORI number for item {0}?
+traderDetailsConsigneeEoriKnown.checkYourAnswersLabel = Know the consignee’s EORI number for item {0}?
+traderDetailsConsigneeEoriKnown.checkYourAnswersLabel.visuallyHidden = change [if you know the consignee’s EORI number for item {0}]
+traderDetailsConsigneeEoriKnown.error.required = Select yes if you know the consignee’s EORI number for item {0}
+
+traderDetailsConsigneeEoriNumber.title = What is the consignee’s EORI number for item {0}?
+traderDetailsConsigneeEoriNumber.heading = What is the consignee’s EORI number for item {0}?
+traderDetailsConsigneeEoriNumber.checkYourAnswersLabel = Consignee’s EORI number for item {0}
+traderDetailsConsigneeEoriNumber.checkYourAnswersLabel.visuallyHidden = change [consignee’s EORI number for item {0}]
+traderDetailsConsigneeEoriNumber.error.required = Enter the consignee’s EORI number for item {0}
+traderDetailsConsigneeEoriNumber.error.length = The consignee’s EORI number for item must be {0} characters or less
+traderDetailsConsigneeEoriNumber.error.invalid = The consignee’s EORI number for item {0} must only include letters a to z and numbers 0 to 9
+
+traderDetailsConsigneeName.title = What is the consignee’s name for item {0}?
+traderDetailsConsigneeName.heading = What is the consignee’s name for item {0}?
+traderDetailsConsigneeName.checkYourAnswersLabel = Consignee’s name for item {0}
+traderDetailsConsigneeName.checkYourAnswersLabel.visuallyHidden = change [consignee’s name for item {0}]
+traderDetailsConsigneeName.error.required =  Enter the consignee’s name for item {0}
+traderDetailsConsigneeName.error.length = The consignee’s name for item {0} must be {1} characters or less
+traderDetailsConsigneeName.error.invalid = The consignee’s name for item {0} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
+traderDetailsConsignorAddress.title = What is the consignor’s address for item {0}
+traderDetailsConsignorAddress.heading = What is {0}’s address?
+traderDetailsConsignorAddress.checkYourAnswersLabel = {0}'s address
+traderDetailsConsignorAddress.checkYourAnswersLabel.visuallyHidden = change [{0}'s address]
+traderDetailsConsignorAddress.error.line.required = Enter address line {0} of {1}’s address for item {2}
+traderDetailsConsignorAddress.error.line.invalid = Address line {0} of {1}’s address for item {2} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+traderDetailsConsignorAddress.error.line.length = Address line {0} of {1}’s address for item {2} must be 35 characters or less
+traderDetailsConsignorAddress.error.line.country.required = Enter the country of {0}’s address for item {1}
+traderDetailsConsignorAddress.heading =  What is {0}’s address?
+traderDetailsConsignorAddress.checkYourAnswersLabel =  {0}’s address
+traderDetailsConsignorAddress.error.required = Enter {0}’s Address
+traderDetailsConsignorAddress.error.length = The address for {0} must be 100 characters or less
+traderDetailsConsignorAddress.buildingAndStreet = Building and street
+traderDetailsConsignorAddress.city = Town or city
+traderDetailsConsignorAddress.postcode = Postcode
+traderDetailsConsignorAddress.error.buildingAndStreet.required = Enter the building and street
+traderDetailsConsignorAddress.error.buildingAndStreet.length = Building and street must be 35 characters or less
+traderDetailsConsignorAddress.error.city.required = Enter the town or city
+traderDetailsConsignorAddress.error.city.length = Town or city must be 35 characters or less
+traderDetailsConsignorAddress.checkYourAnswersLabel.visuallyHidden = change [{0}'s address]
+traderDetailsConsignorAddress.error.postcode.required = Enter the postcode of {0}’s address
+traderDetailsConsignorAddress.error.postcode.length = Postcode must be 9 characters or less
+traderDetailsConsignorAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters A to Z and numbers 0 to 9
+traderDetailsConsignorAddress.error.invalid = The {0} of {1}’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
+traderDetailsConsignorAddress.error.required = Enter the {0} of {1}’s address
+traderDetailsConsignorAddress.error.max_length = The {0} of {1}’s address must be 35 characters or less
+
+traderDetailsConsignorEoriKnown.title = Do you know the consignor’s EORI number for item {0}?
+traderDetailsConsignorEoriKnown.heading = Do you know the consignor’s EORI number for item {0}?
+traderDetailsConsignorEoriKnown.checkYourAnswersLabel = Know the consignor’s EORI number for item {0}?
+traderDetailsConsignorEoriKnown.checkYourAnswersLabel.visuallyHidden = change [if you know the consignor’s EORI number for item {0}]
+traderDetailsConsignorEoriKnown.error.required = Select yes if you know the consignor’s EORI number for item {0}
+
+traderDetailsConsignorEoriNumber.title = What is the consignor’s EORI number for item {0}?
+traderDetailsConsignorEoriNumber.heading = What is the consignor’s EORI number for item {0}?
+traderDetailsConsignorEoriNumber.checkYourAnswersLabel = Consignor’s EORI number for item {0}
+traderDetailsConsignorEoriNumber.checkYourAnswersLabel.visuallyHidden = change [consignor’s EORI number for item {0}]
+traderDetailsConsignorEoriNumber.error.required = Enter the consignor’s EORI number for item {0}
+traderDetailsConsignorEoriNumber.error.length = The consignor’s EORI number for item must be {0} characters or less
+traderDetailsConsignorEoriNumber.error.invalid = The consignor’s EORI number for item {0} must only include letters a to z and numbers 0 to 9
+
+traderDetailsConsignorName.title = What is the consignor’s name for item {0}?
+traderDetailsConsignorName.heading = What is the consignor’s name for item {0}?
+traderDetailsConsignorName.checkYourAnswersLabel = Consignor’s name for item {0}
+traderDetailsConsignorName.checkYourAnswersLabel.visuallyHidden = change [consignor’s name for item {0}]
+traderDetailsConsignorName.error.required =  Enter the consignor’s name for item {0}
+traderDetailsConsignorName.error.length = The consignor’s name for item {0} must be {1} characters or less
+traderDetailsConsignorName.error.invalid = The consignor’s name for item {0} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
 removeItem.title = Are you sure you want to remove this item?
 removeItem.heading = Are you sure you want to remove this item?
@@ -842,16 +905,17 @@ addItems.checkYourAnswersLabel.containers = Containers
 addItems.checkYourAnswersLabel.containers = Special mentions
 addItems.checkYourAnswersLabel.certificates = Produced documents and work certificates
 addItems.checkYourAnswersLabel.references = Previous administrative references
+addItems.checkYourAnswersLabel.references.addRemove = Add or remove previous administrative references
 
 addAdministrativeReference.title = Do you need to add a previous administrative reference?
 addAdministrativeReference.heading = Do you need to add a previous administrative reference?
 addAdministrativeReference.checkYourAnswersLabel = Add previous administrative reference?
 addAdministrativeReference.error.required = Select yes if you need to add a previous administrative reference
 
-referenceType.title = What type of reference do you want to add
-referenceType.heading = What type of reference do you want to add
+referenceType.title = What type of reference do you want to add?
+referenceType.heading = What type of reference do you want to add?
 referenceType.checkYourAnswersLabel = referenceType
-referenceType.error.required = What type of reference do you want to add
+referenceType.error.required = Enter the type of reference you want to add
 
 previousReference.title = What is the previous document reference?
 previousReference.heading = What is the previous document reference?
@@ -921,6 +985,10 @@ addAnotherContainer.title = addAnotherContainer
 addAnotherContainer.heading = addAnotherContainer
 addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
 addAnotherContainer.error.required = Select yes if addAnotherContainer
+
+addExtraDocumentInformation.title = Do you need to add any extra information for document {0}?
+addExtraDocumentInformation.heading = Do you need to add any extra information for document {0}?
+addExtraDocumentInformation.error.required = Select yes if you need to add any extra information for document {0}
 
 addDocuments.title = Do you need to add any produced documents or work certificates for item {0}?
 addDocuments.heading = Do you need to add any produced documents or work certificates for item {0}?

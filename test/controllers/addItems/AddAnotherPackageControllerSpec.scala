@@ -17,6 +17,8 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
+import forms.addItems.AddAnotherPackageFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
@@ -25,18 +27,15 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.addItems.AddAnotherPackagePage
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
-import forms.addItems.AddAnotherPackageFormProvider
-import pages.addItems.AddAnotherPackagePage
-import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 

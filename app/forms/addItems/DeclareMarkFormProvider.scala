@@ -19,12 +19,33 @@ package forms.addItems
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class DeclareMarkFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  val regex: String = "^[a-zA-Z0-9]*$"
+  val maxLength     = 42
+
+  def apply(totalPackages: Option[Int], packageIndex: Int): Form[String] =
     Form(
-      "value" -> text("declareMark.error.required")
-        .verifying(maxLength(42, "declareMark.error.length"))
+      "value" -> text("declareMark.error.required", Seq(packageIndex))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "declareMark.error.length", packageIndex, maxLength),
+            regexp(regex, "declareMark.error.format", packageIndex),
+            emptyNumberOfPackages(totalPackages, packageIndex)
+          )
+        )
     )
+
+  private def emptyNumberOfPackages(totalPackages: Option[Int], packageIndex: Int): Constraint[String] =
+    Constraint {
+      value =>
+        totalPackages match {
+          case Some(0) if value == "0" => Invalid("declareMark.error.emptyNumberOfPackages", packageIndex)
+          case _                       => Valid
+        }
+    }
+
 }

@@ -49,12 +49,13 @@ class RemovePackageController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/removePackage.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        val form = formProvider(packageIndex.display)
+
         val preparedForm = request.userAnswers.get(RemovePackagePage(itemIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -75,6 +76,8 @@ class RemovePackageController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        val form = formProvider(packageIndex.display)
+
         form
           .bindFromRequest()
           .fold(

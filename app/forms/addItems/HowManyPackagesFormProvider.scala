@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
 import forms.mappings.Mappings
 import javax.inject.Inject
@@ -22,9 +22,13 @@ import play.api.data.Form
 
 class HowManyPackagesFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Int] =
+  def apply(itemIndex: Int): Form[Int] =
     Form(
-      "value" -> int("howManyPackages.error.required", "howManyPackages.error.wholeNumber", "howManyPackages.error.nonNumeric")
-        .verifying(inRange(1, 9999, "howManyPackages.error.outOfRange"))
+      "value" -> int(
+        "howManyPackages.error.required",
+        "howManyPackages.error.wholeNumber",
+        "howManyPackages.error.nonNumeric",
+        Seq(itemIndex.toString)
+      ).verifying(inRange(0, 9999, "howManyPackages.error.outOfRange"))
     )
 }
