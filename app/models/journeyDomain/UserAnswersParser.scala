@@ -37,7 +37,7 @@ object UserAnswersParser {
 
           override def run[AA >: A](ua: UserAnswers): Option[AA] =
             l.run(ua) orElse r.run(ua)
-        }
+      }
     )
 }
 
