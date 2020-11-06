@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
-import models.DocumentTypeList
-import models.reference.DocumentType
 
-class DocumentTypeFormProviderSpec extends SpecBase with StringFieldBehaviours {
+class DocumentReferenceFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "documentType.error.required"
-  val lengthKey   = "documentType.error.length"
-  val maxLength   = 100
+  val requiredKey                           = "documentReference.error.required"
+  val lengthKey                             = "documentReference.error.length"
+  val maxLength                             = 35
+  val documentReferenceCharactersRegex      = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
+  val documentReferenceInvalidCharactersKey = "documentReference.error.invalidCharacters"
 
-  private val documentList = DocumentTypeList(
-    Seq(
-      DocumentType("955", "ATA carnet"),
-      DocumentType("740", "Air waybill")
-    )
-  )
-
-  val form = new DocumentTypeFormProvider()(documentList)
+  val form = new DocumentReferenceFormProvider()(index)
 
   ".value" - {
 
@@ -59,5 +53,21 @@ class DocumentTypeFormProviderSpec extends SpecBase with StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the previous reference invalid characters regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, documentReferenceInvalidCharactersKey, Seq(documentReferenceCharactersRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(documentReferenceCharactersRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }

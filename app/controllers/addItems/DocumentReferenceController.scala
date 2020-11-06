@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package controllers.addItems.specialMentions
+package controllers.addItems
 
 import controllers.actions._
-import forms.addItems.specialMentions.AddAnotherSpecialMentionFormProvider
+import forms.addItems.DocumentReferenceFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.PreTaskListDetails
-import pages.addItems.specialMentions.AddAnotherSpecialMentionPage
+import navigation.annotations.AddItems
+import pages.addItems.DocumentReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAnotherSpecialMentionController @Inject()(
+class DocumentReferenceController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @PreTaskListDetails navigator: Navigator,
+  @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddAnotherSpecialMentionFormProvider,
+  formProvider: DocumentReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -48,21 +48,19 @@ class AddAnotherSpecialMentionController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
-  private val template = "addItems/specialMentions/addAnotherSpecialMention.njk"
+  private val template = "addItems/documentReference.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddAnotherSpecialMentionPage(itemIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(DocumentReferencePage(itemIndex: Index)) match {
+        case None        => formProvider(itemIndex)
+        case Some(value) => formProvider(itemIndex).fill(value)
       }
 
       val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
+        "form" -> preparedForm,
+        "lrn"  -> lrn,
+        "mode" -> mode
       )
 
       renderer.render(template, json).map(Ok(_))
@@ -70,25 +68,24 @@ class AddAnotherSpecialMentionController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(itemIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => {
 
             val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
+              "form" -> formWithErrors,
+              "lrn"  -> lrn,
+              "mode" -> mode
             )
 
             renderer.render(template, json).map(BadRequest(_))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSpecialMentionPage(itemIndex), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentReferencePage(itemIndex: Index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAnotherSpecialMentionPage(itemIndex), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(DocumentReferencePage(itemIndex: Index), mode, updatedAnswers))
         )
   }
 }

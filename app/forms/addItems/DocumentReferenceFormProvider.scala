@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.{DocumentTypeList, Index}
+import javax.inject.Inject
+import models.Index
 import play.api.data.Form
-import models.reference.DocumentType
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class DocumentTypeFormProvider @Inject() extends Mappings {
+class DocumentReferenceFormProvider @Inject() extends Mappings {
 
-  def apply(documentTypeList: DocumentTypeList): Form[DocumentType] =
+  val maxLength                        = 35
+  val documentReferenceCharactersRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
+
+  def apply(index: Index): Form[String] =
     Form(
-      "value" -> text("documentType.error.required")
-        .verifying("documentType.error.required", value => documentTypeList.documentTypes.exists(_.code == value))
-        .transform[DocumentType](value => documentTypeList.getDocumentType(value).get, _.code)
-    )
+      "value" -> text("documentReference.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "documentReference.error.length"),
+            regexp(documentReferenceCharactersRegex, "documentReference.error.invalidCharacters")
+          )
+        ))
 }

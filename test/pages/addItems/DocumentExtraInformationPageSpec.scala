@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import base.SpecBase
+import models.Index
 import pages.behaviours.PageBehaviours
 
-class DocumentTypePageSpec extends SpecBase with PageBehaviours {
+class DocumentExtraInformationPageSpec(index: Index, documentIndex: Index) extends PageBehaviours {
 
-  "DocumentTypePage" - {
+  "DocumentExtraInformationPage" - {
 
-    beRetrievable[String](DocumentTypePage(index, documentIndex))
+    beRetrievable[String](DocumentExtraInformationPage(index, documentIndex))
 
-    beSettable[String](DocumentTypePage(index, documentIndex))
+    beSettable[String](DocumentExtraInformationPage(index, documentIndex))
 
-    beRemovable[String](DocumentTypePage(index, documentIndex))
+    beRemovable[String](DocumentExtraInformationPage(index, documentIndex))
   }
 }

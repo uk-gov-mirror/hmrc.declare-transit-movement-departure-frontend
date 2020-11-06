@@ -17,16 +17,17 @@
 package pages
 
 import base.SpecBase
+import pages.addItems.DocumentReferencePage
 import pages.behaviours.PageBehaviours
 
-class DocumentTypePageSpec extends SpecBase with PageBehaviours {
+class DocumentReferencePageSpec extends SpecBase with PageBehaviours {
 
-  "DocumentTypePage" - {
+  "DocumentReferencePage" - {
 
-    beRetrievable[String](DocumentTypePage(index, documentIndex))
+    beRetrievable[String](DocumentReferencePage(index))
 
-    beSettable[String](DocumentTypePage(index, documentIndex))
+    beSettable[String](DocumentReferencePage(index))
 
-    beRemovable[String](DocumentTypePage(index, documentIndex))
+    beRemovable[String](DocumentReferencePage(index))
   }
 }

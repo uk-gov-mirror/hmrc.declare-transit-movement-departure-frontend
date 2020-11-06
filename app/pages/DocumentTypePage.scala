@@ -16,9 +16,10 @@
 
 package pages
 
+import models.Index
 import play.api.libs.json.JsPath
 
-case object DocumentTypePage extends QuestionPage[String] {
+case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 

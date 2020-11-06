@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{items, specialMentions}
 
-class DocumentTypePageSpec extends SpecBase with PageBehaviours {
+final case class DeriveNumberOfSpecialMentions(itemIndex: Index) extends Derivable[List[JsObject], Int] {
 
-  "DocumentTypePage" - {
+  override val derive: List[JsObject] => Int = _.size
 
-    beRetrievable[String](DocumentTypePage(index, documentIndex))
-
-    beSettable[String](DocumentTypePage(index, documentIndex))
-
-    beRemovable[String](DocumentTypePage(index, documentIndex))
-  }
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ specialMentions
 }

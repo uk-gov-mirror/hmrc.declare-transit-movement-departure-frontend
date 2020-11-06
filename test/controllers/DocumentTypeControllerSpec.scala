@@ -16,26 +16,26 @@
 
 package controllers
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
-import matchers.JsonMatchers
+import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import forms.DocumentTypeFormProvider
-import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import matchers.JsonMatchers
+import models.reference.DocumentType
+import models.{DocumentTypeList, NormalMode}
 import navigation.annotations.AddItems
-import org.mockito.ArgumentCaptor
+import navigation.{FakeNavigator, Navigator}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DocumentTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
@@ -45,24 +45,39 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new DocumentTypeFormProvider()
-  private val form         = formProvider(index)
-  private val template     = "documentType.njk"
+  private val documentTypeList = DocumentTypeList(
+    Seq(
+      DocumentType("955", "ATA carnet"),
+      DocumentType("740", "Air waybill")
+    )
+  )
+  private val form     = formProvider(documentTypeList)
+  private val template = "documentType.njk"
 
-  lazy val documentTypeRoute = routes.DocumentTypeController.onPageLoad(lrn, index, NormalMode).url
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+
+  lazy val documentTypeRoute = routes.DocumentTypeController.onPageLoad(lrn, index, documentIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockRefDataConnector)
+  }
 
   "DocumentType Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      dataRetrievalWithData(emptyUserAnswers)
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      dataRetrievalWithData(emptyUserAnswers)
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val request        = FakeRequest(GET, documentTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -74,10 +89,18 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val expectedDocumentTypeJson = Seq(
+        Json.obj("value" -> "", "text"    -> ""),
+        Json.obj("value" -> "955", "text" -> "(955) ATA carnet", "selected" -> false),
+        Json.obj("value" -> "740", "text" -> "(740) Air waybill", "selected" -> false)
+      )
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"          -> form,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "documents"     -> expectedDocumentTypeJson,
+        "mode"          -> NormalMode,
+        "lrn"           -> lrn
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -92,7 +115,7 @@ class DocumentTypeControllerSpec extends SpecBase with MockNunjucksRendererApp w
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(DocumentTypePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(DocumentTypePage(itemIndex, documentIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, documentTypeRoute)

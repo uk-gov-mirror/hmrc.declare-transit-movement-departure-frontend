@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models.reference
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Json, OFormat}
 
-class DocumentTypePageSpec extends SpecBase with PageBehaviours {
+case class DocumentType(code: String, description: String)
 
-  "DocumentTypePage" - {
-
-    beRetrievable[String](DocumentTypePage(index, documentIndex))
-
-    beSettable[String](DocumentTypePage(index, documentIndex))
-
-    beRemovable[String](DocumentTypePage(index, documentIndex))
-  }
+object DocumentType {
+  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
 }

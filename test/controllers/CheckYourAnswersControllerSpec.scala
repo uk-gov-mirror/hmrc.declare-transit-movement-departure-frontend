@@ -33,16 +33,15 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererA
 
     "must return OK and the correct view for a GET" in {
 
+      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
         FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(lrn).url)
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -53,26 +52,22 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererA
         .render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       templateCaptor.getValue mustEqual "check-your-answers.njk"
-
-      application.stop()
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      dataRetrievalNoData()
 
       val request =
         FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(lrn).url)
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController
         .onPageLoad()
         .url
-
-      application.stop()
     }
   }
 }
