@@ -29,8 +29,6 @@ import org.scalacheck.{Arbitrary, Gen}
 trait ModelGenerators {
   self: Generators =>
 
-  val stringMaxLength = 256
-
   // TODO turn PackageType into a trait with three sub classes for Bulk, Unpacked and normal
   implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
     Arbitrary {
