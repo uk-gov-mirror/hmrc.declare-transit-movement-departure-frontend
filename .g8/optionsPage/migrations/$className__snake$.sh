@@ -28,19 +28,10 @@ awk '/self: Generators =>/ {\
     print "  implicit lazy val arbitrary$className$UserAnswersEntry: Arbitrary[($className$Page.type, JsValue)] =";\
     print "    Arbitrary {";\
     print "      for {";\
-    print "        page  <- arbitrary[$className$Page.type]";\
-    print "        value <- arbitrary[$className$].map(Json.toJson(_))";\
-    print "      } yield (page, value)";\
+    print "        value <- arbitrary[$className$Page.type#Data].map(Json.toJson(_))";\
+    print "      } yield ($className$Page, value)";\
     print "    }";\
     next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
-
-echo "Adding to PageGenerators"
-awk '/trait PageGenerators/ {\
-    print;\
-    print "";\
-    print "  implicit lazy val arbitrary$className$Page: Arbitrary[$className$Page.type] =";\
-    print "    Arbitrary($className$Page)";\
-    next }1' ../test/generators/PageGenerators.scala > tmp && mv tmp ../test/generators/PageGenerators.scala
 
 echo "Adding to ModelGenerators"
 awk '/self: Generators =>/ {\
@@ -55,7 +46,7 @@ awk '/self: Generators =>/ {\
 echo "Adding to UserAnswersGenerator"
 awk '/val generators/ {\
     print;\
-    print "    arbitrary[($className$Page.type, JsValue)] ::";\
+    print "    arbitrary$className$UserAnswersEntry.arbitrary ::";\
     next }1' ../test/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test/generators/UserAnswersGenerator.scala
 
 echo "Adding helper method to CheckYourAnswersHelper"
