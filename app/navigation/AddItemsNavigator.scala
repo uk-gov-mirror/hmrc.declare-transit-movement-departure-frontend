@@ -35,7 +35,11 @@ import play.api.mvc.Call
 class AddItemsNavigator @Inject()() extends Navigator {
 
   // format: off
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = allNormalRoutes
+
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = allCheckRoutes
+
+  private def allNormalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(index)                           => ua => Some(addItemsRoutes.ItemTotalGrossMassController.onPageLoad(ua.id, index, NormalMode))
     case ItemTotalGrossMassPage(index)                        => ua => Some(addItemsRoutes.AddTotalNetMassController.onPageLoad(ua.id, index, NormalMode))
     case AddTotalNetMassPage(index)                           => ua => addTotalNetMassRoute(index, ua, NormalMode)
@@ -75,8 +79,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddAnotherPreviousAdministrativeReferencePage(itemIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, ua, NormalMode)
   }
 
-  //TODO: Need to refactor this code
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+  private def allCheckRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(index)                           => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case ItemTotalGrossMassPage(index)                        => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case AddTotalNetMassPage(index)                           => ua => addTotalNetMassRoute(index, ua, CheckMode)

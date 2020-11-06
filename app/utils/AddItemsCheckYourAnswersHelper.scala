@@ -19,12 +19,10 @@ package utils
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
-import models.reference.PreviousDocumentType
 import models._
-import pages._
-import pages.{addItems, _}
 import pages.addItems._
 import pages.addItems.traderDetails._
+import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 import viewModels.AddAnotherViewModel
