@@ -18,7 +18,6 @@ package models
 
 import cats.data._
 import cats.implicits._
-import models.journeyDomain.UserAnswersReader
 import play.api.libs.json.Reads
 import queries.Gettable
 

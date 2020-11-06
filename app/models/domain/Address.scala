@@ -18,7 +18,7 @@ package models.domain
 
 import models.{ConsigneeAddress, ConsignorAddress, PrincipalAddress}
 import models.reference.Country
-import monocle.{Iso, Prism}
+import monocle.Prism
 
 case class Address(
   line1: String,
