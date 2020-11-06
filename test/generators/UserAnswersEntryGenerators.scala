@@ -33,6 +33,14 @@ trait UserAnswersEntryGenerators extends PageGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryDocumentTypeUserAnswersEntry: Arbitrary[(DocumentTypePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[DocumentTypePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryAddExtraDocumentInformationUserAnswersEntry: Arbitrary[(AddExtraDocumentInformationPage, JsValue)] =
     Arbitrary {
       for {

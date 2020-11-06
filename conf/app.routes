@@ -553,3 +553,8 @@ GET        /:lrn/add-items/:itemIndex/add-documents                        contr
 POST       /:lrn/add-items/:itemIndex/add-documents                         controllers.addItems.AddDocumentsController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/:itemIndex/change-add-documents                   controllers.addItems.AddDocumentsController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/change-add-documents                   controllers.addItems.AddDocumentsController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/add-items/:itemIndex/document-type                        controllers.DocumentTypeController.onPageLoad(lrn: LocalReferenceNumber,  itemIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/document-type                        controllers.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/change-document-type                  controllers.DocumentTypeController.onPageLoad(lrn: LocalReferenceNumber,  itemIndex: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/:itemIndex/change-document-type                  controllers.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, mode: Mode = CheckMode)

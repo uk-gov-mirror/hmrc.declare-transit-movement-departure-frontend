@@ -994,3 +994,9 @@ addDocuments.title = Do you need to add any produced documents or work certifica
 addDocuments.heading = Do you need to add any produced documents or work certificates for item {0}?
 addDocuments.checkYourAnswersLabel = Do you need to add any produced documents or work certificates for item {0}?
 addDocuments.error.required = Select yes if you need to add any produced documents or work certificates for item {0}
+
+documentType.title = What type of document do you need to add?
+documentType.heading = What type of document do you need to add?
+documentType.checkYourAnswersLabel = Document type
+documentType.error.required = Enter the type of document you need to add
+documentType.error.length = DocumentType must be 100 characters or less
