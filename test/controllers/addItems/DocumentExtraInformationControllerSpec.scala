@@ -17,7 +17,7 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import forms.addItems.DocumentReferenceFormProvider
+import forms.addItems.DocumentExtraInformationFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.AddItems
@@ -26,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.DocumentReferencePage
+import pages.addItems.DocumentExtraInformationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -39,22 +39,22 @@ import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class DocumentExtraInformationControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new DocumentReferenceFormProvider()
+  private val formProvider = new DocumentExtraInformationFormProvider()
   private val form         = formProvider(index)
-  private val template     = "addItems/documentReference.njk"
+  private val template     = "addItems/documentExtraInformation.njk"
 
-  lazy val documentReferenceRoute = routes.DocumentReferenceController.onPageLoad(lrn, index, NormalMode).url
+  lazy val documentExtraInformationRoute = routes.DocumentExtraInformationController.onPageLoad(lrn, index, documentIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "DocumentReference Controller" - {
+  "DocumentExtraInformation Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -63,7 +63,7 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, documentReferenceRoute)
+      val request        = FakeRequest(GET, documentExtraInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -74,9 +74,11 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"          -> form,
+        "mode"          -> NormalMode,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -91,10 +93,10 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(DocumentReferencePage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(DocumentExtraInformationPage(index, documentIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
-      val request        = FakeRequest(GET, documentReferenceRoute)
+      val request        = FakeRequest(GET, documentExtraInformationRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -107,9 +109,11 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"          -> filledForm,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "mode"          -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -126,7 +130,7 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, documentReferenceRoute)
+        FakeRequest(POST, documentExtraInformationRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
@@ -143,7 +147,7 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, documentReferenceRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, documentExtraInformationRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -155,9 +159,11 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"          -> boundForm,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "mode"          -> NormalMode
       )
 
       templateCaptor.getValue mustEqual template
@@ -169,7 +175,7 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, documentReferenceRoute)
+      val request = FakeRequest(GET, documentExtraInformationRoute)
 
       val result = route(app, request).value
 
@@ -184,7 +190,7 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, documentReferenceRoute)
+        FakeRequest(POST, documentExtraInformationRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value

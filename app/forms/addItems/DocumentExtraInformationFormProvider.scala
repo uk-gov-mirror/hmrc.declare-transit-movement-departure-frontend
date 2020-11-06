@@ -22,18 +22,18 @@ import models.Index
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class DocumentReferenceFormProvider @Inject() extends Mappings {
+class DocumentExtraInformationFormProvider @Inject() extends Mappings {
 
-  val maxLength                        = 35
-  val documentReferenceCharactersRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
+  val maxLength = 26
+  val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
 
   def apply(index: Index): Form[String] =
     Form(
-      "value" -> text("documentReference.error.required")
+      "value" -> text("documentExtraInformation.error.required", Seq(index.display))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(maxLength, "documentReference.error.length"),
-            regexp(documentReferenceCharactersRegex, "documentReference.error.invalidCharacters")
-          )
-        ))
+            maxLength(maxLength, "documentExtraInformation.error.length", index.display),
+            regexp(regex, "documentExtraInformation.error.invalid", index.display)
+          ))
+    )
 }

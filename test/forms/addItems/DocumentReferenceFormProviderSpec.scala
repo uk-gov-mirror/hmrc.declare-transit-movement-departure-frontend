@@ -26,7 +26,7 @@ class DocumentReferenceFormProviderSpec extends SpecBase with StringFieldBehavio
   val requiredKey                           = "documentReference.error.required"
   val lengthKey                             = "documentReference.error.length"
   val maxLength                             = 35
-  val documentReferenceCharactersRegex      = "^[a-zA-Z0-9&'@\\/.\\-%?<>]$"
+  val documentReferenceCharactersRegex      = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
   val documentReferenceInvalidCharactersKey = "documentReference.error.invalidCharacters"
 
   val form = new DocumentReferenceFormProvider()(index)

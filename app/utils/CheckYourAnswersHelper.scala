@@ -26,6 +26,7 @@ import pages._
 import pages.addItems.DocumentReferencePage
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions._
+import pages.addItems.DocumentExtraInformationPage
 import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import pages.addItems.specialMentions.{
   AddAnotherSpecialMentionPage,

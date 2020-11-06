@@ -17,12 +17,16 @@
 package pages.addItems
 
 import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class DocumentReferencePage(index: Index) extends QuestionPage[String] {
+class DocumentExtraInformationPageSpec(index: Index, documentIndex: Index) extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "DocumentExtraInformationPage" - {
 
-  override def toString: String = "documentReference"
+    beRetrievable[String](DocumentExtraInformationPage(index, documentIndex))
+
+    beSettable[String](DocumentExtraInformationPage(index, documentIndex))
+
+    beRemovable[String](DocumentExtraInformationPage(index, documentIndex))
+  }
 }

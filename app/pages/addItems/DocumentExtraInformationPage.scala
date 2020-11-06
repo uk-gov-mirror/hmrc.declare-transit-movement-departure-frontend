@@ -20,9 +20,9 @@ import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case class DocumentReferencePage(index: Index) extends QuestionPage[String] {
+case class DocumentExtraInformationPage(index: Index, documentIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "documentReference"
+  override def toString: String = "documentExtraInformation"
 }
