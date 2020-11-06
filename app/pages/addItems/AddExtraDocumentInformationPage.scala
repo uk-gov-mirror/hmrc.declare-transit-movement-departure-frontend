@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package forms.addItems
+package pages.addItems
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class RemovePackageFormProvider @Inject() extends Mappings {
+case class AddExtraDocumentInformationPage(index: Index, documentIndex: Index) extends QuestionPage[Boolean] {
 
-  def apply(packageIndex: Int): Form[Boolean] =
-    Form(
-      "value" -> boolean("removePackage.error.required", args = packageIndex.toString)
-    )
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "addExtraDocumentInformation"
 }

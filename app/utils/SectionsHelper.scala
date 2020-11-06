@@ -16,13 +16,13 @@
 
 package utils
 
+import controllers.addItems.{routes => addItemsRoutes}
 import controllers.goodsSummary.{routes => goodsSummaryRoutes}
 import controllers.guaranteeDetails.{routes => guaranteetDetailsRoutes}
 import controllers.movementDetails.{routes => movementDetailsRoutes}
 import controllers.routeDetails.{routes => routeDetailsRoutes}
 import controllers.traderDetails.{routes => traderDetailsRoutes}
 import controllers.transportDetails.{routes => transportDetailsRoutes}
-import controllers.addItems.{routes => addItemsRoutes}
 import models.GuaranteeType.{guaranteeReferenceRoute, nonGuaranteeReferenceRoute}
 import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
@@ -38,21 +38,22 @@ class SectionsHelper(userAnswers: UserAnswers) {
 
   def getSections: Seq[SectionDetails] = {
 
-    val mandatorySections = Seq(
-      movementDetailsSection,
-      routesSection,
-      transportSection,
-      tradersDetailsSection,
-      itemsSection,
-      goodsSummarySection,
-      guaranteeSection
-    )
+    val optionalSecurityDetailsSection: Option[SectionDetails] =
+      if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
+        Some(safetyAndSecuritySection)
+      } else None
 
-    if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
-      mandatorySections :+ safetyAndSecuritySection
-    } else {
-      mandatorySections
-    }
+    Seq(
+      Some(movementDetailsSection),
+      Some(routesSection),
+      Some(transportSection),
+      Some(tradersDetailsSection),
+      optionalSecurityDetailsSection,
+      Some(itemsSection),
+      Some(goodsSummarySection),
+      Some(guaranteeSection)
+    ).flatten
+
   }
 
   private def getIncompletePage(startPage: String, pages: Seq[(Option[_], String)]): Option[(String, Status)] =

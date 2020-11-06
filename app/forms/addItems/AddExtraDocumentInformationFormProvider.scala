@@ -18,12 +18,13 @@ package forms.addItems
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
 
-class RemovePackageFormProvider @Inject() extends Mappings {
+class AddExtraDocumentInformationFormProvider @Inject() extends Mappings {
 
-  def apply(packageIndex: Int): Form[Boolean] =
+  def apply(index: Index): Form[Boolean] =
     Form(
-      "value" -> boolean("removePackage.error.required", args = packageIndex.toString)
+      "value" -> boolean("addExtraDocumentInformation.error.required", "error.boolean", Seq(index.display))
     )
 }

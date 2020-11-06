@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package forms.addItems
+package pages.addItems
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-class RemovePackageFormProvider @Inject() extends Mappings {
+class AddExtraDocumentInformationPageSpec extends SpecBase with PageBehaviours {
 
-  def apply(packageIndex: Int): Form[Boolean] =
-    Form(
-      "value" -> boolean("removePackage.error.required", args = packageIndex.toString)
-    )
+  "AddExtraDocumentInformationPage" - {
+
+    beRetrievable[Boolean](AddExtraDocumentInformationPage(index, documentIndex))
+
+    beSettable[Boolean](AddExtraDocumentInformationPage(index, documentIndex))
+
+    beRemovable[Boolean](AddExtraDocumentInformationPage(index, documentIndex))
+  }
 }

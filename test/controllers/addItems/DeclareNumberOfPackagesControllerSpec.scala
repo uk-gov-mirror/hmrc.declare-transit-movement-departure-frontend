@@ -44,7 +44,7 @@ class DeclareNumberOfPackagesControllerSpec extends SpecBase with MockNunjucksRe
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new DeclareNumberOfPackagesFormProvider()
-  val form         = formProvider()
+  val form         = formProvider(index.display)
 
   lazy val declareNumberOfPackagesRoute = routes.DeclareNumberOfPackagesController.onPageLoad(lrn, index, index, NormalMode).url
 

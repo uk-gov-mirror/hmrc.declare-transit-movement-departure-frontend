@@ -31,6 +31,21 @@ import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def addDocuments(itemIndex: Index): Option[Row] = userAnswers.get(AddDocumentsPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"addDocuments.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddDocumentsController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addDocuments.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def documentReference(itemIndex: Index): Option[Row] = userAnswers.get(DocumentReferencePage) map {
     answer =>
       Row(
@@ -468,6 +483,22 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
       )
   }
+
+  def addExtraDocumentInformation(index: Index, documentIndex: Index): Option[Row] =
+    userAnswers.get(AddExtraDocumentInformationPage(index, documentIndex)) map {
+      answer =>
+        Row(
+          key   = Key(msg"addExtraDocumentInformation.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          value = Value(yesOrNo(answer)),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = routes.AddExtraDocumentInformationController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addExtraDocumentInformation.checkYourAnswersLabel"))
+            )
+          )
+        )
+    }
 
   def lrn: LocalReferenceNumber = userAnswers.id
 

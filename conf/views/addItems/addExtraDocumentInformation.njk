@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("declareNumberOfPackages.title", itemIndex), form.errors) }}
+  {{ title(messages("addExtraDocumentInformation.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -27,9 +27,8 @@
           }) }}
         {% endif %}
 
+        <form action="{{ routes.controllers.addItems.AddExtraDocumentInformationController.onSubmit(lrn, index, documentIndex, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
-
-        <form action="{{ routes.controllers.addItems.DeclareNumberOfPackagesController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
@@ -37,7 +36,7 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('declareNumberOfPackages.heading', itemIndex),
+                text: messages('addExtraDocumentInformation.heading', index),
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--xl"
               }

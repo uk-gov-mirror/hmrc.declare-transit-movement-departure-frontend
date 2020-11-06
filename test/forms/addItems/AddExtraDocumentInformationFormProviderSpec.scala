@@ -16,15 +16,16 @@
 
 package forms.addItems
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class DeclareNumberOfPackagesFormProviderSpec extends BooleanFieldBehaviours {
+class AddExtraDocumentInformationFormProviderSpec extends SpecBase with BooleanFieldBehaviours {
 
-  val requiredKey = "declareNumberOfPackages.error.required"
+  val requiredKey = "addExtraDocumentInformation.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new DeclareNumberOfPackagesFormProvider()(1)
+  val form = new AddExtraDocumentInformationFormProvider()(index)
 
   ".value" - {
 
@@ -33,13 +34,13 @@ class DeclareNumberOfPackagesFormProviderSpec extends BooleanFieldBehaviours {
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey, Seq(1))
+      invalidError = FormError(fieldName, invalidKey, Seq(index.display))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(1))
+      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
   }
 }

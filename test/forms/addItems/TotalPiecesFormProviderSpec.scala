@@ -21,13 +21,13 @@ import play.api.data.FormError
 
 class TotalPiecesFormProviderSpec extends IntFieldBehaviours {
 
-  val form = new TotalPiecesFormProvider()()
+  val form = new TotalPiecesFormProvider()(1)
 
   ".value" - {
 
     val fieldName = "value"
 
-    val minimum = 1
+    val minimum = 0
     val maximum = 99999
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
@@ -41,8 +41,8 @@ class TotalPiecesFormProviderSpec extends IntFieldBehaviours {
     behave like intField(
       form,
       fieldName,
-      nonNumericError  = FormError(fieldName, "totalPieces.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "totalPieces.error.wholeNumber")
+      nonNumericError  = FormError(fieldName, "totalPieces.error.nonNumeric", Seq("1")),
+      wholeNumberError = FormError(fieldName, "totalPieces.error.wholeNumber", Seq("1"))
     )
 
     behave like intFieldWithRange(
@@ -50,13 +50,13 @@ class TotalPiecesFormProviderSpec extends IntFieldBehaviours {
       fieldName,
       minimum       = minimum,
       maximum       = maximum,
-      expectedError = FormError(fieldName, "totalPieces.error.outOfRange", Seq(minimum, maximum))
+      expectedError = FormError(fieldName, "totalPieces.error.outOfRange", Seq(1, maximum))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "totalPieces.error.required")
+      requiredError = FormError(fieldName, "totalPieces.error.required", Seq("1"))
     )
   }
 }
