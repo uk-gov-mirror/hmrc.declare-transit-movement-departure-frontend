@@ -56,6 +56,7 @@ class AddSecurityDetailsControllerSpec extends SpecBase with MockNunjucksRendere
 
     "must return OK and the correct view for a GET" in {
       dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 

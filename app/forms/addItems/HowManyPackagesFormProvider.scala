@@ -20,10 +20,15 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class RemovePackageFormProvider @Inject() extends Mappings {
+class HowManyPackagesFormProvider @Inject() extends Mappings {
 
-  def apply(packageIndex: Int): Form[Boolean] =
+  def apply(itemIndex: Int): Form[Int] =
     Form(
-      "value" -> boolean("removePackage.error.required", args = packageIndex.toString)
+      "value" -> int(
+        "howManyPackages.error.required",
+        "howManyPackages.error.wholeNumber",
+        "howManyPackages.error.nonNumeric",
+        Seq(itemIndex.toString)
+      ).verifying(inRange(0, 9999, "howManyPackages.error.outOfRange"))
     )
 }

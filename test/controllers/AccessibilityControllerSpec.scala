@@ -18,8 +18,8 @@ package controllers
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -32,14 +32,14 @@ class AccessibilityControllerSpec extends SpecBase with MockNunjucksRendererApp 
 
     "must return OK and the correct view for a GET" in {
 
+      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("foo")))
 
-      val application = applicationBuilder(userAnswers = None).build()
-
       val request = FakeRequest(GET, routes.AccessibilityController.onPageLoad().url)
 
-      val result = route(application, request).value
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -48,8 +48,6 @@ class AccessibilityControllerSpec extends SpecBase with MockNunjucksRendererApp 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), any())(any())
 
       templateCaptor.getValue mustEqual "accessibility.njk"
-
-      application.stop()
     }
   }
 }

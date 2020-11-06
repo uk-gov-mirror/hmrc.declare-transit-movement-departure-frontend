@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.addItems
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import pages.behaviours.PageBehaviours
 
-class HowManyPackagesFormProvider @Inject() extends Mappings {
+class AddDocumentsPageSpec extends PageBehaviours {
 
-  def apply(): Form[Int] =
-    Form(
-      "value" -> int(
-        "howManyPackages.error.required",
-        "howManyPackages.error.wholeNumber",
-        "howManyPackages.error.nonNumeric"
-      ).verifying(inRange(0, 9999, "howManyPackages.error.outOfRange"))
-    )
+  "AddDocumentsPage" - {
+
+    beRetrievable[Boolean](AddDocumentsPage)
+
+    beSettable[Boolean](AddDocumentsPage)
+
+    beRemovable[Boolean](AddDocumentsPage)
+  }
 }

@@ -18,12 +18,22 @@ package forms.addItems
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class RemovePackageFormProvider @Inject() extends Mappings {
+class DocumentReferenceFormProvider @Inject() extends Mappings {
 
-  def apply(packageIndex: Int): Form[Boolean] =
+  val maxLength                        = 35
+  val documentReferenceCharactersRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
+
+  def apply(index: Index): Form[String] =
     Form(
-      "value" -> boolean("removePackage.error.required", args = packageIndex.toString)
-    )
+      "value" -> text("documentReference.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "documentReference.error.length"),
+            regexp(documentReferenceCharactersRegex, "documentReference.error.invalidCharacters")
+          )
+        ))
 }

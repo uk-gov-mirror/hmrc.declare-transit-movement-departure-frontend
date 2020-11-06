@@ -44,7 +44,7 @@ class AddMarkControllerSpec extends SpecBase with MockNunjucksRendererApp with M
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new AddMarkFormProvider()
-  val form         = formProvider()
+  val form         = formProvider(index.display)
 
   lazy val addMarkRoute = routes.AddMarkController.onPageLoad(lrn, index, index, NormalMode).url
 

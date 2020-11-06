@@ -21,11 +21,10 @@ import controllers.actions._
 import javax.inject.Inject
 import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.SectionsHelper
+import viewModels.DeclarationSummaryViewModel
 
 import scala.concurrent.ExecutionContext
 
@@ -36,16 +35,15 @@ class DeclarationSummaryController @Inject()(
   requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer,
-  appConfig: FrontendAppConfig,
+  appConfig: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sectionHelper = new SectionsHelper(request.userAnswers)
-      val json          = Json.obj("lrn" -> lrn, "sections" -> sectionHelper.getSections, "backToTransitMovements" -> appConfig.manageTransitMovementsUrl)
-
-      renderer.render("declarationSummary.njk", json).map(Ok(_))
+      renderer
+        .render("declarationSummary.njk", DeclarationSummaryViewModel(appConfig, request.userAnswers))
+        .map(Ok(_))
   }
 }
