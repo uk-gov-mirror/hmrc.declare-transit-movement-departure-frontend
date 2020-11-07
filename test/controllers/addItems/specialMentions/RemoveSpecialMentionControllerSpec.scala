@@ -24,9 +24,9 @@ import navigation.annotations.SpecialMentions
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.specialMentions.RemoveSpecialMentionPage
+import pages.addItems.specialMentions.{RemoveSpecialMentionPage, SpecialMentionTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -34,6 +34,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import queries.SpecialMentionsQuery
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
@@ -46,7 +47,7 @@ class RemoveSpecialMentionControllerSpec extends SpecBase with MockNunjucksRende
   private val form         = formProvider()
   private val template     = "addItems/specialMentions/removeSpecialMention.njk"
 
-  lazy val removeSpecialMentionRoute = routes.RemoveSpecialMentionController.onPageLoad(lrn, itemIndex, NormalMode).url
+  lazy val removeSpecialMentionRoute = routes.RemoveSpecialMentionController.onPageLoad(lrn, itemIndex, referenceIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -91,7 +92,7 @@ class RemoveSpecialMentionControllerSpec extends SpecBase with MockNunjucksRende
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(RemoveSpecialMentionPage(itemIndex), true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(RemoveSpecialMentionPage(itemIndex, referenceIndex), true).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, removeSpecialMentionRoute)
@@ -120,11 +121,12 @@ class RemoveSpecialMentionControllerSpec extends SpecBase with MockNunjucksRende
 
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must remove data and redirect to the next page when true is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      dataRetrievalWithData(emptyUserAnswers)
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val updatedUserAnswers                             = emptyUserAnswers.set(SpecialMentionTypePage(index, referenceIndex), "value").success.value
+      dataRetrievalWithData(updatedUserAnswers)
 
       val request =
         FakeRequest(POST, removeSpecialMentionRoute)
@@ -134,8 +136,29 @@ class RemoveSpecialMentionControllerSpec extends SpecBase with MockNunjucksRende
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      verify(mockSessionRepository, times(1)).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.get(SpecialMentionTypePage(index, referenceIndex)) mustBe None
 
+      redirectLocation(result).value mustEqual onwardRoute.url
+    }
+
+    "must not remove data and redirect to the next page when false is submitted" in {
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val updatedUserAnswers = emptyUserAnswers.set(SpecialMentionTypePage(index, referenceIndex), "value").success.value
+      dataRetrievalWithData(updatedUserAnswers)
+
+      val request =
+        FakeRequest(POST, removeSpecialMentionRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      verifyNoInteractions(mockSessionRepository)
+
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

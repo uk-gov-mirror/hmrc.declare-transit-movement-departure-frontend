@@ -21,7 +21,7 @@ import controllers.addItems.specialMentions.routes
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
+import pages.addItems.specialMentions._
 
 class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -61,6 +61,33 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
 
       "must go from SpecialMentionAdditionalInfo to AddAnotherSpecialMention" in {
+        navigator
+          .nextPage(SpecialMentionAdditionalInfoPage(index, index), NormalMode, emptyUserAnswers)
+          .mustBe(routes.AddAnotherSpecialMentionController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
+      }
+
+      "must go from RemoveSpecialMentionController" - {
+
+        "to AddAnotherSpecialMentionController when at least one special mention exists" in {
+
+          val userAnswers = emptyUserAnswers
+            .set(SpecialMentionTypePage(index, index), "value")
+            .success
+            .value
+
+          navigator
+            .nextPage(RemoveSpecialMentionPage(index, index), NormalMode, userAnswers)
+            .mustBe(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, index, NormalMode))
+        }
+
+        "to AddSpecialMentionPage when no special mentions exist" in {
+          navigator
+            .nextPage(RemoveSpecialMentionPage(index, index), NormalMode, emptyUserAnswers)
+            .mustBe(routes.AddSpecialMentionController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
+        }
+      }
+
+      "must go from RemoveSpecialMentionController to AddAnotherSpecialMention" in {
         navigator
           .nextPage(SpecialMentionAdditionalInfoPage(index, index), NormalMode, emptyUserAnswers)
           .mustBe(routes.AddAnotherSpecialMentionController.onPageLoad(emptyUserAnswers.id, index, NormalMode))

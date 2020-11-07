@@ -17,14 +17,14 @@
 package utils
 
 import controllers.addItems.specialMentions.{routes => specialMentionRoutes}
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, UserAnswers}
 import pages.addItems.specialMentions._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class SpecialMentionsCheckYourAnswers(userAnswers: UserAnswers) {
 
-  def removeSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(RemoveSpecialMentionPage(itemIndex)) map {
+  def removeSpecialMention(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(RemoveSpecialMentionPage(itemIndex, referenceIndex)) map {
     answer =>
       Row(
         key   = Key(msg"removeSpecialMention.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -32,7 +32,7 @@ class SpecialMentionsCheckYourAnswers(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = specialMentionRoutes.RemoveSpecialMentionController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            href               = specialMentionRoutes.RemoveSpecialMentionController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"removeSpecialMention.checkYourAnswersLabel"))
           )
         )
@@ -80,8 +80,13 @@ class SpecialMentionsCheckYourAnswers(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = specialMentionRoutes.SpecialMentionTypeController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionType.checkYourAnswersLabel"))
+          ),
+          Action(
+            content            = msg"site.delete",
+            href               = specialMentionRoutes.RemoveSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, referenceIndex, NormalMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
+            attributes         = Map("id" -> s"""remove-special-mentions-${itemIndex.display}""")
           )
-          //TODO: Add remove link
         )
       )
   }

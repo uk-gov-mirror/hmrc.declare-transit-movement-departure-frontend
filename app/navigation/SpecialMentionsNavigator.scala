@@ -21,7 +21,7 @@ import derivable.DeriveNumberOfSpecialMentions
 import javax.inject.{Inject, Singleton}
 import models.{CheckMode, Index, NormalMode, UserAnswers}
 import pages.Page
-import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
+import pages.addItems.specialMentions._
 import play.api.mvc.Call
 
 @Singleton
@@ -40,7 +40,13 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
     case AddAnotherSpecialMentionPage(itemIndex) =>
       userAnswers =>
         Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), NormalMode))
-
+    case RemoveSpecialMentionPage(itemIndex, _) =>
+      userAnswers =>
+        if (count(itemIndex)(userAnswers) == 0) {
+          Some(routes.AddSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+        } else {
+          Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+        }
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
