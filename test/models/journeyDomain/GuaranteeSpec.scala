@@ -19,8 +19,9 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase}
 import models.UserAnswers
 import models.journeyDomain.Guarantee.GuaranteeOther
-import org.scalacheck.{Arbitrary, Gen}
 import pages.{OtherReferenceLiabilityAmountPage, OtherReferencePage, QuestionPage}
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary._
 
 class GuaranteeSpec extends SpecBase with GeneratorSpec {
 
