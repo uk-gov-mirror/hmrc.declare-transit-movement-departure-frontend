@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package base
+package models
 
-import generators.Generators
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalacheck.{Arbitrary, Gen}
+import models.reference.DocumentType
 
-trait GeneratorSpec extends ScalaCheckPropertyChecks with Generators {
-  self: SpecBase =>
+case class DocumentTypeList(documentTypes: Seq[DocumentType]) {
 
-  def arb[A: Arbitrary]: Gen[A] = Arbitrary.arbitrary[A]
+  def getDocumentType(code: String): Option[DocumentType] =
+    documentTypes.find(_.code == code)
 
 }

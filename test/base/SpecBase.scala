@@ -17,8 +17,7 @@
 package base
 
 import models.domain.SealDomain
-import models.{Address, EoriNumber, Index, LocalReferenceNumber, PrincipalAddress, UserAnswers}
-import org.scalacheck.Arbitrary
+import models.{EoriNumber, Index, LocalReferenceNumber, PrincipalAddress, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers

@@ -16,7 +16,6 @@
 
 package models
 
-import models.PackageTypeList
 import models.reference.PackageType
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec

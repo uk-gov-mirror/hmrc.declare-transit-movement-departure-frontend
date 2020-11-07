@@ -20,7 +20,7 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.specialMentions.SpecialMentionTypeFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
-import navigation.annotations.{PreTaskListDetails, SpecialMentions}
+import navigation.annotations.SpecialMentions
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

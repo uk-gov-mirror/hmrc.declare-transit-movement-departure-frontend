@@ -16,13 +16,16 @@
 
 package base
 
-import generators.Generators
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalacheck.{Arbitrary, Gen}
+import cats.Eq
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatestplus.scalacheck.Checkers
+import org.typelevel.discipline.scalatest.{Discipline, FunSpecDiscipline}
 
-trait GeneratorSpec extends ScalaCheckPropertyChecks with Generators {
-  self: SpecBase =>
+trait MonocleSpec extends AnyFunSpec with Discipline with Checkers with FunSpecDiscipline
 
-  def arb[A: Arbitrary]: Gen[A] = Arbitrary.arbitrary[A]
+object MonocleSpec {
 
+  object Implicits {
+    implicit def scalaStandardEquals[A]: Eq[A] = (l: A, r: A) => l == r
+  }
 }

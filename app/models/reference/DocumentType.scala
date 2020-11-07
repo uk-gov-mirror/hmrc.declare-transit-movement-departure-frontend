@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package base
+package models.reference
 
-import generators.Generators
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalacheck.{Arbitrary, Gen}
+import play.api.libs.json.{Json, OFormat}
 
-trait GeneratorSpec extends ScalaCheckPropertyChecks with Generators {
-  self: SpecBase =>
+case class DocumentType(code: String, description: String, transportDocument: Boolean)
 
-  def arb[A: Arbitrary]: Gen[A] = Arbitrary.arbitrary[A]
-
+object DocumentType {
+  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
 }
