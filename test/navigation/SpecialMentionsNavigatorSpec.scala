@@ -47,12 +47,22 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
     "in normal mode" - {
 
       "must go from AddSpecialMention to SpecialMentionType" in {
+
+        val userAnswers = emptyUserAnswers.set(AddSpecialMentionPage(index), true).success.value
+
         navigator
-          .nextPage(AddSpecialMentionPage(index), NormalMode, emptyUserAnswers)
-          .mustBe(routes.SpecialMentionTypeController.onPageLoad(emptyUserAnswers.id, index, index, NormalMode))
+          .nextPage(AddSpecialMentionPage(index), NormalMode, userAnswers)
+          .mustBe(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, index, NormalMode))
       }
 
-      "must go from AddSpecialMention to [PRODUCED DOCUMENTS NOT YET IN]" ignore {}
+      "to AddDocuments when set to false" in {
+
+        val userAnswers = emptyUserAnswers.set(AddSpecialMentionPage(index), false).success.value
+
+        navigator
+          .nextPage(AddSpecialMentionPage(index), NormalMode, userAnswers)
+          .mustBe(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, index, NormalMode))
+      }
 
       "must go from SpecialMentionType to SpecialMentionAdditionalInfo" in {
         navigator
@@ -104,13 +114,13 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, index, NormalMode))
         }
 
-        "to [PRODUCED DOCUMENTS NOT YET IN] when set to false" ignore {
+        "to AddDocuments when set to false" in {
 
-          val userAnswers = emptyUserAnswers.set(AddAnotherSpecialMentionPage(index), true).success.value
+          val userAnswers = emptyUserAnswers.set(AddAnotherSpecialMentionPage(index), false).success.value
 
           navigator
             .nextPage(AddAnotherSpecialMentionPage(index), NormalMode, userAnswers)
-            .mustBe(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, index, NormalMode))
+            .mustBe(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, index, NormalMode))
         }
       }
     }
