@@ -27,6 +27,7 @@ import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.TraderDetailsCheckYourAnswersHelper
 import viewModels.sections.Section
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 
 import scala.concurrent.ExecutionContext
 
@@ -58,17 +59,28 @@ class TraderDetailsCheckYourAnswersController @Inject()(
 
     Seq(
       Section(
+        msg"principal.cya.section.heading",
         Seq(
           checkYourAnswersHelper.isPrincipalEoriKnown,
           checkYourAnswersHelper.whatIsPrincipalEori,
           checkYourAnswersHelper.principalName,
-          checkYourAnswersHelper.principalAddress,
+          checkYourAnswersHelper.principalAddress
+        ).flatten
+      ),
+      Section(
+        msg"consignor.cya.section.heading",
+        Seq(
           checkYourAnswersHelper.consignorForAllItems,
           checkYourAnswersHelper.addConsignor,
           checkYourAnswersHelper.isConsignorEoriKnown,
           checkYourAnswersHelper.consignorName,
           checkYourAnswersHelper.consignorAddress,
-          checkYourAnswersHelper.consignorEori,
+          checkYourAnswersHelper.consignorEori
+        ).flatten
+      ),
+      Section(
+        msg"consignee.cya.section.heading",
+        Seq(
           checkYourAnswersHelper.consigneeForAllItems,
           checkYourAnswersHelper.addConsignee,
           checkYourAnswersHelper.isConsigneeEoriKnown,
@@ -76,6 +88,7 @@ class TraderDetailsCheckYourAnswersController @Inject()(
           checkYourAnswersHelper.consigneeAddress,
           checkYourAnswersHelper.whatIsConsigneeEori,
         ).flatten
-      ))
+      )
+    )
   }
 }
