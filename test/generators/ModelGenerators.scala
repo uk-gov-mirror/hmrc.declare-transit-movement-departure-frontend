@@ -21,15 +21,12 @@ import java.time.LocalDateTime
 import models._
 import models.domain.SealDomain
 import models.domain.SealDomain.Constants
-import models.journeyDomain._
 import models.reference.{Country, CountryCode, CustomsOffice, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
   self: Generators =>
-
-  val stringMaxLength = 256
 
   // TODO turn PackageType into a trait with three sub classes for Bulk, Unpacked and normal
   implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
@@ -174,36 +171,6 @@ trait ModelGenerators {
     }
   }
 
-  implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =
-    Arbitrary(Gen.const(DeclarationForSelf))
-
-  implicit lazy val arbitraryDeclarationForSomeoneElse: Arbitrary[DeclarationForSomeoneElse] =
-    Arbitrary {
-      for {
-        companyName <- stringsWithMaxLength(stringMaxLength)
-        capacity    <- arbitrary[RepresentativeCapacity]
-      } yield DeclarationForSomeoneElse(companyName, capacity)
-    }
-
-  implicit lazy val arbitraryDeclarationForSomeoneElseAnswer: Arbitrary[DeclarationForSomeoneElseAnswer] =
-    Arbitrary(Gen.oneOf(arbitrary[DeclarationForSelf.type], arbitrary[DeclarationForSomeoneElse]))
-
-  implicit lazy val arbitrarySimplifiedMovementDetails: Arbitrary[SimplifiedMovementDetails] =
-    Arbitrary {
-      for {
-        declarationType           <- arbitrary[DeclarationType]
-        containersUsed            <- arbitrary[Boolean]
-        declarationPlacePage      <- stringsWithMaxLength(stringMaxLength)
-        declarationForSomeoneElse <- arbitrary[DeclarationForSomeoneElseAnswer]
-      } yield
-        SimplifiedMovementDetails(
-          declarationType,
-          containersUsed,
-          declarationPlacePage,
-          declarationForSomeoneElse
-        )
-    }
-
   implicit lazy val arbitraryLocalDateTimeWithAMPM: Arbitrary[LocalDateTimeWithAMPM] =
     Arbitrary {
       for {
@@ -245,9 +212,10 @@ trait ModelGenerators {
   implicit lazy val arbitraryTraderAddress: Arbitrary[ForeignAddress] =
     Arbitrary {
       for {
-        buildingAndStreet <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
-        city              <- alphaStringsWithMaxLength(ForeignAddress.Constants.cityLength)
-        postcode          <- alphaStringsWithMaxLength(ForeignAddress.Constants.postcodeLength)
-      } yield Address(buildingAndStreet, city, postcode)
+        line1 <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
+        line2              <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
+        line3          <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
+        country          <- alphaStringsWithMaxLength(ForeignAddress.Constants.postcodeLength)
+      } yield ForeignAddress(line1 = line1, line2 = line2, line3 = line3, country = country)
     }
 }

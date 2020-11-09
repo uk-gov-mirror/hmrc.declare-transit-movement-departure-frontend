@@ -19,17 +19,30 @@ package utils
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
-import models.reference.PreviousDocumentType
 import models._
-import pages._
-import pages.{addItems, _}
 import pages.addItems._
 import pages.addItems.traderDetails._
+import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def documentType(index: Index, documentIndex: Index): Option[Row] = userAnswers.get(DocumentTypePage(index, documentIndex)) map {
+    answer =>
+      Row(
+        key   = Key(msg"documentType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.DocumentTypeController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"documentType.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def addDocuments(itemIndex: Index): Option[Row] = userAnswers.get(AddDocumentsPage) map {
     answer =>
@@ -382,14 +395,14 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
                   content            = msg"site.change",
                   href               = previousReferencesRoutes.ReferenceTypeController.onPageLoad(userAnswers.id, index, referenceIndex, mode).url,
                   visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
-                  attributes         = Map("id" -> s"""change-item-${index.display}""")
+                  attributes         = Map("id" -> s"""change-reference-document-type-${index.display}""")
                 ),
                 Action(
                   content = msg"site.delete",
                   href =
                     previousReferencesRoutes.ConfirmRemovePreviousAdministrativeReferenceController.onPageLoad(userAnswers.id, index, referenceIndex, mode).url,
                   visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
-                  attributes         = Map("id" -> s"""remove-item-${index.display}""")
+                  attributes         = Map("id" -> s"""remove-reference-document-type-${index.display}""")
                 )
               )
             )

@@ -25,10 +25,9 @@ import models.XMLWrites._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.GoodsItem
 import models.messages.guarantee.Guarantee
+import models.messages.header.Header
 import models.messages.trader._
 import utils.NonEmptyListXMLReader._
-import json.NonEmptyListOps._
-import models.messages.header.Header
 
 import scala.xml.{Elem, Node, NodeSeq}
 

@@ -18,7 +18,7 @@ package controllers.addItems.traderDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.traderDetails.TraderDetailsConsigneeAddressFormProvider
-import generators.{Generators, ModelGenerators}
+import generators.Generators
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.AddItems
@@ -75,7 +75,6 @@ class TraderDetailsConsigneeAddressControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val application    = applicationBuilder(userAnswers = Some(answers)).build()
       val request        = FakeRequest(GET, traderDetailsConsigneeAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])

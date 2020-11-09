@@ -21,184 +21,189 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.addItems._
-import pages.addItems.specialMentions._
-import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
-import pages.addItems.specialMentions.RemoveSpecialMentionPage
-import pages.addItems.traderDetails._
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
-import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
 
-trait UserAnswersGenerator extends TryValues {
+trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
   self: Generators =>
 
-  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(DocumentExtraInformationPage, JsValue)] ::
-      arbitrary[(ConfirmRemovePreviousAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(DocumentReferencePage, JsValue)] ::
-      arbitrary[(ConfirmRemovePreviousAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(AddExtraDocumentInformationPage, JsValue)] ::
-      arbitrary[(ConfirmRemovePreviousAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(AddDocumentsPage.type, JsValue)] ::
-      arbitrary[(ConfirmRemovePreviousAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(ExtraInformationPage, JsValue)] ::
-      arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(RemoveSpecialMentionPage, JsValue)] ::
-      arbitrary[(AddAnotherSpecialMentionPage.type, JsValue)] ::
-      arbitrary[(SpecialMentionAdditionalInfoPage.type, JsValue)] ::
-      arbitrary[(SpecialMentionTypePage.type, JsValue)] ::
-      arbitrary[(AddSpecialMentionPage, JsValue)] ::
-      arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(AddAnotherContainerPage.type, JsValue)] ::
-      arbitrary[(ContainerNumberPage.type, JsValue)] ::
-      arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(AddItemsSameConsignorForAllItemsPage, JsValue)] ::
-      arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(PreviousReferencePage, JsValue)] ::
-      arbitrary[(ExtraInformationPage, JsValue)] ::
-      arbitrary[(PreviousReferencePage, JsValue)] ::
-      arbitrary[(AddExtraInformationPage, JsValue)] ::
-      arbitrary[(AddItemsSameConsignorForAllItemsPage, JsValue)] ::
-      arbitrary[(HowManyPackagesPage, JsValue)] ::
-      arbitrary[(AddAnotherPackagePage, JsValue)] ::
-      arbitrary[(DeclareMarkPage, JsValue)] ::
-      arbitrary[(AddMarkPage, JsValue)] ::
-      arbitrary[(TotalPiecesPage, JsValue)] ::
-      arbitrary[(DeclareNumberOfPackagesPage, JsValue)] ::
-      arbitrary[(PreviousReferencePage, JsValue)] ::
-      arbitrary[(AddExtraInformationPage, JsValue)] ::
-      arbitrary[(ReferenceTypePage, JsValue)] ::
-      arbitrary[(AddAdministrativeReferencePage, JsValue)] ::
-      arbitrary[(ConfirmRemoveItemPage.type, JsValue)] ::
-      arbitrary[(TotalPackagesPage.type, JsValue)] ::
-      arbitrary[(TotalNetMassPage, JsValue)] ::
-      arbitrary[(CommodityCodePage, JsValue)] ::
-      arbitrary[(TotalNetMassPage, JsValue)] ::
-      arbitrary[(TraderDetailsConsignorNamePage, JsValue)] ::
-      arbitrary[(TraderDetailsConsignorEoriNumberPage, JsValue)] ::
-      arbitrary[(TraderDetailsConsignorEoriKnownPage, JsValue)] ::
-      arbitrary[(TraderDetailsConsignorAddressPage, JsValue)] ::
-      arbitrary[(TraderDetailsConsigneeNamePage, JsValue)] ::
-      arbitrary[(TraderDetailsConsigneeEoriNumberPage, JsValue)] ::
-      arbitrary[(TraderDetailsConsigneeEoriKnownPage, JsValue)] ::
-      arbitrary[(TraderDetailsConsigneeAddressPage, JsValue)] ::
-      arbitrary[(TotalNetMassPage, JsValue)] ::
-      arbitrary[(AddTotalNetMassPage, JsValue)] ::
-      arbitrary[(IsCommodityCodeKnownPage, JsValue)] ::
-      arbitrary[(AddTotalNetMassPage, JsValue)] ::
-      arbitrary[(ItemDescriptionPage, JsValue)] ::
-      arbitrary[(OtherReferenceLiabilityAmountPage.type, JsValue)] ::
-      arbitrary[(ItemTotalGrossMassPage, JsValue)] ::
-      arbitrary[(PreLodgeDeclarationPage.type, JsValue)] ::
-      arbitrary[(ItemDescriptionPage, JsValue)] ::
-      arbitrary[(OtherReferenceLiabilityAmountPage.type, JsValue)] ::
-      arbitrary[(ConfirmRemoveSealsPage.type, JsValue)] ::
-      arbitrary[(GuaranteeTypePage.type, JsValue)] ::
-      arbitrary[(OtherReferencePage.type, JsValue)] ::
-      arbitrary[(GuaranteeReferencePage.type, JsValue)] ::
-      arbitrary[(ConfirmRemoveOfficeOfTransitPage.type, JsValue)] ::
-      arbitrary[(SealsInformationPage.type, JsValue)] ::
-      arbitrary[(AddAnotherTransitOfficePage, JsValue)] ::
-      arbitrary[(ArrivalTimesAtOfficePage, JsValue)] ::
-      arbitrary[(ControlResultDateLimitPage.type, JsValue)] ::
-      arbitrary[(SealIdDetailsPage, JsValue)] ::
-      arbitrary[(AddSealsPage.type, JsValue)] ::
-      arbitrary[(CustomsApprovedLocationPage.type, JsValue)] ::
-      arbitrary[(AddCustomsApprovedLocationPage.type, JsValue)] ::
-      arbitrary[(TotalGrossMassPage.type, JsValue)] ::
-      arbitrary[(AuthorisedLocationCodePage.type, JsValue)] ::
-      arbitrary[(TotalPackagesPage.type, JsValue)] ::
-      arbitrary[(DeclarePackagesPage.type, JsValue)] ::
-      arbitrary[(AddTransitOfficePage.type, JsValue)] ::
-      arbitrary[(ModeAtBorderPage.type, JsValue)] ::
-      arbitrary[(NationalityCrossingBorderPage.type, JsValue)] ::
-      arbitrary[(ModeCrossingBorderPage.type, JsValue)] ::
-      arbitrary[(InlandModePage.type, JsValue)] ::
-      arbitrary[(DestinationOfficePage.type, JsValue)] ::
-      arbitrary[(AddIdAtDeparturePage.type, JsValue)] ::
-      arbitrary[(IdCrossingBorderPage.type, JsValue)] ::
-      arbitrary[(DestinationCountryPage.type, JsValue)] ::
-      arbitrary[(ChangeAtBorderPage.type, JsValue)] ::
-      arbitrary[(NationalityAtDeparturePage.type, JsValue)] ::
-      arbitrary[(IdAtDeparturePage.type, JsValue)] ::
-      arbitrary[(ConsigneeAddressPage.type, JsValue)] ::
-      arbitrary[(PrincipalAddressPage.type, JsValue)] ::
-      arbitrary[(ConsignorAddressPage.type, JsValue)] ::
-      arbitrary[(OfficeOfDeparturePage.type, JsValue)] ::
-      arbitrary[(ConsigneeNamePage.type, JsValue)] ::
-      arbitrary[(WhatIsConsigneeEoriPage.type, JsValue)] ::
-      arbitrary[(CountryOfDispatchPage.type, JsValue)] ::
-      arbitrary[(ConsignorNamePage.type, JsValue)] ::
-      arbitrary[(AddConsigneePage.type, JsValue)] ::
-      arbitrary[(IsConsigneeEoriKnownPage.type, JsValue)] ::
-      arbitrary[(ConsignorEoriPage.type, JsValue)] ::
-      arbitrary[(AddConsignorPage.type, JsValue)] ::
-      arbitrary[(IsConsignorEoriKnownPage.type, JsValue)] ::
-      arbitrary[(PrincipalNamePage.type, JsValue)] ::
-      arbitrary[(IsPrincipalEoriKnownPage.type, JsValue)] ::
-      arbitrary[(WhatIsPrincipalEoriPage.type, JsValue)] ::
-      arbitrary[(RepresentativeCapacityPage.type, JsValue)] ::
-      arbitrary[(RepresentativeNamePage.type, JsValue)] ::
-      arbitrary[(ContainersUsedPage.type, JsValue)] ::
-      arbitrary[(DeclarationForSomeoneElsePage.type, JsValue)] ::
-      arbitrary[(DeclarationPlacePage.type, JsValue)] ::
-      arbitrary[(ProcedureTypePage.type, JsValue)] ::
-      arbitrary[(DeclarationTypePage.type, JsValue)] ::
-      arbitrary[(AddSecurityDetailsPage.type, JsValue)] ::
-      arbitrary[(AccessCodePage.type, JsValue)] ::
-      arbitrary[(OtherReferencePage.type, JsValue)] ::
-      arbitrary[(LiabilityAmountPage.type, JsValue)] ::
-      arbitrary[(GuaranteeReferencePage.type, JsValue)] ::
-      arbitrary[(ConfirmRemoveOfficeOfTransitPage.type, JsValue)] ::
-      arbitrary[(SealsInformationPage.type, JsValue)] ::
-      arbitrary[(AddAnotherTransitOfficePage, JsValue)] ::
-      arbitrary[(ArrivalTimesAtOfficePage, JsValue)] ::
-      arbitrary[(ControlResultDateLimitPage.type, JsValue)] ::
-      arbitrary[(SealIdDetailsPage, JsValue)] ::
-      arbitrary[(AddSealsPage.type, JsValue)] ::
-      arbitrary[(CustomsApprovedLocationPage.type, JsValue)] ::
-      arbitrary[(AddCustomsApprovedLocationPage.type, JsValue)] ::
-      arbitrary[(TotalGrossMassPage.type, JsValue)] ::
-      arbitrary[(AuthorisedLocationCodePage.type, JsValue)] ::
-      arbitrary[(TotalPackagesPage.type, JsValue)] ::
-      arbitrary[(DeclarePackagesPage.type, JsValue)] ::
-      arbitrary[(AddTransitOfficePage.type, JsValue)] ::
-      arbitrary[(ModeAtBorderPage.type, JsValue)] ::
-      arbitrary[(NationalityCrossingBorderPage.type, JsValue)] ::
-      arbitrary[(ModeCrossingBorderPage.type, JsValue)] ::
-      arbitrary[(InlandModePage.type, JsValue)] ::
-      arbitrary[(DestinationOfficePage.type, JsValue)] ::
-      arbitrary[(AddIdAtDeparturePage.type, JsValue)] ::
-      arbitrary[(IdCrossingBorderPage.type, JsValue)] ::
-      arbitrary[(DestinationCountryPage.type, JsValue)] ::
-      arbitrary[(ChangeAtBorderPage.type, JsValue)] ::
-      arbitrary[(NationalityAtDeparturePage.type, JsValue)] ::
-      arbitrary[(IdAtDeparturePage.type, JsValue)] ::
-      arbitrary[(ConsigneeAddressPage.type, JsValue)] ::
-      arbitrary[(PrincipalAddressPage.type, JsValue)] ::
-      arbitrary[(ConsignorAddressPage.type, JsValue)] ::
-      arbitrary[(OfficeOfDeparturePage.type, JsValue)] ::
-      arbitrary[(ConsigneeNamePage.type, JsValue)] ::
-      arbitrary[(WhatIsConsigneeEoriPage.type, JsValue)] ::
-      arbitrary[(CountryOfDispatchPage.type, JsValue)] ::
-      arbitrary[(ConsignorNamePage.type, JsValue)] ::
-      arbitrary[(AddConsigneePage.type, JsValue)] ::
-      arbitrary[(IsConsigneeEoriKnownPage.type, JsValue)] ::
-      arbitrary[(ConsignorEoriPage.type, JsValue)] ::
-      arbitrary[(AddConsignorPage.type, JsValue)] ::
-      arbitrary[(IsConsignorEoriKnownPage.type, JsValue)] ::
-      arbitrary[(PrincipalNamePage.type, JsValue)] ::
-      arbitrary[(IsPrincipalEoriKnownPage.type, JsValue)] ::
-      arbitrary[(WhatIsPrincipalEoriPage.type, JsValue)] ::
-      arbitrary[(RepresentativeCapacityPage.type, JsValue)] ::
-      arbitrary[(RepresentativeNamePage.type, JsValue)] ::
-      arbitrary[(ContainersUsedPage.type, JsValue)] ::
-      arbitrary[(DeclarationForSomeoneElsePage.type, JsValue)] ::
-      arbitrary[(DeclarationPlacePage.type, JsValue)] ::
-      arbitrary[(ProcedureTypePage.type, JsValue)] ::
-      arbitrary[(DeclarationTypePage.type, JsValue)] ::
-      arbitrary[(AddSecurityDetailsPage.type, JsValue)] ::
+  /**
+    * The max number of QuestionPage and valid answers that are generated
+    *
+    * The larger this number the more QuestionPages and answers are generated
+    * used in the UserAnswers that is returned. Larger values will increase test
+    * runtime and should therefore have a sensible value that still provide
+    * confidence that the tests are robust.
+    *
+    * @note The value must be greater than 0 but less than the number of elements in the
+    *       class member `generators`.
+    */
+  val maxNumberOfGeneratedPageAnswers: Int = 1
+
+  final val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitraryDocumentExtraInformationUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryDocumentReferenceUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryAddExtraDocumentInformationUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryAddDocumentsUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryExtraInformationUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryRemoveSpecialMentionUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherSpecialMentionUserAnswersEntry.arbitrary ::
+      arbitrarySpecialMentionAdditionalInfoUserAnswersEntry.arbitrary ::
+      arbitrarySpecialMentionTypeUserAnswersEntry.arbitrary ::
+      arbitraryAddSpecialMentionUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherContainerUserAnswersEntry.arbitrary ::
+      arbitraryContainerNumberUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryPreviousReferenceUserAnswersEntry.arbitrary ::
+      arbitraryExtraInformationUserAnswersEntry.arbitrary ::
+      arbitraryPreviousReferenceUserAnswersEntry.arbitrary ::
+      arbitraryAddExtraInformationUserAnswersEntry.arbitrary ::
+      arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry.arbitrary ::
+      arbitraryHowManyPackagesUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherPackageUserAnswersEntry.arbitrary ::
+      arbitraryDeclareMarkUserAnswersEntry.arbitrary ::
+      arbitraryAddMarkUserAnswersEntry.arbitrary ::
+      arbitraryTotalPiecesUserAnswersEntry.arbitrary ::
+      arbitraryDeclareNumberOfPackagesUserAnswersEntry.arbitrary ::
+      arbitraryPreviousReferenceUserAnswersEntry.arbitrary ::
+      arbitraryAddExtraInformationUserAnswersEntry.arbitrary ::
+      arbitraryReferenceTypeUserAnswersEntry.arbitrary ::
+      arbitraryAddAdministrativeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemoveItemUserAnswersEntry.arbitrary ::
+      arbitraryTotalPackagesUserAnswersEntry.arbitrary ::
+      arbitraryTotalNetMassUserAnswersEntry.arbitrary ::
+      arbitraryCommodityCodeUserAnswersEntry.arbitrary ::
+      arbitraryTotalNetMassUserAnswersEntry.arbitrary ::
+      arbitraryTraderDetailsConsignorNameUserAnswersEntry.arbitrary ::
+      arbitraryTraderDetailsConsignorEoriNumberUserAnswersEntry.arbitrary ::
+      arbitraryTraderDetailsConsignorEoriKnownUserAnswersEntry.arbitrary ::
+      arbitraryTraderDetailsConsignorAddressUserAnswersEntry.arbitrary ::
+      arbitraryTraderDetailsConsigneeNameUserAnswersEntry.arbitrary ::
+      arbitraryTraderDetailsConsigneeEoriNumberUserAnswersEntry.arbitrary ::
+      arbitraryTraderDetailsConsigneeEoriKnownUserAnswersEntry.arbitrary ::
+      arbitraryTraderDetailsConsigneeAddressUserAnswersEntry.arbitrary ::
+      arbitraryTotalNetMassUserAnswersEntry.arbitrary ::
+      arbitraryAddTotalNetMassUserAnswersEntry.arbitrary ::
+      arbitraryIsCommodityCodeKnownUserAnswersEntry.arbitrary ::
+      arbitraryAddTotalNetMassUserAnswersEntry.arbitrary ::
+      arbitraryItemDescriptionUserAnswersEntry.arbitrary ::
+      arbitraryOtherReferenceLiabilityAmountUserAnswersEntry.arbitrary ::
+      arbitraryItemTotalGrossMassUserAnswersEntry.arbitrary ::
+      arbitraryPreLodgeDeclarationUserAnswersEntry.arbitrary ::
+      arbitraryItemDescriptionUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemoveSealsUserAnswersEntry.arbitrary ::
+      arbitraryGuaranteeTypeUserAnswersEntry.arbitrary ::
+      arbitraryOtherReferenceUserAnswersEntry.arbitrary ::
+      arbitraryGuaranteeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemoveOfficeOfTransitUserAnswersEntry.arbitrary ::
+      arbitrarySealsInformationUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherTransitOfficeUserAnswersEntry.arbitrary ::
+      arbitraryArrivalTimesAtOfficeUserAnswersEntry.arbitrary ::
+      arbitraryControlResultDateLimitUserAnswersEntry.arbitrary ::
+      arbitrarySealIdDetailsUserAnswersEntry.arbitrary ::
+      arbitraryAddSealsUserAnswersEntry.arbitrary ::
+      arbitraryCustomsApprovedLocationUserAnswersEntry.arbitrary ::
+      arbitraryAddCustomsApprovedLocationUserAnswersEntry.arbitrary ::
+      arbitraryTotalGrossMassUserAnswersEntry.arbitrary ::
+      arbitraryAuthorisedLocationCodeUserAnswersEntry.arbitrary ::
+      arbitraryTotalPackagesUserAnswersEntry.arbitrary ::
+      arbitraryDeclarePackagesUserAnswersEntry.arbitrary ::
+      arbitraryAddTransitOfficeUserAnswersEntry.arbitrary ::
+      arbitraryModeAtBorderUserAnswersEntry.arbitrary ::
+      arbitraryNationalityCrossingBorderUserAnswersEntry.arbitrary ::
+      arbitraryModeCrossingBorderUserAnswersEntry.arbitrary ::
+      arbitraryInlandModeUserAnswersEntry.arbitrary ::
+      arbitraryDestinationOfficeUserAnswersEntry.arbitrary ::
+      arbitraryAddIdAtDepartureUserAnswersEntry.arbitrary ::
+      arbitraryIdCrossingBorderUserAnswersEntry.arbitrary ::
+      arbitraryDestinationCountryUserAnswersEntry.arbitrary ::
+      arbitraryChangeAtBorderUserAnswersEntry.arbitrary ::
+      arbitraryNationalityAtDepartureUserAnswersEntry.arbitrary ::
+      arbitraryIdAtDepartureUserAnswersEntry.arbitrary ::
+      arbitraryConsigneeAddressUserAnswersEntry.arbitrary ::
+      arbitraryPrincipalAddressUserAnswersEntry.arbitrary ::
+      arbitraryConsignorAddressUserAnswersEntry.arbitrary ::
+      arbitraryOfficeOfDepartureUserAnswersEntry.arbitrary ::
+      arbitraryConsigneeNameUserAnswersEntry.arbitrary ::
+      arbitraryWhatIsConsigneeEoriUserAnswersEntry.arbitrary ::
+      arbitraryCountryOfDispatchUserAnswersEntry.arbitrary ::
+      arbitraryConsignorNameUserAnswersEntry.arbitrary ::
+      arbitraryAddConsigneeUserAnswersEntry.arbitrary ::
+      arbitraryIsConsigneeEoriKnownUserAnswersEntry.arbitrary ::
+      arbitraryConsignorEoriUserAnswersEntry.arbitrary ::
+      arbitraryAddConsignorUserAnswersEntry.arbitrary ::
+      arbitraryIsConsignorEoriKnownUserAnswersEntry.arbitrary ::
+      arbitraryPrincipalNameUserAnswersEntry.arbitrary ::
+      arbitraryIsPrincipalEoriKnownUserAnswersEntry.arbitrary ::
+      arbitraryWhatIsPrincipalEoriUserAnswersEntry.arbitrary ::
+      arbitraryRepresentativeCapacityUserAnswersEntry.arbitrary ::
+      arbitraryRepresentativeNameUserAnswersEntry.arbitrary ::
+      arbitraryContainersUsedUserAnswersEntry.arbitrary ::
+      arbitraryDeclarationForSomeoneElseUserAnswersEntry.arbitrary ::
+      arbitraryDeclarationPlaceUserAnswersEntry.arbitrary ::
+      arbitraryProcedureTypeUserAnswersEntry.arbitrary ::
+      arbitraryDeclarationTypeUserAnswersEntry.arbitrary ::
+      arbitraryAddSecurityDetailsUserAnswersEntry.arbitrary ::
+      arbitraryAccessCodeUserAnswersEntry.arbitrary ::
+      arbitraryOtherReferenceUserAnswersEntry.arbitrary ::
+      arbitraryLiabilityAmountUserAnswersEntry.arbitrary ::
+      arbitraryGuaranteeReferenceUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemoveOfficeOfTransitUserAnswersEntry.arbitrary ::
+      arbitrarySealsInformationUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherTransitOfficeUserAnswersEntry.arbitrary ::
+      arbitraryArrivalTimesAtOfficeUserAnswersEntry.arbitrary ::
+      arbitraryControlResultDateLimitUserAnswersEntry.arbitrary ::
+      arbitrarySealIdDetailsUserAnswersEntry.arbitrary ::
+      arbitraryAddSealsUserAnswersEntry.arbitrary ::
+      arbitraryCustomsApprovedLocationUserAnswersEntry.arbitrary ::
+      arbitraryAddCustomsApprovedLocationUserAnswersEntry.arbitrary ::
+      arbitraryTotalGrossMassUserAnswersEntry.arbitrary ::
+      arbitraryAuthorisedLocationCodeUserAnswersEntry.arbitrary ::
+      arbitraryTotalPackagesUserAnswersEntry.arbitrary ::
+      arbitraryDeclarePackagesUserAnswersEntry.arbitrary ::
+      arbitraryAddTransitOfficeUserAnswersEntry.arbitrary ::
+      arbitraryModeAtBorderUserAnswersEntry.arbitrary ::
+      arbitraryNationalityCrossingBorderUserAnswersEntry.arbitrary ::
+      arbitraryModeCrossingBorderUserAnswersEntry.arbitrary ::
+      arbitraryInlandModeUserAnswersEntry.arbitrary ::
+      arbitraryDestinationOfficeUserAnswersEntry.arbitrary ::
+      arbitraryAddIdAtDepartureUserAnswersEntry.arbitrary ::
+      arbitraryIdCrossingBorderUserAnswersEntry.arbitrary ::
+      arbitraryDestinationCountryUserAnswersEntry.arbitrary ::
+      arbitraryChangeAtBorderUserAnswersEntry.arbitrary ::
+      arbitraryNationalityAtDepartureUserAnswersEntry.arbitrary ::
+      arbitraryIdAtDepartureUserAnswersEntry.arbitrary ::
+      arbitraryConsigneeAddressUserAnswersEntry.arbitrary ::
+      arbitraryPrincipalAddressUserAnswersEntry.arbitrary ::
+      arbitraryConsignorAddressUserAnswersEntry.arbitrary ::
+      arbitraryOfficeOfDepartureUserAnswersEntry.arbitrary ::
+      arbitraryConsigneeNameUserAnswersEntry.arbitrary ::
+      arbitraryWhatIsConsigneeEoriUserAnswersEntry.arbitrary ::
+      arbitraryCountryOfDispatchUserAnswersEntry.arbitrary ::
+      arbitraryConsignorNameUserAnswersEntry.arbitrary ::
+      arbitraryAddConsigneeUserAnswersEntry.arbitrary ::
+      arbitraryIsConsigneeEoriKnownUserAnswersEntry.arbitrary ::
+      arbitraryConsignorEoriUserAnswersEntry.arbitrary ::
+      arbitraryAddConsignorUserAnswersEntry.arbitrary ::
+      arbitraryIsConsignorEoriKnownUserAnswersEntry.arbitrary ::
+      arbitraryPrincipalNameUserAnswersEntry.arbitrary ::
+      arbitraryIsPrincipalEoriKnownUserAnswersEntry.arbitrary ::
+      arbitraryWhatIsPrincipalEoriUserAnswersEntry.arbitrary ::
+      arbitraryRepresentativeCapacityUserAnswersEntry.arbitrary ::
+      arbitraryRepresentativeNameUserAnswersEntry.arbitrary ::
+      arbitraryContainersUsedUserAnswersEntry.arbitrary ::
+      arbitraryDeclarationForSomeoneElseUserAnswersEntry.arbitrary ::
+      arbitraryDeclarationPlaceUserAnswersEntry.arbitrary ::
+      arbitraryProcedureTypeUserAnswersEntry.arbitrary ::
+      arbitraryDeclarationTypeUserAnswersEntry.arbitrary ::
+      arbitraryAddSecurityDetailsUserAnswersEntry.arbitrary ::
       Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {

@@ -25,30 +25,7 @@ import models.reference.CountryCode
 import pages._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-
-final case class TransitInformation(
-  transitOffice: String,
-  arrivalTime: LocalDateTime
-)
-
-object TransitInformation {
-
-  implicit val reads: Reads[TransitInformation] =
-    ((__ \ AddAnotherTransitOfficePage.key).read[String] and
-      (__ \ ArrivalTimesAtOfficePage.key \ "dateTime").read[LocalDateTime])(TransitInformation(_, _))
-
-  implicit val readSeqTransitInformation: UserAnswersReader[NonEmptyList[TransitInformation]] = {
-    val readArrayOfTransitOffices: UserAnswersReader[List[JsObject]] =
-      DeriveNumberOfOfficeOfTransits.reader
-
-    val readTransitOffices =
-      ReaderT[Option, List[JsObject], List[TransitInformation]] {
-        _.traverse(_.validate[TransitInformation].asOpt)
-      }.flatMapF(NonEmptyList.fromList)
-
-    readArrayOfTransitOffices andThen readTransitOffices
-  }
-}
+import RouteDetails.TransitInformation
 
 final case class RouteDetails(
   countryOfDispatch: CountryCode,
@@ -59,6 +36,30 @@ final case class RouteDetails(
 )
 
 object RouteDetails {
+
+  final case class TransitInformation(
+    transitOffice: String,
+    arrivalTime: LocalDateTime
+  )
+
+  object TransitInformation {
+
+    implicit val reads: Reads[TransitInformation] =
+      ((__ \ AddAnotherTransitOfficePage.key).read[String] and
+        (__ \ ArrivalTimesAtOfficePage.key \ "dateTime").read[LocalDateTime])(TransitInformation(_, _))
+
+    implicit val readSeqTransitInformation: UserAnswersReader[NonEmptyList[TransitInformation]] = {
+      val readArrayOfTransitOffices: UserAnswersReader[List[JsObject]] =
+        DeriveNumberOfOfficeOfTransits.reader
+
+      val readTransitOffices =
+        ReaderT[Option, List[JsObject], List[TransitInformation]] {
+          _.traverse(_.validate[TransitInformation].asOpt)
+        }.flatMapF(NonEmptyList.fromList)
+
+      readArrayOfTransitOffices andThen readTransitOffices
+    }
+  }
 
   implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, RouteDetails] =
     UserAnswersOptionalParser(

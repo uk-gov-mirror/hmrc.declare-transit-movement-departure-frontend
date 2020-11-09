@@ -18,58 +18,30 @@ package forms.addItems.traderDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.ForeignAddress
-import models.domain.TraderDomain.Constants.{cityLength, postCodeLength, streetAndNumberLength}
-import models.domain.TraderDomain.inputRegex
+import models.reference.Country
+import models.{ConsigneeAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class TraderDetailsConsignorAddressFormProvider @Inject() extends Mappings {
 
-  def apply(consignorName: String): Form[ForeignAddress] = Form(
+  val addressRegex: String = "^[a-zA-Z0-9 ]*$"
+
+  def apply(countryList: CountryList): Form[ConsigneeAddress] = Form(
     mapping(
-      "buildingAndStreet" -> text(
-        "traderDetailsConsignorAddress.error.required",
-        Seq(ForeignAddress.Constants.Fields.line1, consignorName)
-      ).verifying(
-          maxLength(
-            streetAndNumberLength,
-            "traderDetailsConsignorAddress.error.max_length",
-            Seq(ForeignAddress.Constants.Fields.line1, consignorName)
-          )
-        )
+      "AddressLine1" -> text("consigneeAddress.error.AddressLine1.required")
         .verifying(
-          minLength(
-            1,
-            "traderDetailsConsignorAddress.error.empty",
-            Seq(ForeignAddress.Constants.Fields.line1, consignorName)
-          )
-        )
+          StopOnFirstFail[String](maxLength(35, "consigneeAddress.error.AddressLine1.length"), regexp(addressRegex, "consigneeAddress.error.line1.invalid"))),
+      "AddressLine2" -> text("consigneeAddress.error.AddressLine2.required")
         .verifying(
-          regexp(
-            inputRegex,
-            "traderDetailsConsignorAddress.error.invalid",
-            Seq(ForeignAddress.Constants.Fields.line1, consignorName)
-          )
-        ),
-      "city" -> text("traderDetailsConsignorAddress.error.required", args = Seq(ForeignAddress.Constants.Fields.line2, consignorName))
+          StopOnFirstFail[String](maxLength(35, "consigneeAddress.error.AddressLine2.length"), regexp(addressRegex, "consigneeAddress.error.line2.invalid"))),
+      "AddressLine3" -> text("consigneeAddress.error.AddressLine3.required")
         .verifying(
-          maxLength(cityLength, "traderDetailsConsignorAddress.error.max_length", args = Seq(ForeignAddress.Constants.Fields.line2, consignorName))
-        )
-        .verifying(
-          minLength(1, "traderDetailsConsignorAddress.error.empty", Seq(ForeignAddress.Constants.Fields.line2, consignorName))
-        )
-        .verifying(
-          regexp(
-            inputRegex,
-            "traderDetailsConsignorAddress.error.invalid",
-            Seq("city", consignorName)
-          )
-        ),
-      "postcode" -> text("traderDetailsConsignorAddress.error.postcode.required", args = Seq(consignorName))
-        .verifying(maxLength(postCodeLength, "traderDetailsConsignorAddress.error.postcode.length", args = Seq(consignorName)))
-        .verifying(minLength(1, "traderDetailsConsignorAddress.error.empty", args = Seq(ForeignAddress.Constants.Fields.line3, consignorName)))
-        .verifying(regexp("[\\sa-zA-Z0-9]*".r, "traderDetailsConsignorAddress.error.postcode.invalid", args = Seq(consignorName)))
-    )(ForeignAddress.apply)(ForeignAddress.unapply)
+          StopOnFirstFail[String](maxLength(35, "consigneeAddress.error.AddressLine3.length"), regexp(addressRegex, "consigneeAddress.error.line3.invalid"))),
+      "country" -> text("consigneeAddress.error.country.required")
+        .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))
+        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
+    )(ConsigneeAddress.apply)(ConsigneeAddress.unapply)
   )
 }

@@ -16,16 +16,17 @@
 
 package pages.addItems.specialMentions
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class SpecialMentionAdditionalInfoPageSpec extends PageBehaviours {
+class SpecialMentionAdditionalInfoPageSpec extends PageBehaviours with SpecBase {
 
   "SpecialMentionAdditionalInfoPage" - {
 
-    beRetrievable[String](SpecialMentionAdditionalInfoPage)
+    beRetrievable[String](SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex))
 
-    beSettable[String](SpecialMentionAdditionalInfoPage)
+    beSettable[String](SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex))
 
-    beRemovable[String](SpecialMentionAdditionalInfoPage)
+    beRemovable[String](SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex))
   }
 }

@@ -40,13 +40,13 @@ import scala.concurrent.Future
 
 class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new SpecialMentionTypeFormProvider()
   private val form         = formProvider()
   private val template     = "addItems/specialMentions/specialMentionType.njk"
 
-  lazy val specialMentionTypeRoute = routes.SpecialMentionTypeController.onPageLoad(lrn, NormalMode).url
+  lazy val specialMentionTypeRoute = routes.SpecialMentionTypeController.onPageLoad(lrn, itemIndex, referenceIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -90,7 +90,7 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(SpecialMentionTypePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(SpecialMentionTypePage(itemIndex, referenceIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, specialMentionTypeRoute)

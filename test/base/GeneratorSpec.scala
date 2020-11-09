@@ -23,6 +23,6 @@ import org.scalacheck.{Arbitrary, Gen}
 trait GeneratorSpec extends ScalaCheckPropertyChecks with Generators {
   self: SpecBase =>
 
-  def arbitrary[A: Arbitrary]: Gen[A] = Arbitrary.arbitrary[A]
+  def arb[A: Arbitrary]: Gen[A] = Arbitrary.arbitrary[A]
 
 }
