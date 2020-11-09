@@ -54,7 +54,7 @@ class ContainerNumberController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(ContainerNumberPage) match {
+        val preparedForm = request.userAnswers.get(ContainerNumberPage(itemIndex, containerIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -86,9 +86,9 @@ class ContainerNumberController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerNumberPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerNumberPage(itemIndex, containerIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ContainerNumberPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(ContainerNumberPage(itemIndex, containerIndex), mode, updatedAnswers))
           )
     }
 }

@@ -44,7 +44,7 @@ class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRender
   private val form         = formProvider()
   private val template     = "addItems/containers/addAnotherContainer.njk"
 
-  lazy val addAnotherContainerRoute = routes.AddAnotherContainerController.onPageLoad(lrn, itemIndex, NormalMode).url
+  private lazy val addAnotherContainerRoute = routes.AddAnotherContainerController.onPageLoad(lrn, itemIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

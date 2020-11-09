@@ -21,8 +21,7 @@ import pages.QuestionPage
 import play.api.libs.json.{JsObject, JsPath}
 import queries.Constants.{containers, items}
 
-final case class ContainersQuery(index: Index) extends QuestionPage[JsObject] {
+final case class ContainersQuery(itemIndex: Index) extends QuestionPage[JsObject] {
 
-  override def path: JsPath = JsPath \ items \ index.position \ containers
-
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ containers
 }

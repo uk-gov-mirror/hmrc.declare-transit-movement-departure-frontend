@@ -90,7 +90,7 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ContainerNumberPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(ContainerNumberPage(itemIndex, containerIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, containerNumberRoute)

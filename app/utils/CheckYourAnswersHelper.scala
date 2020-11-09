@@ -109,7 +109,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def containerNumber(itemIndex: Index, containerIndex: Index): Option[Row] = userAnswers.get(ContainerNumberPage) map {
+  def containerNumber(itemIndex: Index, containerIndex: Index): Option[Row] = userAnswers.get(ContainerNumberPage(itemIndex, containerIndex)) map {
     answer =>
       Row(
         key   = Key(msg"containerNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
