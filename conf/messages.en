@@ -1011,3 +1011,11 @@ documentExtraInformation.checkYourAnswersLabel = Extra information for document 
 documentExtraInformation.error.required = Enter the extra information for document {0}
 documentExtraInformation.error.length = Document extra information must be 26 characters or less
 documentExtraInformation.error.invalid = The extra information for this document must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
+addAnotherDocument.title.singular = You have added {0} produced document or certificate
+addAnotherDocument.title.plural = You have added {0} produced documents or certificates
+addAnotherDocument.heading.singular = You have added {0} produced document or certificate
+addAnotherDocument.heading.plural = You have added {0} produced documents or certificates
+addAnotherDocument.paragraph = Do you need to add another produced document or work certificate?
+addAnotherDocument.error.required = Select yes if you want to add another produced document or work certificate
+

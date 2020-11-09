@@ -33,6 +33,13 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryAddAnotherDocumentUserAnswersEntry: Arbitrary[(AddAnotherDocumentPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddAnotherDocumentPage.type#Data].map(Json.toJson(_))
+      } yield (AddAnotherDocumentPage, value)
+    }
+
   implicit lazy val arbitraryDocumentReferenceUserAnswersEntry: Arbitrary[(DocumentReferencePage, JsValue)] =
     Arbitrary {
       for {
