@@ -85,9 +85,9 @@ trait ModelGenerators {
   implicit lazy val arbitraryConsigneeAddress: Arbitrary[ConsigneeAddress] =
     Arbitrary {
       for {
-        addressLine1 <- stringsWithMaxLength(stringMaxLength)
-        addressLine2 <- stringsWithMaxLength(stringMaxLength)
-        addressLine3 <- stringsWithMaxLength(stringMaxLength)
+        addressLine1 <- alphaStringsWithMaxLength(stringMaxLength)
+        addressLine2 <- alphaStringsWithMaxLength(stringMaxLength)
+        addressLine3 <- alphaStringsWithMaxLength(stringMaxLength)
         addressLine4 <- arbitrary[Country]
       } yield ConsigneeAddress(addressLine1, addressLine2, addressLine3, addressLine4)
     }
