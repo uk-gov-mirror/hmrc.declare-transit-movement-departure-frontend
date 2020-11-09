@@ -45,11 +45,13 @@ abstract class UserAnswersOptionalParser[A] extends UserAnswersParser[Option, A]
 
 object UserAnswersOptionalParser {
 
+  def apply[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersParser[Option, A] = parser
+
   def apply[A, B](reader: ReaderT[Option, UserAnswers, A])(f: A => B): UserAnswersOptionalParser[B] =
     new UserAnswersOptionalParser[B] {
 
       override def run[AA >: B](ua: UserAnswers): Option[AA] =
-        reader.map(f.widen[AA]).run(ua)
+        reader.map(f).run(ua).widen[AA]
     }
 
   def empty[A]: UserAnswersOptionalParser[A] =

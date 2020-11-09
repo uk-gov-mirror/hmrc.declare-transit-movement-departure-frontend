@@ -16,17 +16,24 @@
 
 package viewModels
 
-import base.SpecBase
+import base.{GeneratorSpec, SpecBase}
 import config.{ManageTransitMovementsService, Service}
-import models.UserAnswers
-import play.api.Configuration
-import play.api.libs.json.Json
+import generators.JourneyModelGenerators
+import models.journeyDomain.{MovementDetails, RouteDetails}
 import org.mockito.Mockito
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import play.api.Configuration
+import play.api.libs.json.Json
 import utils.SectionsHelper
 
-class DeclarationSummaryViewModelSpec extends SpecBase with BeforeAndAfterEach {
+import models.journeyDomain.MovementDetailsSpec._
+import models.journeyDomain.RouteDetailsSpec._
+import models.journeyDomain.TraderDetailsSpec._
+import models.journeyDomain.TransportDetailsSpec._
+import models.EoriNumber
+
+class DeclarationSummaryViewModelSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with BeforeAndAfterEach {
 
   private val service: Service = Service("host", "port", "protocol", "startUrl")
   val mockConfiguration        = mock[Configuration]
@@ -35,7 +42,7 @@ class DeclarationSummaryViewModelSpec extends SpecBase with BeforeAndAfterEach {
   val manageTransitMovementsService = new ManageTransitMovementsService(mockConfiguration)
 
   "when the declaration is incomplete" - {
-    "returns lrn and sections and movement link" in {
+    "returns lrn, sections, movement link and indicator for incomplete declaration" in {
       val userAnswers                      = emptyUserAnswers
       val sut: DeclarationSummaryViewModel = DeclarationSummaryViewModel(manageTransitMovementsService, userAnswers)
 
@@ -45,11 +52,39 @@ class DeclarationSummaryViewModelSpec extends SpecBase with BeforeAndAfterEach {
         Json.obj(
           "lrn"                    -> lrn,
           "sections"               -> new SectionsHelper(userAnswers).getSections,
-          "backToTransitMovements" -> service.fullServiceUrl
+          "backToTransitMovements" -> service.fullServiceUrl,
+          "isDeclarationComplete"  -> false
         )
 
       result mustEqual expectedJson
     }
+
+    "returns lrn, sections, movement link and indicator for complete declaration" in {
+      forAll(arb[MovementDetails], arb[RouteDetails], arb[EoriNumber]) {
+        case (movement, routeDetails, principalEori) =>
+          val userAnswers = (
+            ((setMovementDetails(movement)) _) andThen
+              (setRouteDetails(routeDetails) _) andThen
+              (setTraderDetailsPrincipalEoriOnly(principalEori) _) andThen
+              (setTransportDetailsRail(false) _)
+          )(emptyUserAnswers)
+
+          val sut = DeclarationSummaryViewModel(manageTransitMovementsService, userAnswers)
+
+          val result = Json.toJsObject(sut)
+
+          val expectedJson =
+            Json.obj(
+              "lrn"                    -> lrn,
+              "sections"               -> new SectionsHelper(userAnswers).getSections,
+              "backToTransitMovements" -> service.fullServiceUrl,
+              "isDeclarationComplete"  -> true
+            )
+
+          result mustEqual expectedJson
+      }
+    }
+
   }
 
   override def beforeEach(): Unit = {
