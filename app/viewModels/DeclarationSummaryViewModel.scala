@@ -37,7 +37,7 @@ object DeclarationSummaryViewModel {
   def unapply(arg: DeclarationSummaryViewModel): Some[(LocalReferenceNumber, Seq[SectionDetails], String)] =
     Some(arg.lrn, arg.sections, arg.backToTransitMovements)
 
-  implicit val writes2: OWrites[DeclarationSummaryViewModel] =
+  implicit val writes: OWrites[DeclarationSummaryViewModel] =
     ((__ \ "lrn").write[LocalReferenceNumber] and
       (__ \ "sections").write[Seq[SectionDetails]] and
       (__ \ "backToTransitMovements").write[String])(unlift(unapply))
