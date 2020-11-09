@@ -32,6 +32,11 @@
         <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
         <h1 class="govuk-heading-xl"> {{ heading }} </h1>
 
+          {{ govukSummaryList({
+                        classes: 'govuk-!-margin-bottom-9 ctc-add-to-a-list',
+                        rows: documentRows
+                    }) }}
+
         <form action="{{ routes.controllers.addItems.AddAnotherDocumentController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}

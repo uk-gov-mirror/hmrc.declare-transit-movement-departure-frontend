@@ -16,16 +16,17 @@
 
 package pages.addItems
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class AddAnotherDocumentPageSpec extends PageBehaviours {
+class AddAnotherDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "AddAnotherDocumentPage" - {
 
-    beRetrievable[Boolean](AddAnotherDocumentPage)
+    beRetrievable[Boolean](AddAnotherDocumentPage(index, documentIndex))
 
-    beSettable[Boolean](AddAnotherDocumentPage)
+    beSettable[Boolean](AddAnotherDocumentPage(index, documentIndex))
 
-    beRemovable[Boolean](AddAnotherDocumentPage)
+    beRemovable[Boolean](AddAnotherDocumentPage(index, documentIndex))
   }
 }

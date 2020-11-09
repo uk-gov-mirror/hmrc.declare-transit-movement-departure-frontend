@@ -33,11 +33,11 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
-  implicit lazy val arbitraryAddAnotherDocumentUserAnswersEntry: Arbitrary[(AddAnotherDocumentPage.type, JsValue)] =
+  implicit lazy val arbitraryAddAnotherDocumentUserAnswersEntry: Arbitrary[(AddAnotherDocumentPage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[AddAnotherDocumentPage.type#Data].map(Json.toJson(_))
-      } yield (AddAnotherDocumentPage, value)
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (AddAnotherDocumentPage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitraryDocumentReferenceUserAnswersEntry: Arbitrary[(DocumentReferencePage, JsValue)] =
@@ -158,6 +158,13 @@ trait UserAnswersEntryGenerators {
       for {
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (ReferenceTypePage(Index(0), Index(0)), value)
+    }
+
+  implicit lazy val arbDocumentTypePage: Arbitrary[(DocumentTypePage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[String].map(Json.toJson(_))
+      } yield (DocumentTypePage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitraryAddAdministrativeReferenceUserAnswersEntry: Arbitrary[(AddAdministrativeReferencePage, JsValue)] =

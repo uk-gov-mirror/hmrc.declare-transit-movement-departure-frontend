@@ -70,9 +70,9 @@ class AddAnotherDocumentController @Inject()(
             formWithErrors => renderPage(lrn, index, documentIndex, formWithErrors).map(BadRequest(_)),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherDocumentPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherDocumentPage(index, documentIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAnotherDocumentPage, NormalMode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddAnotherDocumentPage(index, documentIndex), NormalMode, updatedAnswers))
           )
     }
 
@@ -98,6 +98,6 @@ class AddAnotherDocumentController @Inject()(
       "radios"       -> Radios.yesNo(form("value"))
     )
 
-    renderer.render("addItems/addAnotherItem.njk", json)
+    renderer.render("addItems/addAnotherDocument.njk", json)
   }
 }

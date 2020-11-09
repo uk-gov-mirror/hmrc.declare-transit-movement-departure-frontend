@@ -344,6 +344,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         )
 
         connector.getPackageTypes().futureValue mustEqual expectResult
+
       }
 
       "must return an exception when an error response is returned" in {
@@ -388,8 +389,8 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
         val expectResult = DocumentTypeList(
           Seq(
-            DocumentType("18", "Movement certificate A.TR.1", transportDocument = false),
-            DocumentType("2", "Certificate of conformity", transportDocument    = false)
+            DocumentType("18", "Movement certificate A.TR.1"),
+            DocumentType("2", "Certificate of conformity")
           )
         )
 

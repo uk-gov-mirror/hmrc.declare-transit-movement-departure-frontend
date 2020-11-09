@@ -13,13 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package models.reference
-
-import play.api.libs.json.{Json, OFormat}
-
-case class DocumentType(code: String, description: String)
-
-object DocumentType {
-  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
-}

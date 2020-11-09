@@ -17,16 +17,17 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
 import forms.addItems.AddAnotherDocumentFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.AddAnotherDocumentPage
+import pages.addItems.{AddAnotherDocumentPage, DocumentTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -35,7 +36,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
+import utils.AddItemsCheckYourAnswersHelper
 
 import scala.concurrent.Future
 
@@ -57,67 +58,33 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
   "AddAnotherDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      dataRetrievalWithData(emptyUserAnswers)
-
-      val request        = FakeRequest(GET, addAnotherDocumentRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
-      )
-
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
-
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddAnotherDocumentPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(DocumentTypePage(index, documentIndex), "test").success.value
       dataRetrievalWithData(userAnswers)
 
-      val request        = FakeRequest(GET, addAnotherDocumentRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
 
-      val result = route(app, request).value
+      val request               = FakeRequest(GET, addAnotherDocumentRoute)
+      val templateCaptor        = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor            = ArgumentCaptor.forClass(classOf[JsObject])
+      val result                = route(app, request).value
+      val indexList: Seq[Index] = List.range(0, 1).map(Index(_))
+      val cyaHelper             = new AddItemsCheckYourAnswersHelper(userAnswers)
 
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
-
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form"      -> form,
+        "lrn"       -> lrn,
+        "pageTitle" -> msg"addAnotherDocument.title.plural".withArgs(1),
+        "heading"   -> msg"addAnotherDocument.heading.plural".withArgs(1),
+        "radios"    -> Radios.yesNo(form("value"))
       )
-
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      println(s"\n\n\n\n jsonCaptor.getValue : ${jsonCaptor.getValue}")
+      templateCaptor.getValue mustEqual "addItems/addAnotherDocument.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
 
     }
 
@@ -140,11 +107,11 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      val userAnswers = emptyUserAnswers.set(DocumentTypePage(index, documentIndex), "test").success.value
 
+      dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-
-      dataRetrievalWithData(emptyUserAnswers)
 
       val request        = FakeRequest(POST, addAnotherDocumentRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
@@ -158,16 +125,15 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"      -> boundForm,
+        "pageTitle" -> msg"addAnotherDocument.title.plural".withArgs(1),
+        "heading"   -> msg"addAnotherDocument.heading.plural".withArgs(1),
+        "lrn"       -> lrn,
+        "radios"    -> Radios.yesNo(boundForm("value"))
       )
 
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      templateCaptor.getValue mustEqual "addItems/addAnotherDocument.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
 
     }
 
