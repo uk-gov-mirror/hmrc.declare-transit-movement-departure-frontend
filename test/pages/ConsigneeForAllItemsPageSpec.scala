@@ -16,6 +16,8 @@
 
 package pages
 
+import models.{ConsigneeAddress, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class ConsigneeForAllItemsPageSpec extends PageBehaviours {
@@ -27,5 +29,42 @@ class ConsigneeForAllItemsPageSpec extends PageBehaviours {
     beSettable[Boolean](ConsigneeForAllItemsPage)
 
     beRemovable[Boolean](ConsigneeForAllItemsPage)
+  }
+
+  "cleanup" - {
+
+    "must remove AddConsigneePage, ConsigneeAddressPage, ConsigneeNamePage and WhatIsConsigneeEoriPage when they exist in userAnswers" in {
+
+      val consigneeAddress = arbitrary[ConsigneeAddress].sample.value
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val result = userAnswers
+            .set(AddConsigneePage, true)
+            .success
+            .value
+            .set(ConsigneeNamePage, "answer")
+            .success
+            .value
+            .set(ConsigneeAddressPage, consigneeAddress)
+            .success
+            .value
+            .set(IsConsigneeEoriKnownPage, true)
+            .success
+            .value
+            .set(WhatIsConsigneeEoriPage, "GB123456")
+            .success
+            .value
+            .set(ConsigneeForAllItemsPage, true)
+            .success
+            .value
+
+          result.get(AddConsigneePage) must not be defined
+          result.get(ConsigneeNamePage) must not be defined
+          result.get(ConsigneeAddressPage) must not be defined
+          result.get(WhatIsConsigneeEoriPage) must not be defined
+          result.get(IsConsigneeEoriKnownPage) must not be defined
+
+      }
+    }
   }
 }

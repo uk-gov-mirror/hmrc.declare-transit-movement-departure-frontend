@@ -19,8 +19,14 @@ package generators
 import java.time.LocalDateTime
 
 import models.{DeclarationType, RepresentativeCapacity}
-import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, DeclarationForSomeoneElseAnswer, SimplifiedMovementDetails}
-import models.journeyDomain.RouteDetails
+import models.journeyDomain.MovementDetails.{
+  DeclarationForSelf,
+  DeclarationForSomeoneElse,
+  DeclarationForSomeoneElseAnswer,
+  NormalMovementDetails,
+  SimplifiedMovementDetails
+}
+import models.journeyDomain.{MovementDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.CountryCode
 import org.scalacheck.Arbitrary.arbitrary
@@ -58,6 +64,27 @@ trait JourneyModelGenerators {
           declarationForSomeoneElse
         )
     }
+
+  implicit lazy val arbitraryNormalMovementDetails: Arbitrary[NormalMovementDetails] =
+    Arbitrary {
+      for {
+        declarationType           <- arbitrary[DeclarationType]
+        preLodge                  <- arbitrary[Boolean]
+        containersUsed            <- arbitrary[Boolean]
+        declarationPlacePage      <- stringsWithMaxLength(stringMaxLength)
+        declarationForSomeoneElse <- arbitrary[DeclarationForSomeoneElseAnswer]
+      } yield
+        MovementDetails.NormalMovementDetails(
+          declarationType,
+          preLodge,
+          containersUsed,
+          declarationPlacePage,
+          declarationForSomeoneElse
+        )
+    }
+
+  implicit lazy val arbitraryMovementDetails: Arbitrary[MovementDetails] =
+    Arbitrary(Gen.oneOf(arbitrary[NormalMovementDetails], arbitrary[SimplifiedMovementDetails]))
 
   implicit lazy val arbitraryTransitInformation: Arbitrary[TransitInformation] =
     Arbitrary {
