@@ -21,8 +21,6 @@ import java.time.LocalDateTime
 import models._
 import models.domain.SealDomain
 import models.domain.SealDomain.Constants
-import models.journeyDomain.RouteDetails
-import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.{Country, CountryCode, CustomsOffice, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -180,7 +178,5 @@ trait ModelGenerators {
         amOrPm   <- Gen.oneOf("AM", "PM")
       } yield LocalDateTimeWithAMPM(dateTime, amOrPm)
     }
-
-
 
 }
