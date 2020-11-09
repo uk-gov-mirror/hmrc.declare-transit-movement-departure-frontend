@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package models.reference
+package forms.addItems
 
-import play.api.libs.json.{Json, OFormat}
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.DocumentTypeList
+import models.reference.DocumentType
+import play.api.data.Form
 
-case class DocumentType(code: String, description: String)
+class DocumentTypeFormProvider @Inject() extends Mappings {
 
-object DocumentType {
-  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
+  def apply(documentTypeList: DocumentTypeList): Form[DocumentType] =
+    Form(
+      "value" -> text("documentType.error.required")
+        .verifying("documentType.error.required", value => documentTypeList.documentTypes.exists(_.code == value))
+        .transform[DocumentType](value => documentTypeList.getDocumentType(value).get, _.code)
+    )
 }

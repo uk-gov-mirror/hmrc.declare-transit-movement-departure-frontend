@@ -75,8 +75,8 @@ class GuaranteeSpec extends SpecBase with GeneratorSpec {
   implicit lazy val arbitraryGuaranteeOther: Arbitrary[GuaranteeOther] =
     Arbitrary {
       for {
-        otherReference  <- arbitrary[String]
-        liabilityAmount <- arbitrary[String]
+        otherReference  <- nonEmptyString
+        liabilityAmount <- nonEmptyString
       } yield GuaranteeOther(otherReference, liabilityAmount)
     }
 

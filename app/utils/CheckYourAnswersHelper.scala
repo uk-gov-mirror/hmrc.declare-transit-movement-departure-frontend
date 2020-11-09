@@ -22,6 +22,8 @@ import controllers.addItems.containers.{routes => containerRoutes}
 import controllers.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.addItems.{AddDocumentsPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
+import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._

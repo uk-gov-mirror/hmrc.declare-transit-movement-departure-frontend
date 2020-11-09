@@ -113,6 +113,18 @@ package object utils {
     defaultOption +: list
   }
 
+  def getDocumentsAsJson(value: Option[DocumentType], documentList: Seq[DocumentType]): Seq[JsObject] = {
+    val documentObjects = documentList.map {
+      documentType =>
+        Json.obj(
+          "value"    -> documentType.code,
+          "text"     -> s"(${documentType.code}) ${documentType.description}",
+          "selected" -> value.contains(documentType)
+        )
+    }
+    defaultOption +: documentObjects
+  }
+
   def yesOrNo(answer: Boolean): Content =
     if (answer) {
       msg"site.yes"

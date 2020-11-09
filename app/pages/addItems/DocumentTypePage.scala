@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.addItems
 
-import play.api.libs.json.{Json, OFormat}
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-case class DocumentType(code: String, description: String)
+case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
 
-object DocumentType {
-  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "documentType"
 }
