@@ -17,6 +17,8 @@
 package forms.addItems.specialMentions
 
 import forms.behaviours.StringFieldBehaviours
+import models.SpecialMentionList
+import models.reference.SpecialMention
 import play.api.data.FormError
 
 class SpecialMentionTypeFormProviderSpec extends StringFieldBehaviours {
@@ -25,7 +27,14 @@ class SpecialMentionTypeFormProviderSpec extends StringFieldBehaviours {
   val lengthKey   = "specialMentionType.error.length"
   val maxLength   = 100
 
-  val form = new SpecialMentionTypeFormProvider()()
+  private val specialMentionList = SpecialMentionList(
+    Seq(
+      SpecialMention("10600", "Negotiable Bill of lading 'to order blank endorsed'"),
+      SpecialMention("30400", "RET-EXP – Copy 3 to be returned")
+    )
+  )
+
+  val form = new SpecialMentionTypeFormProvider()(specialMentionList)
 
   ".value" - {
 
@@ -37,17 +46,24 @@ class SpecialMentionTypeFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind if special mention that does not exist in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a special mention which is in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "10600"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
   }
 }

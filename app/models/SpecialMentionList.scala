@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package forms.addItems.specialMentions
+package models
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.SpecialMentionList
 import models.reference.SpecialMention
-import play.api.data.Form
 
-class SpecialMentionTypeFormProvider @Inject() extends Mappings {
+case class SpecialMentionList(list: Seq[SpecialMention]) {
 
-  def apply(specialMentionList: SpecialMentionList): Form[SpecialMention] =
-    Form(
-      "value" -> text("specialMentionType.error.required")
-        .verifying("specialMentionType.error.required", value => specialMentionList.list.exists(_.code == value))
-        .transform[SpecialMention](value => specialMentionList.getSpecialMention(value).get, _.code)
-    )
+  def getSpecialMention(code: String): Option[SpecialMention] =
+    list.find(_.code == code)
 }

@@ -16,13 +16,16 @@
 
 package controllers.addItems.specialMentions
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.addItems.specialMentions.SpecialMentionTypeFormProvider
 import javax.inject.Inject
+import models.reference.SpecialMention
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.SpecialMentionTypePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,6 +33,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.getSpecialMentionAsJson
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,6 +45,7 @@ class SpecialMentionTypeController @Inject()(
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: SpecialMentionTypeFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -48,47 +53,86 @@ class SpecialMentionTypeController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
+  //private val form     = formProvider()
   private val template = "addItems/specialMentions/specialMentionType.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(SpecialMentionTypePage(itemIndex, referenceIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+        referenceDataConnector.getSpecialMention() flatMap {
+          specialMention =>
+            val form: Form[SpecialMention] = formProvider(specialMention)
+
+            val preparedForm = request.userAnswers
+              .get(SpecialMentionTypePage(itemIndex, referenceIndex))
+              .flatMap(specialMention.getSpecialMention)
+              .map(form.fill)
+              .getOrElse(form)
+
+            val json = Json.obj(
+              "form"           -> preparedForm,
+              "index"          -> itemIndex.display,
+              "referenceIndex" -> referenceIndex.display,
+              "specialMention" -> getSpecialMentionAsJson(preparedForm.value, specialMention.list),
+              "lrn"            -> lrn,
+              "mode"           -> mode
+            )
+
+            renderer.render(template, json).map(Ok(_))
         }
-
-        val json = Json.obj(
-          "form" -> preparedForm,
-          "lrn"  -> lrn,
-          "mode" -> mode
-        )
-
-        renderer.render(template, json).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
+        referenceDataConnector.getSpecialMention() flatMap {
+          specialMention =>
+            val form = formProvider(specialMention)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => {
 
-              val json = Json.obj(
-                "form" -> formWithErrors,
-                "lrn"  -> lrn,
-                "mode" -> mode
+                  val json = Json.obj(
+                    "form"           -> formWithErrors,
+                    "index"          -> itemIndex.display,
+                    "referenceIndex" -> referenceIndex.display,
+                    "specialMention" -> getSpecialMentionAsJson(form.value, specialMention.list),
+                    "lrn"            -> lrn,
+                    "mode"           -> mode
+                  )
+
+                  renderer.render(template, json).map(BadRequest(_))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(SpecialMentionTypePage(itemIndex, referenceIndex), value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(SpecialMentionTypePage(itemIndex, referenceIndex), mode, updatedAnswers))
               )
-
-              renderer.render(template, json).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(SpecialMentionTypePage(itemIndex, referenceIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(SpecialMentionTypePage(itemIndex, referenceIndex), mode, updatedAnswers))
-          )
+        }
     }
+  //  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
+//    (identify andThen getData(lrn) andThen requireData).async {
+//      implicit request =>
+//        form
+//          .bindFromRequest()
+//          .fold(
+//            formWithErrors => {
+//
+//              val json = Json.obj(
+//                "form" -> formWithErrors,
+//                "lrn"  -> lrn,
+//                "mode" -> mode
+//              )
+//
+//              renderer.render(template, json).map(BadRequest(_))
+//            },
+//            value =>
+//              for {
+//                updatedAnswers <- Future.fromTry(request.userAnswers.set(SpecialMentionTypePage(itemIndex, referenceIndex), value))
+//                _              <- sessionRepository.set(updatedAnswers)
+//              } yield Redirect(navigator.nextPage(SpecialMentionTypePage(itemIndex, referenceIndex), mode, updatedAnswers))
+//          )
+//    }
 }

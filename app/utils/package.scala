@@ -101,6 +101,18 @@ package object utils {
     defaultOption +: documentObjects
   }
 
+  def getSpecialMentionAsJson(value: Option[SpecialMention], documentList: Seq[SpecialMention]): Seq[JsObject] = {
+    val list = documentList.map {
+      specialMention =>
+        Json.obj(
+          "value"    -> specialMention.code,
+          "text"     -> s"(${specialMention.code}) ${specialMention.description}",
+          "selected" -> value.contains(specialMention)
+        )
+    }
+    defaultOption +: list
+  }
+
   def yesOrNo(answer: Boolean): Content =
     if (answer) {
       msg"site.yes"

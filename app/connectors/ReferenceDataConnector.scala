@@ -77,4 +77,9 @@ class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClie
     http.GET[Seq[DocumentType]](serviceUrl).map(DocumentTypeList)
   }
 
+  def getSpecialMention()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[SpecialMentionList] = {
+    val serviceUrl = s"${config.referenceDataUrl}/special-mention"
+    http.GET[Seq[SpecialMention]](serviceUrl).map(SpecialMentionList)
+  }
+
 }
