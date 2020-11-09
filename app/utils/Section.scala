@@ -33,6 +33,6 @@ object Section {
     (
       (__ \ "sectionTitle").write[Option[Text]] and
         (__ \ "rows").write[Seq[Row]]
-      )(unlift(Section.unapply))
+    )(unlift(Section.unapply))
 
 }

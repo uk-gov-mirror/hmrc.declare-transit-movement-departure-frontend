@@ -16,12 +16,12 @@
 
 package pages.addItems.traderDetails
 
-import models.{ForeignAddress, Index}
+import models.{ConsigneeAddress, Index}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{items, traderDetails}
 
-case class TraderDetailsConsigneeAddressPage(index: Index) extends QuestionPage[ForeignAddress] {
+case class TraderDetailsConsigneeAddressPage(index: Index) extends QuestionPage[ConsigneeAddress] {
 
   override def path: JsPath = JsPath \ items \ index.position \ traderDetails \ toString
 

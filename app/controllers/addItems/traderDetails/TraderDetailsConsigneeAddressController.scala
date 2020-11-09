@@ -16,6 +16,7 @@
 
 package controllers.addItems.traderDetails
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.addItems.traderDetails.TraderDetailsConsigneeAddressFormProvider
 import javax.inject.Inject
@@ -40,6 +41,7 @@ class TraderDetailsConsigneeAddressController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
   formProvider: TraderDetailsConsigneeAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -52,46 +54,52 @@ class TraderDetailsConsigneeAddressController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val name = request.userAnswers.get(TraderDetailsConsigneeNamePage(index)).getOrElse("")
-      val form = formProvider(name)
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          val form = formProvider(countries)
 
-      val preparedForm = request.userAnswers.get(TraderDetailsConsigneeAddressPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+          val preparedForm = request.userAnswers.get(TraderDetailsConsigneeAddressPage(index)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+
+          val json = Json.obj(
+            "form" -> preparedForm,
+            "lrn"  -> lrn,
+            "mode" -> mode
+          )
+
+          renderer.render(template, json).map(Ok(_))
       }
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render(template, json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val name = request.userAnswers.get(TraderDetailsConsigneeNamePage(index)).getOrElse("")
-      val form = formProvider(name)
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          val form = formProvider(countries)
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
 
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
+                val json = Json.obj(
+                  "form" -> formWithErrors,
+                  "lrn"  -> lrn,
+                  "mode" -> mode
+                )
+
+                renderer.render(template, json).map(BadRequest(_))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderDetailsConsigneeAddressPage(index), value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(TraderDetailsConsigneeAddressPage(index), mode, updatedAnswers))
             )
+      }
 
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderDetailsConsigneeAddressPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TraderDetailsConsigneeAddressPage(index), mode, updatedAnswers))
-        )
   }
 }

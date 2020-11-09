@@ -29,14 +29,14 @@ case class ForeignAddress(
 object ForeignAddress {
 
   object Constants {
-    val lineLength = 35
-    val cityLength              = 35
-    val postcodeLength          = 9
+    val lineLength     = 35
+    val cityLength     = 35
+    val postcodeLength = 9
 
     object Fields {
-      val line1 = "line1"
-      val line2 = "line2"
-      val line3 = "line2"
+      val line1   = "line1"
+      val line2   = "line2"
+      val line3   = "line2"
       val country = "country"
     }
   }
