@@ -531,7 +531,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def addAnotherDocument(itemIndex: Index, content: Text): AddAnotherViewModel = {
 
     //TODO: Update to use AddAnotherDocument controller
-    val addAnotherDocumentHref = previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, itemIndex, CheckMode).url
+    val addAnotherDocumentHref = ???
 
     AddAnotherViewModel(addAnotherDocumentHref, content)
   }
