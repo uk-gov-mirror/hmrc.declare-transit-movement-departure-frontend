@@ -207,28 +207,17 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
       Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
-    require(
-      maxNumberOfGeneratedPageAnswers < generators.size,
-      s"The value for maxNumberOfGeneratedPageAnswers must be less than ${generators.size}"
-    )
-
-    require(
-      generators.size > 0,
-      s"This generator cannot be used when `UserAnswersGenerator.generators` is empty"
-    )
 
     import models._
-
-    val g1 :: g2 :: gn = generators
-
-    val answers: Gen[Seq[(QuestionPage[_], JsValue)]] =
-      Gen.pick(maxNumberOfGeneratedPageAnswers, g1, g2, gn: _*)
 
     Arbitrary {
       for {
         id         <- arbitrary[LocalReferenceNumber]
         eoriNumber <- arbitrary[EoriNumber]
-        data       <- answers
+        data <- generators match {
+          case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
+          case _   => Gen.mapOf(oneOf(generators))
+        }
       } yield
         UserAnswers(
           id         = id,

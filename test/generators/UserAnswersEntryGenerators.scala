@@ -153,6 +153,13 @@ trait UserAnswersEntryGenerators {
       } yield (ReferenceTypePage(Index(0), Index(0)), value)
     }
 
+  implicit lazy val arbDocumentTypePage: Arbitrary[(DocumentTypePage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[String].map(Json.toJson(_))
+      } yield (DocumentTypePage(Index(0), Index(0)), value)
+    }
+
   implicit lazy val arbitraryAddAdministrativeReferenceUserAnswersEntry: Arbitrary[(AddAdministrativeReferencePage, JsValue)] =
     Arbitrary {
       for {

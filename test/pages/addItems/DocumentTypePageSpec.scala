@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.addItems
 
-import play.api.libs.json.{Json, OFormat}
+import base.SpecBase
+import pages.addItems
+import pages.behaviours.PageBehaviours
 
-case class DocumentType(code: String, description: String)
+class DocumentTypePageSpec extends SpecBase with PageBehaviours {
 
-object DocumentType {
-  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
+  "DocumentTypePage" - {
+
+    beRetrievable[String](addItems.DocumentTypePage(index, documentIndex))
+
+    beSettable[String](addItems.DocumentTypePage(index, documentIndex))
+
+    beRemovable[String](addItems.DocumentTypePage(index, documentIndex))
+  }
 }
