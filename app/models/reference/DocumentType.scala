@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package models.reference
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import play.api.libs.json.{Json, OFormat}
 
-class HowManyPackagesFormProvider @Inject() extends Mappings {
+case class DocumentType(code: String, description: String)
 
-  def apply(): Form[Int] =
-    Form(
-      "value" -> int(
-        "howManyPackages.error.required",
-        "howManyPackages.error.wholeNumber",
-        "howManyPackages.error.nonNumeric"
-      ).verifying(inRange(0, 9999, "howManyPackages.error.outOfRange"))
-    )
+object DocumentType {
+  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
 }

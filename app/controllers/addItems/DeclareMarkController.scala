@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.{DeclareMarkPage, DeclareNumberOfPackagesPage, HowManyPackagesPage}
+import pages.addItems.{DeclareMarkPage, HowManyPackagesPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -52,7 +52,7 @@ class DeclareMarkController @Inject()(
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         val getNumberOfPackages = request.userAnswers.get(HowManyPackagesPage(itemIndex, packageIndex))
-        val form                = formProvider(getNumberOfPackages)
+        val form                = formProvider(getNumberOfPackages, packageIndex.display)
 
         val preparedForm = request.userAnswers.get(DeclareMarkPage(itemIndex, packageIndex)) match {
           case None        => form
@@ -73,7 +73,7 @@ class DeclareMarkController @Inject()(
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         val getNumberOfPackages = request.userAnswers.get(HowManyPackagesPage(itemIndex, packageIndex))
-        val form                = formProvider(getNumberOfPackages)
+        val form                = formProvider(getNumberOfPackages, packageIndex.display)
 
         form
           .bindFromRequest()

@@ -17,8 +17,7 @@
 package base
 
 import models.domain.SealDomain
-import models.{Address, EoriNumber, Index, LocalReferenceNumber, PrincipalAddress, UserAnswers}
-import org.scalacheck.Arbitrary
+import models.{EoriNumber, Index, LocalReferenceNumber, PrincipalAddress, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -40,6 +39,7 @@ trait SpecBase extends AnyFreeSpec with Matchers with OptionValues with TryValue
 
   val index: Index          = Index(0)
   val referenceIndex: Index = Index(0)
+  val documentIndex: Index  = Index(0)
 
   val itemIndex: Index      = Index(0)
   val packageIndex: Index   = Index(0)

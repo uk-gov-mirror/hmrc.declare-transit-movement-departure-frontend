@@ -43,7 +43,7 @@ class RemovePackageControllerSpec extends SpecBase with MockNunjucksRendererApp 
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new RemovePackageFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(index.display)
   private val template     = "addItems/removePackage.njk"
 
   lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(lrn, index, index, NormalMode).url

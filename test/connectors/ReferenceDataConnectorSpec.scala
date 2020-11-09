@@ -20,7 +20,7 @@ import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
 import models.reference._
-import models.{CountryList, CustomsOfficeList, OfficeOfTransitList, PackageTypeList, PreviousDocumentTypeList, TransportModeList}
+import models.{CountryList, CustomsOfficeList, DocumentTypeList, OfficeOfTransitList, PackageTypeList, PreviousDocumentTypeList, TransportModeList}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -143,6 +143,22 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |  {
       |    "code": "T2F",
       |    "description": "Description T2F"
+      |  }
+      |]
+      |""".stripMargin
+
+  private val documentJson: String =
+    """
+      |[
+      | {
+      |    "code": "18",
+      |    "transportDocument": false,
+      |    "description": "Movement certificate A.TR.1"
+      |  },
+      |  {
+      |    "code": "2",
+      |    "transportDocument": false,
+      |    "description": "Certificate of conformity"
       |  }
       |]
       |""".stripMargin
@@ -328,6 +344,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         )
 
         connector.getPackageTypes().futureValue mustEqual expectResult
+
       }
 
       "must return an exception when an error response is returned" in {
@@ -358,6 +375,31 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return an exception when an error response is returned" in {
 
         checkErrorResponse(s"/$startUrl/previous-document-type", connector.getPreviousDocumentTypes())
+      }
+
+    }
+
+    "getDocumentType" - {
+
+      "must return list of document types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/document-type"))
+            .willReturn(okJson(documentJson))
+        )
+
+        val expectResult = DocumentTypeList(
+          Seq(
+            DocumentType("18", "Movement certificate A.TR.1"),
+            DocumentType("2", "Certificate of conformity")
+          )
+        )
+
+        connector.getDocumentTypes().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/document-type", connector.getDocumentTypes())
       }
 
     }

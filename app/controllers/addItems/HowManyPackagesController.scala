@@ -17,7 +17,7 @@
 package controllers.addItems
 
 import controllers.actions._
-import forms.HowManyPackagesFormProvider
+import forms.addItems.HowManyPackagesFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
@@ -48,11 +48,11 @@ class HowManyPackagesController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        val form = formProvider(itemIndex.display)
+
         val preparedForm = request.userAnswers.get(HowManyPackagesPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -71,6 +71,8 @@ class HowManyPackagesController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        val form = formProvider(itemIndex.display)
+
         form
           .bindFromRequest()
           .fold(

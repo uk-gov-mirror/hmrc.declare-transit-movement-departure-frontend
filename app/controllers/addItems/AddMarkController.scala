@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.{AddMarkPage, DeclareNumberOfPackagesPage}
+import pages.addItems.AddMarkPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,11 +48,11 @@ class AddMarkController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        val form = formProvider(packageIndex.display)
+
         val preparedForm = request.userAnswers.get(AddMarkPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -72,6 +72,8 @@ class AddMarkController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        val form = formProvider(packageIndex.display)
+
         form
           .bindFromRequest()
           .fold(
