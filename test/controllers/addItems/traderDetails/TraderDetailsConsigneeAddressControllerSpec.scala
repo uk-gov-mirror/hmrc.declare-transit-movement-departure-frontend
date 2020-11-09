@@ -21,7 +21,7 @@ import forms.addItems.traderDetails.TraderDetailsConsigneeAddressFormProvider
 import generators.Generators
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
-import models.{ConsigneeAddress, CountryList, ForeignAddress, NormalMode}
+import models.{ConsigneeAddress, CountryList, NormalMode}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor

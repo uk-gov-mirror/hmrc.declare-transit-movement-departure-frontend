@@ -17,14 +17,17 @@
 package forms.addItems.traderDetails
 
 import forms.behaviours.StringFieldBehaviours
-import models.ForeignAddress
+import models.{CountryList}
+import models.reference.{Country, CountryCode}
 import org.scalacheck.Gen
 import play.api.data.FormError
 
 class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val consignorName = "TestConsignor"
-  val form          = new TraderDetailsConsignorAddressFormProvider()(consignorName)
+  val consignorName     = "TestConsignor"
+  private val country   = Country(CountryCode("GB"), "United Kingdom")
+  private val countries = CountryList(Seq(country))
+  val form              = new TraderDetailsConsignorAddressFormProvider()(countries)
 
   ".value" - {
 
@@ -40,7 +43,7 @@ class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviour
         list <- Gen.listOfN(num, Gen.alphaNumChar)
       } yield list.mkString("")
 
-      val args: Seq[Any] = Seq(ForeignAddress.Constants.Fields.line1, consignorName)
+      val args: Seq[Any] = Seq(maxLength, consignorName)
 
       behave like fieldThatBindsValidData(
         form,

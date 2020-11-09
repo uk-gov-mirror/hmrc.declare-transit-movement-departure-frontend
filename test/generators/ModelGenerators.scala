@@ -211,13 +211,4 @@ trait ModelGenerators {
         )
     }
 
-  implicit lazy val arbitraryTraderAddress: Arbitrary[ForeignAddress] =
-    Arbitrary {
-      for {
-        line1   <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
-        line2   <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
-        line3   <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
-        country <- alphaStringsWithMaxLength(ForeignAddress.Constants.postcodeLength)
-      } yield ForeignAddress(line1 = line1, line2 = line2, line3 = line3, country = country)
-    }
 }
