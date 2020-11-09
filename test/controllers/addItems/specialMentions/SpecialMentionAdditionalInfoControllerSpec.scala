@@ -19,7 +19,7 @@ package controllers.addItems.specialMentions
 import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.specialMentions.SpecialMentionAdditionalInfoFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{Index, NormalMode}
 import navigation.annotations.SpecialMentions
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.addItems.specialMentions.SpecialMentionAdditionalInfoPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -42,9 +43,10 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new SpecialMentionAdditionalInfoFormProvider()
-  private val form         = formProvider()
-  private val template     = "addItems/specialMentions/specialMentionAdditionalInfo.njk"
+  private val formProvider                         = new SpecialMentionAdditionalInfoFormProvider()
+  private val form: Index => Index => Form[String] = itemIndex => referenceIndex => formProvider(itemIndex, referenceIndex)
+
+  private val template = "addItems/specialMentions/specialMentionAdditionalInfo.njk"
 
   lazy val specialMentionAdditionalInfoRoute = routes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, itemIndex, referenceIndex, NormalMode).url
 
@@ -73,9 +75,11 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"           -> form(itemIndex)(referenceIndex),
+        "index"          -> itemIndex.display,
+        "referenceIndex" -> referenceIndex.display,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -103,12 +107,14 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form(itemIndex)(referenceIndex).bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"           -> filledForm,
+        "index"          -> itemIndex.display,
+        "referenceIndex" -> referenceIndex.display,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -143,7 +149,7 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
       dataRetrievalWithData(emptyUserAnswers)
 
       val request        = FakeRequest(POST, specialMentionAdditionalInfoRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
+      val boundForm      = form(itemIndex)(referenceIndex).bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 

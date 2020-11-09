@@ -51,7 +51,7 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
       SpecialMention("30400", "RET-EXP – Copy 3 to be returned")
     )
   )
-  private val form     = formProvider(specialMentionList)
+  private val form     = formProvider(specialMentionList, itemIndex)
   private val template = "addItems/specialMentions/specialMentionType.njk"
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]

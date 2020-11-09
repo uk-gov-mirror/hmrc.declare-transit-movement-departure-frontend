@@ -16,12 +16,13 @@
 
 package forms.addItems.specialMentions
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import models.SpecialMentionList
+import models.{Index, SpecialMentionList}
 import models.reference.SpecialMention
 import play.api.data.FormError
 
-class SpecialMentionTypeFormProviderSpec extends StringFieldBehaviours {
+class SpecialMentionTypeFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
   val requiredKey = "specialMentionType.error.required"
   val lengthKey   = "specialMentionType.error.length"
@@ -34,7 +35,7 @@ class SpecialMentionTypeFormProviderSpec extends StringFieldBehaviours {
     )
   )
 
-  val form = new SpecialMentionTypeFormProvider()(specialMentionList)
+  val form = new SpecialMentionTypeFormProvider()(specialMentionList, index)
 
   ".value" - {
 
@@ -49,7 +50,7 @@ class SpecialMentionTypeFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
 
     "not bind if special mention that does not exist in the list" in {

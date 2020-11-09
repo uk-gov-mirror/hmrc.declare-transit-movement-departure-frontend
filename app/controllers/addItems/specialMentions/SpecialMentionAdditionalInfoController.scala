@@ -48,21 +48,24 @@ class SpecialMentionAdditionalInfoController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/specialMentions/specialMentionAdditionalInfo.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
+        val form = formProvider(itemIndex, referenceIndex)
+
         val preparedForm = request.userAnswers.get(SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
         val json = Json.obj(
-          "form" -> preparedForm,
-          "lrn"  -> lrn,
-          "mode" -> mode
+          "form"           -> preparedForm,
+          "index"          -> itemIndex.display,
+          "referenceIndex" -> referenceIndex.display,
+          "lrn"            -> lrn,
+          "mode"           -> mode
         )
 
         renderer.render(template, json).map(Ok(_))
@@ -71,15 +74,17 @@ class SpecialMentionAdditionalInfoController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        form
+        formProvider(itemIndex, referenceIndex)
           .bindFromRequest()
           .fold(
             formWithErrors => {
 
               val json = Json.obj(
-                "form" -> formWithErrors,
-                "lrn"  -> lrn,
-                "mode" -> mode
+                "form"           -> formWithErrors,
+                "index"          -> itemIndex.display,
+                "referenceIndex" -> referenceIndex.display,
+                "lrn"            -> lrn,
+                "mode"           -> mode
               )
 
               renderer.render(template, json).map(BadRequest(_))
