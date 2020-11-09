@@ -20,7 +20,8 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.traderDetails.TraderDetailsConsigneeAddressFormProvider
 import generators.Generators
 import matchers.JsonMatchers
-import models.NormalMode
+import models.reference.{Country, CountryCode}
+import models.{CountryList, ForeignAddress, NormalMode}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -39,7 +40,6 @@ import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
-import models.ForeignAddress
 
 class TraderDetailsConsigneeAddressControllerSpec
     extends SpecBase
@@ -54,7 +54,9 @@ class TraderDetailsConsigneeAddressControllerSpec
   val consigneeName = "Test consignee"
 
   private val formProvider = new TraderDetailsConsigneeAddressFormProvider()
-  private val form         = formProvider(consigneeName = consigneeName)
+  private val country                                            = Country(CountryCode("GB"), "United Kingdom")
+  private val countries                                          = CountryList(Seq(country))
+  private val form         = formProvider(countries)
   private val template     = "addItems/traderDetails/traderDetailsConsigneeAddress.njk"
 
   lazy val traderDetailsConsigneeAddressRoute = routes.TraderDetailsConsigneeAddressController.onPageLoad(lrn, index, NormalMode).url

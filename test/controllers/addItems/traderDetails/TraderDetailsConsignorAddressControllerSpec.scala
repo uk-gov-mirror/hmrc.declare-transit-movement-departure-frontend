@@ -21,7 +21,8 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.traderDetails.TraderDetailsConsignorAddressFormProvider
 import generators.Generators
 import matchers.JsonMatchers
-import models.{ForeignAddress, NormalMode}
+import models.reference.{Country, CountryCode}
+import models.{CountryList, ForeignAddress, NormalMode}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -54,7 +55,9 @@ class TraderDetailsConsignorAddressControllerSpec
 
   val consignorName        = "TestConsignorName"
   private val formProvider = new TraderDetailsConsignorAddressFormProvider()
-  private val form         = formProvider(consignorName)
+  private val country                                            = Country(CountryCode("GB"), "United Kingdom")
+  private val countries                                          = CountryList(Seq(country))
+  private val form         = formProvider(countries)
   private val template     = "addItems/traderDetails/traderDetailsConsignorAddress.njk"
 
   lazy val traderDetailsConsignorAddressRoute = routes.TraderDetailsConsignorAddressController.onPageLoad(lrn, index, NormalMode).url
