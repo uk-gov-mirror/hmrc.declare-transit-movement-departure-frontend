@@ -181,34 +181,6 @@ trait ModelGenerators {
       } yield LocalDateTimeWithAMPM(dateTime, amOrPm)
     }
 
-  implicit lazy val arbitraryTransitInformation: Arbitrary[TransitInformation] =
-    Arbitrary {
-      for {
-        transitOffice <- stringsWithMaxLength(stringMaxLength)
-        arrivalTime   <- arbitrary[LocalDateTime]
-      } yield
-        TransitInformation(
-          transitOffice,
-          arrivalTime
-        )
-    }
 
-  implicit lazy val arbitraryRouteDetails: Arbitrary[RouteDetails] =
-    Arbitrary {
-      for {
-        countryOfDispatch  <- arbitrary[CountryCode]
-        officeOfDeparture  <- stringsWithMaxLength(stringMaxLength)
-        destinationCountry <- arbitrary[CountryCode]
-        destinationOffice  <- stringsWithMaxLength(stringMaxLength)
-        transitInformation <- nonEmptyListOf[TransitInformation](10)
-      } yield
-        RouteDetails(
-          countryOfDispatch,
-          officeOfDeparture,
-          destinationCountry,
-          destinationOffice,
-          transitInformation
-        )
-    }
 
 }
