@@ -17,7 +17,7 @@
 package forms.addItems.traderDetails
 
 import forms.behaviours.StringFieldBehaviours
-import models.Address
+import models.ForeignAddress
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -43,7 +43,7 @@ class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviour
         list <- Gen.listOfN(num, Gen.alphaNumChar)
       } yield list.mkString("")
 
-      val args = Seq(Address.Constants.Fields.buildingAndStreetName, consigneeName)
+      val args = Seq(ForeignAddress.Constants.Fields.line1, consigneeName)
 
       behave like fieldThatBindsValidData(
         form,
@@ -80,7 +80,7 @@ class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviour
         list <- Gen.listOfN(num, Gen.alphaNumChar)
       } yield list.mkString("")
 
-      val args = Seq(Address.Constants.Fields.city, consigneeName)
+      val args = Seq(ForeignAddress.Constants.Fields.line2, consigneeName)
 
       behave like fieldThatBindsValidData(
         form,

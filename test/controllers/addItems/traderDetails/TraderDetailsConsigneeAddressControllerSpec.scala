@@ -39,7 +39,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
-import models.Address
+import models.ForeignAddress
 
 class TraderDetailsConsigneeAddressControllerSpec
     extends SpecBase
@@ -98,7 +98,7 @@ class TraderDetailsConsigneeAddressControllerSpec
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val address = arbitrary[Address].sample.value
+      val address = arbitrary[ForeignAddress].sample.value
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
@@ -125,8 +125,8 @@ class TraderDetailsConsigneeAddressControllerSpec
       val filledForm =
         form.bind(
           Map(
-            "buildingAndStreet" -> address.buildingAndStreet,
-            "city"              -> address.city,
+            "buildingAndStreet" -> address.line1,
+            "city"              -> address.line2,
             "postcode"          -> address.postcode
           )
         )
@@ -142,7 +142,7 @@ class TraderDetailsConsigneeAddressControllerSpec
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val address = arbitrary[Address].sample.value
+      val address = arbitrary[ForeignAddress].sample.value
       val userAnswers = emptyUserAnswers
         .set(TraderDetailsConsigneeNamePage(index), consigneeName)
         .success
@@ -157,8 +157,8 @@ class TraderDetailsConsigneeAddressControllerSpec
       val request =
         FakeRequest(POST, traderDetailsConsigneeAddressRoute)
           .withFormUrlEncodedBody(
-            ("buildingAndStreet", address.buildingAndStreet),
-            ("city", address.city),
+            ("buildingAndStreet", address.line1),
+            ("city", address.line2),
             ("postcode", address.postcode)
           )
 

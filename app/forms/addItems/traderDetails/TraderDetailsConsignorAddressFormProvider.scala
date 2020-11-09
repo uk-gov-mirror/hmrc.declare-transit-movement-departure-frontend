@@ -18,7 +18,7 @@ package forms.addItems.traderDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.Address
+import models.ForeignAddress
 import models.domain.TraderDomain.Constants.{cityLength, postCodeLength, streetAndNumberLength}
 import models.domain.TraderDomain.inputRegex
 import play.api.data.Form
@@ -26,38 +26,38 @@ import play.api.data.Forms.mapping
 
 class TraderDetailsConsignorAddressFormProvider @Inject() extends Mappings {
 
-  def apply(consignorName: String): Form[Address] = Form(
+  def apply(consignorName: String): Form[ForeignAddress] = Form(
     mapping(
       "buildingAndStreet" -> text(
         "traderDetailsConsignorAddress.error.required",
-        Seq(Address.Constants.Fields.buildingAndStreetName, consignorName)
+        Seq(ForeignAddress.Constants.Fields.line1, consignorName)
       ).verifying(
           maxLength(
             streetAndNumberLength,
             "traderDetailsConsignorAddress.error.max_length",
-            Seq(Address.Constants.Fields.buildingAndStreetName, consignorName)
+            Seq(ForeignAddress.Constants.Fields.line1, consignorName)
           )
         )
         .verifying(
           minLength(
             1,
             "traderDetailsConsignorAddress.error.empty",
-            Seq(Address.Constants.Fields.buildingAndStreetName, consignorName)
+            Seq(ForeignAddress.Constants.Fields.line1, consignorName)
           )
         )
         .verifying(
           regexp(
             inputRegex,
             "traderDetailsConsignorAddress.error.invalid",
-            Seq(Address.Constants.Fields.buildingAndStreetName, consignorName)
+            Seq(ForeignAddress.Constants.Fields.line1, consignorName)
           )
         ),
-      "city" -> text("traderDetailsConsignorAddress.error.required", args = Seq(Address.Constants.Fields.city, consignorName))
+      "city" -> text("traderDetailsConsignorAddress.error.required", args = Seq(ForeignAddress.Constants.Fields.line2, consignorName))
         .verifying(
-          maxLength(cityLength, "traderDetailsConsignorAddress.error.max_length", args = Seq(Address.Constants.Fields.city, consignorName))
+          maxLength(cityLength, "traderDetailsConsignorAddress.error.max_length", args = Seq(ForeignAddress.Constants.Fields.line2, consignorName))
         )
         .verifying(
-          minLength(1, "traderDetailsConsignorAddress.error.empty", Seq(Address.Constants.Fields.city, consignorName))
+          minLength(1, "traderDetailsConsignorAddress.error.empty", Seq(ForeignAddress.Constants.Fields.line2, consignorName))
         )
         .verifying(
           regexp(
@@ -68,8 +68,8 @@ class TraderDetailsConsignorAddressFormProvider @Inject() extends Mappings {
         ),
       "postcode" -> text("traderDetailsConsignorAddress.error.postcode.required", args = Seq(consignorName))
         .verifying(maxLength(postCodeLength, "traderDetailsConsignorAddress.error.postcode.length", args = Seq(consignorName)))
-        .verifying(minLength(1, "traderDetailsConsignorAddress.error.empty", args = Seq(Address.Constants.Fields.postcode, consignorName)))
+        .verifying(minLength(1, "traderDetailsConsignorAddress.error.empty", args = Seq(ForeignAddress.Constants.Fields.line3, consignorName)))
         .verifying(regexp("[\\sa-zA-Z0-9]*".r, "traderDetailsConsignorAddress.error.postcode.invalid", args = Seq(consignorName)))
-    )(Address.apply)(Address.unapply)
+    )(ForeignAddress.apply)(ForeignAddress.unapply)
   )
 }

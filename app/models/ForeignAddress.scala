@@ -16,23 +16,30 @@
 
 package models
 
+import models.reference.Country
 import play.api.libs.json._
 
-case class Address(buildingAndStreet: String, city: String, postcode: String)
+case class ForeignAddress(
+  line1: String,
+  line2: String,
+  line3: Option[String],
+  country: Country
+)
 
-object Address {
+object ForeignAddress {
 
   object Constants {
-    val buildingAndStreetLength = 35
+    val lineLength = 35
     val cityLength              = 35
     val postcodeLength          = 9
 
     object Fields {
-      val buildingAndStreetName = "building and street name"
-      val city                  = "city"
-      val postcode              = "postcode"
+      val line1 = "line1"
+      val line2 = "line2"
+      val line3 = "line2"
+      val country = "country"
     }
   }
 
-  implicit val format: OFormat[Address] = Json.format[Address]
+  implicit val format: OFormat[ForeignAddress] = Json.format[ForeignAddress]
 }

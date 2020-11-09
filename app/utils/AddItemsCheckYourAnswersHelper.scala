@@ -151,11 +151,15 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
+  def addressHtml(address: ForeignAddress): Html = Html(
+    Seq(address.line1, address.line2, address.line3.getOrElse(""), address.country).mkString("<br>")
+  )
+
   def traderDetailsConsignorAddress(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorAddressPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(addressHtml(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -215,7 +219,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     answer =>
       Row(
         key   = Key(msg"traderDetailsConsigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(addressHtml(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",

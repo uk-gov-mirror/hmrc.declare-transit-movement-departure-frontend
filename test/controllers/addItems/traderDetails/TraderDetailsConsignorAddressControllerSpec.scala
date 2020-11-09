@@ -21,7 +21,7 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.traderDetails.TraderDetailsConsignorAddressFormProvider
 import generators.Generators
 import matchers.JsonMatchers
-import models.{Address, NormalMode}
+import models.{ForeignAddress, NormalMode}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -95,7 +95,7 @@ class TraderDetailsConsignorAddressControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val address = arbitrary[Address].sample.value
+      val address = arbitrary[ForeignAddress].sample.value
 
       val userAnswers = emptyUserAnswers
         .set(TraderDetailsConsignorNamePage(index), consignorName)
@@ -119,8 +119,8 @@ class TraderDetailsConsignorAddressControllerSpec
       val filledForm =
         form.bind(
           Map(
-            "buildingAndStreet" -> address.buildingAndStreet,
-            "city"              -> address.city,
+            "buildingAndStreet" -> address.line1,
+            "city"              -> address.line2,
             "postcode"          -> address.postcode
           )
         )
@@ -136,7 +136,7 @@ class TraderDetailsConsignorAddressControllerSpec
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val address = arbitrary[Address].sample.value
+      val address = arbitrary[ForeignAddress].sample.value
 
       val userAnswers = emptyUserAnswers
         .set(TraderDetailsConsignorNamePage(index), consignorName)
@@ -152,8 +152,8 @@ class TraderDetailsConsignorAddressControllerSpec
       val request =
         FakeRequest(POST, traderDetailsConsignorAddressRoute)
           .withFormUrlEncodedBody(
-            ("buildingAndStreet", address.buildingAndStreet),
-            ("city", address.city),
+            ("buildingAndStreet", address.line1),
+            ("city", address.line2),
             ("postcode", address.postcode)
           )
 
