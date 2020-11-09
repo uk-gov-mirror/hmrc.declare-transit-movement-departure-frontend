@@ -29,20 +29,29 @@ import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def addAnotherDocument(index: Index, documentIndex: Index): Option[Row] = userAnswers.get(AddAnotherDocumentPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addAnotherDocument.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddAnotherDocumentController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherDocument.checkYourAnswersLabel"))
+  def documentRow(index: Index, documentIndex: Index): Option[Row] = userAnswers.get(AddAnotherDocumentPage) map {
+    userAnswers.get(DocumentTypePage(documentIndex)).map {
+      answer =>
+        Row(
+          key   = Key(msg"addSeal.documentList.label".withArgs(documentIndex.display)),
+          value = Value(lit"${answer.numberOrMark}"),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = DocumentTypeController.onPageLoad(lrn, documentIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"addSeal.documentList.change.hidden".withArgs(answer.)),
+              attributes         = Map("id" -> s"""change-seal-${documentIndex.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = "",
+              visuallyHiddenText = Some(msg"addSeal.documentList.delete.hidden".withArgs(answer.numberOrMark)),
+              attributes         = Map("id" -> s"""remove-seal-${documentIndex.display}""")
+            )
           )
         )
-      )
-  }
+    }
+
   def itemRows(index: Index): Option[Row] =
     userAnswers.get(ItemDescriptionPage(index)).map {
       answer =>
@@ -65,7 +74,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           )
         )
     }
-
 
   def addDocuments(itemIndex: Index): Option[Row] = userAnswers.get(AddDocumentsPage) map {
     answer =>
@@ -357,7 +365,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
       )
   }
-
 
   def previousReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList): Option[Row] =
     userAnswers.get(ReferenceTypePage(index, referenceIndex)) flatMap {
