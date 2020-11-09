@@ -528,6 +528,14 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
+  def addAnotherDocument(itemIndex: Index, content: Text): AddAnotherViewModel = {
+
+    //TODO: Update to use AddAnotherDocument controller
+    val addAnotherDocumentHref = previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(lrn, itemIndex, CheckMode).url
+
+    AddAnotherViewModel(addAnotherDocumentHref, content)
+  }
+
   def lrn: LocalReferenceNumber = userAnswers.id
 
 }

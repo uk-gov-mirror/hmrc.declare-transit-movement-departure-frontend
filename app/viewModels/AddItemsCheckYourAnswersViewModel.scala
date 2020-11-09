@@ -42,6 +42,8 @@ object AddItemsCheckYourAnswersViewModel {
           checkYourAnswersHelper.previousReferenceRows(index, Index(position), documentTypes)
       }
 
+    //TODO: Add documentRows
+
     AddItemsCheckYourAnswersViewModel(
       Seq(
         Section(
@@ -74,6 +76,16 @@ object AddItemsCheckYourAnswersViewModel {
           msg"addItems.checkYourAnswersLabel.references",
           Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
           checkYourAnswersHelper.addAnotherPreviousReferences(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
+        ),
+        Section(
+          msg"addItems.checkYourAnswersLabel.documents",
+          Seq(
+            checkYourAnswersHelper.addDocuments(index),
+//            checkYourAnswersHelper.documentType(index),
+            checkYourAnswersHelper.documentReference(index),
+//            checkYourAnswersHelper.documentExtraInformation(index, documentIndex), //TODO Add documentIndex to view model
+          ).flatten,
+          checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
         )
       )
     )
