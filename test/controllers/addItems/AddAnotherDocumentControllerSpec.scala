@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
-import forms.AddAnotherDocumentFormProvider
+import base.{MockNunjucksRendererApp, SpecBase}
+import forms.addItems.AddAnotherDocumentFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddAnotherDocumentPage
+import pages.addItems.AddAnotherDocumentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -35,8 +34,8 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -45,10 +44,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new AddAnotherDocumentFormProvider()
-  private val form         = formProvider()
-  private val template     = "addAnotherDocument.njk"
+  private val form         = formProvider(index)
+  private val template     = "addItems/addAnotherDocument.njk"
 
-  lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn, NormalMode).url
+  lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn, index, documentIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -182,7 +181,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -198,7 +197,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }

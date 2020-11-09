@@ -564,7 +564,7 @@ POST       /:lrn/add-items/:itemIndex/add-documents                         cont
 GET        /:lrn/add-items/:itemIndex/change-add-documents                   controllers.addItems.AddDocumentsController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/change-add-documents                   controllers.addItems.AddDocumentsController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 
-GET        /:lrn/add-another-document                        controllers.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/add-another-document                             controllers.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/change-add-another-document                    controllers.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/change-add-another-document              controllers.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/:itemIndex/document-reference/:documentIndex/add-another-document                        controllers.addItems.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/:itemIndex/document-reference/:documentIndex/add-another-document                             controllers.addItems.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode = NormalMode)
+GET        /:lrn/:itemIndex/document-reference/:documentIndex/change-add-another-document                    controllers.addItems.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode = CheckMode)
+POST       /:lrn/:itemIndex/document-reference/:documentIndex/change-add-another-document              controllers.addItems.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode = CheckMode)

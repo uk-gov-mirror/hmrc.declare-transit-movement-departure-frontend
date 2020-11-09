@@ -30,21 +30,6 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def addAnotherDocument: Option[Row] = userAnswers.get(AddAnotherDocumentPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addAnotherDocument.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddAnotherDocumentController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherDocument.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def removeSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(RemoveSpecialMentionPage(itemIndex)) map {
     answer =>
       Row(
