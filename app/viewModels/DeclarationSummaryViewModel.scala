@@ -16,23 +16,23 @@
 
 package viewModels
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, ManageTransitMovementsService}
 import models.{LocalReferenceNumber, SectionDetails, UserAnswers}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import utils.SectionsHelper
 
-class DeclarationSummaryViewModel(config: FrontendAppConfig, userAnswers: UserAnswers) {
+class DeclarationSummaryViewModel(manageTransitMovementsService: ManageTransitMovementsService, userAnswers: UserAnswers) {
 
   val lrn: LocalReferenceNumber      = userAnswers.id
   val sections: Seq[SectionDetails]  = new SectionsHelper(userAnswers).getSections
-  val backToTransitMovements: String = config.manageTransitMovementsUrl
+  val backToTransitMovements: String = manageTransitMovementsService.service.fullServiceUrl
 }
 
 object DeclarationSummaryViewModel {
 
-  def apply(config: FrontendAppConfig, userAnswers: UserAnswers): DeclarationSummaryViewModel =
-    new DeclarationSummaryViewModel(config, userAnswers)
+  def apply(manageTransitMovementsService: ManageTransitMovementsService, userAnswers: UserAnswers): DeclarationSummaryViewModel =
+    new DeclarationSummaryViewModel(manageTransitMovementsService, userAnswers)
 
   def unapply(arg: DeclarationSummaryViewModel): Some[(LocalReferenceNumber, Seq[SectionDetails], String)] =
     Some(arg.lrn, arg.sections, arg.backToTransitMovements)

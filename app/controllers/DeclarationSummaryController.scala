@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, ManageTransitMovementsService}
 import controllers.actions._
 import javax.inject.Inject
 import models.LocalReferenceNumber
@@ -35,7 +35,7 @@ class DeclarationSummaryController @Inject()(
   requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer,
-  appConfig: FrontendAppConfig
+  manageTransitMovementsService: ManageTransitMovementsService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -43,7 +43,7 @@ class DeclarationSummaryController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       renderer
-        .render("declarationSummary.njk", DeclarationSummaryViewModel(appConfig, request.userAnswers))
+        .render("declarationSummary.njk", DeclarationSummaryViewModel(manageTransitMovementsService, request.userAnswers))
         .map(Ok(_))
   }
 }
