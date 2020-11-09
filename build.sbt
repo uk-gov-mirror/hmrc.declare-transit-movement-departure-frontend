@@ -51,7 +51,8 @@ lazy val root = (project in file("."))
       "-feature",
       "-language:implicitConversions",
       "-language:postfixOps",
-      "-language:higherKinds"
+      "-language:higherKinds",
+      "-Ypartial-unification"
     ),
     libraryDependencies ++= AppDependencies(),
     dependencyOverrides += "commons-codec" % "commons-codec" % "1.12", //added for reactive mongo issues
