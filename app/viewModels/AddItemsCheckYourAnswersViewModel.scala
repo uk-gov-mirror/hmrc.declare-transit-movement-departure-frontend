@@ -16,7 +16,7 @@
 
 package viewModels
 
-import derivable.{DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
+import derivable.{DeriveNumberOfDocuments, DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
 import models.{Index, PreviousDocumentTypeList, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.AddItemsCheckYourAnswersHelper
@@ -42,7 +42,11 @@ object AddItemsCheckYourAnswersViewModel {
           checkYourAnswersHelper.previousReferenceRows(index, Index(position), documentTypes)
       }
 
-    //TODO: Add documentRows
+    val documentRows: Seq[SummaryList.Row] =
+      List.range(0, userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)).flatMap {
+        documentPosition =>
+          checkYourAnswersHelper.documentRow(index, Index(documentPosition), userAnswers)
+      }
 
     AddItemsCheckYourAnswersViewModel(
       Seq(
@@ -79,12 +83,7 @@ object AddItemsCheckYourAnswersViewModel {
         ),
         Section(
           msg"addItems.checkYourAnswersLabel.documents",
-          Seq(
-            checkYourAnswersHelper.addDocuments(index),
-//            checkYourAnswersHelper.documentType(index),
-            checkYourAnswersHelper.documentReference(index),
-//            checkYourAnswersHelper.documentExtraInformation(index, documentIndex), //TODO Add documentIndex to view model
-          ).flatten,
+          Seq(checkYourAnswersHelper.addDocuments(index).toSeq, checkYourAnswersHelper.documentReference(index).toSeq, documentRows).flatten,
           checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
         )
       )
