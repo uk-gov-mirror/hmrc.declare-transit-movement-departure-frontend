@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package queries
+package derivable
 
-object Constants {
-  val routeDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val items                        = "items"
-  val packages                     = "packages"
-  val previousReferences           = "previousReferences"
-  val specialMentions              = "specialMentions"
-  val traderDetails                = "traderDetails"
-  val documents                    = "documents"
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{documents, items, previousReferences}
+
+case class DeriveNumberOfDocuments(itemIndex: Index) extends Derivable[List[JsObject], Int] {
+
+  override val derive: List[JsObject] => Int = _.size
+
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents
 }

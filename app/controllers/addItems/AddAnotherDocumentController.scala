@@ -17,12 +17,17 @@
 package controllers.addItems
 
 import controllers.actions._
+import derivable.DeriveNumberOfDocuments
 import forms.addItems.AddAnotherDocumentFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.requests.DataRequest
+import play.twirl.api.Html
+import utils.AddItemsCheckYourAnswersHelper
+import models.{Index, LocalReferenceNumber, Mode, NormalMode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.AddAnotherDocumentPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,19 +58,7 @@ class AddAnotherDocumentController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(AddAnotherDocumentPage) match {
-          case None        => formProvider(index)
-          case Some(value) => formProvider(index).fill(value)
-        }
-
-        val json = Json.obj(
-          "form"   -> preparedForm,
-          "mode"   -> mode,
-          "lrn"    -> lrn,
-          "radios" -> Radios.yesNo(preparedForm("value"))
-        )
-
-        renderer.render(template, json).map(Ok(_))
+        renderPage(lrn, index, documentIndex, formProvider(index)).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
@@ -74,22 +67,37 @@ class AddAnotherDocumentController @Inject()(
         formProvider(index)
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"   -> formWithErrors,
-                "mode"   -> mode,
-                "lrn"    -> lrn,
-                "radios" -> Radios.yesNo(formWithErrors("value"))
-              )
-
-              renderer.render(template, json).map(BadRequest(_))
-            },
+            formWithErrors => renderPage(lrn, index, documentIndex, formWithErrors).map(BadRequest(_)),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherDocumentPage, value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAnotherDocumentPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddAnotherDocumentPage, NormalMode, updatedAnswers))
           )
     }
+
+  private def renderPage(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, form: Form[Boolean])(
+    implicit request: DataRequest[AnyContent]): Future[Html] = {
+
+    val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
+    val numberOfDocuments     = request.userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)
+    val indexList: Seq[Index] = List.range(0, numberOfDocuments).map(Index(_))
+
+    val documentRows = indexList.map {
+      index =>
+        cyaHelper.addAnotherDocument(index, documentIndex)
+    }
+
+    val singularOrPlural = if (numberOfDocuments == 1) "singular" else "plural"
+    val json = Json.obj(
+      "form"         -> form,
+      "lrn"          -> lrn,
+      "pageTitle"    -> msg"addAnotherDocument.title.$singularOrPlural".withArgs(numberOfDocuments),
+      "heading"      -> msg"addAnotherDocument.heading.$singularOrPlural".withArgs(numberOfDocuments),
+      "documentRows" -> documentRows,
+      "radios"       -> Radios.yesNo(form("value"))
+    )
+
+    renderer.render("addItems/addAnotherItem.njk", json)
+  }
 }
