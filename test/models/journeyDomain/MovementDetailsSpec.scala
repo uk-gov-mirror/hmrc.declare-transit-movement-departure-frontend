@@ -135,37 +135,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       movementDetails <- Arbitrary.arbitrary[SimplifiedMovementDetails]
       baseUserAnswers <- Arbitrary.arbitrary[UserAnswers]
     } yield {
-      val interstitialUserAnswers =
-        baseUserAnswers
-          .set(ProcedureTypePage, ProcedureType.Simplified)
-          .toOption
-          .value
-          .set(DeclarationTypePage, movementDetails.declarationType)
-          .toOption
-          .value
-          .set(ContainersUsedPage, movementDetails.containersUsed)
-          .toOption
-          .value
-          .set(DeclarationPlacePage, movementDetails.declarationPlacePage)
-          .toOption
-          .value
-          .set(DeclarationForSomeoneElsePage, movementDetails.declarationForSomeoneElse != DeclarationForSelf)
-          .toOption
-          .value
-
-      val userAnswers = movementDetails.declarationForSomeoneElse match {
-        case DeclarationForSelf =>
-          interstitialUserAnswers
-        case DeclarationForSomeoneElse(companyName, capacity) =>
-          interstitialUserAnswers
-            .set(RepresentativeNamePage, companyName)
-            .toOption
-            .value
-            .set(RepresentativeCapacityPage, capacity)
-            .toOption
-            .value
-
-      }
+      val userAnswers = MovementDetailsSpec.setSimplifiedMovement(movementDetails)(baseUserAnswers)
 
       (movementDetails, userAnswers)
     }
@@ -175,43 +145,96 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       movementDetails <- Arbitrary.arbitrary[NormalMovementDetails]
       baseUserAnswers <- Arbitrary.arbitrary[UserAnswers]
     } yield {
-      val interstitialUserAnswers = baseUserAnswers
-        .set(ProcedureTypePage, ProcedureType.Normal)
-        .success
-        .value
-        .set(DeclarationTypePage, movementDetails.declarationType)
-        .toOption
-        .value
-        .set(PreLodgeDeclarationPage, movementDetails.prelodge)
-        .toOption
-        .value
-        .set(ContainersUsedPage, movementDetails.containersUsed)
-        .toOption
-        .value
-        .set(DeclarationPlacePage, movementDetails.declarationPlacePage)
-        .toOption
-        .value
-        .set(DeclarationForSomeoneElsePage, movementDetails.declarationForSomeoneElse != DeclarationForSelf)
-        .toOption
-        .value
-
-      val userAnswers = movementDetails.declarationForSomeoneElse match {
-        case DeclarationForSelf =>
-          interstitialUserAnswers
-        case DeclarationForSomeoneElse(companyName, capacity) =>
-          interstitialUserAnswers
-            .set(RepresentativeNamePage, companyName)
-            .toOption
-            .value
-            .set(RepresentativeCapacityPage, capacity)
-            .toOption
-            .value
-      }
+      val userAnswers = MovementDetailsSpec.setNormalMovement(movementDetails)(baseUserAnswers)
 
       (movementDetails, userAnswers)
     }
 
   private val movementUserAnswers: Gen[(MovementDetails, UserAnswers)] =
     Gen.oneOf(simpleMovementUserAnswers, normalMovementUserAnswers)
+
+}
+
+object MovementDetailsSpec {
+
+  def setMovementDetails(movementDetails: MovementDetails)(startUserAnswers: UserAnswers): UserAnswers =
+    movementDetails match {
+      case details: NormalMovementDetails     => setNormalMovement(details)(startUserAnswers)
+      case details: SimplifiedMovementDetails => setSimplifiedMovement(details)(startUserAnswers)
+    }
+
+  def setNormalMovement(movementDetails: NormalMovementDetails)(startUserAnswers: UserAnswers): UserAnswers = {
+    val interstitialUserAnswers =
+      startUserAnswers
+        .set(ProcedureTypePage, ProcedureType.Normal)
+        .toOption
+        .get
+        .set(DeclarationTypePage, movementDetails.declarationType)
+        .toOption
+        .get
+        .set(PreLodgeDeclarationPage, movementDetails.prelodge)
+        .toOption
+        .get
+        .set(ContainersUsedPage, movementDetails.containersUsed)
+        .toOption
+        .get
+        .set(DeclarationPlacePage, movementDetails.declarationPlacePage)
+        .toOption
+        .get
+        .set(DeclarationForSomeoneElsePage, movementDetails.declarationForSomeoneElse != DeclarationForSelf)
+        .toOption
+        .get
+
+    val userAnswers = movementDetails.declarationForSomeoneElse match {
+      case DeclarationForSelf =>
+        interstitialUserAnswers
+      case DeclarationForSomeoneElse(companyName, capacity) =>
+        interstitialUserAnswers
+          .set(RepresentativeNamePage, companyName)
+          .toOption
+          .get
+          .set(RepresentativeCapacityPage, capacity)
+          .toOption
+          .get
+    }
+
+    userAnswers
+  }
+
+  def setSimplifiedMovement(movementDetails: SimplifiedMovementDetails)(startUserAnswers: UserAnswers): UserAnswers = {
+    val interstitialUserAnswers =
+      startUserAnswers
+        .set(ProcedureTypePage, ProcedureType.Simplified)
+        .toOption
+        .get
+        .set(DeclarationTypePage, movementDetails.declarationType)
+        .toOption
+        .get
+        .set(ContainersUsedPage, movementDetails.containersUsed)
+        .toOption
+        .get
+        .set(DeclarationPlacePage, movementDetails.declarationPlacePage)
+        .toOption
+        .get
+        .set(DeclarationForSomeoneElsePage, movementDetails.declarationForSomeoneElse != DeclarationForSelf)
+        .toOption
+        .get
+
+    val userAnswers = movementDetails.declarationForSomeoneElse match {
+      case DeclarationForSelf =>
+        interstitialUserAnswers
+      case DeclarationForSomeoneElse(companyName, capacity) =>
+        interstitialUserAnswers
+          .set(RepresentativeNamePage, companyName)
+          .toOption
+          .get
+          .set(RepresentativeCapacityPage, capacity)
+          .toOption
+          .get
+
+    }
+
+    userAnswers
+  }
 
 }
