@@ -21,6 +21,8 @@ import java.time.LocalDateTime
 import models._
 import models.domain.SealDomain
 import models.domain.SealDomain.Constants
+import models.journeyDomain.RouteDetails
+import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.{Country, CountryCode, CustomsOffice, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -212,10 +214,10 @@ trait ModelGenerators {
   implicit lazy val arbitraryTraderAddress: Arbitrary[ForeignAddress] =
     Arbitrary {
       for {
-        line1 <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
-        line2              <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
-        line3          <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
-        country          <- alphaStringsWithMaxLength(ForeignAddress.Constants.postcodeLength)
+        line1   <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
+        line2   <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
+        line3   <- alphaStringsWithMaxLength(ForeignAddress.Constants.lineLength)
+        country <- alphaStringsWithMaxLength(ForeignAddress.Constants.postcodeLength)
       } yield ForeignAddress(line1 = line1, line2 = line2, line3 = line3, country = country)
     }
 }

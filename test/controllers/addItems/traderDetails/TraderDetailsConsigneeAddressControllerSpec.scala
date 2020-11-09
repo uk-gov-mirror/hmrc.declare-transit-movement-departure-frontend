@@ -21,7 +21,7 @@ import forms.addItems.traderDetails.TraderDetailsConsigneeAddressFormProvider
 import generators.Generators
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
-import models.{CountryList, ForeignAddress, NormalMode}
+import models.{ConsigneeAddress, CountryList, ForeignAddress, NormalMode}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -54,8 +54,8 @@ class TraderDetailsConsigneeAddressControllerSpec
   val consigneeName = "Test consignee"
 
   private val formProvider = new TraderDetailsConsigneeAddressFormProvider()
-  private val country                                            = Country(CountryCode("GB"), "United Kingdom")
-  private val countries                                          = CountryList(Seq(country))
+  private val country      = Country(CountryCode("GB"), "United Kingdom")
+  private val countries    = CountryList(Seq(country))
   private val form         = formProvider(countries)
   private val template     = "addItems/traderDetails/traderDetailsConsigneeAddress.njk"
 
@@ -99,7 +99,7 @@ class TraderDetailsConsigneeAddressControllerSpec
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val address = arbitrary[ForeignAddress].sample.value
+      val address = arbitrary[ConsigneeAddress].sample.value
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
@@ -126,9 +126,10 @@ class TraderDetailsConsigneeAddressControllerSpec
       val filledForm =
         form.bind(
           Map(
-            "buildingAndStreet" -> address.line1,
-            "city"              -> address.line2,
-            "postcode"          -> address.postcode
+            "AddressLine1" -> address.AddressLine1,
+            "AddressLine2" -> address.AddressLine2,
+            "AddressLine3" -> address.AddressLine3,
+            "Country"      -> address.country.code.code,
           )
         )
 
@@ -143,7 +144,7 @@ class TraderDetailsConsigneeAddressControllerSpec
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val address = arbitrary[ForeignAddress].sample.value
+      val address = arbitrary[ConsigneeAddress].sample.value
       val userAnswers = emptyUserAnswers
         .set(TraderDetailsConsigneeNamePage(index), consigneeName)
         .success
@@ -158,9 +159,10 @@ class TraderDetailsConsigneeAddressControllerSpec
       val request =
         FakeRequest(POST, traderDetailsConsigneeAddressRoute)
           .withFormUrlEncodedBody(
-            ("buildingAndStreet", address.line1),
-            ("city", address.line2),
-            ("postcode", address.postcode)
+            ("AddressLine1", address.AddressLine1),
+            ("AddressLine2", address.AddressLine2),
+            ("AddressLine3", address.AddressLine3),
+            ("Country", address.country.code.code)
           )
 
       val result = route(app, request).value

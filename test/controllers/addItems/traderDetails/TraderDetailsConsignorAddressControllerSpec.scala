@@ -55,8 +55,8 @@ class TraderDetailsConsignorAddressControllerSpec
 
   val consignorName        = "TestConsignorName"
   private val formProvider = new TraderDetailsConsignorAddressFormProvider()
-  private val country                                            = Country(CountryCode("GB"), "United Kingdom")
-  private val countries                                          = CountryList(Seq(country))
+  private val country      = Country(CountryCode("GB"), "United Kingdom")
+  private val countries    = CountryList(Seq(country))
   private val form         = formProvider(countries)
   private val template     = "addItems/traderDetails/traderDetailsConsignorAddress.njk"
 
