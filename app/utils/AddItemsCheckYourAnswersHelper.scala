@@ -29,39 +29,24 @@ import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def documentType(index: Index, documentIndex: Index): Option[Row] = userAnswers.get(DocumentTypePage(index, documentIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"documentType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.DocumentTypeController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"documentType.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def documentRow(index: Index, documentIndex: Index): Option[Row] =
+  def documentRows(index: Index, documentIndex: Index): Option[Row] =
     userAnswers.get(DocumentTypePage(index, documentIndex)).map {
       answer =>
         Row(
-          key   = Key(msg"addSeal.documentList.label".withArgs(documentIndex.display)),
-          value = Value(lit"$answer"),
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
           actions = List(
             Action(
-              content            = msg"site.edit",
+              content            = msg"site.change",
               href               = routes.DocumentTypeController.onPageLoad(userAnswers.id, index, documentIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"addSeal.documentList.change.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""change-seal-${documentIndex.display}""")
+              visuallyHiddenText = Some(msg"addAnotherDocument.documentList.change.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-document-${index.display}""")
             ),
             Action(
               content            = msg"site.delete",
               href               = "",
               visuallyHiddenText = Some(msg"addSeal.documentList.delete.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""remove-seal-${documentIndex.display}""")
+              attributes         = Map("id" -> s"""remove-document-${index.display}""")
             )
           )
         )

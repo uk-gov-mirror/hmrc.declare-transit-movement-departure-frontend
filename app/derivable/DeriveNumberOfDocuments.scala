@@ -18,7 +18,7 @@ package derivable
 
 import models.Index
 import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.{documents, items, previousReferences}
+import queries.Constants.{documents, items}
 
 case class DeriveNumberOfDocuments(itemIndex: Index) extends Derivable[List[JsObject], Int] {
 

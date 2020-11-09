@@ -85,7 +85,7 @@ class AddAnotherDocumentController @Inject()(
 
     val documentRows = indexList.map {
       index =>
-        cyaHelper.documentRow(index, documentIndex)
+        cyaHelper.documentRows(index, documentIndex)
     }
 
     val singularOrPlural = if (numberOfDocuments == 1) "singular" else "plural"
