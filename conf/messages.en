@@ -1015,4 +1015,3 @@ documentType.title = What type of document do you need to add?
 documentType.heading = What type of document do you need to add?
 documentType.checkYourAnswersLabel = Document type
 documentType.error.required = Enter the type of document you need to add
-documentType.error.length = DocumentType must be 100 characters or less

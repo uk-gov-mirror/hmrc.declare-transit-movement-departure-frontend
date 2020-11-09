@@ -25,8 +25,6 @@ import play.api.data.FormError
 class DocumentTypeFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
   val requiredKey = "documentType.error.required"
-  val lengthKey   = "documentType.error.length"
-  val maxLength   = 100
 
   private val documentList = DocumentTypeList(
     Seq(
@@ -40,12 +38,6 @@ class DocumentTypeFormProviderSpec extends SpecBase with StringFieldBehaviours {
   ".value" - {
 
     val fieldName = "value"
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
 
     behave like mandatoryField(
       form,
