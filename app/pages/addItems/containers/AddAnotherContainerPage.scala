@@ -16,12 +16,7 @@
 
 package pages.addItems.containers
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import models.Index
+import pages.Page
 
-case object AddAnotherContainerPage extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "addAnotherContainer"
-}
+case class AddAnotherContainerPage(itemIndex: Index) extends Page

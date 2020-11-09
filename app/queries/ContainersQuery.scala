@@ -16,12 +16,13 @@
 
 package queries
 
-object Constants {
-  val routeDetailsOfficesOfTransit = "routeDetailOfficesOfTransit"
-  val seals                        = "seals"
-  val items                        = "items"
-  val packages                     = "packages"
-  val previousReferences           = "previousReferences"
-  val traderDetails                = "traderDetails"
-  val containers                   = "containers"
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{containers, items}
+
+final case class ContainersQuery(index: Index) extends QuestionPage[JsObject] {
+
+  override def path: JsPath = JsPath \ items \ index.position \ containers
+
 }

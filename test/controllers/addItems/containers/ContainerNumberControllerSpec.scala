@@ -40,13 +40,13 @@ import scala.concurrent.Future
 
 class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new ContainerNumberFormProvider()
   private val form         = formProvider()
   private val template     = "addItems/containers/containerNumber.njk"
 
-  lazy val containerNumberRoute = routes.ContainerNumberController.onPageLoad(lrn, itemIndex, NormalMode).url
+  private lazy val containerNumberRoute = routes.ContainerNumberController.onPageLoad(lrn, itemIndex, containerIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

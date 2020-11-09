@@ -17,15 +17,18 @@
 package controllers.addItems.containers
 
 import controllers.actions._
+import derivable.DeriveNumberOfContainers
 import forms.addItems.containers.AddAnotherContainerFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.containers.AddAnotherContainerPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.ContainersQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -35,7 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherContainerController @Inject()(
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
@@ -53,16 +55,11 @@ class AddAnotherContainerController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddAnotherContainerPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
       val json = Json.obj(
-        "form"   -> preparedForm,
+        "form"   -> form,
         "mode"   -> mode,
         "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
+        "radios" -> Radios.yesNo(form("value"))
       )
 
       renderer.render(template, json).map(Ok(_))
@@ -84,11 +81,20 @@ class AddAnotherContainerController @Inject()(
 
             renderer.render(template, json).map(BadRequest(_))
           },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherContainerPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAnotherContainerPage, mode, updatedAnswers))
+          value => {
+            val onwardRoute = value match {
+              case true =>
+                val containerCount = request.userAnswers.get(DeriveNumberOfContainers(itemIndex)).getOrElse(0)
+                val containerIndex = Index(containerCount)
+                routes.ContainerNumberController.onPageLoad(request.userAnswers.id, itemIndex, containerIndex, mode)
+              case false =>
+                navigator.nextPage(AddAnotherContainerPage(itemIndex), mode, request.userAnswers)
+              case _ =>
+                controllers.routes.SessionExpiredController.onPageLoad()
+            }
+
+            Future.successful(Redirect(onwardRoute))
+          }
         )
   }
 }

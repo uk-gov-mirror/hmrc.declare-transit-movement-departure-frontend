@@ -82,14 +82,6 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddAnotherContainerUserAnswersEntry: Arbitrary[(AddAnotherContainerPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[AddAnotherContainerPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryContainerNumberUserAnswersEntry: Arbitrary[(ContainerNumberPage.type, JsValue)] =
     Arbitrary {
       for {
