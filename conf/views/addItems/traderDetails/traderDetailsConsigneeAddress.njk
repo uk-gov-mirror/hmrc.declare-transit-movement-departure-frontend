@@ -28,40 +28,56 @@
         {% endif %}
 
         <form action="{{ routes.controllers.addItems.traderDetails.TraderDetailsConsigneeAddressController.onSubmit(lrn, mode).url }}" method="post">
+          <span class="govuk-caption-xl">{{messages('traderDetails.preHeading')}}</span>
 
           {{ csrf() | safe }}
+
           <h1 class="govuk-heading-xl">
             {{ messages("traderDetailsConsigneeAddress.heading", consigneeName) }}
           </h1>
-          {{ govukInput({
+
+          {{ govukInput ({
             classes: "govuk-!-width-two-thirds",
             label: {
-              text: messages('traderDetailsConsigneeAddress.buildingAndStreet')
+              text: messages('traderDetailsConsigneeAddress.AddressLine1')
             },
-            id: "buildingAndStreet",
-            name: "buildingAndStreet",
-            value: form.buildingAndStreet.value,
-            errorMessage: form.buildingAndStreet.error
+            id: "AddressLine1",
+            name: "AddressLine1",
+            value: form.AddressLine1.value,
+            errorMessage: form.AddressLine1.error
           }) }}
 
           {{ govukInput({
             classes: "govuk-!-width-two-thirds",
             label: {
-              text: messages('traderDetailsConsigneeAddress.city')
+              text: messages('traderDetailsConsigneeAddress.AddressLine2')
             },
-            id: "city",
-            name: "city",
-            value: form.city.value,
-            errorMessage: form.city.error
+            id: "AddressLine2",
+            name: "AddressLine2",
+            value: form.AddressLine2.value,
+            errorMessage: form.AddressLine2.error
           }) }}
 
           {{ govukInput({
-            classes: "govuk-input--width-10",
+            classes: "govuk-!-width-two-thirds",
             label: {
-              text: messages('traderDetailsConsigneeAddress.country')
+              text: messages('traderDetailsConsigneeAddress.AddressLine3')
+            },
+            id: "AddressLine3",
+            name: "AddressLine3",
+            value: form.AddressLine3.value,
+            errorMessage: form.AddressLine3.error
+          }) }}
+
+          {{ govukSelect({
+            classes: "govuk-input--width-20 autocomplete",
+            label: {
+              text: messages('traderDetailsConsigneeAddress.AddressLine4')
             },
             id: "country",
             name: "country",
+            errorMessage: form.value.error,
+            items: countries,
             value: form.country.value,
             errorMessage: form.country.error
           }) }}

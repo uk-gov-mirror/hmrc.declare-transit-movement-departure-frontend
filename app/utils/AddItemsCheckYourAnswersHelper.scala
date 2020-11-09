@@ -164,8 +164,8 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def addressHtml(address: ForeignAddress): Html = Html(
-    Seq(address.line1, address.line2, address.line3.getOrElse(""), address.country).mkString("<br>")
+  def addressHtml(address: ConsigneeAddress): Html = Html(
+    Seq(address.AddressLine1, address.AddressLine2, address.AddressLine3, address.country.code.code).mkString("<br>")
   )
 
   def traderDetailsConsignorAddress(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorAddressPage(index)) map {
