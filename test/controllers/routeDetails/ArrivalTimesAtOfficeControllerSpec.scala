@@ -27,10 +27,9 @@ import models.reference.OfficeOfTransit
 import models.{LocalDateTimeWithAMPM, NormalMode}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{AddAnotherTransitOfficePage, ArrivalTimesAtOfficePage}
 import play.api.inject.bind
@@ -40,7 +39,6 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import viewModels.DateTimeInput
 

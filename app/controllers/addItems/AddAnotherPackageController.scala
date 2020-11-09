@@ -17,7 +17,7 @@
 package controllers.addItems
 
 import controllers.actions._
-import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
+import derivable.DeriveNumberOfPackages
 import forms.addItems.AddAnotherPackageFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
@@ -28,10 +28,8 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.AddItemsCheckYourAnswersHelper
 import viewModels.PackageViewModel
 
 import scala.concurrent.{ExecutionContext, Future}

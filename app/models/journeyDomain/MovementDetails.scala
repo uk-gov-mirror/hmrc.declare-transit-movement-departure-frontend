@@ -20,68 +20,72 @@ import cats.implicits._
 import models.{DeclarationType, RepresentativeCapacity}
 import pages._
 
-sealed trait DeclarationForSomeoneElseAnswer
-
-object DeclarationForSelf extends DeclarationForSomeoneElseAnswer {
-
-  implicit val readDeclarationForSelf: UserAnswersReader[DeclarationForSelf.type] =
-    DeclarationForSelf.pure[UserAnswersReader]
-
-}
-
-final case class DeclarationForSomeoneElse(
-  companyName: String,
-  capacity: RepresentativeCapacity
-) extends DeclarationForSomeoneElseAnswer
-
-object DeclarationForSomeoneElse {
-
-  implicit val readDeclarationForSomeoneElse: UserAnswersReader[DeclarationForSomeoneElse] =
-    (
-      RepresentativeNamePage.reader,
-      RepresentativeCapacityPage.reader
-    ).tupled.map((DeclarationForSomeoneElse.apply _).tupled)
-}
-
 sealed trait MovementDetails
 
-final case class NormalMovementDetails(
-  declarationType: DeclarationType,
-  prelodge: Boolean,
-  containersUsed: Boolean,
-  declarationPlacePage: String,
-  declarationForSomeoneElse: DeclarationForSomeoneElseAnswer
-) extends MovementDetails
+object MovementDetails {
 
-final case class SimplifiedMovementDetails(
-  declarationType: DeclarationType,
-  containersUsed: Boolean,
-  declarationPlacePage: String,
-  declarationForSomeoneElse: DeclarationForSomeoneElseAnswer
-) extends MovementDetails
+  final case class NormalMovementDetails(
+    declarationType: DeclarationType,
+    prelodge: Boolean,
+    containersUsed: Boolean,
+    declarationPlacePage: String,
+    declarationForSomeoneElse: DeclarationForSomeoneElseAnswer
+  ) extends MovementDetails
 
-object SimplifiedMovementDetails {
+  final case class SimplifiedMovementDetails(
+    declarationType: DeclarationType,
+    containersUsed: Boolean,
+    declarationPlacePage: String,
+    declarationForSomeoneElse: DeclarationForSomeoneElseAnswer
+  ) extends MovementDetails
 
-  implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, SimplifiedMovementDetails] = {
+  object SimplifiedMovementDetails {
 
-    val declarationForSomeoneElseAnswer: UserAnswersReader[DeclarationForSomeoneElseAnswer] =
-      DeclarationForSomeoneElsePage.reader.flatMap(
-        bool =>
-          if (bool) {
-            UserAnswersReader[DeclarationForSomeoneElse].widen[DeclarationForSomeoneElseAnswer]
-          } else {
-            UserAnswersReader[DeclarationForSelf.type].widen[DeclarationForSomeoneElseAnswer]
-        }
-      )
+    implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, SimplifiedMovementDetails] = {
 
-    UserAnswersOptionalParser(
+      val declarationForSomeoneElseAnswer: UserAnswersReader[DeclarationForSomeoneElseAnswer] =
+        DeclarationForSomeoneElsePage.reader.flatMap(
+          bool =>
+            if (bool) {
+              UserAnswersReader[DeclarationForSomeoneElse].widen[DeclarationForSomeoneElseAnswer]
+            } else {
+              UserAnswersReader[DeclarationForSelf.type].widen[DeclarationForSomeoneElseAnswer]
+          }
+        )
+
+      UserAnswersOptionalParser(
+        (
+          DeclarationTypePage.reader,
+          ContainersUsedPage.reader,
+          DeclarationPlacePage.reader,
+          declarationForSomeoneElseAnswer
+        ).tupled
+      )((SimplifiedMovementDetails.apply _).tupled)
+    }
+
+  }
+
+  sealed trait DeclarationForSomeoneElseAnswer
+
+  object DeclarationForSelf extends DeclarationForSomeoneElseAnswer {
+
+    implicit val readDeclarationForSelf: UserAnswersReader[DeclarationForSelf.type] =
+      DeclarationForSelf.pure[UserAnswersReader]
+
+  }
+
+  final case class DeclarationForSomeoneElse(
+    companyName: String,
+    capacity: RepresentativeCapacity
+  ) extends DeclarationForSomeoneElseAnswer
+
+  object DeclarationForSomeoneElse {
+
+    implicit val readDeclarationForSomeoneElse: UserAnswersReader[DeclarationForSomeoneElse] =
       (
-        DeclarationTypePage.reader,
-        ContainersUsedPage.reader,
-        DeclarationPlacePage.reader,
-        declarationForSomeoneElseAnswer
-      ).tupled
-    )((SimplifiedMovementDetails.apply _).tupled)
+        RepresentativeNamePage.reader,
+        RepresentativeCapacityPage.reader
+      ).tupled.map((DeclarationForSomeoneElse.apply _).tupled)
   }
 
 }
