@@ -16,16 +16,17 @@
 
 package pages.addItems
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class ConfirmRemoveDocumentPageSpec extends PageBehaviours {
+class ConfirmRemoveDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "ConfirmRemoveDocumentPage" - {
 
-    beRetrievable[Boolean](ConfirmRemoveDocumentPage)
+    beRetrievable[Boolean](ConfirmRemoveDocumentPage(index, documentIndex))
 
-    beSettable[Boolean](ConfirmRemoveDocumentPage)
+    beSettable[Boolean](ConfirmRemoveDocumentPage(index, documentIndex))
 
-    beRemovable[Boolean](ConfirmRemoveDocumentPage)
+    beRemovable[Boolean](ConfirmRemoveDocumentPage(index, documentIndex))
   }
 }

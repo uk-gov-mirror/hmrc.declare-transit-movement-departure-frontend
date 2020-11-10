@@ -47,7 +47,7 @@ class ConfirmRemoveDocumentControllerSpec extends SpecBase with MockNunjucksRend
   private val form         = formProvider()
   private val template     = "addItems/confirmRemoveDocument.njk"
 
-  lazy val confirmRemoveDocumentRoute = routes.ConfirmRemoveDocumentController.onPageLoad(lrn, NormalMode).url
+  lazy val confirmRemoveDocumentRoute = routes.ConfirmRemoveDocumentController.onPageLoad(lrn, index, documentIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -74,10 +74,12 @@ class ConfirmRemoveDocumentControllerSpec extends SpecBase with MockNunjucksRend
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form"          -> form,
+        "mode"          -> NormalMode,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "radios"        -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -92,7 +94,7 @@ class ConfirmRemoveDocumentControllerSpec extends SpecBase with MockNunjucksRend
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemoveDocumentPage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemoveDocumentPage(index, documentIndex), true).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, confirmRemoveDocumentRoute)
@@ -108,10 +110,12 @@ class ConfirmRemoveDocumentControllerSpec extends SpecBase with MockNunjucksRend
       val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form"          -> filledForm,
+        "mode"          -> NormalMode,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "radios"        -> Radios.yesNo(filledForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -158,10 +162,12 @@ class ConfirmRemoveDocumentControllerSpec extends SpecBase with MockNunjucksRend
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"          -> boundForm,
+        "mode"          -> NormalMode,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "radios"        -> Radios.yesNo(boundForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey

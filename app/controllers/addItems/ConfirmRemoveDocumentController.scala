@@ -19,7 +19,7 @@ package controllers.addItems
 import controllers.actions._
 import forms.addItems.ConfirmRemoveDocumentFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.ConfirmRemoveDocumentPage
@@ -51,44 +51,54 @@ class ConfirmRemoveDocumentController @Inject()(
   private val form     = formProvider()
   private val template = "addItems/confirmRemoveDocument.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(ConfirmRemoveDocumentPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(ConfirmRemoveDocumentPage(itemIndex, documentIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConfirmRemoveDocumentPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ConfirmRemoveDocumentPage, mode, updatedAnswers))
+        val json = Json.obj(
+          "form"          -> preparedForm,
+          "mode"          -> mode,
+          "lrn"           -> lrn,
+          "index"         -> itemIndex.display,
+          "documentIndex" -> documentIndex.display,
+          "radios"        -> Radios.yesNo(preparedForm("value"))
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"          -> formWithErrors,
+                "mode"          -> mode,
+                "lrn"           -> lrn,
+                "index"         -> itemIndex.display,
+                "documentIndex" -> documentIndex.display,
+                "radios"        -> Radios.yesNo(formWithErrors("value"))
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              if (value) {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ConfirmRemoveDocumentPage(itemIndex, documentIndex), value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ConfirmRemoveDocumentPage(itemIndex, documentIndex), mode, updatedAnswers))
+              } else {
+                Future.successful(Redirect((navigator.nextPage(ConfirmRemoveDocumentPage(itemIndex, documentIndex), mode, request.userAnswers))))
+            }
+          )
+    }
 }
