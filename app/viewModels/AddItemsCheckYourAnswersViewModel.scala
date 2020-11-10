@@ -16,7 +16,7 @@
 
 package viewModels
 
-import derivable.{DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
+import derivable.{DeriveNumberOfDocuments, DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
 import models.{Index, PreviousDocumentTypeList, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.AddItemsCheckYourAnswersHelper
@@ -38,6 +38,12 @@ object AddItemsCheckYourAnswersViewModel {
         //checkYourAnswersHelper.previousReferenceRows(index, Index(position), documentTypes)
       }*/
 
+    val documentRows: Seq[SummaryList.Row] =
+      List.range(0, userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)).flatMap {
+        documentPosition =>
+          checkYourAnswersHelper.documentRow(index, Index(documentPosition), userAnswers)
+      }
+
     AddItemsCheckYourAnswersViewModel(
       Seq(
         itemsDetailsSection(checkYourAnswersHelper, index),
@@ -49,6 +55,11 @@ object AddItemsCheckYourAnswersViewModel {
           msg"addItems.checkYourAnswersLabel.references",
           Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
           checkYourAnswersHelper.addAnotherPreviousReferences(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
+        ),
+        Section(
+          msg"addItems.checkYourAnswersLabel.documents",
+          Seq(checkYourAnswersHelper.addDocuments(index).toSeq, checkYourAnswersHelper.documentReference(index).toSeq, documentRows).flatten,
+//          checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
         )
        */
       )

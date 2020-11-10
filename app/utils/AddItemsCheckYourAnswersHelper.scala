@@ -528,6 +528,31 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
+  def addAnotherDocument(itemIndex: Index, content: Text): AddAnotherViewModel = {
+
+    //TODO: Update to use AddAnotherDocument controller
+    val addAnotherDocumentHref = ???
+
+    AddAnotherViewModel(addAnotherDocumentHref, content)
+  }
+
+  def documentRow(itemIndex: Index, documentIndex: Index, userAnswers: UserAnswers): Option[Row] =
+    userAnswers.get(DocumentTypePage(itemIndex, documentIndex)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.DocumentTypeController.onPageLoad(userAnswers.id, itemIndex, documentIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer.toString)),
+              attributes         = Map("id" -> s"""change-document-${documentIndex.display}""")
+            )
+          )
+        )
+    }
+
   def lrn: LocalReferenceNumber = userAnswers.id
 
 }
