@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package config
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.{documents, items}
+import com.google.inject.{Inject, Singleton}
+import controllers.routes
+import play.api.Configuration
+import play.api.i18n.Lang
+import play.api.mvc.Call
 
-case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents \ documentIndex.position \ toString
-
-  override def toString: String = "documentType"
-}
+@Singleton
+class ManageTransitMovementsService @Inject()(configuration: Configuration)
+    extends ServiceDetails(configuration, "microservice.services.manageTransitMovementsFrontend")

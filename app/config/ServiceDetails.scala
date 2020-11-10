@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package config
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.{documents, items}
+import play.api.Configuration
 
-case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents \ documentIndex.position \ toString
-
-  override def toString: String = "documentType"
+abstract class ServiceDetails(configuration: Configuration, configPath: String) {
+  val service: Service = configuration.get[Service](path = configPath)
 }

@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.addItems.containers
+package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
-import forms.addItems.containers.AddAnotherContainerFormProvider
+import controllers.{routes => mainRoutes}
+import forms.addItems.AddAnotherDocumentFormProvider
 import matchers.JsonMatchers
 import models.reference.DocumentType
-import models.{DocumentTypeList, NormalMode, UserAnswers}
+import models.{DocumentTypeList, Index, NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.containers.AddAnotherContainerPage
+import pages.addItems.{AddAnotherDocumentPage, DocumentTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -37,98 +38,69 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import utils.AddItemsCheckYourAnswersHelper
 
 import scala.concurrent.Future
 
-class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new AddAnotherContainerFormProvider()
-  private val form         = formProvider()
-  private val template     = "addItems/containers/addAnotherContainer.njk"
-
-  lazy val addAnotherContainerRoute = routes.AddAnotherContainerController.onPageLoad(lrn, itemIndex, NormalMode).url
+  private val formProvider                                 = new AddAnotherDocumentFormProvider()
+  private val form                                         = formProvider(index)
+  private val template                                     = "addItems/addAnotherDocument.njk"
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  val documentType1: DocumentType                          = DocumentType("1", "11", true)
+  val documentType2: DocumentType                          = DocumentType("2", "22", true)
+  val documentTypeList: DocumentTypeList                   = DocumentTypeList(Seq(documentType1, documentType2))
+  lazy val addAnotherDocumentRoute                         = routes.AddAnotherDocumentController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockRefDataConnector))
 
-  "AddAnotherContainer Controller" - {
+  "AddAnotherDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
       dataRetrievalWithData(emptyUserAnswers)
-
-      val request        = FakeRequest(GET, addAnotherContainerRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
-      )
-
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
-
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddAnotherContainerPage, true).success.value
-      dataRetrievalWithData(userAnswers)
-
-      val request        = FakeRequest(GET, addAnotherContainerRoute)
+      val request        = FakeRequest(GET, addAnotherDocumentRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val result         = route(app, request).value
 
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
-
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form"      -> form,
+        "lrn"       -> lrn,
+        "pageTitle" -> msg"addAnotherDocument.title.plural".withArgs(1),
+        "heading"   -> msg"addAnotherDocument.heading.plural".withArgs(1),
+        "radios"    -> Radios.yesNo(form("value"))
       )
-
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      templateCaptor.getValue mustEqual "addItems/addAnotherDocument.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
 
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
+      dataRetrievalWithData(emptyUserAnswers)
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      dataRetrievalWithData(emptyUserAnswers)
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
 
       val request =
-        FakeRequest(POST, addAnotherContainerRoute)
+        FakeRequest(POST, addAnotherDocumentRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -141,12 +113,13 @@ class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRender
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
+      dataRetrievalWithData(emptyUserAnswers)
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      dataRetrievalWithData(emptyUserAnswers)
-
-      val request        = FakeRequest(POST, addAnotherContainerRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, addAnotherDocumentRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -158,16 +131,15 @@ class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRender
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"      -> boundForm,
+        "pageTitle" -> msg"addAnotherDocument.title.plural".withArgs(1),
+        "heading"   -> msg"addAnotherDocument.heading.plural".withArgs(1),
+        "lrn"       -> lrn,
+        "radios"    -> Radios.yesNo(boundForm("value"))
       )
 
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      templateCaptor.getValue mustEqual "addItems/addAnotherDocument.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
 
     }
 
@@ -175,13 +147,13 @@ class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRender
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, addAnotherContainerRoute)
+      val request = FakeRequest(GET, addAnotherDocumentRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -190,14 +162,14 @@ class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRender
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, addAnotherContainerRoute)
+        FakeRequest(POST, addAnotherDocumentRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }

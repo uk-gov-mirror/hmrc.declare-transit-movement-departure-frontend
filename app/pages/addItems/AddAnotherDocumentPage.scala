@@ -21,9 +21,9 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{documents, items}
 
-case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
+case class AddAnotherDocumentPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents \ documentIndex.position \ toString
+  override def path: JsPath = JsPath \ items \ index.position \ toString
 
-  override def toString: String = "documentType"
+  override def toString: String = "addAnotherDocument"
 }

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package forms.addItems
 
+import forms.mappings.Mappings
+import javax.inject.Inject
 import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.{documents, items}
+import play.api.data.Form
 
-case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
+class AddAnotherDocumentFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents \ documentIndex.position \ toString
-
-  override def toString: String = "documentType"
+  def apply(index: Index): Form[Boolean] =
+    Form(
+      "value" -> boolean("addAnotherDocument.error.required", "error.boolean", Seq(index.display))
+    )
 }

@@ -28,8 +28,8 @@ class DocumentTypeFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
   private val documentList = DocumentTypeList(
     Seq(
-      DocumentType("955", "ATA carnet"),
-      DocumentType("740", "Air waybill")
+      DocumentType("955", "ATA carnet", true),
+      DocumentType("740", "Air waybill", true)
     )
   )
 

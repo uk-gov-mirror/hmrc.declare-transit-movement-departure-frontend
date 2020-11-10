@@ -16,14 +16,17 @@
 
 package pages.addItems
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.{documents, items}
+import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
+class AddAnotherDocumentPageSpec extends SpecBase with PageBehaviours {
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents \ documentIndex.position \ toString
+  "AddAnotherDocumentPage" - {
 
-  override def toString: String = "documentType"
+    beRetrievable[Boolean](AddAnotherDocumentPage(index))
+
+    beSettable[Boolean](AddAnotherDocumentPage(index))
+
+    beRemovable[Boolean](AddAnotherDocumentPage(index))
+  }
 }

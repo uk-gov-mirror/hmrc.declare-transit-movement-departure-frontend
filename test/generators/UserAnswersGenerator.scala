@@ -40,7 +40,8 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
   val maxNumberOfGeneratedPageAnswers: Int = 1
 
   final val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitraryDocumentExtraInformationUserAnswersEntry.arbitrary ::
+    arbitraryAddAnotherDocumentUserAnswersEntry.arbitrary ::
+      arbitraryDocumentExtraInformationUserAnswersEntry.arbitrary ::
       arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
       arbitraryDocumentReferenceUserAnswersEntry.arbitrary ::
       arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
@@ -75,6 +76,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
       arbitraryPreviousReferenceUserAnswersEntry.arbitrary ::
       arbitraryAddExtraInformationUserAnswersEntry.arbitrary ::
       arbitraryReferenceTypeUserAnswersEntry.arbitrary ::
+      arbitraryDocumentTypeUserAnswersEntry.arbitrary ::
       arbitraryAddAdministrativeReferenceUserAnswersEntry.arbitrary ::
       arbitraryConfirmRemoveItemUserAnswersEntry.arbitrary ::
       arbitraryTotalPackagesUserAnswersEntry.arbitrary ::
