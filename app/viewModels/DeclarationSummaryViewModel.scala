@@ -16,17 +16,13 @@
 
 package viewModels
 
-import models.journeyDomain.MovementDetails
-import models.{LocalReferenceNumber, SectionDetails, UserAnswers}
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import utils.SectionsHelper
-import models.journeyDomain.UserAnswersOptionalParser
-import models.journeyDomain.TraderDetails
 import config.ManageTransitMovementsService
-import models.journeyDomain.RouteDetails
-import models.journeyDomain.TransportDetails
+import models.journeyDomain.JourneyDomain
+import models.{LocalReferenceNumber, SectionDetails, UserAnswers}
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 import play.api.mvc.Call
+import utils.SectionsHelper
 
 class DeclarationSummaryViewModel(manageTransitMovementsService: ManageTransitMovementsService, userAnswers: UserAnswers) {
   import DeclarationSummaryViewModel.nextPage
@@ -36,12 +32,11 @@ class DeclarationSummaryViewModel(manageTransitMovementsService: ManageTransitMo
   val backToTransitMovements: String = manageTransitMovementsService.service.fullServiceUrl
 
   val isDeclarationComplete: Boolean =
-    (for {
-      _ <- UserAnswersOptionalParser[MovementDetails].run(userAnswers)
-      _ <- UserAnswersOptionalParser[RouteDetails].run(userAnswers)
-      _ <- UserAnswersOptionalParser[TraderDetails].run(userAnswers)
-      _ <- UserAnswersOptionalParser[TransportDetails].run(userAnswers)
-    } yield true).getOrElse(false)
+    JourneyDomain
+      .parse(userAnswers)
+      .fold(false)(
+        _ => true
+      )
 
   val onSubmitUrl: Option[String] = if (isDeclarationComplete) Some(nextPage(lrn).url) else None
 
