@@ -18,6 +18,7 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
+import models.journeyDomain.ItemDetailsSpec.setItemDetailsUserAnswers
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.addItems.CommodityCodePage
@@ -30,7 +31,8 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
       "when all details for section have been answered" in {
         forAll(arbitrary[ItemDetails], arbitrary[UserAnswers]) {
           case (itemDetails, userAnswers) =>
-            val result = UserAnswersParser[Option, MovementDetails].run(userAnswers)
+            val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
+            val result             = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
             result.value mustEqual itemDetails
         }

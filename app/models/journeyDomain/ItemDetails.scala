@@ -32,7 +32,7 @@ final case class ItemDetails(
 
 object ItemDetails {
 
-  implicit def itemDetailsReader(index: Index): UserAnswersReader[ItemDetails] =
+  def itemDetailsReader(index: Index): UserAnswersReader[ItemDetails] =
     (
       ItemDescriptionPage(index).reader,
       ItemTotalGrossMassPage(index).reader,
