@@ -18,8 +18,12 @@ package models.journeyDomain
 
 import java.time.LocalDate
 
+import cats.implicits._
+import derivable.DeriveNumberOfSeals
+import models.ProcedureType
 import models.domain.SealDomain
 import models.journeyDomain.GoodsSummary.GoodSummaryDetails
+import pages._
 
 case class GoodsSummary(
   numberOfPackages: Option[Int],
@@ -31,8 +35,61 @@ case class GoodsSummary(
 
 object GoodsSummary {
 
+  implicit val parser: UserAnswersParser[Option, GoodsSummary] =
+    UserAnswersOptionalParser(
+      (
+        TotalPackagesPage.optionalReader,
+        TotalGrossMassPage.reader,
+        none[String].pure[UserAnswersReader],
+        UserAnswersReader[GoodSummaryDetails],
+        DeriveNumberOfSeals.reader orElse List.empty[SealDomain].pure[UserAnswersReader]
+      ).tupled
+    )((GoodsSummary.apply _).tupled)
+
   sealed trait GoodSummaryDetails
-  final case class GoodSummaryNormalDetails(customsApprovedLocation: String) extends GoodSummaryDetails
+
+  final case class GoodSummaryNormalDetails(customsApprovedLocation: Option[String]) extends GoodSummaryDetails
+
+  object GoodSummaryNormalDetails {
+
+    implicit val goodSummaryNormalDetailsReader: UserAnswersReader[GoodSummaryNormalDetails] =
+      ProcedureTypePage.reader
+        .filter(_ == ProcedureType.Normal)
+        .productR(
+          AddCustomsApprovedLocationPage.reader
+            .flatMap {
+              locationNeeded =>
+                if (locationNeeded)
+                  CustomsApprovedLocationPage.reader.map(
+                    location => GoodSummaryNormalDetails(Some(location))
+                  )
+                else
+                  GoodSummaryNormalDetails(None).pure[UserAnswersReader]
+            }
+        )
+  }
+
   final case class GoodSummarySimplifiedDetails(authorisedLocationCode: String, controlResultDateLimit: LocalDate) extends GoodSummaryDetails
 
+  object GoodSummarySimplifiedDetails {
+
+    implicit val goodSummarySimplifiedDetailsReader: UserAnswersReader[GoodSummarySimplifiedDetails] =
+      ProcedureTypePage.reader
+        .filter(_ == ProcedureType.Simplified)
+        .productR(
+          (
+            AuthorisedLocationCodePage.reader,
+            ControlResultDateLimitPage.reader
+          ).tupled
+            .map((GoodSummarySimplifiedDetails.apply _).tupled)
+        )
+
+  }
+
+  object GoodSummaryDetails {
+
+    implicit val goodSummaryDetailsReader: UserAnswersReader[GoodSummaryDetails] =
+      UserAnswersReader[GoodSummaryNormalDetails].widen[GoodSummaryDetails] orElse
+        UserAnswersReader[GoodSummarySimplifiedDetails].widen[GoodSummaryDetails]
+  }
 }

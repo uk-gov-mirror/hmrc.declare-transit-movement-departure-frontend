@@ -26,7 +26,9 @@ trait UserAnswersSpecHelper {
   implicit class UserAnswersNoErrorSet(userAnswers: UserAnswers) {
 
     def unsafeSetVal[A: Writes](page: QuestionPage[A])(value: A): UserAnswers =
-      userAnswers.set(page, value).getOrElse(throw new Exception(s"`set` on UserAnswers failed in test for userAnswers: $userAnswers"))
+      userAnswers
+        .set(page, value)
+        .getOrElse(throw new Exception(s"`set` on UserAnswers failed in test when trying to get $page with userAnswers: \n $userAnswers"))
 
     def unsafeSetOpt[A: Writes](page: QuestionPage[A])(value: Option[A]): UserAnswers =
       value.fold(userAnswers)(unsafeSetVal(page))
@@ -38,11 +40,14 @@ trait UserAnswersSpecHelper {
         }
         .foldLeft(userAnswers) {
           case (ua, (page, value)) =>
-            unsafeSetVal(page)(value)
+            ua.unsafeSetVal(page)(value)
         }
 
-    def unsafeSetFun[A, B: Writes](page: QuestionPage[B])(value: A)(pf: A => B): UserAnswers =
-      unsafeSetVal(page)(pf(value))
+    def unsafeSetPFn[A, B: Writes](page: QuestionPage[B])(value: A)(pf: PartialFunction[A, B]): UserAnswers =
+      unsafeSetOpt(page)(pf.lift(value))
+
+    def unsafeSetPFnOpt[A, B: Writes](page: QuestionPage[B])(value: A)(pf: PartialFunction[A, Option[B]]): UserAnswers =
+      unsafeSetOpt(page)(pf.lift(value).flatten)
 
   }
 

@@ -51,7 +51,7 @@ class AddSealHelper(userAnswers: UserAnswers) {
 
   def sealsRow(lrn: LocalReferenceNumber): Option[Row] = userAnswers.get(SealsQuery()).map {
     answer =>
-      val numberOfSeals = userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
+      val numberOfSeals = userAnswers.get(DeriveNumberOfSeals).getOrElse(0)
 
       val singularOrPlural = if (numberOfSeals == 1) "singular" else "plural"
       val idPluralisation  = if (numberOfSeals == 1) "change-seal" else "change-seals"
