@@ -23,7 +23,7 @@ class ContainerNumberFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "containerNumber.error.required"
   val lengthKey   = "containerNumber.error.length"
-  val maxLength   = 100
+  val maxLength   = 17
 
   val form = new ContainerNumberFormProvider()()
 

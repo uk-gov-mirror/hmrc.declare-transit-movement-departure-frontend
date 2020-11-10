@@ -32,7 +32,7 @@ class ContainerNumberFormProvider @Inject() extends Mappings {
       "value" -> text("containerNumber.error.required")
         .verifying(
           StopOnFirstFail(
-            maxLength(containerNumberMaxLength, "containerNumber.error.length", args = Seq(containerNumberMaxLength)),
+            maxLength(containerNumberMaxLength, "containerNumber.error.length", containerNumberMaxLength),
             regexp(containerNumberRegex, "containerNumber.error.invalid")
           )
         )

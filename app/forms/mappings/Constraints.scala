@@ -86,12 +86,20 @@ trait Constraints {
         Invalid(errorKey, args: _*)
     }
 
-  protected def maxLength(maximum: Int, errorKey: String, args: Seq[Any] = Seq.empty): Constraint[String] =
+  protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
     Constraint {
       case str if str.length <= maximum =>
         Valid
       case _ =>
-        Invalid(errorKey, maximum, args)
+        Invalid(errorKey, maximum)
+    }
+
+  protected def maxLength(maximum: Int, errorKey: String, args: Any*): Constraint[String] =
+    Constraint {
+      case str if str.length <= maximum =>
+        Valid
+      case _ =>
+        Invalid(errorKey, args: _*)
     }
 
   protected def minGrossMax(minimum: Int, errorKey: String): Constraint[String] =

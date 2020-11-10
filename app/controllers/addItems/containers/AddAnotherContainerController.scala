@@ -94,8 +94,6 @@ class AddAnotherContainerController @Inject()(
     val singularOrPlural = if (numberOfContainers == 1) "singular" else "plural"
     val title            = msg"addAnotherContainer.title.$singularOrPlural".withArgs(numberOfContainers)
 
-    println(s"\n\n$title\n\n")
-
     val json = Json.obj(
       "form"           -> form,
       "mode"           -> mode,
