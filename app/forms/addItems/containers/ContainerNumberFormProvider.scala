@@ -19,12 +19,22 @@ package forms.addItems.containers
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ContainerNumberFormProvider @Inject() extends Mappings {
+
+  //todo: move these to models
+  private lazy val containerNumberMaxLength = 17
+  private lazy val containerNumberRegex     = s"^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,$containerNumberMaxLength}$$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("containerNumber.error.required")
-        .verifying(maxLength(100, "containerNumber.error.length"))
+        .verifying(
+          StopOnFirstFail(
+            maxLength(containerNumberMaxLength, "containerNumber.error.length", args = Seq(containerNumberMaxLength)),
+            regexp(containerNumberRegex, "containerNumber.error.invalid")
+          )
+        )
     )
 }

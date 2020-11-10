@@ -31,7 +31,7 @@ class ItemDescriptionFormProvider @Inject() extends Mappings {
       "value" -> text("itemDescription.error.required", Seq(index.display))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(280, "itemDescription.error.length", index.display),
+            maxLength(280, "itemDescription.error.length", Seq(index.display)),
             regexp(regex, "itemDescription.error.invalid", index.display)
           )))
 }

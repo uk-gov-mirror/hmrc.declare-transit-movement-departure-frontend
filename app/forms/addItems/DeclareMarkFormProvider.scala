@@ -32,7 +32,7 @@ class DeclareMarkFormProvider @Inject() extends Mappings {
       "value" -> text("declareMark.error.required", Seq(packageIndex))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(maxLength, "declareMark.error.length", packageIndex, maxLength),
+            maxLength(maxLength, "declareMark.error.length", Seq(packageIndex, maxLength)),
             regexp(regex, "declareMark.error.format", packageIndex),
             emptyNumberOfPackages(totalPackages, packageIndex)
           )

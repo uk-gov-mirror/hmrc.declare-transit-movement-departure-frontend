@@ -109,21 +109,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def containerNumber(itemIndex: Index, containerIndex: Index): Option[Row] = userAnswers.get(ContainerNumberPage(itemIndex, containerIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"containerNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = containerRoutes.ContainerNumberController.onPageLoad(lrn, itemIndex, containerIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"containerNumber.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(
