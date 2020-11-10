@@ -38,7 +38,8 @@ class SpecialMentionsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             Action(
               content            = msg"site.edit",
               href               = specialMentionRoutes.SpecialMentionTypeController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answerFormatted.getOrElse(answer)))
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answerFormatted.getOrElse(answer))),
+              attributes         = Map("id" -> s"""change-special-mentions-${itemIndex.display}""")
             ),
             Action(
               content            = msg"site.delete",
