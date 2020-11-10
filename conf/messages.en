@@ -916,6 +916,9 @@ addAnotherItem.paragraph = Do you need to add another item?
 
 addItems.checkYourAnswersLabel.itemDetails = Item details
 addItems.checkYourAnswersLabel.traderDetails = Trader details
+addItems.checkYourAnswersLabel.traderDetails.consignor = Consignor
+addItems.checkYourAnswersLabel.traderDetails.consignee = Consignee
+addItems.checkYourAnswersLabel.traderDetails = Trader details
 addItems.checkYourAnswersLabel.packages = Packages
 addItems.checkYourAnswersLabel.packages.addRemove = Add or remove packages
 addItems.checkYourAnswersLabel.containers = Containers

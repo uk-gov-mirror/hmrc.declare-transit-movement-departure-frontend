@@ -123,38 +123,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  //todo: is this required
-  def addItemsSameConsignorForAllItems(index: Index): Option[Row] = userAnswers.get(AddItemsSameConsignorForAllItemsPage(index)) map {
-    answer =>
-      Row(
-        key   = Key(msg"addItemsSameConsignorForAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddItemsSameConsignorForAllItemsController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addItemsSameConsignorForAllItems.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  //todo: is this required
-  def addItemsSameConsigneeForAllItems(index: Index): Option[Row] = userAnswers.get(AddItemsSameConsigneeForAllItemsPage(index)) map {
-    answer =>
-      Row(
-        key   = Key(msg"addItemsSameConsigneeForAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddItemsSameConsigneeForAllItemsController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addItemsSameConsigneeForAllItems.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def traderDetailsConsignorName(index: Index): Option[Row] = userAnswers.get(TraderDetailsConsignorNamePage(index)) map {
     answer =>
       Row(
@@ -204,9 +172,12 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     answer =>
       val consignorsName =
         userAnswers.get(TraderDetailsConsignorNamePage(itemIndex)).getOrElse(msg"traderDetailsConsignorAddress.checkYourAnswersLabel.fallback")
+      val address = Html(
+        Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+          .mkString("<br>"))
       Row(
         key   = Key(msg"traderDetailsConsignorAddress.checkYourAnswersLabel".withArgs(consignorsName), classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -266,9 +237,12 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     answer =>
       val consigneesName =
         userAnswers.get(TraderDetailsConsigneeNamePage(itemIndex)).getOrElse(msg"traderDetailsConsigneeAddress.checkYourAnswersLabel.fallback")
+      val address = Html(
+        Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+          .mkString("<br>"))
       Row(
         key   = Key(msg"traderDetailsConsigneeAddress.checkYourAnswersLabel".withArgs(consigneesName), classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",

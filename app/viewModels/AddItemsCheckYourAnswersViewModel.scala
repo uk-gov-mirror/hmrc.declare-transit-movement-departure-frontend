@@ -53,9 +53,7 @@ object AddItemsCheckYourAnswersViewModel {
       checkYourAnswersHelper.addTotalNetMass(index),
       checkYourAnswersHelper.totalNetMass(index),
       checkYourAnswersHelper.isCommodityCodeKnown(index),
-      checkYourAnswersHelper.commodityCode(index),
-      checkYourAnswersHelper.addItemsSameConsigneeForAllItems(index),
-      checkYourAnswersHelper.addItemsSameConsignorForAllItems(index)
+      checkYourAnswersHelper.commodityCode(index)
     ).flatten
   )
 
