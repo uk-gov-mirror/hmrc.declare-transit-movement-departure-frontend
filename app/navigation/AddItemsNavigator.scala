@@ -338,7 +338,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (Some(false), CheckMode) =>
         Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
       case (Some(false), NormalMode) =>
-        ??? //TODO hook into container journey
+        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
