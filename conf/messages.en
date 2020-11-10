@@ -1020,3 +1020,11 @@ documentType.title = What type of document do you need to add?
 documentType.heading = What type of document do you need to add?
 documentType.checkYourAnswersLabel = Document type
 documentType.error.required = Enter the type of document you need to add
+
+submissionConfirmation.title = Departure declaration sent
+submissionConfirmation.heading = Departure declaration sent
+submissionConfirmation.submissionText = for local reference number
+submissionConfirmation.subHeading = What happens next
+submissionConfirmation.link.pretext = You can:
+submissionConfirmation.link.option1 = manage your departure declarations
+submissionConfirmation.link.option2 = make another departure declaration

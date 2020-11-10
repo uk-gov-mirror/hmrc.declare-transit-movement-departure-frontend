@@ -569,3 +569,5 @@ GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/document
 POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/document-type               controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-document-type        controllers.addItems.DocumentTypeController.onPageLoad(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-document-type        controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
+
+GET        /:lrn/submissionConfirmation                       controllers.SubmissionConfirmationController.onPageLoad(lrn: LocalReferenceNumber)
