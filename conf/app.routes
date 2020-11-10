@@ -25,6 +25,7 @@ GET        /:lrn/change-add-security-details                  controllers.AddSec
 POST       /:lrn/change-add-security-details                  controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/task-list                                    controllers.DeclarationSummaryController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/task-list                                    controllers.DeclarationSummaryController.onSubmit(lrn: LocalReferenceNumber)
 
 GET        /:lrn/movement-details/declaration-type                        controllers.movementDetails.DeclarationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/movement-details/declaration-type                        controllers.movementDetails.DeclarationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -568,6 +569,8 @@ GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/document
 POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/document-type               controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-document-type        controllers.addItems.DocumentTypeController.onPageLoad(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-document-type        controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
+
+GET        /:lrn/submissionConfirmation                       controllers.SubmissionConfirmationController.onPageLoad(lrn: LocalReferenceNumber)
 
 GET        /:lrn/add-items/:itemIndex/document-reference/add-another-document                        controllers.addItems.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/:itemIndex/document-reference/add-another-document                             controllers.addItems.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)

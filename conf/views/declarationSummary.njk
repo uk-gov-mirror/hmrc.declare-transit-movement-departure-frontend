@@ -2,6 +2,7 @@
 
 {% from "macros/title.njk"                         import title %}
 {% from "macros/summarySection.njk"                import summarySection as summarySectionMacro %}
+{% from "govuk/components/button/macro.njk"        import govukButton %}
 
 {% block pageTitle %}
   {{ title(messages("declarationSummary.title")) }}
@@ -24,7 +25,25 @@
 
          {{ summarySectionMacro(messages("declarationSummary.departureDetails"), sections) }}
 
-          <p class="govuk-body"><a href={{backToTransitMovements}}>{{ messages("declarationSummary.backToTransitMovements")}}</a></p>
+          {% if isDeclarationComplete %}
+            <form action="{{ onSubmitUrl }}" method="post">
+                {{ csrf() | safe }}
+
+                <h2 class="govuk-heading-m">{{ messages("declarationSummary.submissionSubheader") }}</h2>
+
+                <p class="govuk-body">
+                    {{ messages("declarationSummary.submissionHonestyPledge") }}
+                </p>
+
+                {{ govukButton({
+                  text: messages("declarationSummary.confirmAndSend"),
+                  preventDoubleClick: true,
+                  attributes: {id:"submit"}
+                }) }}
+            </form>
+         {% endif %}
+
+         <p class="govuk-body"><a href={{backToTransitMovements}}>{{ messages("declarationSummary.backToTransitMovements")}}</a></p>
       </div>
     </div>
   </div>
