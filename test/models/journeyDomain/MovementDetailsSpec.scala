@@ -18,53 +18,223 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
-import models.UserAnswers
-import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, SimplifiedMovementDetails}
-import pages._
+import models.{ProcedureType, UserAnswers}
+import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, NormalMovementDetails, SimplifiedMovementDetails}
+import org.scalacheck.{Arbitrary, Gen}
+import pages.{movementDetails, _}
+import pages.movementDetails.PreLodgeDeclarationPage
+import queries.Settable
 
 class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
+  "MovmentDetails" - {
+    "can be parsed UserAnswers" - {
+      "when all details for section have been answered" in {
+        forAll(movementUserAnswers) {
+          case (_, userAnswers) =>
+            val result = UserAnswersParser[Option, MovementDetails].run(userAnswers)
+
+            result must be(defined)
+        }
+      }
+    }
+  }
+
+  "NormalMovmentDetails" - {
+
+    val mandatoryPages: Gen[QuestionPage[_]] = Gen.oneOf(
+      ProcedureTypePage,
+      DeclarationTypePage,
+      PreLodgeDeclarationPage,
+      ContainersUsedPage,
+      DeclarationPlacePage,
+      DeclarationForSomeoneElsePage
+    )
+
+    "can be parsed" - {
+      "when all details for section have been answered" in {
+        forAll(normalMovementUserAnswers) {
+          case (expected, userAnswers) =>
+            val result = UserAnswersParser[Option, NormalMovementDetails].run(userAnswers).value
+
+            result mustEqual expected
+        }
+      }
+
+    }
+
+    "cannot be parsed from UserAnswers" - {
+      "when an answer is missing" in {
+        forAll(normalMovementUserAnswers, mandatoryPages) {
+          case ((_, ua), mandatoryPage) =>
+            val userAnswers = ua.remove(mandatoryPage).success.value
+
+            val result = UserAnswersParser[Option, NormalMovementDetails].run(userAnswers)
+
+            result mustEqual None
+        }
+      }
+
+      "when the movement is a simplified" in {
+        forAll(simpleMovementUserAnswers) {
+          case (_, userAnswers) =>
+            val result = UserAnswersParser[Option, NormalMovementDetails].run(userAnswers)
+
+            result mustEqual None
+        }
+      }
+    }
+  }
+
   "SimplifiedMovementDetails" - {
-    "ParseUserAnswers parseNoDetails" - {
 
-      "can be constructed when all the answers have been answered" in {
-        forAll(arb[SimplifiedMovementDetails], arb[UserAnswers]) {
-          (expected, baseUserAnswers) =>
-            val interstitialUserAnswers = baseUserAnswers
-              .set(DeclarationTypePage, expected.declarationType)
-              .toOption
-              .value
-              .set(ContainersUsedPage, expected.containersUsed)
-              .toOption
-              .value
-              .set(DeclarationPlacePage, expected.declarationPlacePage)
-              .toOption
-              .value
-              .set(DeclarationForSomeoneElsePage, expected.declarationForSomeoneElse != DeclarationForSelf)
-              .toOption
-              .value
+    val mandatoryPages: Gen[QuestionPage[_]] = Gen.oneOf(
+      ProcedureTypePage,
+      DeclarationTypePage,
+      ContainersUsedPage,
+      DeclarationPlacePage,
+      DeclarationForSomeoneElsePage
+    )
 
-            val userAnswers = expected.declarationForSomeoneElse match {
-              case DeclarationForSelf =>
-                interstitialUserAnswers
-              case DeclarationForSomeoneElse(companyName, capacity) =>
-                interstitialUserAnswers
-                  .set(RepresentativeNamePage, companyName)
-                  .toOption
-                  .value
-                  .set(RepresentativeCapacityPage, capacity)
-                  .toOption
-                  .value
-            }
-
+    "can be parsed from UserAnswers" - {
+      "when all the answers have been answered" in {
+        forAll(simpleMovementUserAnswers) {
+          case (expected, userAnswers) =>
             val result = UserAnswersParser[Option, SimplifiedMovementDetails].run(userAnswers).value
 
             result mustEqual expected
-
         }
-
       }
     }
 
+    "cannot be parsed from UserAnswers" - {
+      "when a mandatory answer is missing" in {
+        forAll(simpleMovementUserAnswers, mandatoryPages) {
+          case ((_, ua), mandatoryPage) =>
+            val userAnswers = ua.remove(mandatoryPage).success.value
+
+            val result = UserAnswersParser[Option, SimplifiedMovementDetails].run(userAnswers)
+
+            result mustEqual None
+        }
+      }
+
+      "when the movement is a simplified movement" in {
+        forAll(normalMovementUserAnswers) {
+          case (_, userAnswers) =>
+            val result = UserAnswersParser[Option, SimplifiedMovementDetails].run(userAnswers)
+
+            result mustEqual None
+        }
+      }
+    }
   }
+
+  val simpleMovementUserAnswers: Gen[(SimplifiedMovementDetails, UserAnswers)] =
+    for {
+      movementDetails <- Arbitrary.arbitrary[SimplifiedMovementDetails]
+      baseUserAnswers <- Arbitrary.arbitrary[UserAnswers]
+    } yield {
+      val userAnswers = MovementDetailsSpec.setSimplifiedMovement(movementDetails)(baseUserAnswers)
+
+      (movementDetails, userAnswers)
+    }
+
+  private val normalMovementUserAnswers: Gen[(NormalMovementDetails, UserAnswers)] =
+    for {
+      movementDetails <- Arbitrary.arbitrary[NormalMovementDetails]
+      baseUserAnswers <- Arbitrary.arbitrary[UserAnswers]
+    } yield {
+      val userAnswers = MovementDetailsSpec.setNormalMovement(movementDetails)(baseUserAnswers)
+
+      (movementDetails, userAnswers)
+    }
+
+  private val movementUserAnswers: Gen[(MovementDetails, UserAnswers)] =
+    Gen.oneOf(simpleMovementUserAnswers, normalMovementUserAnswers)
+
+}
+
+object MovementDetailsSpec {
+
+  def setMovementDetails(movementDetails: MovementDetails)(startUserAnswers: UserAnswers): UserAnswers =
+    movementDetails match {
+      case details: NormalMovementDetails     => setNormalMovement(details)(startUserAnswers)
+      case details: SimplifiedMovementDetails => setSimplifiedMovement(details)(startUserAnswers)
+    }
+
+  def setNormalMovement(movementDetails: NormalMovementDetails)(startUserAnswers: UserAnswers): UserAnswers = {
+    val interstitialUserAnswers =
+      startUserAnswers
+        .set(ProcedureTypePage, ProcedureType.Normal)
+        .toOption
+        .get
+        .set(DeclarationTypePage, movementDetails.declarationType)
+        .toOption
+        .get
+        .set(PreLodgeDeclarationPage, movementDetails.prelodge)
+        .toOption
+        .get
+        .set(ContainersUsedPage, movementDetails.containersUsed)
+        .toOption
+        .get
+        .set(DeclarationPlacePage, movementDetails.declarationPlacePage)
+        .toOption
+        .get
+        .set(DeclarationForSomeoneElsePage, movementDetails.declarationForSomeoneElse != DeclarationForSelf)
+        .toOption
+        .get
+
+    val userAnswers = movementDetails.declarationForSomeoneElse match {
+      case DeclarationForSelf =>
+        interstitialUserAnswers
+      case DeclarationForSomeoneElse(companyName, capacity) =>
+        interstitialUserAnswers
+          .set(RepresentativeNamePage, companyName)
+          .toOption
+          .get
+          .set(RepresentativeCapacityPage, capacity)
+          .toOption
+          .get
+    }
+
+    userAnswers
+  }
+
+  def setSimplifiedMovement(movementDetails: SimplifiedMovementDetails)(startUserAnswers: UserAnswers): UserAnswers = {
+    val interstitialUserAnswers =
+      startUserAnswers
+        .set(ProcedureTypePage, ProcedureType.Simplified)
+        .toOption
+        .get
+        .set(DeclarationTypePage, movementDetails.declarationType)
+        .toOption
+        .get
+        .set(ContainersUsedPage, movementDetails.containersUsed)
+        .toOption
+        .get
+        .set(DeclarationPlacePage, movementDetails.declarationPlacePage)
+        .toOption
+        .get
+        .set(DeclarationForSomeoneElsePage, movementDetails.declarationForSomeoneElse != DeclarationForSelf)
+        .toOption
+        .get
+
+    val userAnswers = movementDetails.declarationForSomeoneElse match {
+      case DeclarationForSelf =>
+        interstitialUserAnswers
+      case DeclarationForSomeoneElse(companyName, capacity) =>
+        interstitialUserAnswers
+          .set(RepresentativeNamePage, companyName)
+          .toOption
+          .get
+          .set(RepresentativeCapacityPage, capacity)
+          .toOption
+          .get
+
+    }
+
+    userAnswers
+  }
+
 }

@@ -78,7 +78,6 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ContainerNumberPage(itemIndex, containerIndex) => ua => Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, NormalMode))
   }
 
-  //TODO: Need to refactor this code
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(index)                           => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case ItemTotalGrossMassPage(index)                        => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
@@ -336,16 +335,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
   def addAnotherPackage(itemIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(AddAnotherPackagePage(itemIndex)), ua.get(DeriveNumberOfContainers(itemIndex)).getOrElse(0)) match {
+    (ua.get(AddAnotherPackagePage(itemIndex)), mode) match {
       case (Some(true), _) =>
         val nextPackageIndex: Int = ua.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
         Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(nextPackageIndex), mode))
-      case (Some(false), 0) =>
-        Some(containerRoutes.ContainerNumberController.onPageLoad(ua.id, itemIndex, Index(0), mode))
-      case (Some(false), _) if mode == CheckMode =>
+      case (Some(false), CheckMode) =>
         Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
-      case (Some(false), _) =>
-        Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, mode))
+      case (Some(false), NormalMode) =>
+        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 

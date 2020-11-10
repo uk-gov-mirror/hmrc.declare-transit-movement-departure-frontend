@@ -16,29 +16,46 @@
 
 package viewModels
 
-import config.FrontendAppConfig
+import config.ManageTransitMovementsService
+import models.journeyDomain.JourneyDomain
 import models.{LocalReferenceNumber, SectionDetails, UserAnswers}
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import play.api.mvc.Call
 import utils.SectionsHelper
 
-class DeclarationSummaryViewModel(config: FrontendAppConfig, userAnswers: UserAnswers) {
+class DeclarationSummaryViewModel(manageTransitMovementsService: ManageTransitMovementsService, userAnswers: UserAnswers) {
+  import DeclarationSummaryViewModel.nextPage
 
   val lrn: LocalReferenceNumber      = userAnswers.id
   val sections: Seq[SectionDetails]  = new SectionsHelper(userAnswers).getSections
-  val backToTransitMovements: String = config.manageTransitMovementsUrl
+  val backToTransitMovements: String = manageTransitMovementsService.service.fullServiceUrl
+
+  val isDeclarationComplete: Boolean =
+    JourneyDomain
+      .parse(userAnswers)
+      .fold(false)(
+        _ => true
+      )
+
+  val onSubmitUrl: Option[String] = if (isDeclarationComplete) Some(nextPage(lrn).url) else None
+
 }
 
 object DeclarationSummaryViewModel {
 
-  def apply(config: FrontendAppConfig, userAnswers: UserAnswers): DeclarationSummaryViewModel =
-    new DeclarationSummaryViewModel(config, userAnswers)
+  def nextPage(localReferenceNumber: LocalReferenceNumber): Call = controllers.routes.DeclarationSummaryController.onSubmit(localReferenceNumber)
 
-  def unapply(arg: DeclarationSummaryViewModel): Some[(LocalReferenceNumber, Seq[SectionDetails], String)] =
-    Some(arg.lrn, arg.sections, arg.backToTransitMovements)
+  def apply(manageTransitMovementsService: ManageTransitMovementsService, userAnswers: UserAnswers): DeclarationSummaryViewModel =
+    new DeclarationSummaryViewModel(manageTransitMovementsService, userAnswers)
 
-  implicit val writes2: OWrites[DeclarationSummaryViewModel] =
+  def unapply(arg: DeclarationSummaryViewModel): Option[(LocalReferenceNumber, Seq[SectionDetails], String, Boolean, Option[String])] =
+    Some((arg.lrn, arg.sections, arg.backToTransitMovements, arg.isDeclarationComplete, arg.onSubmitUrl))
+
+  implicit val writes: OWrites[DeclarationSummaryViewModel] =
     ((__ \ "lrn").write[LocalReferenceNumber] and
       (__ \ "sections").write[Seq[SectionDetails]] and
-      (__ \ "backToTransitMovements").write[String])(unlift(unapply))
+      (__ \ "backToTransitMovements").write[String] and
+      (__ \ "isDeclarationComplete").write[Boolean] and
+      (__ \ "onSubmitUrl").writeNullable[String])(unlift(unapply))
 }
