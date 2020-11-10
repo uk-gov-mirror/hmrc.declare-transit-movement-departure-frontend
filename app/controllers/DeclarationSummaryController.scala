@@ -46,4 +46,6 @@ class DeclarationSummaryController @Inject()(
         .render("declarationSummary.njk", DeclarationSummaryViewModel(manageTransitMovementsService, request.userAnswers))
         .map(Ok(_))
   }
+
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = Action(NotImplemented)
 }

@@ -25,17 +25,12 @@ import play.api.mvc.Call
 @Singleton
 class FrontendAppConfig @Inject()(configuration: Configuration) {
 
-  private val contactHost                  = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "play26frontend"
+  private val contactHost = configuration.get[String]("contact-frontend.host")
 
-  val analyticsToken: String         = configuration.get[String](s"google-analytics.token")
-  val analyticsHost: String          = configuration.get[String](s"google-analytics.host")
-  val reportAProblemPartialUrl       = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  val reportAProblemNonJSUrl         = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  val betaFeedbackUrl                = s"$contactHost/contact/beta-feedback"
-  val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
-  val signOutUrl: String             = configuration.get[String]("urls.logout")
-  val nctsEnquiriesUrl: String       = configuration.get[String]("urls.nctsEnquiries")
+  val analyticsToken: String   = configuration.get[String](s"google-analytics.token")
+  val analyticsHost: String    = configuration.get[String](s"google-analytics.host")
+  val betaFeedbackUrl          = s"$contactHost/contact/beta-feedback"
+  val nctsEnquiriesUrl: String = configuration.get[String]("urls.nctsEnquiries")
 
   //TODO: Move out into it's own config object like `ManageTransitMovementsService`
   lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.referenceData").fullServiceUrl

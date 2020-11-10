@@ -25,6 +25,7 @@ GET        /:lrn/change-add-security-details                  controllers.AddSec
 POST       /:lrn/change-add-security-details                  controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/task-list                                    controllers.DeclarationSummaryController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/task-list                                    controllers.DeclarationSummaryController.onSubmit(lrn: LocalReferenceNumber)
 
 GET        /:lrn/movement-details/declaration-type                        controllers.movementDetails.DeclarationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/movement-details/declaration-type                        controllers.movementDetails.DeclarationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

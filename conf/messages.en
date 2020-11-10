@@ -204,6 +204,11 @@ declarationSummary.section.safetyAndSecurity = {0} safety and security details
 declarationSummary.section.addItems = {0} items
 declarationSummary.backToTransitMovements = Back to transit movements
 
+declarationSummary.submissionSubheader = Now send your departure declaration
+declarationSummary.submissionHonestyPledge = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
+declarationSummary.confirmAndSend = Confirm and send
+
+
 declarationType.title = What declaration do you want to create?
 declarationType.heading = What declaration do you want to create?
 declarationType.option1 = T1 (goods moving under external Union Transit procedure)

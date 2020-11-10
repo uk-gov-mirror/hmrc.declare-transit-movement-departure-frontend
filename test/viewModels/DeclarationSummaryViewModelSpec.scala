@@ -26,12 +26,11 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
 import play.api.libs.json.Json
 import utils.SectionsHelper
-
 import models.journeyDomain.MovementDetailsSpec._
 import models.journeyDomain.RouteDetailsSpec._
 import models.journeyDomain.TraderDetailsSpec._
 import models.journeyDomain.TransportDetailsSpec._
-import models.EoriNumber
+import models.{EoriNumber, LocalReferenceNumber}
 
 class DeclarationSummaryViewModelSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with BeforeAndAfterEach {
 
@@ -78,7 +77,8 @@ class DeclarationSummaryViewModelSpec extends SpecBase with GeneratorSpec with J
               "lrn"                    -> lrn,
               "sections"               -> new SectionsHelper(userAnswers).getSections,
               "backToTransitMovements" -> service.fullServiceUrl,
-              "isDeclarationComplete"  -> true
+              "isDeclarationComplete"  -> true,
+              "onSubmitUrl"            -> DeclarationSummaryViewModel.nextPage(lrn).url
             )
 
           result mustEqual expectedJson
