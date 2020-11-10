@@ -18,7 +18,8 @@ package generators
 
 import java.time.LocalDateTime
 
-import models.{DeclarationType, RepresentativeCapacity}
+import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
+import models.{DeclarationType, GuaranteeType, RepresentativeCapacity, UserAnswers}
 import models.journeyDomain.MovementDetails.{
   DeclarationForSelf,
   DeclarationForSomeoneElse,
@@ -26,7 +27,7 @@ import models.journeyDomain.MovementDetails.{
   NormalMovementDetails,
   SimplifiedMovementDetails
 }
-import models.journeyDomain.{MovementDetails, RouteDetails}
+import models.journeyDomain.{GuaranteeDetails, MovementDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.CountryCode
 import org.scalacheck.Arbitrary.arbitrary
@@ -34,6 +35,29 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryGuaranteeDetails: Arbitrary[GuaranteeDetails] =
+    Arbitrary(Gen.oneOf(arbitrary[GuaranteeReference], arbitrary[GuaranteeOther]))
+
+  implicit lazy val arbitraryGuaranteeOther: Arbitrary[GuaranteeOther] =
+    Arbitrary {
+      for {
+        guaranteeType   <- Arbitrary.arbitrary[GuaranteeType]
+        otherReference  <- nonEmptyString
+        liabilityAmount <- nonEmptyString
+      } yield GuaranteeOther(guaranteeType, otherReference, liabilityAmount)
+    }
+
+  implicit lazy val arbitraryGuaranteeReference: Arbitrary[GuaranteeReference] =
+    Arbitrary {
+      for {
+        guaranteeType            <- Arbitrary.arbitrary[GuaranteeType]
+        guaranteeReferenceNumber <- nonEmptyString
+        liabilityAmount          <- nonEmptyString
+        useDefaultAmount         <- Gen.option(Arbitrary.arbitrary[Boolean])
+        accessCode               <- nonEmptyString
+      } yield GuaranteeReference(guaranteeType, guaranteeReferenceNumber, liabilityAmount, useDefaultAmount, accessCode)
+    }
 
   implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =
     Arbitrary(Gen.const(DeclarationForSelf))

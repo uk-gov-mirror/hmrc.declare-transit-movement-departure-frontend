@@ -17,21 +17,24 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
+import generators.JourneyModelGenerators
+import models.UserAnswers
 import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
-import models.{GuaranteeType, UserAnswers}
-import org.scalacheck.{Arbitrary, Gen}
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages._
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
-class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec {
+class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
   "GuaranteeDetails" - {
 
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(guaranteeDetails) {
+        forAll(arbitrary[GuaranteeDetails], arbitrary[UserAnswers]) {
           case (guarantee, userAnswers) =>
-            val result: Option[GuaranteeDetails] = UserAnswersReader[GuaranteeDetails].run(userAnswers)
+            val updatedUserAnswer                = GuaranteeDetailsSpec.setGuaranteeDetails(guarantee)(userAnswers)
+            val result: Option[GuaranteeDetails] = UserAnswersReader[GuaranteeDetails].run(updatedUserAnswer)
 
             result.value mustEqual guarantee
         }
@@ -51,9 +54,10 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec {
 
         "when all details for section have been answered" in {
 
-          forAll(guaranteeReferenceUserAnswers) {
+          forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
-              val result = UserAnswersReader[GuaranteeReference].run(userAnswers).value
+              val updatedUserAnswer = GuaranteeDetailsSpec.setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+              val result            = UserAnswersReader[GuaranteeReference].run(updatedUserAnswer).value
 
               result mustEqual expected
           }
@@ -64,11 +68,10 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec {
 
         "when an answer is missing" in {
 
-          forAll(guaranteeReferenceUserAnswers, mandatoryPages) {
-            case ((_, ua), mandatoryPage) =>
+          forAll(arbitrary[UserAnswers], mandatoryPages) {
+            case (ua, mandatoryPage) =>
               val userAnswers = ua.remove(mandatoryPage).success.value
-
-              val result = UserAnswersReader[GuaranteeReference].run(userAnswers)
+              val result      = UserAnswersReader[GuaranteeReference].run(userAnswers)
 
               result mustBe None
           }
@@ -88,9 +91,10 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec {
 
         "when all details for section have been answered" in {
 
-          forAll(guaranteeOtherUserAnswers) {
+          forAll(arbitrary[GuaranteeOther], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
-              val result = UserAnswersReader[GuaranteeOther].run(userAnswers).value
+              val updatedUserAnswer = GuaranteeDetailsSpec.setGuaranteeOtherUserAnswers(expected)(userAnswers)
+              val result            = UserAnswersReader[GuaranteeOther].run(updatedUserAnswer).value
 
               result mustEqual expected
           }
@@ -101,11 +105,10 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec {
 
         "when an answer is missing" in {
 
-          forAll(guaranteeOtherUserAnswers, mandatoryPages) {
-            case ((_, ua), mandatoryPage) =>
+          forAll(arbitrary[UserAnswers], mandatoryPages) {
+            case (ua, mandatoryPage) =>
               val userAnswers = ua.remove(mandatoryPage).success.value
-
-              val result = UserAnswersReader[GuaranteeOther].run(userAnswers)
+              val result      = UserAnswersReader[GuaranteeOther].run(userAnswers)
 
               result mustBe None
           }
@@ -113,64 +116,53 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec {
       }
     }
   }
+}
 
-  implicit lazy val arbitraryGuaranteeOther: Arbitrary[GuaranteeOther] =
-    Arbitrary {
-      for {
-        guaranteeType   <- Arbitrary.arbitrary[GuaranteeType]
-        otherReference  <- nonEmptyString
-        liabilityAmount <- nonEmptyString
-      } yield GuaranteeOther(guaranteeType, otherReference, liabilityAmount)
+object GuaranteeDetailsSpec {
+
+  def setGuaranteeDetails(guaranteeDetails: GuaranteeDetails)(startUserAnswers: UserAnswers): UserAnswers =
+    guaranteeDetails match {
+      case guaranteeReference: GuaranteeReference => setGuaranteeReferenceUserAnswers(guaranteeReference)(startUserAnswers)
+      case guaranteeOther: GuaranteeOther         => setGuaranteeOtherUserAnswers(guaranteeOther)(startUserAnswers)
     }
 
-  implicit lazy val arbitraryGuaranteeReference: Arbitrary[GuaranteeReference] =
-    Arbitrary {
-      for {
-        guaranteeType            <- Arbitrary.arbitrary[GuaranteeType]
-        guaranteeReferenceNumber <- nonEmptyString
-        liabilityAmount          <- nonEmptyString
-        useDefaultAmount         <- Gen.option(Arbitrary.arbitrary[Boolean])
-        accessCode               <- nonEmptyString
-      } yield GuaranteeReference(guaranteeType, guaranteeReferenceNumber, liabilityAmount, useDefaultAmount, accessCode)
+  def setGuaranteeOtherUserAnswers(otherGuarantee: GuaranteeOther)(startUserAnswers: UserAnswers): UserAnswers = {
+
+    val guaranteeOtherUserAnswers = startUserAnswers
+      .set(GuaranteeTypePage, otherGuarantee.guaranteeType)
+      .toOption
+      .get
+      .set(OtherReferencePage, otherGuarantee.otherReference)
+      .toOption
+      .get
+      .set(OtherReferenceLiabilityAmountPage, otherGuarantee.liabilityAmount)
+      .toOption
+      .get
+
+    guaranteeOtherUserAnswers
+  }
+
+  def setGuaranteeReferenceUserAnswers(guaranteeReference: GuaranteeReference)(startUserAnswers: UserAnswers): UserAnswers = {
+
+    val userAnswers: UserAnswers = startUserAnswers
+      .set(GuaranteeTypePage, guaranteeReference.guaranteeType)
+      .toOption
+      .get
+      .set(GuaranteeReferencePage, guaranteeReference.guaranteeReferenceNumber)
+      .toOption
+      .get
+      .set(LiabilityAmountPage, guaranteeReference.liabilityAmount)
+      .toOption
+      .get
+      .set(AccessCodePage, guaranteeReference.accessCode)
+      .toOption
+      .get
+
+    val userAnswersWithOptionals: UserAnswers = guaranteeReference.useDefaultAmount match {
+      case Some(defaultAmount) => userAnswers.set(DefaultAmountPage, defaultAmount).toOption.get
+      case _                   => userAnswers
     }
 
-  // format: off
-
-  private val guaranteeOtherUserAnswers: Gen[(GuaranteeOther, UserAnswers)] =
-    for {
-      baseUserAnswers <- Arbitrary.arbitrary[UserAnswers]
-      guaranteeOther  <- Arbitrary.arbitrary[GuaranteeOther]
-    } yield {
-      val guaranteeOtherUserAnswers = baseUserAnswers
-        .set(GuaranteeTypePage, guaranteeOther.guaranteeType).success.value
-        .set(OtherReferencePage, guaranteeOther.otherReference).success.value
-        .set(OtherReferenceLiabilityAmountPage, guaranteeOther.liabilityAmount).success.value
-
-      (guaranteeOther, guaranteeOtherUserAnswers)
-    }
-
-  private val guaranteeReferenceUserAnswers: Gen[(GuaranteeReference, UserAnswers)] =
-    for {
-      baseUserAnswers     <- Arbitrary.arbitrary[UserAnswers]
-      guaranteeReference  <- Arbitrary.arbitrary[GuaranteeReference]
-    } yield {
-      val userAnswers = baseUserAnswers
-        .set(GuaranteeTypePage, guaranteeReference.guaranteeType).success.value
-        .set(GuaranteeReferencePage, guaranteeReference.guaranteeReferenceNumber).success.value
-        .set(LiabilityAmountPage, guaranteeReference.liabilityAmount).success.value
-        .set(AccessCodePage, guaranteeReference.accessCode).success.value
-
-      val userAnswersWithOptionals = guaranteeReference.useDefaultAmount match {
-        case Some(defaultAmount) => userAnswers.set(DefaultAmountPage, defaultAmount).success.value
-        case _                   => userAnswers
-      }
-
-      (guaranteeReference, userAnswersWithOptionals)
-    }
-
-  private val guaranteeDetails: Gen[(GuaranteeDetails, UserAnswers)] =
-    Gen.oneOf(guaranteeReferenceUserAnswers, guaranteeOtherUserAnswers)
-
-  // format: on
-
+    userAnswersWithOptionals
+  }
 }
