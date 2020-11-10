@@ -48,20 +48,20 @@ class TraderDetailsConsigneeEoriKnownController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/traderDetails/traderDetailsConsigneeEoriKnown.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(TraderDetailsConsigneeEoriKnownPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => formProvider(index)
+        case Some(value) => formProvider(index).fill(value)
       }
 
       val json = Json.obj(
         "form"   -> preparedForm,
         "mode"   -> mode,
         "lrn"    -> lrn,
+        "index"  -> index.display,
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
@@ -70,7 +70,7 @@ class TraderDetailsConsigneeEoriKnownController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(index)
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -79,6 +79,7 @@ class TraderDetailsConsigneeEoriKnownController @Inject()(
               "form"   -> formWithErrors,
               "mode"   -> mode,
               "lrn"    -> lrn,
+              "index"  -> index.display,
               "radios" -> Radios.yesNo(formWithErrors("value"))
             )
 

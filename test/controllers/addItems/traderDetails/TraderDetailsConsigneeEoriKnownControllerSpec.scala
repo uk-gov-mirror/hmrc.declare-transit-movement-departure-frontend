@@ -43,7 +43,7 @@ class TraderDetailsConsigneeEoriKnownControllerSpec extends SpecBase with MockNu
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new TraderDetailsConsigneeEoriKnownFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(index)
   private val template     = "addItems/traderDetails/traderDetailsConsigneeEoriKnown.njk"
 
   lazy val traderDetailsConsigneeEoriKnownRoute = routes.TraderDetailsConsigneeEoriKnownController.onPageLoad(lrn, index, NormalMode).url
