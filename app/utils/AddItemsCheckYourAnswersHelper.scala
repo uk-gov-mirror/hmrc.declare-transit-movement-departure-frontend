@@ -35,7 +35,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         documentType.getDocumentType(answer) map {
           documentType =>
             Row(
-              key   = Key(lit"${documentType.code}"),
+              key   = Key(lit"(${documentType.code}) ${documentType.description}"),
               value = Value(lit""),
               actions = List(
                 Action(
