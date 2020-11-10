@@ -31,19 +31,6 @@ object AddItemsCheckYourAnswersViewModel {
 
     val checkYourAnswersHelper = new AddItemsCheckYourAnswersHelper(userAnswers)
 
-    /*    val referencesRows: Seq[SummaryList.Row] =
-      List.range(0, userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)).flatMap {
-        position =>
-          checkYourAnswersHelper.previousReferenceRows(index, Index(position))
-        //checkYourAnswersHelper.previousReferenceRows(index, Index(position), documentTypes)
-      }*/
-
-    val documentRows: Seq[SummaryList.Row] =
-      List.range(0, userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)).flatMap {
-        documentPosition =>
-          checkYourAnswersHelper.documentRow(index, Index(documentPosition), userAnswers)
-      }
-
     AddItemsCheckYourAnswersViewModel(
       Seq(
         itemsDetailsSection(checkYourAnswersHelper, index),
@@ -51,16 +38,8 @@ object AddItemsCheckYourAnswersViewModel {
         packagesSection(checkYourAnswersHelper, index)(userAnswers)
         /*
         ,
-        Section(
-          msg"addItems.checkYourAnswersLabel.references",
-          Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
-          checkYourAnswersHelper.addAnotherPreviousReferences(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
-        ),
-        Section(
-          msg"addItems.checkYourAnswersLabel.documents",
-          Seq(checkYourAnswersHelper.addDocuments(index).toSeq, checkYourAnswersHelper.documentReference(index).toSeq, documentRows).flatten,
-//          checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
-        )
+        referencesSection(checkYourAnswersHelper, index)(userAnswers),
+        documentsSection(checkYourAnswersHelper, index)(userAnswers)
        */
       )
     )
@@ -83,13 +62,15 @@ object AddItemsCheckYourAnswersViewModel {
   private def traderDetailsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
     msg"addItems.checkYourAnswersLabel.traderDetails",
     Seq(
-      checkYourAnswersHelper.traderDetailsConsignorName(index),
-      checkYourAnswersHelper.traderDetailsConsignorEoriNumber(index),
+      //todo: add in subheading for consignor H3
       checkYourAnswersHelper.traderDetailsConsignorEoriKnown(index),
+      checkYourAnswersHelper.traderDetailsConsignorEoriNumber(index),
+      checkYourAnswersHelper.traderDetailsConsignorName(index),
       checkYourAnswersHelper.traderDetailsConsignorAddress(index),
-      checkYourAnswersHelper.traderDetailsConsigneeName(index),
-      checkYourAnswersHelper.traderDetailsConsigneeEoriNumber(index),
+      //todo: add in subheading for consignee H3
       checkYourAnswersHelper.traderDetailsConsigneeEoriKnown(index),
+      checkYourAnswersHelper.traderDetailsConsigneeEoriNumber(index),
+      checkYourAnswersHelper.traderDetailsConsigneeName(index),
       checkYourAnswersHelper.traderDetailsConsigneeAddress(index)
     ).flatten
   )
@@ -105,6 +86,34 @@ object AddItemsCheckYourAnswersViewModel {
       msg"addItems.checkYourAnswersLabel.packages",
       packageRows,
       checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.packages.addRemove")
+    )
+  }
+
+  /* private def referencesSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index)(implicit userAnswers: UserAnswers) = {
+    val referencesRows: Seq[SummaryList.Row] =
+      List.range(0, userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)).flatMap {
+        position =>
+        //checkYourAnswersHelper.previousReferenceRows(index, Index(position), documentTypes) //todo: will need docTypes added back in
+      }
+
+    Section(
+      msg"addItems.checkYourAnswersLabel.references",
+      Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
+      checkYourAnswersHelper.addAnotherPreviousReferences(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
+    )
+  }*/
+
+  private def documentsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index)(implicit userAnswers: UserAnswers) = {
+    val documentRows: Seq[SummaryList.Row] =
+      List.range(0, userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)).flatMap {
+        documentPosition =>
+          checkYourAnswersHelper.documentRow(index, Index(documentPosition), userAnswers)
+      }
+
+    Section(
+      msg"addItems.checkYourAnswersLabel.documents",
+      Seq(checkYourAnswersHelper.addDocuments(index).toSeq, checkYourAnswersHelper.documentReference(index).toSeq, documentRows).flatten,
+      checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
     )
   }
 

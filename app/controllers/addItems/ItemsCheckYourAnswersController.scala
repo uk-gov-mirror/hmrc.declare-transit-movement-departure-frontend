@@ -42,6 +42,8 @@ class ItemsCheckYourAnswersController @Inject()(
     extends FrontendBaseController
     with I18nSupport {
 
+  private val template = "addItems/itemsCheckYourAnswers.njk"
+
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val sections: Seq[Section] = AddItemsCheckYourAnswersViewModel(request.userAnswers, index).sections
@@ -51,7 +53,7 @@ class ItemsCheckYourAnswersController @Inject()(
         "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
       )
 
-      renderer.render("itemsCheckYourAnswers.njk", json).map(Ok(_))
+      renderer.render(template, json).map(Ok(_))
   }
 
   /*
@@ -66,7 +68,7 @@ class ItemsCheckYourAnswersController @Inject()(
             "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
           )
 
-          renderer.render("itemsCheckYourAnswers.njk", json).map(Ok(_))
+          renderer.render(template, json).map(Ok(_))
       }
   }
  */

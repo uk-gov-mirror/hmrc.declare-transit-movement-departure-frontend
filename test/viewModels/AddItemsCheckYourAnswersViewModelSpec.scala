@@ -49,10 +49,11 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase {
         .success
         .value
 
-      val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, previousDocumentTypeList)
+      //val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, previousDocumentTypeList)
+      val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index)
 
       data.sections.head.sectionTitle mustBe defined
-      data.sections.length mustEqual 4
+      data.sections.length mustEqual 3
       data.sections.head.rows.length mustEqual 6
     }
   }
