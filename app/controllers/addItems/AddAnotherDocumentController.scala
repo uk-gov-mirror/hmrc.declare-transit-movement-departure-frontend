@@ -55,30 +55,28 @@ class AddAnotherDocumentController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        renderPage(lrn, index, documentIndex, formProvider(index)).map(Ok(_))
+        renderPage(lrn, index, formProvider(index)).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         formProvider(index)
           .bindFromRequest()
           .fold(
-            formWithErrors => renderPage(lrn, index, documentIndex, formWithErrors).map(BadRequest(_)),
+            formWithErrors => renderPage(lrn, index, formWithErrors).map(BadRequest(_)),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherDocumentPage(index, documentIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherDocumentPage(index), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAnotherDocumentPage(index, documentIndex), NormalMode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddAnotherDocumentPage(index), NormalMode, updatedAnswers))
           )
     }
 
-  private def renderPage(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, form: Form[Boolean])(
-    implicit request: DataRequest[AnyContent]): Future[Html] = {
+  private def renderPage(lrn: LocalReferenceNumber, index: Index, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
 
     val cyaHelper             = new AddItemsCheckYourAnswersHelper(request.userAnswers)
     val numberOfDocuments     = request.userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)
@@ -87,7 +85,7 @@ class AddAnotherDocumentController @Inject()(
     referenceDataConnector.getDocumentTypes() flatMap {
       documents =>
         val documentRows = indexList.map {
-          index =>
+          documentIndex =>
             cyaHelper.documentRows(index, documentIndex, documents)
         }
 

@@ -20,7 +20,7 @@ import base.SpecBase
 import pages.addItems
 import pages.behaviours.PageBehaviours
 
-class DocumentTypePageSpec extends SpecBase with PageBehaviours {
+class DocumentTypePageSpec extends PageBehaviours with SpecBase {
 
   "DocumentTypePage" - {
 

@@ -19,11 +19,11 @@ package pages.addItems
 import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import queries.Constants.items
+import queries.Constants.{documents, items}
 
-case class AddAnotherDocumentPage(index: Index, documentIndex: Index) extends QuestionPage[Boolean] {
+case class AddAnotherDocumentPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ items \ documentIndex.position \ toString
+  override def path: JsPath = JsPath \ items \ index.position \ documents \ toString
 
   override def toString: String = "addAnotherDocument"
 }

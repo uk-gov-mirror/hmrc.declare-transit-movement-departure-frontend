@@ -23,10 +23,10 @@ class AddAnotherDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "AddAnotherDocumentPage" - {
 
-    beRetrievable[Boolean](AddAnotherDocumentPage(index, documentIndex))
+    beRetrievable[Boolean](AddAnotherDocumentPage(index))
 
-    beSettable[Boolean](AddAnotherDocumentPage(index, documentIndex))
+    beSettable[Boolean](AddAnotherDocumentPage(index))
 
-    beRemovable[Boolean](AddAnotherDocumentPage(index, documentIndex))
+    beRemovable[Boolean](AddAnotherDocumentPage(index))
   }
 }

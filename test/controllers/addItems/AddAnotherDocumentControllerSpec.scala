@@ -48,7 +48,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
   private val form         = formProvider(index)
   private val template     = "addItems/addAnotherDocument.njk"
 
-  lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn, index, documentIndex, NormalMode).url
+  lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -64,12 +64,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request               = FakeRequest(GET, addAnotherDocumentRoute)
-      val templateCaptor        = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor            = ArgumentCaptor.forClass(classOf[JsObject])
-      val result                = route(app, request).value
-      val indexList: Seq[Index] = List.range(0, 1).map(Index(_))
-      val cyaHelper             = new AddItemsCheckYourAnswersHelper(userAnswers)
+      val request        = FakeRequest(GET, addAnotherDocumentRoute)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val result         = route(app, request).value
 
       status(result) mustEqual OK
 
@@ -82,7 +80,6 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
         "heading"   -> msg"addAnotherDocument.heading.plural".withArgs(1),
         "radios"    -> Radios.yesNo(form("value"))
       )
-      println(s"\n\n\n\n jsonCaptor.getValue : ${jsonCaptor.getValue}")
       templateCaptor.getValue mustEqual "addItems/addAnotherDocument.njk"
       jsonCaptor.getValue must containJson(expectedJson)
 
