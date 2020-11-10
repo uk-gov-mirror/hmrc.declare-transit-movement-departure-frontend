@@ -58,8 +58,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
   "AddAnotherDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = emptyUserAnswers.set(DocumentTypePage(index, documentIndex), "test").success.value
-      dataRetrievalWithData(userAnswers)
+      dataRetrievalWithData(emptyUserAnswers)
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -104,9 +103,8 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val userAnswers = emptyUserAnswers.set(DocumentTypePage(index, documentIndex), "test").success.value
 
-      dataRetrievalWithData(userAnswers)
+      dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
