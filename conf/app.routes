@@ -568,3 +568,8 @@ GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/document
 POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/document-type               controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-document-type        controllers.addItems.DocumentTypeController.onPageLoad(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-document-type        controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
+
+GET        /:lrn/confirm-remove-document                        controllers.addItems.ConfirmRemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/confirm-remove-document                       controllers.addItems.ConfirmRemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/change-confirm-remove-document                   controllers.addItems.ConfirmRemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/change-confirm-remove-document                  controllers.addItems.ConfirmRemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

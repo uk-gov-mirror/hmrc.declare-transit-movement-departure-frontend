@@ -23,7 +23,7 @@ import controllers.addItems.specialMentions.{routes => specialMentionRoutes}
 import controllers.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.{AddDocumentsPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
+import pages.addItems.{AddDocumentsPage, ConfirmRemoveDocumentPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import pages.addItems.specialMentions._

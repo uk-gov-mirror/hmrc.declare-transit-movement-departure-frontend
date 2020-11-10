@@ -13,3 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package pages.addItems
+
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+
+case object ConfirmRemoveDocumentPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "confirmRemoveDocument"
+}

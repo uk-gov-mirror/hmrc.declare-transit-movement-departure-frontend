@@ -13,3 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package forms.addItems
+
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
+
+class ConfirmRemoveDocumentFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmRemoveDocument.error.required")
+    )
+}

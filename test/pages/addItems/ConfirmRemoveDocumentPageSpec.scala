@@ -13,3 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package pages.addItems
+
+import pages.behaviours.PageBehaviours
+
+class ConfirmRemoveDocumentPageSpec extends PageBehaviours {
+
+  "ConfirmRemoveDocumentPage" - {
+
+    beRetrievable[Boolean](ConfirmRemoveDocumentPage)
+
+    beSettable[Boolean](ConfirmRemoveDocumentPage)
+
+    beRemovable[Boolean](ConfirmRemoveDocumentPage)
+  }
+}

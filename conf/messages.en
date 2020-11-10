@@ -1015,3 +1015,7 @@ documentType.title = What type of document do you need to add?
 documentType.heading = What type of document do you need to add?
 documentType.checkYourAnswersLabel = Document type
 documentType.error.required = Enter the type of document you need to add
+
+confirmRemoveDocument.title = Are you sure you want to remove this document?
+confirmRemoveDocument.heading = Are you sure you want to remove this document?
+confirmRemoveDocument.error.required = Select yes if you want to remove this document

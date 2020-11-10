@@ -528,6 +528,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
+  def confirmRemoveDocument: Option[Row] = userAnswers.get(ConfirmRemoveDocumentPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"confirmRemoveDocument.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConfirmRemoveDocumentController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveDocument.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def lrn: LocalReferenceNumber = userAnswers.id
 
 }
