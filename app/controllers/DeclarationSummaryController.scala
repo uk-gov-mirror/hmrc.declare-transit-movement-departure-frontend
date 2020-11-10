@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{FrontendAppConfig, ManageTransitMovementsService}
+import config.ManageTransitMovementsService
 import controllers.actions._
 import javax.inject.Inject
 import models.LocalReferenceNumber
@@ -47,5 +47,5 @@ class DeclarationSummaryController @Inject()(
         .map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = Action(NotImplemented)
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = Action(Redirect(routes.SubmissionConfirmationController.onPageLoad(lrn)))
 }
