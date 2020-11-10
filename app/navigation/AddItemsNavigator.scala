@@ -75,7 +75,6 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddAnotherPreviousAdministrativeReferencePage(itemIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, ua, NormalMode)
   }
 
-  //TODO: Need to refactor this code
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(index)                           => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case ItemTotalGrossMassPage(index)                        => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
