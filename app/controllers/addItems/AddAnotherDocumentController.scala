@@ -16,6 +16,7 @@
 
 package controllers.addItems
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import derivable.DeriveNumberOfDocuments
 import forms.addItems.AddAnotherDocumentFormProvider
@@ -46,6 +47,7 @@ class AddAnotherDocumentController @Inject()(
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: AddAnotherDocumentFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -83,21 +85,24 @@ class AddAnotherDocumentController @Inject()(
     val numberOfDocuments     = request.userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)
     val indexList: Seq[Index] = List.range(0, numberOfDocuments).map(Index(_))
 
-    val documentRows = indexList.map {
-      index =>
-        cyaHelper.documentRows(index, documentIndex)
+    referenceDataConnector.getDocumentTypes() flatMap {
+      documents =>
+        val documentRows = indexList.map {
+          index =>
+            cyaHelper.documentRows(index, documentIndex, documents)
+        }
+
+        val singularOrPlural = if (numberOfDocuments == 1) "singular" else "plural"
+        val json = Json.obj(
+          "form"         -> form,
+          "lrn"          -> lrn,
+          "pageTitle"    -> msg"addAnotherDocument.title.$singularOrPlural".withArgs(numberOfDocuments),
+          "heading"      -> msg"addAnotherDocument.heading.$singularOrPlural".withArgs(numberOfDocuments),
+          "documentRows" -> documentRows,
+          "radios"       -> Radios.yesNo(form("value"))
+        )
+
+        renderer.render("addItems/addAnotherDocument.njk", json)
     }
-
-    val singularOrPlural = if (numberOfDocuments == 1) "singular" else "plural"
-    val json = Json.obj(
-      "form"         -> form,
-      "lrn"          -> lrn,
-      "pageTitle"    -> msg"addAnotherDocument.title.$singularOrPlural".withArgs(numberOfDocuments),
-      "heading"      -> msg"addAnotherDocument.heading.$singularOrPlural".withArgs(numberOfDocuments),
-      "documentRows" -> documentRows,
-      "radios"       -> Radios.yesNo(form("value"))
-    )
-
-    renderer.render("addItems/addAnotherDocument.njk", json)
   }
 }

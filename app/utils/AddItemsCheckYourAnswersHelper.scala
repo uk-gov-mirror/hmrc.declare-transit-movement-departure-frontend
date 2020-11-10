@@ -29,27 +29,30 @@ import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def documentRows(index: Index, documentIndex: Index): Option[Row] =
-    userAnswers.get(DocumentTypePage(index, documentIndex)).map {
+  def documentRows(index: Index, documentIndex: Index, documentType: DocumentTypeList): Option[Row] =
+    userAnswers.get(DocumentTypePage(index, documentIndex)).flatMap {
       answer =>
-        Row(
-          key   = Key(lit"$answer"),
-          value = Value(lit""),
-          actions = List(
-            Action(
-              content            = msg"site.change",
-              href               = routes.DocumentTypeController.onPageLoad(userAnswers.id, index, documentIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"addAnotherDocument.documentList.change.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""change-document-${index.display}""")
-            ),
-            Action(
-              content            = msg"site.delete",
-              href               = "",
-              visuallyHiddenText = Some(msg"addSeal.documentList.delete.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""remove-document-${index.display}""")
+        documentType.getDocumentType(answer) map {
+          documentType =>
+            Row(
+              key   = Key(lit"${documentType.code}"),
+              value = Value(lit""),
+              actions = List(
+                Action(
+                  content            = msg"site.change",
+                  href               = routes.DocumentTypeController.onPageLoad(userAnswers.id, index, documentIndex, CheckMode).url,
+                  visuallyHiddenText = Some(msg"addAnotherDocument.documentList.change.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""change-document-${index.display}""")
+                ),
+                Action(
+                  content            = msg"site.delete",
+                  href               = "",
+                  visuallyHiddenText = Some(msg"addSeal.documentList.delete.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""remove-document-${index.display}""")
+                )
+              )
             )
-          )
-        )
+        }
     }
 
   def itemRows(index: Index): Option[Row] =
