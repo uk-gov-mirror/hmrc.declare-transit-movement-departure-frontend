@@ -55,7 +55,6 @@ class AddAnotherDocumentController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val template = "addItems/addAnotherDocument.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
