@@ -23,7 +23,7 @@ import queries.Constants.{documents, items}
 
 case class AddAnotherDocumentPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ items \ index.position \ documents \ toString
+  override def path: JsPath = JsPath \ items \ index.position \ toString
 
   override def toString: String = "addAnotherDocument"
 }
