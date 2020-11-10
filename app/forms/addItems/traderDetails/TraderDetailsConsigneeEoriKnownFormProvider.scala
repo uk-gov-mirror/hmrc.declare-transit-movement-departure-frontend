@@ -18,12 +18,13 @@ package forms.addItems.traderDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
 
 class TraderDetailsConsigneeEoriKnownFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(index: Index): Form[Boolean] =
     Form(
-      "value" -> boolean("traderDetailsConsigneeEoriKnown.error.required")
+      "value" -> boolean("traderDetailsConsigneeEoriKnown.error.required", "error.boolean", Seq(index.display))
     )
 }

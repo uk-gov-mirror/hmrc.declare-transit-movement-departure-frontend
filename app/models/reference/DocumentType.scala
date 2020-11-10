@@ -18,7 +18,7 @@ package models.reference
 
 import play.api.libs.json.{Json, OFormat}
 
-case class DocumentType(code: String, description: String)
+case class DocumentType(code: String, description: String, transportDocument: Boolean)
 
 object DocumentType {
   implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
