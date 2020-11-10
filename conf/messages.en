@@ -204,6 +204,11 @@ declarationSummary.section.safetyAndSecurity = {0} safety and security details
 declarationSummary.section.addItems = {0} items
 declarationSummary.backToTransitMovements = Back to transit movements
 
+declarationSummary.submissionSubheader = Now send your departure declaration
+declarationSummary.submissionHonestyPledge = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
+declarationSummary.confirmAndSend = Confirm and send
+
+
 declarationType.title = What declaration do you want to create?
 declarationType.heading = What declaration do you want to create?
 declarationType.option1 = T1 (goods moving under external Union Transit procedure)
@@ -274,7 +279,7 @@ whatIsPrincipalEori.checkYourAnswersLabel = What is the principal’s EORI numbe
 whatIsPrincipalEori.error.required = Enter the principal’s EORI number
 whatIsPrincipalEori.error.length = The principal’s EORI number must be 17 characters or less
 whatIsPrincipalEori.error.invalidCharacters = The principal’s EORI number must only include letters a to z and numbers 0 to 9
-whatIsPrincipalEori.error.invalidFormat = Enter the principal’s EORI number in the right format
+whatIsPrincipalEori.error.invalidFormat = Enter the principal’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 principalAddress.title = What is the principal’s address?
 principalAddress.heading = What is {0}’s address?
@@ -316,7 +321,7 @@ consignorEori.checkYourAnswersLabel = What is the consignor’s EORI number?
 consignorEori.error.required = Enter the consignor's EORI umber
 consignorEori.error.length = Consignor's Eori number must be 17 characters or less
 consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
-consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
+consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 isConsigneeEoriKnown.title = Do you know the consignee’s EORI number?
 isConsigneeEoriKnown.heading = Do you know the consignee’s EORI number?
@@ -342,7 +347,7 @@ whatIsConsigneeEori.checkYourAnswersLabel = What is the consignee’s EORI numbe
 whatIsConsigneeEori.error.required = Enter the consignee’s EORI number
 whatIsConsigneeEori.error.length = The consignee’s EORI number must be 17 characters or less
 whatIsConsigneeEori.error.invalidCharacters = The consignee’s EORI number must only include letters a to z and numbers 0 to 9
-whatIsConsigneeEori.error.invalidFormat = Enter the consignee’s EORI number in the right format
+whatIsConsigneeEori.error.invalidFormat = Enter the consignee’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 consignorAddress.title = What is the address of the consignor
 consignorAddress.heading = What is {0}’s address?
@@ -909,6 +914,8 @@ addItems.checkYourAnswersLabel.containers = Special mentions
 addItems.checkYourAnswersLabel.certificates = Produced documents and work certificates
 addItems.checkYourAnswersLabel.references = Previous administrative references
 addItems.checkYourAnswersLabel.references.addRemove = Add or remove previous administrative references
+addItems.checkYourAnswersLabel.documents = Produced documents and work certificates
+addItems.checkYourAnswersLabel.documents.addRemove = Add or remove documents
 
 addAdministrativeReference.title = Do you need to add a previous administrative reference?
 addAdministrativeReference.heading = Do you need to add a previous administrative reference?
@@ -1011,10 +1018,31 @@ documentExtraInformation.checkYourAnswersLabel = Extra information for document 
 documentExtraInformation.error.required = Enter the extra information for document {0}
 documentExtraInformation.error.length = Document extra information must be 26 characters or less
 documentExtraInformation.error.invalid = The extra information for this document must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
+addAnotherDocument.title.singular = You have added {0} produced document or certificate
+addAnotherDocument.title.plural = You have added {0} produced documents or certificates
+addAnotherDocument.heading.singular = You have added {0} produced document or certificate
+addAnotherDocument.heading.plural = You have added {0} produced documents or certificates
+addAnotherDocument.paragraph = Do you need to add another produced document or work certificate?
+addAnotherDocument.error.required = Select yes if you want to add another produced document or work certificate
+addAnotherDocument.documentList.heading = Documents
+addAnotherDocument.documentList.label = Document {0}
+addAnotherDocument.documentList.change.hidden = Document {0}
+addAnotherDocument.documentList.delete.hidden = Document {0}
+
+
 documentType.title = What type of document do you need to add?
 documentType.heading = What type of document do you need to add?
 documentType.checkYourAnswersLabel = Document type
 documentType.error.required = Enter the type of document you need to add
+
+submissionConfirmation.title = Departure declaration sent
+submissionConfirmation.heading = Departure declaration sent
+submissionConfirmation.submissionText = for local reference number
+submissionConfirmation.subHeading = What happens next
+submissionConfirmation.link.pretext = You can:
+submissionConfirmation.link.option1 = manage your departure declarations
+submissionConfirmation.link.option2 = make another departure declaration
 
 confirmRemoveDocument.title = Are you sure you want to remove this document?
 confirmRemoveDocument.heading = Are you sure you want to remove this document?

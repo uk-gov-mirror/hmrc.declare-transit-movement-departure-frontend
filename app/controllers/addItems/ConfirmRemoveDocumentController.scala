@@ -26,6 +26,7 @@ import pages.addItems.ConfirmRemoveDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.DocumentQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -93,7 +94,7 @@ class ConfirmRemoveDocumentController @Inject()(
             value =>
               if (value) {
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ConfirmRemoveDocumentPage(itemIndex, documentIndex), value))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(DocumentQuery(itemIndex, documentIndex)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ConfirmRemoveDocumentPage(itemIndex, documentIndex), mode, updatedAnswers))
               } else {

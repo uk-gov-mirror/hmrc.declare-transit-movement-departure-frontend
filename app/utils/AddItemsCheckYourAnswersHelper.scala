@@ -29,20 +29,54 @@ import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def documentType(index: Index, documentIndex: Index): Option[Row] = userAnswers.get(DocumentTypePage(index, documentIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"documentType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.DocumentTypeController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"documentType.checkYourAnswersLabel"))
+  def documentRows(index: Index, documentIndex: Index, documentType: DocumentTypeList): Option[Row] =
+    userAnswers.get(DocumentTypePage(index, documentIndex)).flatMap {
+      answer =>
+        documentType.getDocumentType(answer) map {
+          documentType =>
+            Row(
+              key   = Key(lit"(${documentType.code}) ${documentType.description}"),
+              value = Value(lit""),
+              actions = List(
+                Action(
+                  content            = msg"site.change",
+                  href               = routes.DocumentTypeController.onPageLoad(userAnswers.id, index, documentIndex, CheckMode).url,
+                  visuallyHiddenText = Some(msg"addAnotherDocument.documentList.change.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""change-document-${index.display}""")
+                ),
+                Action(
+                  content            = msg"site.delete",
+                  href               = routes.ConfirmRemoveDocumentController.onPageLoad(userAnswers.id, index, documentIndex, CheckMode).url,
+                  visuallyHiddenText = Some(msg"addSeal.documentList.delete.hidden".withArgs(answer)),
+                  attributes         = Map("id" -> s"""remove-document-${index.display}""")
+                )
+              )
+            )
+        }
+    }
+
+  def itemRows(index: Index): Option[Row] =
+    userAnswers.get(ItemDescriptionPage(index)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index).url,
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-item-${index.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = routes.ConfirmRemoveItemController.onPageLoad(userAnswers.id, index).url,
+              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-item-${index.display}""")
+            )
           )
         )
-      )
-  }
+    }
 
   def addDocuments(itemIndex: Index): Option[Row] = userAnswers.get(AddDocumentsPage) map {
     answer =>
@@ -335,29 +369,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def itemRows(index: Index): Option[Row] =
-    userAnswers.get(ItemDescriptionPage(index)).map {
-      answer =>
-        Row(
-          key   = Key(lit"$answer"),
-          value = Value(lit""),
-          actions = List(
-            Action(
-              content            = msg"site.change",
-              href               = routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, index).url,
-              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""change-item-${index.display}""")
-            ),
-            Action(
-              content            = msg"site.delete",
-              href               = routes.ConfirmRemoveItemController.onPageLoad(userAnswers.id, index).url,
-              visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.delete.hidden".withArgs(answer)),
-              attributes         = Map("id" -> s"""remove-item-${index.display}""")
-            )
-          )
-        )
-    }
-
   def previousReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList): Option[Row] =
     userAnswers.get(ReferenceTypePage(index, referenceIndex)) flatMap {
       answer =>
@@ -523,6 +534,31 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               content            = msg"site.edit",
               href               = routes.AddExtraDocumentInformationController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
               visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addExtraDocumentInformation.checkYourAnswersLabel"))
+            )
+          )
+        )
+    }
+
+  def addAnotherDocument(itemIndex: Index, content: Text): AddAnotherViewModel = {
+
+    //TODO: Update to use AddAnotherDocument controller
+    val addAnotherDocumentHref = ???
+
+    AddAnotherViewModel(addAnotherDocumentHref, content)
+  }
+
+  def documentRow(itemIndex: Index, documentIndex: Index, userAnswers: UserAnswers): Option[Row] =
+    userAnswers.get(DocumentTypePage(itemIndex, documentIndex)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.DocumentTypeController.onPageLoad(userAnswers.id, itemIndex, documentIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer.toString)),
+              attributes         = Map("id" -> s"""change-document-${documentIndex.display}""")
             )
           )
         )

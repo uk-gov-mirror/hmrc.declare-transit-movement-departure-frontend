@@ -17,7 +17,7 @@
 package controllers
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, ManageTransitMovementsService}
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -41,7 +41,7 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendere
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+      val manageTransitMovementsService = app.injector.instanceOf[ManageTransitMovementsService]
 
       val request        = FakeRequest(GET, routes.DeclarationSummaryController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -56,7 +56,7 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendere
       val expectedJson =
         Json.obj(
           "lrn"                    -> lrn,
-          "backToTransitMovements" -> frontendAppConfig.manageTransitMovementsUrl
+          "backToTransitMovements" -> manageTransitMovementsService.service.fullServiceUrl
         )
 
       templateCaptor.getValue mustEqual "declarationSummary.njk"

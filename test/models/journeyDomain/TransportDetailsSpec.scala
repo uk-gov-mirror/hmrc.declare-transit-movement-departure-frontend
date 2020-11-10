@@ -27,21 +27,16 @@ import org.scalatest.TryValues
 import pages._
 
 class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
+  import TransportDetailsSpec._
 
   "TransportDetail can be parser from UserAnswers" - {
     "when there are no change at the border" - {
-      val willNotChangeAnswers: Gen[UserAnswers] =
-        arb[UserAnswers].map(_.set(ChangeAtBorderPage, false).success.value)
-
       "when inland mode is 'Rail'" in {
         val railModeGen = Gen.oneOf(Rail.Constants.codes)
 
-        forAll(willNotChangeAnswers, railModeGen) {
+        forAll(arb[UserAnswers], railModeGen) {
           (baseUserAnswers, railMode) =>
-            val userAnswers = baseUserAnswers
-              .set(InlandModePage, railMode)
-              .success
-              .value
+            val userAnswers = setTransportDetailsRail(false, railMode)(baseUserAnswers)
 
             val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
 
@@ -54,15 +49,9 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
       "when inland mode is 'Postal Consignment' or 'Fixed transport installations'" in {
         val modeGen = Gen.oneOf(Mode5or7.Constants.codes)
 
-        forAll(willNotChangeAnswers, modeGen, arb[CountryCode]) {
+        forAll(arb[UserAnswers], modeGen, arb[CountryCode]) {
           (baseUserAnswers, mode, countryCode) =>
-            val userAnswers = baseUserAnswers
-              .set(InlandModePage, mode)
-              .success
-              .value
-              .set(NationalityAtDeparturePage, countryCode)
-              .success
-              .value
+            val userAnswers = setTransportDetailsMode5or7(false, countryCode, mode)(baseUserAnswers)
 
             val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
 
@@ -74,23 +63,10 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
       "when inland mode is anything other than 'Rail', 'Postal Consignment' or 'Fixed transport installations'" in {
         val modeGen = stringsExceptSpecificValues(Rail.Constants.codes ++ Mode5or7.Constants.codes)
 
-        forAll(willNotChangeAnswers, modeGen, arb[CountryCode], Gen.option(stringsWithMaxLength(stringMaxLength))) {
+        forAll(arb[UserAnswers], modeGen, arb[CountryCode], Gen.option(stringsWithMaxLength(stringMaxLength))) {
           (baseUserAnswers, mode, countryCode, optionalIdAtDeparture) =>
-            val tmp = baseUserAnswers
-              .set(InlandModePage, mode)
-              .success
-              .value
-              .set(NationalityAtDeparturePage, countryCode)
-              .success
-              .value
-              .set(AddIdAtDeparturePage, optionalIdAtDeparture.isDefined)
-              .success
-              .value
-
             val userAnswers =
-              optionalIdAtDeparture.fold(tmp)(
-                idAtDeparture => tmp.set(IdAtDeparturePage, idAtDeparture).success.value
-              )
+              setTransportDetailsOther(false, countryCode, optionalIdAtDeparture)(baseUserAnswers)
 
             val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
 
@@ -99,6 +75,61 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
         }
       }
     }
+  }
+
+}
+
+object TransportDetailsSpec {
+
+  def setTransportDetailsRail(changeAtBorder: Boolean, mode: String = Rail.Constants.codes.head)(startUserAnswers: UserAnswers): UserAnswers =
+    startUserAnswers
+      .set(ChangeAtBorderPage, changeAtBorder)
+      .toOption
+      .get
+      .set(InlandModePage, mode)
+      .toOption
+      .get
+
+  def setTransportDetailsMode5or7(changeAtBorder: Boolean, countryCode: CountryCode, mode: String = Mode5or7.Constants.codes.head)(
+    startUserAnswers: UserAnswers
+  ): UserAnswers =
+    startUserAnswers
+      .set(ChangeAtBorderPage, changeAtBorder)
+      .toOption
+      .get
+      .set(InlandModePage, mode)
+      .toOption
+      .get
+      .set(NationalityAtDeparturePage, countryCode)
+      .toOption
+      .get
+
+  def setTransportDetailsOther(changeAtBorder: Boolean, countryCode: CountryCode, optionalIdAtDeparture: Option[String], mode: String = "ZZ")(
+    startUserAnswers: UserAnswers
+  ): UserAnswers = {
+    val tmp = startUserAnswers
+      .set(ChangeAtBorderPage, changeAtBorder)
+      .toOption
+      .get
+      .set(InlandModePage, Rail.Constants.codes.head)
+      .toOption
+      .get
+      .set(InlandModePage, mode)
+      .toOption
+      .get
+      .set(NationalityAtDeparturePage, countryCode)
+      .toOption
+      .get
+      .set(AddIdAtDeparturePage, optionalIdAtDeparture.isDefined)
+      .toOption
+      .get
+
+    val userAnswers =
+      optionalIdAtDeparture.fold(tmp)(
+        idAtDeparture => tmp.set(IdAtDeparturePage, idAtDeparture).toOption.get
+      )
+
+    userAnswers
   }
 
 }

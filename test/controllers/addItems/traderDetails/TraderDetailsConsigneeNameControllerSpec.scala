@@ -43,7 +43,7 @@ class TraderDetailsConsigneeNameControllerSpec extends SpecBase with MockNunjuck
   def onwardRoute: Call = Call("GET", "/foo")
 
   private val formProvider = new TraderDetailsConsigneeNameFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(index)
   private val template     = "addItems/traderDetails/traderDetailsConsigneeName.njk"
 
   lazy val traderDetailsConsigneeNameRoute = routes.TraderDetailsConsigneeNameController.onPageLoad(lrn, index, NormalMode).url
