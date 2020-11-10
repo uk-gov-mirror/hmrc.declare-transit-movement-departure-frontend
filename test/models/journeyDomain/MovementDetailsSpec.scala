@@ -27,7 +27,7 @@ import queries.Settable
 
 class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
-  "MovmentDetails" - {
+  "MovementDetails" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(movementUserAnswers) {
