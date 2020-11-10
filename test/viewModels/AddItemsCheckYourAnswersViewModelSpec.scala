@@ -52,7 +52,7 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase {
       val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, previousDocumentTypeList)
 
       data.sections.head.sectionTitle mustBe defined
-      data.sections.length mustEqual 3
+      data.sections.length mustEqual 4
       data.sections.head.rows.length mustEqual 6
     }
   }
