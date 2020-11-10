@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package derivable
+package forms.addItems
 
+import forms.mappings.Mappings
+import javax.inject.Inject
 import models.Index
-import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.{documents, items}
+import play.api.data.Form
 
-case class DeriveNumberOfDocuments(itemIndex: Index) extends Derivable[List[JsObject], Int] {
+class AddAnotherDocumentFormProvider @Inject() extends Mappings {
 
-  override val derive: List[JsObject] => Int = _.size
-
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents
+  def apply(index: Index): Form[Boolean] =
+    Form(
+      "value" -> boolean("addAnotherDocument.error.required", "error.boolean", Seq(index.display))
+    )
 }

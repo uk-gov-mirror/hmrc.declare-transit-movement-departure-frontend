@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package derivable
+package pages.addItems
 
-import models.Index
-import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.{documents, items}
+import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-case class DeriveNumberOfDocuments(itemIndex: Index) extends Derivable[List[JsObject], Int] {
+class AddAnotherDocumentPageSpec extends SpecBase with PageBehaviours {
 
-  override val derive: List[JsObject] => Int = _.size
+  "AddAnotherDocumentPage" - {
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents
+    beRetrievable[Boolean](AddAnotherDocumentPage(index))
+
+    beSettable[Boolean](AddAnotherDocumentPage(index))
+
+    beRemovable[Boolean](AddAnotherDocumentPage(index))
+  }
 }

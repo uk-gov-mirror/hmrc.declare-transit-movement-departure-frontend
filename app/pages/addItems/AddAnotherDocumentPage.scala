@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package derivable
+package pages.addItems
 
 import models.Index
-import play.api.libs.json.{JsObject, JsPath}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 import queries.Constants.{documents, items}
 
-case class DeriveNumberOfDocuments(itemIndex: Index) extends Derivable[List[JsObject], Int] {
+case class AddAnotherDocumentPage(index: Index) extends QuestionPage[Boolean] {
 
-  override val derive: List[JsObject] => Int = _.size
+  override def path: JsPath = JsPath \ items \ index.position \ toString
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents
+  override def toString: String = "addAnotherDocument"
 }

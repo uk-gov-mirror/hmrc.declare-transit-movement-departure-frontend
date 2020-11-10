@@ -25,4 +25,5 @@ object Constants {
   val specialMentions              = "specialMentions"
   val traderDetails                = "traderDetails"
   val documentReferences           = "documentReferences"
+  val documents                    = "documents"
 }
