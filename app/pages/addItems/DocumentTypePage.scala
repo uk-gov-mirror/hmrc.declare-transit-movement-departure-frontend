@@ -23,6 +23,7 @@ import queries.Constants.{documents, items}
 
 case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath     = JsPath \ items \ itemIndex.position \ documents \ documentIndex.position \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ documents \ documentIndex.position \ toString
+
   override def toString: String = "documentType"
 }

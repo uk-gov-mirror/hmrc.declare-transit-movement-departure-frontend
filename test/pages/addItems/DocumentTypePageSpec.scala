@@ -17,17 +17,16 @@
 package pages.addItems
 
 import base.SpecBase
-import pages.addItems
 import pages.behaviours.PageBehaviours
 
 class DocumentTypePageSpec extends PageBehaviours with SpecBase {
 
   "DocumentTypePage" - {
 
-    beRetrievable[String](addItems.DocumentTypePage(index, documentIndex))
+    beRetrievable[String](DocumentTypePage(index, documentIndex))
 
-    beSettable[String](addItems.DocumentTypePage(index, documentIndex))
-
-    beRemovable[String](addItems.DocumentTypePage(index, documentIndex))
+//    beSettable[String](DocumentTypePage(index, documentIndex))
+//
+//    beRemovable[String](DocumentTypePage(index, documentIndex))
   }
 }
