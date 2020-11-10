@@ -793,25 +793,26 @@ traderDetailsConsigneeAddress.checkYourAnswersLabel =  {0}’s address
 traderDetailsConsigneeAddress.error.required = Enter {0}’s Address
 traderDetailsConsigneeAddress.error.length = The address for {0} must be 100 characters or less
 
-traderDetailsConsigneeAddress.buildingAndStreet = Building and street
-traderDetailsConsigneeAddress.city = Town or city
-traderDetailsConsigneeAddress.postcode = Postcode
-
-traderDetailsConsigneeAddress.error.buildingAndStreet.required = Enter the building and street
-traderDetailsConsigneeAddress.error.buildingAndStreet.length = Building and street must be 35 characters or less
-
-traderDetailsConsigneeAddress.error.city.required = Enter the town or city
-traderDetailsConsigneeAddress.error.city.length = Town or city must be 35 characters or less
 traderDetailsConsigneeAddress.checkYourAnswersLabel.visuallyHidden = change [{0}'s address]
-
-traderDetailsConsigneeAddress.error.postcode.required = Enter the postcode of {0}’s address
-traderDetailsConsigneeAddress.error.postcode.length = Postcode must be 9 characters or less
-traderDetailsConsigneeAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters A to Z and numbers 0 to 9
 
 traderDetailsConsigneeAddress.error.invalid = The {0} of {1}’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
 traderDetailsConsigneeAddress.error.required = Enter the {0} of {1}’s address
 traderDetailsConsigneeAddress.error.max_length = The {0} of {1}’s address must be 35 characters or less
 
+traderDetailsConsigneeAddress.AddressLine1 = Address line 1
+traderDetailsConsigneeAddress.AddressLine2 = Address line 2
+traderDetailsConsigneeAddress.AddressLine3 = Address line 3
+traderDetailsConsigneeAddress.AddressLine4 = Country
+traderDetailsConsigneeAddress.error.AddressLine1.required = Enter the first line of the consignee’s address
+traderDetailsConsigneeAddress.error.AddressLine2.required = Enter the second line of the consignee’s address
+traderDetailsConsigneeAddress.error.AddressLine3.required = Enter the third line of the consignee’s address
+traderDetailsConsigneeAddress.error.country.required = Enter the country of the consignee’s address
+traderDetailsConsigneeAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
+traderDetailsConsigneeAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
+traderDetailsConsigneeAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
+traderDetailsConsigneeAddress.error.line1.invalid= The first line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+traderDetailsConsigneeAddress.error.line2.invalid= The second line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+traderDetailsConsigneeAddress.error.line3.invalid= The third line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 
 traderDetailsConsigneeEoriKnown.title = Do you know the consignee’s EORI number for item {0}?
 traderDetailsConsigneeEoriKnown.heading = Do you know the consignee’s EORI number for item {0}?
@@ -847,20 +848,26 @@ traderDetailsConsignorAddress.heading =  What is {0}’s address?
 traderDetailsConsignorAddress.checkYourAnswersLabel =  {0}’s address
 traderDetailsConsignorAddress.error.required = Enter {0}’s Address
 traderDetailsConsignorAddress.error.length = The address for {0} must be 100 characters or less
-traderDetailsConsignorAddress.buildingAndStreet = Building and street
-traderDetailsConsignorAddress.city = Town or city
-traderDetailsConsignorAddress.postcode = Postcode
-traderDetailsConsignorAddress.error.buildingAndStreet.required = Enter the building and street
-traderDetailsConsignorAddress.error.buildingAndStreet.length = Building and street must be 35 characters or less
-traderDetailsConsignorAddress.error.city.required = Enter the town or city
-traderDetailsConsignorAddress.error.city.length = Town or city must be 35 characters or less
 traderDetailsConsignorAddress.checkYourAnswersLabel.visuallyHidden = change [{0}'s address]
-traderDetailsConsignorAddress.error.postcode.required = Enter the postcode of {0}’s address
-traderDetailsConsignorAddress.error.postcode.length = Postcode must be 9 characters or less
-traderDetailsConsignorAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters A to Z and numbers 0 to 9
+
 traderDetailsConsignorAddress.error.invalid = The {0} of {1}’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
 traderDetailsConsignorAddress.error.required = Enter the {0} of {1}’s address
 traderDetailsConsignorAddress.error.max_length = The {0} of {1}’s address must be 35 characters or less
+
+traderDetailsConsignorAddress.AddressLine1 = Address line 1
+traderDetailsConsignorAddress.AddressLine2 = Address line 2
+traderDetailsConsignorAddress.AddressLine3 = Address line 3
+traderDetailsConsignorAddress.AddressLine4 = Country
+traderDetailsConsignorAddress.error.AddressLine1.required = Enter the first line of the consignor’s address
+traderDetailsConsignorAddress.error.AddressLine2.required = Enter the second line of the consignor’s address
+traderDetailsConsignorAddress.error.AddressLine3.required = Enter the third line of the consignor’s address
+traderDetailsConsignorAddress.error.country.required = Enter the country of the consignor’s address
+traderDetailsConsignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
+traderDetailsConsignorAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
+traderDetailsConsignorAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
+traderDetailsConsignorAddress.error.line1.invalid= The first line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+traderDetailsConsignorAddress.error.line2.invalid= The second line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+traderDetailsConsignorAddress.error.line3.invalid= The third line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 
 traderDetailsConsignorEoriKnown.title = Do you know the consignor’s EORI number for item {0}?
 traderDetailsConsignorEoriKnown.heading = Do you know the consignor’s EORI number for item {0}?

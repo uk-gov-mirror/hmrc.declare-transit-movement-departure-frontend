@@ -33,6 +33,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.countryJsonList
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -73,9 +74,8 @@ class TraderDetailsConsignorAddressController @Inject()(
                 "countries"     -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
               )
 
-              renderer.render("consignorAddress.njk", json).map(Ok(_))
-            case _ => ???
-//            case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
+              renderer.render(template, json).map(Ok(_))
+            case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
 
           }
       }
@@ -103,7 +103,7 @@ class TraderDetailsConsignorAddressController @Inject()(
                       "countries"     -> countryJsonList(countryValue, countries.fullList)
                     )
 
-                    renderer.render("consignorAddress.njk", json).map(BadRequest(_))
+                    renderer.render(template, json).map(BadRequest(_))
                   },
                   value =>
                     for {

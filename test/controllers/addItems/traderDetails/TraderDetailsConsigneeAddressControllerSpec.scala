@@ -17,11 +17,14 @@
 package controllers.addItems.traderDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
+import controllers.traderDetails.routes
 import forms.addItems.traderDetails.TraderDetailsConsigneeAddressFormProvider
 import generators.Generators
 import matchers.JsonMatchers
-import models.{Address, NormalMode}
-import navigation.annotations.AddItems
+import models.reference.{Country, CountryCode}
+import models.{Address, ConsigneeAddress, CountryList, NormalMode}
+import navigation.annotations.{AddItems, TraderDetails}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -37,6 +40,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -48,31 +52,36 @@ class TraderDetailsConsigneeAddressControllerSpec
     with JsonMatchers
     with Generators {
 
-  def onwardRoute = Call("GET", "/foo")
-
-  val consigneeName = "Test consignee"
+  private def onwardRoute                                        = Call("GET", "/foo")
+  private val country                                            = Country(CountryCode("GB"), "United Kingdom")
+  private val countries                                          = CountryList(Seq(country))
+  private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   private val formProvider = new TraderDetailsConsigneeAddressFormProvider()
-  private val form         = formProvider(consigneeName = consigneeName)
-  private val template     = "addItems/traderDetails/traderDetailsConsigneeAddress.njk"
+  private val form         = formProvider(countries)
 
-  lazy val traderDetailsConsigneeAddressRoute = routes.TraderDetailsConsigneeAddressController.onPageLoad(lrn, index, NormalMode).url
+  private lazy val traderDetailsConsigneeAddressRoute = routes.TraderDetailsConsigneeAddressController.onPageLoad(lrn, index, NormalMode).url
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(
+        bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)),
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      )
 
-  "TraderDetailsConsigneeAddress Controller" - {
+  "ConsigneeAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val answers = emptyUserAnswers
-        .set(TraderDetailsConsigneeNamePage(index), consigneeName)
-        .success
-        .value
-      dataRetrievalWithData(answers)
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
+      val userAnswers = emptyUserAnswers.set(TraderDetailsConsigneeNamePage(index), "foo").success.value
+      dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, traderDetailsConsigneeAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -86,28 +95,31 @@ class TraderDetailsConsigneeAddressControllerSpec
 
       val expectedJson = Json.obj(
         "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual template
+      templateCaptor.getValue mustEqual "addItems/traderDetails/traderDetailsConsigneeAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val address = arbitrary[Address].sample.value
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers
-        .set(TraderDetailsConsigneeNamePage(index), consigneeName)
-        .success
-        .value
-        .set(TraderDetailsConsigneeAddressPage(index), address)
-        .success
-        .value
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
 
+      val tradersDetailsConsigneeAddress: ConsigneeAddress = ConsigneeAddress("Address line 1", "Address line 2", "Address line 3", country)
+
+      val userAnswers = emptyUserAnswers
+        .set(TraderDetailsConsigneeNamePage(index), "consigneeName")
+        .success
+        .value
+        .set(TraderDetailsConsigneeAddressPage(index), tradersDetailsConsigneeAddress)
+        .success
+        .value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, traderDetailsConsigneeAddressRoute)
@@ -120,14 +132,14 @@ class TraderDetailsConsigneeAddressControllerSpec
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm =
-        form.bind(
-          Map(
-            "buildingAndStreet" -> address.buildingAndStreet,
-            "city"              -> address.city,
-            "postcode"          -> address.postcode
-          )
+      val filledForm = form.bind(
+        Map(
+          "AddressLine1" -> "Address line 1",
+          "AddressLine2" -> "Address line 2",
+          "AddressLine3" -> "Address line 3",
+          "country"      -> "GB"
         )
+      )
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -135,45 +147,44 @@ class TraderDetailsConsigneeAddressControllerSpec
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual template
+      templateCaptor.getValue mustEqual "addItems/traderDetails/traderDetailsConsigneeAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val address = arbitrary[Address].sample.value
-      val userAnswers = emptyUserAnswers
-        .set(TraderDetailsConsigneeNamePage(index), consigneeName)
-        .success
-        .value
-        .set(TraderDetailsConsigneeAddressPage(index), address)
-        .success
-        .value
 
-      dataRetrievalWithData(userAnswers)
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
+      val userAnswers = emptyUserAnswers.set(TraderDetailsConsigneeNamePage(index), "consigneeName").success.value
+      dataRetrievalWithData(userAnswers)
 
       val request =
         FakeRequest(POST, traderDetailsConsigneeAddressRoute)
-          .withFormUrlEncodedBody(
-            ("buildingAndStreet", address.buildingAndStreet),
-            ("city", address.city),
-            ("postcode", address.postcode)
-          )
+          .withFormUrlEncodedBody(("AddressLine1", "value 1"), ("AddressLine2", "value 2"), ("AddressLine3", "value 3"), ("country", "GB"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual onwardRoute.url
 
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(POST, traderDetailsConsigneeAddressRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
+      val userAnswers = emptyUserAnswers.set(TraderDetailsConsigneeNamePage(index), "consigneeName").success.value
+      dataRetrievalWithData(userAnswers)
+
+      val request        = FakeRequest(POST, traderDetailsConsigneeAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -189,11 +200,12 @@ class TraderDetailsConsigneeAddressControllerSpec
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual template
+      templateCaptor.getValue mustEqual "addItems/traderDetails/traderDetailsConsigneeAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
+
       dataRetrievalNoData()
 
       val request = FakeRequest(GET, traderDetailsConsigneeAddressRoute)
@@ -201,26 +213,22 @@ class TraderDetailsConsigneeAddressControllerSpec
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
 
       dataRetrievalNoData()
+
       val request =
         FakeRequest(POST, traderDetailsConsigneeAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("Address line 1", "value 1"), ("Address line 2", "value 2"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
     }
   }
 }

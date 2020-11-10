@@ -17,17 +17,17 @@
 package pages.addItems.traderDetails
 
 import base.SpecBase
-import models.Address
+import models.{Address, ConsignorAddress}
 import pages.behaviours.PageBehaviours
 
 class TraderDetailsConsignorAddressPageSpec extends PageBehaviours with SpecBase {
 
   "TraderDetailsConsignorAddressPage" - {
 
-    beRetrievable[Address](TraderDetailsConsignorAddressPage(index))
+    beRetrievable[ConsignorAddress](TraderDetailsConsignorAddressPage(index))
 
-    beSettable[Address](TraderDetailsConsignorAddressPage(index))
+    beSettable[ConsignorAddress](TraderDetailsConsignorAddressPage(index))
 
-    beRemovable[Address](TraderDetailsConsignorAddressPage(index))
+    beRemovable[ConsignorAddress](TraderDetailsConsignorAddressPage(index))
   }
 }

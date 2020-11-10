@@ -17,127 +17,96 @@
 package forms.addItems.traderDetails
 
 import forms.behaviours.StringFieldBehaviours
-import models.Address
-import org.scalacheck.Gen
+import models.CountryList
+import models.reference.{Country, CountryCode}
 import play.api.data.FormError
 
 class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey   = "traderDetailsConsigneeAddress.error.required"
-  val lengthKey     = "traderDetailsConsigneeAddress.error.length"
-  val consigneeName = "Test consignee"
+  val country   = Country(CountryCode("GB"), "United Kingdom")
+  val countries = CountryList(Seq(country))
 
-  val form = new TraderDetailsConsigneeAddressFormProvider()(consigneeName)
+  val formProvider = new TraderDetailsConsigneeAddressFormProvider()
+  val form         = formProvider(countries)
 
-  ".value" - {
+  ".AddressLine1" - {
 
-    ".buildingAndStreet" - {
+    val fieldName   = "AddressLine1"
+    val requiredKey = "traderDetailsConsigneeAddress.error.AddressLine1.required"
+    val lengthKey   = "traderDetailsConsigneeAddress.error.AddressLine1.length"
+    val maxLength   = 35
 
-      val fieldName   = "buildingAndStreet"
-      val requiredKey = "traderDetailsConsigneeAddress.error.required"
-      val lengthKey   = "traderDetailsConsigneeAddress.error.max_length"
-      val maxLength   = 35
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxLength)
+    )
 
-      val validAdressOverLength: Gen[String] = for {
-        num  <- Gen.chooseNum[Int](maxLength + 1, maxLength + 5)
-        list <- Gen.listOfN(num, Gen.alphaNumChar)
-      } yield list.mkString("")
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
 
-      val args = Seq(Address.Constants.Fields.buildingAndStreetName, consigneeName)
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        stringsWithMaxLength(maxLength)
-      )
+  ".AddressLine2" - {
 
-      val error = FormError(fieldName, lengthKey, Array(args))
+    val fieldName   = "AddressLine2"
+    val requiredKey = "traderDetailsConsigneeAddress.error.AddressLine2.required"
+    val lengthKey   = "traderDetailsConsigneeAddress.error.AddressLine2.length"
+    val maxLength   = 35
 
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength   = maxLength,
-        lengthError = error,
-        validAdressOverLength
-      )
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxLength)
+    )
 
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, requiredKey, args)
-      )
-    }
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
 
-    ".city" - {
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 
-      val fieldName   = "city"
-      val requiredKey = "traderDetailsConsigneeAddress.error.required"
-      val lengthKey   = "traderDetailsConsigneeAddress.error.max_length"
-      val maxLength   = 35
+  ".AddressLine3" - {
 
-      val validAdressOverLength: Gen[String] = for {
-        num  <- Gen.chooseNum[Int](maxLength + 1, maxLength + 5)
-        list <- Gen.listOfN(num, Gen.alphaNumChar)
-      } yield list.mkString("")
+    val fieldName   = "AddressLine3"
+    val requiredKey = "traderDetailsConsigneeAddress.error.AddressLine3.required"
+    val lengthKey   = "traderDetailsConsigneeAddress.error.AddressLine3.length"
+    val maxLength   = 35
 
-      val args = Seq(Address.Constants.Fields.city, consigneeName)
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxLength)
+    )
 
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        stringsWithMaxLength(maxLength)
-      )
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
 
-      val error = FormError(fieldName, lengthKey, Array(args))
-
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength   = maxLength,
-        lengthError = error,
-        validAdressOverLength
-      )
-
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, requiredKey, args)
-      )
-    }
-
-    ".postcode" - {
-
-      val fieldName   = "postcode"
-      val requiredKey = "traderDetailsConsigneeAddress.error.postcode.required"
-      val lengthKey   = "traderDetailsConsigneeAddress.error.postcode.length"
-      val maxLength   = 9
-
-      val validAdressOverLength: Gen[String] = for {
-        num  <- Gen.chooseNum[Int](maxLength + 1, maxLength + 5)
-        list <- Gen.listOfN(num, Gen.alphaNumChar)
-      } yield list.mkString("")
-
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        stringsWithMaxLength(maxLength)
-      )
-
-      val error = FormError(fieldName, lengthKey, Array(Seq(consigneeName)))
-
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength   = maxLength,
-        lengthError = error,
-        validAdressOverLength
-      )
-
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, requiredKey, Seq(consigneeName))
-      )
-    }
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

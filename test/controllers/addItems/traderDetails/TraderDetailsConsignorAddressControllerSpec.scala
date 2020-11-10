@@ -16,18 +16,19 @@
 
 package controllers.addItems.traderDetails
 
-import base.SpecBase
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoutes}
 import forms.addItems.traderDetails.TraderDetailsConsignorAddressFormProvider
 import generators.Generators
 import matchers.JsonMatchers
-import models.{Address, NormalMode}
-import navigation.annotations.AddItems
+import models.reference.{Country, CountryCode}
+import models.{ConsignorAddress, CountryList, NormalMode}
+import navigation.annotations.TraderDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.addItems.traderDetails.{TraderDetailsConsignorAddressPage, TraderDetailsConsignorNamePage}
@@ -42,33 +43,38 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class TraderDetailsConsignorAddressControllerSpec
-    extends SpecBase
-    with MockNunjucksRendererApp
-    with MockitoSugar
-    with NunjucksSupport
-    with JsonMatchers
-    with Generators {
+class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute: Call = Call("GET", "/foo")
+  private def onwardRoute                                        = Call("GET", "/foo")
+  private val country                                            = Country(CountryCode("GB"), "United Kingdom")
+  private val countries                                          = CountryList(Seq(country))
+  private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  val consignorName        = "TestConsignorName"
   private val formProvider = new TraderDetailsConsignorAddressFormProvider()
-  private val form         = formProvider(consignorName)
-  private val template     = "addItems/traderDetails/traderDetailsConsignorAddress.njk"
+  private val form         = formProvider(countries)
 
   lazy val traderDetailsConsignorAddressRoute = routes.TraderDetailsConsignorAddressController.onPageLoad(lrn, index, NormalMode).url
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(
+        bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)),
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      )
 
   "TraderDetailsConsignorAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
+      val userAnswers = emptyUserAnswers.set(TraderDetailsConsignorNamePage(index), "foo").success.value
+      dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, traderDetailsConsignorAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -82,11 +88,11 @@ class TraderDetailsConsignorAddressControllerSpec
 
       val expectedJson = Json.obj(
         "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual template
+      templateCaptor.getValue mustEqual "addItems/traderDetails/traderDetailsConsignorAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
     }
 
@@ -95,17 +101,20 @@ class TraderDetailsConsignorAddressControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val address = arbitrary[Address].sample.value
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
+      val tradersDetailsConsignorAddress: ConsignorAddress = ConsignorAddress("Address line 1", "Address line 2", "Address line 3", country)
 
       val userAnswers = emptyUserAnswers
-        .set(TraderDetailsConsignorNamePage(index), consignorName)
+        .set(TraderDetailsConsignorNamePage(index), "ConsignorName")
         .success
         .value
-        .set(TraderDetailsConsignorAddressPage(index), address)
+        .set(TraderDetailsConsignorAddressPage(index), tradersDetailsConsignorAddress)
         .success
         .value
-
       dataRetrievalWithData(userAnswers)
+
       val request        = FakeRequest(GET, traderDetailsConsignorAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -116,14 +125,14 @@ class TraderDetailsConsignorAddressControllerSpec
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm =
-        form.bind(
-          Map(
-            "buildingAndStreet" -> address.buildingAndStreet,
-            "city"              -> address.city,
-            "postcode"          -> address.postcode
-          )
+      val filledForm = form.bind(
+        Map(
+          "AddressLine1" -> "Address line 1",
+          "AddressLine2" -> "Address line 2",
+          "AddressLine3" -> "Address line 3",
+          "country"      -> "GB"
         )
+      )
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -131,45 +140,53 @@ class TraderDetailsConsignorAddressControllerSpec
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual template
+      templateCaptor.getValue mustEqual "addItems/traderDetails/traderDetailsConsignorAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val address = arbitrary[Address].sample.value
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
 
       val userAnswers = emptyUserAnswers
-        .set(TraderDetailsConsignorNamePage(index), consignorName)
+        .set(TraderDetailsConsignorNamePage(index), "ConsignorName")
         .success
         .value
-        .set(TraderDetailsConsignorAddressPage(index), address)
-        .success
-        .value
-
       dataRetrievalWithData(userAnswers)
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request =
         FakeRequest(POST, traderDetailsConsignorAddressRoute)
-          .withFormUrlEncodedBody(
-            ("buildingAndStreet", address.buildingAndStreet),
-            ("city", address.city),
-            ("postcode", address.postcode)
-          )
+          .withFormUrlEncodedBody(("AddressLine1", "value 1"), ("AddressLine2", "value 2"), ("AddressLine3", "value 3"), ("country", "GB"))
+
+      println("****Request******")
+      println(request)
+      println(request.body)
 
       val result = route(app, request).value
 
+      println("****Result******")
+      println(result)
+
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(POST, traderDetailsConsignorAddressRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
+      val userAnswers = emptyUserAnswers.set(TraderDetailsConsignorNamePage(index), "ConsignorName").success.value
+      dataRetrievalWithData(userAnswers)
+
+      val request        = FakeRequest(POST, traderDetailsConsignorAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -185,22 +202,20 @@ class TraderDetailsConsignorAddressControllerSpec
         "mode" -> NormalMode
       )
 
-      templateCaptor.getValue mustEqual template
+      templateCaptor.getValue mustEqual "addItems/traderDetails/traderDetailsConsignorAddress.njk"
       jsonCaptor.getValue must containJson(expectedJson)
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       dataRetrievalNoData()
+
       val request = FakeRequest(GET, traderDetailsConsignorAddressRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -209,15 +224,13 @@ class TraderDetailsConsignorAddressControllerSpec
 
       val request =
         FakeRequest(POST, traderDetailsConsignorAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("Address line 1", "value 1"), ("Address line 2", "value 2"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
     }
   }
 }
