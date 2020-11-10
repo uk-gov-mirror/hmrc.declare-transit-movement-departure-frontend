@@ -93,7 +93,7 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddDocumentsPage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddDocumentsPage(index), true).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, addDocumentsRoute)

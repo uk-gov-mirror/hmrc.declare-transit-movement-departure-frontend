@@ -52,7 +52,7 @@ class AddDocumentsController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddDocumentsPage) match {
+      val preparedForm = request.userAnswers.get(AddDocumentsPage(itemIndex)) match {
         case None        => formProvider(itemIndex)
         case Some(value) => formProvider(itemIndex).fill(value)
       }
@@ -87,9 +87,9 @@ class AddDocumentsController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDocumentsPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDocumentsPage(itemIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddDocumentsPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddDocumentsPage(itemIndex), mode, updatedAnswers))
         )
   }
 }

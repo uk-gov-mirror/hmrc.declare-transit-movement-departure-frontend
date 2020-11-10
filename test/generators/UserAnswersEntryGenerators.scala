@@ -61,11 +61,11 @@ trait UserAnswersEntryGenerators {
       } yield (AddExtraDocumentInformationPage(Index(0), Index(0)), value)
     }
 
-  implicit lazy val arbitraryAddDocumentsUserAnswersEntry: Arbitrary[(AddDocumentsPage.type, JsValue)] =
+  implicit lazy val arbitraryAddDocumentsUserAnswersEntry: Arbitrary[(AddDocumentsPage, JsValue)] =
     Arbitrary {
       for {
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (AddDocumentsPage, value)
+      } yield (AddDocumentsPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry
