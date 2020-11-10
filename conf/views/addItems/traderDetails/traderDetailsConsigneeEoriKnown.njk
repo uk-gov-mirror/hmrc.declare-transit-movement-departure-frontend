@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("traderDetailsConsigneeEoriKnown.title"), form.errors) }}
+  {{ title(messages("traderDetailsConsigneeEoriKnown.title", index), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -28,6 +28,7 @@
         {% endif %}
 
         <form action="{{ routes.controllers.addItems.traderDetails.TraderDetailsConsigneeEoriKnownController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
 
           {{ csrf() | safe }}
 
@@ -35,7 +36,7 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('traderDetailsConsigneeEoriKnown.heading'),
+                text: messages('traderDetailsConsigneeEoriKnown.heading', index),
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--xl"
               }

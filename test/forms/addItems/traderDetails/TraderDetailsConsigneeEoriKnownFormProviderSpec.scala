@@ -16,15 +16,18 @@
 
 package forms.addItems.traderDetails
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
+import models.Index
 import play.api.data.FormError
 
 class TraderDetailsConsigneeEoriKnownFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "traderDetailsConsigneeEoriKnown.error.required"
   val invalidKey  = "error.boolean"
+  val index       = Index(0)
 
-  val form = new TraderDetailsConsigneeEoriKnownFormProvider()()
+  val form = new TraderDetailsConsigneeEoriKnownFormProvider()(index)
 
   ".value" - {
 
@@ -33,13 +36,13 @@ class TraderDetailsConsigneeEoriKnownFormProviderSpec extends BooleanFieldBehavi
     behave like booleanField(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+      invalidError = FormError(fieldName, invalidKey, Seq(index.display))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
   }
 }
