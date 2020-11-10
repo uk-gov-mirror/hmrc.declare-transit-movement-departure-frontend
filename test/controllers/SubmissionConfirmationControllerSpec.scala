@@ -16,13 +16,14 @@
 
 package controllers
 
-import base.{MockNunjucksRendererApp, SpecBase}
-import config.{FrontendAppConfig, ManageTransitMovementsService}
+import base.SpecBase
+import base.MockNunjucksRendererApp
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.guice.GuiceApplicationBuilder // TODO: Do we need?
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -30,20 +31,18 @@ import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
+class SubmissionConfirmationControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
-  "DeclarationSummary Controller" - {
+  "SubmissionConfirmation Controller" - {
 
     "return OK and the correct view for a GET" in {
-
-      dataRetrievalWithData(emptyUserAnswers)
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val manageTransitMovementsService = app.injector.instanceOf[ManageTransitMovementsService]
+      dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, routes.DeclarationSummaryController.onPageLoad(lrn).url)
+      val request        = FakeRequest(GET, routes.SubmissionConfirmationController.onPageLoad(lrn).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -53,15 +52,11 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendere
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson =
-        Json.obj(
-          "lrn"                    -> lrn,
-          "backToTransitMovements" -> manageTransitMovementsService.service.fullServiceUrl
-        )
+      val expectedJson = Json.obj("lrn" -> lrn)
 
-      templateCaptor.getValue mustEqual "declarationSummary.njk"
+      templateCaptor.getValue mustEqual "submissionConfirmation.njk"
       jsonCaptor.getValue must containJson(expectedJson)
+
     }
   }
-
 }

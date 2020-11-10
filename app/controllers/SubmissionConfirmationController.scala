@@ -21,14 +21,14 @@ import controllers.actions._
 import javax.inject.Inject
 import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import viewModels.DeclarationSummaryViewModel
 
 import scala.concurrent.ExecutionContext
 
-class DeclarationSummaryController @Inject()(
+class SubmissionConfirmationController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
@@ -42,10 +42,12 @@ class DeclarationSummaryController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      renderer
-        .render("declarationSummary.njk", DeclarationSummaryViewModel(manageTransitMovementsService, request.userAnswers))
-        .map(Ok(_))
-  }
+      val json = Json.obj(
+        "lrn"                       -> lrn,
+        "manageTransitMovementsUrl" -> manageTransitMovementsService.service.fullServiceUrl,
+        "makeAnotherDeparture"      -> controllers.routes.LocalReferenceNumberController.onPageLoad.url
+      )
 
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = Action(Redirect(routes.SubmissionConfirmationController.onPageLoad(lrn)))
+      renderer.render("submissionConfirmation.njk", json).map(Ok(_))
+  }
 }
