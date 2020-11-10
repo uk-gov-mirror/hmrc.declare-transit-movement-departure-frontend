@@ -18,27 +18,45 @@ package models.journeyDomain
 
 import cats.implicits._
 import models.GuaranteeType
-import models.messages.guarantee.GuaranteeReferenceWithGrn
-import pages.{OtherReferenceLiabilityAmountPage, OtherReferencePage}
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages._
 
-sealed trait Guarantee
+sealed trait GuaranteeDetails
 
-object Guarantee {
+object GuaranteeDetails {
 
   final case class GuaranteeReference(
     guaranteeType: GuaranteeType,
-    guaranteeReferenceNumber: GuaranteeReferenceWithGrn,
+    guaranteeReferenceNumber: String,
     liabilityAmount: String,
     useDefaultAmount: Option[Boolean],
     accessCode: String
-  ) extends Guarantee
+  ) extends GuaranteeDetails
 
-  final case class GuaranteeOther(otherReference: String, liabilityAmount: String) extends Guarantee
+  object GuaranteeReference {
+
+    implicit val parseGuaranteeReference: UserAnswersReader[GuaranteeReference] =
+      (
+        GuaranteeTypePage.reader,
+        GuaranteeReferencePage.reader,
+        LiabilityAmountPage.reader,
+        DefaultAmountPage.optionalReader,
+        AccessCodePage.reader
+      ).tupled.map((GuaranteeReference.apply _).tupled)
+
+  }
+
+  final case class GuaranteeOther(
+    guaranteeType: GuaranteeType,
+    otherReference: String,
+    liabilityAmount: String
+  ) extends GuaranteeDetails
 
   object GuaranteeOther {
 
     implicit val parseGuaranteeOther: UserAnswersReader[GuaranteeOther] =
       (
+        GuaranteeTypePage.reader,
         OtherReferencePage.reader,
         OtherReferenceLiabilityAmountPage.reader
       ).tupled.map((GuaranteeOther.apply _).tupled)
