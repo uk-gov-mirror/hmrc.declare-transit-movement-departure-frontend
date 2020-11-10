@@ -406,7 +406,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return list of document types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/document-type"))
+          get(urlEqualTo(s"/$startUrl/document-types"))
             .willReturn(okJson(documentJson))
         )
 
