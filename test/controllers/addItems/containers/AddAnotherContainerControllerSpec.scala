@@ -17,9 +17,11 @@
 package controllers.addItems.containers
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import forms.addItems.containers.AddAnotherContainerFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.reference.DocumentType
+import models.{DocumentTypeList, NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -59,7 +61,6 @@ class AddAnotherContainerControllerSpec extends SpecBase with MockNunjucksRender
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-
       dataRetrievalWithData(emptyUserAnswers)
 
       val request        = FakeRequest(GET, addAnotherContainerRoute)

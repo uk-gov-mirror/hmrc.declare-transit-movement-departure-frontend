@@ -46,7 +46,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
                 ),
                 Action(
                   content            = msg"site.delete",
-                  href               = "",
+                  href               = "", //TODO  put on href when page built
                   visuallyHiddenText = Some(msg"addSeal.documentList.delete.hidden".withArgs(answer)),
                   attributes         = Map("id" -> s"""remove-document-${index.display}""")
                 )

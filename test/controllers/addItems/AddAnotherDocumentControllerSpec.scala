@@ -17,10 +17,12 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.addItems.AddAnotherDocumentFormProvider
 import matchers.JsonMatchers
-import models.{Index, NormalMode, UserAnswers}
+import models.reference.DocumentType
+import models.{DocumentTypeList, Index, NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -44,21 +46,26 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new AddAnotherDocumentFormProvider()
-  private val form         = formProvider(index)
-  private val template     = "addItems/addAnotherDocument.njk"
-
-  lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn, index, NormalMode).url
+  private val formProvider                                 = new AddAnotherDocumentFormProvider()
+  private val form                                         = formProvider(index)
+  private val template                                     = "addItems/addAnotherDocument.njk"
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  val documentType1: DocumentType                          = DocumentType("1", "11", true)
+  val documentType2: DocumentType                          = DocumentType("2", "22", true)
+  val documentTypeList: DocumentTypeList                   = DocumentTypeList(Seq(documentType1, documentType2))
+  lazy val addAnotherDocumentRoute                         = routes.AddAnotherDocumentController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockRefDataConnector))
 
   "AddAnotherDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
       dataRetrievalWithData(emptyUserAnswers)
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -85,10 +92,12 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
+      dataRetrievalWithData(emptyUserAnswers)
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      dataRetrievalWithData(emptyUserAnswers)
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
 
       val request =
         FakeRequest(POST, addAnotherDocumentRoute)
@@ -105,6 +114,8 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       dataRetrievalWithData(emptyUserAnswers)
+      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
