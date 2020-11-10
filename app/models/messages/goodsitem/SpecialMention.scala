@@ -23,13 +23,15 @@ import utils.BinaryToBooleanXMLReader._
 
 trait SpecialMention {
 
+  //TODO: May need to add Additional information to Special Mentions
   def additionalInformationCoded: String
 }
 
 object SpecialMention {
 
   object Constants {
-    val specialMentionCount = 99
+    val specialMentionCount                       = 99
+    val specialMentionAdditionalInformationLength = 70
   }
 
   val countrySpecificCodes = Seq("DG0", "DG1")

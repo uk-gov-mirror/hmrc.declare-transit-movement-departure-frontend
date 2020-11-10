@@ -53,7 +53,6 @@ class SpecialMentionTypeController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  //private val form     = formProvider()
   private val template = "addItems/specialMentions/specialMentionType.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
@@ -112,27 +111,4 @@ class SpecialMentionTypeController @Inject()(
               )
         }
     }
-  //  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-//    (identify andThen getData(lrn) andThen requireData).async {
-//      implicit request =>
-//        form
-//          .bindFromRequest()
-//          .fold(
-//            formWithErrors => {
-//
-//              val json = Json.obj(
-//                "form" -> formWithErrors,
-//                "lrn"  -> lrn,
-//                "mode" -> mode
-//              )
-//
-//              renderer.render(template, json).map(BadRequest(_))
-//            },
-//            value =>
-//              for {
-//                updatedAnswers <- Future.fromTry(request.userAnswers.set(SpecialMentionTypePage(itemIndex, referenceIndex), value))
-//                _              <- sessionRepository.set(updatedAnswers)
-//              } yield Redirect(navigator.nextPage(SpecialMentionTypePage(itemIndex, referenceIndex), mode, updatedAnswers))
-//          )
-//    }
 }

@@ -35,7 +35,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.SpecialMentionsCheckYourAnswers
+import utils.SpecialMentionsCheckYourAnswersHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -60,7 +60,7 @@ class AddAnotherSpecialMentionController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      renderPage(lrn, itemIndex, form).map(Ok(_))
+      renderPage(lrn, itemIndex, form, mode).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -68,7 +68,7 @@ class AddAnotherSpecialMentionController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => renderPage(lrn, itemIndex, formWithErrors).map(BadRequest(_)),
+          formWithErrors => renderPage(lrn, itemIndex, formWithErrors, mode).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSpecialMentionPage(itemIndex), value))
@@ -77,10 +77,11 @@ class AddAnotherSpecialMentionController @Inject()(
         )
   }
 
-  private def renderPage(lrn: LocalReferenceNumber, itemIndex: Index, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] =
+  private def renderPage(lrn: LocalReferenceNumber, itemIndex: Index, form: Form[Boolean], mode: Mode)(
+    implicit request: DataRequest[AnyContent]): Future[Html] =
     referenceDataConnector.getSpecialMention() flatMap {
       specialMention =>
-        val cya                   = new SpecialMentionsCheckYourAnswers(request.userAnswers)
+        val cya                   = new SpecialMentionsCheckYourAnswersHelper(request.userAnswers)
         val numberOfReferences    = request.userAnswers.get(DeriveNumberOfSpecialMentions(itemIndex)).getOrElse(0)
         val indexList: Seq[Index] = List.range(0, numberOfReferences).map(Index(_))
 
@@ -97,7 +98,8 @@ class AddAnotherSpecialMentionController @Inject()(
           "pageTitle"     -> msg"addAnotherSpecialMention.title.$singularOrPlural".withArgs(numberOfReferences, itemIndex.display),
           "heading"       -> msg"addAnotherSpecialMention.heading.$singularOrPlural".withArgs(numberOfReferences, itemIndex.display),
           "referenceRows" -> referenceRows,
-          "radios"        -> Radios.yesNo(form("value"))
+          "radios"        -> Radios.yesNo(form("value")),
+          "mode"          -> mode
         )
 
         renderer.render(template, json)

@@ -18,7 +18,6 @@ package forms.addItems.specialMentions
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import models.Index
 import play.api.data.FormError
 
 class SpecialMentionAdditionalInfoFormProviderSpec extends StringFieldBehaviours with SpecBase {

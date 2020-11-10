@@ -958,7 +958,6 @@ addSpecialMention.error.required = Select yes if you need to add special mention
 
 specialMentionType.title = What type of special mention do you want to add for item {0}
 specialMentionType.heading = What type of special mention do you want to add for item {0}
-specialMentionType.checkYourAnswersLabel = {0} {1}
 specialMentionType.error.required = Enter the type of special mention that you want to add for item {0}
 specialMentionType.error.length = SpecialMentionType must be 100 characters or less
 

@@ -22,7 +22,7 @@ import pages.addItems.specialMentions._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
-class SpecialMentionsCheckYourAnswers(userAnswers: UserAnswers) {
+class SpecialMentionsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def specialMentionType(itemIndex: Index, referenceIndex: Index, specialMentionList: SpecialMentionList): Option[Row] =
     userAnswers.get(SpecialMentionTypePage(itemIndex, referenceIndex)) map {

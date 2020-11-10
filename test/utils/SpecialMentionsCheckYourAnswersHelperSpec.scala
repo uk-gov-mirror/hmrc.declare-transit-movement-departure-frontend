@@ -22,9 +22,9 @@ import models.reference.SpecialMention
 import pages.addItems.specialMentions.SpecialMentionTypePage
 import uk.gov.hmrc.viewmodels.Text.Message
 
-class SpecialMentionsCheckYourAnswersSpec extends SpecBase {
+class SpecialMentionsCheckYourAnswersHelperSpec extends SpecBase {
 
-  "SpecialMentionsCheckYourAnswers" - {
+  "SpecialMentionsCheckYourAnswersHelper" - {
 
     "specialMentionType" in {
 
@@ -40,7 +40,7 @@ class SpecialMentionsCheckYourAnswersSpec extends SpecBase {
         .toOption
         .value
 
-      val checkYourAnswers = new SpecialMentionsCheckYourAnswers(userAnswers)
+      val checkYourAnswers = new SpecialMentionsCheckYourAnswersHelper(userAnswers)
 
       val row = checkYourAnswers.specialMentionType(itemIndex, referenceIndex, specialMentionList)
 

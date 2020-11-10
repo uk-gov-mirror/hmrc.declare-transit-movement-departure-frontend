@@ -19,6 +19,7 @@ package forms.addItems.specialMentions
 import forms.mappings.Mappings
 import javax.inject.Inject
 import models.Index
+import models.messages.goodsitem.SpecialMention
 import play.api.data.Form
 
 class SpecialMentionAdditionalInfoFormProvider @Inject() extends Mappings {
@@ -26,6 +27,11 @@ class SpecialMentionAdditionalInfoFormProvider @Inject() extends Mappings {
   def apply(itemIndex: Index, referenceIndex: Index): Form[String] =
     Form(
       "value" -> text("specialMentionAdditionalInfo.error.required", Seq(itemIndex.display, referenceIndex.display))
-        .verifying(maxLength(70, "specialMentionAdditionalInfo.error.length", itemIndex.display, referenceIndex.display))
+        .verifying(maxLength(
+          SpecialMention.Constants.specialMentionAdditionalInformationLength,
+          "specialMentionAdditionalInfo.error.length",
+          itemIndex.display,
+          referenceIndex.display
+        ))
     )
 }
