@@ -25,8 +25,8 @@ class DocumentTypePageSpec extends PageBehaviours with SpecBase {
 
     beRetrievable[String](DocumentTypePage(index, documentIndex))
 
-//    beSettable[String](DocumentTypePage(index, documentIndex))
-//
-//    beRemovable[String](DocumentTypePage(index, documentIndex))
+    beSettable[String](DocumentTypePage(index, documentIndex))
+
+    beRemovable[String](DocumentTypePage(index, documentIndex))
   }
 }
