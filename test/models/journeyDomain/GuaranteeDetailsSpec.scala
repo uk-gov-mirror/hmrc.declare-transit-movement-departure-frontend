@@ -27,6 +27,17 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec {
 
   "GuaranteeDetails" - {
 
+    "can be parsed UserAnswers" - {
+      "when all details for section have been answered" in {
+        forAll(guaranteeDetails) {
+          case (guarantee, userAnswers) =>
+            val result: Option[GuaranteeDetails] = UserAnswersReader[GuaranteeDetails].run(userAnswers)
+
+            result.value mustEqual guarantee
+        }
+      }
+    }
+
     "GuaranteeReference" - {
 
       val mandatoryPages: Gen[QuestionPage[_]] = Gen.oneOf(
@@ -156,6 +167,10 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec {
 
       (guaranteeReference, userAnswersWithOptionals)
     }
+
+  private val guaranteeDetails: Gen[(GuaranteeDetails, UserAnswers)] =
+    Gen.oneOf(guaranteeReferenceUserAnswers, guaranteeOtherUserAnswers)
+
   // format: on
 
 }

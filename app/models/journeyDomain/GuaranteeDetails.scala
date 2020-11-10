@@ -18,12 +18,16 @@ package models.journeyDomain
 
 import cats.implicits._
 import models.GuaranteeType
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages._
+import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 sealed trait GuaranteeDetails
 
 object GuaranteeDetails {
+
+  implicit val parseGuaranteeDetails: UserAnswersReader[GuaranteeDetails] =
+    UserAnswersReader[GuaranteeReference].widen[GuaranteeDetails] orElse
+      UserAnswersReader[GuaranteeOther].widen[GuaranteeDetails]
 
   final case class GuaranteeReference(
     guaranteeType: GuaranteeType,
@@ -43,7 +47,6 @@ object GuaranteeDetails {
         DefaultAmountPage.optionalReader,
         AccessCodePage.reader
       ).tupled.map((GuaranteeReference.apply _).tupled)
-
   }
 
   final case class GuaranteeOther(
