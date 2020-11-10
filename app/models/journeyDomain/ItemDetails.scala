@@ -16,8 +16,10 @@
 
 package models.journeyDomain
 
-import pages.addItems.CommodityCodePage
+import cats.implicits._
+import models.Index
 import pages._
+import pages.addItems.CommodityCodePage
 
 final case class ItemDetails(
   itemDescription: String,
@@ -30,15 +32,14 @@ final case class ItemDetails(
 
 object ItemDetails {
 
-  implicit val itemDetailsReader: UserAnswersReader[ItemDetails] = ???
-//
-//  (
-//    ItemDescriptionPage.reader,
-//    ItemTotalGrossMassPage.reader,
-//    AddTotalNetMassPage.reader,
-//    TotalNetMassPage.reader,
-//    IsCommodityCodeKnownPage.reader,
-//    CommodityCodePage.reader,
-//    ItemTotalGrossMassPage.reader
-//    ).tupled.map((ItemDetails.apply _).tupled)
+  implicit def itemDetailsReader(index: Index): UserAnswersReader[ItemDetails] =
+    (
+      ItemDescriptionPage(index).reader,
+      ItemTotalGrossMassPage(index).reader,
+      AddTotalNetMassPage(index).reader,
+      TotalNetMassPage(index).optionalReader,
+      IsCommodityCodeKnownPage(index).reader,
+      CommodityCodePage(index).optionalReader
+    ).tupled.map((ItemDetails.apply _).tupled)
+
 }
