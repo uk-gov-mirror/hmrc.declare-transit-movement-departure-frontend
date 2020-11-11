@@ -26,6 +26,7 @@ import play.api.mvc.Call
 
 @Singleton
 class GoodsSummaryNavigator @Inject()() extends Navigator {
+
   // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
@@ -68,7 +69,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     }
 
   def confirmRemoveSeal(ua: UserAnswers, mode: Mode) = {
-    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
+    val sealCount = ua.get(DeriveNumberOfSeals).getOrElse(0)
     (ua.get(ConfirmRemoveSealsPage)) match {
       case Some(true) if sealCount > 0 => routes.SealsInformationController.onPageLoad(ua.id, mode)
       case Some(true) => routes.AddSealsController.onPageLoad(ua.id, mode)
@@ -99,7 +100,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     }
 
   def addSealsRoute(ua: UserAnswers, mode: Mode): Call = {
-    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
+    val sealCount = ua.get(DeriveNumberOfSeals).getOrElse(0)
     val sealIndex = Index(sealCount)
 
     (ua.get(AddSealsPage), mode) match {
@@ -112,7 +113,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
   }
 
   def sealsInformationRoute(ua: UserAnswers, mode: Mode): Call = {
-    val sealCount = ua.get(DeriveNumberOfSeals()).getOrElse(0)
+    val sealCount = ua.get(DeriveNumberOfSeals).getOrElse(0)
     val sealIndex = Index(sealCount)
 
     (ua.get(SealsInformationPage), mode) match {
