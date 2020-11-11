@@ -26,7 +26,7 @@ class CustomsApprovedLocationFormProviderSpec extends StringFieldBehaviours {
   val lengthKey                            = "customsApprovedLocation.error.length"
   val maxLength                            = 17
   val invalidCharacters                    = "customsApprovedLocation.error.invalidCharacters"
-  val customsApprovedLocationRegex: String = "^[a-zA-Z0-9\\/\\@\\'\\<\\>\\?\\%\\&\\.\\-\\ ]*$"
+  val customsApprovedLocationRegex: String = "^[a-zA-Z0-9/@'<>?%&.\\- ]*$"
 
   val form = new CustomsApprovedLocationFormProvider()()
 
