@@ -26,7 +26,7 @@ import models.journeyDomain.MovementDetails.{
   NormalMovementDetails,
   SimplifiedMovementDetails
 }
-import models.journeyDomain.{MovementDetails, RouteDetails}
+import models.journeyDomain.{ItemDetails, MovementDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.CountryCode
 import org.scalacheck.Arbitrary.arbitrary
@@ -34,6 +34,16 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryItemDetails: Arbitrary[ItemDetails] =
+    Arbitrary {
+      for {
+        itemDescription <- nonEmptyString
+        totalGrossMass  <- nonEmptyString
+        totalNetMass    <- Gen.option(arbitrary[String])
+        commodityCode   <- Gen.option(arbitrary[String])
+      } yield ItemDetails(itemDescription, totalGrossMass, totalNetMass, commodityCode)
+    }
 
   implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =
     Arbitrary(Gen.const(DeclarationForSelf))
