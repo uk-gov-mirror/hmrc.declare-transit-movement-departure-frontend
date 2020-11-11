@@ -28,7 +28,7 @@ import models._
 import models.reference.CountryCode
 import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCodes}
 import pages._
-import pages.addItems.containers.ContainerNumberPage
+import pages.addItems.containers.{ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
 import play.api.mvc.Call
@@ -76,6 +76,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ExtraInformationPage(itemIndex, _)    => ua => Some(previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPreviousAdministrativeReferencePage(itemIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, ua, NormalMode)
     case ContainerNumberPage(itemIndex, containerIndex) => ua => Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, NormalMode))
+    case ConfirmRemoveContainerPage(index, _) => ua => Some(confirmRemoveContainerRoute(ua, index, NormalMode))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -119,6 +120,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ExtraInformationPage(itemIndex, _)    => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case ConfirmRemovePreviousAdministrativeReferencePage(itemIndex, referenceIndex)     => ua => Some(removePreviousAdministrativeReference(itemIndex, CheckMode)(ua))
     case ContainerNumberPage(itemIndex, containerIndex) => ua => Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, CheckMode))
+    case ConfirmRemoveContainerPage(index, _) => ua => Some(confirmRemoveContainerRoute(ua, index, CheckMode))
   }
 
   private def consigneeAddress(ua: UserAnswers, index: Index, mode: Mode) =
@@ -396,6 +398,11 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _              => previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, mode)
     }
 
+  private def confirmRemoveContainerRoute(ua: UserAnswers, index: Index, mode: Mode) =
+    ua.get(DeriveNumberOfContainers(index)).getOrElse(0) match {
+      case 0 => containerRoutes.ContainerNumberController.onPageLoad(ua.id, index, Index(0), mode)
+      case _ => containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, index, mode)
+    }
 
   // format: on
 }
