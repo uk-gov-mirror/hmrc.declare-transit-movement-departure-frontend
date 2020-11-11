@@ -46,7 +46,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
                 ),
                 Action(
                   content            = msg"site.delete",
-                  href               = "", //TODO  put on href when page built
+                  href               = routes.ConfirmRemoveDocumentController.onPageLoad(userAnswers.id, index, documentIndex, CheckMode).url,
                   visuallyHiddenText = Some(msg"addSeal.documentList.delete.hidden".withArgs(answer)),
                   attributes         = Map("id" -> s"""remove-document-${index.display}""")
                 )
@@ -569,6 +569,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
           )
         )
     }
+
+  def confirmRemoveDocument(index: Index, documentIndex: Index): Option[Row] = userAnswers.get(ConfirmRemoveDocumentPage(index, documentIndex)) map {
+    answer =>
+      Row(
+        key   = Key(msg"confirmRemoveDocument.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConfirmRemoveDocumentController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveDocument.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def lrn: LocalReferenceNumber = userAnswers.id
 

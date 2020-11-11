@@ -40,6 +40,13 @@ trait UserAnswersEntryGenerators {
       } yield (AddAnotherDocumentPage(Index(0)), value)
     }
 
+  implicit lazy val arbitraryConfirmRemoveDocumentUserAnswersEntry: Arbitrary[(ConfirmRemoveDocumentPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (ConfirmRemoveDocumentPage(Index(0), Index(0)), value)
+    }
+
   implicit lazy val arbitraryDocumentReferenceUserAnswersEntry: Arbitrary[(DocumentReferencePage, JsValue)] =
     Arbitrary {
       for {

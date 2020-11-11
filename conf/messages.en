@@ -1048,3 +1048,7 @@ submissionConfirmation.subHeading = What happens next
 submissionConfirmation.link.pretext = You can:
 submissionConfirmation.link.option1 = manage your departure declarations
 submissionConfirmation.link.option2 = make another departure declaration
+
+confirmRemoveDocument.title = Are you sure you want to remove this document?
+confirmRemoveDocument.heading = Are you sure you want to remove this document?
+confirmRemoveDocument.error.required = Select yes if you want to remove this document
