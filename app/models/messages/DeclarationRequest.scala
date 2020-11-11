@@ -20,9 +20,8 @@ import cats.data.NonEmptyList
 import cats.syntax.all._
 import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.{UserAnswers, XMLWrites}
+import models.XMLWrites
 import models.XMLWrites._
-import models.journeyDomain.{MovementDetails, RouteDetails, TraderDetails, TransportDetails, UserAnswersOptionalParser}
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.GoodsItem
 import models.messages.guarantee.Guarantee

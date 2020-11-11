@@ -17,20 +17,38 @@
 package controllers
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import config.{FrontendAppConfig, ManageTransitMovementsService}
+import config.ManageTransitMovementsService
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalacheck.Gen
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import services.DeclarationSubmissionService
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
+class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendererApp with BeforeAndAfterEach with MockitoSugar with JsonMatchers {
+
+  private val mockDeclarationSubmissionService = mock[DeclarationSubmissionService]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[DeclarationSubmissionService].toInstance(mockDeclarationSubmissionService))
+
+  override def beforeEach: Unit = {
+    reset(mockDeclarationSubmissionService)
+    super.beforeEach
+  }
 
   "DeclarationSummary Controller" - {
 
@@ -62,6 +80,34 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendere
       templateCaptor.getValue mustEqual "declarationSummary.njk"
       jsonCaptor.getValue must containJson(expectedJson)
     }
+
+    "must redirect to 'Departure declaration sent' page on valid submission" in {
+      dataRetrievalWithData(emptyUserAnswers)
+      when(mockDeclarationSubmissionService.submit(any())(any())).thenReturn(Future.successful(Some(HttpResponse(ACCEPTED))))
+
+      val request = FakeRequest(POST, routes.DeclarationSummaryController.onSubmit(lrn).url)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SubmissionConfirmationController.onPageLoad(lrn).url
+    }
+
+    "must redirected to TechnicalDifficulties page when there is a server side error" in {
+      dataRetrievalWithData(emptyUserAnswers)
+      val genServerError = Gen.chooseNum(500, 599).sample.value
+
+      when(mockDeclarationSubmissionService.submit(any())(any())).thenReturn(Future.successful(Some(HttpResponse(genServerError))))
+
+      val request = FakeRequest(POST, routes.DeclarationSummaryController.onSubmit(lrn).url)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+    }
+
   }
 
 }

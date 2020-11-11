@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package derivable
+package services
 
-import models.Index
-import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.{containers, items}
+import models.UserAnswers
+import models.messages.DeclarationRequest
 
-final case class DeriveNumberOfContainers(itemIndex: Index) extends Derivable[List[JsObject], Int] {
+class DeclarationRequestService {
 
-  override val derive: List[JsObject] => Int = _.size
+  def convert(userAnswers: UserAnswers): Option[DeclarationRequest] = None
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ containers
 }
