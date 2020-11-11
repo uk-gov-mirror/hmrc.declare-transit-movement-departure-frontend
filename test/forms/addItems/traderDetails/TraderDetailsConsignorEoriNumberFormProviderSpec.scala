@@ -24,7 +24,7 @@ class TraderDetailsConsignorEoriNumberFormProviderSpec extends StringFieldBehavi
 
   val requiredKey = "traderDetailsConsignorEoriNumber.error.required"
   val lengthKey   = "traderDetailsConsignorEoriNumber.error.length"
-  val maxLength   = 100
+  val maxLength   = 17
   val index       = Index(0)
 
   val form = new TraderDetailsConsignorEoriNumberFormProvider()(index)
