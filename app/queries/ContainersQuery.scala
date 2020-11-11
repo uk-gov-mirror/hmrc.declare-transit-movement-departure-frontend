@@ -13,3 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package queries
+
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{containers, items}
+
+final case class ContainersQuery(itemIndex: Index) extends QuestionPage[JsObject] {
+
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ containers
+}

@@ -57,7 +57,6 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
       arbitrarySpecialMentionTypeUserAnswersEntry.arbitrary ::
       arbitraryAddSpecialMentionUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
-      arbitraryAddAnotherContainerUserAnswersEntry.arbitrary ::
       arbitraryContainerNumberUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
       arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry.arbitrary ::
