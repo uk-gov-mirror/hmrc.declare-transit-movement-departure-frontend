@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages.addItems.containers
+package queries
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-class ContainerNumberPageSpec extends PageBehaviours with SpecBase {
+final case class DocumentQuery(index: Index, documentIndex: Index) extends QuestionPage[JsObject] {
 
-  "ContainerNumberPage" - {
+  override def path: JsPath = JsPath \ Constants.items \ index.position \ Constants.documents \ documentIndex.position
 
-    beRetrievable[String](ContainerNumberPage(itemIndex, containerIndex))
-
-    beSettable[String](ContainerNumberPage(itemIndex, containerIndex))
-
-    beRemovable[String](ContainerNumberPage(itemIndex, containerIndex))
-  }
 }

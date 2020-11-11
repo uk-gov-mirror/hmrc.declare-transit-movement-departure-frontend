@@ -17,22 +17,24 @@
 package navigation
 
 import base.SpecBase
+import controllers.addItems.containers.{routes => containerRoutes}
 import controllers.addItems.previousReferences.{routes => previousReferenceRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderRoutes}
 import controllers.{routes => mainRoutes}
 import generators.Generators
 import models.reference.{CountryCode, PackageType}
-import models.{Address, CheckMode, ConsigneeAddress, ConsignorAddress, DeclarationType, Index, NormalMode, UserAnswers}
+import models.{CheckMode, ConsigneeAddress, ConsignorAddress, DeclarationType, Index, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
+import pages.addItems.containers._
 import pages.addItems.traderDetails._
-import queries.{ItemsQuery, PackagesQuery, PreviousReferencesQuery}
+import queries.{ContainersQuery, _}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
+  // format: off
   val navigator = new AddItemsNavigator
 
   "Add Items section" - {
@@ -64,12 +66,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(AddTotalNetMassPage(index), true)
-              .success
-              .value
-              .remove(TotalNetMassPage(index))
-              .success
-              .value
+              .set(AddTotalNetMassPage(index), true).success.value
+              .remove(TotalNetMassPage(index)).success.value
             navigator
               .nextPage(AddTotalNetMassPage(index), NormalMode, updatedAnswers)
               .mustBe(routes.TotalNetMassController.onPageLoad(answers.id, index, NormalMode))
@@ -81,12 +79,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(AddTotalNetMassPage(index), false)
-              .success
-              .value
-              .remove(TotalNetMassPage(index))
-              .success
-              .value
+              .set(AddTotalNetMassPage(index), false).success.value
+              .remove(TotalNetMassPage(index)).success.value
             navigator
               .nextPage(AddTotalNetMassPage(index), NormalMode, updatedAnswers)
               .mustBe(routes.IsCommodityCodeKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -102,21 +96,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(IsCommodityCodeKnownPage(index), false)
-                .success
-                .value
-                .set(ConsignorForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsignorPage, false)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsigneePage, false)
-                .success
-                .value
+                .set(IsCommodityCodeKnownPage(index), false).success.value
+                .set(ConsignorForAllItemsPage, false).success.value
+                .set(AddConsignorPage, false).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, false).success.value
               navigator
                 .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
                 .mustBe(traderRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -128,21 +112,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(IsCommodityCodeKnownPage(index), false)
-                .success
-                .value
-                .remove(ConsignorForAllItemsPage)
-                .success
-                .value
-                .remove(AddConsignorPage)
-                .success
-                .value
-                .remove(ConsigneeForAllItemsPage)
-                .success
-                .value
-                .remove(AddConsigneePage)
-                .success
-                .value
+                .set(IsCommodityCodeKnownPage(index), false).success.value
+                .remove(ConsignorForAllItemsPage).success.value
+                .remove(AddConsignorPage).success.value
+                .remove(ConsigneeForAllItemsPage).success.value
+                .remove(AddConsigneePage).success.value
               navigator
                 .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
                 .mustBe(traderRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -154,21 +128,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(IsCommodityCodeKnownPage(index), false)
-                .success
-                .value
-                .set(ConsignorForAllItemsPage, true)
-                .success
-                .value
-                .remove(AddConsignorPage)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsigneePage, false)
-                .success
-                .value
+                .set(IsCommodityCodeKnownPage(index), false).success.value
+                .set(ConsignorForAllItemsPage, true).success.value
+                .remove(AddConsignorPage).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, false).success.value
               navigator
                 .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
                 .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -180,21 +144,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(IsCommodityCodeKnownPage(index), false)
-                .success
-                .value
-                .set(ConsignorForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsignorPage, true)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsigneePage, false)
-                .success
-                .value
+                .set(IsCommodityCodeKnownPage(index), false).success.value
+                .set(ConsignorForAllItemsPage, false).success.value
+                .set(AddConsignorPage, true).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, false).success.value
               navigator
                 .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
                 .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -206,21 +160,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(IsCommodityCodeKnownPage(index), false)
-                .success
-                .value
-                .set(ConsignorForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsignorPage, true)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, true)
-                .success
-                .value
-                .remove(AddConsigneePage)
-                .success
-                .value
+                .set(IsCommodityCodeKnownPage(index), false).success.value
+                .set(ConsignorForAllItemsPage, false).success.value
+                .set(AddConsignorPage, true).success.value
+                .set(ConsigneeForAllItemsPage, true).success.value
+                .remove(AddConsigneePage).success.value
               navigator
                 .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
                 .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
@@ -232,21 +176,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(IsCommodityCodeKnownPage(index), false)
-                .success
-                .value
-                .set(ConsignorForAllItemsPage, true)
-                .success
-                .value
-                .remove(AddConsignorPage)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, true)
-                .success
-                .value
-                .remove(AddConsigneePage)
-                .success
-                .value
+                .set(IsCommodityCodeKnownPage(index), false).success.value
+                .set(ConsignorForAllItemsPage, true).success.value
+                .remove(AddConsignorPage).success.value
+                .set(ConsigneeForAllItemsPage, true).success.value
+                .remove(AddConsigneePage).success.value
               navigator
                 .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
                 .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
@@ -259,9 +193,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(IsCommodityCodeKnownPage(index), true)
-              .success
-              .value
+              .set(IsCommodityCodeKnownPage(index), true).success.value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
               .mustBe(routes.CommodityCodeController.onPageLoad(answers.id, index, NormalMode))
@@ -275,18 +207,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(ConsignorForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsignorPage, false)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsigneePage, false)
-                .success
-                .value
+                .set(ConsignorForAllItemsPage, false).success.value
+                .set(AddConsignorPage, false).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, false).success.value
               navigator
                 .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
                 .mustBe(traderRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -298,18 +222,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .remove(ConsignorForAllItemsPage)
-                .success
-                .value
-                .remove(AddConsignorPage)
-                .success
-                .value
-                .remove(ConsigneeForAllItemsPage)
-                .success
-                .value
-                .remove(AddConsigneePage)
-                .success
-                .value
+                .remove(ConsignorForAllItemsPage).success.value
+                .remove(AddConsignorPage).success.value
+                .remove(ConsigneeForAllItemsPage).success.value
+                .remove(AddConsigneePage).success.value
               navigator
                 .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
                 .mustBe(traderRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -321,18 +237,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(ConsignorForAllItemsPage, true)
-                .success
-                .value
-                .remove(AddConsignorPage)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsigneePage, false)
-                .success
-                .value
+                .set(ConsignorForAllItemsPage, true).success.value
+                .remove(AddConsignorPage).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, false).success.value
               navigator
                 .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
                 .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -344,18 +252,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(ConsignorForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsignorPage, true)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsigneePage, false)
-                .success
-                .value
+                .set(ConsignorForAllItemsPage, false).success.value
+                .set(AddConsignorPage, true).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, false).success.value
               navigator
                 .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
                 .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -367,18 +267,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(ConsignorForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsignorPage, true)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, true)
-                .success
-                .value
-                .remove(AddConsigneePage)
-                .success
-                .value
+                .set(ConsignorForAllItemsPage, false).success.value
+                .set(AddConsignorPage, true).success.value
+                .set(ConsigneeForAllItemsPage, true).success.value
+                .remove(AddConsigneePage).success.value
               navigator
                 .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
                 .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
@@ -390,18 +282,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(ConsignorForAllItemsPage, true)
-                .success
-                .value
-                .remove(AddConsignorPage)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, true)
-                .success
-                .value
-                .remove(AddConsigneePage)
-                .success
-                .value
+                .set(ConsignorForAllItemsPage, true).success.value
+                .remove(AddConsignorPage).success.value
+                .set(ConsigneeForAllItemsPage, true).success.value
+                .remove(AddConsigneePage).success.value
               navigator
                 .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
                 .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
@@ -417,21 +301,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .remove(ConsignorForAllItemsPage)
-                  .success
-                  .value
-                  .remove(AddConsignorPage)
-                  .success
-                  .value
-                  .remove(ConsigneeForAllItemsPage)
-                  .success
-                  .value
-                  .remove(AddConsigneePage)
-                  .success
-                  .value
-                  .set(TraderDetailsConsignorEoriKnownPage(index), true)
-                  .success
-                  .value
+                  .remove(ConsignorForAllItemsPage).success.value
+                  .remove(AddConsignorPage).success.value
+                  .remove(ConsigneeForAllItemsPage).success.value
+                  .remove(AddConsigneePage).success.value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriKnownPage(index), NormalMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
@@ -441,9 +315,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage(index), false)
-                  .success
-                  .value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriKnownPage(index), NormalMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorNameController.onPageLoad(updatedAnswers.id, index, NormalMode))
@@ -453,21 +325,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .remove(ConsignorForAllItemsPage)
-                  .success
-                  .value
-                  .remove(AddConsignorPage)
-                  .success
-                  .value
-                  .remove(ConsigneeForAllItemsPage)
-                  .success
-                  .value
-                  .remove(AddConsigneePage)
-                  .success
-                  .value
-                  .remove(TraderDetailsConsignorEoriKnownPage(index))
-                  .success
-                  .value
+                  .remove(ConsignorForAllItemsPage).success.value
+                  .remove(AddConsignorPage).success.value
+                  .remove(ConsigneeForAllItemsPage).success.value
+                  .remove(AddConsigneePage).success.value
+                  .remove(TraderDetailsConsignorEoriKnownPage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriKnownPage(index), NormalMode, updatedAnswers)
                   .mustBe(mainRoutes.SessionExpiredController.onPageLoad())
@@ -480,12 +342,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(ConsigneeForAllItemsPage, false)
-                  .success
-                  .value
-                  .set(AddConsigneePage, false)
-                  .success
-                  .value
+                  .set(ConsigneeForAllItemsPage, false).success.value
+                  .set(AddConsigneePage, false).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -495,12 +353,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .remove(ConsigneeForAllItemsPage)
-                  .success
-                  .value
-                  .remove(AddConsigneePage)
-                  .success
-                  .value
+                  .remove(ConsigneeForAllItemsPage).success.value
+                  .remove(AddConsigneePage).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -510,12 +364,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(ConsigneeForAllItemsPage, false)
-                  .success
-                  .value
-                  .set(AddConsigneePage, true)
-                  .success
-                  .value
+                  .set(ConsigneeForAllItemsPage, false).success.value
+                  .set(AddConsigneePage, true).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
@@ -525,12 +375,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(ConsigneeForAllItemsPage, true)
-                  .success
-                  .value
-                  .remove(AddConsigneePage)
-                  .success
-                  .value
+                  .set(ConsigneeForAllItemsPage, true).success.value
+                  .remove(AddConsigneePage).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriNumberPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
@@ -550,18 +396,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(ConsignorForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsignorPage, false)
-                .success
-                .value
-                .set(ConsigneeForAllItemsPage, false)
-                .success
-                .value
-                .set(AddConsigneePage, false)
-                .success
-                .value
+                .set(ConsignorForAllItemsPage, false).success.value
+                .set(AddConsignorPage, false).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, false).success.value
               navigator
                 .nextPage(TraderDetailsConsignorAddressPage(index), NormalMode, updatedAnswers)
                 .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
@@ -574,12 +412,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage(index), true)
-                  .success
-                  .value
-                  .set(AddItemsSameConsigneeForAllItemsPage(index), true)
-                  .success
-                  .value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), true).success.value
+                  .set(AddItemsSameConsigneeForAllItemsPage(index), true).success.value
                 navigator
                   .nextPage(AddItemsSameConsigneeForAllItemsPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, Index(0), NormalMode))
@@ -589,12 +423,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             (forAll(arbitrary[UserAnswers], arbitrary[Boolean])) {
               (answers, addItemsSameConsigneeForAllItems) =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsignorForAllItemsPage(index), false)
-                  .success
-                  .value
-                  .set(AddItemsSameConsigneeForAllItemsPage(index), addItemsSameConsigneeForAllItems)
-                  .success
-                  .value
+                  .set(AddItemsSameConsignorForAllItemsPage(index), false).success.value
+                  .set(AddItemsSameConsigneeForAllItemsPage(index), addItemsSameConsigneeForAllItems).success.value
                 navigator
                   .nextPage(AddItemsSameConsigneeForAllItemsPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
@@ -604,9 +434,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddItemsSameConsigneeForAllItemsPage(index), false)
-                  .success
-                  .value
+                  .set(AddItemsSameConsigneeForAllItemsPage(index), false).success.value
                 navigator
                   .nextPage(AddItemsSameConsigneeForAllItemsPage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
@@ -619,9 +447,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsigneeEoriKnownPage(index), true)
-                  .success
-                  .value
+                  .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
                 navigator
                   .nextPage(TraderDetailsConsigneeEoriKnownPage(index), NormalMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
@@ -631,12 +457,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsigneeEoriKnownPage(index), false)
-                  .success
-                  .value
-                  .remove(TraderDetailsConsigneeNamePage(index))
-                  .success
-                  .value
+                  .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
+                  .remove(TraderDetailsConsigneeNamePage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsigneeEoriKnownPage(index), NormalMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsigneeNameController.onPageLoad(updatedAnswers.id, index, NormalMode))
@@ -646,21 +468,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .remove(ConsignorForAllItemsPage)
-                  .success
-                  .value
-                  .remove(AddConsignorPage)
-                  .success
-                  .value
-                  .remove(ConsigneeForAllItemsPage)
-                  .success
-                  .value
-                  .remove(AddConsigneePage)
-                  .success
-                  .value
-                  .remove(TraderDetailsConsigneeEoriKnownPage(index))
-                  .success
-                  .value
+                  .remove(ConsignorForAllItemsPage).success.value
+                  .remove(AddConsignorPage).success.value
+                  .remove(ConsigneeForAllItemsPage).success.value
+                  .remove(AddConsigneePage).success.value
+                  .remove(TraderDetailsConsigneeEoriKnownPage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsigneeEoriKnownPage(index), NormalMode, updatedAnswers)
                   .mustBe(mainRoutes.SessionExpiredController.onPageLoad())
@@ -705,9 +517,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
 
                 navigator
                   .nextPage(PackageTypePage(index, index), NormalMode, updatedAnswers)
@@ -720,9 +530,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkOrUnpackedPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
 
                 navigator
                   .nextPage(PackageTypePage(index, index), NormalMode, updatedAnswers)
@@ -737,12 +545,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType], arbitrary[Int]) {
               (answers, packageType, howManyPackages) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(HowManyPackagesPage(index, index), howManyPackages)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(HowManyPackagesPage(index, index), howManyPackages).success.value
 
                 navigator
                   .nextPage(HowManyPackagesPage(index, index), NormalMode, updatedAnswers)
@@ -754,12 +558,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary, arbitrary[Int]) {
               (answers, packageType, howManyPackages) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(HowManyPackagesPage(index, index), howManyPackages)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(HowManyPackagesPage(index, index), howManyPackages).success.value
 
                 navigator
                   .nextPage(HowManyPackagesPage(index, index), NormalMode, updatedAnswers)
@@ -771,12 +571,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary, arbitrary[Int]) {
               (answers, packageType, howManyPackages) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(HowManyPackagesPage(index, index), howManyPackages)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(HowManyPackagesPage(index, index), howManyPackages).success.value
 
                 navigator
                   .nextPage(HowManyPackagesPage(index, index), NormalMode, updatedAnswers)
@@ -791,9 +587,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage(index, index), true)
-                  .success
-                  .value
+                  .set(DeclareNumberOfPackagesPage(index, index), true).success.value
 
                 navigator
                   .nextPage(DeclareNumberOfPackagesPage(index, index), NormalMode, updatedAnswers)
@@ -804,12 +598,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(DeclareNumberOfPackagesPage(index, index), false)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(DeclareNumberOfPackagesPage(index, index), false).success.value
 
                 navigator
                   .nextPage(DeclareNumberOfPackagesPage(index, index), NormalMode, updatedAnswers)
@@ -820,12 +610,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(DeclareNumberOfPackagesPage(index, index), false)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(DeclareNumberOfPackagesPage(index, index), false).success.value
 
                 navigator
                   .nextPage(DeclareNumberOfPackagesPage(index, index), NormalMode, updatedAnswers)
@@ -840,9 +626,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[Int]) {
               (answers, totalPieces) =>
                 val updatedAnswers = answers
-                  .set(TotalPackagesPage, totalPieces)
-                  .success
-                  .value
+                  .set(TotalPackagesPage, totalPieces).success.value
 
                 navigator
                   .nextPage(TotalPiecesPage(index, index), NormalMode, updatedAnswers)
@@ -856,9 +640,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddMarkPage(index, index), true)
-                  .success
-                  .value
+                  .set(AddMarkPage(index, index), true).success.value
 
                 navigator
                   .nextPage(AddMarkPage(index, index), NormalMode, updatedAnswers)
@@ -869,9 +651,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddMarkPage(index, index), false)
-                  .success
-                  .value
+                  .set(AddMarkPage(index, index), false).success.value
 
                 navigator
                   .nextPage(AddMarkPage(index, index), NormalMode, updatedAnswers)
@@ -880,14 +660,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
         }
 
-        "DeclareMark" - {
+       "DeclareMark" - {
           "must go to AddAnotherPackage" in {
             forAll(arbitrary[UserAnswers], arbitrary[String]) {
               (answers, declareMark) =>
                 val updatedAnswers = answers
-                  .set(DeclareMarkPage(index, index), declareMark)
-                  .success
-                  .value
+                  .set(DeclareMarkPage(index, index), declareMark).success.value
 
                 navigator
                   .nextPage(DeclareMarkPage(index, index), NormalMode, updatedAnswers)
@@ -901,18 +679,54 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(AddAnotherPackagePage(index), true)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(AddAnotherPackagePage(index), true).success.value
 
                 val nextPackageIndex = Index(index.position + 1)
 
                 navigator
                   .nextPage(AddAnotherPackagePage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, nextPackageIndex, NormalMode))
+            }
+          }
+
+          "when no is answered must go to" - {
+            "containerNumber when no containers exist" ignore {
+              forAll(arbitrary[UserAnswers]) {
+                answers =>
+                  val updatedAnswers = answers
+                    .set(AddAnotherPackagePage(itemIndex), false).success.value
+                    .remove(ContainersQuery(itemIndex)).success.value
+                navigator
+                  .nextPage(AddAnotherPackagePage(itemIndex), NormalMode, updatedAnswers)
+                  .mustBe(containerRoutes.ContainerNumberController.onPageLoad(updatedAnswers.id, itemIndex, containerIndex, NormalMode))
+              }
+            }
+
+            "addAnotherContainer when containers already exist" ignore {
+              forAll(arbitrary[UserAnswers], arbitrary[String]) {
+                (answers, containerNumber) =>
+                  val updatedAnswers = answers
+                    .set(AddAnotherPackagePage(itemIndex), false).success.value
+                    .set(ContainerNumberPage(itemIndex, containerIndex), containerNumber).success.value
+                  navigator
+                    .nextPage(AddAnotherPackagePage(itemIndex), NormalMode, updatedAnswers)
+                    .mustBe(containerRoutes.AddAnotherContainerController.onPageLoad(updatedAnswers.id, itemIndex, NormalMode))
+
+              }
+            }
+          }
+        }
+
+        "containerNumber" - {
+          "must go from containerNumber to addAnotherContainer" in {
+            forAll(arbitrary[UserAnswers], arbitrary[String]) {
+              (answers, containerNumber) =>
+                val updatedAnswers = answers
+                  .set(ContainerNumberPage(itemIndex, containerIndex), containerNumber).success.value
+                navigator
+                  .nextPage(ContainerNumberPage(itemIndex, containerIndex), NormalMode, updatedAnswers)
+                  .mustBe(containerRoutes.AddAnotherContainerController.onPageLoad(updatedAnswers.id, itemIndex, NormalMode))
             }
           }
         }
@@ -923,18 +737,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(AddAnotherPackagePage(index), true)
-                  .success
-                  .value
-                  .set(RemovePackagePage(index), false)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(AddAnotherPackagePage(index), true).success.value
+                  .set(RemovePackagePage(index), false).success.value
                 navigator
                   .nextPage(RemovePackagePage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.AddAnotherPackageController.onPageLoad(answers.id, index, NormalMode))
@@ -945,18 +751,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(AddAnotherPackagePage(index), true)
-                  .success
-                  .value
-                  .set(RemovePackagePage(index), true)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(AddAnotherPackagePage(index), true).success.value
+                  .set(RemovePackagePage(index), true).success.value
                 navigator
                   .nextPage(RemovePackagePage(index), NormalMode, updatedAnswers)
                   .mustBe(routes.AddAnotherPackageController.onPageLoad(answers.id, index, NormalMode))
@@ -965,12 +763,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           "must go to PackageType page when 'Yes' is selected and all the packages are removed" in {
             val updatedAnswers = emptyUserAnswers
-              .remove(PackagesQuery(index, index))
-              .success
-              .value
-              .set(RemovePackagePage(index), true)
-              .success
-              .value
+              .remove(PackagesQuery(index, index)).success.value
+              .set(RemovePackagePage(index), true).success.value
             navigator
               .nextPage(RemovePackagePage(index), NormalMode, updatedAnswers)
               .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, index, NormalMode))
@@ -984,12 +778,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(DeclarationTypePage, DeclarationType.Option1)
-                .success
-                .value
-                .set(CountryOfDispatchPage, CountryCode("UK"))
-                .success
-                .value
+                .set(DeclarationTypePage, DeclarationType.Option1).success.value
+                .set(CountryOfDispatchPage, CountryCode("UK")).success.value
 
               navigator
                 .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
@@ -1005,12 +795,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   val updatedAnswers = answers
-                    .set(DeclarationTypePage, DeclarationType.Option2)
-                    .success
-                    .value
-                    .set(CountryOfDispatchPage, countryCode)
-                    .success
-                    .value
+                    .set(DeclarationTypePage, DeclarationType.Option2).success.value
+                    .set(CountryOfDispatchPage, countryCode).success.value
 
                   navigator
                     .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
@@ -1024,12 +810,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .remove(PreviousReferencesQuery(index))
-                .success
-                .value
-                .set(AddAdministrativeReferencePage(index), true)
-                .success
-                .value
+                .remove(PreviousReferencesQuery(index)).success.value
+                .set(AddAdministrativeReferencePage(index), true).success.value
 
               navigator
                 .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
@@ -1041,9 +823,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(AddAdministrativeReferencePage(index), false)
-                .success
-                .value
+                .set(AddAdministrativeReferencePage(index), false).success.value
 
               navigator
                 .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
@@ -1107,12 +887,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswer = answers
-                  .remove(PreviousReferencesQuery(index))
-                  .success
-                  .value
-                  .set(AddAnotherPreviousAdministrativeReferencePage(index), true)
-                  .success
-                  .value
+                  .remove(PreviousReferencesQuery(index)).success.value
+                  .set(AddAnotherPreviousAdministrativeReferencePage(index), true).success.value
 
                 navigator
                   .nextPage(AddAnotherPreviousAdministrativeReferencePage(index), NormalMode, updatedAnswer)
@@ -1124,12 +900,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswer = answers
-                  .remove(PreviousReferencesQuery(index))
-                  .success
-                  .value
-                  .set(AddAnotherPreviousAdministrativeReferencePage(index), false)
-                  .success
-                  .value
+                  .remove(PreviousReferencesQuery(index)).success.value
+                  .set(AddAnotherPreviousAdministrativeReferencePage(index), false).success.value
 
                 navigator
                   .nextPage(AddAnotherPreviousAdministrativeReferencePage(index), NormalMode, updatedAnswer)
@@ -1155,12 +927,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswer = answers
-                  .set(AddAnotherItemPage, true)
-                  .success
-                  .value
-                  .set(ItemDescriptionPage(index), "test")
-                  .success
-                  .value
+                  .set(AddAnotherItemPage, true).success.value
+                  .set(ItemDescriptionPage(index), "test").success.value
 
                 navigator
                   .nextPage(AddAnotherItemPage, NormalMode, updatedAnswer)
@@ -1175,18 +943,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(ItemDescriptionPage(index), "item1")
-                  .success
-                  .value
-                  .set(ItemDescriptionPage(Index(1)), "item2")
-                  .success
-                  .value
-                  .set(AddAnotherItemPage, true)
-                  .success
-                  .value
-                  .set(ConfirmRemoveItemPage, false)
-                  .success
-                  .value
+                  .set(ItemDescriptionPage(index), "item1").success.value
+                  .set(ItemDescriptionPage(Index(1)), "item2").success.value
+                  .set(AddAnotherItemPage, true).success.value
+                  .set(ConfirmRemoveItemPage, false).success.value
                 navigator
                   .nextPage(ConfirmRemoveItemPage, NormalMode, updatedAnswers)
                   .mustBe(routes.AddAnotherItemController.onPageLoad(updatedAnswers.id))
@@ -1197,15 +957,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(ItemDescriptionPage(index), "item1")
-                  .success
-                  .value
-                  .set(ItemDescriptionPage(Index(1)), "item2")
-                  .success
-                  .value
-                  .set(ConfirmRemoveItemPage, true)
-                  .success
-                  .value
+                  .set(ItemDescriptionPage(index), "item1").success.value
+                  .set(ItemDescriptionPage(Index(1)), "item2").success.value
+                  .set(ConfirmRemoveItemPage, true).success.value
                 navigator
                   .nextPage(ConfirmRemoveItemPage, NormalMode, updatedAnswers)
                   .mustBe(routes.AddAnotherItemController.onPageLoad(updatedAnswers.id))
@@ -1216,12 +970,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = emptyUserAnswers
-                  .remove(ItemsQuery(index))
-                  .success
-                  .value
-                  .set(ConfirmRemoveItemPage, true)
-                  .success
-                  .value
+                  .remove(ItemsQuery(index)).success.value
+                  .set(ConfirmRemoveItemPage, true).success.value
                 navigator
                   .nextPage(ConfirmRemoveItemPage, NormalMode, updatedAnswers)
                   .mustBe(routes.ItemDescriptionController.onPageLoad(updatedAnswers.id, index, NormalMode))
@@ -1234,15 +984,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswer = answers
-                  .set(ReferenceTypePage(index, referenceIndex), "T1")
-                  .success
-                  .value
-                  .set(ReferenceTypePage(index, Index(1)), "T1")
-                  .success
-                  .value
-                  .set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true)
-                  .success
-                  .value
+                  .set(ReferenceTypePage(index, referenceIndex), "T1").success.value
+                  .set(ReferenceTypePage(index, Index(1)), "T1").success.value
+                  .set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
                 navigator
                   .nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
                   .mustBe(previousReferenceRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
@@ -1253,12 +997,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswer = answers
-                  .remove(PreviousReferencesQuery(index))
-                  .success
-                  .value
-                  .set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true)
-                  .success
-                  .value
+                  .remove(PreviousReferencesQuery(index)).success.value
+                  .set(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), true).success.value
 
                 navigator
                   .nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
@@ -1305,12 +1045,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(AddTotalNetMassPage(index), true)
-              .success
-              .value
-              .remove(TotalNetMassPage(index))
-              .success
-              .value
+              .set(AddTotalNetMassPage(index), true).success.value
+              .remove(TotalNetMassPage(index)).success.value
             navigator
               .nextPage(AddTotalNetMassPage(index), CheckMode, updatedAnswers)
               .mustBe(routes.TotalNetMassController.onPageLoad(answers.id, index, CheckMode))
@@ -1322,12 +1058,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(AddTotalNetMassPage(index), true)
-              .success
-              .value
-              .set(TotalNetMassPage(index), "100.123")
-              .success
-              .value
+              .set(AddTotalNetMassPage(index), true).success.value
+              .set(TotalNetMassPage(index), "100.123").success.value
             navigator
               .nextPage(AddTotalNetMassPage(index), CheckMode, updatedAnswers)
               .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
@@ -1339,9 +1071,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(AddTotalNetMassPage(index), false)
-              .success
-              .value
+              .set(AddTotalNetMassPage(index), false).success.value
             navigator
               .nextPage(AddTotalNetMassPage(index), CheckMode, updatedAnswers)
               .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
@@ -1362,12 +1092,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(IsCommodityCodeKnownPage(index), true)
-              .success
-              .value
-              .set(CommodityCodePage(index), "111111")
-              .success
-              .value
+              .set(IsCommodityCodeKnownPage(index), true).success.value
+              .set(CommodityCodePage(index), "111111").success.value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), CheckMode, updatedAnswers)
               .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
@@ -1379,12 +1105,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(IsCommodityCodeKnownPage(index), true)
-              .success
-              .value
-              .remove(CommodityCodePage(index))
-              .success
-              .value
+              .set(IsCommodityCodeKnownPage(index), true).success.value
+              .remove(CommodityCodePage(index)).success.value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), CheckMode, updatedAnswers)
               .mustBe(routes.CommodityCodeController.onPageLoad(answers.id, index, CheckMode))
@@ -1396,12 +1118,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(IsCommodityCodeKnownPage(index), false)
-              .success
-              .value
-              .remove(CommodityCodePage(index))
-              .success
-              .value
+              .set(IsCommodityCodeKnownPage(index), false).success.value
+              .remove(CommodityCodePage(index)).success.value
             navigator
               .nextPage(IsCommodityCodeKnownPage(index), CheckMode, updatedAnswers)
               .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
@@ -1416,12 +1134,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage(index), true)
-                  .success
-                  .value
-                  .remove(TraderDetailsConsignorEoriNumberPage(index))
-                  .success
-                  .value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
+                  .remove(TraderDetailsConsignorEoriNumberPage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorEoriNumberController.onPageLoad(updatedAnswers.id, index, CheckMode))
@@ -1431,12 +1145,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage(index), false)
-                  .success
-                  .value
-                  .remove(TraderDetailsConsignorNamePage(index))
-                  .success
-                  .value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
+                  .remove(TraderDetailsConsignorNamePage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
@@ -1446,12 +1156,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage(index), true)
-                  .success
-                  .value
-                  .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber.value)
-                  .success
-                  .value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), true).success.value
+                  .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber.value).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
@@ -1461,12 +1167,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsignorEoriKnownPage(index), false)
-                  .success
-                  .value
-                  .set(TraderDetailsConsignorNamePage(index), "name")
-                  .success
-                  .value
+                  .set(TraderDetailsConsignorEoriKnownPage(index), false).success.value
+                  .set(TraderDetailsConsignorNamePage(index), "name").success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
@@ -1495,15 +1197,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val userAnswers = answers
-                  .set(ConsigneeForAllItemsPage, true)
-                  .success
-                  .value
-                  .set(AddConsigneePage, true)
-                  .success
-                  .value
-                  .remove(TraderDetailsConsigneeEoriKnownPage(index))
-                  .success
-                  .value
+                  .set(ConsigneeForAllItemsPage, true).success.value
+                  .set(AddConsigneePage, true).success.value
+                  .remove(TraderDetailsConsigneeEoriKnownPage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, userAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
@@ -1513,15 +1209,9 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val userAnswers = answers
-                  .set(ConsigneeForAllItemsPage, false)
-                  .success
-                  .value
-                  .set(AddConsigneePage, false)
-                  .success
-                  .value
-                  .remove(TraderDetailsConsigneeEoriKnownPage(index))
-                  .success
-                  .value
+                  .set(ConsigneeForAllItemsPage, false).success.value
+                  .set(AddConsigneePage, false).success.value
+                  .remove(TraderDetailsConsigneeEoriKnownPage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorEoriNumberPage(index), CheckMode, userAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(userAnswers.id, index, CheckMode))
@@ -1534,9 +1224,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val userAnswers = answers
-                  .remove(TraderDetailsConsignorAddressPage(index))
-                  .success
-                  .value
+                  .remove(TraderDetailsConsignorAddressPage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, userAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsignorAddressController.onPageLoad(userAnswers.id, index, CheckMode))
@@ -1546,9 +1234,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[ConsignorAddress]) {
               (answers, address) =>
                 val userAnswers = answers
-                  .set(TraderDetailsConsignorAddressPage(index), address)
-                  .success
-                  .value //todo: move to correct model when page completed
+                  .set(TraderDetailsConsignorAddressPage(index), address).success.value
                 navigator
                   .nextPage(TraderDetailsConsignorNamePage(index), CheckMode, userAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
@@ -1570,12 +1256,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsigneeEoriKnownPage(index), true)
-                  .success
-                  .value
-                  .remove(TraderDetailsConsigneeEoriNumberPage(index))
-                  .success
-                  .value
+                  .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
+                  .remove(TraderDetailsConsigneeEoriNumberPage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(updatedAnswers.id, index, CheckMode))
@@ -1585,12 +1267,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsigneeEoriKnownPage(index), false)
-                  .success
-                  .value
-                  .remove(TraderDetailsConsigneeNamePage(index))
-                  .success
-                  .value
+                  .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
+                  .remove(TraderDetailsConsigneeNamePage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsigneeNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
@@ -1600,12 +1278,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsigneeEoriKnownPage(index), true)
-                  .success
-                  .value
-                  .set(TraderDetailsConsigneeEoriNumberPage(index), eoriNumber.value)
-                  .success
-                  .value
+                  .set(TraderDetailsConsigneeEoriKnownPage(index), true).success.value
+                  .set(TraderDetailsConsigneeEoriNumberPage(index), eoriNumber.value).success.value
                 navigator
                   .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
@@ -1616,12 +1290,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(TraderDetailsConsigneeEoriKnownPage(index), false)
-                  .success
-                  .value
-                  .set(TraderDetailsConsigneeNamePage(index), "value")
-                  .success
-                  .value
+                  .set(TraderDetailsConsigneeEoriKnownPage(index), false).success.value
+                  .set(TraderDetailsConsigneeNamePage(index), "value").success.value
                 navigator
                   .nextPage(TraderDetailsConsigneeEoriKnownPage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
@@ -1645,9 +1315,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val userAnswers = answers
-                  .remove(TraderDetailsConsigneeAddressPage(index))
-                  .success
-                  .value
+                  .remove(TraderDetailsConsigneeAddressPage(index)).success.value
                 navigator
                   .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, userAnswers)
                   .mustBe(traderRoutes.TraderDetailsConsigneeAddressController.onPageLoad(userAnswers.id, index, CheckMode))
@@ -1657,9 +1325,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[ConsigneeAddress]) {
               (answers, address) =>
                 val userAnswers = answers
-                  .set(TraderDetailsConsigneeAddressPage(index), address)
-                  .success
-                  .value //todo: move to correct model when page completed
+                  .set(TraderDetailsConsigneeAddressPage(index), address).success.value
                 navigator
                   .nextPage(TraderDetailsConsigneeNamePage(index), CheckMode, userAnswers)
                   .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
@@ -1688,9 +1354,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
 
                 navigator
                   .nextPage(PackageTypePage(index, index), CheckMode, updatedAnswers)
@@ -1703,9 +1367,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkOrUnpackedPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
 
                 navigator
                   .nextPage(PackageTypePage(index, index), CheckMode, updatedAnswers)
@@ -1719,12 +1381,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType], arbitrary[Int]) {
               (answers, packageType, howManyPackages) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(HowManyPackagesPage(index, index), howManyPackages)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(HowManyPackagesPage(index, index), howManyPackages).success.value
 
                 navigator
                   .nextPage(HowManyPackagesPage(index, index), CheckMode, updatedAnswers)
@@ -1736,12 +1394,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary, arbitrary[Int]) {
               (answers, packageType, howManyPackages) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(HowManyPackagesPage(index, index), howManyPackages)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(HowManyPackagesPage(index, index), howManyPackages).success.value
 
                 navigator
                   .nextPage(HowManyPackagesPage(index, index), CheckMode, updatedAnswers)
@@ -1753,12 +1407,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary, arbitrary[Int]) {
               (answers, packageType, howManyPackages) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(HowManyPackagesPage(index, index), howManyPackages)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(HowManyPackagesPage(index, index), howManyPackages).success.value
 
                 navigator
                   .nextPage(HowManyPackagesPage(index, index), CheckMode, updatedAnswers)
@@ -1773,9 +1423,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(DeclareNumberOfPackagesPage(index, index), true)
-                  .success
-                  .value
+                  .set(DeclareNumberOfPackagesPage(index, index), true).success.value
 
                 navigator
                   .nextPage(DeclareNumberOfPackagesPage(index, index), CheckMode, updatedAnswers)
@@ -1786,12 +1434,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryBulkPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(DeclareNumberOfPackagesPage(index, index), false)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(DeclareNumberOfPackagesPage(index, index), false).success.value
 
                 navigator
                   .nextPage(DeclareNumberOfPackagesPage(index, index), CheckMode, updatedAnswers)
@@ -1802,12 +1446,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitraryUnPackedPackageType.arbitrary) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(DeclareNumberOfPackagesPage(index, index), false)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(DeclareNumberOfPackagesPage(index, index), false).success.value
 
                 navigator
                   .nextPage(DeclareNumberOfPackagesPage(index, index), CheckMode, updatedAnswers)
@@ -1822,9 +1462,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[Int]) {
               (answers, totalPieces) =>
                 val updatedAnswers = answers
-                  .set(TotalPackagesPage, totalPieces)
-                  .success
-                  .value
+                  .set(TotalPackagesPage, totalPieces).success.value
 
                 navigator
                   .nextPage(TotalPiecesPage(index, index), CheckMode, updatedAnswers)
@@ -1838,9 +1476,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddMarkPage(index, index), true)
-                  .success
-                  .value
+                  .set(AddMarkPage(index, index), true).success.value
 
                 navigator
                   .nextPage(AddMarkPage(index, index), CheckMode, updatedAnswers)
@@ -1851,9 +1487,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddMarkPage(index, index), false)
-                  .success
-                  .value
+                  .set(AddMarkPage(index, index), false).success.value
 
                 navigator
                   .nextPage(AddMarkPage(index, index), CheckMode, updatedAnswers)
@@ -1867,9 +1501,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[String]) {
               (answers, declareMark) =>
                 val updatedAnswers = answers
-                  .set(DeclareMarkPage(index, index), declareMark)
-                  .success
-                  .value
+                  .set(DeclareMarkPage(index, index), declareMark).success.value
 
                 navigator
                   .nextPage(DeclareMarkPage(index, index), CheckMode, updatedAnswers)
@@ -1883,12 +1515,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(AddAnotherPackagePage(index), true)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(AddAnotherPackagePage(index), true).success.value
 
                 val nextPackageIndex = Index(index.position + 1)
 
@@ -1897,18 +1525,42 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, nextPackageIndex, CheckMode))
             }
           }
-          "must go to CheckYourAnswers if'No'" in {
+          "must go to CheckYourAnswers if'No' and there are containers" in {
+            forAll(arbitrary[UserAnswers], arbitrary[String]) {
+              (answers, container) =>
+                val updatedAnswers = answers
+                  .set(AddAnotherPackagePage(itemIndex), false).success.value
+                  .set(ContainerNumberPage(itemIndex, containerIndex), container).success.value
+                navigator
+                  .nextPage(AddAnotherPackagePage(itemIndex), CheckMode, updatedAnswers)
+                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, itemIndex))
+            }
+          }
+
+          "must go to ContainerNumber(0, 0) if'No' and there are NO containers" ignore {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
-                  .set(AddAnotherPackagePage(index), false)
-                  .success
-                  .value
-
+                  .set(AddAnotherPackagePage(itemIndex), false).success.value
+                  .remove(ContainersQuery(itemIndex)).success.value
                 navigator
-                  .nextPage(AddAnotherPackagePage(index), CheckMode, updatedAnswers)
-                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+                  .nextPage(AddAnotherPackagePage(itemIndex), CheckMode, updatedAnswers)
+                  .mustBe(containerRoutes.ContainerNumberController.onPageLoad(answers.id, itemIndex, containerIndex, CheckMode))
             }
+          }
+
+        }
+      }
+
+      "containerNumber" - {
+        "must go from containerNumber to addAnotherContainer" in {
+          forAll(arbitrary[UserAnswers], arbitrary[String]) {
+            (answers, containerNumber) =>
+              val updatedAnswers = answers
+                .set(ContainerNumberPage(itemIndex, containerIndex), containerNumber).success.value
+              navigator
+                .nextPage(ContainerNumberPage(itemIndex, containerIndex), CheckMode, updatedAnswers)
+                .mustBe(containerRoutes.AddAnotherContainerController.onPageLoad(updatedAnswers.id, itemIndex, CheckMode))
           }
         }
       }
@@ -1928,12 +1580,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .remove(PreviousReferencesQuery(index))
-                .success
-                .value
-                .set(AddAdministrativeReferencePage(index), true)
-                .success
-                .value
+                .remove(PreviousReferencesQuery(index)).success.value
+                .set(AddAdministrativeReferencePage(index), true).success.value
               navigator
                 .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
                 .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
@@ -2007,18 +1655,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(AddAnotherPackagePage(index), true)
-                  .success
-                  .value
-                  .set(RemovePackagePage(index), false)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(AddAnotherPackagePage(index), true).success.value
+                  .set(RemovePackagePage(index), false).success.value
                 navigator
                   .nextPage(RemovePackagePage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.AddAnotherPackageController.onPageLoad(answers.id, index, CheckMode))
@@ -2029,18 +1669,10 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             forAll(arbitrary[UserAnswers], arbitrary[PackageType]) {
               (answers, packageType) =>
                 val updatedAnswers = answers
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(PackageTypePage(index, index), packageType)
-                  .success
-                  .value
-                  .set(AddAnotherPackagePage(index), true)
-                  .success
-                  .value
-                  .set(RemovePackagePage(index), true)
-                  .success
-                  .value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(PackageTypePage(index, index), packageType).success.value
+                  .set(AddAnotherPackagePage(index), true).success.value
+                  .set(RemovePackagePage(index), true).success.value
                 navigator
                   .nextPage(RemovePackagePage(index), CheckMode, updatedAnswers)
                   .mustBe(routes.AddAnotherPackageController.onPageLoad(answers.id, index, CheckMode))
@@ -2049,12 +1681,8 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           "must go to PackageType page when 'Yes' is selected and all the packages are removed" in {
             val updatedAnswers = emptyUserAnswers
-              .remove(PackagesQuery(index, index))
-              .success
-              .value
-              .set(RemovePackagePage(index), true)
-              .success
-              .value
+              .remove(PackagesQuery(index, index)).success.value
+              .set(RemovePackagePage(index), true).success.value
             navigator
               .nextPage(RemovePackagePage(index), CheckMode, updatedAnswers)
               .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, index, CheckMode))
@@ -2063,4 +1691,5 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
   }
+  // format: on
 }

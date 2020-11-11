@@ -13,3 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package pages.addItems
+
+import base.SpecBase
+import pages.behaviours.PageBehaviours
+
+class ConfirmRemoveDocumentPageSpec extends SpecBase with PageBehaviours {
+
+  "ConfirmRemoveDocumentPage" - {
+
+    beRetrievable[Boolean](ConfirmRemoveDocumentPage(index, documentIndex))
+
+    beSettable[Boolean](ConfirmRemoveDocumentPage(index, documentIndex))
+
+    beRemovable[Boolean](ConfirmRemoveDocumentPage(index, documentIndex))
+  }
+}

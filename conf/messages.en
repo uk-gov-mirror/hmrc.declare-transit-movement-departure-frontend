@@ -997,16 +997,19 @@ removeSpecialMention.heading = removeSpecialMention
 removeSpecialMention.checkYourAnswersLabel = removeSpecialMention
 removeSpecialMention.error.required = Select yes if removeSpecialMention
 
-containerNumber.title = containerNumber
-containerNumber.heading = containerNumber
-containerNumber.checkYourAnswersLabel = containerNumber
-containerNumber.error.required = Enter containerNumber
-containerNumber.error.length = ContainerNumber must be 100 characters or less
+containerNumber.title = What is the shipping container number?
+containerNumber.heading = What is the shipping container number?
+containerNumber.checkYourAnswersLabel = Shipping container
+containerNumber.error.required = Enter the shipping container number
+containerNumber.error.length = The shipping container number must be {0} characters or less
+containerNumber.error.invalid = The shipping container number must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
-addAnotherContainer.title = addAnotherContainer
-addAnotherContainer.heading = addAnotherContainer
-addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
-addAnotherContainer.error.required = Select yes if addAnotherContainer
+addAnotherContainer.title.singular = You have added {0} shipping container
+addAnotherContainer.title.plural = You have added {0} shipping containers
+addAnotherContainer.heading = Do you need to add another shipping container?
+addAnotherContainer.checkYourAnswersLabel.singular = Container
+addAnotherContainer.checkYourAnswersLabel.plural = Containers
+addAnotherContainer.error.required = Select yes if you need to add another shipping container
 
 addExtraDocumentInformation.title = Do you need to add any extra information for document {0}?
 addExtraDocumentInformation.heading = Do you need to add any extra information for document {0}?
@@ -1055,3 +1058,7 @@ submissionConfirmation.subHeading = What happens next
 submissionConfirmation.link.pretext = You can:
 submissionConfirmation.link.option1 = manage your departure declarations
 submissionConfirmation.link.option2 = make another departure declaration
+
+confirmRemoveDocument.title = Are you sure you want to remove this document?
+confirmRemoveDocument.heading = Are you sure you want to remove this document?
+confirmRemoveDocument.error.required = Select yes if you want to remove this document

@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package pages.addItems.containers
+package forms.addItems
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class ContainerNumberPageSpec extends PageBehaviours with SpecBase {
+class ConfirmRemoveDocumentFormProviderSpec extends BooleanFieldBehaviours {
 
-  "ContainerNumberPage" - {
+  val requiredKey = "confirmRemoveDocument.error.required"
+  val invalidKey  = "error.boolean"
 
-    beRetrievable[String](ContainerNumberPage(itemIndex, containerIndex))
+  val form = new ConfirmRemoveDocumentFormProvider()()
 
-    beSettable[String](ContainerNumberPage(itemIndex, containerIndex))
+  ".value" - {
 
-    beRemovable[String](ContainerNumberPage(itemIndex, containerIndex))
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

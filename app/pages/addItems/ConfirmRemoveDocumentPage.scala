@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package pages.addItems.containers
+package pages.addItems
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.items
 
-class ContainerNumberPageSpec extends PageBehaviours with SpecBase {
+case class ConfirmRemoveDocumentPage(index: Index, documentIndex: Index) extends QuestionPage[Boolean] {
 
-  "ContainerNumberPage" - {
+  override def path: JsPath = JsPath \ items \ index.position \ toString
 
-    beRetrievable[String](ContainerNumberPage(itemIndex, containerIndex))
-
-    beSettable[String](ContainerNumberPage(itemIndex, containerIndex))
-
-    beRemovable[String](ContainerNumberPage(itemIndex, containerIndex))
-  }
+  override def toString: String = "confirmRemoveDocument"
 }

@@ -5,10 +5,9 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
-{% from "govuk/components/summary-list/macro.njk"  import govukSummaryList %}
 
 {% block pageTitle %}
-  {{ title(pageTitle, form.errors) }}
+  {{ title(messages("confirmRemoveDocument.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -28,17 +27,8 @@
           }) }}
         {% endif %}
 
+        <form action="{{ routes.controllers.addItems.ConfirmRemoveDocumentController.onSubmit(lrn, index, documentIndex, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
-                <h1 class="govuk-heading-xl">
-                  {{ messages(pageTitle, containerTotal) }}
-                </h1>
-
-          {{ govukSummaryList({
-                    classes: 'govuk-!-margin-bottom-9 ctc-add-to-a-list',
-                    rows: containerRows
-                }) }}
-
-        <form action="{{ routes.controllers.addItems.containers.AddAnotherContainerController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
@@ -46,9 +36,9 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('addAnotherContainer.heading'),
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--m"
+                text: messages('confirmRemoveDocument.heading'),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl"
               }
             },
             items: radios,

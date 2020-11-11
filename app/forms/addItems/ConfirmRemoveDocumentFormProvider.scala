@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package pages.addItems.containers
+package forms.addItems
 
-import base.SpecBase
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class ContainerNumberPageSpec extends PageBehaviours with SpecBase {
+class ConfirmRemoveDocumentFormProvider @Inject() extends Mappings {
 
-  "ContainerNumberPage" - {
-
-    beRetrievable[String](ContainerNumberPage(itemIndex, containerIndex))
-
-    beSettable[String](ContainerNumberPage(itemIndex, containerIndex))
-
-    beRemovable[String](ContainerNumberPage(itemIndex, containerIndex))
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmRemoveDocument.error.required")
+    )
 }
