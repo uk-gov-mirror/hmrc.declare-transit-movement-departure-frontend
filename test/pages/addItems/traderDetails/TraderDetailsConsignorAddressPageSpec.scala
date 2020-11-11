@@ -17,7 +17,7 @@
 package pages.addItems.traderDetails
 
 import base.SpecBase
-import models.{Address, ConsignorAddress}
+import models.ConsignorAddress
 import pages.behaviours.PageBehaviours
 
 class TraderDetailsConsignorAddressPageSpec extends PageBehaviours with SpecBase {

@@ -18,18 +18,17 @@ package controllers.addItems.traderDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
-import controllers.traderDetails.routes
+import controllers.{routes => mainRoutes}
 import forms.addItems.traderDetails.TraderDetailsConsigneeAddressFormProvider
 import generators.Generators
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
-import models.{Address, ConsigneeAddress, CountryList, NormalMode}
-import navigation.annotations.{AddItems, TraderDetails}
+import models.{ConsigneeAddress, CountryList, NormalMode}
+import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.addItems.traderDetails.{TraderDetailsConsigneeAddressPage, TraderDetailsConsigneeNamePage}
 import play.api.inject.bind
@@ -40,7 +39,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -66,7 +64,7 @@ class TraderDetailsConsigneeAddressControllerSpec
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[Navigator]).qualifiedWith(classOf[TraderDetails]).toInstance(new FakeNavigator(onwardRoute)),
+        bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
         bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
 
