@@ -32,6 +32,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def confirmRemoveContainer: Option[Row] = userAnswers.get(ConfirmRemoveContainerPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"confirmRemoveContainer.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConfirmRemoveContainerController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveContainer.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def removeSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(RemoveSpecialMentionPage(itemIndex)) map {
     answer =>
       Row(
