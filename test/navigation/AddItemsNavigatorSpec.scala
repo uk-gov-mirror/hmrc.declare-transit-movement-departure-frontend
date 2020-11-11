@@ -23,8 +23,8 @@ import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderRoutes}
 import controllers.{routes => mainRoutes}
 import generators.Generators
-import models._
 import models.reference.{CountryCode, PackageType}
+import models.{CheckMode, ConsigneeAddress, ConsignorAddress, DeclarationType, Index, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -1231,7 +1231,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
           "Items CYA when Address is Populated" in {
-            forAll(arbitrary[UserAnswers], arbitrary[Address]) {
+            forAll(arbitrary[UserAnswers], arbitrary[ConsignorAddress]) {
               (answers, address) =>
                 val userAnswers = answers
                   .set(TraderDetailsConsignorAddressPage(index), address).success.value
@@ -1322,7 +1322,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
           "Items CYA when address is populated" in {
-            forAll(arbitrary[UserAnswers], arbitrary[Address]) {
+            forAll(arbitrary[UserAnswers], arbitrary[ConsigneeAddress]) {
               (answers, address) =>
                 val userAnswers = answers
                   .set(TraderDetailsConsigneeAddressPage(index), address).success.value
