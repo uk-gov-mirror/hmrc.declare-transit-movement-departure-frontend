@@ -21,12 +21,21 @@ import generators.JourneyModelGenerators
 import models.journeyDomain.ItemDetailsSpec.setItemDetailsUserAnswers
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.addItems.CommodityCodePage
-import pages.{AddTotalNetMassPage, IsCommodityCodeKnownPage, ItemDescriptionPage, ItemTotalGrossMassPage, TotalNetMassPage}
+import pages.{AddTotalNetMassPage, IsCommodityCodeKnownPage, ItemDescriptionPage, ItemTotalGrossMassPage, QuestionPage, TotalNetMassPage}
 
 class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
   "ItemDetails" - {
+
+    val mandatoryPages: Gen[QuestionPage[_]] = Gen.oneOf(
+      ItemDescriptionPage(index),
+      ItemTotalGrossMassPage(index),
+      AddTotalNetMassPage(index),
+      IsCommodityCodeKnownPage(index)
+    )
+
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(arbitrary[ItemDetails], arbitrary[UserAnswers]) {
@@ -35,6 +44,18 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
             val result             = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
             result.value mustEqual itemDetails
+        }
+      }
+    }
+
+    "cannot be parsed from UserAnswers" - {
+      "when a mandatory answer is missing" in {
+        forAll(arbitrary[UserAnswers], mandatoryPages) {
+          case (userAnswers, mandatoryPage) =>
+            val updatedUserAnswers = userAnswers.remove(mandatoryPage).success.value
+            val result             = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
+
+            result mustEqual None
         }
       }
     }
