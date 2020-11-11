@@ -26,6 +26,11 @@ sealed trait Packages
 
 object Packages {
 
+  def packagesReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[Packages] =
+    UnpackedPackages.unpackedPackagesReader(itemIndex, referenceIndex).widen[Packages] orElse
+      BulkPackages.bulkPackageReader(itemIndex, referenceIndex).widen[Packages] orElse
+      OtherPackages.otherPackageReader(itemIndex, referenceIndex).widen[Packages]
+
   final case class UnpackedPackages(
     packageType: PackageType,
     howManyPackagesPage: Option[Int],
@@ -36,12 +41,18 @@ object Packages {
   object UnpackedPackages {
 
     def unpackedPackagesReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[UnpackedPackages] =
-      (
-        PackageTypePage(itemIndex, referenceIndex).reader,
-        HowManyPackagesPage(itemIndex, referenceIndex).optionalReader,
-        TotalPiecesPage(itemIndex, referenceIndex).reader,
-        DeclareMarkPage(itemIndex, referenceIndex).optionalReader
-      ).tupled.map((UnpackedPackages.apply _).tupled)
+      PackageTypePage(itemIndex, referenceIndex).reader
+        .filter(
+          packageType => PackageType.unpackedCodes.contains(packageType.code)
+        )
+        .productR(
+          (
+            PackageTypePage(itemIndex, referenceIndex).reader,
+            HowManyPackagesPage(itemIndex, referenceIndex).optionalReader,
+            TotalPiecesPage(itemIndex, referenceIndex).reader,
+            DeclareMarkPage(itemIndex, referenceIndex).optionalReader
+          ).tupled.map((UnpackedPackages.apply _).tupled)
+        )
 
   }
 
@@ -53,12 +64,18 @@ object Packages {
 
   object BulkPackages {
 
-    def bulkPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[BulkPackages] =
-      (
-        PackageTypePage(itemIndex, referenceIndex).reader,
-        HowManyPackagesPage(itemIndex, referenceIndex).optionalReader,
-        DeclareMarkPage(itemIndex, referenceIndex).optionalReader
-      ).tupled.map((BulkPackages.apply _).tupled)
+    implicit def bulkPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[BulkPackages] =
+      PackageTypePage(itemIndex, referenceIndex).reader
+        .filter(
+          packageType => PackageType.bulkCodes.contains(packageType.code)
+        )
+        .productR(
+          (
+            PackageTypePage(itemIndex, referenceIndex).reader,
+            HowManyPackagesPage(itemIndex, referenceIndex).optionalReader,
+            DeclareMarkPage(itemIndex, referenceIndex).optionalReader
+          ).tupled.map((BulkPackages.apply _).tupled)
+        )
   }
 
   final case class OtherPackages(packageType: PackageType, howManyPackagesPage: Int, markOrNumber: String) extends Packages
@@ -66,11 +83,17 @@ object Packages {
   object OtherPackages {
 
     def otherPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[OtherPackages] =
-      (
-        PackageTypePage(itemIndex, referenceIndex).reader,
-        HowManyPackagesPage(itemIndex, referenceIndex).reader,
-        DeclareMarkPage(itemIndex, referenceIndex).reader
-      ).tupled.map((OtherPackages.apply _).tupled)
+      PackageTypePage(itemIndex, referenceIndex).reader
+        .filter(
+          packageType => !PackageType.bulkAndUnpackedCodes.contains(packageType.code)
+        )
+        .productR(
+          (
+            PackageTypePage(itemIndex, referenceIndex).reader,
+            HowManyPackagesPage(itemIndex, referenceIndex).reader,
+            DeclareMarkPage(itemIndex, referenceIndex).reader
+          ).tupled.map((OtherPackages.apply _).tupled)
+        )
 
   }
 }

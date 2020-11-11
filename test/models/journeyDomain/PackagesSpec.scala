@@ -39,6 +39,16 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
   "PackagesSpec" - {
 
+    "any Packages can be parsed from UserAnswer" in {
+      forAll(arbitrary[Packages], arbitrary[UserAnswers]) {
+        (packages, userAnswers) =>
+          val updatedUserAnswers = setPackageUserAnswers(packages, index)(userAnswers)
+          val result             = UserAnswersReader[Packages](Packages.packagesReader(index, index)).run(updatedUserAnswers)
+
+          result.value mustEqual packages
+      }
+    }
+
     "OtherPackage" - {
 
       "can be parsed from UserAnswers" in {
@@ -115,7 +125,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             val updatedUserAnswers = setPackageUserAnswers(otherPackage, index)(userAnswers)
 
             val userAnswersIncomplete = updatedUserAnswers.remove(mandatoryPage).success.value
-            val result                = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(userAnswersIncomplete)
+            val result                = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(userAnswersIncomplete)
 
             result mustEqual None
         }
@@ -129,8 +139,8 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
 object PackagesSpec extends UserAnswersSpecHelper {
 
-  def setPackageUserAnswers(otherPackage: Packages, index: Index)(userAnswers: UserAnswers): UserAnswers =
-    otherPackage match {
+  def setPackageUserAnswers(packages: Packages, index: Index)(userAnswers: UserAnswers): UserAnswers =
+    packages match {
       case otherPackage: OtherPackages =>
         userAnswers
           .unsafeSetVal(PackageTypePage(index, index))(otherPackage.packageType)
