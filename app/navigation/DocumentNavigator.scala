@@ -18,19 +18,30 @@ package navigation
 import derivable.DeriveNumberOfDocuments
 import models.{Index, NormalMode, UserAnswers}
 import pages.Page
-import pages.addItems.AddDocumentsPage
+import pages.addItems.{AddDocumentsPage, DocumentTypePage}
 import play.api.mvc.Call
+import controllers.addItems.routes
+import javax.inject.{Inject, Singleton}
 
-class DocumentNavigator extends Navigator {
-
+@Singleton
+class DocumentNavigator @Inject()() extends Navigator {
+  // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddDocumentsPage(index) =>
-      ua =>
-        Some(controllers.addItems.routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index, ua)), NormalMode))
+    case AddDocumentsPage(index) => ua => addDocumentsPageRoute(ua, index)
 
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
-  private def count(index: Index, ua: UserAnswers): Int = ua.get(DeriveNumberOfDocuments(index)).getOrElse(0)
+  def addDocumentsPageRoute(ua: UserAnswers, index: Index) =
+    ua.get(AddDocumentsPage(index)) match {
+      case Some(true)  => Some(routes.DocumentTypeController.onPageLoad(ua.id, index,Index(count(index)(ua)), NormalMode))
+      case Some(false) => ???
+    }
+
+  private val count: Index => UserAnswers => Int =
+    index => ua => ua.get(DeriveNumberOfDocuments(index)).getOrElse(0)
+
+  // format: on
+
 }

@@ -17,31 +17,36 @@
 package navigation
 
 import base.SpecBase
-import models.{Address, CheckMode, DeclarationType, Index, LocalReferenceNumber, NormalMode, UserAnswers}
 import generators.Generators
-import pages.addItems.AddDocumentsPage
-import org.scalacheck.Arbitrary.arbitrary
+import models.NormalMode
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.addItems.{AddDocumentsPage, DocumentTypePage}
 
 class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
+  // format: off
   val navigator = new DocumentNavigator
 
   "Document navigator" - {
     "in Normal Mode" - {
+      "AddDocumentPage must go to [Page not yes implemented] when user selects 'no'" ignore {
+
+            }
+
       "AddDocumentPage must go to DocumentTypePage when user selects 'yes'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(AddDocumentsPage(index), true)
-              .success
-              .value
+
+            val updatedAnswers = emptyUserAnswers
+               .set(AddDocumentsPage(index), true).success.value
 
             navigator
               .nextPage(AddDocumentsPage(index), NormalMode, updatedAnswers)
-              .mustBe(controllers.addItems.routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, Index(0), NormalMode))
+              .mustBe(controllers.addItems.routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, index, NormalMode))
         }
+
+
       }
     }
-  }
+
+
+  // format: on
+
 }

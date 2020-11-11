@@ -107,7 +107,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with MockNunjucksRendere
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual "/common-transit-convention-departure"
 
     }
 

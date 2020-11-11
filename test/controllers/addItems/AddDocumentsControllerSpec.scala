@@ -137,7 +137,7 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual s"/common-transit-convention-departure/$lrn/add-items/1/document-reference/1/document-type"
 
     }
 

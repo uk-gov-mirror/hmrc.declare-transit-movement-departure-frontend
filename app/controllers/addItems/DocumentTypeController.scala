@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.reference.DocumentType
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.AddItems
+import navigation.annotations.{AddItems, Document}
 import pages.addItems
 import pages.addItems.DocumentTypePage
 import play.api.data.Form
@@ -41,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DocumentTypeController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @AddItems navigator: Navigator,
+  @Document navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
