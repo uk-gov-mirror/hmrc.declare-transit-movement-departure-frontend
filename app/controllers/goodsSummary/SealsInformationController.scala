@@ -76,7 +76,7 @@ class SealsInformationController @Inject()(
 
   private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
 
-    val numberOfSeals    = request.userAnswers.get(DeriveNumberOfSeals()).getOrElse(0)
+    val numberOfSeals    = request.userAnswers.get(DeriveNumberOfSeals).getOrElse(0)
     val listOfSealsIndex = List.range(0, numberOfSeals).map(Index(_))
     val sealsRows = listOfSealsIndex.flatMap {
       index =>
