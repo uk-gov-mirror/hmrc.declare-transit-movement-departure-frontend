@@ -17,18 +17,26 @@
 package base
 
 import models.UserAnswers
-import org.scalatest.TestSuite
 import pages.QuestionPage
-import play.api.libs.json.Writes
+import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json, Writes}
+
+import scala.util.Success
 
 trait UserAnswersSpecHelper {
 
   implicit class UserAnswersNoErrorSet(userAnswers: UserAnswers) {
+    import models.RichJsObject
+
+    private def unsafeSetWithOutCleanup[A: Writes](page: QuestionPage[A], value: A): UserAnswers =
+      userAnswers.data
+        .setObject(page.path, Json.toJson(value))
+        .fold(
+          errors => throw new JsResultException(errors),
+          jsValue => userAnswers.copy(data = jsValue)
+        )
 
     def unsafeSetVal[A: Writes](page: QuestionPage[A])(value: A): UserAnswers =
-      userAnswers
-        .set(page, value)
-        .getOrElse(throw new Exception(s"`set` on UserAnswers failed in test when trying to get $page with userAnswers: \n $userAnswers"))
+      unsafeSetWithOutCleanup(page, value)
 
     def unsafeSetOpt[A: Writes](page: QuestionPage[A])(value: Option[A]): UserAnswers =
       value.fold(userAnswers)(unsafeSetVal(page))
@@ -49,6 +57,13 @@ trait UserAnswersSpecHelper {
     def unsafeSetPFnOpt[A, B: Writes](page: QuestionPage[B])(value: A)(pf: PartialFunction[A, Option[B]]): UserAnswers =
       unsafeSetOpt(page)(pf.lift(value).flatten)
 
+    def unsafeRemoveVal[A](page: QuestionPage[A]): UserAnswers =
+      userAnswers.data
+        .removeObject(page.path)
+        .fold(
+          _ => userAnswers,
+          jsValue => userAnswers.copy(data = jsValue)
+        )
   }
 
 }
