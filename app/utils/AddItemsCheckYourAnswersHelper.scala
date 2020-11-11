@@ -587,21 +587,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def confirmRemoveContainer(index: Index, containerIndex: Index): Option[Row] = userAnswers.get(ConfirmRemoveContainerPage(index, containerIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"confirmRemoveContainer.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = containersRoutes.ConfirmRemoveContainerController.onPageLoad(lrn, index, containerIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveContainer.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def lrn: LocalReferenceNumber = userAnswers.id
 
 }

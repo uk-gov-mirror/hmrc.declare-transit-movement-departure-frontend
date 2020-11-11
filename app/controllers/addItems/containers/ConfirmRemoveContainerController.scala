@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.containers.ConfirmRemoveContainerPage
+import pages.addItems.containers.{ConfirmRemoveContainerPage, ContainerNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,18 +55,13 @@ class ConfirmRemoveContainerController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, containerIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(ConfirmRemoveContainerPage(index, containerIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-
         val json = Json.obj(
-          "form"           -> preparedForm,
+          "form"           -> form,
           "mode"           -> mode,
           "lrn"            -> lrn,
           "index"          -> index.display,
           "containerIndex" -> containerIndex.display,
-          "radios"         -> Radios.yesNo(preparedForm("value"))
+          "radios"         -> Radios.yesNo(form("value"))
         )
 
         renderer.render(template, json).map(Ok(_))
@@ -94,7 +89,7 @@ class ConfirmRemoveContainerController @Inject()(
             value =>
               if (value) {
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(ContainersQuery(index, containerIndex)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(ContainerNumberPage(index, containerIndex)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ConfirmRemoveContainerPage(index, containerIndex), mode, updatedAnswers))
               } else {

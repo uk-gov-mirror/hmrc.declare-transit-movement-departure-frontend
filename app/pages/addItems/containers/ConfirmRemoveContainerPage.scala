@@ -17,13 +17,6 @@
 package pages.addItems.containers
 
 import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.items
+import pages.Page
 
-case class ConfirmRemoveContainerPage(index: Index, containerIndex: Index) extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ items \ index.position \ toString
-
-  override def toString: String = "confirmRemoveContainer"
-}
+case class ConfirmRemoveContainerPage(index: Index, containerIndex: Index) extends Page
