@@ -28,14 +28,34 @@ import models.journeyDomain.MovementDetails.{
   NormalMovementDetails,
   SimplifiedMovementDetails
 }
-import models.journeyDomain.{ItemDetails, GoodsSummary, MovementDetails, RouteDetails}
+import models.journeyDomain.Packages.{BulkPackage, OtherPackage}
+import models.journeyDomain.{GoodsSummary, ItemDetails, MovementDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.reference.CountryCode
+import models.reference.{CountryCode, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryBulkPackage: Arbitrary[BulkPackage] =
+    Arbitrary {
+      for {
+        bulkPackage         <- arbitraryBulkPackageType.arbitrary
+        howManyPackagesPage <- Gen.option(Gen.choose(1, 10))
+        markOrNumber        <- Gen.option(arbitrary[String])
+      } yield BulkPackage(bulkPackage, howManyPackagesPage, markOrNumber)
+    }
+
+  implicit lazy val arbitraryOtherPackage: Arbitrary[OtherPackage] =
+    Arbitrary {
+      for {
+        code                <- nonEmptyString
+        description         <- nonEmptyString
+        howManyPackagesPage <- Gen.choose(1, 10)
+        markOrNumber        <- arbitrary[String]
+      } yield OtherPackage(PackageType(code, description), howManyPackagesPage, markOrNumber)
+    }
 
   implicit lazy val arbitraryItemDetails: Arbitrary[ItemDetails] =
     Arbitrary {
