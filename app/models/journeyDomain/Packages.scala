@@ -16,11 +16,12 @@
 
 package models.journeyDomain
 
+import cats.data.Kleisli
 import cats.implicits._
-import models.Index
+import models.{Index, UserAnswers}
 import models.reference.PackageType
 import pages.PackageTypePage
-import pages.addItems.{DeclareMarkPage, HowManyPackagesPage, TotalPiecesPage}
+import pages.addItems.{AddMarkPage, DeclareMarkPage, DeclareNumberOfPackagesPage, HowManyPackagesPage, TotalPiecesPage}
 
 sealed trait Packages
 
@@ -48,9 +49,9 @@ object Packages {
         .productR(
           (
             PackageTypePage(itemIndex, referenceIndex).reader,
-            HowManyPackagesPage(itemIndex, referenceIndex).optionalReader,
+            readHowManyPackages(itemIndex, referenceIndex),
             TotalPiecesPage(itemIndex, referenceIndex).reader,
-            DeclareMarkPage(itemIndex, referenceIndex).optionalReader
+            readMarkOrNumber(itemIndex, referenceIndex)
           ).tupled.map((UnpackedPackages.apply _).tupled)
         )
 
@@ -64,7 +65,7 @@ object Packages {
 
   object BulkPackages {
 
-    implicit def bulkPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[BulkPackages] =
+    def bulkPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[BulkPackages] =
       PackageTypePage(itemIndex, referenceIndex).reader
         .filter(
           packageType => PackageType.bulkCodes.contains(packageType.code)
@@ -72,8 +73,8 @@ object Packages {
         .productR(
           (
             PackageTypePage(itemIndex, referenceIndex).reader,
-            HowManyPackagesPage(itemIndex, referenceIndex).optionalReader,
-            DeclareMarkPage(itemIndex, referenceIndex).optionalReader
+            readHowManyPackages(itemIndex, referenceIndex),
+            readMarkOrNumber(itemIndex, referenceIndex)
           ).tupled.map((BulkPackages.apply _).tupled)
         )
   }
@@ -96,4 +97,26 @@ object Packages {
         )
 
   }
+
+  private def readHowManyPackages(itemIndex: Index, referenceIndex: Index): UserAnswersReader[Option[Int]] =
+    DeclareNumberOfPackagesPage(itemIndex, referenceIndex).reader
+      .flatMap {
+        bool =>
+          if (bool) {
+            HowManyPackagesPage(itemIndex, referenceIndex).reader.map(_.some)
+          } else {
+            none[Int].pure[UserAnswersReader]
+          }
+      }
+
+  private def readMarkOrNumber(itemIndex: Index, referenceIndex: Index): Kleisli[Option, UserAnswers, Option[String]] =
+    AddMarkPage(itemIndex, referenceIndex).reader
+      .flatMap {
+        bool =>
+          if (bool) {
+            DeclareMarkPage(itemIndex, referenceIndex).reader.map(_.some)
+          } else {
+            none[String].pure[UserAnswersReader]
+          }
+      }
 }

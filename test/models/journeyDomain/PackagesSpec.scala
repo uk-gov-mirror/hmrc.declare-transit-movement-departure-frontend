@@ -24,6 +24,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.addItems.{AddMarkPage, DeclareMarkPage, DeclareNumberOfPackagesPage, HowManyPackagesPage, TotalPiecesPage}
 import pages.{PackageTypePage, QuestionPage}
+import play.api.libs.json.Json
 
 class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with ModelGenerators {
 
@@ -68,7 +69,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
           case (otherPackage, userAnswers, mandatoryPage) =>
             val updatedUserAnswers = setPackageUserAnswers(otherPackage, index)(userAnswers)
 
-            val userAnswersIncomplete = updatedUserAnswers.remove(mandatoryPage).success.value
+            val userAnswersIncomplete = updatedUserAnswers.unsafeRemoveVal(mandatoryPage)
             val result                = UserAnswersReader[OtherPackages](OtherPackages.otherPackageReader(index, index)).run(userAnswersIncomplete)
 
             result mustEqual None
@@ -90,19 +91,52 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
         }
       }
 
-      "can not be parsed when a mandatory answer is missing" in {
+      "can not be parsed when" - {
+        "an arbitrary mandatory answer is missing" in {
 
-        forAll(arbitrary[BulkPackages], arbitrary[UserAnswers], mandatoryPagesBulkPackages) {
-          case (otherPackage, userAnswers, mandatoryPage) =>
-            val updatedUserAnswers = setPackageUserAnswers(otherPackage, index)(userAnswers)
+          forAll(arbitrary[BulkPackages], arbitrary[UserAnswers], mandatoryPagesBulkPackages) {
+            case (packages, userAnswers, mandatoryPage) =>
+              val updatedUserAnswers = setPackageUserAnswers(packages, index)(userAnswers)
 
-            val userAnswersIncomplete = updatedUserAnswers.remove(mandatoryPage).success.value
-            val result                = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(userAnswersIncomplete)
+              val userAnswersIncomplete = updatedUserAnswers.unsafeRemoveVal(mandatoryPage)
+              val result                = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(userAnswersIncomplete)
 
-            result mustEqual None
+              result mustEqual None
+          }
+        }
+
+        "DeclareNumberOfPackagesPage is true but HowManyPackagesPage is not defined" in {
+          val genPackages = arbitrary[BulkPackages].map(_.copy(howManyPackagesPage = None))
+
+          forAll(genPackages, arbitrary[UserAnswers]) {
+            case (packages, userAnswers) =>
+              val updatedUserAnswers =
+                setPackageUserAnswers(packages, index)(userAnswers)
+                  .unsafeSetVal(DeclareNumberOfPackagesPage(index, index))(true)
+                  .unsafeRemoveVal(HowManyPackagesPage(index, index))
+
+              val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
+
+              result mustEqual None
+          }
+        }
+
+        "AddMarkPage is true but DeclareMarkPage is not defined" in {
+          val genPackages = arbitrary[BulkPackages].map(_.copy(markOrNumber = None))
+
+          forAll(genPackages, arbitrary[UserAnswers]) {
+            case (packages, userAnswers) =>
+              val updatedUserAnswers =
+                setPackageUserAnswers(packages, index)(userAnswers)
+                  .unsafeSetVal(AddMarkPage(index, index))(true)
+                  .unsafeRemoveVal(DeclareMarkPage(index, index))
+
+              val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
+
+              result mustEqual None
+          }
         }
       }
-
     }
 
     "UnpackedPackages" - {
@@ -118,23 +152,53 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
         }
       }
 
-      "can not be parsed when a mandatory answer is missing" in {
+      "can not be parsed when" - {
+        "a mandatory answer is missing" in {
+          forAll(arbitrary[UnpackedPackages], arbitrary[UserAnswers], mandatoryPagesBulkPackages) {
+            case (packages, userAnswers, mandatoryPage) =>
+              val updatedUserAnswers = setPackageUserAnswers(packages, index)(userAnswers)
 
-        forAll(arbitrary[UnpackedPackages], arbitrary[UserAnswers], mandatoryPagesBulkPackages) {
-          case (otherPackage, userAnswers, mandatoryPage) =>
-            val updatedUserAnswers = setPackageUserAnswers(otherPackage, index)(userAnswers)
+              val userAnswersIncomplete = updatedUserAnswers.unsafeRemoveVal(mandatoryPage)
+              val result                = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(userAnswersIncomplete)
 
-            val userAnswersIncomplete = updatedUserAnswers.remove(mandatoryPage).success.value
-            val result                = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(userAnswersIncomplete)
+              result mustEqual None
+          }
+        }
 
-            result mustEqual None
+        "DeclareNumberOfPackagesPage is true but HowManyPackagesPage is not defined" in {
+          val genPackages = arbitrary[UnpackedPackages].map(_.copy(howManyPackagesPage = None))
+
+          forAll(genPackages, arbitrary[UserAnswers]) {
+            case (packages, userAnswers) =>
+              val updatedUserAnswers =
+                setPackageUserAnswers(packages, index)(userAnswers)
+                  .unsafeSetVal(DeclareNumberOfPackagesPage(index, index))(true)
+                  .unsafeRemoveVal(HowManyPackagesPage(index, index))
+
+              val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers)
+
+              result mustEqual None
+          }
+        }
+
+        "AddMarkPage is true but DeclareMarkPage is not defined" in {
+          val genPackages = arbitrary[UnpackedPackages].map(_.copy(markOrNumber = None))
+
+          forAll(genPackages, arbitrary[UserAnswers]) {
+            case (packages, userAnswers) =>
+              val updatedUserAnswers =
+                setPackageUserAnswers(packages, index)(userAnswers)
+                  .unsafeSetVal(AddMarkPage(index, index))(true)
+                  .unsafeRemoveVal(DeclareMarkPage(index, index))
+
+              val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers)
+
+              result mustEqual None
+          }
         }
       }
-
     }
-
   }
-
 }
 
 object PackagesSpec extends UserAnswersSpecHelper {
