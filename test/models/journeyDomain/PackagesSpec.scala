@@ -18,11 +18,11 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.{JourneyModelGenerators, ModelGenerators}
-import models.journeyDomain.Packages.{BulkPackage, OtherPackage}
+import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.addItems.{DeclareMarkPage, HowManyPackagesPage}
+import pages.addItems.{AddMarkPage, DeclareMarkPage, DeclareNumberOfPackagesPage, HowManyPackagesPage, TotalPiecesPage}
 import pages.{PackageTypePage, QuestionPage}
 
 class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with ModelGenerators {
@@ -43,10 +43,10 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
       "can be parsed from UserAnswers" in {
 
-        forAll(arbitrary[OtherPackage], arbitrary[UserAnswers]) {
+        forAll(arbitrary[OtherPackages], arbitrary[UserAnswers]) {
           (otherPackage, userAnswers) =>
             val updatedUserAnswers = setPackageUserAnswers(otherPackage, index)(userAnswers)
-            val result             = UserAnswersReader[OtherPackage](OtherPackage.otherPackageReader(index, index)).run(updatedUserAnswers)
+            val result             = UserAnswersReader[OtherPackages](OtherPackages.otherPackageReader(index, index)).run(updatedUserAnswers)
 
             result.value mustEqual otherPackage
         }
@@ -54,12 +54,12 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
       "can not be parsed when a mandatory answer is missing" in {
 
-        forAll(arbitrary[OtherPackage], arbitrary[UserAnswers], mandatoryPagesOther) {
+        forAll(arbitrary[OtherPackages], arbitrary[UserAnswers], mandatoryPagesOther) {
           case (otherPackage, userAnswers, mandatoryPage) =>
             val updatedUserAnswers = setPackageUserAnswers(otherPackage, index)(userAnswers)
 
             val userAnswersIncomplete = updatedUserAnswers.remove(mandatoryPage).success.value
-            val result                = UserAnswersReader[OtherPackage](OtherPackage.otherPackageReader(index, index)).run(userAnswersIncomplete)
+            val result                = UserAnswersReader[OtherPackages](OtherPackages.otherPackageReader(index, index)).run(userAnswersIncomplete)
 
             result mustEqual None
         }
@@ -71,10 +71,10 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
       "can be parsed from UserAnswers" in {
 
-        forAll(arbitrary[BulkPackage], arbitrary[UserAnswers]) {
+        forAll(arbitrary[BulkPackages], arbitrary[UserAnswers]) {
           (bulkPackage, userAnswers) =>
             val updatedUserAnswers = setPackageUserAnswers(bulkPackage, index)(userAnswers)
-            val result             = UserAnswersReader[BulkPackage](BulkPackage.bulkPackageReader(index, index)).run(updatedUserAnswers)
+            val result             = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
 
             result.value mustEqual bulkPackage
         }
@@ -82,12 +82,40 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
       "can not be parsed when a mandatory answer is missing" in {
 
-        forAll(arbitrary[BulkPackage], arbitrary[UserAnswers], mandatoryPagesBulkPackages) {
+        forAll(arbitrary[BulkPackages], arbitrary[UserAnswers], mandatoryPagesBulkPackages) {
           case (otherPackage, userAnswers, mandatoryPage) =>
             val updatedUserAnswers = setPackageUserAnswers(otherPackage, index)(userAnswers)
 
             val userAnswersIncomplete = updatedUserAnswers.remove(mandatoryPage).success.value
-            val result                = UserAnswersReader[BulkPackage](BulkPackage.bulkPackageReader(index, index)).run(userAnswersIncomplete)
+            val result                = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(userAnswersIncomplete)
+
+            result mustEqual None
+        }
+      }
+
+    }
+
+    "UnpackedPackages" - {
+
+      "can be parsed from UserAnswers" in {
+
+        forAll(arbitrary[UnpackedPackages], arbitrary[UserAnswers]) {
+          (bulkPackage, userAnswers) =>
+            val updatedUserAnswers = setPackageUserAnswers(bulkPackage, index)(userAnswers)
+            val result             = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers)
+
+            result.value mustEqual bulkPackage
+        }
+      }
+
+      "can not be parsed when a mandatory answer is missing" in {
+
+        forAll(arbitrary[UnpackedPackages], arbitrary[UserAnswers], mandatoryPagesBulkPackages) {
+          case (otherPackage, userAnswers, mandatoryPage) =>
+            val updatedUserAnswers = setPackageUserAnswers(otherPackage, index)(userAnswers)
+
+            val userAnswersIncomplete = updatedUserAnswers.remove(mandatoryPage).success.value
+            val result                = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(userAnswersIncomplete)
 
             result mustEqual None
         }
@@ -101,20 +129,28 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
 object PackagesSpec extends UserAnswersSpecHelper {
 
-  def setPackageUserAnswers(otherPackage: Packages, index: Index)(userAnswers: UserAnswers): UserAnswers = otherPackage match {
-    case otherPackage: OtherPackage => {
-      userAnswers
-        .unsafeSetVal(PackageTypePage(index, index))(otherPackage.packageType)
-        .unsafeSetVal(HowManyPackagesPage(index, index))(otherPackage.howManyPackagesPage)
-        .unsafeSetVal(DeclareMarkPage(index, index))(otherPackage.markOrNumber)
+  def setPackageUserAnswers(otherPackage: Packages, index: Index)(userAnswers: UserAnswers): UserAnswers =
+    otherPackage match {
+      case otherPackage: OtherPackages =>
+        userAnswers
+          .unsafeSetVal(PackageTypePage(index, index))(otherPackage.packageType)
+          .unsafeSetVal(HowManyPackagesPage(index, index))(otherPackage.howManyPackagesPage)
+          .unsafeSetVal(DeclareMarkPage(index, index))(otherPackage.markOrNumber)
+      case bulkPackage: BulkPackages =>
+        userAnswers
+          .unsafeSetVal(PackageTypePage(index, index))(bulkPackage.packageType)
+          .unsafeSetVal(DeclareNumberOfPackagesPage(index, index))(bulkPackage.howManyPackagesPage.isDefined)
+          .unsafeSetOpt(HowManyPackagesPage(index, index))(bulkPackage.howManyPackagesPage)
+          .unsafeSetVal(AddMarkPage(index, index))(bulkPackage.markOrNumber.isDefined)
+          .unsafeSetOpt(DeclareMarkPage(index, index))(bulkPackage.markOrNumber)
+      case unpackedPackages: UnpackedPackages =>
+        userAnswers
+          .unsafeSetVal(PackageTypePage(index, index))(unpackedPackages.packageType)
+          .unsafeSetVal(DeclareNumberOfPackagesPage(index, index))(unpackedPackages.howManyPackagesPage.isDefined)
+          .unsafeSetOpt(HowManyPackagesPage(index, index))(unpackedPackages.howManyPackagesPage)
+          .unsafeSetVal(TotalPiecesPage(index, index))(unpackedPackages.totalPieces)
+          .unsafeSetVal(AddMarkPage(index, index))(unpackedPackages.markOrNumber.isDefined)
+          .unsafeSetOpt(DeclareMarkPage(index, index))(unpackedPackages.markOrNumber)
     }
-    case bulkPackage: BulkPackage => {
-      userAnswers
-        .unsafeSetVal(PackageTypePage(index, index))(bulkPackage.packageType)
-        .unsafeSetOpt(HowManyPackagesPage(index, index))(bulkPackage.howManyPackagesPage)
-        .unsafeSetOpt(DeclareMarkPage(index, index))(bulkPackage.markOrNumber)
-    }
-
-  }
 
 }

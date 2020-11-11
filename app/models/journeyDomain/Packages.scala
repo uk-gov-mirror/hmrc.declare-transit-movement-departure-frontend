@@ -20,49 +20,57 @@ import cats.implicits._
 import models.Index
 import models.reference.PackageType
 import pages.PackageTypePage
-import pages.addItems.{DeclareMarkPage, HowManyPackagesPage}
+import pages.addItems.{DeclareMarkPage, HowManyPackagesPage, TotalPiecesPage}
 
 sealed trait Packages
 
 object Packages {
 
-  final case class UnpackedPackaged(
+  final case class UnpackedPackages(
     packageType: PackageType,
-    // declareNumberOfPackage: Boolean,
     howManyPackagesPage: Option[Int],
     totalPieces: Int,
-    // addMark: Boolean,
     markOrNumber: Option[String]
   ) extends Packages
 
-  final case class BulkPackage(
+  object UnpackedPackages {
+
+    def unpackedPackagesReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[UnpackedPackages] =
+      (
+        PackageTypePage(itemIndex, referenceIndex).reader,
+        HowManyPackagesPage(itemIndex, referenceIndex).optionalReader,
+        TotalPiecesPage(itemIndex, referenceIndex).reader,
+        DeclareMarkPage(itemIndex, referenceIndex).optionalReader
+      ).tupled.map((UnpackedPackages.apply _).tupled)
+
+  }
+
+  final case class BulkPackages(
     packageType: PackageType,
-    // declareNumberOfPackage: Boolean,
     howManyPackagesPage: Option[Int],
-    // addMark: Boolean,
     markOrNumber: Option[String]
   ) extends Packages
 
-  object BulkPackage {
+  object BulkPackages {
 
-    def bulkPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[BulkPackage] =
+    def bulkPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[BulkPackages] =
       (
         PackageTypePage(itemIndex, referenceIndex).reader,
         HowManyPackagesPage(itemIndex, referenceIndex).optionalReader,
         DeclareMarkPage(itemIndex, referenceIndex).optionalReader
-      ).tupled.map((BulkPackage.apply _).tupled)
+      ).tupled.map((BulkPackages.apply _).tupled)
   }
 
-  final case class OtherPackage(packageType: PackageType, howManyPackagesPage: Int, markOrNumber: String) extends Packages
+  final case class OtherPackages(packageType: PackageType, howManyPackagesPage: Int, markOrNumber: String) extends Packages
 
-  object OtherPackage {
+  object OtherPackages {
 
-    def otherPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[OtherPackage] =
+    def otherPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[OtherPackages] =
       (
         PackageTypePage(itemIndex, referenceIndex).reader,
         HowManyPackagesPage(itemIndex, referenceIndex).reader,
         DeclareMarkPage(itemIndex, referenceIndex).reader
-      ).tupled.map((OtherPackage.apply _).tupled)
+      ).tupled.map((OtherPackages.apply _).tupled)
 
   }
 }
