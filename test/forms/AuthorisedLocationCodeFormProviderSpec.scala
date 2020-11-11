@@ -25,7 +25,7 @@ class AuthorisedLocationCodeFormProviderSpec extends StringFieldBehaviours {
   val requiredKey                         = "authorisedLocationCode.error.required"
   val lengthKey                           = "authorisedLocationCode.error.length"
   val maxLength                           = 17
-  val authorisedLocationCodeRegex: String = "^[a-zA-Z0-9]*$"
+  val authorisedLocationCodeRegex: String = "^[a-zA-Z0-9\\/\\@\\'\\<\\>\\?\\%\\&\\.\\-\\ ]*$"
   val invalidCharacters                   = "authorisedLocationCode.error.invalidCharacters"
 
   val form = new AuthorisedLocationCodeFormProvider()()
