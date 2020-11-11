@@ -992,7 +992,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 .value
 
               navigator
-                .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
+                .nextPage(AddAnotherPackagePage(index), NormalMode, updatedAnswers)
                 .mustBe(previousReferenceRoutes.AddAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
           }
         }
@@ -1005,6 +1005,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   val updatedAnswers = answers
+                    .remove(PreviousReferencesQuery(index))
+                    .success
+                    .value
+                    .set(AddAnotherPackagePage(index), false)
+                    .success
+                    .value
                     .set(DeclarationTypePage, DeclarationType.Option2)
                     .success
                     .value
@@ -1013,7 +1019,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                     .value
 
                   navigator
-                    .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
+                    .nextPage(AddAnotherPackagePage(index), NormalMode, updatedAnswers)
                     .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
               }
             }

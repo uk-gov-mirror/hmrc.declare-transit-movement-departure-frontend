@@ -66,7 +66,6 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, NormalMode)
     case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
     case ConfirmRemovePreviousAdministrativeReferencePage(itemIndex, referenceIndex)     => ua => Some(removePreviousAdministrativeReference(itemIndex, NormalMode)(ua))
-    case DummyPage(itemIndex, packageIndex)                   => ua => directToPreviousReferencesPage(itemIndex, packageIndex, ua, NormalMode) //TODO replace dummy page with add another document page
     case AddAdministrativeReferencePage(itemIndex) => ua => addAdministrativeReferencePage(itemIndex, ua, NormalMode)
     case ReferenceTypePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.PreviousReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, NormalMode))
     case PreviousReferencePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.AddExtraInformationController.onPageLoad(ua.id, itemIndex, referenceIndex, NormalMode))
@@ -338,7 +337,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (Some(false), CheckMode) =>
         Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
       case (Some(false), NormalMode) =>
-        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+        directToPreviousReferencesPage(itemIndex, ua, NormalMode) //TODO hook into container journey
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
@@ -348,13 +347,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _            => addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, mode)
     }
 
-  def directToPreviousReferencesPage(itemIndex: Index, referenceIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] = {
+  def directToPreviousReferencesPage(itemIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] = {
     val nonEUCountries = Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
     val declarationTypes = Seq(DeclarationType.Option2, DeclarationType.Option4)
     val isNonEUCountry: Boolean = ua.get(CountryOfDispatchPage).fold(false)(code => nonEUCountries.contains(code))
     val isAllowedDeclarationType: Boolean = ua.get(DeclarationTypePage).fold(false)(declarationTypes.contains(_))
+    val referenceIndex = ua.get(DeriveNumberOfPreviousAdministrativeReferences(itemIndex)).getOrElse(0)
     (isNonEUCountry, isAllowedDeclarationType) match {
-      case (true, true) => Some(previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, itemIndex, referenceIndex, mode))
+      case (true, true) => Some(previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, itemIndex, Index(referenceIndex), mode))
       case _ => Some(previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, mode))
     }
   }
