@@ -17,6 +17,8 @@
 package pages.addItems.traderDetails
 
 import base.SpecBase
+import models.{ConsigneeAddress, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class TraderDetailsConsigneeEoriKnownPageSpec extends PageBehaviours with SpecBase {
@@ -28,5 +30,55 @@ class TraderDetailsConsigneeEoriKnownPageSpec extends PageBehaviours with SpecBa
     beSettable[Boolean](TraderDetailsConsigneeEoriKnownPage(index))
 
     beRemovable[Boolean](TraderDetailsConsigneeEoriKnownPage(index))
+  }
+
+  "cleanup" - {
+
+    "must remove TraderDetailsConsigneeEoriNamePage and TraderDetailsConsigneeAddressPage when EORI known in userAnswers" in {
+
+      val consigneeAddress = arbitrary[ConsigneeAddress].sample.value
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val result = userAnswers
+            .set(TraderDetailsConsigneeEoriNumberPage(index), "GB0010")
+            .success
+            .value
+            .set(TraderDetailsConsigneeNamePage(index), "answer")
+            .success
+            .value
+            .set(TraderDetailsConsigneeAddressPage(index), consigneeAddress)
+            .success
+            .value
+            .set(TraderDetailsConsigneeEoriKnownPage(index), true)
+            .success
+            .value
+
+          result.get(TraderDetailsConsigneeNamePage(index)) must not be defined
+          result.get(TraderDetailsConsigneeAddressPage(index)) must not be defined
+      }
+    }
+
+    "must remove TraderDetailsConsigneeEoriNumberPage when EORI not known in in userAnswers" in {
+
+      val consigneeAddress = arbitrary[ConsigneeAddress].sample.value
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val result = userAnswers
+            .set(TraderDetailsConsigneeEoriNumberPage(index), "GB0010")
+            .success
+            .value
+            .set(TraderDetailsConsigneeNamePage(index), "answer")
+            .success
+            .value
+            .set(TraderDetailsConsigneeAddressPage(index), consigneeAddress)
+            .success
+            .value
+            .set(TraderDetailsConsigneeEoriKnownPage(index), false)
+            .success
+            .value
+
+          result.get(TraderDetailsConsigneeEoriNumberPage(index)) must not be defined
+      }
+    }
   }
 }

@@ -26,67 +26,93 @@ case class AddItemsCheckYourAnswersViewModel(sections: Seq[Section])
 
 object AddItemsCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, index: Index, documentTypes: PreviousDocumentTypeList): AddItemsCheckYourAnswersViewModel = {
+  def apply(userAnswers: UserAnswers, index: Index): AddItemsCheckYourAnswersViewModel = {
+    //def apply(userAnswers: UserAnswers, index: Index, documentTypes: PreviousDocumentTypeList): AddItemsCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper = new AddItemsCheckYourAnswersHelper(userAnswers)
 
+    AddItemsCheckYourAnswersViewModel(
+      Seq(
+        itemsDetailsSection(checkYourAnswersHelper, index),
+        traderDetailsSection(checkYourAnswersHelper, index),
+        packagesSection(checkYourAnswersHelper, index)(userAnswers)
+        /*
+        ,
+        referencesSection(checkYourAnswersHelper, index)(userAnswers),
+        documentsSection(checkYourAnswersHelper, index)(userAnswers)
+       */
+      )
+    )
+  }
+
+  private def itemsDetailsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
+    msg"addItems.checkYourAnswersLabel.itemDetails",
+    Seq(
+      checkYourAnswersHelper.itemDescription(index),
+      checkYourAnswersHelper.itemTotalGrossMass(index),
+      checkYourAnswersHelper.addTotalNetMass(index),
+      checkYourAnswersHelper.totalNetMass(index),
+      checkYourAnswersHelper.isCommodityCodeKnown(index),
+      checkYourAnswersHelper.commodityCode(index)
+    ).flatten
+  )
+
+  private def traderDetailsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
+    msg"addItems.checkYourAnswersLabel.traderDetails",
+    Seq(
+      //todo: add in subheading for consignor H3
+      checkYourAnswersHelper.traderDetailsConsignorEoriKnown(index),
+      checkYourAnswersHelper.traderDetailsConsignorEoriNumber(index),
+      checkYourAnswersHelper.traderDetailsConsignorName(index),
+      checkYourAnswersHelper.traderDetailsConsignorAddress(index),
+      //todo: add in subheading for consignee H3
+      checkYourAnswersHelper.traderDetailsConsigneeEoriKnown(index),
+      checkYourAnswersHelper.traderDetailsConsigneeEoriNumber(index),
+      checkYourAnswersHelper.traderDetailsConsigneeName(index),
+      checkYourAnswersHelper.traderDetailsConsigneeAddress(index)
+    ).flatten
+  )
+
+  private def packagesSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index)(implicit userAnswers: UserAnswers): Section = {
     val packageRows: Seq[SummaryList.Row] =
       List.range(0, userAnswers.get(DeriveNumberOfPackages(index)).getOrElse(0)).flatMap {
         packagePosition =>
           checkYourAnswersHelper.packageRow(index, Index(packagePosition), userAnswers)
       }
 
+    Section(
+      msg"addItems.checkYourAnswersLabel.packages",
+      packageRows,
+      checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.packages.addRemove")
+    )
+  }
+
+  /* private def referencesSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index)(implicit userAnswers: UserAnswers) = {
     val referencesRows: Seq[SummaryList.Row] =
       List.range(0, userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)).flatMap {
         position =>
-          checkYourAnswersHelper.previousReferenceRows(index, Index(position), documentTypes)
+        //checkYourAnswersHelper.previousReferenceRows(index, Index(position), documentTypes) //todo: will need docTypes added back in
       }
 
+    Section(
+      msg"addItems.checkYourAnswersLabel.references",
+      Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
+      checkYourAnswersHelper.addAnotherPreviousReferences(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
+    )
+  }*/
+
+  private def documentsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index)(implicit userAnswers: UserAnswers) = {
     val documentRows: Seq[SummaryList.Row] =
       List.range(0, userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)).flatMap {
         documentPosition =>
           checkYourAnswersHelper.documentRow(index, Index(documentPosition), userAnswers)
       }
 
-    AddItemsCheckYourAnswersViewModel(
-      Seq(
-        Section(
-          msg"addItems.checkYourAnswersLabel.itemDetails",
-          Seq(
-            checkYourAnswersHelper.itemDescription(index),
-            checkYourAnswersHelper.itemTotalGrossMass(index),
-            checkYourAnswersHelper.addTotalNetMass(index),
-            checkYourAnswersHelper.totalNetMass(index),
-            checkYourAnswersHelper.isCommodityCodeKnown(index),
-            checkYourAnswersHelper.commodityCode(index),
-            checkYourAnswersHelper.addItemsSameConsigneeForAllItems(index),
-            checkYourAnswersHelper.addItemsSameConsignorForAllItems(index),
-            checkYourAnswersHelper.traderDetailsConsignorName(index),
-            checkYourAnswersHelper.traderDetailsConsignorEoriNumber(index),
-            checkYourAnswersHelper.traderDetailsConsignorEoriKnown(index),
-            checkYourAnswersHelper.traderDetailsConsignorAddress(index),
-            checkYourAnswersHelper.traderDetailsConsigneeName(index),
-            checkYourAnswersHelper.traderDetailsConsigneeEoriNumber(index),
-            checkYourAnswersHelper.traderDetailsConsigneeEoriKnown(index),
-            checkYourAnswersHelper.traderDetailsConsigneeAddress(index),
-          ).flatten
-        ),
-        Section(
-          msg"addItems.checkYourAnswersLabel.packages",
-          packageRows,
-          checkYourAnswersHelper.addAnotherPackage(index, msg"addItems.checkYourAnswersLabel.packages.addRemove")
-        ),
-        Section(
-          msg"addItems.checkYourAnswersLabel.references",
-          Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
-          checkYourAnswersHelper.addAnotherPreviousReferences(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
-        ),
-        Section(
-          msg"addItems.checkYourAnswersLabel.documents",
-          Seq(checkYourAnswersHelper.addDocuments(index).toSeq, checkYourAnswersHelper.documentReference(index).toSeq, documentRows).flatten,
-//          checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
-        )
-      )
+    Section(
+      msg"addItems.checkYourAnswersLabel.documents",
+      Seq(checkYourAnswersHelper.addDocuments(index).toSeq, checkYourAnswersHelper.documentReference(index).toSeq, documentRows).flatten,
+      checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
     )
   }
+
 }

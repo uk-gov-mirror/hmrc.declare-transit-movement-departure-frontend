@@ -16,12 +16,14 @@
 
 package pages.addItems.containers
 
+import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.{containers, items}
 
-case object ContainerNumberPage extends QuestionPage[String] {
+final case class ContainerNumberPage(itemIndex: Index, containerIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ containers \ containerIndex.position \ toString
 
   override def toString: String = "containerNumber"
 }

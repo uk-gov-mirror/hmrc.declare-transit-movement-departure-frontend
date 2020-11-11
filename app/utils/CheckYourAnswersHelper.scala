@@ -23,7 +23,7 @@ import controllers.addItems.specialMentions.{routes => specialMentionRoutes}
 import controllers.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.{AddDocumentsPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
+import pages.addItems.{AddDocumentsPage, ConfirmRemoveDocumentPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import pages.addItems.specialMentions._
@@ -104,36 +104,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = specialMentionRoutes.AddSpecialMentionController.onPageLoad(lrn, itemIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSpecialMention.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addAnotherContainer(itemIndex: Index): Option[Row] = userAnswers.get(AddAnotherContainerPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addAnotherContainer.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = containerRoutes.AddAnotherContainerController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherContainer.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def containerNumber(itemIndex: Index): Option[Row] = userAnswers.get(ContainerNumberPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"containerNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = containerRoutes.ContainerNumberController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"containerNumber.checkYourAnswersLabel"))
           )
         )
       )

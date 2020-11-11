@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package pages.addItems.traderDetails
+package pages.addItems
 
-import models.{ConsigneeAddress, Index}
+import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import queries.Constants.{items, traderDetails}
+import queries.Constants.items
 
-case class TraderDetailsConsigneeAddressPage(index: Index) extends QuestionPage[ConsigneeAddress] {
+case class ConfirmRemoveDocumentPage(index: Index, documentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ items \ index.position \ traderDetails \ toString
+  override def path: JsPath = JsPath \ items \ index.position \ toString
 
-  override def toString: String = "traderDetailsConsigneeAddress"
+  override def toString: String = "confirmRemoveDocument"
 }

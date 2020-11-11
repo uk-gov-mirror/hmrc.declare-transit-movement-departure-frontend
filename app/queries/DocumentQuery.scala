@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package pages.addItems.traderDetails
+package queries
 
-import models.{ConsigneeAddress, Index}
+import models.Index
 import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.{items, traderDetails}
+import play.api.libs.json.{JsObject, JsPath}
 
-case class TraderDetailsConsigneeAddressPage(index: Index) extends QuestionPage[ConsigneeAddress] {
+final case class DocumentQuery(index: Index, documentIndex: Index) extends QuestionPage[JsObject] {
 
-  override def path: JsPath = JsPath \ items \ index.position \ traderDetails \ toString
+  override def path: JsPath = JsPath \ Constants.items \ index.position \ Constants.documents \ documentIndex.position
 
-  override def toString: String = "traderDetailsConsigneeAddress"
 }

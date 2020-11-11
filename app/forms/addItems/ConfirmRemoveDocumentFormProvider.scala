@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package pages.addItems.traderDetails
+package forms.addItems
 
-import models.{ConsigneeAddress, Index}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.{items, traderDetails}
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case class TraderDetailsConsigneeAddressPage(index: Index) extends QuestionPage[ConsigneeAddress] {
+class ConfirmRemoveDocumentFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ items \ index.position \ traderDetails \ toString
-
-  override def toString: String = "traderDetailsConsigneeAddress"
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmRemoveDocument.error.required")
+    )
 }

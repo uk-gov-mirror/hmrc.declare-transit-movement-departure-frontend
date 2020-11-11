@@ -42,6 +42,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
   final val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitraryAddAnotherDocumentUserAnswersEntry.arbitrary ::
       arbitraryDocumentExtraInformationUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemoveDocumentUserAnswersEntry.arbitrary ::
       arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
       arbitraryDocumentReferenceUserAnswersEntry.arbitrary ::
       arbitraryConfirmRemovePreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
@@ -57,7 +58,6 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
       arbitrarySpecialMentionTypeUserAnswersEntry.arbitrary ::
       arbitraryAddSpecialMentionUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
-      arbitraryAddAnotherContainerUserAnswersEntry.arbitrary ::
       arbitraryContainerNumberUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
       arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry.arbitrary ::

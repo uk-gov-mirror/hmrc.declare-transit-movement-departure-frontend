@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.addItems.containers
+package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import forms.addItems.containers.ContainerNumberFormProvider
+import forms.addItems.ConfirmRemoveDocumentFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.containers.ContainerNumberPage
+import pages.addItems.ConfirmRemoveDocumentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -34,26 +34,27 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ConfirmRemoveDocumentControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  private def onwardRoute = Call("GET", "/foo")
+  def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new ContainerNumberFormProvider()
+  private val formProvider = new ConfirmRemoveDocumentFormProvider()
   private val form         = formProvider()
-  private val template     = "addItems/containers/containerNumber.njk"
+  private val template     = "addItems/confirmRemoveDocument.njk"
 
-  private lazy val containerNumberRoute = routes.ContainerNumberController.onPageLoad(lrn, itemIndex, containerIndex, NormalMode).url
+  lazy val confirmRemoveDocumentRoute = routes.ConfirmRemoveDocumentController.onPageLoad(lrn, index, documentIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "ContainerNumber Controller" - {
+  "ConfirmRemoveDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -62,7 +63,7 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, containerNumberRoute)
+      val request        = FakeRequest(GET, confirmRemoveDocumentRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -73,9 +74,12 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"          -> form,
+        "mode"          -> NormalMode,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "radios"        -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -90,10 +94,10 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ContainerNumberPage(itemIndex, containerIndex), "answer").success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemoveDocumentPage(index, documentIndex), true).success.value
       dataRetrievalWithData(userAnswers)
 
-      val request        = FakeRequest(GET, containerNumberRoute)
+      val request        = FakeRequest(GET, confirmRemoveDocumentRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -103,12 +107,15 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"          -> filledForm,
+        "mode"          -> NormalMode,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "radios"        -> Radios.yesNo(filledForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -125,12 +132,13 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, containerNumberRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, confirmRemoveDocumentRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
     }
@@ -142,7 +150,7 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, containerNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, confirmRemoveDocumentRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -154,13 +162,18 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"          -> boundForm,
+        "mode"          -> NormalMode,
+        "lrn"           -> lrn,
+        "index"         -> index.display,
+        "documentIndex" -> documentIndex.display,
+        "radios"        -> Radios.yesNo(boundForm("value"))
       )
 
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
       templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonWithoutConfig mustBe expectedJson
 
     }
 
@@ -168,13 +181,13 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, containerNumberRoute)
+      val request = FakeRequest(GET, confirmRemoveDocumentRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -183,14 +196,14 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, containerNumberRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, confirmRemoveDocumentRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }
