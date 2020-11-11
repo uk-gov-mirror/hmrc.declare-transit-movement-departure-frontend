@@ -587,7 +587,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def confirmRemoveContainer(index: Index, containerIndex: Index): Option[Row] = userAnswers.get(ConfirmRemoveContainerPage) map {
+  def confirmRemoveContainer(index: Index, containerIndex: Index): Option[Row] = userAnswers.get(ConfirmRemoveContainerPage(index, containerIndex)) map {
     answer =>
       Row(
         key   = Key(msg"confirmRemoveContainer.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),

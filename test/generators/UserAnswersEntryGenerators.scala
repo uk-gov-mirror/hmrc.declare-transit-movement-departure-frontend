@@ -33,11 +33,11 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
-  implicit lazy val arbitraryConfirmRemoveContainerUserAnswersEntry: Arbitrary[(ConfirmRemoveContainerPage.type, JsValue)] =
+  implicit lazy val arbitraryConfirmRemoveContainerUserAnswersEntry: Arbitrary[(ConfirmRemoveContainerPage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[ConfirmRemoveContainerPage.type#Data].map(Json.toJson(_))
-      } yield (ConfirmRemoveContainerPage, value)
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (ConfirmRemoveContainerPage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitraryAddAnotherDocumentUserAnswersEntry: Arbitrary[(AddAnotherDocumentPage, JsValue)] =

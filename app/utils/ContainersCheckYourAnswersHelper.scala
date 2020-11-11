@@ -39,7 +39,7 @@ class ContainersCheckYourAnswersHelper(userAnswers: UserAnswers) {
           ),
           Action(
             content            = msg"site.delete",
-            href               = "", //todo: add remove pages
+            href               = containerRoutes.ConfirmRemoveContainerController.onPageLoad(userAnswers.id, itemIndex, containerIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
             attributes         = Map("id" -> s"""remove-container-number-${itemIndex.display}""")
           )

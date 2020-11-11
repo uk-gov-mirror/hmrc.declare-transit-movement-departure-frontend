@@ -26,6 +26,7 @@ import pages.addItems.containers.ConfirmRemoveContainerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.ContainersQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -54,7 +55,7 @@ class ConfirmRemoveContainerController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, containerIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(ConfirmRemoveContainerPage) match {
+        val preparedForm = request.userAnswers.get(ConfirmRemoveContainerPage(index, containerIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -91,10 +92,14 @@ class ConfirmRemoveContainerController @Inject()(
               renderer.render(template, json).map(BadRequest(_))
             },
             value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(ConfirmRemoveContainerPage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ConfirmRemoveContainerPage, mode, updatedAnswers))
+              if (value) {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(ContainersQuery(index, containerIndex)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ConfirmRemoveContainerPage(index, containerIndex), mode, updatedAnswers))
+              } else {
+                Future.successful(Redirect((navigator.nextPage(ConfirmRemoveContainerPage(index, containerIndex), mode, request.userAnswers))))
+            }
           )
     }
 }

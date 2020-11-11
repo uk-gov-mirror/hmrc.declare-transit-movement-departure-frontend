@@ -94,7 +94,7 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with MockNunjucksRen
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemoveContainerPage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemoveContainerPage(index, containerIndex), true).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, confirmRemoveContainerRoute)

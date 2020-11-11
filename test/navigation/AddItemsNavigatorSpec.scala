@@ -696,7 +696,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 answers =>
                   val updatedAnswers = answers
                     .set(AddAnotherPackagePage(itemIndex), false).success.value
-                    .remove(ContainersQuery(itemIndex)).success.value
+                    .remove(ContainersQuery(itemIndex, containerIndex)).success.value
                 navigator
                   .nextPage(AddAnotherPackagePage(itemIndex), NormalMode, updatedAnswers)
                   .mustBe(containerRoutes.ContainerNumberController.onPageLoad(updatedAnswers.id, itemIndex, containerIndex, NormalMode))
@@ -1542,7 +1542,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               answers =>
                 val updatedAnswers = answers
                   .set(AddAnotherPackagePage(itemIndex), false).success.value
-                  .remove(ContainersQuery(itemIndex)).success.value
+                  .remove(ContainersQuery(itemIndex, containerIndex)).success.value
                 navigator
                   .nextPage(AddAnotherPackagePage(itemIndex), CheckMode, updatedAnswers)
                   .mustBe(containerRoutes.ContainerNumberController.onPageLoad(answers.id, itemIndex, containerIndex, CheckMode))
