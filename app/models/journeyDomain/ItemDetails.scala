@@ -16,9 +16,8 @@
 
 package models.journeyDomain
 
-import cats.data.{Kleisli, ReaderT}
 import cats.implicits._
-import models.{Index, UserAnswers}
+import models.Index
 import pages._
 import pages.addItems.CommodityCodePage
 
@@ -39,12 +38,20 @@ object ItemDetails {
           else none[String].pure[UserAnswersReader]
       }
 
+  private def readCommodityCodePage(index: Index): UserAnswersReader[Option[String]] =
+    IsCommodityCodeKnownPage(index).reader
+      .flatMap {
+        bool =>
+          if (bool) CommodityCodePage(index).reader.map(Some(_))
+          else none[String].pure[UserAnswersReader]
+      }
+
   def itemDetailsReader(index: Index): UserAnswersReader[ItemDetails] =
     (
       ItemDescriptionPage(index).reader,
       ItemTotalGrossMassPage(index).reader,
       readTotalNetMassPage(index),
-      CommodityCodePage(index).optionalReader
+      readCommodityCodePage(index)
     ).tupled.map((ItemDetails.apply _).tupled)
 
 }
