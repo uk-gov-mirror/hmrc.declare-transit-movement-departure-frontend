@@ -1053,7 +1053,6 @@ confirmRemoveDocument.title = Are you sure you want to remove this document?
 confirmRemoveDocument.heading = Are you sure you want to remove this document?
 confirmRemoveDocument.error.required = Select yes if you want to remove this document
 
-confirmRemoveContainer.title = confirmRemoveContainer
-confirmRemoveContainer.heading = confirmRemoveContainer
-confirmRemoveContainer.checkYourAnswersLabel = confirmRemoveContainer
-confirmRemoveContainer.error.required = Select yes if confirmRemoveContainer
+confirmRemoveContainer.title = Are you sure you want to remove this shipping container?
+confirmRemoveContainer.heading = Are you sure you want to remove this shipping container?
+confirmRemoveContainer.error.required = Select yes if you want to remove this shipping container

@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.addItems.containers
 
-import javax.inject.Inject
+import pages.behaviours.PageBehaviours
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class ConfirmRemoveContainerPageSpec extends PageBehaviours {
 
-class ConfirmRemoveContainerFormProvider @Inject() extends Mappings {
+  "ConfirmRemoveContainerPage" - {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("confirmRemoveContainer.error.required")
-    )
+    beRetrievable[Boolean](ConfirmRemoveContainerPage)
+
+    beSettable[Boolean](ConfirmRemoveContainerPage)
+
+    beRemovable[Boolean](ConfirmRemoveContainerPage)
+  }
 }

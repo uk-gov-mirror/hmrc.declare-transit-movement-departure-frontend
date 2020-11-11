@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems.containers
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class ConfirmRemoveContainerPageSpec extends PageBehaviours {
+case object ConfirmRemoveContainerPage extends QuestionPage[Boolean] {
 
-  "ConfirmRemoveContainerPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[Boolean](ConfirmRemoveContainerPage)
-
-    beSettable[Boolean](ConfirmRemoveContainerPage)
-
-    beRemovable[Boolean](ConfirmRemoveContainerPage)
-  }
+  override def toString: String = "confirmRemoveContainer"
 }

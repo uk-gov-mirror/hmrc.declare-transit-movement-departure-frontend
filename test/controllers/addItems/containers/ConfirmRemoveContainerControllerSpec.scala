@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems.containers
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
-import forms.ConfirmRemoveContainerFormProvider
+import base.{MockNunjucksRendererApp, SpecBase}
+import forms.addItems.containers.ConfirmRemoveContainerFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ConfirmRemoveContainerPage
+import pages.addItems.containers.ConfirmRemoveContainerPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -35,8 +34,8 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -46,9 +45,9 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with MockNunjucksRen
 
   private val formProvider = new ConfirmRemoveContainerFormProvider()
   private val form         = formProvider()
-  private val template     = "confirmRemoveContainer.njk"
+  private val template     = "addItems/containers/confirmRemoveContainer.njk"
 
-  lazy val confirmRemoveContainerRoute = routes.ConfirmRemoveContainerController.onPageLoad(lrn, NormalMode).url
+  lazy val confirmRemoveContainerRoute = routes.ConfirmRemoveContainerController.onPageLoad(lrn, index, containerIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -75,10 +74,12 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with MockNunjucksRen
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form"           -> form,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "index"          -> index.display,
+        "containerIndex" -> containerIndex.display,
+        "radios"         -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -109,10 +110,12 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with MockNunjucksRen
       val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form"           -> filledForm,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "index"          -> index.display,
+        "containerIndex" -> containerIndex.display,
+        "radios"         -> Radios.yesNo(filledForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -159,10 +162,12 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with MockNunjucksRen
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"           -> boundForm,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "index"          -> index.display,
+        "containerIndex" -> containerIndex.display,
+        "radios"         -> Radios.yesNo(boundForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -182,7 +187,7 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with MockNunjucksRen
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -198,7 +203,7 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with MockNunjucksRen
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }

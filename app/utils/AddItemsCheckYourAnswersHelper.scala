@@ -18,9 +18,11 @@ package utils
 
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
+import controllers.addItems.containers.{routes => containersRoutes}
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import models._
 import pages.addItems._
+import pages.addItems.containers.ConfirmRemoveContainerPage
 import pages.addItems.traderDetails._
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -580,6 +582,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.ConfirmRemoveDocumentController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveDocument.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def confirmRemoveContainer(index: Index, containerIndex: Index): Option[Row] = userAnswers.get(ConfirmRemoveContainerPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"confirmRemoveContainer.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = containersRoutes.ConfirmRemoveContainerController.onPageLoad(lrn, index, containerIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveContainer.checkYourAnswersLabel"))
           )
         )
       )
