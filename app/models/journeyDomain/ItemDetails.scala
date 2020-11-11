@@ -16,29 +16,34 @@
 
 package models.journeyDomain
 
+import cats.data.{Kleisli, ReaderT}
 import cats.implicits._
-import models.Index
+import models.{Index, UserAnswers}
 import pages._
 import pages.addItems.CommodityCodePage
 
 final case class ItemDetails(
   itemDescription: String,
   totalGrossMass: String,
-  addNetMass: Boolean,
   totalNetMass: Option[String],
-  isCommodityCodeKnow: Boolean,
   commodityCode: Option[String]
 )
 
 object ItemDetails {
 
+  private def readTotalNetMassPage(index: Index): UserAnswersReader[Option[String]] =
+    AddTotalNetMassPage(index).reader
+      .flatMap {
+        bool =>
+          if (bool) TotalNetMassPage(index).reader.map(Some(_))
+          else none[String].pure[UserAnswersReader]
+      }
+
   def itemDetailsReader(index: Index): UserAnswersReader[ItemDetails] =
     (
       ItemDescriptionPage(index).reader,
       ItemTotalGrossMassPage(index).reader,
-      AddTotalNetMassPage(index).reader,
-      TotalNetMassPage(index).optionalReader,
-      IsCommodityCodeKnownPage(index).reader,
+      readTotalNetMassPage(index),
       CommodityCodePage(index).optionalReader
     ).tupled.map((ItemDetails.apply _).tupled)
 

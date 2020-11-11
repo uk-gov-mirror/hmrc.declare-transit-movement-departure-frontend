@@ -31,12 +31,10 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
     val mandatoryPages: Gen[QuestionPage[_]] = Gen.oneOf(
       ItemDescriptionPage(index),
-      ItemTotalGrossMassPage(index),
-      AddTotalNetMassPage(index),
-      IsCommodityCodeKnownPage(index)
+      ItemTotalGrossMassPage(index)
     )
 
-    "can be parsed UserAnswers" - {
+    "can be parsed from UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(arbitrary[ItemDetails], arbitrary[UserAnswers]) {
           case (itemDetails, userAnswers) =>
@@ -46,6 +44,47 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
             result.value mustEqual itemDetails
         }
       }
+
+      "when addTotalNetMass is false and totalNetMass has been answered, totNetMass should be none" in {
+        val genItemDetailsNetMassSet =
+          arbitrary[ItemDetails].map(_.copy(totalNetMass = Some("totalNetMassValue")))
+
+        forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
+          case (userAnswers, itemDetails) =>
+            val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
+              .set(AddTotalNetMassPage(index), false)
+              .toOption
+              .get
+              .set(TotalNetMassPage(index), itemDetails.totalNetMass.value)
+              .toOption
+              .get
+
+            val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
+
+            result.value.totalNetMass mustEqual None
+        }
+      }
+
+      "when IsCommodityCodeKnownPage is false and CommodityCodePage has been answered, CommodityCodePage should be none" in {
+        val genItemDetailsNetMassSet =
+          arbitrary[ItemDetails].map(_.copy(commodityCode = Some("totalNetMassValue")))
+
+        forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
+          case (userAnswers, itemDetails) =>
+            val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
+              .set(IsCommodityCodeKnownPage(index), false)
+              .toOption
+              .get
+              .set(CommodityCodePage(index), itemDetails.commodityCode.value)
+              .toOption
+              .get
+
+            val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
+
+            result.value.commodityCode mustEqual None
+        }
+      }
+
     }
 
     "cannot be parsed from UserAnswers" - {
@@ -58,6 +97,41 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
             result mustEqual None
         }
       }
+
+      "when addTotalNetMass is true but totalNetMass is missing " in {
+        val genItemDetailsNetMassSet =
+          arbitrary[ItemDetails].map(_.copy(totalNetMass = None))
+
+        forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
+          case (userAnswers, itemDetails) =>
+            val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
+              .set(AddTotalNetMassPage(index), true)
+              .toOption
+              .get
+
+            val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
+
+            result mustEqual None
+        }
+      }
+
+      "when IsCommodityCodeKnownPage is true but CommodityCodePage is missing " in {
+        val genItemDetailsNetMassSet =
+          arbitrary[ItemDetails].map(_.copy(commodityCode = None))
+
+        forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
+          case (userAnswers, itemDetails) =>
+            val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
+              .set(IsCommodityCodeKnownPage(index), true)
+              .toOption
+              .get
+
+            val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
+
+            result mustEqual None
+        }
+      }
+
     }
   }
 }
@@ -68,27 +142,44 @@ object ItemDetailsSpec {
   def setItemDetailsUserAnswers(itemDetails: ItemDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val userAnswers =
       startUserAnswers
-        .set(ItemDescriptionPage(index), itemDetails.itemDescription)
-        .toOption
-        .get
         .set(ItemTotalGrossMassPage(index), itemDetails.totalGrossMass)
         .toOption
         .get
-        .set(AddTotalNetMassPage(index), itemDetails.addNetMass)
-        .toOption
-        .get
-        .set(IsCommodityCodeKnownPage(index), itemDetails.isCommodityCodeKnow)
+        .set(ItemDescriptionPage(index), itemDetails.itemDescription)
         .toOption
         .get
 
     val totalNetMass = itemDetails.totalNetMass match {
-      case Some(value) => userAnswers.set(TotalNetMassPage(index), value).toOption.get
-      case _           => userAnswers
+      case Some(value) =>
+        userAnswers
+          .set(AddTotalNetMassPage(index), true)
+          .toOption
+          .get
+          .set(TotalNetMassPage(index), value)
+          .toOption
+          .get
+
+      case _ =>
+        userAnswers
+          .set(AddTotalNetMassPage(index), false)
+          .toOption
+          .get
     }
 
     val commodityCode = itemDetails.commodityCode match {
-      case Some(value) => totalNetMass.set(CommodityCodePage(index), value).toOption.get
-      case _           => totalNetMass
+      case Some(value) =>
+        totalNetMass
+          .set(IsCommodityCodeKnownPage(index), true)
+          .toOption
+          .get
+          .set(CommodityCodePage(index), value)
+          .toOption
+          .get
+      case _ =>
+        totalNetMass
+          .set(IsCommodityCodeKnownPage(index), false)
+          .toOption
+          .get
     }
 
     commodityCode

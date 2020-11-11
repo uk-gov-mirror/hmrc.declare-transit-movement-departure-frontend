@@ -35,18 +35,15 @@ import org.scalacheck.{Arbitrary, Gen}
 trait JourneyModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryItemDetails: Arbitrary[ItemDetails] = {
+  implicit lazy val arbitraryItemDetails: Arbitrary[ItemDetails] =
     Arbitrary {
       for {
-        itemDescription     <- nonEmptyString
-        totalGrossMass      <- nonEmptyString
-        addNetMass          <- arbitrary[Boolean]
-        totalNetMass        <- Gen.option(arbitrary[String])
-        isCommodityCodeKnow <- arbitrary[Boolean]
-        commodityCode       <- Gen.option(arbitrary[String])
-      } yield ItemDetails(itemDescription, totalGrossMass, addNetMass, totalNetMass, isCommodityCodeKnow, commodityCode)
+        itemDescription <- nonEmptyString
+        totalGrossMass  <- nonEmptyString
+        totalNetMass    <- Gen.option(arbitrary[String])
+        commodityCode   <- Gen.option(arbitrary[String])
+      } yield ItemDetails(itemDescription, totalGrossMass, totalNetMass, commodityCode)
     }
-  }
 
   implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =
     Arbitrary(Gen.const(DeclarationForSelf))
