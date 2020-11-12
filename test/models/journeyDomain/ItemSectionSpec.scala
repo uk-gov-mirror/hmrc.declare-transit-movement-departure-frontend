@@ -23,7 +23,6 @@ import models.{Index, UserAnswers}
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
-
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(arb[ItemSection], arb[UserAnswers]) {
@@ -44,6 +43,24 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
             val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(userAnswers)
 
             result mustBe None
+        }
+      }
+    }
+  }
+
+  "Seq of ItemSection" - {
+    "can be parsed UserAnswers" - {
+      "when all details for section have been answered" in {
+        forAll(nonEmptyListOf[ItemSection](3), arb[UserAnswers]) {
+          case (itemSections, userAnswers) =>
+            val updatedUserAnswer =
+              itemSections.foldLeft(userAnswers)(
+                (ua, section) => ItemSectionSpec.setItemSection(section, index)(ua)
+              )
+
+            val result = ItemSection.readerItemSections.run(updatedUserAnswer)
+
+            result.value mustEqual itemSections
         }
       }
     }

@@ -48,6 +48,6 @@ object ItemSection {
       derivePackage(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
-  implicit def readerItemSections: UserAnswersReader[Seq[ItemSection]] = ???
+  implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] = ???
 
 }
