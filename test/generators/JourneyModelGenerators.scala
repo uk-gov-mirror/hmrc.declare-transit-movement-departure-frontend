@@ -29,10 +29,9 @@ import models.journeyDomain.MovementDetails.{
   SimplifiedMovementDetails
 }
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
-import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, ItemSection, MovementDetails, Packages, PreTaskListDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
+import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, ItemSection, MovementDetails, Packages, PreTaskListDetails, RouteDetails}
 import models.reference.{CountryCode, PackageType}
-import models.reference.CountryCode
 import models.{DeclarationType, GuaranteeType, LocalReferenceNumber, ProcedureType, RepresentativeCapacity}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -44,7 +43,7 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         itemDetail <- arbitrary[ItemDetails]
-        packages   <- arbitrary[Packages]
+        packages   <- nonEmptyListOf[Packages](10)
       } yield ItemSection(itemDetail, packages)
     }
 

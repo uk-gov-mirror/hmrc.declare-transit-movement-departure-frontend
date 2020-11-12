@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
+import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
 import models.{Index, UserAnswers}
 
@@ -28,7 +29,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(arb[ItemSection], arb[UserAnswers]) {
           case (itemSection, userAnswers) =>
             val updatedUserAnswer           = ItemSectionSpec.setItemSection(itemSection, index)(userAnswers)
-            val result: Option[ItemSection] = UserAnswersReader[ItemSection].run(updatedUserAnswer)
+            val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
 
             result.value mustEqual itemSection
         }
@@ -39,8 +40,8 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
       "when an answer is missing" in {
         forAll(arb[ItemSection], arb[UserAnswers]) {
           case (itemSection, ua) =>
-            val userAnswers = ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, index)(ua)
-            val result      = UserAnswersReader[ItemSection].run(userAnswers)
+            val userAnswers                 = ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, index)(ua)
+            val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(userAnswers)
 
             result mustBe None
         }
@@ -51,10 +52,15 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
 object ItemSectionSpec extends UserAnswersSpecHelper {
 
+  private def setPackages(packages: NonEmptyList[Packages])(startUserAnswers: UserAnswers): UserAnswers =
+    packages.zipWithIndex.foldLeft(startUserAnswers) {
+      case (userAnswers, (pckge, index)) => PackagesSpec.setPackageUserAnswers(pckge, Index(index))(userAnswers)
+    }
+
   def setItemSection(itemSection: ItemSection, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
     (
       ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, index) _ andThen
-        PackagesSpec.setPackageUserAnswers(itemSection.packages, index)
+        setPackages(itemSection.packages)
     )(startUserAnswers)
 
 }

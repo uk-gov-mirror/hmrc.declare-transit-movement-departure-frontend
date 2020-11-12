@@ -16,14 +16,34 @@
 
 package models.journeyDomain
 
+import cats.data._
+import cats.implicits._
+import cats._
+import derivable.DeriveNumberOfPackages
+import models.{Index, UserAnswers}
+
 case class ItemSection(
   itemDetails: ItemDetails,
-  packages: Packages
+  packages: NonEmptyList[Packages]
 )
 
 object ItemSection {
 
-  implicit def readerItemSection: UserAnswersReader[ItemSection] = ???
+  private def derivePackage(itemIndex: Index): ReaderT[Option, UserAnswers, NonEmptyList[Packages]] =
+    DeriveNumberOfPackages(itemIndex).reader.filter(_.size < 1).flatMap {
+      _.zipWithIndex
+        .traverse[UserAnswersReader, Packages]({
+          case (_, index) =>
+            Packages.packagesReader(itemIndex, Index(index))
+        })
+        .map(NonEmptyList.fromListUnsafe _)
+    }
+
+  implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
+    (
+      ItemDetails.itemDetailsReader(index),
+      derivePackage(index)
+    ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[Seq[ItemSection]] = ???
 
