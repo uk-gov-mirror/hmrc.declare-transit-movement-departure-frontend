@@ -29,7 +29,7 @@ import models.journeyDomain.MovementDetails.{
   SimplifiedMovementDetails
 }
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
-import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, MovementDetails, Packages, PreTaskListDetails, RouteDetails}
+import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, ItemSection, MovementDetails, Packages, PreTaskListDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.{CountryCode, PackageType}
 import models.reference.CountryCode
@@ -39,6 +39,14 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryItemSection: Arbitrary[ItemSection] =
+    Arbitrary {
+      for {
+        itemDetail <- arbitrary[ItemDetails]
+        packages   <- arbitrary[Packages]
+      } yield ItemSection(itemDetail, packages)
+    }
 
   implicit lazy val arbitraryPreTaskListDetails: Arbitrary[PreTaskListDetails] =
     Arbitrary {

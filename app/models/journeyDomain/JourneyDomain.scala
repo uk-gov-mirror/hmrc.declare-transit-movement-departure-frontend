@@ -25,14 +25,14 @@ case class JourneyDomain(
   routeDetails: RouteDetails,
   transportDetails: TransportDetails,
   traderDetails: TraderDetails,
-  itemDetails: Seq[Unit], // TODO
+  itemDetails: Seq[ItemSection],
   goodsSummary: GoodsSummary,
   guarantee: GuaranteeDetails
 )
 
 object JourneyDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[JourneyDomain] = ???
+  implicit def userAnswersReader: UserAnswersReader[JourneyDomain] = ???
 
   def convert(journeyDomain: JourneyDomain): DeclarationRequest = ???
 
