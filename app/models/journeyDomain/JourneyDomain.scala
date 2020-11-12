@@ -16,6 +16,9 @@
 
 package models.journeyDomain
 
+import cats._
+import cats.data._
+import cats.implicits._
 import models.{LocalReferenceNumber, ProcedureType, UserAnswers}
 import models.messages.DeclarationRequest
 
@@ -25,14 +28,37 @@ case class JourneyDomain(
   routeDetails: RouteDetails,
   transportDetails: TransportDetails,
   traderDetails: TraderDetails,
-  itemDetails: Seq[ItemSection],
+  itemDetails: NonEmptyList[ItemSection],
   goodsSummary: GoodsSummary,
   guarantee: GuaranteeDetails
 )
 
 object JourneyDomain {
 
-  implicit def userAnswersReader: UserAnswersReader[JourneyDomain] = ???
+  // TOOD: This is a workaround till we remove UserAnswersParser
+  implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
+    ReaderT[Option, UserAnswers, A](parser.run _)
+
+  implicit def userAnswersReader: UserAnswersReader[JourneyDomain] =
+    for {
+      preTaskList      <- UserAnswersReader[PreTaskListDetails]
+      movementDetails  <- UserAnswersReader[MovementDetails]
+      routeDetails     <- UserAnswersReader[RouteDetails]
+      transportDetails <- UserAnswersReader[TransportDetails]
+      traderDetails    <- UserAnswersReader[TraderDetails]
+      itemDetails      <- UserAnswersReader[NonEmptyList[ItemSection]]
+      goodsSummary     <- UserAnswersReader[GoodsSummary]
+      guarantee        <- UserAnswersReader[GuaranteeDetails]
+    } yield JourneyDomain(
+      preTaskList,
+      movementDetails,
+      routeDetails,
+      transportDetails,
+      traderDetails,
+      itemDetails,
+      goodsSummary,
+      guarantee
+    )
 
   def convert(journeyDomain: JourneyDomain): DeclarationRequest = ???
 
