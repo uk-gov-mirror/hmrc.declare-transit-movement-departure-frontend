@@ -35,11 +35,11 @@ case class JourneyDomain(
 
 object JourneyDomain {
 
-  // TOOD: This is a workaround till we remove UserAnswersParser
-  implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
-    ReaderT[Option, UserAnswers, A](parser.run _)
+  implicit def userAnswersReader: UserAnswersReader[JourneyDomain] = {
+    // TOOD: This is a workaround till we remove UserAnswersParser
+    implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
+      ReaderT[Option, UserAnswers, A](parser.run _)
 
-  implicit def userAnswersReader: UserAnswersReader[JourneyDomain] =
     for {
       preTaskList      <- UserAnswersReader[PreTaskListDetails]
       movementDetails  <- UserAnswersReader[MovementDetails]
@@ -49,16 +49,18 @@ object JourneyDomain {
       itemDetails      <- UserAnswersReader[NonEmptyList[ItemSection]]
       goodsSummary     <- UserAnswersReader[GoodsSummary]
       guarantee        <- UserAnswersReader[GuaranteeDetails]
-    } yield JourneyDomain(
-      preTaskList,
-      movementDetails,
-      routeDetails,
-      transportDetails,
-      traderDetails,
-      itemDetails,
-      goodsSummary,
-      guarantee
-    )
+    } yield
+      JourneyDomain(
+        preTaskList,
+        movementDetails,
+        routeDetails,
+        transportDetails,
+        traderDetails,
+        itemDetails,
+        goodsSummary,
+        guarantee
+      )
+  }
 
   def convert(journeyDomain: JourneyDomain): DeclarationRequest = ???
 

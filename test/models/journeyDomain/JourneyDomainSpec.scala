@@ -40,7 +40,7 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
     }
 
     "cannot be parsed" - {
-      "when an answer is missing" in {
+      "when some answers is missing" in {
         forAll(arb[ItemSection], arb[UserAnswers]) {
           case (itemSection, ua) =>
             val userAnswers                 = ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, index)(ua)
@@ -58,13 +58,13 @@ object JourneyDomainSpec {
   def setJourneyDomain(journeyDomain: JourneyDomain)(startUserAnswers: UserAnswers): UserAnswers =
     (
       PreTaskListDetailsSpec.setPreTaskListDetails(journeyDomain.preTaskList) _ andThen
-        MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails) _ andThen
-        RouteDetailsSpec.setRouteDetails(journeyDomain.routeDetails) _ andThen
-        TransportDetailsSpec.setTransportDetail(journeyDomain.transportDetails) _ andThen
-        TraderDetailsSpec.setTraderDetails(journeyDomain.traderDetails) _ andThen
-        ItemSectionSpec.setItemSections(journeyDomain.itemDetails.toList) _ andThen
-        GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary) _ andThen
-        GuaranteeDetailsSpec.setGuaranteeDetails(journeyDomain.guarantee) _
+        MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails) andThen
+        RouteDetailsSpec.setRouteDetails(journeyDomain.routeDetails) andThen
+        TransportDetailsSpec.setTransportDetail(journeyDomain.transportDetails) andThen
+        TraderDetailsSpec.setTraderDetails(journeyDomain.traderDetails) andThen
+        ItemSectionSpec.setItemSections(journeyDomain.itemDetails.toList) andThen
+        GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary, journeyDomain.preTaskList.addSecurityDetails) andThen
+        GuaranteeDetailsSpec.setGuaranteeDetails(journeyDomain.guarantee)
     )(startUserAnswers)
 
 }

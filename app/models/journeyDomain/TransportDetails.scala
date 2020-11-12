@@ -18,10 +18,20 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
+import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, Rail}
 import models.journeyDomain.TransportDetails._
 import models.reference.CountryCode
-import pages.{AddIdAtDeparturePage, IdAtDeparturePage, InlandModePage, NationalityAtDeparturePage}
+import pages.{
+  AddIdAtDeparturePage,
+  ChangeAtBorderPage,
+  IdAtDeparturePage,
+  IdCrossingBorderPage,
+  InlandModePage,
+  ModeAtBorderPage,
+  ModeCrossingBorderPage,
+  NationalityAtDeparturePage,
+  NationalityCrossingBorderPage
+}
 
 case class TransportDetails(
   inlandMode: InlandMode,
@@ -34,13 +44,19 @@ object TransportDetails {
     UserAnswersOptionalParser(
       (
         UserAnswersReader[InlandMode],
-        UserAnswersReader[SameDetailsAtBorder.type]
+        UserAnswersReader[DetailsAtBorder]
       ).tupled
     )((TransportDetails.apply _).tupled)
 
   sealed trait InlandMode
 
   object InlandMode {
+
+    object Constants {
+      val codesSingleDigit: Seq[String] = Rail.Constants.codesSingleDigit ++ Mode5or7.Constants.codesSingleDigit
+      val codesDoubleDigit: Seq[String] = Rail.Constants.codesDoubleDigit ++ Mode5or7.Constants.codesDoubleDigit
+      val codes: Seq[String]            = codesSingleDigit ++ codesDoubleDigit
+    }
 
     implicit val userAnswersReader: UserAnswersReader[InlandMode] =
       UserAnswersReader[Rail.type].widen[InlandMode] orElse
@@ -50,7 +66,9 @@ object TransportDetails {
     case object Rail extends InlandMode {
 
       object Constants {
-        val codes: Seq[String] = Seq("2", "20")
+        val codesSingleDigit: Seq[String] = Seq("2")
+        val codesDoubleDigit: Seq[String] = Seq("20")
+        val codes: Seq[String]            = codesSingleDigit ++ codesDoubleDigit
       }
 
       implicit val userAnswersReaderRail: UserAnswersReader[Rail.type] =
@@ -68,7 +86,9 @@ object TransportDetails {
     case object Mode5or7 {
 
       object Constants {
-        val codes: Seq[String] = Seq("5", "50", "7", "70")
+        val codesSingleDigit: Seq[String] = Seq("5", "7")
+        val codesDoubleDigit: Seq[String] = Seq("50", "70")
+        val codes: Seq[String]            = codesSingleDigit ++ codesDoubleDigit
       }
 
       implicit val userAnswersReaderMode5or7: UserAnswersReader[Mode5or7] = {
@@ -114,10 +134,16 @@ object TransportDetails {
 
   object DetailsAtBorder {
 
+    implicit val reader: UserAnswersReader[DetailsAtBorder] =
+      UserAnswersReader[SameDetailsAtBorder.type].widen[DetailsAtBorder] orElse
+        UserAnswersReader[NewDetailsAtBorder].widen[DetailsAtBorder]
+
     object SameDetailsAtBorder extends DetailsAtBorder {
 
       implicit val userAnswersReader: UserAnswersReader[SameDetailsAtBorder.type] =
-        SameDetailsAtBorder.pure[UserAnswersReader]
+        ChangeAtBorderPage.reader
+          .filterNot(identity)
+          .productR(SameDetailsAtBorder.pure[UserAnswersReader])
 
     }
 
@@ -127,11 +153,36 @@ object TransportDetails {
       modeCrossingBorder: ModeCrossingBorder
     ) extends DetailsAtBorder
 
+    object NewDetailsAtBorder {
+
+      implicit val userAnswersReader: UserAnswersReader[NewDetailsAtBorder] =
+        ChangeAtBorderPage.reader
+          .filter(identity)
+          .productR(
+            (
+              ModeAtBorderPage.reader,
+              IdCrossingBorderPage.reader,
+              UserAnswersReader[ModeCrossingBorder]
+            ).tupled.map((NewDetailsAtBorder.apply _).tupled)
+          )
+
+    }
+
   }
 
   sealed trait ModeCrossingBorder
 
   object ModeCrossingBorder {
+
+    implicit val reader: UserAnswersReader[ModeCrossingBorder] =
+      ModeCrossingBorderPage.reader.flatMap(
+        modeCode =>
+          if ((Mode5or7.Constants.codes ++ Rail.Constants.codes).contains(modeCode))
+            ModeExemptNationality.pure[UserAnswersReader].widen[ModeCrossingBorder]
+          else
+            NationalityCrossingBorderPage.reader.map(ModeWithNationality(_))
+      )
+
     object ModeExemptNationality extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
     final case class ModeWithNationality(nationalityCrossingBorder: CountryCode) extends ModeCrossingBorder
   }
