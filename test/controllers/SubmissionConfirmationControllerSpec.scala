@@ -47,9 +47,9 @@ class SubmissionConfirmationControllerSpec extends SpecBase with MockNunjucksRen
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request           = FakeRequest(GET, routes.SubmissionConfirmationController.onPageLoad(lrn).url)
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
+      val request        = FakeRequest(GET, routes.SubmissionConfirmationController.onPageLoad(lrn).url)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 

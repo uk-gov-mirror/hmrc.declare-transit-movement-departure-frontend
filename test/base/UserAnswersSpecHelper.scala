@@ -18,9 +18,7 @@ package base
 
 import models.UserAnswers
 import pages.QuestionPage
-import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json, Writes}
-
-import scala.util.Success
+import play.api.libs.json.{JsResultException, Json, Writes}
 
 trait UserAnswersSpecHelper {
 
