@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages.addItems.containers
+package derivable
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{containers, items, packages}
 
-class AddAnotherContainerPageSpec extends PageBehaviours {
+final case class DeriveNumberOfContainers(itemIndex: Index) extends Derivable[List[JsObject], Int] {
 
-  "AddAnotherContainerPage" - {
+  override val derive: List[JsObject] => Int = _.size
 
-    beRetrievable[Boolean](AddAnotherContainerPage)
-
-    beSettable[Boolean](AddAnotherContainerPage)
-
-    beRemovable[Boolean](AddAnotherContainerPage)
-  }
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ containers
 }

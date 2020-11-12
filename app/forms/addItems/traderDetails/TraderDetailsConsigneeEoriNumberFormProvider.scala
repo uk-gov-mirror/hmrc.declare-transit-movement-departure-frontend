@@ -18,13 +18,14 @@ package forms.addItems.traderDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
 
 class TraderDetailsConsigneeEoriNumberFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(index: Index): Form[String] =
     Form(
-      "value" -> text("traderDetailsConsigneeEoriNumber.error.required")
+      "value" -> text("traderDetailsConsigneeEoriNumber.error.required", Seq(index.display))
         .verifying(maxLength(100, "traderDetailsConsigneeEoriNumber.error.length"))
     )
 }

@@ -16,16 +16,17 @@
 
 package pages.addItems.containers
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class ContainerNumberPageSpec extends PageBehaviours {
+class ContainerNumberPageSpec extends PageBehaviours with SpecBase {
 
   "ContainerNumberPage" - {
 
-    beRetrievable[String](ContainerNumberPage)
+    beRetrievable[String](ContainerNumberPage(itemIndex, containerIndex))
 
-    beSettable[String](ContainerNumberPage)
+    beSettable[String](ContainerNumberPage(itemIndex, containerIndex))
 
-    beRemovable[String](ContainerNumberPage)
+    beRemovable[String](ContainerNumberPage(itemIndex, containerIndex))
   }
 }

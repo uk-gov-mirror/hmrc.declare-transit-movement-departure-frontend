@@ -13,3 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package config
+
+import play.api.Configuration
+
+abstract class ServiceDetails(configuration: Configuration, configPath: String) {
+  val service: Service = configuration.get[Service](path = configPath)
+}

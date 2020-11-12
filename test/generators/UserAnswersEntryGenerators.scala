@@ -33,6 +33,20 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryAddAnotherDocumentUserAnswersEntry: Arbitrary[(AddAnotherDocumentPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (AddAnotherDocumentPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitraryConfirmRemoveDocumentUserAnswersEntry: Arbitrary[(ConfirmRemoveDocumentPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (ConfirmRemoveDocumentPage(Index(0), Index(0)), value)
+    }
+
   implicit lazy val arbitraryDocumentReferenceUserAnswersEntry: Arbitrary[(DocumentReferencePage, JsValue)] =
     Arbitrary {
       for {
@@ -104,18 +118,18 @@ trait UserAnswersEntryGenerators {
       } yield (AddSpecialMentionPage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryAddAnotherContainerUserAnswersEntry: Arbitrary[(AddAnotherContainerPage.type, JsValue)] =
+  implicit lazy val arbitraryAddAnotherContainerUserAnswersEntry: Arbitrary[(AddAnotherContainerPage, JsValue)] =
     Arbitrary {
       for {
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (AddAnotherContainerPage, value)
+      } yield (AddAnotherContainerPage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryContainerNumberUserAnswersEntry: Arbitrary[(ContainerNumberPage.type, JsValue)] =
+  implicit lazy val arbitraryContainerNumberUserAnswersEntry: Arbitrary[(ContainerNumberPage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (ContainerNumberPage, value)
+      } yield (ContainerNumberPage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry: Arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] =
@@ -153,7 +167,7 @@ trait UserAnswersEntryGenerators {
       } yield (ReferenceTypePage(Index(0), Index(0)), value)
     }
 
-  implicit lazy val arbDocumentTypePage: Arbitrary[(DocumentTypePage, JsValue)] =
+  implicit lazy val arbitraryDocumentTypeUserAnswersEntry: Arbitrary[(DocumentTypePage, JsValue)] =
     Arbitrary {
       for {
         value <- arbitrary[String].map(Json.toJson(_))

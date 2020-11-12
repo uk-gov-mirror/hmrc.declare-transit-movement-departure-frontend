@@ -109,7 +109,7 @@ class ConfirmRemoveSealController @Inject()(
   }
 
   private def renderErrorPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfSeals()).contains(0)) "noSeal" else "multipleSeal"
+    val redirectLinkText = if (request.userAnswers.get(DeriveNumberOfSeals).contains(0)) "noSeal" else "multipleSeal"
     val redirectLink     = navigator.nextPage(ConfirmRemoveSealPage(), mode, request.userAnswers).url
 
     errorHandler.onConcurrentError(redirectLinkText, redirectLink, "concurrent.seal")

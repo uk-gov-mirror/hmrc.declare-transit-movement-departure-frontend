@@ -25,6 +25,7 @@ GET        /:lrn/change-add-security-details                  controllers.AddSec
 POST       /:lrn/change-add-security-details                  controllers.AddSecurityDetailsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/task-list                                    controllers.DeclarationSummaryController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/task-list                                    controllers.DeclarationSummaryController.onSubmit(lrn: LocalReferenceNumber)
 
 GET        /:lrn/movement-details/declaration-type                        controllers.movementDetails.DeclarationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/movement-details/declaration-type                        controllers.movementDetails.DeclarationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -529,10 +530,10 @@ POST       /:lrn/add-items/:itemIndex/remove-special-mention                    
 GET        /:lrn/add-items/:itemIndex/change-remove-special-mention                  controllers.addItems.specialMentions.RemoveSpecialMentionController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/change-remove-special-mention                  controllers.addItems.specialMentions.RemoveSpecialMentionController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 
-GET        /:lrn/add-items/:itemIndex/containers/container-number                                                        controllers.addItems.containers.ContainerNumberController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
-POST       /:lrn/add-items/:itemIndex/containers/container-number                                                        controllers.addItems.containers.ContainerNumberController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
-GET        /:lrn/add-items/:itemIndex/containers/change-container-number                                                 controllers.addItems.containers.ContainerNumberController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
-POST       /:lrn/add-items/:itemIndex/containers/change-container-number                                                 controllers.addItems.containers.ContainerNumberController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+GET        /:lrn/add-items/:itemIndex/containers/:containerIndex/container-number                                                        controllers.addItems.containers.ContainerNumberController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/containers/:containerIndex/container-number                                                        controllers.addItems.containers.ContainerNumberController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/containers/:containerIndex/change-container-number                                                 controllers.addItems.containers.ContainerNumberController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/:itemIndex/containers/:containerIndex/change-container-number                                                 controllers.addItems.containers.ContainerNumberController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index, mode: Mode = CheckMode)
 
 GET        /:lrn/add-items/:itemIndex/containers/add-another-container                                                   controllers.addItems.containers.AddAnotherContainerController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/:itemIndex/containers/add-another-container                                                   controllers.addItems.containers.AddAnotherContainerController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
@@ -568,3 +569,15 @@ GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/document
 POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/document-type               controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-document-type        controllers.addItems.DocumentTypeController.onPageLoad(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-document-type        controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
+
+GET        /:lrn/submissionConfirmation                       controllers.SubmissionConfirmationController.onPageLoad(lrn: LocalReferenceNumber)
+
+GET        /:lrn/add-items/:itemIndex/document-reference/add-another-document                        controllers.addItems.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/document-reference/add-another-document                             controllers.addItems.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/document-reference/change-add-another-document                    controllers.addItems.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/:itemIndex/document-reference/change-add-another-document              controllers.addItems.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/confirm-remove-document                        controllers.addItems.ConfirmRemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex:Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/confirm-remove-document                       controllers.addItems.ConfirmRemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex:Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-confirm-remove-document                   controllers.addItems.ConfirmRemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-confirm-remove-document                  controllers.addItems.ConfirmRemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)

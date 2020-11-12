@@ -25,7 +25,7 @@ class ExtraInformationFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "extraInformation.error.required"
   val lengthKey   = "extraInformation.error.length"
   val maxLength   = 26
-  val validRegex  = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
+  val validRegex  = "^[a-zA-Z0-9&'@\\/.\\-%?<> ]{1,26}$"
   val invalidKey  = "extraInformation.error.invalid"
 
   val form = new ExtraInformationFormProvider()()
