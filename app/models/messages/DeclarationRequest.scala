@@ -20,9 +20,8 @@ import cats.data.NonEmptyList
 import cats.syntax.all._
 import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.{UserAnswers, XMLWrites}
+import models.XMLWrites
 import models.XMLWrites._
-import models.journeyDomain.{MovementDetails, RouteDetails, TraderDetails, TransportDetails, UserAnswersOptionalParser}
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.GoodsItem
 import models.messages.guarantee.Guarantee
@@ -37,7 +36,7 @@ case class DeclarationRequest(meta: Meta,
                               traderPrincipal: TraderPrincipal,
                               traderConsignor: Option[TraderConsignor],
                               traderConsignee: Option[TraderConsignee],
-                              traderAuthorisedConsignee: TraderAuthorisedConsignee,
+                              traderAuthorisedConsignee: Option[TraderAuthorisedConsignee],
                               customsOfficeDeparture: CustomsOfficeDeparture,
                               customsOfficeTransit: Seq[CustomsOfficeTransit],
                               customsOfficeDestination: CustomsOfficeDestination,
@@ -59,7 +58,7 @@ object DeclarationRequest {
           traderPrinciple(declarationRequest.traderPrincipal) ++
           declarationRequest.traderConsignor.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.traderConsignee.map(_.toXml).getOrElse(NodeSeq.Empty) ++
-          declarationRequest.traderAuthorisedConsignee.toXml ++
+          declarationRequest.traderAuthorisedConsignee.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.customsOfficeDeparture.toXml ++
           declarationRequest.customsOfficeTransit.flatMap(_.toXml) ++
           declarationRequest.customsOfficeDestination.toXml ++
@@ -85,7 +84,7 @@ object DeclarationRequest {
      (__ \ "TRAPRIPC1").read[TraderPrincipal],
      (__ \ "TRACONCO1").read[TraderConsignor].optional,
      (__ \ "TRACONCE1").read[TraderConsignee].optional,
-     (__ \ "TRAAUTCONTRA").read[TraderAuthorisedConsignee],
+     (__ \ "TRAAUTCONTRA").read[TraderAuthorisedConsignee].optional,
      (__ \ "CUSOFFDEPEPT").read[CustomsOfficeDeparture],
      (__ \ "CUSOFFTRARNS").read(strictReadSeq[CustomsOfficeTransit]),
      (__ \ "CUSOFFDESEST").read[CustomsOfficeDestination],

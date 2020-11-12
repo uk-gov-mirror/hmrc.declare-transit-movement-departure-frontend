@@ -32,14 +32,13 @@ trait ModelGenerators {
   implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
     Arbitrary {
       for {
-        code        <- arbitrary[String]
+        code        <- arbitrary[String].suchThat(!PackageType.bulkAndUnpackedCodes.contains(_))
         description <- arbitrary[String]
       } yield PackageType(code, description)
     }
 
   lazy val arbitraryBulkPackageType: Arbitrary[PackageType] = {
-
-    val bulkCodes = Seq("VQ", "VG", "VL", "VY", "VR", "VS", "VO")
+    val bulkCodes = PackageType.bulkCodes
 
     Arbitrary {
       for {
@@ -50,8 +49,7 @@ trait ModelGenerators {
   }
 
   lazy val arbitraryUnPackedPackageType: Arbitrary[PackageType] = {
-
-    val unpackedCodes = Seq("NE", "NF", "NG")
+    val unpackedCodes = PackageType.unpackedCodes
 
     Arbitrary {
       for {
