@@ -16,7 +16,9 @@
 
 package models.journeyDomain
 
-import cats.data.Kleisli
+import java.io
+
+import cats.data._
 import cats.implicits._
 import models.{GuaranteeType, UserAnswers}
 import pages._
@@ -41,13 +43,9 @@ object GuaranteeDetails {
 
     private val defaultLiability = "10000"
 
-    private val liabilityAmount: Kleisli[Option, UserAnswers, String] = DefaultAmountPage.optionalReader.flatMap {
+    private val liabilityAmount: UserAnswersReader[String] = DefaultAmountPage.optionalReader.flatMap {
       case Some(defaultAmountPage) =>
-        if (defaultAmountPage) {
-          Kleisli[Option, UserAnswers, String](_ => Some(defaultLiability))
-        } else {
-          LiabilityAmountPage.reader
-        }
+        if (defaultAmountPage) defaultLiability.pure[UserAnswersReader] else LiabilityAmountPage.reader
       case None => LiabilityAmountPage.reader
     }
 
@@ -75,4 +73,5 @@ object GuaranteeDetails {
         OtherReferenceLiabilityAmountPage.reader
       ).tupled.map((GuaranteeOther.apply _).tupled)
   }
+
 }
