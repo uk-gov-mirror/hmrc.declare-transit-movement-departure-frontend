@@ -22,11 +22,11 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.{ConfirmRemovePreviousAdministrativeReferencePage, PreviousReferencePage}
+import pages.addItems.ConfirmRemovePreviousAdministrativeReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{ItemsQuery, PreviousReferenceQuery}
+import queries.PreviousReferenceQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController

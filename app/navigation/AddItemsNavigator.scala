@@ -207,6 +207,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
+  // TODO revisit
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
     (ua.get(IsCommodityCodeKnownPage(index)),ua.get(CommodityCodePage(index)),
       ua.get(ConsignorForAllItemsPage), ua.get(AddConsignorPage),

@@ -53,7 +53,7 @@ class DeclarationRequestSpec
               {traderPrinciple(declarationRequest.traderPrincipal)}
               {declarationRequest.traderConsignor.map(_.toXml).getOrElse(NodeSeq.Empty)}
               {declarationRequest.traderConsignee.map(_.toXml).getOrElse(NodeSeq.Empty)}
-              {declarationRequest.traderAuthorisedConsignee.toXml}
+              {declarationRequest.traderAuthorisedConsignee.map(_.toXml).getOrElse(NodeSeq.Empty)}
               {declarationRequest.customsOfficeDeparture.toXml}
               {declarationRequest.customsOfficeTransit.flatMap(_.toXml)}
               {declarationRequest.customsOfficeDestination.toXml}

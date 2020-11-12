@@ -19,6 +19,11 @@ package viewModels
 import base.{GeneratorSpec, SpecBase}
 import config.{ManageTransitMovementsService, Service}
 import generators.JourneyModelGenerators
+import models.EoriNumber
+import models.journeyDomain.MovementDetailsSpec._
+import models.journeyDomain.RouteDetailsSpec._
+import models.journeyDomain.TraderDetailsSpec._
+import models.journeyDomain.TransportDetailsSpec._
 import models.journeyDomain.{MovementDetails, RouteDetails}
 import org.mockito.Mockito
 import org.mockito.Mockito._
@@ -26,11 +31,6 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
 import play.api.libs.json.Json
 import utils.SectionsHelper
-import models.journeyDomain.MovementDetailsSpec._
-import models.journeyDomain.RouteDetailsSpec._
-import models.journeyDomain.TraderDetailsSpec._
-import models.journeyDomain.TransportDetailsSpec._
-import models.{EoriNumber, LocalReferenceNumber}
 
 class DeclarationSummaryViewModelSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with BeforeAndAfterEach {
 
