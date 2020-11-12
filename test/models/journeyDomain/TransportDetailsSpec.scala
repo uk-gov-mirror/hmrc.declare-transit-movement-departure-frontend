@@ -19,7 +19,7 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase}
 import models.UserAnswers
 import models.journeyDomain.TransportDetails.DetailsAtBorder._
-import models.journeyDomain.TransportDetails.InlandMode._
+import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, _}
 import models.journeyDomain.TransportDetails._
 import models.reference.CountryCode
 import org.scalacheck.Gen
@@ -80,6 +80,18 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
 }
 
 object TransportDetailsSpec {
+
+  def setTransportDetail(transportDetails: TransportDetails)(startUserAnswers: UserAnswers): UserAnswers =
+    transportDetails.inlandMode match {
+      case InlandMode.Rail =>
+        setTransportDetailsRail(!transportDetails.detailsAtBorder.isInstanceOf[SameDetailsAtBorder.type])(startUserAnswers)
+      case Mode5or7(nationalityAtDeparture) =>
+        setTransportDetailsMode5or7(!transportDetails.detailsAtBorder.isInstanceOf[SameDetailsAtBorder.type], nationalityAtDeparture)(startUserAnswers)
+      case NonSpecialMode(nationalityAtDeparture, departureId) =>
+        setTransportDetailsOther(!transportDetails.detailsAtBorder.isInstanceOf[SameDetailsAtBorder.type], nationalityAtDeparture, departureId)(
+          startUserAnswers
+        )
+    }
 
   def setTransportDetailsRail(changeAtBorder: Boolean, mode: String = Rail.Constants.codes.head)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
