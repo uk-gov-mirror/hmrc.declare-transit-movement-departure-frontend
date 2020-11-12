@@ -18,10 +18,8 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import cats._
-import derivable.DeriveNumberOfPackages
+import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
 import models.{Index, UserAnswers}
-import play.api.libs.json.Json
 
 case class ItemSection(
   itemDetails: ItemDetails,
@@ -48,6 +46,16 @@ object ItemSection {
       derivePackage(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
-  implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] = ???
+  implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =
+    DeriveNumberOfItems.reader
+      .filter(_.size > 0)
+      .flatMap {
+        _.zipWithIndex
+          .traverse[UserAnswersReader, ItemSection]({
+            case (_, index) =>
+              readerItemSection(Index(index))
+          })
+          .map(NonEmptyList.fromListUnsafe _)
+      }
 
 }
