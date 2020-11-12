@@ -28,7 +28,7 @@ import models.journeyDomain.MovementDetails.{
   NormalMovementDetails,
   SimplifiedMovementDetails
 }
-import models.journeyDomain.{ItemDetails, GoodsSummary, MovementDetails, RouteDetails}
+import models.journeyDomain.{GoodsSummary, ItemDetails, MovementDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.CountryCode
 import org.scalacheck.Arbitrary.arbitrary
