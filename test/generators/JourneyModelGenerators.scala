@@ -69,14 +69,24 @@ trait JourneyModelGenerators {
   implicit def arbitraryJourneyDomain: Arbitrary[JourneyDomain] =
     Arbitrary {
       for {
-        preTaskList      <- arbitrary[PreTaskListDetails]
-        movementDetails  <- arbitrary[MovementDetails]
+        preTaskList <- arbitrary[PreTaskListDetails]
+        isNormalMovement = preTaskList.procedureType == ProcedureType.Normal
+        movementDetails <- if (isNormalMovement) {
+          arbitrary[NormalMovementDetails]
+        } else {
+          arbitrary[SimplifiedMovementDetails]
+        }
         routeDetails     <- arbitrary[RouteDetails]
         transportDetails <- arbitrary[TransportDetails]
         traderDetails    <- arbitrary[TraderDetails]
         itemDetails      <- nonEmptyListOf[ItemSection](3)
-        goodsSummary     <- arbitrary[GoodsSummary]
-        guarantee        <- arbitrary[GuaranteeDetails]
+        goodsummarydetaislType = if (isNormalMovement) {
+          arbitrary[GoodSummaryNormalDetails]
+        } else {
+          arbitrary[GoodSummarySimplifiedDetails]
+        }
+        goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetaislType)).arbitrary
+        guarantee    <- arbitrary[GuaranteeDetails]
       } yield
         JourneyDomain(
           preTaskList,
