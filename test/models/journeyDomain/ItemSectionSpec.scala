@@ -53,10 +53,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
       "when all details for section have been answered" in {
         forAll(nonEmptyListOf[ItemSection](3), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
-            val updatedUserAnswer = itemSections.zipWithIndex.foldLeft(userAnswers) {
-              case (ua, (section, i)) =>
-                ItemSectionSpec.setItemSection(section, Index(i))(ua)
-            }
+            val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
 
             val result = ItemSection.readerItemSections.run(updatedUserAnswer)
 
@@ -72,6 +69,12 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
   private def setPackages(packages: NonEmptyList[Packages], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     packages.zipWithIndex.foldLeft(startUserAnswers) {
       case (userAnswers, (pckge, index)) => PackagesSpec.setPackageUserAnswers(pckge, itemIndex, Index(index))(userAnswers)
+    }
+
+  def setItemSections(itemSections: Seq[ItemSection])(startUserAnswers: UserAnswers): UserAnswers =
+    itemSections.zipWithIndex.foldLeft(startUserAnswers) {
+      case (ua, (section, i)) =>
+        ItemSectionSpec.setItemSection(section, Index(i))(ua)
     }
 
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
