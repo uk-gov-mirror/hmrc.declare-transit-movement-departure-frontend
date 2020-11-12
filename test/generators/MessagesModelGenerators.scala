@@ -80,7 +80,7 @@ trait MessagesModelGenerators extends Generators {
         traderPrinciple           <- Gen.oneOf(arbitrary[TraderPrincipalWithEori], arbitrary[TraderPrincipalWithoutEori])
         traderConsignor           <- Gen.option(arbitrary[TraderConsignor])
         traderConsignee           <- Gen.option(arbitrary[TraderConsignee])
-        traderAuthorisedConsignee <- arbitrary[TraderAuthorisedConsignee]
+        traderAuthorisedConsignee <- Gen.option(arbitrary[TraderAuthorisedConsignee])
         customsOfficeDeparture    <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')
         customsOfficeTransit      <- listWithMaxLength[CustomsOfficeTransit](CustomsOffice.Constants.transitOfficeCount)
         customsOfficeDestination  <- Gen.pick(CustomsOffice.Constants.length, 'A' to 'Z')

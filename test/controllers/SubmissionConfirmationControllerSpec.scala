@@ -16,14 +16,14 @@
 
 package controllers
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
+import base.{MockNunjucksRendererApp, SpecBase}
 import matchers.JsonMatchers
+import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.guice.GuiceApplicationBuilder // TODO: Do we need?
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,12 +33,17 @@ import scala.concurrent.Future
 
 class SubmissionConfirmationControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+
   "SubmissionConfirmation Controller" - {
 
     "return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockSessionRepository.remove(any())).thenReturn(Future.successful())
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -51,6 +56,7 @@ class SubmissionConfirmationControllerSpec extends SpecBase with MockNunjucksRen
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      verify(mockSessionRepository, times(1)).remove(lrn.toString)
 
       val expectedJson = Json.obj("lrn" -> lrn)
 

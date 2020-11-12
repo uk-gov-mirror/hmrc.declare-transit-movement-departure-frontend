@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package derivable
+package base
 
-import models.Index
-import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.{containers, items}
+import org.scalatest.TestSuite
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
 
-final case class DeriveNumberOfContainers(itemIndex: Index) extends Derivable[List[JsObject], Int] {
+trait MockServiceApp extends GuiceOneAppPerSuite with MockitoSugar {
+  self: TestSuite =>
 
-  override val derive: List[JsObject] => Int = _.size
+  override def fakeApplication(): Application =
+    guiceApplicationBuilder()
+      .build()
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ containers
+  // Override to provide custom binding
+  def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
 }
