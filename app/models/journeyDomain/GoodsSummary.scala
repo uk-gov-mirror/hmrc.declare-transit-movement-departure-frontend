@@ -38,7 +38,14 @@ object GoodsSummary {
   implicit val parser: UserAnswersParser[Option, GoodsSummary] =
     UserAnswersOptionalParser(
       (
-        TotalPackagesPage.optionalReader,
+        DeclarePackagesPage.reader
+          .flatMap(
+            bool =>
+              if (bool)
+                TotalPackagesPage.optionalReader
+              else
+                none[Int].pure[UserAnswersReader]
+          ),
         TotalGrossMassPage.reader,
         none[String].pure[UserAnswersReader],
         UserAnswersReader[GoodSummaryDetails],
