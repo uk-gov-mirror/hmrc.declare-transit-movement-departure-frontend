@@ -18,19 +18,43 @@ package generators
 
 import java.time.{LocalDate, LocalDateTime}
 
-import models._
 import models.domain.SealDomain
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
+import models.journeyDomain.GuaranteeDetails._
 import models.journeyDomain.MovementDetails._
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
-import models.journeyDomain.{GoodsSummary, ItemDetails, MovementDetails, Packages, RouteDetails}
+import models.journeyDomain._
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.reference.{CountryCode, PackageType}
+import models.reference._
+import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, MovementDetails, RouteDetails}
+import models.{DeclarationType, GuaranteeType, RepresentativeCapacity}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryGuaranteeDetails: Arbitrary[GuaranteeDetails] =
+    Arbitrary(Gen.oneOf(arbitrary[GuaranteeReference], arbitrary[GuaranteeOther]))
+
+  implicit lazy val arbitraryGuaranteeOther: Arbitrary[GuaranteeOther] =
+    Arbitrary {
+      for {
+        guaranteeType   <- Arbitrary.arbitrary[GuaranteeType]
+        otherReference  <- nonEmptyString
+        liabilityAmount <- nonEmptyString
+      } yield GuaranteeOther(guaranteeType, otherReference, liabilityAmount)
+    }
+
+  implicit lazy val arbitraryGuaranteeReference: Arbitrary[GuaranteeReference] =
+    Arbitrary {
+      for {
+        guaranteeType            <- Arbitrary.arbitrary[GuaranteeType]
+        guaranteeReferenceNumber <- nonEmptyString
+        liabilityAmount          <- nonEmptyString
+        accessCode               <- nonEmptyString
+      } yield GuaranteeReference(guaranteeType, guaranteeReferenceNumber, liabilityAmount, accessCode)
+    }
 
   implicit lazy val arbitraryPackages: Arbitrary[Packages] =
     Arbitrary(Gen.oneOf(arbitrary[UnpackedPackages], arbitrary[BulkPackages], arbitrary[OtherPackages]))

@@ -44,12 +44,12 @@ class SubmissionConfirmationController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      sessionRepository.remove(lrn.toString) flatMap {
+      sessionRepository.remove(lrn, request.eoriNumber) flatMap {
         _ =>
           val json = Json.obj(
             "lrn"                       -> lrn,
             "manageTransitMovementsUrl" -> manageTransitMovementsService.service.fullServiceUrl,
-            "makeAnotherDeparture"      -> controllers.routes.LocalReferenceNumberController.onPageLoad.url
+            "makeAnotherDeparture"      -> controllers.routes.LocalReferenceNumberController.onPageLoad().url
           )
           renderer.render("submissionConfirmation.njk", json).map(Ok(_))
       }

@@ -19,7 +19,9 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import generators.MessagesModelGenerators
 import helper.WireMockServerHandler
+import models.messages.DeclarationRequest
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -30,7 +32,7 @@ import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks {
+class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with MessagesModelGenerators {
 
   val stubUrl = "/transits-movements-trader-at-departure/movements/departures/"
 
@@ -49,7 +51,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         stubResponse(ACCEPTED)
 
-        forAll(arbitrary[String]) {
+        forAll(arbitrary[DeclarationRequest]) {
           departureMovementRequest =>
             val result: Future[HttpResponse] = connector.submitDepartureMovement(departureMovementRequest)
             result.futureValue.status mustBe ACCEPTED
@@ -57,7 +59,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
       }
 
       "must return an error status when an error response is returned from submitArrivalMovement" in {
-        forAll(arbitrary[String], errorResponsesCodes) {
+        forAll(arbitrary[DeclarationRequest], errorResponsesCodes) {
           (departureMovementRequest, errorResponseCode) =>
             stubResponse(errorResponseCode)
 
