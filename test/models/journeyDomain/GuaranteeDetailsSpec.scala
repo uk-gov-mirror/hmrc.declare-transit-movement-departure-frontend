@@ -52,14 +52,57 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
       "can be parsed" - {
 
-        "when all details for section have been answered" in {
+        "when all mandatory field are defined and DefaultLiability is not defined" in {
 
           forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
-              val updatedUserAnswer = GuaranteeDetailsSpec.setGuaranteeReferenceUserAnswers(expected)(userAnswers)
-              val result            = UserAnswersReader[GuaranteeReference].run(updatedUserAnswer).value
+              val updatedUserAnswer = {
+                GuaranteeDetailsSpec
+                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .remove(DefaultAmountPage)
+                  .toOption
+                  .value
+              }
+              val result = UserAnswersReader[GuaranteeReference].run(updatedUserAnswer).value
 
               result mustEqual expected
+          }
+        }
+
+        "when all mandatory field are defined and use DefaultLiability amount when DefaultLiability is defined as true" in {
+
+          forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
+            case (expected, userAnswers) =>
+              val updatedUserAnswer = {
+                GuaranteeDetailsSpec
+                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .set(DefaultAmountPage, true)
+                  .toOption
+                  .value
+                  .remove(LiabilityAmountPage)
+                  .toOption
+                  .value
+              }
+              val result = UserAnswersReader[GuaranteeReference].run(updatedUserAnswer).value
+
+              result.liabilityAmount mustEqual "10000"
+          }
+        }
+
+        "when all mandatory field are defined and use LiabilityAmount when DefaultLiability is defined as false" in {
+
+          forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
+            case (expected, userAnswers) =>
+              val updatedUserAnswer = {
+                GuaranteeDetailsSpec
+                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .set(DefaultAmountPage, false)
+                  .toOption
+                  .value
+              }
+              val result = UserAnswersReader[GuaranteeReference].run(updatedUserAnswer).value
+
+              result.liabilityAmount mustEqual expected.liabilityAmount
           }
         }
       }
@@ -72,6 +115,48 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
             case (ua, mandatoryPage) =>
               val userAnswers = ua.remove(mandatoryPage).success.value
               val result      = UserAnswersReader[GuaranteeReference].run(userAnswers)
+
+              result mustBe None
+          }
+        }
+
+        "when LiabilityAmount is missing and DefaultLiability is false" in {
+
+          forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
+            case (expected, userAnswers) =>
+              val updatedUserAnswer = {
+                GuaranteeDetailsSpec
+                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .set(DefaultAmountPage, false)
+                  .toOption
+                  .value
+                  .remove(LiabilityAmountPage)
+                  .toOption
+                  .value
+              }
+
+              val result = UserAnswersReader[GuaranteeReference].run(updatedUserAnswer)
+
+              result mustBe None
+          }
+        }
+
+        "when LiabilityAmount is missing and DefaultLiability is missing" in {
+
+          forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
+            case (expected, userAnswers) =>
+              val updatedUserAnswer = {
+                GuaranteeDetailsSpec
+                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .remove(DefaultAmountPage)
+                  .toOption
+                  .value
+                  .remove(LiabilityAmountPage)
+                  .toOption
+                  .value
+              }
+
+              val result = UserAnswersReader[GuaranteeReference].run(updatedUserAnswer)
 
               result mustBe None
           }
@@ -142,9 +227,8 @@ object GuaranteeDetailsSpec {
     guaranteeOtherUserAnswers
   }
 
-  def setGuaranteeReferenceUserAnswers(guaranteeReference: GuaranteeReference)(startUserAnswers: UserAnswers): UserAnswers = {
-
-    val userAnswers: UserAnswers = startUserAnswers
+  def setGuaranteeReferenceUserAnswers(guaranteeReference: GuaranteeReference)(startUserAnswers: UserAnswers): UserAnswers =
+    startUserAnswers
       .set(GuaranteeTypePage, guaranteeReference.guaranteeType)
       .toOption
       .get
@@ -157,12 +241,4 @@ object GuaranteeDetailsSpec {
       .set(AccessCodePage, guaranteeReference.accessCode)
       .toOption
       .get
-
-    val userAnswersWithOptionals: UserAnswers = guaranteeReference.useDefaultAmount match {
-      case Some(defaultAmount) => userAnswers.set(DefaultAmountPage, defaultAmount).toOption.get
-      case _                   => userAnswers
-    }
-
-    userAnswersWithOptionals
-  }
 }

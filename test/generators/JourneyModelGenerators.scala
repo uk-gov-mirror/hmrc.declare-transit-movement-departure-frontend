@@ -18,11 +18,9 @@ package generators
 
 import java.time.{LocalDate, LocalDateTime}
 
-import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
-import models.{DeclarationType, GuaranteeType, RepresentativeCapacity, UserAnswers}
 import models.domain.SealDomain
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
-import models.{DeclarationType, RepresentativeCapacity}
+import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
 import models.journeyDomain.MovementDetails.{
   DeclarationForSelf,
   DeclarationForSomeoneElse,
@@ -30,10 +28,10 @@ import models.journeyDomain.MovementDetails.{
   NormalMovementDetails,
   SimplifiedMovementDetails
 }
-import models.journeyDomain.{GuaranteeDetails, MovementDetails, RouteDetails}
-import models.journeyDomain.{ItemDetails, GoodsSummary, MovementDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
+import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, MovementDetails, RouteDetails}
 import models.reference.CountryCode
+import models.{DeclarationType, GuaranteeType, RepresentativeCapacity}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -58,9 +56,8 @@ trait JourneyModelGenerators {
         guaranteeType            <- Arbitrary.arbitrary[GuaranteeType]
         guaranteeReferenceNumber <- nonEmptyString
         liabilityAmount          <- nonEmptyString
-        useDefaultAmount         <- Gen.option(Arbitrary.arbitrary[Boolean])
         accessCode               <- nonEmptyString
-      } yield GuaranteeReference(guaranteeType, guaranteeReferenceNumber, liabilityAmount, useDefaultAmount, accessCode)
+      } yield GuaranteeReference(guaranteeType, guaranteeReferenceNumber, liabilityAmount, accessCode)
     }
 
   implicit lazy val arbitraryItemDetails: Arbitrary[ItemDetails] =
