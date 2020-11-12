@@ -18,9 +18,16 @@ package navigation
 
 import base.SpecBase
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.addItems.{AddDocumentsPage, AddExtraDocumentInformationPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
+import pages.addItems.{
+  AddAnotherDocumentPage,
+  AddDocumentsPage,
+  AddExtraDocumentInformationPage,
+  DocumentExtraInformationPage,
+  DocumentReferencePage,
+  DocumentTypePage
+}
 import controllers.addItems.routes
 
 class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -31,17 +38,17 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "in Normal Mode" - {
       "AddDocumentPage must go to [Page not yes implemented] when user selects 'no'" ignore {
 
-            }
+      }
 
       "AddDocumentPage must go to DocumentTypePage when user selects 'yes'" in {
 
-            val updatedAnswers = emptyUserAnswers
-               .set(AddDocumentsPage(index), true).success.value
+        val updatedAnswers = emptyUserAnswers
+          .set(AddDocumentsPage(index), true).success.value
 
-            navigator
-              .nextPage(AddDocumentsPage(index), NormalMode, updatedAnswers)
-              .mustBe(controllers.addItems.routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, index, NormalMode))
-        }
+        navigator
+          .nextPage(AddDocumentsPage(index), NormalMode, updatedAnswers)
+          .mustBe(controllers.addItems.routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, index, NormalMode))
+      }
 
       "DocumentTypePage must go to DocumentReferencePage" in {
 
@@ -62,28 +69,28 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           .nextPage(DocumentReferencePage(index), NormalMode, updatedAnswers)
           .mustBe(routes.AddExtraDocumentInformationController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
       }
-        "AddExtraDocumentInformation page must go to" - {
-          "DocumentExtraInformationPage when user selects 'Yes' " in {
-            val updatedAnswers = emptyUserAnswers
-              .set(AddExtraDocumentInformationPage(index, documentIndex), true).success.value
+      "AddExtraDocumentInformation page must go to" - {
+        "DocumentExtraInformationPage when user selects 'Yes' " in {
+          val updatedAnswers = emptyUserAnswers
+            .set(AddExtraDocumentInformationPage(index, documentIndex), true).success.value
 
-            navigator
-              .nextPage(AddExtraDocumentInformationPage(index, documentIndex), NormalMode, updatedAnswers)
-              .mustBe(routes.DocumentExtraInformationController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
-
-
-          }
-          "AddAnotherDocument page when user selects 'No' " in {
-            val updatedAnswers = emptyUserAnswers
-              .set(AddExtraDocumentInformationPage(index, documentIndex), false).success.value
-
-            navigator
-              .nextPage(AddExtraDocumentInformationPage(index, documentIndex), NormalMode, updatedAnswers)
-              .mustBe(routes.AddAnotherDocumentController.onPageLoad(updatedAnswers.id, index, NormalMode))
+          navigator
+            .nextPage(AddExtraDocumentInformationPage(index, documentIndex), NormalMode, updatedAnswers)
+            .mustBe(routes.DocumentExtraInformationController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
 
 
-          }
         }
+        "AddAnotherDocument page when user selects 'No' " in {
+          val updatedAnswers = emptyUserAnswers
+            .set(AddExtraDocumentInformationPage(index, documentIndex), false).success.value
+
+          navigator
+            .nextPage(AddExtraDocumentInformationPage(index, documentIndex), NormalMode, updatedAnswers)
+            .mustBe(routes.AddAnotherDocumentController.onPageLoad(updatedAnswers.id, index, NormalMode))
+
+
+        }
+      }
       "DocumentExtraInformationPage must go to AddAnotherDocument" in {
 
         val updatedAnswers = emptyUserAnswers
@@ -94,11 +101,48 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           .mustBe(routes.AddAnotherDocumentController.onPageLoad(updatedAnswers.id, index, NormalMode))
       }
 
+      "AddAnotherDocument page must go to" - {
+        "DocumentTypePage when user selects 'Yes'" in {
+          val updatedAnswers = emptyUserAnswers
+            .set(AddAnotherDocumentPage(index), true).success.value
+
+          navigator
+            .nextPage(AddAnotherDocumentPage(index), NormalMode, updatedAnswers)
+            .mustBe(routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
+
+        }
 
       }
     }
+    "In CheckMode" - {
+      "AddDocumentPage must go to [Page not yes implemented] when user selects 'no'" ignore {
 
+      }
 
+      "AddDocumentPage must go to DocumentTypePage when user selects 'yes' when previously selected no" in {
+
+        val updatedAnswers = emptyUserAnswers
+
+          .remove(DocumentQuery(index, documentIndex)).success.value
+          .set(AddDocumentsPage(index), true).success.value
+
+        navigator
+          .nextPage(AddDocumentsPage(index), CheckMode, updatedAnswers)
+          .mustBe(controllers.addItems.routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, index, CheckMode))
+      }
+      "AddDocumentPage must go to ItemsCheckYourAnswersPage when user selects 'yes' when previously selected Yes" in {
+
+        val updatedAnswers = emptyUserAnswers
+
+          .set(DocumentTypePage(index, documentIndex), "test").success.value
+          .set(AddDocumentsPage(index), true).success.value
+
+        navigator
+          .nextPage(AddDocumentsPage(index), CheckMode, updatedAnswers)
+          .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+      }
+    }
+
+  }
   // format: on
-
 }

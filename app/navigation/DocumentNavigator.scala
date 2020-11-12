@@ -16,9 +16,16 @@
 
 package navigation
 import derivable.DeriveNumberOfDocuments
-import models.{Index, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.Page
-import pages.addItems.{AddDocumentsPage, AddExtraDocumentInformationPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
+import pages.addItems.{
+  AddAnotherDocumentPage,
+  AddDocumentsPage,
+  AddExtraDocumentInformationPage,
+  DocumentExtraInformationPage,
+  DocumentReferencePage,
+  DocumentTypePage
+}
 import play.api.mvc.Call
 import controllers.addItems.routes
 import javax.inject.{Inject, Singleton}
@@ -32,10 +39,31 @@ class DocumentNavigator @Inject()() extends Navigator {
     case DocumentReferencePage(index) => ua => Some(routes.AddExtraDocumentInformationController.onPageLoad(ua.id, index, Index(count(index)(ua)), NormalMode))
     case AddExtraDocumentInformationPage(index, documentIndex) => ua => addExtraDocumentInformationRoute(ua, index, documentIndex, NormalMode)
     case DocumentExtraInformationPage(index, documentIndex) => ua => Some(routes.AddAnotherDocumentController.onPageLoad(ua.id, index, NormalMode))
+    case AddAnotherDocumentPage(index) => ua =>  addAnotherDocumentRoute(ua, index)
 
   }
 
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case AddDocumentsPage(index) => ua => addDocumentRoute(ua, index, CheckMode)
+
+  }
+  def addDocumentRoute(ua:UserAnswers, index: Index, mode:Mode) =
+    (ua.get(AddDocumentsPage(index)), ua.get(DocumentTypePage(index, Index(count(index)(ua))))) match {
+      case (Some(true), None) => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), CheckMode))
+      case _ => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+
+
+    }
+
+
+
+
+  def addAnotherDocumentRoute(ua:UserAnswers, index:Index) =
+    ua.get(AddAnotherDocumentPage(index)) match {
+      case Some(true) => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), NormalMode))
+      case Some(false) => ??? //TODO NEEDS IMPLEMENTED
+
+    }
 
   def addExtraDocumentInformationRoute(ua:UserAnswers, index:Index, documentIndex:Index, mode:Mode) =
     ua.get(AddExtraDocumentInformationPage(index, documentIndex)) match {
