@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) {
 
-  def submitDepartureMovement(departureMovement: DeclarationRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] = { //TODO: make a movement when ready
+  def submitDepartureMovement(departureMovement: DeclarationRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val serviceUrl = s"${appConfig.departureHost}/movements/departures/"
     val headers    = Seq(("Content-Type", "application/xml"))
 
