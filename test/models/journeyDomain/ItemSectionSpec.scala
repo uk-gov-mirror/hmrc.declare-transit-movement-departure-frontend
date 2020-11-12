@@ -52,15 +52,15 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
 object ItemSectionSpec extends UserAnswersSpecHelper {
 
-  private def setPackages(packages: NonEmptyList[Packages])(startUserAnswers: UserAnswers): UserAnswers =
+  private def setPackages(packages: NonEmptyList[Packages], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     packages.zipWithIndex.foldLeft(startUserAnswers) {
-      case (userAnswers, (pckge, index)) => PackagesSpec.setPackageUserAnswers(pckge, Index(index))(userAnswers)
+      case (userAnswers, (pckge, index)) => PackagesSpec.setPackageUserAnswers(pckge, itemIndex, Index(index))(userAnswers)
     }
 
-  def setItemSection(itemSection: ItemSection, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
+  def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     (
-      ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, index) _ andThen
-        setPackages(itemSection.packages)
+      ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, itemIndex) _ andThen
+        setPackages(itemSection.packages, itemIndex)
     )(startUserAnswers)
 
 }

@@ -21,6 +21,7 @@ import cats.implicits._
 import cats._
 import derivable.DeriveNumberOfPackages
 import models.{Index, UserAnswers}
+import play.api.libs.json.Json
 
 case class ItemSection(
   itemDetails: ItemDetails,
@@ -30,14 +31,16 @@ case class ItemSection(
 object ItemSection {
 
   private def derivePackage(itemIndex: Index): ReaderT[Option, UserAnswers, NonEmptyList[Packages]] =
-    DeriveNumberOfPackages(itemIndex).reader.filter(_.size < 1).flatMap {
-      _.zipWithIndex
-        .traverse[UserAnswersReader, Packages]({
-          case (_, index) =>
-            Packages.packagesReader(itemIndex, Index(index))
-        })
-        .map(NonEmptyList.fromListUnsafe _)
-    }
+    DeriveNumberOfPackages(itemIndex).reader
+      .filter(_.size > 0)
+      .flatMap {
+        _.zipWithIndex
+          .traverse[UserAnswersReader, Packages]({
+            case (_, index) =>
+              Packages.packagesReader(itemIndex, Index(index))
+          })
+          .map(NonEmptyList.fromListUnsafe _)
+      }
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
