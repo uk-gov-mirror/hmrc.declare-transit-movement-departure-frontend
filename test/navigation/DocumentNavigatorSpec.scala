@@ -18,7 +18,7 @@ package navigation
 
 import base.SpecBase
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.addItems.{
   AddAnotherDocumentPage,
@@ -29,6 +29,8 @@ import pages.addItems.{
   DocumentTypePage
 }
 import controllers.addItems.routes
+import derivable.DeriveNumberOfDocuments
+import queries.DocumentQuery
 
 class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   // format: off
