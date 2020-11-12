@@ -22,7 +22,7 @@ import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.containers.{routes => containerRoutes}
 import models._
 import pages.addItems._
-import pages.addItems.containers.ContainerNumberPage
+import pages.addItems.containers._
 import pages.addItems.traderDetails._
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}

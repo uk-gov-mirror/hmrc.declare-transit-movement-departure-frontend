@@ -25,7 +25,7 @@ import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.addItems.{AddDocumentsPage, ConfirmRemoveDocumentPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
 import pages.addItems.specialMentions._
-import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
+import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.addItems.specialMentions._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
