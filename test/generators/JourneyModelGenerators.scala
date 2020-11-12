@@ -28,19 +28,26 @@ import models.journeyDomain.MovementDetails.{
   NormalMovementDetails,
   SimplifiedMovementDetails
 }
-
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
-import models.journeyDomain.{GoodsSummary, ItemDetails, MovementDetails, Packages, RouteDetails}
+import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, MovementDetails, Packages, PreTaskListDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.{CountryCode, PackageType}
-import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, MovementDetails, RouteDetails}
 import models.reference.CountryCode
-import models.{DeclarationType, GuaranteeType, RepresentativeCapacity}
+import models.{DeclarationType, GuaranteeType, LocalReferenceNumber, ProcedureType, RepresentativeCapacity}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryPreTaskListDetails: Arbitrary[PreTaskListDetails] =
+    Arbitrary {
+      for {
+        lrn                <- arbitrary[LocalReferenceNumber]
+        procedureType      <- arbitrary[ProcedureType]
+        addSecurityDetails <- arbitrary[Boolean]
+      } yield PreTaskListDetails(lrn, procedureType, addSecurityDetails)
+    }
 
   implicit lazy val arbitraryGuaranteeDetails: Arbitrary[GuaranteeDetails] =
     Arbitrary(Gen.oneOf(arbitrary[GuaranteeReference], arbitrary[GuaranteeOther]))

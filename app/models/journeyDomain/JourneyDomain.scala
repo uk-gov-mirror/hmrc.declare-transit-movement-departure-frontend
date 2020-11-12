@@ -16,11 +16,11 @@
 
 package models.journeyDomain
 
-import models.UserAnswers
+import models.{LocalReferenceNumber, ProcedureType, UserAnswers}
 import models.messages.DeclarationRequest
 
 case class JourneyDomain(
-  preTaskList: Unit, // TODO
+  preTaskList: PreTaskListDetails,
   movementDetails: MovementDetails,
   routeDetails: RouteDetails,
   transportDetails: TransportDetails,
