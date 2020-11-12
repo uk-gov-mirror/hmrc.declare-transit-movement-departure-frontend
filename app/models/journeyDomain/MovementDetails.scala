@@ -16,8 +16,6 @@
 
 package models.journeyDomain
 
-import cats._
-import cats.data._
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.{DeclarationType, RepresentativeCapacity}

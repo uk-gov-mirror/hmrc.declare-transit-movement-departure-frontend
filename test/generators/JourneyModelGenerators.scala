@@ -16,8 +16,10 @@
 
 package generators
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 
+import models.domain.SealDomain
+import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
 import models.{DeclarationType, RepresentativeCapacity}
 import models.journeyDomain.MovementDetails.{
   DeclarationForSelf,
@@ -26,7 +28,7 @@ import models.journeyDomain.MovementDetails.{
   NormalMovementDetails,
   SimplifiedMovementDetails
 }
-import models.journeyDomain.{MovementDetails, RouteDetails}
+import models.journeyDomain.{ItemDetails, GoodsSummary, MovementDetails, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.CountryCode
 import org.scalacheck.Arbitrary.arbitrary
@@ -34,6 +36,16 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryItemDetails: Arbitrary[ItemDetails] =
+    Arbitrary {
+      for {
+        itemDescription <- nonEmptyString
+        totalGrossMass  <- nonEmptyString
+        totalNetMass    <- Gen.option(arbitrary[String])
+        commodityCode   <- Gen.option(arbitrary[String])
+      } yield ItemDetails(itemDescription, totalGrossMass, totalNetMass, commodityCode)
+    }
 
   implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =
     Arbitrary(Gen.const(DeclarationForSelf))
@@ -113,6 +125,44 @@ trait JourneyModelGenerators {
           destinationCountry,
           destinationOffice,
           transitInformation
+        )
+    }
+
+  implicit lazy val arbitraryGoodSummarySimplifiedDetails: Arbitrary[GoodSummarySimplifiedDetails] =
+    Arbitrary {
+      for {
+        authorisedLocationCode <- stringsWithMaxLength(stringMaxLength)
+        controlResultDateLimit <- arbitrary[LocalDate]
+      } yield GoodSummarySimplifiedDetails(authorisedLocationCode, controlResultDateLimit)
+    }
+
+  implicit lazy val arbitraryGoodSummaryNormalDetails: Arbitrary[GoodSummaryNormalDetails] =
+    Arbitrary {
+      for {
+        customsApprovedLocation <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield GoodSummaryNormalDetails(customsApprovedLocation)
+    }
+
+  implicit lazy val arbitraryGoodSummaryDetails: Arbitrary[GoodSummaryDetails] =
+    Arbitrary {
+      Gen.oneOf(arbitrary[GoodSummaryNormalDetails], arbitrary[GoodSummarySimplifiedDetails])
+    }
+
+  implicit def arbitraryGoodsSummary(implicit arbitraryGoodSummaryDetails: Arbitrary[GoodSummaryDetails]): Arbitrary[GoodsSummary] =
+    Arbitrary {
+      for {
+        numberOfPackages   <- Gen.option(Gen.choose(1, 100))
+        totalMass          <- Gen.choose(1, 100).map(_.toString)
+        loadingPlace       <- Gen.option(stringsWithMaxLength(stringMaxLength)) // TODO: awaiting implementation
+        goodSummaryDetails <- arbitraryGoodSummaryDetails.arbitrary
+        sealNumbers        <- listWithMaxLength[SealDomain](10)
+      } yield
+        GoodsSummary(
+          numberOfPackages,
+          totalMass,
+          None, // loadingPlace,
+          goodSummaryDetails,
+          sealNumbers
         )
     }
 }
