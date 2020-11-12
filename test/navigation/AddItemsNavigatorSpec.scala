@@ -691,7 +691,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
 
           "when no is answered must go to" - {
-            "containerNumber when no containers exist" ignore {
+            "containerNumber when no containers exist" in {
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   val updatedAnswers = answers
@@ -703,7 +703,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               }
             }
 
-            "addAnotherContainer when containers already exist" ignore {
+            "addAnotherContainer when containers already exist" in {
               forAll(arbitrary[UserAnswers], arbitrary[String]) {
                 (answers, containerNumber) =>
                   val updatedAnswers = answers
@@ -1537,7 +1537,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
 
-          "must go to ContainerNumber(0, 0) if'No' and there are NO containers" ignore {
+          "must go to ContainerNumber(0, 0) if'No' and there are NO containers" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers

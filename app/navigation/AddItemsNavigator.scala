@@ -28,7 +28,7 @@ import models._
 import models.reference.CountryCode
 import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCodes}
 import pages._
-import pages.addItems.containers.ContainerNumberPage
+import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
 import play.api.mvc.Call
@@ -76,6 +76,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ExtraInformationPage(itemIndex, _)    => ua => Some(previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPreviousAdministrativeReferencePage(itemIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, ua, NormalMode)
     case ContainerNumberPage(itemIndex, containerIndex) => ua => Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, NormalMode))
+    case AddAnotherContainerPage(itemIndex) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -119,6 +120,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ExtraInformationPage(itemIndex, _)    => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case ConfirmRemovePreviousAdministrativeReferencePage(itemIndex, referenceIndex)     => ua => Some(removePreviousAdministrativeReference(itemIndex, CheckMode)(ua))
     case ContainerNumberPage(itemIndex, containerIndex) => ua => Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, CheckMode))
+    case AddAnotherContainerPage(itemIndex) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
   }
 
   private def consigneeAddress(ua: UserAnswers, index: Index, mode: Mode) =
@@ -335,14 +337,16 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
   def addAnotherPackage(itemIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(AddAnotherPackagePage(itemIndex)), mode) match {
+    (ua.get(AddAnotherPackagePage(itemIndex)), ua.get(DeriveNumberOfContainers(itemIndex)).getOrElse(0)) match {
       case (Some(true), _) =>
         val nextPackageIndex: Int = ua.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
         Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(nextPackageIndex), mode))
-      case (Some(false), CheckMode) =>
+      case (Some(false), 0) =>
+        Some(containerRoutes.ContainerNumberController.onPageLoad(ua.id, itemIndex, Index(0), mode))
+      case (Some(false), _) if mode == CheckMode =>
         Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
-      case (Some(false), NormalMode) =>
-        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+      case (Some(false), _) =>
+        Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, mode))
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 

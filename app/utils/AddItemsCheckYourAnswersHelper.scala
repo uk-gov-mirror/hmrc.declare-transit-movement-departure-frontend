@@ -19,8 +19,10 @@ package utils
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
+import controllers.addItems.containers.{routes => containerRoutes}
 import models._
 import pages.addItems._
+import pages.addItems.containers.ContainerNumberPage
 import pages.addItems.traderDetails._
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -28,6 +30,30 @@ import uk.gov.hmrc.viewmodels._
 import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def containerRow(itemIndex: Index, containerIndex: Index, userAnswers: UserAnswers): Option[Row] =
+    userAnswers.get(ContainerNumberPage(itemIndex, containerIndex)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = containerRoutes.ContainerNumberController.onPageLoad(userAnswers.id, itemIndex, containerIndex, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer.toString)),
+              attributes         = Map("id" -> s"""change-container-${containerIndex.display}""")
+            )
+          )
+        )
+    }
+
+  def addAnotherContainer(itemIndex: Index, content: Text): AddAnotherViewModel = {
+
+    val addAnotherContainerHref = containerRoutes.AddAnotherContainerController.onPageLoad(lrn, itemIndex, CheckMode).url
+
+    AddAnotherViewModel(addAnotherContainerHref, content)
+  }
 
   def documentRows(index: Index, documentIndex: Index, documentType: DocumentTypeList): Option[Row] =
     userAnswers.get(DocumentTypePage(index, documentIndex)).flatMap {
