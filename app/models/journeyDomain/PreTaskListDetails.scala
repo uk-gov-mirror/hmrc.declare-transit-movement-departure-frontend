@@ -16,7 +16,10 @@
 
 package models.journeyDomain
 
-import models.{LocalReferenceNumber, ProcedureType}
+import cats.data.ReaderT
+import models.{LocalReferenceNumber, ProcedureType, UserAnswers}
+import pages.{AddSecurityDetailsPage, ProcedureTypePage}
+import cats.implicits._
 
 case class PreTaskListDetails(
   lrn: LocalReferenceNumber,
@@ -26,6 +29,13 @@ case class PreTaskListDetails(
 
 object PreTaskListDetails {
 
-  implicit val reader: UserAnswersReader[PreTaskListDetails] = ???
+  val localReferenceNumber: UserAnswersReader[LocalReferenceNumber] =
+    ReaderT[Option, UserAnswers, LocalReferenceNumber](_.id.some)
 
+  implicit val reader: UserAnswersReader[PreTaskListDetails] =
+    (
+      localReferenceNumber,
+      ProcedureTypePage.reader,
+      AddSecurityDetailsPage.reader
+    ).tupled.map((PreTaskListDetails.apply _).tupled)
 }
