@@ -44,19 +44,18 @@ class DocumentNavigator @Inject()() extends Navigator {
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddDocumentsPage(index) => ua => addDocumentRoute(ua, index, CheckMode)
+    case AddDocumentsPage(index) => ua => addDocumentRoute(ua, index)
 
   }
-  def addDocumentRoute(ua:UserAnswers, index: Index, mode:Mode) =
-    (ua.get(AddDocumentsPage(index)), ua.get(DocumentTypePage(index, Index(count(index)(ua))))) match {
-      case (Some(true), None) => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), CheckMode))
+  def addDocumentRoute(ua:UserAnswers, index: Index) = 
+    (ua.get(AddDocumentsPage(index)) , ua.get(DocumentReferencePage(index))) match {
+      case (Some(true), None ) => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), CheckMode))
+      case (Some(true), Some(_)) => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
       case _ => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
 
 
     }
-
-
-
+  
 
   def addAnotherDocumentRoute(ua:UserAnswers, index:Index) =
     ua.get(AddAnotherDocumentPage(index)) match {

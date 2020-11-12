@@ -135,10 +135,8 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       "AddDocumentPage must go to ItemsCheckYourAnswersPage when user selects 'yes' when previously selected Yes" in {
 
         val updatedAnswers = emptyUserAnswers
-
-          .set(DocumentTypePage(index, documentIndex), "test").success.value
           .set(AddDocumentsPage(index), true).success.value
-
+          .set(DocumentReferencePage(index), "test").success.value
         navigator
           .nextPage(AddDocumentsPage(index), CheckMode, updatedAnswers)
           .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
