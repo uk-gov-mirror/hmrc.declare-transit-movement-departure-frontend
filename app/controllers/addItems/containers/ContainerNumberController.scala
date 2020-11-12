@@ -60,9 +60,10 @@ class ContainerNumberController @Inject()(
         }
 
         val json = Json.obj(
-          "form" -> preparedForm,
-          "lrn"  -> lrn,
-          "mode" -> mode
+          "form"        -> preparedForm,
+          "lrn"         -> lrn,
+          "mode"        -> mode,
+          "onSubmitUrl" -> routes.ContainerNumberController.onSubmit(lrn, itemIndex, containerIndex, mode).url
         )
 
         renderer.render(template, json).map(Ok(_))

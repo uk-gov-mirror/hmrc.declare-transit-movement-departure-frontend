@@ -17,9 +17,10 @@
 package controllers.addItems.containers
 
 import controllers.actions._
+import derivable.DeriveNumberOfContainers
 import forms.addItems.containers.ConfirmRemoveContainerFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, NormalMode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.containers.{ConfirmRemoveContainerPage, ContainerNumberPage}
@@ -61,7 +62,8 @@ class ConfirmRemoveContainerController @Inject()(
           "lrn"            -> lrn,
           "index"          -> index.display,
           "containerIndex" -> containerIndex.display,
-          "radios"         -> Radios.yesNo(form("value"))
+          "radios"         -> Radios.yesNo(form("value")),
+          "onSubmitUrl"    -> routes.ConfirmRemoveContainerController.onSubmit(lrn, index, containerIndex, mode).url
         )
 
         renderer.render(template, json).map(Ok(_))
@@ -89,9 +91,15 @@ class ConfirmRemoveContainerController @Inject()(
             value =>
               if (value) {
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(ContainerNumberPage(index, containerIndex)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(ContainersQuery(index, containerIndex)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(ConfirmRemoveContainerPage(index, containerIndex), mode, updatedAnswers))
+                } yield {
+                  val numberOfContainers = request.userAnswers.get(DeriveNumberOfContainers(index)).getOrElse(0)
+                  numberOfContainers match {
+                    case 0 => Redirect(navigator.nextPage(ContainerNumberPage(index, containerIndex), mode, updatedAnswers))
+                    case _ => Redirect(navigator.nextPage(ConfirmRemoveContainerPage(index, containerIndex), mode, updatedAnswers))
+                  }
+                }
               } else {
                 Future.successful(Redirect((navigator.nextPage(ConfirmRemoveContainerPage(index, containerIndex), mode, request.userAnswers))))
             }

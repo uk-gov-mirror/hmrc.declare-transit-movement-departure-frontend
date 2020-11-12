@@ -79,7 +79,8 @@ class ConfirmRemoveContainerControllerSpec extends SpecBase with MockNunjucksRen
         "lrn"            -> lrn,
         "index"          -> index.display,
         "containerIndex" -> containerIndex.display,
-        "radios"         -> Radios.yesNo(form("value"))
+        "radios"         -> Radios.yesNo(form("value")),
+        "onSubmitUrl"    -> confirmRemoveContainerRoute
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
