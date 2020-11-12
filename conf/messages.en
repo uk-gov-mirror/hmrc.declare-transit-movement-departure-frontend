@@ -828,6 +828,7 @@ traderDetailsConsigneeEoriNumber.checkYourAnswersLabel.visuallyHidden = change [
 traderDetailsConsigneeEoriNumber.error.required = Enter the consignee’s EORI number for item {0}
 traderDetailsConsigneeEoriNumber.error.length = The consignee’s EORI number for item must be {0} characters or less
 traderDetailsConsigneeEoriNumber.error.invalid = The consignee’s EORI number for item {0} must only include letters a to z and numbers 0 to 9
+traderDetailsConsigneeEoriNumber.error.invalidFormat = Enter the consignee’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 traderDetailsConsigneeName.title = What is the consignee’s name for item {0}?
 traderDetailsConsigneeName.heading = What is the consignee’s name for item {0}?
@@ -882,8 +883,9 @@ traderDetailsConsignorEoriNumber.heading = What is the consignor’s EORI number
 traderDetailsConsignorEoriNumber.checkYourAnswersLabel = Consignor’s EORI number for item {0}
 traderDetailsConsignorEoriNumber.checkYourAnswersLabel.visuallyHidden = change [consignor’s EORI number for item {0}]
 traderDetailsConsignorEoriNumber.error.required = Enter the consignor’s EORI number for item {0}
-traderDetailsConsignorEoriNumber.error.length = The consignor’s EORI number for item must be {0} characters or less
+traderDetailsConsignorEoriNumber.error.length = The consignor’s EORI number for item must be 17 characters or less
 traderDetailsConsignorEoriNumber.error.invalid = The consignor’s EORI number for item {0} must only include letters a to z and numbers 0 to 9
+traderDetailsConsignorEoriNumber.error.invalidFormat = Enter the consignor’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 traderDetailsConsignorName.title = What is the consignor’s name for item {0}?
 traderDetailsConsignorName.heading = What is the consignor’s name for item {0}?

@@ -73,6 +73,7 @@ class TraderDetailsConsignorEoriKnownControllerSpec extends SpecBase with MockNu
         "form"   -> form,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
+        "index"  -> index.display,
         "radios" -> Radios.yesNo(form("value"))
       )
 
@@ -103,6 +104,7 @@ class TraderDetailsConsignorEoriKnownControllerSpec extends SpecBase with MockNu
         "form"   -> filledForm,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
+        "index"  -> index.display,
         "radios" -> Radios.yesNo(filledForm("value"))
       )
 
@@ -145,6 +147,7 @@ class TraderDetailsConsignorEoriKnownControllerSpec extends SpecBase with MockNu
         "form"   -> boundForm,
         "mode"   -> NormalMode,
         "lrn"    -> lrn,
+        "index"  -> index.display,
         "radios" -> Radios.yesNo(boundForm("value"))
       )
 
