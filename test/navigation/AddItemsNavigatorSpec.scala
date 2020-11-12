@@ -691,10 +691,25 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
 
           "when no is answered must go to" - {
-            "containerNumber when no containers exist" ignore {
+
+            "Add items CYA when no containers used selected" in {
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   val updatedAnswers = answers
+                    .set(ContainersUsedPage, false).success.value
+                    .set(AddAnotherPackagePage(itemIndex), false).success.value
+                    .remove(ContainersQuery(itemIndex)).success.value
+                  navigator
+                    .nextPage(AddAnotherPackagePage(itemIndex), NormalMode, updatedAnswers)
+                    .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, itemIndex))
+              }
+            }
+
+            "containerNumber when no containers exist" in {
+              forAll(arbitrary[UserAnswers]) {
+                answers =>
+                  val updatedAnswers = answers
+                    .set(ContainersUsedPage, true).success.value
                     .set(AddAnotherPackagePage(itemIndex), false).success.value
                     .remove(ContainersQuery(itemIndex)).success.value
                 navigator
@@ -703,10 +718,11 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               }
             }
 
-            "addAnotherContainer when containers already exist" ignore {
+            "addAnotherContainer when containers already exist" in {
               forAll(arbitrary[UserAnswers], arbitrary[String]) {
                 (answers, containerNumber) =>
                   val updatedAnswers = answers
+                    .set(ContainersUsedPage, true).success.value
                     .set(AddAnotherPackagePage(itemIndex), false).success.value
                     .set(ContainerNumberPage(itemIndex, containerIndex), containerNumber).success.value
                   navigator
@@ -1003,6 +1019,28 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 navigator
                   .nextPage(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex), NormalMode, updatedAnswer)
                   .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, index, NormalMode))
+            }
+          }
+
+          "must go from ConfirmRemoveContainerPage to AddAnotherContainer page when there is 1 container left" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswer = answers
+                  .set(ContainerNumberPage(index, containerIndex),"").success.value
+                navigator
+                  .nextPage(ConfirmRemoveContainerPage(index, containerIndex), NormalMode, updatedAnswer)
+                  .mustBe(containerRoutes.AddAnotherContainerController.onPageLoad(updatedAnswer.id, index, NormalMode))
+            }
+          }
+
+          "must go from ConfirmRemoveContainerPage to ContainerNumber page when there are no containers left" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswer = answers
+                  .remove(ContainersQuery(index)).success.value
+                navigator
+                  .nextPage(ConfirmRemoveContainerPage(index, containerIndex), NormalMode, updatedAnswer)
+                  .mustBe(containerRoutes.ContainerNumberController.onPageLoad(updatedAnswer.id, index, Index(0), NormalMode))
             }
           }
         }
@@ -1525,6 +1563,19 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, nextPackageIndex, CheckMode))
             }
           }
+          "must go to CheckYourAnswers if'No' and there are containers and containers not used" in {
+            forAll(arbitrary[UserAnswers], arbitrary[String]) {
+              (answers, container) =>
+                val updatedAnswers = answers
+                  .set(ContainersUsedPage, true).success.value
+                  .set(AddAnotherPackagePage(itemIndex), false).success.value
+                  .set(ContainerNumberPage(itemIndex, containerIndex), container).success.value
+                navigator
+                  .nextPage(AddAnotherPackagePage(itemIndex), CheckMode, updatedAnswers)
+                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, itemIndex))
+            }
+          }
+
           "must go to CheckYourAnswers if'No' and there are containers" in {
             forAll(arbitrary[UserAnswers], arbitrary[String]) {
               (answers, container) =>
@@ -1537,10 +1588,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
 
-          "must go to ContainerNumber(0, 0) if'No' and there are NO containers" ignore {
+
+          "must go to ContainerNumber(0, 0) if'No' and there are NO containers" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
+                  .set(ContainersUsedPage, true).success.value
                   .set(AddAnotherPackagePage(itemIndex), false).success.value
                   .remove(ContainersQuery(itemIndex)).success.value
                 navigator
@@ -1686,6 +1739,28 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             navigator
               .nextPage(RemovePackagePage(index), CheckMode, updatedAnswers)
               .mustBe(routes.PackageTypeController.onPageLoad(updatedAnswers.id, index, index, CheckMode))
+          }
+        }
+
+        "must go from ConfirmRemoveContainerPage to AddAnotherContainer page when there is 1 container left" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers
+                .set(ContainerNumberPage(index, containerIndex),"").success.value
+              navigator
+                .nextPage(ConfirmRemoveContainerPage(index, containerIndex), CheckMode, updatedAnswer)
+                .mustBe(containerRoutes.AddAnotherContainerController.onPageLoad(updatedAnswer.id, index, CheckMode))
+          }
+        }
+
+        "must go from ConfirmRemoveContainerPage to ContainerNumber page when there are no containers left" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers
+                .remove(ContainersQuery(index)).success.value
+              navigator
+                .nextPage(ConfirmRemoveContainerPage(index, containerIndex), CheckMode, updatedAnswer)
+                .mustBe(containerRoutes.ContainerNumberController.onPageLoad(updatedAnswer.id, index, Index(0), CheckMode))
           }
         }
       }

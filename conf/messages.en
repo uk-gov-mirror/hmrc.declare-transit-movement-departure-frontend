@@ -922,7 +922,8 @@ addItems.checkYourAnswersLabel.traderDetails = Trader details
 addItems.checkYourAnswersLabel.packages = Packages
 addItems.checkYourAnswersLabel.packages.addRemove = Add or remove packages
 addItems.checkYourAnswersLabel.containers = Containers
-addItems.checkYourAnswersLabel.containers = Special mentions
+addItems.checkYourAnswersLabel.containers.addRemove = Add or remove containers
+addItems.checkYourAnswersLabel.specialMentions = Special mentions
 addItems.checkYourAnswersLabel.certificates = Produced documents and work certificates
 addItems.checkYourAnswersLabel.references = Previous administrative references
 addItems.checkYourAnswersLabel.references.addRemove = Add or remove previous administrative references
@@ -1062,3 +1063,7 @@ submissionConfirmation.link.option2 = make another departure declaration
 confirmRemoveDocument.title = Are you sure you want to remove this document?
 confirmRemoveDocument.heading = Are you sure you want to remove this document?
 confirmRemoveDocument.error.required = Select yes if you want to remove this document
+
+confirmRemoveContainer.title = Are you sure you want to remove this shipping container?
+confirmRemoveContainer.heading = Are you sure you want to remove this shipping container?
+confirmRemoveContainer.error.required = Select yes if you want to remove this shipping container

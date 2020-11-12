@@ -20,21 +20,13 @@ import java.time.{LocalDate, LocalDateTime}
 
 import models.domain.SealDomain
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
-import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
-import models.journeyDomain.MovementDetails.{
-  DeclarationForSelf,
-  DeclarationForSomeoneElse,
-  DeclarationForSomeoneElseAnswer,
-  NormalMovementDetails,
-  SimplifiedMovementDetails
-}
-
+import models.journeyDomain.GuaranteeDetails._
+import models.journeyDomain.MovementDetails._
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
-import models.journeyDomain.{GoodsSummary, ItemDetails, MovementDetails, Packages, RouteDetails}
+import models.journeyDomain._
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.reference.{CountryCode, PackageType}
+import models.reference._
 import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, MovementDetails, RouteDetails}
-import models.reference.CountryCode
 import models.{DeclarationType, GuaranteeType, RepresentativeCapacity}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
