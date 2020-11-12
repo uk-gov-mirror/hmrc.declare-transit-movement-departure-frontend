@@ -19,7 +19,7 @@ package controllers
 import base.{MockNunjucksRendererApp, SpecBase}
 import matchers.JsonMatchers
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -55,7 +55,7 @@ class SubmissionConfirmationControllerSpec extends SpecBase with MockNunjucksRen
       status(result) mustEqual OK
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-      verify(mockSessionRepository, times(1)).remove(lrn, eoriNumber)
+      verify(mockSessionRepository, times(1)).remove(meq(lrn), any())
 
       val expectedJson = Json.obj("lrn" -> lrn)
 
