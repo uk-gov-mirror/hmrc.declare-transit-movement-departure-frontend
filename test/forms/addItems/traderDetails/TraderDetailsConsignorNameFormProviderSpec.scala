@@ -24,7 +24,7 @@ class TraderDetailsConsignorNameFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "traderDetailsConsignorName.error.required"
   val lengthKey   = "traderDetailsConsignorName.error.length"
-  val maxLength   = 35
+  val maxLength   = 100
   val index       = Index(0)
 
   val form = new TraderDetailsConsignorNameFormProvider()(index)

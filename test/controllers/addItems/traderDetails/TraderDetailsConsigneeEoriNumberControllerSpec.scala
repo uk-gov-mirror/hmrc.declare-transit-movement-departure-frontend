@@ -26,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.traderDetails.{TraderDetailsConsigneeEoriKnownPage, TraderDetailsConsigneeEoriNumberPage}
+import pages.addItems.traderDetails.TraderDetailsConsigneeEoriNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -70,10 +70,9 @@ class TraderDetailsConsigneeEoriNumberControllerSpec extends SpecBase with MockN
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> form,
-        "mode"  -> NormalMode,
-        "lrn"   -> lrn,
-        "index" -> index.display
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
       templateCaptor.getValue mustEqual template
@@ -84,7 +83,7 @@ class TraderDetailsConsigneeEoriNumberControllerSpec extends SpecBase with MockN
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(TraderDetailsConsigneeEoriNumberPage(Index(0)), "GB1234567").success.value
+      val userAnswers = emptyUserAnswers.set(TraderDetailsConsigneeEoriNumberPage(Index(0)), "answer").success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, traderDetailsConsigneeEoriNumberRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -96,13 +95,12 @@ class TraderDetailsConsigneeEoriNumberControllerSpec extends SpecBase with MockN
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "GB1234567"))
+      val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form"  -> filledForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual template
@@ -115,7 +113,7 @@ class TraderDetailsConsigneeEoriNumberControllerSpec extends SpecBase with MockN
 
       val request =
         FakeRequest(POST, traderDetailsConsigneeEoriNumberRoute)
-          .withFormUrlEncodedBody(("value", "GB1234567"))
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
@@ -140,10 +138,9 @@ class TraderDetailsConsigneeEoriNumberControllerSpec extends SpecBase with MockN
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> boundForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual template

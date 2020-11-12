@@ -70,7 +70,6 @@ class TraderDetailsConsigneeAddressController @Inject()(
                 "form"          -> preparedForm,
                 "lrn"           -> lrn,
                 "mode"          -> mode,
-                "index"         -> index.display,
                 "consigneeName" -> consigneeName,
                 "countries"     -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
               )
@@ -100,7 +99,6 @@ class TraderDetailsConsigneeAddressController @Inject()(
                       "form"          -> formWithErrors,
                       "lrn"           -> lrn,
                       "mode"          -> mode,
-                      "index"         -> index.display,
                       "consigneeName" -> consigneeName,
                       "countries"     -> countryJsonList(countryValue, countries.fullList)
                     )

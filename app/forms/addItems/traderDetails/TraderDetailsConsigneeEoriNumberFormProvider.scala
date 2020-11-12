@@ -20,20 +20,12 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import models.Index
 import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class TraderDetailsConsigneeEoriNumberFormProvider @Inject() extends Mappings {
-
-  val eoriNumberRegex: String          = "^[a-zA-Z]{2}[0-9]{1,15}"
-  val maxLengthEoriNumber: Int         = 17
-  val validEoriCharactersRegex: String = "^[a-zA-Z0-9]*$"
 
   def apply(index: Index): Form[String] =
     Form(
       "value" -> text("traderDetailsConsigneeEoriNumber.error.required", Seq(index.display))
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLengthEoriNumber, "traderDetailsConsigneeEoriNumber.error.length"),
-          regexp(validEoriCharactersRegex, "traderDetailsConsigneeEoriNumber.error.invalid", index.display),
-          regexp(eoriNumberRegex, "traderDetailsConsigneeEoriNumber.error.invalidFormat")
-        )))
+        .verifying(maxLength(100, "traderDetailsConsigneeEoriNumber.error.length"))
+    )
 }

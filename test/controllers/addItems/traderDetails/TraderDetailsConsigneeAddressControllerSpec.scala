@@ -92,10 +92,9 @@ class TraderDetailsConsigneeAddressControllerSpec
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> form,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form" -> form,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual "addItems/traderDetails/traderDetailsConsigneeAddress.njk"
@@ -141,10 +140,9 @@ class TraderDetailsConsigneeAddressControllerSpec
       )
 
       val expectedJson = Json.obj(
-        "form"  -> filledForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual "addItems/traderDetails/traderDetailsConsigneeAddress.njk"
@@ -195,10 +193,9 @@ class TraderDetailsConsigneeAddressControllerSpec
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> boundForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual "addItems/traderDetails/traderDetailsConsigneeAddress.njk"

@@ -70,10 +70,9 @@ class TraderDetailsConsignorEoriNumberControllerSpec extends SpecBase with MockN
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> form,
-        "mode"  -> NormalMode,
-        "lrn"   -> lrn,
-        "index" -> index.display
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
       templateCaptor.getValue mustEqual template
@@ -84,7 +83,7 @@ class TraderDetailsConsignorEoriNumberControllerSpec extends SpecBase with MockN
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(TraderDetailsConsignorEoriNumberPage(itemIndex), "GB1234567").success.value
+      val userAnswers = emptyUserAnswers.set(TraderDetailsConsignorEoriNumberPage(itemIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, traderDetailsConsignorEoriNumberRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -96,13 +95,12 @@ class TraderDetailsConsignorEoriNumberControllerSpec extends SpecBase with MockN
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "GB1234567"))
+      val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form"  -> filledForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form" -> filledForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual template
@@ -115,7 +113,7 @@ class TraderDetailsConsignorEoriNumberControllerSpec extends SpecBase with MockN
 
       val request =
         FakeRequest(POST, traderDetailsConsignorEoriNumberRoute)
-          .withFormUrlEncodedBody(("value", "GB1234567"))
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
@@ -139,10 +137,9 @@ class TraderDetailsConsignorEoriNumberControllerSpec extends SpecBase with MockN
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> boundForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form" -> boundForm,
+        "lrn"  -> lrn,
+        "mode" -> NormalMode
       )
 
       templateCaptor.getValue mustEqual template
