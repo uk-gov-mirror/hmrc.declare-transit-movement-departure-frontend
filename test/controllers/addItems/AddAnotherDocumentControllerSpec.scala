@@ -22,14 +22,13 @@ import controllers.{routes => mainRoutes}
 import forms.addItems.AddAnotherDocumentFormProvider
 import matchers.JsonMatchers
 import models.reference.DocumentType
-import models.{DocumentTypeList, Index, NormalMode, UserAnswers}
+import models.{DocumentTypeList, NormalMode}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.{AddAnotherDocumentPage, DocumentTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -38,7 +37,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.AddItemsCheckYourAnswersHelper
 
 import scala.concurrent.Future
 

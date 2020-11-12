@@ -20,10 +20,9 @@ import cats.implicits._
 import connectors.DepartureMovementConnector
 import javax.inject.Inject
 import models.UserAnswers
-import models.XMLWrites._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class DeclarationSubmissionService @Inject()(
   connector: DepartureMovementConnector,
@@ -34,7 +33,7 @@ class DeclarationSubmissionService @Inject()(
     declarationRequestService
       .convert(userAnswers)
       .map(
-        declarationRequest => connector.submitDepartureMovement(declarationRequest.toXml.toString())
+        declarationRequest => connector.submitDepartureMovement(declarationRequest)
       )
       .traverse(x => x)
 
