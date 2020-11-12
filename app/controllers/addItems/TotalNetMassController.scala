@@ -56,10 +56,11 @@ class TotalNetMassController @Inject()(
       }
 
       val json = Json.obj(
-        "form"  -> preparedForm,
-        "lrn"   -> lrn,
-        "index" -> index.display,
-        "mode"  -> mode
+        "form"        -> preparedForm,
+        "lrn"         -> lrn,
+        "index"       -> index.display,
+        "mode"        -> mode,
+        "onSubmitUrl" -> routes.ItemTotalGrossMassController.onSubmit(lrn, index, mode).url
       )
 
       renderer.render("totalNetMass.njk", json).map(Ok(_))

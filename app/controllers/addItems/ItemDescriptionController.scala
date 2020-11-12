@@ -56,10 +56,11 @@ class ItemDescriptionController @Inject()(
       }
 
       val json = Json.obj(
-        "form"  -> preparedForm,
-        "lrn"   -> lrn,
-        "index" -> index.display,
-        "mode"  -> mode
+        "form"        -> preparedForm,
+        "lrn"         -> lrn,
+        "index"       -> index.display,
+        "mode"        -> mode,
+        "onSubmitUrl" -> routes.ItemDescriptionController.onSubmit(lrn, index, mode).url
       )
 
       renderer.render("itemDescription.njk", json).map(Ok(_))
