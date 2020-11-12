@@ -18,9 +18,10 @@ package generators
 
 import java.time.{LocalDate, LocalDateTime}
 
+import models._
 import models.domain.SealDomain
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
-import models._
+import models.journeyDomain.MovementDetails._
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
 import models.journeyDomain.{GoodsSummary, ItemDetails, MovementDetails, Packages, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation

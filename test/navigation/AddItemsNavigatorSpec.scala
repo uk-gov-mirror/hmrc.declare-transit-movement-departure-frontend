@@ -691,10 +691,25 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
 
           "when no is answered must go to" - {
+
+            "Add items CYA when no containers used selected" in {
+              forAll(arbitrary[UserAnswers]) {
+                answers =>
+                  val updatedAnswers = answers
+                    .set(ContainersUsedPage, false).success.value
+                    .set(AddAnotherPackagePage(itemIndex), false).success.value
+                    .remove(ContainersQuery(itemIndex)).success.value
+                  navigator
+                    .nextPage(AddAnotherPackagePage(itemIndex), NormalMode, updatedAnswers)
+                    .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, itemIndex))
+              }
+            }
+
             "containerNumber when no containers exist" in {
               forAll(arbitrary[UserAnswers]) {
                 answers =>
                   val updatedAnswers = answers
+                    .set(ContainersUsedPage, true).success.value
                     .set(AddAnotherPackagePage(itemIndex), false).success.value
                     .remove(ContainersQuery(itemIndex)).success.value
                 navigator
@@ -707,6 +722,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               forAll(arbitrary[UserAnswers], arbitrary[String]) {
                 (answers, containerNumber) =>
                   val updatedAnswers = answers
+                    .set(ContainersUsedPage, true).success.value
                     .set(AddAnotherPackagePage(itemIndex), false).success.value
                     .set(ContainerNumberPage(itemIndex, containerIndex), containerNumber).success.value
                   navigator
@@ -1525,6 +1541,19 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, nextPackageIndex, CheckMode))
             }
           }
+          "must go to CheckYourAnswers if'No' and there are containers and containers not used" in {
+            forAll(arbitrary[UserAnswers], arbitrary[String]) {
+              (answers, container) =>
+                val updatedAnswers = answers
+                  .set(ContainersUsedPage, true).success.value
+                  .set(AddAnotherPackagePage(itemIndex), false).success.value
+                  .set(ContainerNumberPage(itemIndex, containerIndex), container).success.value
+                navigator
+                  .nextPage(AddAnotherPackagePage(itemIndex), CheckMode, updatedAnswers)
+                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, itemIndex))
+            }
+          }
+
           "must go to CheckYourAnswers if'No' and there are containers" in {
             forAll(arbitrary[UserAnswers], arbitrary[String]) {
               (answers, container) =>
@@ -1537,10 +1566,12 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
 
+
           "must go to ContainerNumber(0, 0) if'No' and there are NO containers" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
+                  .set(ContainersUsedPage, true).success.value
                   .set(AddAnotherPackagePage(itemIndex), false).success.value
                   .remove(ContainersQuery(itemIndex)).success.value
                 navigator
