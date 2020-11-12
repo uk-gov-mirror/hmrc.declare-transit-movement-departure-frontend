@@ -17,9 +17,26 @@
 package models.journeyDomain
 
 import models.UserAnswers
+import models.messages.DeclarationRequest
+
+case class JourneyDomain(
+  preTaskList: Unit, // TODO
+  movementDetails: MovementDetails,
+  routeDetails: RouteDetails,
+  transportDetails: TransportDetails,
+  traderDetails: TraderDetails,
+  itemDetails: Seq[Unit], // TODO
+  goodsSummary: GoodsSummary,
+  guarantee: GuaranteeDetails
+)
 
 object JourneyDomain {
 
+  implicit val userAnswersReader: UserAnswersReader[JourneyDomain] = ???
+
+  def convert(journeyDomain: JourneyDomain): DeclarationRequest = ???
+
+  // TODO: remove. We will use UserAnswersReader[JourneyDomain].run instead
   def parse(userAnswers: UserAnswers): Option[(MovementDetails, RouteDetails, TraderDetails, TransportDetails)] =
     for {
       movementDetails  <- UserAnswersOptionalParser[MovementDetails].run(userAnswers)
