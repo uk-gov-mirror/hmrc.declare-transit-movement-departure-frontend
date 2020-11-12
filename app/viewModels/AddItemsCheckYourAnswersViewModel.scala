@@ -16,7 +16,7 @@
 
 package viewModels
 
-import derivable.{DeriveNumberOfDocuments, DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
+import derivable.{DeriveNumberOfContainers, DeriveNumberOfDocuments, DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
 import models.{Index, PreviousDocumentTypeList, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.AddItemsCheckYourAnswersHelper
@@ -35,7 +35,8 @@ object AddItemsCheckYourAnswersViewModel {
       Seq(
         itemsDetailsSection(checkYourAnswersHelper, index),
         traderDetailsSection(checkYourAnswersHelper, index),
-        packagesSection(checkYourAnswersHelper, index)(userAnswers)
+        packagesSection(checkYourAnswersHelper, index)(userAnswers),
+        containersSection(checkYourAnswersHelper, index)(userAnswers)
         /*
         ,
         referencesSection(checkYourAnswersHelper, index)(userAnswers),
@@ -112,6 +113,20 @@ object AddItemsCheckYourAnswersViewModel {
       msg"addItems.checkYourAnswersLabel.documents",
       Seq(checkYourAnswersHelper.addDocuments(index).toSeq, checkYourAnswersHelper.documentReference(index).toSeq, documentRows).flatten,
       checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
+    )
+  }
+
+  private def containersSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index)(implicit userAnswers: UserAnswers): Section = {
+    val containerRows: Seq[SummaryList.Row] =
+      List.range(0, userAnswers.get(DeriveNumberOfContainers(index)).getOrElse(0)).flatMap {
+        containerPosition =>
+          checkYourAnswersHelper.containerRow(index, Index(containerPosition), userAnswers)
+      }
+
+    Section(
+      msg"addItems.checkYourAnswersLabel.containers",
+      containerRows,
+      checkYourAnswersHelper.addAnotherContainer(index, msg"addItems.checkYourAnswersLabel.containers.addRemove")
     )
   }
 

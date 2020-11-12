@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package queries
+package pages.addItems.containers
 
 import models.Index
-import pages.QuestionPage
-import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.{containers, items}
+import pages.Page
 
-final case class ContainersQuery(index: Index) extends QuestionPage[JsObject] {
-
-  override def path: JsPath = JsPath \ Constants.items \ index.position \ Constants.containers
-}
+case class ConfirmRemoveContainerPage(index: Index, containerIndex: Index) extends Page

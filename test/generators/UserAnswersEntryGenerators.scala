@@ -24,7 +24,7 @@ import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage, _}
 import pages.addItems.traderDetails._
 import pages.addItems._
 import pages.addItems.specialMentions._
-import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
+import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -32,6 +32,13 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryConfirmRemoveContainerUserAnswersEntry: Arbitrary[(ConfirmRemoveContainerPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (ConfirmRemoveContainerPage(Index(0), Index(0)), value)
+    }
 
   implicit lazy val arbitraryAddAnotherDocumentUserAnswersEntry: Arbitrary[(AddAnotherDocumentPage, JsValue)] =
     Arbitrary {

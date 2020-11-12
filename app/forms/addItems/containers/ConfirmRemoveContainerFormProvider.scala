@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package queries
+package forms.addItems.containers
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.{JsObject, JsPath}
-import queries.Constants.{containers, items}
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-final case class ContainersQuery(index: Index) extends QuestionPage[JsObject] {
+class ConfirmRemoveContainerFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ Constants.items \ index.position \ Constants.containers
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmRemoveContainer.error.required")
+    )
 }
