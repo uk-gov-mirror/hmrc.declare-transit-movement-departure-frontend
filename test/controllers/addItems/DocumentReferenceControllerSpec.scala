@@ -17,10 +17,11 @@
 package controllers.addItems
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
 import forms.addItems.DocumentReferenceFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
-import navigation.annotations.AddItems
+import navigation.annotations.Document
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -35,7 +36,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -52,7 +52,7 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[Document]).toInstance(new FakeNavigator(onwardRoute)))
 
   "DocumentReference Controller" - {
 
