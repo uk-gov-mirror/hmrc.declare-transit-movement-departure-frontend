@@ -28,14 +28,48 @@ import models.journeyDomain.MovementDetails.{
   NormalMovementDetails,
   SimplifiedMovementDetails
 }
-import models.journeyDomain.{GoodsSummary, ItemDetails, MovementDetails, RouteDetails}
+
+import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
+import models.journeyDomain.{GoodsSummary, ItemDetails, MovementDetails, Packages, RouteDetails}
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.reference.CountryCode
+import models.reference.{CountryCode, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryPackages: Arbitrary[Packages] =
+    Arbitrary(Gen.oneOf(arbitrary[UnpackedPackages], arbitrary[BulkPackages], arbitrary[OtherPackages]))
+
+  implicit lazy val arbitraryUnpackedPackages: Arbitrary[UnpackedPackages] =
+    Arbitrary {
+      for {
+        packageType         <- arbitraryUnPackedPackageType.arbitrary
+        howManyPackagesPage <- Gen.option(Gen.choose(1, 10))
+        totalPieces         <- Gen.choose(1, 10)
+        markOrNumber        <- Gen.option(arbitrary[String])
+      } yield UnpackedPackages(packageType, howManyPackagesPage, totalPieces, markOrNumber)
+    }
+
+  implicit lazy val arbitraryBulkPackage: Arbitrary[BulkPackages] =
+    Arbitrary {
+      for {
+        bulkPackage         <- arbitraryBulkPackageType.arbitrary
+        howManyPackagesPage <- Gen.option(Gen.choose(1, 10))
+        markOrNumber        <- Gen.option(arbitrary[String])
+      } yield BulkPackages(bulkPackage, howManyPackagesPage, markOrNumber)
+    }
+
+  implicit lazy val arbitraryOtherPackage: Arbitrary[OtherPackages] =
+    Arbitrary {
+      for {
+        code                <- nonEmptyString
+        description         <- nonEmptyString
+        howManyPackagesPage <- Gen.choose(1, 10)
+        markOrNumber        <- arbitrary[String]
+      } yield OtherPackages(PackageType(code, description), howManyPackagesPage, markOrNumber)
+    }
 
   implicit lazy val arbitraryItemDetails: Arbitrary[ItemDetails] =
     Arbitrary {
