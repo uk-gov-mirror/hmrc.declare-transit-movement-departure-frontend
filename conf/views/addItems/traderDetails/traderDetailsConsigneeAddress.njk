@@ -5,9 +5,16 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
 
 {% block pageTitle %}
-  {{ title(messages("traderDetailsConsigneeAddress.title"), form.errors) }}
+  {{ title(messages("traderDetailsConsignorAddress.title"), form.errors) }}
+{% endblock %}
+
+{% block pageHead %}
+  <!--[if gt IE 8]><!-->
+  <link href="{{ routes.controllers.Assets.versioned("stylesheets/accessible-autocomplete.min.css").url }}" media="screen" rel="stylesheet" type="text/css" />
+  <!--<![endif]-->
 {% endblock %}
 
 {% block mainContent %}
@@ -28,43 +35,58 @@
         {% endif %}
 
         <form action="{{ routes.controllers.addItems.traderDetails.TraderDetailsConsigneeAddressController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
 
           {{ csrf() | safe }}
+
           <h1 class="govuk-heading-xl">
             {{ messages("traderDetailsConsigneeAddress.heading", consigneeName) }}
           </h1>
-          {{ govukInput({
-            classes: "govuk-!-width-two-thirds",
-            label: {
-              text: messages('traderDetailsConsigneeAddress.buildingAndStreet')
-            },
-            id: "buildingAndStreet",
-            name: "buildingAndStreet",
-            value: form.buildingAndStreet.value,
-            errorMessage: form.buildingAndStreet.error
-          }) }}
 
-          {{ govukInput({
-            classes: "govuk-!-width-two-thirds",
-            label: {
-              text: messages('traderDetailsConsigneeAddress.city')
-            },
-            id: "city",
-            name: "city",
-            value: form.city.value,
-            errorMessage: form.city.error
-          }) }}
+          {{ govukInput ({
+                      classes: "govuk-!-width-two-thirds",
+                      label: {
+                        text: messages('traderDetailsConsigneeAddress.AddressLine1')
+                      },
+                      id: "AddressLine1",
+                      name: "AddressLine1",
+                      value: form.AddressLine1.value,
+                      errorMessage: form.AddressLine1.error
+                    }) }}
 
-          {{ govukInput({
-            classes: "govuk-input--width-10",
-            label: {
-              text: messages('traderDetailsConsigneeAddress.postcode')
-            },
-            id: "postcode",
-            name: "postcode",
-            value: form.postcode.value,
-            errorMessage: form.postcode.error
-          }) }}
+                    {{ govukInput({
+                      classes: "govuk-!-width-two-thirds",
+                      label: {
+                        text: messages('traderDetailsConsigneeAddress.AddressLine2')
+                      },
+                      id: "AddressLine2",
+                      name: "AddressLine2",
+                      value: form.AddressLine2.value,
+                      errorMessage: form.AddressLine2.error
+                    }) }}
+
+                    {{ govukInput({
+                      classes: "govuk-!-width-two-thirds",
+                      label: {
+                        text: messages('traderDetailsConsigneeAddress.AddressLine3')
+                      },
+                      id: "AddressLine3",
+                      name: "AddressLine3",
+                      value: form.AddressLine3.value,
+                      errorMessage: form.AddressLine3.error
+                    }) }}
+
+                    {{ govukSelect({
+                      classes: "govuk-input--width-20 autocomplete",
+                      label: {
+                         text: messages('traderDetailsConsigneeAddress.AddressLine4')
+                      },
+                      id: "country",
+                      name: "country",
+                      items: countries,
+                      value: form.country.value,
+                      errorMessage: form.country.error
+                    }) }}
 
           {{ govukButton({
             text: messages("site.continue"),
@@ -79,3 +101,6 @@
 
 {% endblock %}
 
+{% block pageScripts %}
+  <script src="{{ routes.controllers.Assets.versioned("javascripts/accessible-autocomplete.js").url }}"></script>
+{% endblock %}

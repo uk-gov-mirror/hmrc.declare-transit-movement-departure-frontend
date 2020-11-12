@@ -24,7 +24,7 @@ import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage, _}
 import pages.addItems.traderDetails._
 import pages.addItems._
 import pages.addItems.specialMentions._
-import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
+import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -33,11 +33,25 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryConfirmRemoveContainerUserAnswersEntry: Arbitrary[(ConfirmRemoveContainerPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (ConfirmRemoveContainerPage(Index(0), Index(0)), value)
+    }
+
   implicit lazy val arbitraryAddAnotherDocumentUserAnswersEntry: Arbitrary[(AddAnotherDocumentPage, JsValue)] =
     Arbitrary {
       for {
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (AddAnotherDocumentPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitraryConfirmRemoveDocumentUserAnswersEntry: Arbitrary[(ConfirmRemoveDocumentPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (ConfirmRemoveDocumentPage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitraryDocumentReferenceUserAnswersEntry: Arbitrary[(DocumentReferencePage, JsValue)] =
@@ -111,18 +125,18 @@ trait UserAnswersEntryGenerators {
       } yield (AddSpecialMentionPage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryAddAnotherContainerUserAnswersEntry: Arbitrary[(AddAnotherContainerPage.type, JsValue)] =
+  implicit lazy val arbitraryAddAnotherContainerUserAnswersEntry: Arbitrary[(AddAnotherContainerPage, JsValue)] =
     Arbitrary {
       for {
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (AddAnotherContainerPage, value)
+      } yield (AddAnotherContainerPage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryContainerNumberUserAnswersEntry: Arbitrary[(ContainerNumberPage.type, JsValue)] =
+  implicit lazy val arbitraryContainerNumberUserAnswersEntry: Arbitrary[(ContainerNumberPage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (ContainerNumberPage, value)
+      } yield (ContainerNumberPage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry: Arbitrary[(AddAnotherPreviousAdministrativeReferencePage, JsValue)] =

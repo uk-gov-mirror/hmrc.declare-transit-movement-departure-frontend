@@ -20,13 +20,15 @@ import controllers.addItems.previousReferences.{routes => previousReferencesRout
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.{routes => addItemsRoutes}
 import controllers.addItems.{routes => addAnotherPackageRoutes}
+import controllers.addItems.containers.{routes => containerRoutes}
 import controllers.{routes => mainRoutes}
-import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
+import derivable._
 import javax.inject.{Inject, Singleton}
 import models._
 import models.reference.CountryCode
 import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCodes}
 import pages._
+import pages.addItems.containers._
 import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
 import play.api.mvc.Call
@@ -65,7 +67,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case DeclareMarkPage(itemIndex, _)                        => ua => Some(addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, NormalMode)
     case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
-    case ConfirmRemovePreviousAdministrativeReferencePage(itemIndex, referenceIndex)     => ua => Some(removePreviousAdministrativeReference(itemIndex, NormalMode)(ua))
+    case ConfirmRemovePreviousAdministrativeReferencePage(itemIndex, referenceIndex) => ua => Some(removePreviousAdministrativeReference(itemIndex, NormalMode)(ua))
     case DummyPage(itemIndex, packageIndex)                   => ua => directToPreviousReferencesPage(itemIndex, packageIndex, ua, NormalMode) //TODO replace dummy page with add another document page
     case AddAdministrativeReferencePage(itemIndex) => ua => addAdministrativeReferencePage(itemIndex, ua, NormalMode)
     case ReferenceTypePage(itemIndex, referenceIndex) => ua => Some(previousReferencesRoutes.PreviousReferenceController.onPageLoad(ua.id, itemIndex, referenceIndex, NormalMode))
@@ -73,6 +75,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddExtraInformationPage(itemIndex, referenceIndex) => ua => addExtraInformationPage(ua, itemIndex, referenceIndex, NormalMode)
     case ExtraInformationPage(itemIndex, _)    => ua => Some(previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPreviousAdministrativeReferencePage(itemIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, ua, NormalMode)
+    case ContainerNumberPage(itemIndex, containerIndex) => ua => Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, NormalMode))
+    case AddAnotherContainerPage(itemIndex) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+    case ConfirmRemoveContainerPage(index, _) => ua => Some(confirmRemoveContainerRoute(ua, index, NormalMode))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -115,6 +120,9 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddExtraInformationPage(itemIndex, referenceIndex) => ua => addExtraInformationPage(ua, itemIndex, referenceIndex, CheckMode)
     case ExtraInformationPage(itemIndex, _)    => ua =>  Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case ConfirmRemovePreviousAdministrativeReferencePage(itemIndex, referenceIndex)     => ua => Some(removePreviousAdministrativeReference(itemIndex, CheckMode)(ua))
+    case ContainerNumberPage(itemIndex, containerIndex) => ua => Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, CheckMode))
+    case AddAnotherContainerPage(itemIndex) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+    case ConfirmRemoveContainerPage(index, _) => ua => Some(confirmRemoveContainerRoute(ua, index, CheckMode))
   }
 
   private def consigneeAddress(ua: UserAnswers, index: Index, mode: Mode) =
@@ -203,6 +211,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
+  // TODO revisit
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
     (ua.get(IsCommodityCodeKnownPage(index)),ua.get(CommodityCodePage(index)),
       ua.get(ConsignorForAllItemsPage), ua.get(AddConsignorPage),
@@ -331,15 +340,20 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
   def addAnotherPackage(itemIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(AddAnotherPackagePage(itemIndex)), mode) match {
-      case (Some(true), _) =>
+    (ua.get(AddAnotherPackagePage(itemIndex)), ua.get(ContainersUsedPage), ua.get(DeriveNumberOfContainers(itemIndex)).getOrElse(0)) match {
+      case (Some(true), _,  _) =>
         val nextPackageIndex: Int = ua.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
         Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(nextPackageIndex), mode))
-      case (Some(false), CheckMode) =>
+      case (Some(false), Some(false), _) =>
         Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
-      case (Some(false), NormalMode) =>
-        ??? //TODO hook into container journey
-      case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
+      case (Some(false), _, 0) =>
+        Some(containerRoutes.ContainerNumberController.onPageLoad(ua.id, itemIndex, Index(0), mode))
+      case (Some(false), _,  _) if mode == CheckMode =>
+        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+      case (Some(false), _, _) =>
+        Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, mode))
+      case _ =>
+        Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
   private def removePackage(itemIndex: Index, mode: Mode)(ua: UserAnswers) =
@@ -392,6 +406,11 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case _              => previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, mode)
     }
 
+  private def confirmRemoveContainerRoute(ua: UserAnswers, index: Index, mode: Mode) =
+    ua.get(DeriveNumberOfContainers(index)).getOrElse(0) match {
+      case 0 => containerRoutes.ContainerNumberController.onPageLoad(ua.id, index, Index(0), mode)
+      case _ => containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, index, mode)
+    }
 
   // format: on
 }

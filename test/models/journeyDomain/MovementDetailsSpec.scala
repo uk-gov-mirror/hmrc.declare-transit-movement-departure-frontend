@@ -18,16 +18,15 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
-import models.{ProcedureType, UserAnswers}
 import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, NormalMovementDetails, SimplifiedMovementDetails}
+import models.{ProcedureType, UserAnswers}
 import org.scalacheck.{Arbitrary, Gen}
-import pages.{movementDetails, _}
+import pages._
 import pages.movementDetails.PreLodgeDeclarationPage
-import queries.Settable
 
 class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
-  "MovmentDetails" - {
+  "MovementDetails" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(movementUserAnswers) {

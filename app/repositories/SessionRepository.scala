@@ -52,6 +52,12 @@ private[repositories] class DefaultSessionRepository @Inject()(
         }
     }
   }
+
+  override def remove(id: LocalReferenceNumber, eoriNumber: EoriNumber): Future[Unit] = sessionCollection().flatMap {
+    _.findAndRemove(Json.obj("_id" -> id.toString, "eoriNumber" -> eoriNumber.value))
+      .map(_ => ())
+  }
+
 }
 
 trait SessionRepository {
@@ -59,5 +65,7 @@ trait SessionRepository {
   def get(id: LocalReferenceNumber, eoriNumber: EoriNumber): Future[Option[UserAnswers]]
 
   def set(userAnswers: UserAnswers): Future[Boolean]
+
+  def remove(id: LocalReferenceNumber, eoriNumber: EoriNumber): Future[Unit]
 
 }

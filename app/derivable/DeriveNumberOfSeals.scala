@@ -20,7 +20,7 @@ import models.domain.SealDomain
 import play.api.libs.json.JsPath
 import queries.Constants
 
-final case class DeriveNumberOfSeals() extends Derivable[List[SealDomain], Int] {
+object DeriveNumberOfSeals extends Derivable[List[SealDomain], Int] {
 
   override val derive: List[SealDomain] => Int = _.size
 

@@ -16,24 +16,87 @@
 
 package generators
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 
-import models.{DeclarationType, RepresentativeCapacity}
-import models.journeyDomain.MovementDetails.{
-  DeclarationForSelf,
-  DeclarationForSomeoneElse,
-  DeclarationForSomeoneElseAnswer,
-  NormalMovementDetails,
-  SimplifiedMovementDetails
-}
-import models.journeyDomain.{MovementDetails, RouteDetails}
+import models.domain.SealDomain
+import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
+import models.journeyDomain.GuaranteeDetails._
+import models.journeyDomain.MovementDetails._
+import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
+import models.journeyDomain._
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.reference.CountryCode
+import models.reference._
+import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, MovementDetails, RouteDetails}
+import models.{DeclarationType, GuaranteeType, RepresentativeCapacity}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryGuaranteeDetails: Arbitrary[GuaranteeDetails] =
+    Arbitrary(Gen.oneOf(arbitrary[GuaranteeReference], arbitrary[GuaranteeOther]))
+
+  implicit lazy val arbitraryGuaranteeOther: Arbitrary[GuaranteeOther] =
+    Arbitrary {
+      for {
+        guaranteeType   <- Arbitrary.arbitrary[GuaranteeType]
+        otherReference  <- nonEmptyString
+        liabilityAmount <- nonEmptyString
+      } yield GuaranteeOther(guaranteeType, otherReference, liabilityAmount)
+    }
+
+  implicit lazy val arbitraryGuaranteeReference: Arbitrary[GuaranteeReference] =
+    Arbitrary {
+      for {
+        guaranteeType            <- Arbitrary.arbitrary[GuaranteeType]
+        guaranteeReferenceNumber <- nonEmptyString
+        liabilityAmount          <- nonEmptyString
+        accessCode               <- nonEmptyString
+      } yield GuaranteeReference(guaranteeType, guaranteeReferenceNumber, liabilityAmount, accessCode)
+    }
+
+  implicit lazy val arbitraryPackages: Arbitrary[Packages] =
+    Arbitrary(Gen.oneOf(arbitrary[UnpackedPackages], arbitrary[BulkPackages], arbitrary[OtherPackages]))
+
+  implicit lazy val arbitraryUnpackedPackages: Arbitrary[UnpackedPackages] =
+    Arbitrary {
+      for {
+        packageType         <- arbitraryUnPackedPackageType.arbitrary
+        howManyPackagesPage <- Gen.option(Gen.choose(1, 10))
+        totalPieces         <- Gen.choose(1, 10)
+        markOrNumber        <- Gen.option(arbitrary[String])
+      } yield UnpackedPackages(packageType, howManyPackagesPage, totalPieces, markOrNumber)
+    }
+
+  implicit lazy val arbitraryBulkPackage: Arbitrary[BulkPackages] =
+    Arbitrary {
+      for {
+        bulkPackage         <- arbitraryBulkPackageType.arbitrary
+        howManyPackagesPage <- Gen.option(Gen.choose(1, 10))
+        markOrNumber        <- Gen.option(arbitrary[String])
+      } yield BulkPackages(bulkPackage, howManyPackagesPage, markOrNumber)
+    }
+
+  implicit lazy val arbitraryOtherPackage: Arbitrary[OtherPackages] =
+    Arbitrary {
+      for {
+        code                <- nonEmptyString
+        description         <- nonEmptyString
+        howManyPackagesPage <- Gen.choose(1, 10)
+        markOrNumber        <- arbitrary[String]
+      } yield OtherPackages(PackageType(code, description), howManyPackagesPage, markOrNumber)
+    }
+
+  implicit lazy val arbitraryItemDetails: Arbitrary[ItemDetails] =
+    Arbitrary {
+      for {
+        itemDescription <- nonEmptyString
+        totalGrossMass  <- nonEmptyString
+        totalNetMass    <- Gen.option(arbitrary[String])
+        commodityCode   <- Gen.option(arbitrary[String])
+      } yield ItemDetails(itemDescription, totalGrossMass, totalNetMass, commodityCode)
+    }
 
   implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =
     Arbitrary(Gen.const(DeclarationForSelf))
@@ -113,6 +176,44 @@ trait JourneyModelGenerators {
           destinationCountry,
           destinationOffice,
           transitInformation
+        )
+    }
+
+  implicit lazy val arbitraryGoodSummarySimplifiedDetails: Arbitrary[GoodSummarySimplifiedDetails] =
+    Arbitrary {
+      for {
+        authorisedLocationCode <- stringsWithMaxLength(stringMaxLength)
+        controlResultDateLimit <- arbitrary[LocalDate]
+      } yield GoodSummarySimplifiedDetails(authorisedLocationCode, controlResultDateLimit)
+    }
+
+  implicit lazy val arbitraryGoodSummaryNormalDetails: Arbitrary[GoodSummaryNormalDetails] =
+    Arbitrary {
+      for {
+        customsApprovedLocation <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield GoodSummaryNormalDetails(customsApprovedLocation)
+    }
+
+  implicit lazy val arbitraryGoodSummaryDetails: Arbitrary[GoodSummaryDetails] =
+    Arbitrary {
+      Gen.oneOf(arbitrary[GoodSummaryNormalDetails], arbitrary[GoodSummarySimplifiedDetails])
+    }
+
+  implicit def arbitraryGoodsSummary(implicit arbitraryGoodSummaryDetails: Arbitrary[GoodSummaryDetails]): Arbitrary[GoodsSummary] =
+    Arbitrary {
+      for {
+        numberOfPackages   <- Gen.option(Gen.choose(1, 100))
+        totalMass          <- Gen.choose(1, 100).map(_.toString)
+        loadingPlace       <- Gen.option(stringsWithMaxLength(stringMaxLength)) // TODO: awaiting implementation
+        goodSummaryDetails <- arbitraryGoodSummaryDetails.arbitrary
+        sealNumbers        <- listWithMaxLength[SealDomain](10)
+      } yield
+        GoodsSummary(
+          numberOfPackages,
+          totalMass,
+          None, // loadingPlace,
+          goodSummaryDetails,
+          sealNumbers
         )
     }
 }

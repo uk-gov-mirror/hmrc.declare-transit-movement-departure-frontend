@@ -24,6 +24,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
@@ -33,6 +34,7 @@ class SubmissionConfirmationController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer,
   manageTransitMovementsService: ManageTransitMovementsService
@@ -42,12 +44,14 @@ class SubmissionConfirmationController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val json = Json.obj(
-        "lrn"                       -> lrn,
-        "manageTransitMovementsUrl" -> manageTransitMovementsService.service.fullServiceUrl,
-        "makeAnotherDeparture"      -> controllers.routes.LocalReferenceNumberController.onPageLoad.url
-      )
-
-      renderer.render("submissionConfirmation.njk", json).map(Ok(_))
+      sessionRepository.remove(lrn, request.eoriNumber) flatMap {
+        _ =>
+          val json = Json.obj(
+            "lrn"                       -> lrn,
+            "manageTransitMovementsUrl" -> manageTransitMovementsService.service.fullServiceUrl,
+            "makeAnotherDeparture"      -> controllers.routes.LocalReferenceNumberController.onPageLoad().url
+          )
+          renderer.render("submissionConfirmation.njk", json).map(Ok(_))
+      }
   }
 }
