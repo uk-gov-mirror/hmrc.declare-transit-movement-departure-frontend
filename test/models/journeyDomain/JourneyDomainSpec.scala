@@ -21,6 +21,7 @@ import controllers.traderDetails.ConsignorAddressControllerSpec
 import generators.JourneyModelGenerators
 import models.{ConsigneeAddress, ConsignorAddress, PrincipalAddress, UserAnswers}
 import models.domain.Address
+import models.journeyDomain.RouteDetails.TransitInformation
 import org.scalacheck.Arbitrary
 
 class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
@@ -59,11 +60,11 @@ object JourneyDomainSpec {
     (
       PreTaskListDetailsSpec.setPreTaskListDetails(journeyDomain.preTaskList) _ andThen
         MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails) andThen
-        RouteDetailsSpec.setRouteDetails(journeyDomain.routeDetails) andThen
+        RouteDetailsSpec.setRouteDetails(journeyDomain.routeDetails, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
         TransportDetailsSpec.setTransportDetail(journeyDomain.transportDetails) andThen
         TraderDetailsSpec.setTraderDetails(journeyDomain.traderDetails) andThen
         ItemSectionSpec.setItemSections(journeyDomain.itemDetails.toList) andThen
-        GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary, journeyDomain.preTaskList.addSecurityDetails) andThen
+        GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
         GuaranteeDetailsSpec.setGuaranteeDetails(journeyDomain.guarantee)
     )(startUserAnswers)
 

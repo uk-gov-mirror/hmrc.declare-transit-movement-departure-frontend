@@ -358,7 +358,7 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         transitOffice <- stringsWithMaxLength(stringMaxLength)
-        arrivalTime   <- arbitrary[LocalDateTime]
+        arrivalTime   <- Gen.option(arbitrary[LocalDateTime])
       } yield
         TransitInformation(
           transitOffice,
@@ -366,14 +366,14 @@ trait JourneyModelGenerators {
         )
     }
 
-  implicit lazy val arbitraryRouteDetails: Arbitrary[RouteDetails] =
+  implicit def arbitraryRouteDetails(implicit arbTransitInformation: Arbitrary[TransitInformation]): Arbitrary[RouteDetails] =
     Arbitrary {
       for {
         countryOfDispatch  <- arbitrary[CountryCode]
         officeOfDeparture  <- stringsWithMaxLength(stringMaxLength)
         destinationCountry <- arbitrary[CountryCode]
         destinationOffice  <- stringsWithMaxLength(stringMaxLength)
-        transitInformation <- nonEmptyListOf[TransitInformation](10)
+        transitInformation <- nonEmptyListOf[TransitInformation](10)(arbTransitInformation)
       } yield
         RouteDetails(
           countryOfDispatch,
