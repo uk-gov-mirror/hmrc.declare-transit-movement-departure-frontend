@@ -117,32 +117,39 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
     "In CheckMode" - {
-      "AddDocumentPage must go to [Page not yes implemented] when user selects 'no'" ignore {
+      "AddDocumentPage must go to" - {
+        "[Page not yes implemented] when user selects 'no'" ignore {
+
+        }
+
+        "AddDocumentPage must go to DocumentTypePage when user selects 'yes' when previously selected no" in {
+
+          val updatedAnswers = emptyUserAnswers
+
+            .remove(DocumentQuery(index, documentIndex)).success.value
+            .set(AddDocumentsPage(index), true).success.value
+
+          navigator
+            .nextPage(AddDocumentsPage(index), CheckMode, updatedAnswers)
+            .mustBe(controllers.addItems.routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, index, CheckMode))
+        }
+        "AddDocumentPage must go to ItemsCheckYourAnswersPage when user selects 'yes' when previously selected Yes" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddDocumentsPage(index), true).success.value
+            .set(DocumentReferencePage(index), "test").success.value
+          navigator
+            .nextPage(AddDocumentsPage(index), CheckMode, updatedAnswers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+        }
+      }
+      "DocumentTypePage must go to" - {
 
       }
 
-      "AddDocumentPage must go to DocumentTypePage when user selects 'yes' when previously selected no" in {
 
-        val updatedAnswers = emptyUserAnswers
 
-          .remove(DocumentQuery(index, documentIndex)).success.value
-          .set(AddDocumentsPage(index), true).success.value
-
-        navigator
-          .nextPage(AddDocumentsPage(index), CheckMode, updatedAnswers)
-          .mustBe(controllers.addItems.routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, index, CheckMode))
-      }
-      "AddDocumentPage must go to ItemsCheckYourAnswersPage when user selects 'yes' when previously selected Yes" in {
-
-        val updatedAnswers = emptyUserAnswers
-          .set(AddDocumentsPage(index), true).success.value
-          .set(DocumentReferencePage(index), "test").success.value
-        navigator
-          .nextPage(AddDocumentsPage(index), CheckMode, updatedAnswers)
-          .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-      }
     }
-
   }
   // format: on
 }
