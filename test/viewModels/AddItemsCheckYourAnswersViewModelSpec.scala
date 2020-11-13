@@ -17,8 +17,8 @@
 package viewModels
 
 import base.SpecBase
-import models.PreviousDocumentTypeList
-import models.reference.PreviousDocumentType
+import models.{DocumentTypeList, PreviousDocumentTypeList}
+import models.reference.{DocumentType, PreviousDocumentType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -30,6 +30,7 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
   // format: off
 
   private val previousDocumentTypeList = PreviousDocumentTypeList(Seq(PreviousDocumentType("code", "name")))
+  private val documentTypeList = DocumentTypeList(Seq(DocumentType("code", "name", true)))
   private val updatedAnswers = emptyUserAnswers
     .set(ItemDescriptionPage(index), "test").success.value
     .set(ItemTotalGrossMassPage(index), "100.00").success.value
@@ -40,13 +41,13 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
     .set(ContainerNumberPage(itemIndex, containerIndex), arbitrary[String].sample.value).success.value
 
   //val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, previousDocumentTypeList)
-  private val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index)
+  private val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, documentTypeList)
 
 
   "AddItemsCheckYourAnswersViewModel" - {
 
     "display the correct number of sections" in {
-      data.sections.length mustEqual 4
+      data.sections.length mustEqual 5
       data.sections.head.rows.length mustEqual 6
     }
     

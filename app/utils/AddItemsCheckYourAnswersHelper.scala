@@ -547,27 +547,30 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def addAnotherDocument(itemIndex: Index, content: Text): AddAnotherViewModel = {
 
-    //TODO: Update to use AddAnotherDocument controller
-    val addAnotherDocumentHref = ???
+    val addAnotherDocumentHref = routes.AddAnotherDocumentController.onPageLoad(lrn, itemIndex, CheckMode).url
 
     AddAnotherViewModel(addAnotherDocumentHref, content)
   }
 
-  def documentRow(itemIndex: Index, documentIndex: Index, userAnswers: UserAnswers): Option[Row] =
-    userAnswers.get(DocumentTypePage(itemIndex, documentIndex)).map {
+  def documentRow(itemIndex: Index, documentIndex: Index, userAnswers: UserAnswers, documentTypeList: DocumentTypeList): Option[Row] =
+    userAnswers.get(DocumentTypePage(itemIndex, documentIndex)).flatMap {
       answer =>
-        Row(
-          key   = Key(lit"$answer"),
-          value = Value(lit""),
-          actions = List(
-            Action(
-              content            = msg"site.change",
-              href               = routes.DocumentTypeController.onPageLoad(userAnswers.id, itemIndex, documentIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer.toString)),
-              attributes         = Map("id" -> s"""change-document-${documentIndex.display}""")
+        documentTypeList.getDocumentType(answer).map {
+          documentType =>
+            val updatedAnswer = s"(${documentType.code}) ${documentType.description}"
+            Row(
+              key   = Key(lit"$updatedAnswer"),
+              value = Value(lit""),
+              actions = List(
+                Action(
+                  content            = msg"site.change",
+                  href               = routes.DocumentTypeController.onPageLoad(userAnswers.id, itemIndex, documentIndex, CheckMode).url,
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(updatedAnswer.toString)),
+                  attributes         = Map("id" -> s"""change-document-${documentIndex.display}""")
+                )
+              )
             )
-          )
-        )
+        }
     }
 
   def confirmRemoveDocument(index: Index, documentIndex: Index): Option[Row] = userAnswers.get(ConfirmRemoveDocumentPage(index, documentIndex)) map {
