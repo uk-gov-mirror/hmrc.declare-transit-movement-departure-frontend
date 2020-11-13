@@ -72,12 +72,13 @@ object TransportDetails {
       }
 
       implicit val userAnswersReaderRail: UserAnswersReader[Rail.type] =
-        InlandModePage.reader.andThen(
-          code =>
-            Rail.Constants.codes
-              .find(_ == code)
-              .productR(Rail.some)
-        )
+        InlandModePage.reader
+          .andThen(
+            code =>
+              Rail.Constants.codes
+                .find(_ == code)
+                .productR(Rail.some)
+          )
 
     }
 
