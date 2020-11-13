@@ -61,7 +61,7 @@ class SpecialMentionTypeController @Inject()(
       implicit request =>
         referenceDataConnector.getSpecialMention() flatMap {
           specialMention =>
-            val form: Form[SpecialMention] = formProvider(specialMention)
+            val form: Form[SpecialMention] = formProvider(specialMention, itemIndex)
 
             val preparedForm = request.userAnswers
               .get(SpecialMentionTypePage(itemIndex, referenceIndex))
@@ -87,7 +87,7 @@ class SpecialMentionTypeController @Inject()(
       implicit request =>
         referenceDataConnector.getSpecialMention() flatMap {
           specialMention =>
-            val form = formProvider(specialMention)
+            val form = formProvider(specialMention, itemIndex)
             form
               .bindFromRequest()
               .fold(
