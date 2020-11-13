@@ -133,11 +133,7 @@ object TransportDetails {
 
   }
 
-  sealed trait DetailsAtBorder {
-    val mode: String
-    val idCrossing: String
-    val modeCrossingBorder: ModeCrossingBorder
-  }
+  sealed trait DetailsAtBorder
 
   object DetailsAtBorder {
 

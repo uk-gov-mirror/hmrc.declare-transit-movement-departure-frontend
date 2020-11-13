@@ -20,16 +20,17 @@ import java.time.{LocalDate, LocalDateTime}
 
 import cats.data._
 import cats.implicits._
-import models.UserAnswers
 import models.domain.Address
-import models.journeyDomain.TransportDetails.InlandMode
+import models.journeyDomain.TransportDetails.DetailsAtBorder
+import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage}
 import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
-import models.messages.trader.{TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
-import models.messages.{DeclarationRequest, InterchangeControlReference, Meta, booleanToInt}
-import utils.Format
+import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
+import models.messages.{booleanToInt, DeclarationRequest, InterchangeControlReference, Meta}
+import models.reference.CountryCode
+import models.{ConsignorAddress, EoriNumber, UserAnswers}
 
 case class JourneyDomain(
   preTaskList: PreTaskListDetails,
@@ -43,6 +44,12 @@ case class JourneyDomain(
 )
 
 object JourneyDomain {
+
+  object Constants {
+
+    val principalTraderCountryCode: CountryCode = CountryCode("GB")
+
+  }
 
   implicit def userAnswersReader: UserAnswersReader[JourneyDomain] = {
     // TOOD: This is a workaround till we remove UserAnswersParser
@@ -72,11 +79,10 @@ object JourneyDomain {
   }
 
   def convert(
-               journeyDomain: JourneyDomain,
-               decDate: LocalDate,
-               icr: InterchangeControlReference,
-               dateTimeOfPrep: LocalDateTime
-             ): DeclarationRequest = {
+    journeyDomain: JourneyDomain,
+    icr: InterchangeControlReference,
+    dateTimeOfPrep: LocalDateTime
+  ): DeclarationRequest = {
 
     val JourneyDomain(
       preTaskList,
@@ -109,87 +115,111 @@ object JourneyDomain {
           RegularPackage(packageType.toString, howManyPackagesPage, markOrNumber)
       }
 
-    def goodsItems(goodsItems: NonEmptyList[ItemSection]): NonEmptyList[GoodsItem] = {
+    def goodsItems(goodsItems: NonEmptyList[ItemSection]): NonEmptyList[GoodsItem] =
       goodsItems.zipWithIndex.map {
-        case(itemSection, index) =>
+        case (itemSection, index) =>
           GoodsItem(
-            itemNumber = index + 1,
-            commodityCode = itemSection.itemDetails.commodityCode,
-            declarationType = None,
-            description = itemSection.itemDetails.itemDescription,
-            grossMass = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)), //TODO Pass this as a string rather than BigDecimal
-            netMass = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)), //TODO same here
-            countryOfDispatch = None,
-            countryOfDestination = None,
-            methodOfPayment = None,
-            commercialReferenceNumber = None,
-            dangerousGoodsCode = None,
+            itemNumber                       = index + 1,
+            commodityCode                    = itemSection.itemDetails.commodityCode,
+            declarationType                  = None,
+            description                      = itemSection.itemDetails.itemDescription,
+            grossMass                        = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)), //TODO Pass this as a string rather than BigDecimal
+            netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)), //TODO same here
+            countryOfDispatch                = None,
+            countryOfDestination             = None,
+            methodOfPayment                  = None,
+            commercialReferenceNumber        = None,
+            dangerousGoodsCode               = None,
             previousAdministrativeReferences = Seq.empty,
-            producedDocuments = Seq.empty,
-            specialMention = Seq.empty,
-            traderConsignorGoodsItem = None,
-            traderConsigneeGoodsItem = None,
-            containers = Seq.empty,
-            packages = packages(itemSection.packages).toList,
-            sensitiveGoodsInformation = Seq.empty
+            producedDocuments                = Seq.empty,
+            specialMention                   = Seq.empty,
+            traderConsignorGoodsItem         = None,
+            traderConsigneeGoodsItem         = None,
+            containers                       = Seq.empty,
+            packages                         = packages(itemSection.packages).toList,
+            sensitiveGoodsInformation        = Seq.empty
           )
       }
-    }
 
-    def trader(traderDetails: TraderDetails): TraderPrincipal =
+    def principalTrader(traderDetails: TraderDetails): TraderPrincipal =
       traderDetails.principalTraderDetails match {
         case TraderDetails.PersonalInformation(name, Address(buildingAndStreet, city, postcode, _)) =>
           TraderPrincipalWithoutEori(
-            name = name,
+            name            = name,
             streetAndNumber = buildingAndStreet,
-            postCode = postcode,
-            city = city,
-            countryCode = ???
+            postCode        = postcode,
+            city            = city,
+            countryCode     = Constants.principalTraderCountryCode.code
           )
         case TraderDetails.TraderEori(traderEori) =>
           TraderPrincipalWithEori(eori = traderEori.toString, None, None, None, None, None)
       }
 
+    def headerConsignor(traderDetails: TraderDetails): Option[TraderConsignor] =
+      traderDetails.consignor
+        .flatMap {
+          case TraderDetails.PersonalInformation(name, address) =>
+            Address.prismAddressToConsignorAddress.getOption(address).map {
+              case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
+                TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+            }
+
+          case TraderDetails.TraderEori(EoriNumber(eori)) =>
+            Some(TraderConsignor(???, ???, ???, ???, ???, Some(eori)))
+        }
+
+    def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder): Option[Int] =
+      detailsAtBorder match {
+        case SameDetailsAtBorder                            => None
+        case DetailsAtBorder.NewDetailsAtBorder(mode, _, _) => Some(mode.toInt)
+      }
+
+    def detailsAtBorderIdCrossing(detailsAtBorder: DetailsAtBorder): Option[String] =
+      detailsAtBorder match {
+        case SameDetailsAtBorder                                  => None
+        case DetailsAtBorder.NewDetailsAtBorder(_, idCrossing, _) => Some(idCrossing)
+      }
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
-        dateOfPreparation = dateTimeOfPrep.toLocalDate,
-        timeOfPreparation = dateTimeOfPrep.toLocalTime
+        dateOfPreparation           = dateTimeOfPrep.toLocalDate,
+        timeOfPreparation           = dateTimeOfPrep.toLocalTime
       ),
       Header(
-        refNumHEA4 = preTaskList.lrn.toString,
-        typOfDecHEA24 = movementDetails.declarationType.code,
-        couOfDesCodHEA30 = Some(routeDetails.destinationCountry.code),
+        refNumHEA4          = preTaskList.lrn.toString,
+        typOfDecHEA24       = movementDetails.declarationType.code,
+        couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
         agrLocOfGooCodHEA38 = None,
-        agrLocOfGooHEA39 = None,
+        agrLocOfGooHEA39    = None,
         autLocOfGooCodHEA41 = None,
-        plaOfLoaCodHEA46 = None,
-        couOfDisCodHEA55 = Some(routeDetails.countryOfDispatch.code),
-        cusSubPlaHEA66 = None,
+        plaOfLoaCodHEA46    = None,
+        couOfDisCodHEA55    = Some(routeDetails.countryOfDispatch.code),
+        cusSubPlaHEA66      = None,
         transportDetails = Transport(
-          inlTraModHEA75 = Some(transportDetails.inlandMode.code),
-          traModAtBorHEA76 = Some(transportDetails.detailsAtBorder.mode.toInt),
-          ideOfMeaOfTraAtDHEA78 = Some(transportDetails.detailsAtBorder.idCrossing),
+          inlTraModHEA75        = Some(transportDetails.inlandMode.code),
+          traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
+          ideOfMeaOfTraAtDHEA78 = detailsAtBorderIdCrossing(transportDetails.detailsAtBorder),
           natOfMeaOfTraAtDHEA80 = None,
           ideOfMeaOfTraCroHEA85 = None,
           natOfMeaOfTraCroHEA87 = None,
           typOfMeaOfTraCroHEA88 = None
         ),
-        conIndHEA96 = booleanToInt(movementDetails.containersUsed),
-        totNumOfIteHEA305 = itemDetails.size,
-        totNumOfPacHEA306 = None,
-        totGroMasHEA307 = goodsSummary.totalMass,
-        decDatHEA383 = decDate,
-        decPlaHEA394 = movementDetails.declarationPlacePage,
-        speCirIndHEA1 = None,
+        conIndHEA96        = booleanToInt(movementDetails.containersUsed),
+        totNumOfIteHEA305  = itemDetails.size,
+        totNumOfPacHEA306  = None,
+        totGroMasHEA307    = goodsSummary.totalMass,
+        decDatHEA383       = dateTimeOfPrep.toLocalDate,
+        decPlaHEA394       = movementDetails.declarationPlacePage,
+        speCirIndHEA1      = None,
         traChaMetOfPayHEA1 = None,
-        comRefNumHEA = None,
-        secHEA358 = None,
-        conRefNumHEA = None,
-        codPlUnHEA357 = None
+        comRefNumHEA       = None,
+        secHEA358          = None,
+        conRefNumHEA       = None,
+        codPlUnHEA357      = None
       ),
-      trader(traderDetails),
-      None,
+      principalTrader(traderDetails),
+      headerConsignor(traderDetails),
       None,
       None,
       CustomsOfficeDeparture(
@@ -204,16 +234,6 @@ object JourneyDomain {
       None,
       guaranteeDetails(guarantee),
       goodsItems(journeyDomain.itemDetails)
-      )
+    )
   }
-
-  // TODO: remove. We will use UserAnswersReader[JourneyDomain].run instead
-  def parse(userAnswers: UserAnswers): Option[(MovementDetails, RouteDetails, TraderDetails, TransportDetails)] =
-    for {
-      movementDetails  <- UserAnswersOptionalParser[MovementDetails].run(userAnswers)
-      routeDetails     <- UserAnswersOptionalParser[RouteDetails].run(userAnswers)
-      traderDetails    <- UserAnswersOptionalParser[TraderDetails].run(userAnswers)
-      transportDetails <- UserAnswersOptionalParser[TransportDetails].run(userAnswers)
-    } yield (movementDetails, routeDetails, traderDetails, transportDetails)
-
 }
