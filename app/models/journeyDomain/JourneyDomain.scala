@@ -16,18 +16,19 @@
 
 package models.journeyDomain
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 
 import cats.data._
 import cats.implicits._
 import models.UserAnswers
+import models.domain.Address
 import models.journeyDomain.TransportDetails.InlandMode
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage}
 import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
-import models.messages.trader.TraderPrincipalWithEori
-import models.messages.{DeclarationRequest, Meta, booleanToInt}
+import models.messages.trader.{TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
+import models.messages.{DeclarationRequest, InterchangeControlReference, Meta, booleanToInt}
 import utils.Format
 
 case class JourneyDomain(
@@ -70,9 +71,23 @@ object JourneyDomain {
       )
   }
 
-  def convert(journeyDomain: JourneyDomain, decDate: LocalDate): DeclarationRequest = {
+  def convert(
+               journeyDomain: JourneyDomain,
+               decDate: LocalDate,
+               icr: InterchangeControlReference,
+               dateTimeOfPrep: LocalDateTime
+             ): DeclarationRequest = {
 
-    val JourneyDomain(preTaskList, movementDetails, routeDetails, transportDetails, traderDetails, itemDetails, goodsSummary, guarantee) = journeyDomain
+    val JourneyDomain(
+      preTaskList,
+      movementDetails,
+      routeDetails,
+      transportDetails,
+      traderDetails,
+      itemDetails,
+      goodsSummary,
+      guarantee
+    ) = journeyDomain
 
     def guaranteeDetails(guaranteeDetails: GuaranteeDetails): Guarantee =
       guaranteeDetails match {
@@ -121,11 +136,25 @@ object JourneyDomain {
       }
     }
 
+    def trader(traderDetails: TraderDetails): TraderPrincipal =
+      traderDetails.principalTraderDetails match {
+        case TraderDetails.PersonalInformation(name, Address(buildingAndStreet, city, postcode, _)) =>
+          TraderPrincipalWithoutEori(
+            name = name,
+            streetAndNumber = buildingAndStreet,
+            postCode = postcode,
+            city = city,
+            countryCode = ???
+          )
+        case TraderDetails.TraderEori(traderEori) =>
+          TraderPrincipalWithEori(eori = traderEori.toString, None, None, None, None, None)
+      }
+
     DeclarationRequest(
       Meta(
-        interchangeControlReference = ???, //TODO this service isnt called anywhere
-        dateOfPreparation = ???,
-        timeOfPreparation = ???
+        interchangeControlReference = icr,
+        dateOfPreparation = dateTimeOfPrep.toLocalDate,
+        timeOfPreparation = dateTimeOfPrep.toLocalTime
       ),
       Header(
         refNumHEA4 = preTaskList.lrn.toString,
@@ -138,7 +167,7 @@ object JourneyDomain {
         couOfDisCodHEA55 = Some(routeDetails.countryOfDispatch.code),
         cusSubPlaHEA66 = None,
         transportDetails = Transport(
-          inlTraModHEA75 = Some(InlandMode.Constants.code.head),
+          inlTraModHEA75 = Some(transportDetails.inlandMode.code),
           traModAtBorHEA76 = Some(transportDetails.detailsAtBorder.mode.toInt),
           ideOfMeaOfTraAtDHEA78 = Some(transportDetails.detailsAtBorder.idCrossing),
           natOfMeaOfTraAtDHEA80 = None,
@@ -159,28 +188,21 @@ object JourneyDomain {
         conRefNumHEA = None,
         codPlUnHEA357 = None
       ),
-      TraderPrincipalWithEori(
-        eori = ???,
-        name = ???,
-        streetAndNumber = ???,
-        postCode = ???,
-        city = ???,
-        countryCode = ???
-      ),
+      trader(traderDetails),
       None,
       None,
       None,
       CustomsOfficeDeparture(
-        referenceNumber = journeyDomain.routeDetails.officeOfDeparture
+        referenceNumber = routeDetails.officeOfDeparture
       ),
       Seq.empty[CustomsOfficeTransit],
       CustomsOfficeDestination(
-        referenceNumber = journeyDomain.routeDetails.destinationOffice
+        referenceNumber = routeDetails.destinationOffice
       ),
       None,
       None,
       None,
-      guaranteeDetails(journeyDomain.guarantee),
+      guaranteeDetails(guarantee),
       goodsItems(journeyDomain.itemDetails)
       )
   }

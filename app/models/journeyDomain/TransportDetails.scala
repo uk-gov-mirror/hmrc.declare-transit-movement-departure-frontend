@@ -48,7 +48,9 @@ object TransportDetails {
       ).tupled
     )((TransportDetails.apply _).tupled)
 
-  sealed trait InlandMode
+  sealed trait InlandMode {
+    def code: Int
+  }
 
   object InlandMode {
 
@@ -56,7 +58,6 @@ object TransportDetails {
       val codesSingleDigit: Seq[String] = Rail.Constants.codesSingleDigit ++ Mode5or7.Constants.codesSingleDigit
       val codesDoubleDigit: Seq[String] = Rail.Constants.codesDoubleDigit ++ Mode5or7.Constants.codesDoubleDigit
       val codes: Seq[String]            = codesSingleDigit ++ codesDoubleDigit
-      val code: Seq[Int]                = Seq(1)
     }
 
     implicit val userAnswersReader: UserAnswersReader[InlandMode] =
