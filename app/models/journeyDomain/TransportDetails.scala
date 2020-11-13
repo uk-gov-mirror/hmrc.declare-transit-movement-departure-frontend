@@ -59,11 +59,13 @@ object TransportDetails {
     }
 
     implicit val userAnswersReader: UserAnswersReader[InlandMode] =
-      UserAnswersReader[Rail.type].widen[InlandMode] orElse
+      UserAnswersReader[Rail].widen[InlandMode] orElse
         UserAnswersReader[Mode5or7].widen[InlandMode] orElse
         UserAnswersReader[NonSpecialMode].widen[InlandMode]
 
-    case object Rail extends InlandMode {
+    case class Rail(code: Int) extends InlandMode
+
+    object Rail {
 
       object Constants {
         val codesSingleDigit: Seq[String] = Seq("2")
@@ -71,18 +73,15 @@ object TransportDetails {
         val codes: Seq[String]            = codesSingleDigit ++ codesDoubleDigit
       }
 
-      implicit val userAnswersReaderRail: UserAnswersReader[Rail.type] =
+      implicit val userAnswersReaderRail: UserAnswersReader[Rail] =
         InlandModePage.reader
-          .andThen(
-            code =>
-              Rail.Constants.codes
-                .find(_ == code)
-                .productR(Rail.some)
-          )
+          .filter(Rail.Constants.codes.contains(_))
+          .map(_.toInt)
+          .map(Rail(_))
 
     }
 
-    final case class Mode5or7(nationalityAtDeparture: CountryCode) extends InlandMode
+    final case class Mode5or7(code: Int, nationalityAtDeparture: CountryCode) extends InlandMode
 
     case object Mode5or7 {
 
@@ -95,32 +94,36 @@ object TransportDetails {
       implicit val userAnswersReaderMode5or7: UserAnswersReader[Mode5or7] =
         InlandModePage.reader
           .filter(Mode5or7.Constants.codes.contains(_))
-          .productR(
-            NationalityAtDeparturePage.reader
-              .map(Mode5or7(_))
+          .map(_.toInt)
+          .flatMap(
+            code =>
+              NationalityAtDeparturePage.reader
+                .map(Mode5or7(code, _))
           )
 
     }
 
-    final case class NonSpecialMode(nationalityAtDeparture: CountryCode, departureId: Option[String]) extends InlandMode
+    final case class NonSpecialMode(code: Int, nationalityAtDeparture: CountryCode, departureId: Option[String]) extends InlandMode
 
     object NonSpecialMode {
 
       implicit val userAnswersReaderNonSpecialMode: UserAnswersReader[NonSpecialMode] =
         InlandModePage.reader
           .filterNot(InlandMode.Constants.codes.contains(_))
-          .productR(
-            AddIdAtDeparturePage.reader
-              .flatMap {
-                bool =>
-                  if (bool) {
-                    (
-                      NationalityAtDeparturePage.reader,
-                      IdAtDeparturePage.reader.map(Some(_))
-                    ).tupled.map((NonSpecialMode.apply _).tupled)
-                  } else {
-                    NationalityAtDeparturePage.reader.map(NonSpecialMode(_, None))
-                  }
+          .map(_.toInt)
+          .flatMap(
+            code =>
+              AddIdAtDeparturePage.reader
+                .flatMap {
+                  bool =>
+                    if (bool) {
+                      (
+                        NationalityAtDeparturePage.reader,
+                        IdAtDeparturePage.reader.map(Some(_))
+                      ).tupled.map((NonSpecialMode(code, _, _)).tupled)
+                    } else {
+                      NationalityAtDeparturePage.reader.map(NonSpecialMode(code, _, None))
+                    }
               }
           )
 

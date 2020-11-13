@@ -147,25 +147,36 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
     Arbitrary(
       Gen.oneOf(
-        arbitrary[Rail.type],
+        arbitrary[Rail],
         arbitrary[Mode5or7],
         arbitrary[NonSpecialMode]
       )
     )
 
-  implicit lazy val arbitraryRail: Arbitrary[Rail.type] =
-    Arbitrary(Gen.const(Rail))
+  implicit lazy val arbitraryRail: Arbitrary[Rail] =
+    Arbitrary {
+      for {
+        code <- Gen.oneOf(Rail.Constants.codes).map(_.toInt)
+      } yield Rail(code)
+    }
 
   implicit lazy val arbitraryMode5or7: Arbitrary[Mode5or7] =
-    Arbitrary(arbitrary[CountryCode].map(Mode5or7(_)))
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf(Mode5or7.Constants.codes).map(_.toInt)
+        countryCode <- arbitrary[CountryCode]
+      } yield Mode5or7(code, countryCode)
+    }
 
   implicit lazy val arbitraryNonSpecialMode: Arbitrary[NonSpecialMode] =
     Arbitrary {
       for {
+        code                   <- Gen.const(42)
         nationalityAtDeparture <- arbitrary[CountryCode]
         departureId            <- Gen.option(stringsWithMaxLength(stringMaxLength))
       } yield
         NonSpecialMode(
+          code,
           nationalityAtDeparture,
           departureId
         )
