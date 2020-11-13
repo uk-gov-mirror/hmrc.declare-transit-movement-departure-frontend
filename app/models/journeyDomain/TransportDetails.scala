@@ -92,23 +92,14 @@ object TransportDetails {
         val codes: Seq[String]            = codesSingleDigit ++ codesDoubleDigit
       }
 
-      implicit val userAnswersReaderMode5or7: UserAnswersReader[Mode5or7] = {
+      implicit val userAnswersReaderMode5or7: UserAnswersReader[Mode5or7] =
+        InlandModePage.reader
+          .filter(Mode5or7.Constants.codes.contains(_))
+          .productR(
+            NationalityAtDeparturePage.reader
+              .map(Mode5or7(_))
+          )
 
-        val mode5or7 = ReaderT[Option, (String, CountryCode), Mode5or7] {
-          x =>
-            val (code, nationalityAtDeparture) = x
-            Mode5or7.Constants.codes
-              .find(_ == code)
-              .productR(Mode5or7(nationalityAtDeparture).some)
-        }
-
-        (
-          InlandModePage.reader,
-          NationalityAtDeparturePage.reader
-        ).tupled
-          .andThen(mode5or7)
-
-      }
     }
 
     final case class NonSpecialMode(nationalityAtDeparture: CountryCode, departureId: Option[String]) extends InlandMode
@@ -116,16 +107,22 @@ object TransportDetails {
     object NonSpecialMode {
 
       implicit val userAnswersReaderNonSpecialMode: UserAnswersReader[NonSpecialMode] =
-        (
-          InlandModePage.reader,
-          AddIdAtDeparturePage.reader,
-          IdAtDeparturePage.optionalReader,
-          NationalityAtDeparturePage.reader
-        ).tupled
-          .map {
-            case (_, _, optionalIdAtDeparture, nationalityAtDeparture) =>
-              NonSpecialMode(nationalityAtDeparture, optionalIdAtDeparture)
-          }
+        InlandModePage.reader
+          .filterNot(InlandMode.Constants.codes.contains(_))
+          .productR(
+            AddIdAtDeparturePage.reader
+              .flatMap {
+                bool =>
+                  if (bool) {
+                    (
+                      NationalityAtDeparturePage.reader,
+                      IdAtDeparturePage.reader.map(Some(_))
+                    ).tupled.map((NonSpecialMode.apply _).tupled)
+                  } else {
+                    NationalityAtDeparturePage.reader.map(NonSpecialMode(_, None))
+                  }
+              }
+          )
 
     }
 
