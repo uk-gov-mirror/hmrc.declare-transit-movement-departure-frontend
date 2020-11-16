@@ -140,7 +140,7 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryNewDetailsAtBorder: Arbitrary[NewDetailsAtBorder] =
     Arbitrary {
       for {
-        mode               <- stringsWithMaxLength(stringMaxLength)
+        mode               <- genNumberString
         idCrossing         <- stringsWithMaxLength(stringMaxLength)
         modeCrossingBorder <- arbitrary[ModeCrossingBorder]
       } yield
