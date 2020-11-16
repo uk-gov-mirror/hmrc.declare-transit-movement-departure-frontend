@@ -19,12 +19,13 @@ package pages.addItems
 import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.{documents, items}
 
 import scala.util.Try
 
 case class AddExtraDocumentInformationPage(index: Index, documentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ index.position \ documents \ documentIndex.position \ toString
 
   override def toString: String = "addExtraDocumentInformation"
 
