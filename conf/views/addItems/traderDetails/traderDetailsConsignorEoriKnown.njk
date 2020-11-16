@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("traderDetailsConsignorEoriKnown.title"), form.errors) }}
+  {{ title(messages("traderDetailsConsignorEoriKnown.title", index), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -22,12 +22,13 @@
 
         {% if form.errors.length > 0 %}
           {{ govukErrorSummary({
-            "titleText": messages("error.summary.title"),
+            "titleText": messages('error.summary.title'),
             "errorList": form.errors
           }) }}
         {% endif %}
 
         <form action="{{ routes.controllers.addItems.traderDetails.TraderDetailsConsignorEoriKnownController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
 
           {{ csrf() | safe }}
 
@@ -35,7 +36,7 @@
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('traderDetailsConsignorEoriKnown.heading'),
+                text: messages('traderDetailsConsignorEoriKnown.heading', index),
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--xl"
               }

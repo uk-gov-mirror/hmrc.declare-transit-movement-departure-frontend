@@ -18,47 +18,13 @@ package utils
 
 import java.time.format.DateTimeFormatter
 
-import controllers.addItems.containers.{routes => containerRoutes}
 import controllers.routes
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.{AddDocumentsPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
-import pages.addItems.specialMentions._
-import pages.addItems.containers.{AddAnotherContainerPage, ContainerNumberPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
-
-  def addAnotherContainer(itemIndex: Index): Option[Row] = userAnswers.get(AddAnotherContainerPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addAnotherContainer.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = containerRoutes.AddAnotherContainerController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherContainer.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def containerNumber(itemIndex: Index): Option[Row] = userAnswers.get(ContainerNumberPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"containerNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = containerRoutes.ContainerNumberController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"containerNumber.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
 
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>

@@ -36,7 +36,7 @@ case class DeclarationRequest(meta: Meta,
                               traderPrincipal: TraderPrincipal,
                               traderConsignor: Option[TraderConsignor],
                               traderConsignee: Option[TraderConsignee],
-                              traderAuthorisedConsignee: TraderAuthorisedConsignee,
+                              traderAuthorisedConsignee: Option[TraderAuthorisedConsignee],
                               customsOfficeDeparture: CustomsOfficeDeparture,
                               customsOfficeTransit: Seq[CustomsOfficeTransit],
                               customsOfficeDestination: CustomsOfficeDestination,
@@ -58,7 +58,7 @@ object DeclarationRequest {
           traderPrinciple(declarationRequest.traderPrincipal) ++
           declarationRequest.traderConsignor.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.traderConsignee.map(_.toXml).getOrElse(NodeSeq.Empty) ++
-          declarationRequest.traderAuthorisedConsignee.toXml ++
+          declarationRequest.traderAuthorisedConsignee.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.customsOfficeDeparture.toXml ++
           declarationRequest.customsOfficeTransit.flatMap(_.toXml) ++
           declarationRequest.customsOfficeDestination.toXml ++
@@ -84,7 +84,7 @@ object DeclarationRequest {
      (__ \ "TRAPRIPC1").read[TraderPrincipal],
      (__ \ "TRACONCO1").read[TraderConsignor].optional,
      (__ \ "TRACONCE1").read[TraderConsignee].optional,
-     (__ \ "TRAAUTCONTRA").read[TraderAuthorisedConsignee],
+     (__ \ "TRAAUTCONTRA").read[TraderAuthorisedConsignee].optional,
      (__ \ "CUSOFFDEPEPT").read[CustomsOfficeDeparture],
      (__ \ "CUSOFFTRARNS").read(strictReadSeq[CustomsOfficeTransit]),
      (__ \ "CUSOFFDESEST").read[CustomsOfficeDestination],

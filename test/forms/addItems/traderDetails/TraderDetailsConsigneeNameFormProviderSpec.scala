@@ -17,15 +17,17 @@
 package forms.addItems.traderDetails
 
 import forms.behaviours.StringFieldBehaviours
+import models.Index
 import play.api.data.FormError
 
 class TraderDetailsConsigneeNameFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "traderDetailsConsigneeName.error.required"
   val lengthKey   = "traderDetailsConsigneeName.error.length"
-  val maxLength   = 100
+  val maxLength   = 35
+  val index       = Index(0)
 
-  val form = new TraderDetailsConsigneeNameFormProvider()()
+  val form = new TraderDetailsConsigneeNameFormProvider()(index)
 
   ".value" - {
 
@@ -47,7 +49,7 @@ class TraderDetailsConsigneeNameFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
   }
 }

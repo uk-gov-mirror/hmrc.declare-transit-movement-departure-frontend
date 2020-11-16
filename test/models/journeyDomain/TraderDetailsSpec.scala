@@ -24,24 +24,13 @@ import org.scalatest.TryValues
 import pages._
 
 class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
+  import TraderDetailsSpec._
 
   "TraderDetail can be parser from UserAnswers" - {
     "when there is a principal trader eori details only" in {
       forAll(arb[UserAnswers], arb[EoriNumber]) {
-        case (baseUserAnswers, eori @ EoriNumber(eoriNumber)) =>
-          val userAnswers = baseUserAnswers
-            .set(IsPrincipalEoriKnownPage, true)
-            .success
-            .value
-            .set(WhatIsPrincipalEoriPage, eoriNumber)
-            .success
-            .value
-            .set(AddConsigneePage, false)
-            .success
-            .value
-            .set(AddConsignorPage, false)
-            .success
-            .value
+        (baseUserAnswers, eori) =>
+          val userAnswers = setTraderDetailsPrincipalEoriOnly(eori)(baseUserAnswers)
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
@@ -210,4 +199,23 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
     }
 
   }
+}
+
+object TraderDetailsSpec {
+
+  def setTraderDetailsPrincipalEoriOnly(eoriNumber: EoriNumber)(startUserAnswers: UserAnswers): UserAnswers =
+    startUserAnswers
+      .set(IsPrincipalEoriKnownPage, true)
+      .toOption
+      .get
+      .set(WhatIsPrincipalEoriPage, eoriNumber.value)
+      .toOption
+      .get
+      .set(AddConsigneePage, false)
+      .toOption
+      .get
+      .set(AddConsignorPage, false)
+      .toOption
+      .get
+
 }

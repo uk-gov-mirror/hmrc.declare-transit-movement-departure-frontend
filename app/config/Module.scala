@@ -41,5 +41,7 @@ class Module extends AbstractModule {
 
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction])
     bind(classOf[DateTimeService]).to(classOf[DateTimeServiceImpl]).asEagerSingleton()
+
+    bind(classOf[RenderConfig]).to(classOf[RenderConfigImpl]).asEagerSingleton()
   }
 }

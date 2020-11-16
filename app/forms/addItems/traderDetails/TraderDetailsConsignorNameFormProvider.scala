@@ -18,13 +18,20 @@ package forms.addItems.traderDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class TraderDetailsConsignorNameFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  val consignorNameRegex: String = "^[a-zA-Z0-9 ]*$"
+  val maxLengthConsignorName     = 35
+
+  def apply(index: Index): Form[String] =
     Form(
-      "value" -> text("traderDetailsConsignorName.error.required")
-        .verifying(maxLength(100, "traderDetailsConsignorName.error.length"))
-    )
+      "value" -> text("traderDetailsConsignorName.error.required", Seq(index.display))
+        .verifying(StopOnFirstFail[String](
+          maxLength(maxLengthConsignorName, "traderDetailsConsignorName.error.length"),
+          regexp(consignorNameRegex, "traderDetailsConsignorName.error.invalid", index.display)
+        )))
 }
