@@ -33,16 +33,17 @@ trait SpecBase extends AnyFreeSpec with Matchers with OptionValues with TryValue
   val userAnswersId             = "id"
   val eoriNumber: EoriNumber    = EoriNumber("EoriNumber")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
-  val sealIndex                 = Index(0)
+  val sealIndex: Index          = Index(0)
   val sealDomain: SealDomain    = SealDomain("sealNumber")
   val sealDomain2: SealDomain   = SealDomain("sealNumber2")
 
-  val index          = Index(0)
-  val referenceIndex = Index(0)
-  val documentIndex  = Index(0)
+  val index: Index          = Index(0)
+  val referenceIndex: Index = Index(0)
+  val documentIndex: Index  = Index(0)
 
-  val itemIndex    = Index(0)
-  val packageIndex = Index(0)
+  val itemIndex: Index      = Index(0)
+  val packageIndex: Index   = Index(0)
+  val containerIndex: Index = Index(0)
 
   val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())
 

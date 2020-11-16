@@ -204,6 +204,11 @@ declarationSummary.section.safetyAndSecurity = {0} safety and security details
 declarationSummary.section.addItems = {0} items
 declarationSummary.backToTransitMovements = Back to transit movements
 
+declarationSummary.submissionSubheader = Now send your departure declaration
+declarationSummary.submissionHonestyPledge = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
+declarationSummary.confirmAndSend = Confirm and send
+
+
 declarationType.title = What declaration do you want to create?
 declarationType.heading = What declaration do you want to create?
 declarationType.option1 = T1 (goods moving under external Union Transit procedure)
@@ -274,7 +279,7 @@ whatIsPrincipalEori.checkYourAnswersLabel = What is the principal’s EORI numbe
 whatIsPrincipalEori.error.required = Enter the principal’s EORI number
 whatIsPrincipalEori.error.length = The principal’s EORI number must be 17 characters or less
 whatIsPrincipalEori.error.invalidCharacters = The principal’s EORI number must only include letters a to z and numbers 0 to 9
-whatIsPrincipalEori.error.invalidFormat = Enter the principal’s EORI number in the right format
+whatIsPrincipalEori.error.invalidFormat = Enter the principal’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 principalAddress.title = What is the principal’s address?
 principalAddress.heading = What is {0}’s address?
@@ -316,7 +321,7 @@ consignorEori.checkYourAnswersLabel = What is the consignor’s EORI number?
 consignorEori.error.required = Enter the consignor's EORI umber
 consignorEori.error.length = Consignor's Eori number must be 17 characters or less
 consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
-consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format
+consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 isConsigneeEoriKnown.title = Do you know the consignee’s EORI number?
 isConsigneeEoriKnown.heading = Do you know the consignee’s EORI number?
@@ -342,7 +347,7 @@ whatIsConsigneeEori.checkYourAnswersLabel = What is the consignee’s EORI numbe
 whatIsConsigneeEori.error.required = Enter the consignee’s EORI number
 whatIsConsigneeEori.error.length = The consignee’s EORI number must be 17 characters or less
 whatIsConsigneeEori.error.invalidCharacters = The consignee’s EORI number must only include letters a to z and numbers 0 to 9
-whatIsConsigneeEori.error.invalidFormat = Enter the consignee’s EORI number in the right format
+whatIsConsigneeEori.error.invalidFormat = Enter the consignee’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 consignorAddress.title = What is the address of the consignor
 consignorAddress.heading = What is {0}’s address?
@@ -776,6 +781,7 @@ consigneeForAllItems.error.required = Select yes if you are the consignee for al
 traderDetailsConsigneeAddress.title = What is the consignee’s address for item {0}
 traderDetailsConsigneeAddress.heading = What is {0}’s address?
 traderDetailsConsigneeAddress.checkYourAnswersLabel = {0}'s address
+traderDetailsConsigneeAddress.checkYourAnswersLabel.fallback = Consignee
 
 traderDetailsConsigneeAddress.error.line.required = Enter address line {0} of {1}’s address for item {2}
 traderDetailsConsigneeAddress.error.line.invalid = Address line {0} of {1}’s address for item {2} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
@@ -788,25 +794,26 @@ traderDetailsConsigneeAddress.checkYourAnswersLabel =  {0}’s address
 traderDetailsConsigneeAddress.error.required = Enter {0}’s Address
 traderDetailsConsigneeAddress.error.length = The address for {0} must be 100 characters or less
 
-traderDetailsConsigneeAddress.buildingAndStreet = Building and street
-traderDetailsConsigneeAddress.city = Town or city
-traderDetailsConsigneeAddress.postcode = Postcode
-
-traderDetailsConsigneeAddress.error.buildingAndStreet.required = Enter the building and street
-traderDetailsConsigneeAddress.error.buildingAndStreet.length = Building and street must be 35 characters or less
-
-traderDetailsConsigneeAddress.error.city.required = Enter the town or city
-traderDetailsConsigneeAddress.error.city.length = Town or city must be 35 characters or less
 traderDetailsConsigneeAddress.checkYourAnswersLabel.visuallyHidden = change [{0}'s address]
-
-traderDetailsConsigneeAddress.error.postcode.required = Enter the postcode of {0}’s address
-traderDetailsConsigneeAddress.error.postcode.length = Postcode must be 9 characters or less
-traderDetailsConsigneeAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters A to Z and numbers 0 to 9
 
 traderDetailsConsigneeAddress.error.invalid = The {0} of {1}’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
 traderDetailsConsigneeAddress.error.required = Enter the {0} of {1}’s address
 traderDetailsConsigneeAddress.error.max_length = The {0} of {1}’s address must be 35 characters or less
 
+traderDetailsConsigneeAddress.AddressLine1 = Address line 1
+traderDetailsConsigneeAddress.AddressLine2 = Address line 2
+traderDetailsConsigneeAddress.AddressLine3 = Address line 3
+traderDetailsConsigneeAddress.AddressLine4 = Country
+traderDetailsConsigneeAddress.error.AddressLine1.required = Enter the first line of the consignee’s address
+traderDetailsConsigneeAddress.error.AddressLine2.required = Enter the second line of the consignee’s address
+traderDetailsConsigneeAddress.error.AddressLine3.required = Enter the third line of the consignee’s address
+traderDetailsConsigneeAddress.error.country.required = Enter the country of the consignee’s address
+traderDetailsConsigneeAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
+traderDetailsConsigneeAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
+traderDetailsConsigneeAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
+traderDetailsConsigneeAddress.error.line1.invalid= The first line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+traderDetailsConsigneeAddress.error.line2.invalid= The second line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+traderDetailsConsigneeAddress.error.line3.invalid= The third line of the consignee’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 
 traderDetailsConsigneeEoriKnown.title = Do you know the consignee’s EORI number for item {0}?
 traderDetailsConsigneeEoriKnown.heading = Do you know the consignee’s EORI number for item {0}?
@@ -821,6 +828,7 @@ traderDetailsConsigneeEoriNumber.checkYourAnswersLabel.visuallyHidden = change [
 traderDetailsConsigneeEoriNumber.error.required = Enter the consignee’s EORI number for item {0}
 traderDetailsConsigneeEoriNumber.error.length = The consignee’s EORI number for item must be {0} characters or less
 traderDetailsConsigneeEoriNumber.error.invalid = The consignee’s EORI number for item {0} must only include letters a to z and numbers 0 to 9
+traderDetailsConsigneeEoriNumber.error.invalidFormat = Enter the consignee’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 traderDetailsConsigneeName.title = What is the consignee’s name for item {0}?
 traderDetailsConsigneeName.heading = What is the consignee’s name for item {0}?
@@ -833,6 +841,7 @@ traderDetailsConsigneeName.error.invalid = The consignee’s name for item {0} m
 traderDetailsConsignorAddress.title = What is the consignor’s address for item {0}
 traderDetailsConsignorAddress.heading = What is {0}’s address?
 traderDetailsConsignorAddress.checkYourAnswersLabel = {0}'s address
+traderDetailsConsignorAddress.checkYourAnswersLabel.fallback = Consignor
 traderDetailsConsignorAddress.checkYourAnswersLabel.visuallyHidden = change [{0}'s address]
 traderDetailsConsignorAddress.error.line.required = Enter address line {0} of {1}’s address for item {2}
 traderDetailsConsignorAddress.error.line.invalid = Address line {0} of {1}’s address for item {2} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
@@ -842,20 +851,26 @@ traderDetailsConsignorAddress.heading =  What is {0}’s address?
 traderDetailsConsignorAddress.checkYourAnswersLabel =  {0}’s address
 traderDetailsConsignorAddress.error.required = Enter {0}’s Address
 traderDetailsConsignorAddress.error.length = The address for {0} must be 100 characters or less
-traderDetailsConsignorAddress.buildingAndStreet = Building and street
-traderDetailsConsignorAddress.city = Town or city
-traderDetailsConsignorAddress.postcode = Postcode
-traderDetailsConsignorAddress.error.buildingAndStreet.required = Enter the building and street
-traderDetailsConsignorAddress.error.buildingAndStreet.length = Building and street must be 35 characters or less
-traderDetailsConsignorAddress.error.city.required = Enter the town or city
-traderDetailsConsignorAddress.error.city.length = Town or city must be 35 characters or less
 traderDetailsConsignorAddress.checkYourAnswersLabel.visuallyHidden = change [{0}'s address]
-traderDetailsConsignorAddress.error.postcode.required = Enter the postcode of {0}’s address
-traderDetailsConsignorAddress.error.postcode.length = Postcode must be 9 characters or less
-traderDetailsConsignorAddress.error.postcode.invalid = The postcode of {0}’s address must only include letters A to Z and numbers 0 to 9
+
 traderDetailsConsignorAddress.error.invalid = The {0} of {1}’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
 traderDetailsConsignorAddress.error.required = Enter the {0} of {1}’s address
 traderDetailsConsignorAddress.error.max_length = The {0} of {1}’s address must be 35 characters or less
+
+traderDetailsConsignorAddress.AddressLine1 = Address line 1
+traderDetailsConsignorAddress.AddressLine2 = Address line 2
+traderDetailsConsignorAddress.AddressLine3 = Address line 3
+traderDetailsConsignorAddress.AddressLine4 = Country
+traderDetailsConsignorAddress.error.AddressLine1.required = Enter the first line of the consignor’s address
+traderDetailsConsignorAddress.error.AddressLine2.required = Enter the second line of the consignor’s address
+traderDetailsConsignorAddress.error.AddressLine3.required = Enter the third line of the consignor’s address
+traderDetailsConsignorAddress.error.country.required = Enter the country of the consignor’s address
+traderDetailsConsignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
+traderDetailsConsignorAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
+traderDetailsConsignorAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
+traderDetailsConsignorAddress.error.line1.invalid= The first line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+traderDetailsConsignorAddress.error.line2.invalid= The second line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
+traderDetailsConsignorAddress.error.line3.invalid= The third line of the consignor’s address must only include letters a to z and numbers 0 to 9 or blank spaces
 
 traderDetailsConsignorEoriKnown.title = Do you know the consignor’s EORI number for item {0}?
 traderDetailsConsignorEoriKnown.heading = Do you know the consignor’s EORI number for item {0}?
@@ -868,8 +883,9 @@ traderDetailsConsignorEoriNumber.heading = What is the consignor’s EORI number
 traderDetailsConsignorEoriNumber.checkYourAnswersLabel = Consignor’s EORI number for item {0}
 traderDetailsConsignorEoriNumber.checkYourAnswersLabel.visuallyHidden = change [consignor’s EORI number for item {0}]
 traderDetailsConsignorEoriNumber.error.required = Enter the consignor’s EORI number for item {0}
-traderDetailsConsignorEoriNumber.error.length = The consignor’s EORI number for item must be {0} characters or less
+traderDetailsConsignorEoriNumber.error.length = The consignor’s EORI number for item must be 17 characters or less
 traderDetailsConsignorEoriNumber.error.invalid = The consignor’s EORI number for item {0} must only include letters a to z and numbers 0 to 9
+traderDetailsConsignorEoriNumber.error.invalidFormat = Enter the consignor’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 traderDetailsConsignorName.title = What is the consignor’s name for item {0}?
 traderDetailsConsignorName.heading = What is the consignor’s name for item {0}?
@@ -902,13 +918,19 @@ addAnotherItem.paragraph = Do you need to add another item?
 
 addItems.checkYourAnswersLabel.itemDetails = Item details
 addItems.checkYourAnswersLabel.traderDetails = Trader details
+addItems.checkYourAnswersLabel.traderDetails.consignor = Consignor
+addItems.checkYourAnswersLabel.traderDetails.consignee = Consignee
+addItems.checkYourAnswersLabel.traderDetails = Trader details
 addItems.checkYourAnswersLabel.packages = Packages
 addItems.checkYourAnswersLabel.packages.addRemove = Add or remove packages
 addItems.checkYourAnswersLabel.containers = Containers
-addItems.checkYourAnswersLabel.containers = Special mentions
+addItems.checkYourAnswersLabel.containers.addRemove = Add or remove containers
+addItems.checkYourAnswersLabel.specialMentions = Special mentions
 addItems.checkYourAnswersLabel.certificates = Produced documents and work certificates
 addItems.checkYourAnswersLabel.references = Previous administrative references
 addItems.checkYourAnswersLabel.references.addRemove = Add or remove previous administrative references
+addItems.checkYourAnswersLabel.documents = Produced documents and work certificates
+addItems.checkYourAnswersLabel.documents.addRemove = Add or remove documents
 
 addAdministrativeReference.title = Do you need to add a previous administrative reference?
 addAdministrativeReference.heading = Do you need to add a previous administrative reference?
@@ -984,16 +1006,19 @@ removeSpecialMention.heading = Are you sure you want to remove this special ment
 removeSpecialMention.checkYourAnswersLabel = removeSpecialMention
 removeSpecialMention.error.required = Select yes if you want to remove this special mention
 
-containerNumber.title = containerNumber
-containerNumber.heading = containerNumber
-containerNumber.checkYourAnswersLabel = containerNumber
-containerNumber.error.required = Enter containerNumber
-containerNumber.error.length = ContainerNumber must be 100 characters or less
+containerNumber.title = What is the shipping container number?
+containerNumber.heading = What is the shipping container number?
+containerNumber.checkYourAnswersLabel = Shipping container
+containerNumber.error.required = Enter the shipping container number
+containerNumber.error.length = The shipping container number must be {0} characters or less
+containerNumber.error.invalid = The shipping container number must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
-addAnotherContainer.title = addAnotherContainer
-addAnotherContainer.heading = addAnotherContainer
-addAnotherContainer.checkYourAnswersLabel = addAnotherContainer
-addAnotherContainer.error.required = Select yes if addAnotherContainer
+addAnotherContainer.title.singular = You have added {0} shipping container
+addAnotherContainer.title.plural = You have added {0} shipping containers
+addAnotherContainer.heading = Do you need to add another shipping container?
+addAnotherContainer.checkYourAnswersLabel.singular = Container
+addAnotherContainer.checkYourAnswersLabel.plural = Containers
+addAnotherContainer.error.required = Select yes if you need to add another shipping container
 
 addExtraDocumentInformation.title = Do you need to add any extra information for document {0}?
 addExtraDocumentInformation.heading = Do you need to add any extra information for document {0}?
@@ -1017,7 +1042,36 @@ documentExtraInformation.checkYourAnswersLabel = Extra information for document 
 documentExtraInformation.error.required = Enter the extra information for document {0}
 documentExtraInformation.error.length = Document extra information must be 26 characters or less
 documentExtraInformation.error.invalid = The extra information for this document must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
+addAnotherDocument.title.singular = You have added {0} produced document or certificate
+addAnotherDocument.title.plural = You have added {0} produced documents or certificates
+addAnotherDocument.heading.singular = You have added {0} produced document or certificate
+addAnotherDocument.heading.plural = You have added {0} produced documents or certificates
+addAnotherDocument.paragraph = Do you need to add another produced document or work certificate?
+addAnotherDocument.error.required = Select yes if you want to add another produced document or work certificate
+addAnotherDocument.documentList.heading = Documents
+addAnotherDocument.documentList.label = Document {0}
+addAnotherDocument.documentList.change.hidden = Document {0}
+addAnotherDocument.documentList.delete.hidden = Document {0}
+
+
 documentType.title = What type of document do you need to add?
 documentType.heading = What type of document do you need to add?
 documentType.checkYourAnswersLabel = Document type
 documentType.error.required = Enter the type of document you need to add
+
+submissionConfirmation.title = Departure declaration sent
+submissionConfirmation.heading = Departure declaration sent
+submissionConfirmation.submissionText = for local reference number
+submissionConfirmation.subHeading = What happens next
+submissionConfirmation.link.pretext = You can:
+submissionConfirmation.link.option1 = manage your departure declarations
+submissionConfirmation.link.option2 = make another departure declaration
+
+confirmRemoveDocument.title = Are you sure you want to remove this document?
+confirmRemoveDocument.heading = Are you sure you want to remove this document?
+confirmRemoveDocument.error.required = Select yes if you want to remove this document
+
+confirmRemoveContainer.title = Are you sure you want to remove this shipping container?
+confirmRemoveContainer.heading = Are you sure you want to remove this shipping container?
+confirmRemoveContainer.error.required = Select yes if you want to remove this shipping container

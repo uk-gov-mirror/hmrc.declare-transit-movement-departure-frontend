@@ -23,34 +23,13 @@ import models.{Index, LocalDateTimeWithAMPM, UserAnswers}
 import pages._
 
 class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
+  import RouteDetailsSpec._
 
   "RouteDetails" - {
     "can be constructed when all the answers have been answered" in {
       forAll(arb[RouteDetails], arb[UserAnswers]) {
         (expected, baseUserAnswers) =>
-          val interstitialUserAnswers = baseUserAnswers
-            .set(CountryOfDispatchPage, expected.countryOfDispatch)
-            .toOption
-            .value
-            .set(OfficeOfDeparturePage, expected.officeOfDeparture)
-            .toOption
-            .value
-            .set(DestinationCountryPage, expected.destinationCountry)
-            .toOption
-            .value
-            .set(DestinationOfficePage, expected.destinationOffice)
-            .toOption
-            .value
-
-          val userAnswers = expected.transitInformation.zipWithIndex.foldLeft(interstitialUserAnswers) {
-            case (ua, (TransitInformation(transitOffice, arrivalTime), index)) =>
-              ua.set(AddAnotherTransitOfficePage(Index(index)), transitOffice)
-                .toOption
-                .value
-                .set(ArrivalTimesAtOfficePage(Index(index)), LocalDateTimeWithAMPM(arrivalTime, "PM"))
-                .toOption
-                .value
-          }
+          val userAnswers = setRouteDetails(expected)(baseUserAnswers)
 
           val result = UserAnswersParser[Option, RouteDetails].run(userAnswers).value
 
@@ -61,4 +40,36 @@ class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGene
     }
   }
 
+}
+
+object RouteDetailsSpec {
+
+  def setRouteDetails(routeDetails: RouteDetails)(startUserAnswers: UserAnswers): UserAnswers = {
+    val interstitialUserAnswers =
+      startUserAnswers
+        .set(CountryOfDispatchPage, routeDetails.countryOfDispatch)
+        .toOption
+        .get
+        .set(OfficeOfDeparturePage, routeDetails.officeOfDeparture)
+        .toOption
+        .get
+        .set(DestinationCountryPage, routeDetails.destinationCountry)
+        .toOption
+        .get
+        .set(DestinationOfficePage, routeDetails.destinationOffice)
+        .toOption
+        .get
+
+    val userAnswers = routeDetails.transitInformation.zipWithIndex.foldLeft(interstitialUserAnswers) {
+      case (ua, (TransitInformation(transitOffice, arrivalTime), index)) =>
+        ua.set(AddAnotherTransitOfficePage(Index(index)), transitOffice)
+          .toOption
+          .get
+          .set(ArrivalTimesAtOfficePage(Index(index)), LocalDateTimeWithAMPM(arrivalTime, "PM"))
+          .toOption
+          .get
+    }
+
+    userAnswers
+  }
 }

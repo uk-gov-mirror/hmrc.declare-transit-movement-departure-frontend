@@ -412,8 +412,8 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
         val expectResult = DocumentTypeList(
           Seq(
-            DocumentType("18", "Movement certificate A.TR.1"),
-            DocumentType("2", "Certificate of conformity")
+            DocumentType("18", "Movement certificate A.TR.1", false),
+            DocumentType("2", "Certificate of conformity", false)
           )
         )
 

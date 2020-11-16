@@ -40,13 +40,13 @@ import scala.concurrent.Future
 
 class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new ContainerNumberFormProvider()
   private val form         = formProvider()
   private val template     = "addItems/containers/containerNumber.njk"
 
-  lazy val containerNumberRoute = routes.ContainerNumberController.onPageLoad(lrn, itemIndex, NormalMode).url
+  private lazy val containerNumberRoute = routes.ContainerNumberController.onPageLoad(lrn, itemIndex, containerIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -73,9 +73,10 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"        -> form,
+        "mode"        -> NormalMode,
+        "lrn"         -> lrn,
+        "onSubmitUrl" -> containerNumberRoute
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -90,7 +91,7 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ContainerNumberPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(ContainerNumberPage(itemIndex, containerIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, containerNumberRoute)
@@ -106,9 +107,10 @@ class ContainerNumberControllerSpec extends SpecBase with MockNunjucksRendererAp
       val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"        -> filledForm,
+        "lrn"         -> lrn,
+        "mode"        -> NormalMode,
+        "onSubmitUrl" -> containerNumberRoute
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey

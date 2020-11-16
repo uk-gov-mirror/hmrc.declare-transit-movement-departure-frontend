@@ -17,25 +17,28 @@
 package controllers.addItems.containers
 
 import controllers.actions._
+import derivable.DeriveNumberOfContainers
 import forms.addItems.containers.AddAnotherContainerFormProvider
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.containers.AddAnotherContainerPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
 import renderer.Renderer
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import utils.ContainersCheckYourAnswersHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherContainerController @Inject()(
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
@@ -53,19 +56,7 @@ class AddAnotherContainerController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddAnotherContainerPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
+      renderPage(itemIndex, mode, form).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -73,22 +64,46 @@ class AddAnotherContainerController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
+          formWithErrors => renderPage(itemIndex, mode, formWithErrors).map(BadRequest(_)),
+          value => {
+            val onwardRoute = value match {
+              case true =>
+                val containerCount = request.userAnswers.get(DeriveNumberOfContainers(itemIndex)).getOrElse(0)
+                val containerIndex = Index(containerCount)
+                routes.ContainerNumberController.onPageLoad(request.userAnswers.id, itemIndex, containerIndex, mode)
+              case false =>
+                navigator.nextPage(AddAnotherContainerPage(itemIndex), mode, request.userAnswers)
+              case _ =>
+                controllers.routes.SessionExpiredController.onPageLoad()
+            }
 
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherContainerPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAnotherContainerPage, mode, updatedAnswers))
+            Future.successful(Redirect(onwardRoute))
+          }
         )
+  }
+
+  private def renderPage(itemIndex: Index, mode: Mode, form: Form[_])(implicit request: DataRequest[AnyContent]): Future[Html] = {
+    val cyaHelper          = new ContainersCheckYourAnswersHelper(request.userAnswers)
+    val numberOfContainers = request.userAnswers.get(DeriveNumberOfContainers(itemIndex)).getOrElse(0)
+    val indexList          = List.range(0, numberOfContainers).map(Index(_))
+    val containerRows = indexList.map {
+      containerIndex =>
+        cyaHelper.containerNumber(itemIndex, containerIndex)
+    }
+
+    val singularOrPlural = if (numberOfContainers == 1) "singular" else "plural"
+    val title            = msg"addAnotherContainer.title.$singularOrPlural".withArgs(numberOfContainers)
+
+    val json = Json.obj(
+      "form"           -> form,
+      "mode"           -> mode,
+      "lrn"            -> request.userAnswers.id,
+      "pageTitle"      -> title,
+      "containerCount" -> numberOfContainers,
+      "containerRows"  -> containerRows,
+      "radios"         -> Radios.yesNo(form("value"))
+    )
+
+    renderer.render(template, json)
   }
 }
