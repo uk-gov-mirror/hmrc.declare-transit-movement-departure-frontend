@@ -20,7 +20,7 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import forms.addItems.AddDocumentsFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.annotations.AddItems
+import navigation.annotations.{AddItems, Document}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -52,7 +52,7 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[Document]).toInstance(new FakeNavigator(onwardRoute)))
 
   "AddDocuments Controller" - {
 
@@ -137,7 +137,7 @@ class AddDocumentsControllerSpec extends SpecBase with MockNunjucksRendererApp w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual s"/common-transit-convention-departure/$lrn/add-items/1/documents/1/document-type"
+      redirectLocation(result).value mustEqual onwardRoute.url
 
     }
 
