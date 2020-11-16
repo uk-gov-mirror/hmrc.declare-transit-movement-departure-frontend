@@ -16,7 +16,7 @@
 
 package models.journeyDomain
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDateTime
 
 import cats.data._
 import cats.implicits._

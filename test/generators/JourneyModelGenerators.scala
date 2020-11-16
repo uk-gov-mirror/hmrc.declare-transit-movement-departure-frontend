@@ -76,7 +76,14 @@ trait JourneyModelGenerators {
         } else {
           arbitrary[SimplifiedMovementDetails]
         }
-        routeDetails     <- arbitrary[RouteDetails]
+
+        isSecurityDetailsRequired = preTaskList.addSecurityDetails
+        transitInformation = if (isSecurityDetailsRequired) {
+          Arbitrary(genTransitInformationWithArrivalTime)
+        } else {
+          Arbitrary(genTransitInformationWithoutArrivalTime)
+        }
+        routeDetails     <- arbitraryRouteDetails(transitInformation).arbitrary
         transportDetails <- arbitrary[TransportDetails]
         traderDetails    <- arbitrary[TraderDetails]
         itemDetails      <- nonEmptyListOf[ItemSection](3)
@@ -354,17 +361,27 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryMovementDetails: Arbitrary[MovementDetails] =
     Arbitrary(Gen.oneOf(arbitrary[NormalMovementDetails], arbitrary[SimplifiedMovementDetails]))
 
+  val genTransitInformationWithoutArrivalTime =
+    for {
+      transitOffice <- stringsWithMaxLength(stringMaxLength)
+    } yield
+      TransitInformation(
+        transitOffice,
+        None
+      )
+
+  val genTransitInformationWithArrivalTime =
+    for {
+      transitOffice <- stringsWithMaxLength(stringMaxLength)
+      arrivalTime   <- arbitrary[LocalDateTime]
+    } yield
+      TransitInformation(
+        transitOffice,
+        Some(arrivalTime)
+      )
+
   implicit lazy val arbitraryTransitInformation: Arbitrary[TransitInformation] =
-    Arbitrary {
-      for {
-        transitOffice <- stringsWithMaxLength(stringMaxLength)
-        arrivalTime   <- Gen.option(arbitrary[LocalDateTime])
-      } yield
-        TransitInformation(
-          transitOffice,
-          arrivalTime
-        )
-    }
+    Arbitrary(Gen.oneOf(genTransitInformationWithoutArrivalTime, genTransitInformationWithArrivalTime))
 
   implicit def arbitraryRouteDetails(implicit arbTransitInformation: Arbitrary[TransitInformation]): Arbitrary[RouteDetails] =
     Arbitrary {
