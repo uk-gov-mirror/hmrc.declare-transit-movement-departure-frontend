@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.addItems.traderDetails
+package controllers.addItems.containers
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import forms.addItems.traderDetails.TraderDetailsConsigneeEoriNumberFormProvider
+import forms.addItems.containers.ConfirmRemoveContainerFormProvider
 import matchers.JsonMatchers
-import models.{Index, NormalMode}
+import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.traderDetails.{TraderDetailsConsigneeEoriKnownPage, TraderDetailsConsigneeEoriNumberPage}
+import pages.addItems.containers.ConfirmRemoveContainerPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -34,32 +34,36 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class TraderDetailsConsigneeEoriNumberControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ConfirmRemoveContainerControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new TraderDetailsConsigneeEoriNumberFormProvider()
-  private val form         = formProvider(index)
-  private val template     = "addItems/traderDetails/traderDetailsConsigneeEoriNumber.njk"
+  private val formProvider = new ConfirmRemoveContainerFormProvider()
+  private val form         = formProvider()
+  private val template     = "addItems/containers/confirmRemoveContainer.njk"
 
-  lazy val traderDetailsConsigneeEoriNumberRoute = routes.TraderDetailsConsigneeEoriNumberController.onPageLoad(lrn, index, NormalMode).url
+  lazy val confirmRemoveContainerRoute = routes.ConfirmRemoveContainerController.onPageLoad(lrn, index, containerIndex, NormalMode).url
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "TraderDetailsConsigneeEoriNumber Controller" - {
+  "ConfirmRemoveContainer Controller" - {
 
     "must return OK and the correct view for a GET" in {
+
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+
       dataRetrievalWithData(emptyUserAnswers)
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(GET, traderDetailsConsigneeEoriNumberRoute)
+      val request        = FakeRequest(GET, confirmRemoveContainerRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -70,65 +74,48 @@ class TraderDetailsConsigneeEoriNumberControllerSpec extends SpecBase with MockN
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> form,
-        "mode"  -> NormalMode,
-        "lrn"   -> lrn,
-        "index" -> index.display
+        "form"           -> form,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "index"          -> index.display,
+        "containerIndex" -> containerIndex.display,
+        "radios"         -> Radios.yesNo(form("value")),
+        "onSubmitUrl"    -> confirmRemoveContainerRoute
       )
 
-      templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = emptyUserAnswers.set(TraderDetailsConsigneeEoriNumberPage(Index(0)), "GB1234567").success.value
-      dataRetrievalWithData(userAnswers)
-      val request        = FakeRequest(GET, traderDetailsConsigneeEoriNumberRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> "GB1234567"))
-
-      val expectedJson = Json.obj(
-        "form"  -> filledForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
-      )
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonWithoutConfig mustBe expectedJson
+
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      dataRetrievalWithData(emptyUserAnswers)
+
       val request =
-        FakeRequest(POST, traderDetailsConsigneeEoriNumberRoute)
-          .withFormUrlEncodedBody(("value", "GB1234567"))
+        FakeRequest(POST, confirmRemoveContainerRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
+
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      dataRetrievalWithData(emptyUserAnswers)
+
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(POST, traderDetailsConsigneeEoriNumberRoute).withFormUrlEncodedBody(("value", ""))
+      dataRetrievalWithData(emptyUserAnswers)
+
+      val request        = FakeRequest(POST, confirmRemoveContainerRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -140,44 +127,49 @@ class TraderDetailsConsigneeEoriNumberControllerSpec extends SpecBase with MockN
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"  -> boundForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form"           -> boundForm,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "index"          -> index.display,
+        "containerIndex" -> containerIndex.display,
+        "radios"         -> Radios.yesNo(boundForm("value"))
       )
 
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
       templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonWithoutConfig mustBe expectedJson
+
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, traderDetailsConsigneeEoriNumberRoute)
+      val request = FakeRequest(GET, confirmRemoveContainerRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
+
       dataRetrievalNoData()
+
       val request =
-        FakeRequest(POST, traderDetailsConsigneeEoriNumberRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, confirmRemoveContainerRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController
-        .onPageLoad()
-        .url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
+
     }
   }
 }

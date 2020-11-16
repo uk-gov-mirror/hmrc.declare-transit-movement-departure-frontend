@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package forms.addItems.traderDetails
+package forms.addItems.containers
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.Index
 import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class TraderDetailsConsigneeNameFormProvider @Inject() extends Mappings {
+class ConfirmRemoveContainerFormProvider @Inject() extends Mappings {
 
-  val consigneeNameRegex: String = "^[a-zA-Z0-9 ]*$"
-  val maxLengthConsigneeName     = 35
-
-  def apply(index: Index): Form[String] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> text("traderDetailsConsigneeName.error.required", Seq(index.display))
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLengthConsigneeName, "traderDetailsConsigneeName.error.length"),
-          regexp(consigneeNameRegex, "traderDetailsConsigneeName.error.invalid", index.display)
-        ))
+      "value" -> boolean("confirmRemoveContainer.error.required")
     )
 }

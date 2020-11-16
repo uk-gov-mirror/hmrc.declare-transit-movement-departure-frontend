@@ -14,42 +14,32 @@
  * limitations under the License.
  */
 
-package forms.addItems.traderDetails
+package forms.addItems.containers
 
-import forms.behaviours.StringFieldBehaviours
-import models.Index
+import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class TraderDetailsConsignorNameFormProviderSpec extends StringFieldBehaviours {
+class ConfirmRemoveContainerFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "traderDetailsConsignorName.error.required"
-  val lengthKey   = "traderDetailsConsignorName.error.length"
-  val maxLength   = 35
-  val index       = Index(0)
+  val requiredKey = "confirmRemoveContainer.error.required"
+  val invalidKey  = "error.boolean"
 
-  val form = new TraderDetailsConsignorNameFormProvider()(index)
+  val form = new ConfirmRemoveContainerFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
 
-    behave like fieldThatBindsValidData(
+    behave like booleanField(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(index.display))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

@@ -1,13 +1,13 @@
 {% extends "includes/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
-{% from "govuk/components/input/macro.njk"         import govukInput %}
+{% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("containerNumber.title"), form.errors) }}
+  {{ title(messages("confirmRemoveContainer.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -32,15 +32,16 @@
 
           {{ csrf() | safe }}
 
-          {{ govukInput({
-            label: {
-              text: messages('containerNumber.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
+          {{ govukRadios({
+            name: 'value',
+            fieldset: {
+              legend: {
+                text: messages('confirmRemoveContainer.heading'),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl"
+              }
             },
-            id: "value",
-            name: "value",
-            value: form.value.value,
+            items: radios,
             errorMessage: form.value.error
           }) }}
 
