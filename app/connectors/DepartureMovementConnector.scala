@@ -16,14 +16,18 @@
 
 package connectors
 
+import com.lucidchart.open.xtract.XmlReader
 import config.FrontendAppConfig
 import javax.inject.Inject
+import models.XMLWrites._
 import models.messages.DeclarationRequest
+import models.{DepartureId, DepartureRejectionMessage, MessagesSummary, ResponseMessage}
+import uk.gov.hmrc.http.RawReads.is2xx
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import models.XMLWrites._
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.xml.NodeSeq
 
 class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) {
 
@@ -32,5 +36,24 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
     val headers    = Seq(("Content-Type", "application/xml"))
 
     http.POSTString[HttpResponse](serviceUrl, departureMovement.toXml.toString, headers)
+  }
+
+  def getSummary(departureId: DepartureId)(implicit hc: HeaderCarrier): Future[Option[MessagesSummary]] = {
+
+    val serviceUrl: String = s"${appConfig.departureHost}/movements/arrivals/${departureId.value}/messages/summary"
+    http.GET[HttpResponse](serviceUrl) map {
+      case responseMessage if is2xx(responseMessage.status) => Some(responseMessage.json.as[MessagesSummary])
+      case _                                                => None
+    }
+  }
+
+  def getRejectionMessage(rejectionLocation: String)(implicit hc: HeaderCarrier): Future[Option[DepartureRejectionMessage]] = {
+    val serviceUrl = s"${appConfig.departureHost}$rejectionLocation"
+    http.GET[HttpResponse](serviceUrl) map {
+      case responseMessage if is2xx(responseMessage.status) =>
+        val message: NodeSeq = responseMessage.json.as[ResponseMessage].message
+        XmlReader.of[DepartureRejectionMessage].read(message).toOption
+      case _ => None
+    }
   }
 }
