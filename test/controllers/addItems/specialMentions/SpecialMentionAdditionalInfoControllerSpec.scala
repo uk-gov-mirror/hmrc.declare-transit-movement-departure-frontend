@@ -43,7 +43,7 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new SpecialMentionAdditionalInfoFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(itemIndex, referenceIndex)
   private val template     = "addItems/specialMentions/specialMentionAdditionalInfo.njk"
 
   lazy val specialMentionAdditionalInfoRoute = routes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, itemIndex, referenceIndex, NormalMode).url
@@ -73,9 +73,11 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"           -> form,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "index"          -> itemIndex.display,
+        "referenceIndex" -> referenceIndex.display
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -106,9 +108,11 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
       val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"           -> filledForm,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode,
+        "index"          -> itemIndex.display,
+        "referenceIndex" -> referenceIndex.display
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -154,9 +158,11 @@ class SpecialMentionAdditionalInfoControllerSpec extends SpecBase with MockNunju
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"           -> boundForm,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode,
+        "index"          -> itemIndex.display,
+        "referenceIndex" -> referenceIndex.display
       )
 
       templateCaptor.getValue mustEqual template

@@ -18,13 +18,19 @@ package forms.addItems.specialMentions
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class SpecialMentionAdditionalInfoFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  val regex: String = "^[a-zA-Z0-9 ]*$"
+
+  def apply(itemIndex: Index, referenceIndex: Index): Form[String] =
     Form(
-      "value" -> text("specialMentionAdditionalInfo.error.required")
-        .verifying(maxLength(70, "specialMentionAdditionalInfo.error.length"))
-    )
+      "value" -> text("specialMentionAdditionalInfo.error.required", Seq(itemIndex.display, referenceIndex.display))
+        .verifying(StopOnFirstFail[String](
+          maxLength(70, "specialMentionAdditionalInfo.error.length", Seq(itemIndex.display, referenceIndex.display)),
+          regexp(regex, "specialMentionAdditionalInfo.error.invalid", Seq(itemIndex.display), Seq(referenceIndex.display))
+        )))
 }
