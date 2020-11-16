@@ -42,7 +42,7 @@ class SpecialMentionAdditionalInfoFormProviderSpec extends StringFieldBehaviours
       form,
       fieldName,
       maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, List(Seq(itemIndex.display, referenceIndex.display)))
+      lengthError = FormError(fieldName, lengthKey, Seq(itemIndex.display, referenceIndex.display))
     )
 
     behave like mandatoryField(
