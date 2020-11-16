@@ -16,6 +16,7 @@
 
 package controllers.addItems.specialMentions
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import derivable.DeriveNumberOfSpecialMentions
 import forms.addItems.specialMentions.AddAnotherSpecialMentionFormProvider
@@ -46,6 +47,7 @@ class AddAnotherSpecialMentionController @Inject()(
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: AddAnotherSpecialMentionFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -81,22 +83,26 @@ class AddAnotherSpecialMentionController @Inject()(
     val numberOfReferences    = request.userAnswers.get(DeriveNumberOfSpecialMentions(itemIndex)).getOrElse(0)
     val indexList: Seq[Index] = List.range(0, numberOfReferences).map(Index(_))
 
-    val referenceRows = indexList.map {
-      referenceIndex =>
-        cya.specialMentionType(itemIndex, referenceIndex)
+    referenceDataConnector.getSpecialMention() flatMap {
+      specialMentions =>
+        val referenceRows = indexList.map {
+          referenceIndex =>
+            cya.specialMentionType(itemIndex, referenceIndex, specialMentions)
+        }
+
+        val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"
+
+        val json = Json.obj(
+          "form"          -> form,
+          "lrn"           -> lrn,
+          "pageTitle"     -> msg"addAnotherSpecialMention.title.$singularOrPlural".withArgs(numberOfReferences, itemIndex.display),
+          "heading"       -> msg"addAnotherSpecialMention.heading.$singularOrPlural".withArgs(numberOfReferences, itemIndex.display),
+          "referenceRows" -> referenceRows,
+          "radios"        -> Radios.yesNo(form("value"))
+        )
+
+        renderer.render(template, json)
     }
 
-    val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"
-
-    val json = Json.obj(
-      "form"          -> form,
-      "lrn"           -> lrn,
-      "pageTitle"     -> msg"addAnotherSpecialMention.title.$singularOrPlural".withArgs(numberOfReferences, itemIndex.display),
-      "heading"       -> msg"addAnotherSpecialMention.heading.$singularOrPlural".withArgs(numberOfReferences, itemIndex.display),
-      "referenceRows" -> referenceRows,
-      "radios"        -> Radios.yesNo(form("value"))
-    )
-
-    renderer.render(template, json)
   }
 }

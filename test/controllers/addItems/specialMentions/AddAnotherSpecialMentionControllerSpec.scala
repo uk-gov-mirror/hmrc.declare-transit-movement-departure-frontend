@@ -17,9 +17,10 @@
 package controllers.addItems.specialMentions
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import forms.addItems.specialMentions.AddAnotherSpecialMentionFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, SpecialMentionList, UserAnswers}
 import navigation.annotations.SpecialMentions
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -48,10 +49,13 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
 
   lazy val addAnotherSpecialMentionRoute = routes.AddAnotherSpecialMentionController.onPageLoad(lrn, itemIndex, NormalMode).url
 
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SpecialMentions]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockRefDataConnector))
 
   "AddAnotherSpecialMention Controller" - {
 
@@ -59,6 +63,8 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockRefDataConnector.getSpecialMention()(any(), any())).thenReturn(Future.successful(SpecialMentionList(Nil)))
 
       dataRetrievalWithData(emptyUserAnswers)
 

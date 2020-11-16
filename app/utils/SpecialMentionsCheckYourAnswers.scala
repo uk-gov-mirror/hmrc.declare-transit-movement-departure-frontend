@@ -17,79 +17,39 @@
 package utils
 
 import controllers.addItems.specialMentions.{routes => specialMentionRoutes}
-import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, SpecialMentionList, UserAnswers}
 import pages.addItems.specialMentions._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class SpecialMentionsCheckYourAnswers(userAnswers: UserAnswers) {
 
-  def removeSpecialMention(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(RemoveSpecialMentionPage(itemIndex, referenceIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"removeSpecialMention.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = specialMentionRoutes.RemoveSpecialMentionController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"removeSpecialMention.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addAnotherSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(AddAnotherSpecialMentionPage(itemIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"addAnotherSpecialMention.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = specialMentionRoutes.AddAnotherSpecialMentionController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherSpecialMention.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def specialMentionAdditionalInfo(itemIndex: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex)) map {
+  def specialMentionType(itemIndex: Index, referenceIndex: Index, specialMentions: SpecialMentionList): Option[Row] =
+    userAnswers.get(SpecialMentionTypePage(itemIndex, referenceIndex)) flatMap {
       answer =>
-        Row(
-          key   = Key(msg"specialMentionAdditionalInfo.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-          value = Value(lit"$answer"),
-          actions = List(
-            Action(
-              content            = msg"site.edit",
-              href               = specialMentionRoutes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionAdditionalInfo.checkYourAnswersLabel"))
+        specialMentions.getSpecialMention(answer) map {
+          specialMention =>
+            val updatedAnswer = s"(${specialMention.code}) ${specialMention.description}"
+            Row(
+              key   = Key(msg"$updatedAnswer"),
+              value = Value(lit""),
+              actions = List(
+                Action(
+                  content            = msg"site.change",
+                  href               = specialMentionRoutes.SpecialMentionTypeController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"$updatedAnswer")),
+                  attributes         = Map("id" -> s"""change-special-mentions-${itemIndex.display}""")
+                ),
+                Action(
+                  content            = msg"site.delete",
+                  href               = specialMentionRoutes.RemoveSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, referenceIndex, NormalMode).url,
+                  visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(updatedAnswer)),
+                  attributes         = Map("id" -> s"""remove-special-mentions-${itemIndex.display}""")
+                )
+              )
             )
-          )
-        )
+        }
     }
-
-  def specialMentionType(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(SpecialMentionTypePage(itemIndex, referenceIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"specialMentionType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = specialMentionRoutes.SpecialMentionTypeController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionType.checkYourAnswersLabel"))
-          ),
-          Action(
-            content            = msg"site.delete",
-            href               = specialMentionRoutes.RemoveSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, referenceIndex, NormalMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(answer)),
-            attributes         = Map("id" -> s"""remove-special-mentions-${itemIndex.display}""")
-          )
-        )
-      )
-  }
 
   def addSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(AddSpecialMentionPage(itemIndex)) map {
     answer =>
