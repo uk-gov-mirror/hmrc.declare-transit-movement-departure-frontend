@@ -304,8 +304,8 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         itemDescription <- nonEmptyString
-        totalGrossMass  <- nonEmptyString
-        totalNetMass    <- Gen.option(arbitrary[String])
+        totalGrossMass  <- genNumberString
+        totalNetMass    <- Gen.option(genNumberString)
         commodityCode   <- Gen.option(arbitrary[String])
       } yield ItemDetails(itemDescription, totalGrossMass, totalNetMass, commodityCode)
     }

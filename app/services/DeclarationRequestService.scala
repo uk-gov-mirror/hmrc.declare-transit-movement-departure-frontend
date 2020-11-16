@@ -140,7 +140,7 @@ class DeclarationRequestService @Inject()(
             }
 
           case TraderDetails.TraderEori(EoriNumber(eori)) =>
-            Some(TraderConsignor("???", "???", "???", "???", "???", Some(eori)))
+            Some(TraderConsignor("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
         }
 
     def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder): Option[String] =
