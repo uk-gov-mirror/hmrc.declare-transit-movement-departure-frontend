@@ -110,7 +110,7 @@ object AddItemsCheckYourAnswersViewModel {
 
     Section(
       msg"addItems.checkYourAnswersLabel.documents",
-      documentRows,
+      Seq(checkYourAnswersHelper.addDocuments(index).toSeq, documentRows).flatten,
       checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
     )
   }

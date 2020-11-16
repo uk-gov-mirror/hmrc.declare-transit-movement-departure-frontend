@@ -107,7 +107,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def addDocuments(itemIndex: Index): Option[Row] = userAnswers.get(AddDocumentsPage) map {
     answer =>
       Row(
-        key   = Key(msg"addDocuments.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"addDocuments.checkYourAnswersLabel".withArgs(itemIndex.display), classes = Seq("govuk-!-width-one-half")),
         value = Value(yesOrNo(answer)),
         actions = List(
           Action(
