@@ -36,8 +36,8 @@ class DocumentNavigator @Inject()() extends Navigator {
   // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddDocumentsPage(index) => ua => addDocumentRoute(ua, index, NormalMode)
-    case DocumentTypePage(index, documentIndex) => ua => Some(routes.DocumentReferenceController.onPageLoad(ua.id, index, NormalMode))
-    case DocumentReferencePage(index) => ua => Some(routes.AddExtraDocumentInformationController.onPageLoad(ua.id, index, Index(count(index)(ua)), NormalMode))
+    case DocumentTypePage(index, documentIndex) => ua => Some(routes.DocumentReferenceController.onPageLoad(ua.id, index, documentIndex, NormalMode))
+    case DocumentReferencePage(index, documentIndex) => ua => Some(routes.AddExtraDocumentInformationController.onPageLoad(ua.id, index, documentIndex, NormalMode))
     case AddExtraDocumentInformationPage(index, documentIndex) => ua => addExtraDocumentInformationRoute(ua, index, documentIndex, NormalMode)
     case DocumentExtraInformationPage(index, documentIndex) => ua => Some(routes.AddAnotherDocumentController.onPageLoad(ua.id, index, NormalMode))
     case AddAnotherDocumentPage(index) => ua =>  addAnotherDocumentRoute(ua, index, NormalMode)
@@ -47,7 +47,7 @@ class DocumentNavigator @Inject()() extends Navigator {
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddDocumentsPage(index) => ua => addDocumentRoute(ua, index, CheckMode)
     case DocumentTypePage(index, documentIndex) => ua =>  Some(routes.AddAnotherDocumentController.onPageLoad(ua.id, index, CheckMode))
-    case DocumentReferencePage(index) => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case DocumentReferencePage(index, documentIndex) => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case AddExtraDocumentInformationPage(index, documentIndex) => ua =>  addExtraDocumentInformationRoute(ua, index, documentIndex, CheckMode)
     case DocumentExtraInformationPage(index, documentIndex) => ua => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case AddAnotherDocumentPage(index) => ua =>  addAnotherDocumentRoute(ua, index, CheckMode)
@@ -75,14 +75,17 @@ class DocumentNavigator @Inject()() extends Navigator {
       case (Some(true), CheckMode, None) =>  Some(routes.DocumentExtraInformationController.onPageLoad(ua.id, index, documentIndex, CheckMode))
     }
 
-  def addDocumentRoute(ua:UserAnswers, index: Index, mode:Mode) =
-    (ua.get(AddDocumentsPage(index)) , ua.get(DocumentReferencePage(index)), mode) match {
-      case (Some(true),_, NormalMode)  => Some(routes.DocumentTypeController.onPageLoad(ua.id, index,Index(count(index)(ua)), NormalMode))
+  def addDocumentRoute(ua:UserAnswers, index: Index,  mode:Mode) = {
+
+    val documentIndex = ua.get(DeriveNumberOfDocuments(index)).getOrElse(0)
+    (ua.get(AddDocumentsPage(index)) , ua.get(DocumentReferencePage(index, Index(documentIndex))), mode) match {
+      case (Some(true),_, NormalMode)  => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(documentIndex), NormalMode))
       case (Some(false),_ ,NormalMode) => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
       case (Some(true), None, CheckMode ) => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), CheckMode))
       case (Some(true), Some(_), CheckMode) => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
       case _ => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
+  }
 
   private val count: Index => UserAnswers => Int =
     index => ua => ua.get(DeriveNumberOfDocuments(index)).getOrElse(0)

@@ -58,7 +58,7 @@ trait UserAnswersEntryGenerators {
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (DocumentReferencePage(Index(0)), value)
+      } yield (DocumentReferencePage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitraryDocumentExtraInformationUserAnswersEntry: Arbitrary[(DocumentExtraInformationPage, JsValue)] =

@@ -51,14 +51,14 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           .set(DocumentTypePage(index, documentIndex), "test").success.value
         navigator
           .nextPage(DocumentTypePage(index, documentIndex), NormalMode, updatedAnswers)
-          .mustBe(routes.DocumentReferenceController.onPageLoad(updatedAnswers.id, index, NormalMode))
+          .mustBe(routes.DocumentReferenceController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
       }
 
       "DocumentReferencePage must go to AddExtraDocumentInformation page" in {
         val updatedAnswers = emptyUserAnswers
-          .set(DocumentReferencePage(index), "test").success.value
+          .set(DocumentReferencePage(index, documentIndex), "test").success.value
         navigator
-          .nextPage(DocumentReferencePage(index), NormalMode, updatedAnswers)
+          .nextPage(DocumentReferencePage(index, documentIndex), NormalMode, updatedAnswers)
           .mustBe(routes.AddExtraDocumentInformationController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
       }
       "AddExtraDocumentInformation page must go to" - {
@@ -145,7 +145,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       "AddDocumentPage must go to ItemsCheckYourAnswersPage when user selects 'yes' when previously selected Yes" in {
         val updatedAnswers = emptyUserAnswers
           .set(AddDocumentsPage(index), true).success.value
-          .set(DocumentReferencePage(index), "test").success.value
+          .set(DocumentReferencePage(index, documentIndex), "test").success.value
         navigator
           .nextPage(AddDocumentsPage(index), CheckMode, updatedAnswers)
           .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
@@ -162,11 +162,12 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
     "DocumentReferencePage must go to ItemsCheckYourAnswersPage" in {
       val updatedAnswers = emptyUserAnswers
-        .set(DocumentReferencePage(index), "Test").success.value
+        .set(DocumentReferencePage(index, documentIndex), "Test").success.value
       navigator
-        .nextPage(DocumentReferencePage(index), CheckMode, updatedAnswers)
+        .nextPage(DocumentReferencePage(index, documentIndex), CheckMode, updatedAnswers)
         .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
     }
+
 
     "AddDocumentExtraInformationPage must go to" - {
       "CheckYourAnswersPage if user selects 'No'" in {

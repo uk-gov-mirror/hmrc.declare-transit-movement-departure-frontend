@@ -47,7 +47,7 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
   private val form         = formProvider(index)
   private val template     = "addItems/documentReference.njk"
 
-  lazy val documentReferenceRoute = routes.DocumentReferenceController.onPageLoad(lrn, index, NormalMode).url
+  lazy val documentReferenceRoute = routes.DocumentReferenceController.onPageLoad(lrn, index, documentIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -91,7 +91,7 @@ class DocumentReferenceControllerSpec extends SpecBase with MockNunjucksRenderer
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(DocumentReferencePage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(DocumentReferencePage(index, documentIndex), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, documentReferenceRoute)
