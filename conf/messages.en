@@ -1069,3 +1069,9 @@ confirmRemoveDocument.error.required = Select yes if you want to remove this doc
 confirmRemoveContainer.title = Are you sure you want to remove this shipping container?
 confirmRemoveContainer.heading = Are you sure you want to remove this shipping container?
 confirmRemoveContainer.error.required = Select yes if you want to remove this shipping container
+
+transportCharges.title = transportCharges
+transportCharges.heading = transportCharges
+transportCharges.checkYourAnswersLabel = transportCharges
+transportCharges.error.required = Enter transportCharges
+transportCharges.error.length = TransportCharges must be 100 characters or less

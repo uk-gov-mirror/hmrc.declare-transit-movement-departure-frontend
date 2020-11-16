@@ -33,6 +33,13 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryTransportChargesUserAnswersEntry: Arbitrary[(TransportChargesPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[TransportChargesPage.type#Data].map(Json.toJson(_))
+      } yield (TransportChargesPage, value)
+    }
+
   implicit lazy val arbitraryConfirmRemoveContainerUserAnswersEntry: Arbitrary[(ConfirmRemoveContainerPage, JsValue)] =
     Arbitrary {
       for {
