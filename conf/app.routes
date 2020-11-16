@@ -560,10 +560,10 @@ POST       /:lrn/add-items/:itemIndex/documents/:documentIndex/add-extra-documen
 GET        /:lrn/add-items/:itemIndex/documents/:documentIndex/change-add-extra-document-information                   controllers.addItems.AddExtraDocumentInformationController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/documents/:documentIndex/change-add-extra-document-information                   controllers.addItems.AddExtraDocumentInformationController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode = CheckMode)
 
-GET        /:lrn/add-items/:itemIndex/add-documents                        controllers.addItems.AddDocumentsController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
-POST       /:lrn/add-items/:itemIndex/add-documents                         controllers.addItems.AddDocumentsController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
-GET        /:lrn/add-items/:itemIndex/change-add-documents                   controllers.addItems.AddDocumentsController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
-POST       /:lrn/add-items/:itemIndex/change-add-documents                   controllers.addItems.AddDocumentsController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+GET        /:lrn/add-items/:itemIndex/documents/add-documents                        controllers.addItems.AddDocumentsController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
+POST       /:lrn/add-items/:itemIndex/documents/add-documents                         controllers.addItems.AddDocumentsController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
+GET        /:lrn/add-items/:itemIndex/documents/change-add-documents                   controllers.addItems.AddDocumentsController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+POST       /:lrn/add-items/:itemIndex/documents/change-add-documents                   controllers.addItems.AddDocumentsController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 
 GET        /:lrn/add-items/:itemIndex/documents/:documentIndex/document-type               controllers.addItems.DocumentTypeController.onPageLoad(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/:itemIndex/documents/:documentIndex/document-type               controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = NormalMode)
