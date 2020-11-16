@@ -77,12 +77,12 @@ class DocumentNavigator @Inject()() extends Navigator {
 
   def addDocumentRoute(ua:UserAnswers, index: Index,  mode:Mode) = {
 
-    val documentIndex = ua.get(DeriveNumberOfDocuments(index)).getOrElse(0)
-    (ua.get(AddDocumentsPage(index)) , ua.get(DocumentReferencePage(index, Index(documentIndex))), mode) match {
-      case (Some(true),_, NormalMode)  => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(documentIndex), NormalMode))
+    val documentCount: Int = ua.get(DeriveNumberOfDocuments(index)).getOrElse(0)
+    (ua.get(AddDocumentsPage(index)) , ua.get(DocumentReferencePage(index, Index(documentCount-1))), mode) match {
+      case (Some(true),_, NormalMode)  => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(documentCount), NormalMode))
       case (Some(false),_ ,NormalMode) => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-      case (Some(true), None, CheckMode ) => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), CheckMode))
       case (Some(true), Some(_), CheckMode) => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (Some(true), None, CheckMode ) => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(documentCount), CheckMode))
       case _ => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
   }
