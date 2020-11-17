@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package forms.addItems.securityDetails
 
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class KnowUNDangerousGoodsCodePageSpec extends PageBehaviours {
+class KnowUNDangerousGoodsCodeFormProvider @Inject() extends Mappings {
 
-  "KnowUNDangerousGoodsCodePage" - {
-
-    beRetrievable[Boolean](KnowUNDangerousGoodsCodePage)
-
-    beSettable[Boolean](KnowUNDangerousGoodsCodePage)
-
-    beRemovable[Boolean](KnowUNDangerousGoodsCodePage)
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("knowUNDangerousGoodsCode.error.required")
+    )
 }

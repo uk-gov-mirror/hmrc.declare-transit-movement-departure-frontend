@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems.securityDetails
 
 import controllers.actions._
-import forms.KnowUNDangerousGoodsCodeFormProvider
+import forms.addItems.securityDetails.KnowUNDangerousGoodsCodeFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.KnowUNDangerousGoodsCodePage
+import pages.addItems.securityDetails.KnowUNDangerousGoodsCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems.securityDetails
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object KnowUNDangerousGoodsCodePage extends QuestionPage[Boolean] {
+class KnowUNDangerousGoodsCodePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "KnowUNDangerousGoodsCodePage" - {
 
-  override def toString: String = "knowUNDangerousGoodsCode"
+    beRetrievable[Boolean](KnowUNDangerousGoodsCodePage)
+
+    beSettable[Boolean](KnowUNDangerousGoodsCodePage)
+
+    beRemovable[Boolean](KnowUNDangerousGoodsCodePage)
+  }
 }

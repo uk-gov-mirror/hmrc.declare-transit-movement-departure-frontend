@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems.securityDetails
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
-import forms.KnowUNDangerousGoodsCodeFormProvider
+import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
+import forms.addItems.securityDetails.KnowUNDangerousGoodsCodeFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.KnowUNDangerousGoodsCodePage
+import pages.addItems.securityDetails.KnowUNDangerousGoodsCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -35,9 +35,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 

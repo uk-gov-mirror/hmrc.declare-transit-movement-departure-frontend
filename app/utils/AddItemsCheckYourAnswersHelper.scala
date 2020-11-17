@@ -24,7 +24,7 @@ import controllers.addItems.securityDetails.{routes => securityDetailsRoutes}
 import models._
 import pages.addItems._
 import pages.addItems.containers._
-import pages.addItems.securityDetails.{CommercialReferenceNumberPage, TransportChargesPage, UsingSameCommercialReferencePage}
+import pages.addItems.securityDetails._
 import pages.addItems.traderDetails._
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -627,6 +627,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = securityDetailsRoutes.CommercialReferenceNumberController.onPageLoad(lrn, itemIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"commercialReferenceNumber.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def knowUNDangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(KnowUNDangerousGoodsCodePage) map {
+    answer =>
+      Row(
+        key   = Key(msg"knowUNDangerousGoodsCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = securityDetailsRoutes.KnowUNDangerousGoodsCodeController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"knowUNDangerousGoodsCode.checkYourAnswersLabel"))
           )
         )
       )
