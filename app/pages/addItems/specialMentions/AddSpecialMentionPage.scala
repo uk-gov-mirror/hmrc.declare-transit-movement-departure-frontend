@@ -16,14 +16,24 @@
 
 package pages.addItems.specialMentions
 
-import models.Index
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.items
+import queries.RemoveSpecialMentionsQuery
+
+import scala.util.Try
 
 case class AddSpecialMentionPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ items \ itemIndex.position \ toString
 
   override def toString: String = "addSpecialMention"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) =>
+        userAnswers.remove(RemoveSpecialMentionsQuery(itemIndex))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

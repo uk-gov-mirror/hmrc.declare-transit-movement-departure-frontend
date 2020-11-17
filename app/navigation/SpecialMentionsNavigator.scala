@@ -37,6 +37,14 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
     ).reduce(_ orElse _)
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case AddSpecialMentionPage(itemIndex) =>
+      userAnswers =>
+        (userAnswers.get(AddSpecialMentionPage(itemIndex)), count(itemIndex)(userAnswers)) match {
+          case (Some(true), specialMentionCount) if specialMentionCount == 0 =>
+            Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(specialMentionCount), NormalMode))
+          case (Some(true), _) => Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, CheckMode))
+          case _               => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, itemIndex))
+        }
     case SpecialMentionTypePage(itemIndex, referenceIndex) =>
       userAnswers =>
         Some(routes.SpecialMentionAdditionalInfoController.onPageLoad(userAnswers.id, itemIndex, referenceIndex, CheckMode))
