@@ -16,16 +16,17 @@
 
 package forms.addItems.specialMentions
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class SpecialMentionAdditionalInfoFormProviderSpec extends StringFieldBehaviours {
+class SpecialMentionAdditionalInfoFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
   val requiredKey = "specialMentionAdditionalInfo.error.required"
   val lengthKey   = "specialMentionAdditionalInfo.error.length"
   val maxLength   = 70
 
-  val form = new SpecialMentionAdditionalInfoFormProvider()()
+  val form = new SpecialMentionAdditionalInfoFormProvider()(itemIndex, referenceIndex)
 
   ".value" - {
 
@@ -41,13 +42,13 @@ class SpecialMentionAdditionalInfoFormProviderSpec extends StringFieldBehaviours
       form,
       fieldName,
       maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(itemIndex.display, referenceIndex.display))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(itemIndex.display, referenceIndex.display))
     )
   }
 }

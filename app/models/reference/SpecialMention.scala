@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package models.reference
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.items
+import play.api.libs.json.{Json, OFormat}
 
-case class CommodityCodePage(index: Index) extends QuestionPage[String] {
+case class SpecialMention(code: String, description: String)
 
-  override def path: JsPath = JsPath \ items \ index.position \ toString
-
-  override def toString: String = "commodityCode"
+object SpecialMention {
+  implicit val format: OFormat[SpecialMention] = Json.format[SpecialMention]
 }

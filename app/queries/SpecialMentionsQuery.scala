@@ -14,27 +14,13 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package queries
 
-import models.{Index, UserAnswers}
+import models.Index
 import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.items
-import queries.RemoveDocumentQuery
+import play.api.libs.json.{JsObject, JsPath}
 
-import scala.util.Try
+final case class SpecialMentionsQuery(index: Index, referenceIndex: Index) extends QuestionPage[JsObject] {
 
-case class AddDocumentsPage(index: Index) extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ items \ index.position \ toString
-
-  override def toString: String = "addDocuments"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-
-      case Some(false) =>
-        userAnswers.remove(RemoveDocumentQuery(index))
-      case _ => super.cleanup(value, userAnswers)
-    }
+  override def path: JsPath = JsPath \ Constants.items \ index.position \ Constants.specialMentions \ referenceIndex.position
 }

@@ -233,6 +233,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
       Some(false),Some(true),
       Some(false),Some(false),
       NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, mode))
+      case (Some(false),_,
+      Some(true), None,
+      Some(false), Some(true),
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
+      case (Some(false),_,
+      Some(false), Some(true),
+      Some(false), Some(true),
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
       case (_,_,
       Some(true),None,
       Some(true),None,
@@ -261,6 +269,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
       Some(false), Some(true),
       Some(false), Some(false),
       NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      case (_,
+      Some(true), None,
+      Some(false), Some(true),
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
+      case (_,
+      Some(false), Some(true),
+      Some(false), Some(true),
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
       case (_,
       Some(true), None,
       Some(true), None,

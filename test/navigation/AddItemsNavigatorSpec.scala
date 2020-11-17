@@ -186,6 +186,38 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
           }
         }
+
+        "Package Type page when there is a Consignor and Consignee for all items" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(IsCommodityCodeKnownPage(index), false).success.value
+                .set(ConsignorForAllItemsPage, false).success.value
+                .set(AddConsignorPage, true).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, true).success.value
+              navigator
+                .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
+                .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
+          }
+        }
+
+        "Package Type page when Consignor is for all, and there is a Consignee" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(IsCommodityCodeKnownPage(index), false).success.value
+                .set(ConsignorForAllItemsPage, true).success.value
+                .remove(AddConsignorPage).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, true).success.value
+              navigator
+                .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
+                .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
+          }
+        }
       }
 
       "must go from IsCommodityCodeKnownPage to CommodityCodePage if the answer is 'Yes'" in {
@@ -286,6 +318,36 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 .remove(AddConsignorPage).success.value
                 .set(ConsigneeForAllItemsPage, true).success.value
                 .remove(AddConsigneePage).success.value
+              navigator
+                .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
+                .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
+          }
+        }
+
+        "Package Type page when there is a Consignor and Consignee for all items" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ConsignorForAllItemsPage, false).success.value
+                .set(AddConsignorPage, true).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, true).success.value
+              navigator
+                .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
+                .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
+          }
+        }
+
+        "Package Type page when Consignor is for all, and there is a Consignee" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ConsignorForAllItemsPage, true).success.value
+                .remove(AddConsignorPage).success.value
+                .set(ConsigneeForAllItemsPage, false).success.value
+                .set(AddConsigneePage, true).success.value
               navigator
                 .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
                 .mustBe(routes.PackageTypeController.onPageLoad(answers.id, index, Index(0), NormalMode))
