@@ -1075,3 +1075,8 @@ transportCharges.heading = What payment method are you using for the transport c
 transportCharges.checkYourAnswersLabel = Payment method for transport charges
 transportCharges.error.required = Enter the payment method you are using for the transport charges
 transportCharges.error.length = TransportCharges must be 100 characters or less
+
+usingSameCommercialReference.title = Are you using the same commercial reference number across all items?
+usingSameCommercialReference.heading = Are you using the same commercial reference number across all items?
+usingSameCommercialReference.checkYourAnswersLabel = Using same commercial reference number?
+usingSameCommercialReference.error.required = Select yes if you are using the same commercial reference number

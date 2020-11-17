@@ -25,7 +25,7 @@ import pages.addItems.traderDetails._
 import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
-import pages.addItems.securityDetails.TransportChargesPage
+import pages.addItems.securityDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -33,6 +33,13 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryUsingSameCommercialReferenceUserAnswersEntry: Arbitrary[(UsingSameCommercialReferencePage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (UsingSameCommercialReferencePage(Index(0)), value)
+    }
 
   implicit lazy val arbitraryTransportChargesUserAnswersEntry: Arbitrary[(TransportChargesPage.type, JsValue)] =
     Arbitrary {

@@ -5,9 +5,17 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
+
 
 {% block pageTitle %}
   {{ title(messages("transportCharges.title"), form.errors) }}
+{% endblock %}
+
+{% block pageHead %}
+  <!--[if gt IE 8]><!-->
+  <link href="{{ routes.controllers.Assets.versioned("stylesheets/accessible-autocomplete.min.css").url }}" media="screen" rel="stylesheet" type="text/css" />
+  <!--<![endif]-->
 {% endblock %}
 
 {% block mainContent %}
@@ -28,20 +36,21 @@
         {% endif %}
 
         <form action="{{ routes.controllers.addItems.securityDetails.TransportChargesController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
+
+          <h1 class="govuk-heading-xl">
+                  {{ messages("transportCharges.heading") }}
+          </h1>
 
           {{ csrf() | safe }}
 
-          {{ govukInput({
-            label: {
-              text: messages('transportCharges.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
-            },
-            id: "value",
-            name: "value",
-            value: form.value.value,
-            errorMessage: form.value.error
-          }) }}
+            {{ govukSelect({
+                                 classes: "govuk-input--width-20 autocomplete",
+                                 id: "value",
+                                 name: "value",
+                                 errorMessage: form.value.error,
+                                 items: transportCharges
+                               }) }}
 
           {{ govukButton({
             text: messages("site.continue"),
@@ -54,4 +63,8 @@
     </div>
   </div>
 
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="{{ routes.controllers.Assets.versioned("javascripts/accessible-autocomplete.js").url }}"></script>
 {% endblock %}
