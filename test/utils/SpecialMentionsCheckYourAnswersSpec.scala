@@ -59,10 +59,7 @@ class SpecialMentionsCheckYourAnswersSpec extends SpecBase with GeneratorSpec wi
 
             val cya = new SpecialMentionsCheckYourAnswers(updatedAnswers)
 
-            val row = cya.specialMentionType(
-              itemIndex,
-              referenceIndex,
-              SpecialMentionList(List(SpecialMention("code", "description"))))
+            val row = cya.specialMentionType(itemIndex, referenceIndex, SpecialMentionList(List(SpecialMention("code", "description"))))
 
             row mustBe None
         }
