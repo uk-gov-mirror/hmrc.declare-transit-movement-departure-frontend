@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class SealsInformationFormProvider @Inject() extends Mappings {
+class ConfirmRemoveSealsFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("sealsInformation.error.required")
+      "value" -> boolean("confirmRemoveSeals.error.required")
     )
-
 }

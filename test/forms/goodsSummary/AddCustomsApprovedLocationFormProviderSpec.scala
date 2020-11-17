@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddSealsFormProviderSpec extends BooleanFieldBehaviours {
+class AddCustomsApprovedLocationFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addSeals.error.required"
+  val requiredKey = "addCustomsApprovedLocation.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddSealsFormProvider()()
+  val form = new AddCustomsApprovedLocationFormProvider()()
 
   ".value" - {
 

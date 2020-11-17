@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.{routes => mainRoutes}
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.SealsInformationFormProvider
+import forms.goodsSummary.SealsInformationFormProvider
 import matchers.JsonMatchers
 import models.{Index, NormalMode}
 import navigation.annotations.GoodsSummary

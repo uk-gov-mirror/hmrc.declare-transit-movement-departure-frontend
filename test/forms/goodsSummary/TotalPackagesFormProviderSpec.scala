@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.IntFieldBehaviours
+import forms.goodsSummary.TotalPackagesFormProvider
 import play.api.data.FormError
 
 class TotalPackagesFormProviderSpec extends IntFieldBehaviours {

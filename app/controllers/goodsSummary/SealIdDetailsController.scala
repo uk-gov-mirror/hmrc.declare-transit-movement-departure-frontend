@@ -17,7 +17,7 @@
 package controllers.goodsSummary
 
 import controllers.actions._
-import forms.SealIdDetailsFormProvider
+import forms.goodsSummary.SealIdDetailsFormProvider
 import javax.inject.Inject
 import models.domain.SealDomain
 import models.requests.DataRequest

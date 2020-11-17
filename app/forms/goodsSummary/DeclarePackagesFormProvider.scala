@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class CustomsApprovedLocationFormProvider @Inject() extends Mappings {
+class DeclarePackagesFormProvider @Inject() extends Mappings {
 
-  val customsApprovedLocationRegex: String = "^[a-zA-Z0-9/@'<>?%&.\\- ]*$"
-  val maxLengthCustomsApprovedLocation     = 17
-
-  def apply(): Form[String] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> text("customsApprovedLocation.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLengthCustomsApprovedLocation, "customsApprovedLocation.error.length"),
-          regexp(customsApprovedLocationRegex, "customsApprovedLocation.error.invalidCharacters")
-        )))
+      "value" -> boolean("declarePackages.error.required")
+    )
 }

@@ -14,17 +14,32 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.domain.SealDomain
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class ConfirmRemoveSealFormProvider @Inject() extends Mappings {
+class AddSealsFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(seal: SealDomain): Form[Boolean] =
-    Form(
-      "value" -> boolean("confirmRemoveSeal.error.required", args = Seq(seal.numberOrMark))
+  val requiredKey = "addSeals.error.required"
+  val invalidKey  = "error.boolean"
+
+  val form = new AddSealsFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

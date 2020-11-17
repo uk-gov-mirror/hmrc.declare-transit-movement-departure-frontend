@@ -18,6 +18,7 @@ package forms
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import forms.goodsSummary.SealIdDetailsFormProvider
 import org.scalacheck.Gen
 import play.api.data.FormError
 

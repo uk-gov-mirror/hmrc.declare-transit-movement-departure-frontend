@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.goodsSummary
 
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.domain.GrossMass.Constants._
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class DeclarePackagesFormProvider @Inject() extends Mappings {
+class TotalGrossMassFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(): Form[String] =
     Form(
-      "value" -> boolean("declarePackages.error.required")
+      "value" -> text(requiredKeyTotalGrossMass)
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLengthGrossMass, lengthKeyTotalGrossMass),
+            regexp(totalGrossMassInvalidFormatRegex, invalidCharactersTotalGrossMass),
+            minGrossMax(0, minLengthTotalGrossMass)
+          ))
     )
 }

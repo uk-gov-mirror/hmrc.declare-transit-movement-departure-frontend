@@ -20,7 +20,7 @@ import java.time.{LocalDate, ZoneOffset}
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.ControlResultDateLimitFormProvider
+import forms.goodsSummary.ControlResultDateLimitFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.GoodsSummary

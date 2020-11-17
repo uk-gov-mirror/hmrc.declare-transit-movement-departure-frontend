@@ -18,7 +18,7 @@ package controllers.goodsSummary
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.ConfirmRemoveSealsFormProvider
+import forms.goodsSummary.ConfirmRemoveSealsFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.GoodsSummary

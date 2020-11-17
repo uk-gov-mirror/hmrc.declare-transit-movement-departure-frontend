@@ -18,7 +18,7 @@ package controllers.goodsSummary
 
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
-import forms.SealsInformationFormProvider
+import forms.goodsSummary.SealsInformationFormProvider
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}

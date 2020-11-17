@@ -17,7 +17,7 @@
 package controllers.goodsSummary
 
 import controllers.actions._
-import forms.AddSealsFormProvider
+import forms.goodsSummary.AddSealsFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator

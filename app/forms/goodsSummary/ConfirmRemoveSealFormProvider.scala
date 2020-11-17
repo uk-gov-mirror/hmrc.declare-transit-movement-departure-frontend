@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.domain.SealDomain
 import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class AuthorisedLocationCodeFormProvider @Inject() extends Mappings {
+class ConfirmRemoveSealFormProvider @Inject() extends Mappings {
 
-  val authorisedLocationCodeRegex: String = "^[a-zA-Z0-9/@'<>?%&.\\- ]*$"
-  val authorisedLocationCodeMaxLength     = 17
-
-  def apply(): Form[String] =
+  def apply(seal: SealDomain): Form[Boolean] =
     Form(
-      "value" -> text("authorisedLocationCode.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(authorisedLocationCodeMaxLength, "authorisedLocationCode.error.length"),
-          regexp(authorisedLocationCodeRegex, "authorisedLocationCode.error.invalidCharacters")
-        )))
+      "value" -> boolean("confirmRemoveSeal.error.required", args = Seq(seal.numberOrMark))
+    )
 }

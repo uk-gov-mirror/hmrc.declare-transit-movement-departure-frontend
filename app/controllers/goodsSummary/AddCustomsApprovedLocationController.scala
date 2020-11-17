@@ -17,7 +17,7 @@
 package controllers.goodsSummary
 
 import controllers.actions._
-import forms.AddCustomsApprovedLocationFormProvider
+import forms.goodsSummary.AddCustomsApprovedLocationFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator

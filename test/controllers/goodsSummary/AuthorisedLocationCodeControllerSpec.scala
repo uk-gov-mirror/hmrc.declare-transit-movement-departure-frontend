@@ -18,7 +18,7 @@ package controllers.goodsSummary
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.AuthorisedLocationCodeFormProvider
+import forms.goodsSummary.AuthorisedLocationCodeFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.GoodsSummary

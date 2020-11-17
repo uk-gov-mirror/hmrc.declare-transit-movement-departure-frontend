@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
-import models.domain.GrossMass.Constants._
 
-class TotalGrossMassFormProvider @Inject() extends Mappings {
+class AuthorisedLocationCodeFormProvider @Inject() extends Mappings {
+
+  val authorisedLocationCodeRegex: String = "^[a-zA-Z0-9/@'<>?%&.\\- ]*$"
+  val authorisedLocationCodeMaxLength     = 17
 
   def apply(): Form[String] =
     Form(
-      "value" -> text(requiredKeyTotalGrossMass)
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(maxLengthGrossMass, lengthKeyTotalGrossMass),
-            regexp(totalGrossMassInvalidFormatRegex, invalidCharactersTotalGrossMass),
-            minGrossMax(0, minLengthTotalGrossMass)
-          ))
-    )
+      "value" -> text("authorisedLocationCode.error.required")
+        .verifying(StopOnFirstFail[String](
+          maxLength(authorisedLocationCodeMaxLength, "authorisedLocationCode.error.length"),
+          regexp(authorisedLocationCodeRegex, "authorisedLocationCode.error.invalidCharacters")
+        )))
 }

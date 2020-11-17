@@ -18,7 +18,7 @@ package controllers.goodsSummary
 
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
-import forms.ConfirmRemoveSealFormProvider
+import forms.goodsSummary.ConfirmRemoveSealFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.domain.SealDomain

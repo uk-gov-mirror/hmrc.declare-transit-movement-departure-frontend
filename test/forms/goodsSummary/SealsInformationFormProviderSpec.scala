@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
+import forms.goodsSummary.SealsInformationFormProvider
 import play.api.data.FormError
 
 class SealsInformationFormProviderSpec extends BooleanFieldBehaviours {

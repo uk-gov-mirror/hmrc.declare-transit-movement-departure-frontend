@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.goodsSummary
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class ConfirmRemoveSealsFormProvider @Inject() extends Mappings {
+class CustomsApprovedLocationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  val customsApprovedLocationRegex: String = "^[a-zA-Z0-9/@'<>?%&.\\- ]*$"
+  val maxLengthCustomsApprovedLocation     = 17
+
+  def apply(): Form[String] =
     Form(
-      "value" -> boolean("confirmRemoveSeals.error.required")
-    )
+      "value" -> text("customsApprovedLocation.error.required")
+        .verifying(StopOnFirstFail[String](
+          maxLength(maxLengthCustomsApprovedLocation, "customsApprovedLocation.error.length"),
+          regexp(customsApprovedLocationRegex, "customsApprovedLocation.error.invalidCharacters")
+        )))
 }
