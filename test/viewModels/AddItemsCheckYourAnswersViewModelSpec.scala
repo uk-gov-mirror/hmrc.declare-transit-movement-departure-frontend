@@ -40,7 +40,6 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
     .set(CommodityCodePage(index), "111111").success.value
     .set(ContainerNumberPage(itemIndex, containerIndex), arbitrary[String].sample.value).success.value
 
-  //val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, previousDocumentTypeList)
   private val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, documentTypeList)
 
 
