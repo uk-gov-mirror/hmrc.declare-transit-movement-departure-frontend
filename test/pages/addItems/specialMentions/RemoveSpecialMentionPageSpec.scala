@@ -23,10 +23,10 @@ class RemoveSpecialMentionPageSpec extends PageBehaviours with SpecBase {
 
   "RemoveSpecialMentionPage" - {
 
-    beRetrievable[Boolean](RemoveSpecialMentionPage(itemIndex))
+    beRetrievable[Boolean](RemoveSpecialMentionPage(itemIndex, referenceIndex))
 
-    beSettable[Boolean](RemoveSpecialMentionPage(itemIndex))
+    beSettable[Boolean](RemoveSpecialMentionPage(itemIndex, referenceIndex))
 
-    beRemovable[Boolean](RemoveSpecialMentionPage(itemIndex))
+    beRemovable[Boolean](RemoveSpecialMentionPage(itemIndex, referenceIndex))
   }
 }

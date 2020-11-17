@@ -19,11 +19,11 @@ package pages.addItems.specialMentions
 import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import queries.Constants.items
+import queries.Constants.{items, specialMentions}
 
-case class RemoveSpecialMentionPage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class RemoveSpecialMentionPage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ specialMentions \ referenceIndex.position \ toString
 
   override def toString: String = "removeSpecialMention"
 }

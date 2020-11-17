@@ -153,56 +153,47 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
-    "DocumentTypePage must go to AddAnotherDocumentPage" in {
+    "DocumentTypePage must go to DocumentReferencePage" in {
       val updatedAnswers = emptyUserAnswers
         .set(DocumentTypePage(index, documentIndex), "Test").success.value
       navigator
         .nextPage(DocumentTypePage(index, documentIndex), CheckMode, updatedAnswers)
-        .mustBe(routes.AddAnotherDocumentController.onPageLoad(updatedAnswers.id, index, CheckMode))
+        .mustBe(routes.DocumentReferenceController.onPageLoad(updatedAnswers.id, index, documentIndex, CheckMode))
     }
 
-    "DocumentReferencePage must go to ItemsCheckYourAnswersPage" in {
+    "DocumentReferencePage must go to AddExtraDocumentInformationPage" in {
       val updatedAnswers = emptyUserAnswers
         .set(DocumentReferencePage(index, documentIndex), "Test").success.value
       navigator
         .nextPage(DocumentReferencePage(index, documentIndex), CheckMode, updatedAnswers)
-        .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+        .mustBe(controllers.addItems.routes.AddExtraDocumentInformationController.onPageLoad(updatedAnswers.id, index, documentIndex, CheckMode))
     }
 
 
     "AddDocumentExtraInformationPage must go to" - {
-      "CheckYourAnswersPage if user selects 'No'" in {
+      "AddAnotherDocumentPage if user selects 'No'" in {
         val updatedAnswers = emptyUserAnswers
           .set(AddExtraDocumentInformationPage(index, documentIndex), false).success.value
         navigator
           .nextPage(AddExtraDocumentInformationPage(index, documentIndex), CheckMode, updatedAnswers)
-          .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+          .mustBe(routes.AddAnotherDocumentController.onPageLoad(updatedAnswers.id, index, CheckMode))
       }
 
-      "CheckYourAnswersPage if user selects Yes' and extra information already exists" in {
+      "DocumentExtraInformationPage if user selects 'Yes'" in {
         val updatedAnswers = emptyUserAnswers
           .set(AddExtraDocumentInformationPage(index, documentIndex), true).success.value
-          .set(DocumentExtraInformationPage(index, documentIndex), "Test").success.value
-        navigator
-          .nextPage(AddExtraDocumentInformationPage(index, documentIndex), CheckMode, updatedAnswers)
-          .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-      }
-      "DocumentExtraInformationPage if user selects Yes' and no extra information already exists" in {
-        val updatedAnswers = emptyUserAnswers
-          .set(AddExtraDocumentInformationPage(index, documentIndex), true).success.value
-          .remove(DocumentExtraInformationPage(index, documentIndex)).success.value
         navigator
           .nextPage(AddExtraDocumentInformationPage(index, documentIndex), CheckMode, updatedAnswers)
           .mustBe(routes.DocumentExtraInformationController.onPageLoad(updatedAnswers.id, index, documentIndex, CheckMode))
       }
     }
 
-    "DocumentExtraInformationPage must go to CheckYourAnswersPage" in {
+    "DocumentExtraInformationPage must go to AddAnotherDocumentPage" in {
       val updatedAnswers = emptyUserAnswers
         .set(DocumentExtraInformationPage(index, documentIndex), "Test").success.value
       navigator
         .nextPage(DocumentExtraInformationPage(index, documentIndex), CheckMode, updatedAnswers)
-        .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+        .mustBe(controllers.addItems.routes.AddAnotherDocumentController.onPageLoad(updatedAnswers.id, index, CheckMode))
     }
 
     "AddAnotherDocumentPage must go to" - {

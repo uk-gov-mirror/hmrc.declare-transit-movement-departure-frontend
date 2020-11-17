@@ -94,7 +94,7 @@ trait UserAnswersEntryGenerators {
     Arbitrary {
       for {
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (RemoveSpecialMentionPage(Index(0)), value)
+      } yield (RemoveSpecialMentionPage(Index(0), Index(0)), value)
     }
 
   implicit lazy val arbitraryAddAnotherSpecialMentionUserAnswersEntry: Arbitrary[(AddAnotherSpecialMentionPage, JsValue)] =

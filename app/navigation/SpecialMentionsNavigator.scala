@@ -19,31 +19,78 @@ package navigation
 import controllers.addItems.specialMentions.routes
 import derivable.DeriveNumberOfSpecialMentions
 import javax.inject.{Inject, Singleton}
-import models.{Index, NormalMode, UserAnswers}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
 import pages.Page
-import pages.addItems.specialMentions.{AddAnotherSpecialMentionPage, AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
+import pages.addItems.specialMentions._
 import play.api.mvc.Call
 
 @Singleton
 class SpecialMentionsNavigator @Inject()() extends Navigator {
 
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddSpecialMentionPage(index) =>
-      userAnswers =>
-        Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, Index(count(index)(userAnswers)), NormalMode))
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] =
+    Seq(
+      addSpecialMentionPage,
+      specialMentionTypePage,
+      specialMentionAdditionalInfoPage,
+      addAnotherSpecialMentionPage,
+      removeSpecialMentionPage
+    ).reduce(_ orElse _)
+
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case SpecialMentionTypePage(itemIndex, referenceIndex) =>
       userAnswers =>
-        Some(routes.SpecialMentionAdditionalInfoController.onPageLoad(userAnswers.id, itemIndex, referenceIndex, NormalMode))
+        Some(routes.SpecialMentionAdditionalInfoController.onPageLoad(userAnswers.id, itemIndex, referenceIndex, CheckMode))
     case SpecialMentionAdditionalInfoPage(itemIndex, _) =>
       userAnswers =>
         Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
-    case AddAnotherSpecialMentionPage(itemIndex) =>
-      userAnswers =>
-        Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), NormalMode))
-
   }
 
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  private def addSpecialMentionPage: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case AddSpecialMentionPage(itemIndex) =>
+      userAnswers =>
+        userAnswers.get(AddSpecialMentionPage(itemIndex)) match {
+          case Some(true) => Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), NormalMode))
+          case _          => Some(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+        }
+  }
+
+  private def specialMentionTypePage: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case SpecialMentionTypePage(itemIndex, referenceIndex) =>
+      userAnswers =>
+        Some(routes.SpecialMentionAdditionalInfoController.onPageLoad(userAnswers.id, itemIndex, referenceIndex, NormalMode))
+  }
+
+  private def specialMentionAdditionalInfoPage: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case SpecialMentionAdditionalInfoPage(itemIndex, _) =>
+      userAnswers =>
+        Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+  }
+
+  private def addAnotherSpecialMentionPage: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case AddAnotherSpecialMentionPage(itemIndex) =>
+      userAnswers =>
+        userAnswers.get(AddAnotherSpecialMentionPage(itemIndex)) match {
+          case Some(true) => Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), NormalMode))
+          case _          => Some(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+        }
+    case RemoveSpecialMentionPage(itemIndex, _) =>
+      userAnswers =>
+        if (count(itemIndex)(userAnswers) == 0) {
+          Some(routes.AddSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+        } else {
+          Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+        }
+  }
+
+  private def removeSpecialMentionPage: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case RemoveSpecialMentionPage(itemIndex, _) =>
+      userAnswers =>
+        if (count(itemIndex)(userAnswers) == 0) {
+          Some(routes.AddSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+        } else {
+          Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+        }
+  }
 
   private val count: Index => UserAnswers => Int =
     index => userAnswers => userAnswers.get(DeriveNumberOfSpecialMentions(index)).getOrElse(0)

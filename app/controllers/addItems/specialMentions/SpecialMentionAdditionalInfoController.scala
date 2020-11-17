@@ -21,7 +21,7 @@ import forms.addItems.specialMentions.SpecialMentionAdditionalInfoFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.PreTaskListDetails
+import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.SpecialMentionAdditionalInfoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SpecialMentionAdditionalInfoController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @PreTaskListDetails navigator: Navigator,
+  @SpecialMentions navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
@@ -48,21 +48,23 @@ class SpecialMentionAdditionalInfoController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
+//  private val form     = formProvider()
   private val template = "addItems/specialMentions/specialMentionAdditionalInfo.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+          case None        => formProvider(itemIndex, referenceIndex)
+          case Some(value) => formProvider(itemIndex, referenceIndex).fill(value)
         }
 
         val json = Json.obj(
-          "form" -> preparedForm,
-          "lrn"  -> lrn,
-          "mode" -> mode
+          "form"           -> preparedForm,
+          "lrn"            -> lrn,
+          "mode"           -> mode,
+          "index"          -> itemIndex.display,
+          "referenceIndex" -> referenceIndex.display
         )
 
         renderer.render(template, json).map(Ok(_))
@@ -71,15 +73,17 @@ class SpecialMentionAdditionalInfoController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        form
+        formProvider(itemIndex, referenceIndex)
           .bindFromRequest()
           .fold(
             formWithErrors => {
 
               val json = Json.obj(
-                "form" -> formWithErrors,
-                "lrn"  -> lrn,
-                "mode" -> mode
+                "form"           -> formWithErrors,
+                "lrn"            -> lrn,
+                "mode"           -> mode,
+                "index"          -> itemIndex.display,
+                "referenceIndex" -> referenceIndex.display
               )
 
               renderer.render(template, json).map(BadRequest(_))

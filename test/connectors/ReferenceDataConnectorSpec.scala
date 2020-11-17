@@ -20,7 +20,16 @@ import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
 import models.reference._
-import models.{CountryList, CustomsOfficeList, DocumentTypeList, OfficeOfTransitList, PackageTypeList, PreviousDocumentTypeList, TransportModeList}
+import models.{
+  CountryList,
+  CustomsOfficeList,
+  DocumentTypeList,
+  OfficeOfTransitList,
+  PackageTypeList,
+  PreviousDocumentTypeList,
+  SpecialMentionList,
+  TransportModeList
+}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -159,6 +168,20 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |    "code": "2",
       |    "transportDocument": false,
       |    "description": "Certificate of conformity"
+      |  }
+      |]
+      |""".stripMargin
+
+  private val specialMentionJson: String =
+    """
+      |[
+      | {
+      |    "code": "10600",
+      |    "description": "Negotiable Bill of lading 'to order blank endorsed'"
+      |  },
+      |  {
+      |    "code": "30400",
+      |    "description": "RET-EXP – Copy 3 to be returned"
       |  }
       |]
       |""".stripMargin
@@ -400,6 +423,31 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return an exception when an error response is returned" in {
 
         checkErrorResponse(s"/$startUrl/document-type", connector.getDocumentTypes())
+      }
+
+    }
+
+    "getSpecialMention" - {
+
+      "must return list of document types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/special-mention"))
+            .willReturn(okJson(specialMentionJson))
+        )
+
+        val expectResult = SpecialMentionList(
+          Seq(
+            SpecialMention("10600", "Negotiable Bill of lading 'to order blank endorsed'"),
+            SpecialMention("30400", "RET-EXP – Copy 3 to be returned")
+          )
+        )
+
+        connector.getSpecialMention().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/special-mention", connector.getSpecialMention())
       }
 
     }

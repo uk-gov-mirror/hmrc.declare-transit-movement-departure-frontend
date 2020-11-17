@@ -27,7 +27,8 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.addItems.containers.ContainerNumberController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ onSubmitUrl }}" method="post">
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
 
           {{ csrf() | safe }}
 
