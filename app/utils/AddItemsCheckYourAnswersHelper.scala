@@ -20,9 +20,11 @@ import controllers.addItems.previousReferences.{routes => previousReferencesRout
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.containers.{routes => containerRoutes}
+import controllers.addItems.securityDetails.{routes => securityDetailsRoutes}
 import models._
 import pages.addItems._
 import pages.addItems.containers._
+import pages.addItems.securityDetails._
 import pages.addItems.traderDetails._
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -30,6 +32,36 @@ import uk.gov.hmrc.viewmodels._
 import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def usingSameCommercialReference(index: Index): Option[Row] = userAnswers.get(UsingSameCommercialReferencePage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"usingSameCommercialReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = securityDetailsRoutes.UsingSameCommercialReferenceController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"usingSameCommercialReference.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def transportCharges(itemIndex: Index): Option[Row] = userAnswers.get(TransportChargesPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"transportCharges.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = securityDetailsRoutes.TransportChargesController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"transportCharges.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def containerRow(itemIndex: Index, containerIndex: Index, userAnswers: UserAnswers): Option[Row] =
     userAnswers.get(ContainerNumberPage(itemIndex, containerIndex)).map {
@@ -583,6 +615,51 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.ConfirmRemoveDocumentController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveDocument.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def commercialReferenceNumber(itemIndex: Index): Option[Row] = userAnswers.get(CommercialReferenceNumberPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"commercialReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = securityDetailsRoutes.CommercialReferenceNumberController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"commercialReferenceNumber.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def AddDangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(AddDangerousGoodsCodePage) map {
+    answer =>
+      Row(
+        key   = Key(msg"addDangerousGoodsCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = securityDetailsRoutes.AddDangerousGoodsCodeController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addDangerousGoodsCode.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def dangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(DangerousGoodsCodePage) map {
+    answer =>
+      Row(
+        key   = Key(msg"dangerousGoodsCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = securityDetailsRoutes.DangerousGoodsCodeController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"dangerousGoodsCode.checkYourAnswersLabel"))
           )
         )
       )

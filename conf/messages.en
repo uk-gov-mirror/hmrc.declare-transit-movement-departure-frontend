@@ -1075,3 +1075,32 @@ confirmRemoveDocument.error.required = Select yes if you want to remove this doc
 confirmRemoveContainer.title = Are you sure you want to remove this shipping container?
 confirmRemoveContainer.heading = Are you sure you want to remove this shipping container?
 confirmRemoveContainer.error.required = Select yes if you want to remove this shipping container
+
+transportCharges.title = What payment method are you using for the transport charges?
+transportCharges.heading = What payment method are you using for the transport charges?
+transportCharges.checkYourAnswersLabel = Payment method for transport charges
+transportCharges.error.required = Enter the payment method you are using for the transport charges
+transportCharges.error.length = TransportCharges must be 100 characters or less
+
+usingSameCommercialReference.title = Are you using the same commercial reference number across all items?
+usingSameCommercialReference.heading = Are you using the same commercial reference number across all items?
+usingSameCommercialReference.checkYourAnswersLabel = Using same commercial reference number?
+usingSameCommercialReference.error.required = Select yes if you are using the same commercial reference number
+
+commercialReferenceNumber.title = What is the commercial reference number?
+commercialReferenceNumber.heading = What is the commercial reference number?
+commercialReferenceNumber.checkYourAnswersLabel = Commercial reference number
+commercialReferenceNumber.error.required = Enter the commercial reference number
+commercialReferenceNumber.error.invalidCharacters = The commercial reference number must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+commercialReferenceNumber.error.length = The commercial reference number must be 70 characters or less
+
+addDangerousGoodsCode.title = Do you know the United Nations number for dangerous goods?
+addDangerousGoodsCode.heading = Do you know the United Nations number for dangerous goods?
+addDangerousGoodsCode.checkYourAnswersLabel = Know the United Nations number for dangerous goods?
+addDangerousGoodsCode.error.required = Select yes if you know the United Nations number for dangerous goods
+
+dangerousGoodsCode.title = What is the United Nations number for dangerous goods?
+dangerousGoodsCode.heading = What is the United Nations number for dangerous goods?
+dangerousGoodsCode.checkYourAnswersLabel = United Nations number for dangerous goods
+dangerousGoodsCode.error.required = Enter the United Nations number for dangerous goods
+dangerousGoodsCode.error.length = United Nations number for dangerous goods must be 4 characters or less

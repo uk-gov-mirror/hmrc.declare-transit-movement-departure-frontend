@@ -25,6 +25,7 @@ import pages.addItems.traderDetails._
 import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
+import pages.addItems.securityDetails._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -32,6 +33,41 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryDangerousGoodsCodeUserAnswersEntry: Arbitrary[(DangerousGoodsCodePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[DangerousGoodsCodePage.type#Data].map(Json.toJson(_))
+      } yield (DangerousGoodsCodePage, value)
+    }
+
+  implicit lazy val arbitraryAddDangerousGoodsCodeUserAnswersEntry: Arbitrary[(AddDangerousGoodsCodePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddDangerousGoodsCodePage.type#Data].map(Json.toJson(_))
+      } yield (AddDangerousGoodsCodePage, value)
+    }
+
+  implicit lazy val arbitraryCommercialReferenceNumberUserAnswersEntry: Arbitrary[(CommercialReferenceNumberPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CommercialReferenceNumberPage.type#Data].map(Json.toJson(_))
+      } yield (CommercialReferenceNumberPage, value)
+    }
+
+  implicit lazy val arbitraryUsingSameCommercialReferenceUserAnswersEntry: Arbitrary[(UsingSameCommercialReferencePage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (UsingSameCommercialReferencePage(Index(0)), value)
+    }
+
+  implicit lazy val arbitraryTransportChargesUserAnswersEntry: Arbitrary[(TransportChargesPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[TransportChargesPage.type#Data].map(Json.toJson(_))
+      } yield (TransportChargesPage, value)
+    }
 
   implicit lazy val arbitraryConfirmRemoveContainerUserAnswersEntry: Arbitrary[(ConfirmRemoveContainerPage, JsValue)] =
     Arbitrary {
