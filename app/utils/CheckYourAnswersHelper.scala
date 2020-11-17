@@ -33,6 +33,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def knowUNDangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(KnowUNDangerousGoodsCodePage) map {
+    answer =>
+      Row(
+        key   = Key(msg"knowUNDangerousGoodsCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.KnowUNDangerousGoodsCodeController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"knowUNDangerousGoodsCode.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def removeSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(RemoveSpecialMentionPage(itemIndex)) map {
     answer =>
       Row(
