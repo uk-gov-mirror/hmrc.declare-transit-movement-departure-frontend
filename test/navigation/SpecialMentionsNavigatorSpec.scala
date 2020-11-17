@@ -38,7 +38,7 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
           navigator
             .nextPage(AddSpecialMentionPage(index), CheckMode, userAnswers)
-            .mustBe(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, index, NormalMode))
+            .mustBe(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, index, CheckMode))
         }
 
         "AddSpecialMentionPage is true and 1 special mention exists" in {
