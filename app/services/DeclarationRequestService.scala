@@ -83,11 +83,11 @@ class DeclarationRequestService @Inject()(
     def packages(packages: NonEmptyList[Packages]): NonEmptyList[models.messages.goodsitem.Package] =
       packages.map {
         case Packages.UnpackedPackages(packageType, _, totalPieces, markOrNumber) =>
-          UnpackedPackage(packageType.toString, totalPieces, markOrNumber)
+          UnpackedPackage(packageType.code, totalPieces, markOrNumber)
         case Packages.BulkPackages(packageType, _, markOrNumber) =>
-          BulkPackage(packageType.toString, markOrNumber)
+          BulkPackage(packageType.code, markOrNumber)
         case Packages.OtherPackages(packageType, howManyPackagesPage, markOrNumber) =>
-          RegularPackage(packageType.toString, howManyPackagesPage, markOrNumber)
+          RegularPackage(packageType.code, howManyPackagesPage, markOrNumber)
       }
 
     def goodsItems(goodsItems: NonEmptyList[ItemSection]): NonEmptyList[GoodsItem] =
@@ -127,7 +127,7 @@ class DeclarationRequestService @Inject()(
             countryCode     = Constants.principalTraderCountryCode.code
           )
         case TraderDetails.TraderEori(traderEori) =>
-          TraderPrincipalWithEori(eori = traderEori.toString, None, None, None, None, None)
+          TraderPrincipalWithEori(eori = traderEori.value, None, None, None, None, None)
       }
 
     def headerConsignor(traderDetails: TraderDetails): Option[TraderConsignor] =
@@ -162,7 +162,7 @@ class DeclarationRequestService @Inject()(
         timeOfPreparation           = dateTimeOfPrep.toLocalTime
       ),
       Header(
-        refNumHEA4          = preTaskList.lrn.toString,
+        refNumHEA4          = preTaskList.lrn.value,
         typOfDecHEA24       = movementDetails.declarationType.code,
         couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
         agrLocOfGooCodHEA38 = None,
