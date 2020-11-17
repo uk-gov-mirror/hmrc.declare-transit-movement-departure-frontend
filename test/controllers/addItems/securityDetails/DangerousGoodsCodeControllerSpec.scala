@@ -18,7 +18,7 @@ package controllers.addItems.securityDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.addItems.securityDetails.UNDangerousGoodsCodeFormProvider
+import forms.addItems.securityDetails.DangerousGoodsCodeFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.AddItems
@@ -27,7 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.securityDetails.UNDangerousGoodsCodePage
+import pages.addItems.securityDetails.DangerousGoodsCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -39,22 +39,22 @@ import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class UNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new UNDangerousGoodsCodeFormProvider()
+  private val formProvider = new DangerousGoodsCodeFormProvider()
   private val form         = formProvider()
-  private val template     = "addItems/securityDetails/uNDangerousGoodsCode.njk"
+  private val template     = "addItems/securityDetails/dangerousGoodsCode.njk"
 
-  lazy val uNDangerousGoodsCodeRoute = routes.UNDangerousGoodsCodeController.onPageLoad(lrn, index, NormalMode).url
+  lazy val dangerousGoodsCodeRoute = routes.DangerousGoodsCodeController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "UNDangerousGoodsCode Controller" - {
+  "DangerousGoodsCode Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -63,7 +63,7 @@ class UNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRende
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, uNDangerousGoodsCodeRoute)
+      val request        = FakeRequest(GET, dangerousGoodsCodeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -91,10 +91,10 @@ class UNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRende
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(UNDangerousGoodsCodePage, "test").success.value
+      val userAnswers = emptyUserAnswers.set(DangerousGoodsCodePage, "test").success.value
       dataRetrievalWithData(userAnswers)
 
-      val request        = FakeRequest(GET, uNDangerousGoodsCodeRoute)
+      val request        = FakeRequest(GET, dangerousGoodsCodeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -126,7 +126,7 @@ class UNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRende
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, uNDangerousGoodsCodeRoute)
+        FakeRequest(POST, dangerousGoodsCodeRoute)
           .withFormUrlEncodedBody(("value", "test"))
 
       val result = route(app, request).value
@@ -143,7 +143,7 @@ class UNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRende
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, uNDangerousGoodsCodeRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, dangerousGoodsCodeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -169,7 +169,7 @@ class UNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRende
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, uNDangerousGoodsCodeRoute)
+      val request = FakeRequest(GET, dangerousGoodsCodeRoute)
 
       val result = route(app, request).value
 
@@ -184,7 +184,7 @@ class UNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRende
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, uNDangerousGoodsCodeRoute)
+        FakeRequest(POST, dangerousGoodsCodeRoute)
           .withFormUrlEncodedBody(("value", "test"))
 
       val result = route(app, request).value

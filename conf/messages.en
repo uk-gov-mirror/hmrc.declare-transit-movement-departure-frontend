@@ -1099,8 +1099,8 @@ addDangerousGoodsCode.heading = Do you know the United Nations number for danger
 addDangerousGoodsCode.checkYourAnswersLabel = Know the United Nations number for dangerous goods?
 addDangerousGoodsCode.error.required = Select yes if you know the United Nations number for dangerous goods
 
-uNDangerousGoodsCode.title = What is the United Nations number for dangerous goods?
-uNDangerousGoodsCode.heading = What is the United Nations number for dangerous goods?
-uNDangerousGoodsCode.checkYourAnswersLabel = United Nations number for dangerous goods
-uNDangerousGoodsCode.error.required = Enter the United Nations number for dangerous goods
-uNDangerousGoodsCode.error.length = United Nations number for dangerous goods must be 4 characters or less
+dangerousGoodsCode.title = What is the United Nations number for dangerous goods?
+dangerousGoodsCode.heading = What is the United Nations number for dangerous goods?
+dangerousGoodsCode.checkYourAnswersLabel = United Nations number for dangerous goods
+dangerousGoodsCode.error.required = Enter the United Nations number for dangerous goods
+dangerousGoodsCode.error.length = United Nations number for dangerous goods must be 4 characters or less

@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("uNDangerousGoodsCode.title"), form.errors) }}
+  {{ title(messages("dangerousGoodsCode.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -27,14 +27,14 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.addItems.securityDetails.UNDangerousGoodsCodeController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.addItems.securityDetails.DangerousGoodsCodeController.onSubmit(lrn, mode).url }}" method="post">
         <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
 
           {{ csrf() | safe }}
 
           {{ govukInput({
             label: {
-              text: messages('uNDangerousGoodsCode.heading'),
+              text: messages('dangerousGoodsCode.heading'),
               isPageHeading: true,
               classes: "govuk-label--xl"
             },

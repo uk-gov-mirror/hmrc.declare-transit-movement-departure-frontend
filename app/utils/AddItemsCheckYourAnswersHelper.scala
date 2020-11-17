@@ -650,16 +650,16 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def uNDangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(UNDangerousGoodsCodePage) map {
+  def dangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(DangerousGoodsCodePage) map {
     answer =>
       Row(
-        key   = Key(msg"uNDangerousGoodsCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"dangerousGoodsCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"$answer"),
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = securityDetailsRoutes.UNDangerousGoodsCodeController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"uNDangerousGoodsCode.checkYourAnswersLabel"))
+            href               = securityDetailsRoutes.DangerousGoodsCodeController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"dangerousGoodsCode.checkYourAnswersLabel"))
           )
         )
       )

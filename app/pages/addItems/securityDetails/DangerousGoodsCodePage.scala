@@ -19,9 +19,9 @@ package pages.addItems.securityDetails
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object UNDangerousGoodsCodePage extends QuestionPage[String] {
+case object DangerousGoodsCodePage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "uNDangerousGoodsCode"
+  override def toString: String = "dangerousGoodsCode"
 }

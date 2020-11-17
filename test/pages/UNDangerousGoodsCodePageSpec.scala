@@ -16,17 +16,17 @@
 
 package pages
 
-import pages.addItems.securityDetails.UNDangerousGoodsCodePage
+import pages.addItems.securityDetails.DangerousGoodsCodePage
 import pages.behaviours.PageBehaviours
 
-class UNDangerousGoodsCodePageSpec extends PageBehaviours {
+class DangerousGoodsCodePageSpec extends PageBehaviours {
 
-  "UNDangerousGoodsCodePage" - {
+  "DangerousGoodsCodePage" - {
 
-    beRetrievable[String](UNDangerousGoodsCodePage)
+    beRetrievable[String](DangerousGoodsCodePage)
 
-    beSettable[String](UNDangerousGoodsCodePage)
+    beSettable[String](DangerousGoodsCodePage)
 
-    beRemovable[String](UNDangerousGoodsCodePage)
+    beRemovable[String](DangerousGoodsCodePage)
   }
 }
