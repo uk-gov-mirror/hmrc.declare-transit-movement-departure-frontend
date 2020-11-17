@@ -31,6 +31,12 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
     "in check mode" - {
 
+      "must go from SpecialMentionAdditionalInfoPage to AddAnotherSpecialMentionController" in {
+        navigator
+          .nextPage(SpecialMentionAdditionalInfoPage(index, itemIndex), CheckMode, emptyUserAnswers)
+          .mustBe(routes.AddAnotherSpecialMentionController.onPageLoad(emptyUserAnswers.id, index, CheckMode))
+      }
+
       "must go from AddSpecialMentionPage to SpecialMentionTypeController when" - {
 
         "AddSpecialMentionPage is true and no special mentions exist" in {
@@ -78,7 +84,13 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       "must go from SpecialMentionAdditionalInfo to AddAnotherSpecialMention" in {
         navigator
           .nextPage(SpecialMentionAdditionalInfoPage(index, index), CheckMode, emptyUserAnswers)
-          .mustBe(routes.AddAnotherSpecialMentionController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
+          .mustBe(routes.AddAnotherSpecialMentionController.onPageLoad(emptyUserAnswers.id, index, CheckMode))
+      }
+
+      "must go from AddAnotherSpecialMentionPage to ItemsCheckYourAnswers" in {
+        navigator
+          .nextPage(AddAnotherSpecialMentionPage(index), CheckMode, emptyUserAnswers)
+          .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(emptyUserAnswers.id, index))
       }
     }
 
