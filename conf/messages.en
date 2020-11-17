@@ -1080,3 +1080,10 @@ usingSameCommercialReference.title = Are you using the same commercial reference
 usingSameCommercialReference.heading = Are you using the same commercial reference number across all items?
 usingSameCommercialReference.checkYourAnswersLabel = Using same commercial reference number?
 usingSameCommercialReference.error.required = Select yes if you are using the same commercial reference number
+
+commercialReferenceNumber.title = What is the commercial reference number?
+commercialReferenceNumber.heading = What is the commercial reference number?
+commercialReferenceNumber.checkYourAnswersLabel = Commercial reference number
+commercialReferenceNumber.error.required = Enter the commercial reference number
+commercialReferenceNumber.error.invalidCharacters = The commercial reference number must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+commercialReferenceNumber.error.length = The commercial reference number must be 70 characters or less
