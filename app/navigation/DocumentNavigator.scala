@@ -15,6 +15,7 @@
  */
 
 package navigation
+
 import derivable.DeriveNumberOfDocuments
 import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.Page

@@ -44,7 +44,7 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new TransportChargesFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(index)
   private val template     = "addItems/securityDetails/transportCharges.njk"
 
   lazy val transportChargesRoute = routes.TransportChargesController.onPageLoad(lrn, index, NormalMode).url
@@ -90,7 +90,7 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(TransportChargesPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(TransportChargesPage(index), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, transportChargesRoute)

@@ -16,16 +16,17 @@
 
 package pages.addItems.securityDetails
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class CommercialReferenceNumberPageSpec extends PageBehaviours {
+class CommercialReferenceNumberPageSpec extends SpecBase with PageBehaviours {
 
   "CommercialReferenceNumberPage" - {
 
-    beRetrievable[String](CommercialReferenceNumberPage)
+    beRetrievable[String](CommercialReferenceNumberPage(index))
 
-    beSettable[String](CommercialReferenceNumberPage)
+    beSettable[String](CommercialReferenceNumberPage(index))
 
-    beRemovable[String](CommercialReferenceNumberPage)
+    beRemovable[String](CommercialReferenceNumberPage(index))
   }
 }

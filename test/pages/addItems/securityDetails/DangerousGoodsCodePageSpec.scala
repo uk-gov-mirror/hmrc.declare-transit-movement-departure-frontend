@@ -17,16 +17,17 @@
 package pages.addItems.securityDetails
 
 import base.SpecBase
+import models.Index
 import pages.behaviours.PageBehaviours
 
-class TransportChargesPageSpec extends SpecBase with PageBehaviours {
+class DangerousGoodsCodePageSpec extends SpecBase with PageBehaviours {
 
-  "TransportChargesPage" - {
+  "DangerousGoodsCodePage" - {
 
-    beRetrievable[String](TransportChargesPage(index))
+    beRetrievable[String](DangerousGoodsCodePage(index))
 
-    beSettable[String](TransportChargesPage(index))
+    beSettable[String](DangerousGoodsCodePage(index))
 
-    beRemovable[String](TransportChargesPage(index))
+    beRemovable[String](DangerousGoodsCodePage(index))
   }
 }

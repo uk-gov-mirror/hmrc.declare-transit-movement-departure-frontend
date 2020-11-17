@@ -48,14 +48,13 @@ class TransportChargesController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/securityDetails/transportCharges.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TransportChargesPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(TransportChargesPage(itemIndex)) match {
+        case None        => formProvider(itemIndex)
+        case Some(value) => formProvider(itemIndex).fill(value)
       }
 
       val json = Json.obj(
@@ -69,7 +68,7 @@ class TransportChargesController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(itemIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -84,9 +83,9 @@ class TransportChargesController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportChargesPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportChargesPage(itemIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TransportChargesPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(TransportChargesPage(itemIndex), mode, updatedAnswers))
         )
   }
 }

@@ -18,11 +18,12 @@ package forms.addItems.securityDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
 
 class CommercialReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(index: Index): Form[String] =
     Form(
       "value" -> text("commercialReferenceNumber.error.required")
         .verifying(maxLength(70, "commercialReferenceNumber.error.length"))

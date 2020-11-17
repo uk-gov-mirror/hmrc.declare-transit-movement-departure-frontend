@@ -48,14 +48,13 @@ class CommercialReferenceNumberController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/securityDetails/commercialReferenceNumber.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CommercialReferenceNumberPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(CommercialReferenceNumberPage(index)) match {
+        case None        => formProvider(index)
+        case Some(value) => formProvider(index).fill(value)
       }
 
       val json = Json.obj(
@@ -69,7 +68,7 @@ class CommercialReferenceNumberController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(index)
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -84,9 +83,9 @@ class CommercialReferenceNumberController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(CommercialReferenceNumberPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CommercialReferenceNumberPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(CommercialReferenceNumberPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(CommercialReferenceNumberPage(index), mode, updatedAnswers))
         )
   }
 }

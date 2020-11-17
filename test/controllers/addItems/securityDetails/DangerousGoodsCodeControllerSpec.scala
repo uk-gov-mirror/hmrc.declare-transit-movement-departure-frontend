@@ -44,7 +44,7 @@ class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendere
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new DangerousGoodsCodeFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(index)
   private val template     = "addItems/securityDetails/dangerousGoodsCode.njk"
 
   lazy val dangerousGoodsCodeRoute = routes.DangerousGoodsCodeController.onPageLoad(lrn, index, NormalMode).url
@@ -91,7 +91,7 @@ class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendere
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(DangerousGoodsCodePage, "test").success.value
+      val userAnswers = emptyUserAnswers.set(DangerousGoodsCodePage(index), "test").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, dangerousGoodsCodeRoute)

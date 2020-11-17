@@ -48,14 +48,13 @@ class AddDangerousGoodsCodeController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/securityDetails/addDangerousGoodsCode.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddDangerousGoodsCodePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(AddDangerousGoodsCodePage(itemIndex)) match {
+        case None        => formProvider(itemIndex)
+        case Some(value) => formProvider(itemIndex).fill(value)
       }
 
       val json = Json.obj(
@@ -70,7 +69,7 @@ class AddDangerousGoodsCodeController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider(itemIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -86,9 +85,9 @@ class AddDangerousGoodsCodeController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDangerousGoodsCodePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDangerousGoodsCodePage(itemIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddDangerousGoodsCodePage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddDangerousGoodsCodePage(itemIndex), mode, updatedAnswers))
         )
   }
 }

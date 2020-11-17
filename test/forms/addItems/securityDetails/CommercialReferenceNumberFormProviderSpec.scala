@@ -16,16 +16,17 @@
 
 package forms.addItems.securityDetails
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class CommercialReferenceNumberFormProviderSpec extends StringFieldBehaviours {
+class CommercialReferenceNumberFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
   val requiredKey = "commercialReferenceNumber.error.required"
   val lengthKey   = "commercialReferenceNumber.error.length"
   val maxLength   = 70
 
-  val form = new CommercialReferenceNumberFormProvider()()
+  val form = new CommercialReferenceNumberFormProvider()(index)
 
   ".value" - {
 

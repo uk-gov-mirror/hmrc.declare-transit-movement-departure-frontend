@@ -34,25 +34,25 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
-  implicit lazy val arbitraryDangerousGoodsCodeUserAnswersEntry: Arbitrary[(DangerousGoodsCodePage.type, JsValue)] =
+  implicit lazy val arbitraryDangerousGoodsCodeUserAnswersEntry: Arbitrary[(DangerousGoodsCodePage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[DangerousGoodsCodePage.type#Data].map(Json.toJson(_))
-      } yield (DangerousGoodsCodePage, value)
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (DangerousGoodsCodePage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryAddDangerousGoodsCodeUserAnswersEntry: Arbitrary[(AddDangerousGoodsCodePage.type, JsValue)] =
+  implicit lazy val arbitraryAddDangerousGoodsCodeUserAnswersEntry: Arbitrary[(AddDangerousGoodsCodePage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[AddDangerousGoodsCodePage.type#Data].map(Json.toJson(_))
-      } yield (AddDangerousGoodsCodePage, value)
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (AddDangerousGoodsCodePage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryCommercialReferenceNumberUserAnswersEntry: Arbitrary[(CommercialReferenceNumberPage.type, JsValue)] =
+  implicit lazy val arbitraryCommercialReferenceNumberUserAnswersEntry: Arbitrary[(CommercialReferenceNumberPage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[CommercialReferenceNumberPage.type#Data].map(Json.toJson(_))
-      } yield (CommercialReferenceNumberPage, value)
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (CommercialReferenceNumberPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryUsingSameCommercialReferenceUserAnswersEntry: Arbitrary[(UsingSameCommercialReferencePage, JsValue)] =
@@ -62,11 +62,11 @@ trait UserAnswersEntryGenerators {
       } yield (UsingSameCommercialReferencePage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryTransportChargesUserAnswersEntry: Arbitrary[(TransportChargesPage.type, JsValue)] =
+  implicit lazy val arbitraryTransportChargesUserAnswersEntry: Arbitrary[(TransportChargesPage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[TransportChargesPage.type#Data].map(Json.toJson(_))
-      } yield (TransportChargesPage, value)
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (TransportChargesPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryConfirmRemoveContainerUserAnswersEntry: Arbitrary[(ConfirmRemoveContainerPage, JsValue)] =

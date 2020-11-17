@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package navigation.annotations;
 
-import pages.addItems.securityDetails.DangerousGoodsCodePage
-import pages.behaviours.PageBehaviours
+import com.google.inject.BindingAnnotation;
 
-class DangerousGoodsCodePageSpec extends PageBehaviours {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  "DangerousGoodsCodePage" - {
-
-    beRetrievable[String](DangerousGoodsCodePage)
-
-    beSettable[String](DangerousGoodsCodePage)
-
-    beRemovable[String](DangerousGoodsCodePage)
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface SecurityDetails {
 }

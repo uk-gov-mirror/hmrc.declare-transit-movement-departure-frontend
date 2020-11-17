@@ -16,16 +16,17 @@
 
 package forms.addItems.securityDetails
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class TransportChargesFormProviderSpec extends StringFieldBehaviours {
+class TransportChargesFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
   val requiredKey = "transportCharges.error.required"
   val lengthKey   = "transportCharges.error.length"
   val maxLength   = 100
 
-  val form = new TransportChargesFormProvider()()
+  val form = new TransportChargesFormProvider()(index)
 
   ".value" - {
 

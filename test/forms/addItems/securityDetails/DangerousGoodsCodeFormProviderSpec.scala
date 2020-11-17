@@ -16,16 +16,17 @@
 
 package forms.addItems.securityDetails
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class DangerousGoodsCodeFormProviderSpec extends StringFieldBehaviours {
+class DangerousGoodsCodeFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
   val requiredKey = "dangerousGoodsCode.error.required"
   val lengthKey   = "dangerousGoodsCode.error.length"
   val maxLength   = 4
 
-  val form = new DangerousGoodsCodeFormProvider()()
+  val form = new DangerousGoodsCodeFormProvider()(index)
 
   ".value" - {
 

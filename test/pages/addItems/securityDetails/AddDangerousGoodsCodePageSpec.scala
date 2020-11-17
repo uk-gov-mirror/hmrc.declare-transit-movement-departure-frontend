@@ -16,16 +16,17 @@
 
 package pages.addItems.securityDetails
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class AddDangerousGoodsCodePageSpec extends PageBehaviours {
+class AddDangerousGoodsCodePageSpec extends SpecBase with PageBehaviours {
 
   "AddDangerousGoodsCodePage" - {
 
-    beRetrievable[Boolean](AddDangerousGoodsCodePage)
+    beRetrievable[Boolean](AddDangerousGoodsCodePage(index))
 
-    beSettable[Boolean](AddDangerousGoodsCodePage)
+    beSettable[Boolean](AddDangerousGoodsCodePage(index))
 
-    beRemovable[Boolean](AddDangerousGoodsCodePage)
+    beRemovable[Boolean](AddDangerousGoodsCodePage(index))
   }
 }
