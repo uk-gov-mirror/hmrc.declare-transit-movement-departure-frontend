@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms.addItems.securityDetails
 
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class TransportChargesPageSpec extends PageBehaviours {
+class TransportChargesFormProvider @Inject() extends Mappings {
 
-  "TransportChargesPage" - {
-
-    beRetrievable[String](TransportChargesPage)
-
-    beSettable[String](TransportChargesPage)
-
-    beRemovable[String](TransportChargesPage)
-  }
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("transportCharges.error.required")
+        .verifying(maxLength(100, "transportCharges.error.length"))
+    )
 }

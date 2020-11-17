@@ -25,6 +25,7 @@ import pages.addItems.traderDetails._
 import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
+import pages.addItems.securityDetails.TransportChargesPage
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}

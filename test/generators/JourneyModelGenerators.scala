@@ -21,7 +21,13 @@ import java.time.{LocalDate, LocalDateTime}
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
 import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
-import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, DeclarationForSomeoneElseAnswer, NormalMovementDetails, SimplifiedMovementDetails}
+import models.journeyDomain.MovementDetails.{
+  DeclarationForSelf,
+  DeclarationForSomeoneElse,
+  DeclarationForSomeoneElseAnswer,
+  NormalMovementDetails,
+  SimplifiedMovementDetails
+}
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori}
@@ -29,9 +35,31 @@ import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
-import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemDetails, ItemSection, JourneyDomain, MovementDetails, Packages, PreTaskListDetails, RouteDetails, TraderDetails, TransportDetails}
+import models.journeyDomain.{
+  GoodsSummary,
+  GuaranteeDetails,
+  ItemDetails,
+  ItemSection,
+  JourneyDomain,
+  MovementDetails,
+  Packages,
+  PreTaskListDetails,
+  RouteDetails,
+  TraderDetails,
+  TransportDetails
+}
 import models.reference.{CountryCode, PackageType}
-import models.{ConsigneeAddress, ConsignorAddress, DeclarationType, EoriNumber, GuaranteeType, LocalReferenceNumber, PrincipalAddress, ProcedureType, RepresentativeCapacity}
+import models.{
+  ConsigneeAddress,
+  ConsignorAddress,
+  DeclarationType,
+  EoriNumber,
+  GuaranteeType,
+  LocalReferenceNumber,
+  PrincipalAddress,
+  ProcedureType,
+  RepresentativeCapacity
+}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 

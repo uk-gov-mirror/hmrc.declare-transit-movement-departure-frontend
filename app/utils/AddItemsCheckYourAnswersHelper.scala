@@ -20,9 +20,11 @@ import controllers.addItems.previousReferences.{routes => previousReferencesRout
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.containers.{routes => containerRoutes}
+import controllers.addItems.securityDetails.{routes => securityDetailsRoutes}
 import models._
 import pages.addItems._
 import pages.addItems.containers._
+import pages.addItems.securityDetails.TransportChargesPage
 import pages.addItems.traderDetails._
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -30,6 +32,21 @@ import uk.gov.hmrc.viewmodels._
 import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def transportCharges(itemIndex: Index): Option[Row] = userAnswers.get(TransportChargesPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"transportCharges.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = securityDetailsRoutes.TransportChargesController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"transportCharges.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def containerRow(itemIndex: Index, containerIndex: Index, userAnswers: UserAnswers): Option[Row] =
     userAnswers.get(ContainerNumberPage(itemIndex, containerIndex)).map {

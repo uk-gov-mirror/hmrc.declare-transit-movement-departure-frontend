@@ -1070,8 +1070,8 @@ confirmRemoveContainer.title = Are you sure you want to remove this shipping con
 confirmRemoveContainer.heading = Are you sure you want to remove this shipping container?
 confirmRemoveContainer.error.required = Select yes if you want to remove this shipping container
 
-transportCharges.title = transportCharges
-transportCharges.heading = transportCharges
-transportCharges.checkYourAnswersLabel = transportCharges
-transportCharges.error.required = Enter transportCharges
+transportCharges.title = What payment method are you using for the transport charges?
+transportCharges.heading = What payment method are you using for the transport charges?
+transportCharges.checkYourAnswersLabel = Payment method for transport charges
+transportCharges.error.required = Enter the payment method you are using for the transport charges
 transportCharges.error.length = TransportCharges must be 100 characters or less
