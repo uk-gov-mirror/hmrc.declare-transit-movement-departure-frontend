@@ -18,13 +18,16 @@ package forms.addItems.specialMentions
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.{Index, SpecialMentionList}
+import models.reference.SpecialMention
 import play.api.data.Form
 
 class SpecialMentionTypeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(specialMentionList: SpecialMentionList, itemIndex: Index): Form[SpecialMention] =
     Form(
-      "value" -> text("specialMentionType.error.required")
-        .verifying(maxLength(100, "specialMentionType.error.length"))
+      "value" -> text("specialMentionType.error.required", args = Seq(itemIndex.display))
+        .verifying("specialMentionType.error.required", value => specialMentionList.list.exists(_.code == value))
+        .transform[SpecialMention](value => specialMentionList.getSpecialMention(value).get, _.code)
     )
 }

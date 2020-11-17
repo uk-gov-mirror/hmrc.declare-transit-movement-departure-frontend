@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package pages.addItems.specialMentions
+package queries
 
 import models.Index
 import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.{items, specialMentions}
+import play.api.libs.json.{JsObject, JsPath}
 
-case class RemoveSpecialMentionPage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
+final case class SpecialMentionsQuery(index: Index, referenceIndex: Index) extends QuestionPage[JsObject] {
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ specialMentions \ referenceIndex.position \ toString
-
-  override def toString: String = "removeSpecialMention"
+  override def path: JsPath = JsPath \ Constants.items \ index.position \ Constants.specialMentions \ referenceIndex.position
 }

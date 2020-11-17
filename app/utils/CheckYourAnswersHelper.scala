@@ -18,96 +18,13 @@ package utils
 
 import java.time.format.DateTimeFormatter
 
-import controllers.addItems.containers.{routes => containerRoutes}
-import controllers.addItems.specialMentions.{routes => specialMentionRoutes}
 import controllers.routes
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.{AddDocumentsPage, ConfirmRemoveDocumentPage, DocumentExtraInformationPage, DocumentReferencePage, DocumentTypePage}
-import pages.addItems.specialMentions._
-import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
-import pages.addItems.specialMentions._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
-
-  def removeSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(RemoveSpecialMentionPage(itemIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"removeSpecialMention.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = specialMentionRoutes.RemoveSpecialMentionController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"removeSpecialMention.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  //TODO: These should be moved
-  def addAnotherSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(AddAnotherSpecialMentionPage(itemIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"addAnotherSpecialMention.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = specialMentionRoutes.AddAnotherSpecialMentionController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherSpecialMention.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def specialMentionAdditionalInfo(itemIndex: Index, referenceIndex: Index): Option[Row] =
-    userAnswers.get(SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex)) map {
-      answer =>
-        Row(
-          key   = Key(msg"specialMentionAdditionalInfo.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-          value = Value(lit"$answer"),
-          actions = List(
-            Action(
-              content            = msg"site.edit",
-              href               = specialMentionRoutes.SpecialMentionAdditionalInfoController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionAdditionalInfo.checkYourAnswersLabel"))
-            )
-          )
-        )
-    }
-
-  def specialMentionType(itemIndex: Index, referenceIndex: Index): Option[Row] = userAnswers.get(SpecialMentionTypePage(itemIndex, referenceIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"specialMentionType.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = specialMentionRoutes.SpecialMentionTypeController.onPageLoad(lrn, itemIndex, referenceIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"specialMentionType.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addSpecialMention(itemIndex: Index): Option[Row] = userAnswers.get(AddSpecialMentionPage(itemIndex)) map {
-    answer =>
-      Row(
-        key   = Key(msg"addSpecialMention.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = specialMentionRoutes.AddSpecialMentionController.onPageLoad(lrn, itemIndex, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSpecialMention.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
 
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
