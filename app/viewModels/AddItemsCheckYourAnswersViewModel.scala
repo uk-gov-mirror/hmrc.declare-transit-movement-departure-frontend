@@ -17,7 +17,7 @@
 package viewModels
 
 import derivable.{DeriveNumberOfContainers, DeriveNumberOfDocuments, DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
-import models.{Index, PreviousDocumentTypeList, UserAnswers}
+import models.{DocumentTypeList, Index, PreviousDocumentTypeList, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.AddItemsCheckYourAnswersHelper
 import viewModels.sections.Section
@@ -26,8 +26,7 @@ case class AddItemsCheckYourAnswersViewModel(sections: Seq[Section])
 
 object AddItemsCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, index: Index): AddItemsCheckYourAnswersViewModel = {
-    //def apply(userAnswers: UserAnswers, index: Index, documentTypes: PreviousDocumentTypeList): AddItemsCheckYourAnswersViewModel = {
+  def apply(userAnswers: UserAnswers, index: Index, documentTypeList: DocumentTypeList): AddItemsCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper = new AddItemsCheckYourAnswersHelper(userAnswers)
 
@@ -36,11 +35,10 @@ object AddItemsCheckYourAnswersViewModel {
         itemsDetailsSection(checkYourAnswersHelper, index),
         traderDetailsSection(checkYourAnswersHelper, index),
         packagesSection(checkYourAnswersHelper, index)(userAnswers),
-        containersSection(checkYourAnswersHelper, index)(userAnswers)
+        containersSection(checkYourAnswersHelper, index)(userAnswers),
+        documentsSection(checkYourAnswersHelper, index, documentTypeList)(userAnswers)
         /*
-        ,
         referencesSection(checkYourAnswersHelper, index)(userAnswers),
-        documentsSection(checkYourAnswersHelper, index)(userAnswers)
        */
       )
     )
@@ -102,17 +100,17 @@ object AddItemsCheckYourAnswersViewModel {
     )
   }*/
 
-  private def documentsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index, documentIndex: Index)(
+  private def documentsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index, documentTypeList: DocumentTypeList)(
     implicit userAnswers: UserAnswers) = {
     val documentRows: Seq[SummaryList.Row] =
       List.range(0, userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)).flatMap {
         documentPosition =>
-          checkYourAnswersHelper.documentRow(index, Index(documentPosition), userAnswers)
+          checkYourAnswersHelper.documentRow(index, Index(documentPosition), userAnswers, documentTypeList)
       }
 
     Section(
       msg"addItems.checkYourAnswersLabel.documents",
-      Seq(checkYourAnswersHelper.addDocuments(index).toSeq, checkYourAnswersHelper.documentReference(index, documentIndex).toSeq, documentRows).flatten,
+      Seq(checkYourAnswersHelper.addDocuments(index).toSeq, documentRows).flatten,
       checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
     )
   }
