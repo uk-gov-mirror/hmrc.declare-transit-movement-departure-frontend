@@ -44,7 +44,6 @@ class ItemsCheckYourAnswersController @Inject()(
 
   private val template = "addItems/itemsCheckYourAnswers.njk"
 
-//TODO: Add a spec for this
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       referenceDataConnector.getDocumentTypes() flatMap {

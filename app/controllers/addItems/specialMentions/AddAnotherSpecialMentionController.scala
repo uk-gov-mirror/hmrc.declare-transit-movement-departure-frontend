@@ -60,7 +60,7 @@ class AddAnotherSpecialMentionController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      renderPage(lrn, itemIndex, form).map(Ok(_))
+      renderPage(lrn, itemIndex, form, mode).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -68,7 +68,7 @@ class AddAnotherSpecialMentionController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => renderPage(lrn, itemIndex, formWithErrors).map(BadRequest(_)),
+          formWithErrors => renderPage(lrn, itemIndex, formWithErrors, mode).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSpecialMentionPage(itemIndex), value))
@@ -77,7 +77,8 @@ class AddAnotherSpecialMentionController @Inject()(
         )
   }
 
-  private def renderPage(lrn: LocalReferenceNumber, itemIndex: Index, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
+  private def renderPage(lrn: LocalReferenceNumber, itemIndex: Index, form: Form[Boolean], mode: Mode)(
+    implicit request: DataRequest[AnyContent]): Future[Html] = {
 
     val cya                   = new SpecialMentionsCheckYourAnswers(request.userAnswers)
     val numberOfReferences    = request.userAnswers.get(DeriveNumberOfSpecialMentions(itemIndex)).getOrElse(0)
@@ -87,7 +88,7 @@ class AddAnotherSpecialMentionController @Inject()(
       specialMentions =>
         val referenceRows = indexList.map {
           referenceIndex =>
-            cya.specialMentionType(itemIndex, referenceIndex, specialMentions)
+            cya.specialMentionType(itemIndex, referenceIndex, specialMentions, mode)
         }
 
         val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"

@@ -53,7 +53,17 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
         Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, CheckMode))
     case AddAnotherSpecialMentionPage(itemIndex) =>
       userAnswers =>
-        Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, itemIndex))
+        userAnswers.get(AddAnotherSpecialMentionPage(itemIndex)) match {
+          case Some(true) => Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), CheckMode))
+          case _          => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, itemIndex))
+        }
+    case RemoveSpecialMentionPage(itemIndex, _) =>
+      userAnswers =>
+        if (count(itemIndex)(userAnswers) == 0) {
+          Some(routes.AddSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, CheckMode))
+        } else {
+          Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, CheckMode))
+        }
   }
 
   private def addSpecialMentionPage: PartialFunction[Page, UserAnswers => Option[Call]] = {
