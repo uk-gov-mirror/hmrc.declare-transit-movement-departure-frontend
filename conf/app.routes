@@ -571,6 +571,7 @@ GET        /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-d
 POST       /:lrn/add-items/:itemIndex/document-reference/:documentIndex/change-document-type        controllers.addItems.DocumentTypeController.onSubmit(lrn: LocalReferenceNumber,  itemIndex: Index, documentIndex:Index, mode: Mode = CheckMode)
 
 GET        /:lrn/submissionConfirmation                       controllers.SubmissionConfirmationController.onPageLoad(lrn: LocalReferenceNumber)
+GET        /:departureId/departure-rejection                  controllers.GuaranteeNotValidController.onPageLoad(departureId: DepartureId)
 
 GET        /:lrn/add-items/:itemIndex/document-reference/add-another-document                        controllers.addItems.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
 POST       /:lrn/add-items/:itemIndex/document-reference/add-another-document                             controllers.addItems.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)

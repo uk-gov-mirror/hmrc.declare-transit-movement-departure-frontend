@@ -27,7 +27,7 @@ object InvalidGuaranteeReasonCode {
   implicit val writes: OWrites[InvalidGuaranteeReasonCode] = Json.writes[InvalidGuaranteeReasonCode]
 
   implicit val xmlReader: XmlReader[InvalidGuaranteeReasonCode] = (
-    (__ \ "InvGuaReaCodRNS11").read[InvalidGuaranteeCode],
-    (__ \ "InvGuaReaRNS12").read[String].optional
+    (__ \ "INVGUARNS" \ "InvGuaReaCodRNS11").read[InvalidGuaranteeCode],
+    (__ \ "INVGUARNS" \ "InvGuaReaRNS12").read[String].optional
   ).mapN(apply)
 }

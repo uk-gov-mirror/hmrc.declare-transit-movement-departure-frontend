@@ -18,9 +18,14 @@ package models
 
 import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import com.lucidchart.open.xtract.{__, XmlReader}
+import play.api.libs.json.{Json, OWrites}
 
-case class DepartureRejectionMessage(invalidGuaranteeReasonCodes: Seq[InvalidGuaranteeReasonCode])
+case class GuaranteeNotValidMessage(reasonCodes: Seq[InvalidGuaranteeReasonCode])
 
-object DepartureRejectionMessage {
-  implicit val xmlReader: XmlReader[DepartureRejectionMessage] = (__ \ "INVGUARNS").read(strictReadSeq[InvalidGuaranteeReasonCode]).map(apply)
+object GuaranteeNotValidMessage {
+
+  implicit val writes: OWrites[GuaranteeNotValidMessage] = Json.writes[GuaranteeNotValidMessage]
+
+  implicit val xmlReader: XmlReader[GuaranteeNotValidMessage] = (__ \ "GUAREF2").read(strictReadSeq[InvalidGuaranteeReasonCode]).map(apply)
+
 }

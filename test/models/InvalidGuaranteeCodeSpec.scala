@@ -16,11 +16,9 @@
 
 package models
 
-import com.lucidchart.open.xtract.XmlReader
+import com.lucidchart.open.xtract.{ParseFailure, XmlReader}
 import generators.Generators
-import models.InvalidGuaranteeCode.DefaultInvalidCode
 import org.scalacheck.Gen
-import org.scalacheck.Gen.const
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -30,20 +28,15 @@ class InvalidGuaranteeCodeSpec extends AnyFreeSpec with Generators with ScalaChe
   "InvalidGuaranteeCode" - {
     "must read xml for single items" in {
       forAll(Gen.oneOf(InvalidGuaranteeCode.values)) {
-        pointer =>
-          val xml = <test>{pointer.code}</test>
-          XmlReader.of[InvalidGuaranteeCode].read(xml).toOption.value mustBe pointer
+        code =>
+          val xml = <test>{code.code}</test>
+          XmlReader.of[InvalidGuaranteeCode].read(xml).toOption.value mustBe code
       }
     }
 
-    "must return DefaultInvalidCode" in {
-
-      forAll(nonEmptyString suchThat (x => !InvalidGuaranteeCode.values.contains(x))) {
-        string =>
-          val xml = <test>{string}</test>
-          XmlReader.of[InvalidGuaranteeCode].read(xml).toOption.value mustBe DefaultInvalidCode(string)
-      }
-
+    "must return ParseFailureError for invalid value" in {
+      val xml = <test>somedata</test>
+      XmlReader.of[InvalidGuaranteeCode].read(xml) mustBe an[ParseFailure]
     }
 
   }
