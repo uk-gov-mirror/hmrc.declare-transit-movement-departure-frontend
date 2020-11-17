@@ -17,7 +17,7 @@
 package controllers.addItems.securityDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import controllers.{routes => transportChargesRoutes}
+import controllers.{routes => mainRoutes}
 import forms.addItems.securityDetails.TransportChargesFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
@@ -174,7 +174,7 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual transportChargesRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -190,7 +190,7 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual transportChargesRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }

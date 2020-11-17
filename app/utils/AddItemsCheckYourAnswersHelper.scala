@@ -24,7 +24,7 @@ import controllers.addItems.securityDetails.{routes => securityDetailsRoutes}
 import models._
 import pages.addItems._
 import pages.addItems.containers._
-import pages.addItems.securityDetails.{TransportChargesPage, UsingSameCommercialReferencePage}
+import pages.addItems.securityDetails.{CommercialReferenceNumberPage, TransportChargesPage, UsingSameCommercialReferencePage}
 import pages.addItems.traderDetails._
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -612,6 +612,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = routes.ConfirmRemoveDocumentController.onPageLoad(lrn, index, documentIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveDocument.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def commercialReferenceNumber(itemIndex: Index): Option[Row] = userAnswers.get(CommercialReferenceNumberPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"commercialReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = securityDetailsRoutes.CommercialReferenceNumberController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"commercialReferenceNumber.checkYourAnswersLabel"))
           )
         )
       )

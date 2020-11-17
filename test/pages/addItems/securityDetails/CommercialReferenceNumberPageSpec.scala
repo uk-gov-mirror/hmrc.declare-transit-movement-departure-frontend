@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems.securityDetails
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object CommercialReferenceNumberPage extends QuestionPage[String] {
+class CommercialReferenceNumberPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "CommercialReferenceNumberPage" - {
 
-  override def toString: String = "commercialReferenceNumber"
+    beRetrievable[String](CommercialReferenceNumberPage)
+
+    beSettable[String](CommercialReferenceNumberPage)
+
+    beRemovable[String](CommercialReferenceNumberPage)
+  }
 }

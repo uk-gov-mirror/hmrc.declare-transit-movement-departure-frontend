@@ -28,6 +28,7 @@
         {% endif %}
 
         <form action="{{ routes.controllers.addItems.securityDetails.UsingSameCommercialReferenceController.onSubmit(lrn, mode).url }}" method="post">
+        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
 
           {{ csrf() | safe }}
 

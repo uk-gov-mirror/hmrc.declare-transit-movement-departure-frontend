@@ -35,7 +35,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import controllers.{routes => UsingSameCommercialReferenceRoutes}
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -181,7 +181,7 @@ class UsingSameCommercialReferenceControllerSpec extends SpecBase with MockNunju
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual UsingSameCommercialReferenceRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -197,7 +197,7 @@ class UsingSameCommercialReferenceControllerSpec extends SpecBase with MockNunju
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual UsingSameCommercialReferenceRoutes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }
