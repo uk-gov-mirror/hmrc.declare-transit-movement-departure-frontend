@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems.securityDetails
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
+import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => transportChargesRoutes}
+import forms.addItems.securityDetails.TransportChargesFormProvider
 import matchers.JsonMatchers
-import forms.TransportChargesFormProvider
-import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import models.NormalMode
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.TransportChargesPage
+import pages.addItems.securityDetails.TransportChargesPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
@@ -175,7 +174,7 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual transportChargesRoutes.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -191,7 +190,7 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual transportChargesRoutes.SessionExpiredController.onPageLoad().url
 
     }
   }

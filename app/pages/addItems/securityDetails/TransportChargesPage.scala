@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems.securityDetails
 
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
 case object TransportChargesPage extends QuestionPage[String] {
