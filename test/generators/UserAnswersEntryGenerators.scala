@@ -41,11 +41,11 @@ trait UserAnswersEntryGenerators {
       } yield (UNDangerousGoodsCodePage, value)
     }
 
-  implicit lazy val arbitraryKnowUNDangerousGoodsCodeUserAnswersEntry: Arbitrary[(KnowUNDangerousGoodsCodePage.type, JsValue)] =
+  implicit lazy val arbitraryAddDangerousGoodsCodeUserAnswersEntry: Arbitrary[(AddDangerousGoodsCodePage.type, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[KnowUNDangerousGoodsCodePage.type#Data].map(Json.toJson(_))
-      } yield (KnowUNDangerousGoodsCodePage, value)
+        value <- arbitrary[AddDangerousGoodsCodePage.type#Data].map(Json.toJson(_))
+      } yield (AddDangerousGoodsCodePage, value)
     }
 
   implicit lazy val arbitraryCommercialReferenceNumberUserAnswersEntry: Arbitrary[(CommercialReferenceNumberPage.type, JsValue)] =

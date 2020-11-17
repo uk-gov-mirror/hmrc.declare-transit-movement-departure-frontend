@@ -18,7 +18,7 @@ package controllers.addItems.securityDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.addItems.securityDetails.KnowUNDangerousGoodsCodeFormProvider
+import forms.addItems.securityDetails.AddDangerousGoodsCodeFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
@@ -27,7 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.securityDetails.KnowUNDangerousGoodsCodePage
+import pages.addItems.securityDetails.AddDangerousGoodsCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -39,22 +39,22 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class KnowUNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new KnowUNDangerousGoodsCodeFormProvider()
+  private val formProvider = new AddDangerousGoodsCodeFormProvider()
   private val form         = formProvider()
-  private val template     = "addItems/securityDetails/knowUNDangerousGoodsCode.njk"
+  private val template     = "addItems/securityDetails/addDangerousGoodsCode.njk"
 
-  lazy val knowUNDangerousGoodsCodeRoute = routes.KnowUNDangerousGoodsCodeController.onPageLoad(lrn, index, NormalMode).url
+  lazy val addDangerousGoodsCodeRoute = routes.AddDangerousGoodsCodeController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "KnowUNDangerousGoodsCode Controller" - {
+  "AddDangerousGoodsCode Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -63,7 +63,7 @@ class KnowUNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksR
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, knowUNDangerousGoodsCodeRoute)
+      val request        = FakeRequest(GET, addDangerousGoodsCodeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -92,10 +92,10 @@ class KnowUNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksR
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(KnowUNDangerousGoodsCodePage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddDangerousGoodsCodePage, true).success.value
       dataRetrievalWithData(userAnswers)
 
-      val request        = FakeRequest(GET, knowUNDangerousGoodsCodeRoute)
+      val request        = FakeRequest(GET, addDangerousGoodsCodeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -128,7 +128,7 @@ class KnowUNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksR
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, knowUNDangerousGoodsCodeRoute)
+        FakeRequest(POST, addDangerousGoodsCodeRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -146,7 +146,7 @@ class KnowUNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksR
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, knowUNDangerousGoodsCodeRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, addDangerousGoodsCodeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -175,7 +175,7 @@ class KnowUNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksR
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, knowUNDangerousGoodsCodeRoute)
+      val request = FakeRequest(GET, addDangerousGoodsCodeRoute)
 
       val result = route(app, request).value
 
@@ -190,7 +190,7 @@ class KnowUNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksR
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, knowUNDangerousGoodsCodeRoute)
+        FakeRequest(POST, addDangerousGoodsCodeRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value

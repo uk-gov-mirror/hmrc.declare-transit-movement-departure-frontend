@@ -19,12 +19,12 @@ package forms.addItems.securityDetails
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class KnowUNDangerousGoodsCodeFormProviderSpec extends BooleanFieldBehaviours {
+class AddDangerousGoodsCodeFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "knowUNDangerousGoodsCode.error.required"
+  val requiredKey = "addDangerousGoodsCode.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new KnowUNDangerousGoodsCodeFormProvider()()
+  val form = new AddDangerousGoodsCodeFormProvider()()
 
   ".value" - {
 

@@ -16,12 +16,16 @@
 
 package pages.addItems.securityDetails
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object KnowUNDangerousGoodsCodePage extends QuestionPage[Boolean] {
+class AddDangerousGoodsCodePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "AddDangerousGoodsCodePage" - {
 
-  override def toString: String = "knowUNDangerousGoodsCode"
+    beRetrievable[Boolean](AddDangerousGoodsCodePage)
+
+    beSettable[Boolean](AddDangerousGoodsCodePage)
+
+    beRemovable[Boolean](AddDangerousGoodsCodePage)
+  }
 }

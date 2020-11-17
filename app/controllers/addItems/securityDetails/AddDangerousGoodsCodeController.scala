@@ -17,12 +17,12 @@
 package controllers.addItems.securityDetails
 
 import controllers.actions._
-import forms.addItems.securityDetails.KnowUNDangerousGoodsCodeFormProvider
+import forms.addItems.securityDetails.AddDangerousGoodsCodeFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.securityDetails.KnowUNDangerousGoodsCodePage
+import pages.addItems.securityDetails.AddDangerousGoodsCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,14 +33,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class KnowUNDangerousGoodsCodeController @Inject()(
+class AddDangerousGoodsCodeController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: KnowUNDangerousGoodsCodeFormProvider,
+  formProvider: AddDangerousGoodsCodeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -49,11 +49,11 @@ class KnowUNDangerousGoodsCodeController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "addItems/securityDetails/knowUNDangerousGoodsCode.njk"
+  private val template = "addItems/securityDetails/addDangerousGoodsCode.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(KnowUNDangerousGoodsCodePage) match {
+      val preparedForm = request.userAnswers.get(AddDangerousGoodsCodePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -86,9 +86,9 @@ class KnowUNDangerousGoodsCodeController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(KnowUNDangerousGoodsCodePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDangerousGoodsCodePage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(KnowUNDangerousGoodsCodePage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddDangerousGoodsCodePage, mode, updatedAnswers))
         )
   }
 }
