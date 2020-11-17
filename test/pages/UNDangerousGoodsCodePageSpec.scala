@@ -16,6 +16,7 @@
 
 package pages
 
+import pages.addItems.securityDetails.UNDangerousGoodsCodePage
 import pages.behaviours.PageBehaviours
 
 class UNDangerousGoodsCodePageSpec extends PageBehaviours {

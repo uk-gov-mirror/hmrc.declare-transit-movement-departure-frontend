@@ -45,7 +45,7 @@ class KnowUNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksR
 
   private val formProvider = new KnowUNDangerousGoodsCodeFormProvider()
   private val form         = formProvider()
-  private val template     = "knowUNDangerousGoodsCode.njk"
+  private val template     = "addItems/securityDetails/knowUNDangerousGoodsCode.njk"
 
   lazy val knowUNDangerousGoodsCodeRoute = routes.KnowUNDangerousGoodsCodeController.onPageLoad(lrn, index, NormalMode).url
 

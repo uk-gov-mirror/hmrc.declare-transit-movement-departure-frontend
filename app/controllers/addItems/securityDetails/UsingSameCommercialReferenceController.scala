@@ -49,7 +49,7 @@ class UsingSameCommercialReferenceController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "usingSameCommercialReference.njk"
+  private val template = "addItems/securityDetails/usingSameCommercialReference.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

@@ -49,7 +49,7 @@ class KnowUNDangerousGoodsCodeController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "knowUNDangerousGoodsCode.njk"
+  private val template = "addItems/securityDetails/knowUNDangerousGoodsCode.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems.securityDetails
 
 import controllers.actions._
-import forms.UNDangerousGoodsCodeFormProvider
+import forms.addItems.securityDetails.UNDangerousGoodsCodeFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.UNDangerousGoodsCodePage
+import pages.addItems.securityDetails.UNDangerousGoodsCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,7 +49,7 @@ class UNDangerousGoodsCodeController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "uNDangerousGoodsCode.njk"
+  private val template = "addItems/securityDetails/uNDangerousGoodsCode.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

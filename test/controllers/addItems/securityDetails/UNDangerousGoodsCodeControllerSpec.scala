@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.addItems.securityDetails
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
+import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
+import forms.addItems.securityDetails.UNDangerousGoodsCodeFormProvider
 import matchers.JsonMatchers
-import forms.UNDangerousGoodsCodeFormProvider
-import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import models.NormalMode
 import navigation.annotations.AddItems
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.UNDangerousGoodsCodePage
+import pages.addItems.securityDetails.UNDangerousGoodsCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
@@ -47,7 +45,7 @@ class UNDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRende
 
   private val formProvider = new UNDangerousGoodsCodeFormProvider()
   private val form         = formProvider()
-  private val template     = "uNDangerousGoodsCode.njk"
+  private val template     = "addItems/securityDetails/uNDangerousGoodsCode.njk"
 
   lazy val uNDangerousGoodsCodeRoute = routes.UNDangerousGoodsCodeController.onPageLoad(lrn, index, NormalMode).url
 
