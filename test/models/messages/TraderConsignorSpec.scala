@@ -62,6 +62,7 @@ class TraderConsignorSpec
               <CouCO125>
                 {trader.countryCode}
               </CouCO125>
+              <TRACONCO1LNG>EN</TRACONCO1LNG>
               {eori.getOrElse(NodeSeq.Empty)}
             </TRACONCO1>
 
