@@ -21,7 +21,7 @@ import forms.addItems.securityDetails.DangerousGoodsCodeFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.AddItems
+import navigation.annotations.{AddItems, SecurityDetails}
 import pages.addItems.securityDetails.DangerousGoodsCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DangerousGoodsCodeController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @AddItems navigator: Navigator,
+  @SecurityDetails navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
@@ -48,14 +48,13 @@ class DangerousGoodsCodeController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/securityDetails/dangerousGoodsCode.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DangerousGoodsCodePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(DangerousGoodsCodePage(index)) match {
+        case None        => formProvider()
+        case Some(value) => formProvider().fill(value)
       }
 
       val json = Json.obj(
@@ -69,7 +68,7 @@ class DangerousGoodsCodeController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider()
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -84,9 +83,9 @@ class DangerousGoodsCodeController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DangerousGoodsCodePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DangerousGoodsCodePage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DangerousGoodsCodePage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(DangerousGoodsCodePage(index), mode, updatedAnswers))
         )
   }
 }

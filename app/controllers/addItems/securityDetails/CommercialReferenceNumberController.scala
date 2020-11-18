@@ -21,7 +21,7 @@ import forms.addItems.securityDetails.CommercialReferenceNumberFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.AddItems
+import navigation.annotations.{AddItems, SecurityDetails}
 import pages.addItems.securityDetails.CommercialReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CommercialReferenceNumberController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @AddItems navigator: Navigator,
+  @SecurityDetails navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
@@ -48,14 +48,13 @@ class CommercialReferenceNumberController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
   private val template = "addItems/securityDetails/commercialReferenceNumber.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CommercialReferenceNumberPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(CommercialReferenceNumberPage(index)) match {
+        case None        => formProvider()
+        case Some(value) => formProvider().fill(value)
       }
 
       val json = Json.obj(
@@ -69,7 +68,7 @@ class CommercialReferenceNumberController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
+      formProvider()
         .bindFromRequest()
         .fold(
           formWithErrors => {
@@ -84,9 +83,9 @@ class CommercialReferenceNumberController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(CommercialReferenceNumberPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CommercialReferenceNumberPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(CommercialReferenceNumberPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(CommercialReferenceNumberPage(index), mode, updatedAnswers))
         )
   }
 }

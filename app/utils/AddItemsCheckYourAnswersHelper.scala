@@ -48,7 +48,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def transportCharges(itemIndex: Index): Option[Row] = userAnswers.get(TransportChargesPage) map {
+  def transportCharges(itemIndex: Index): Option[Row] = userAnswers.get(TransportChargesPage(itemIndex)) map {
     answer =>
       Row(
         key   = Key(msg"transportCharges.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -620,7 +620,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def commercialReferenceNumber(itemIndex: Index): Option[Row] = userAnswers.get(CommercialReferenceNumberPage) map {
+  def commercialReferenceNumber(itemIndex: Index): Option[Row] = userAnswers.get(CommercialReferenceNumberPage(itemIndex)) map {
     answer =>
       Row(
         key   = Key(msg"commercialReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -635,7 +635,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def AddDangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(AddDangerousGoodsCodePage) map {
+  def AddDangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(AddDangerousGoodsCodePage(itemIndex)) map {
     answer =>
       Row(
         key   = Key(msg"addDangerousGoodsCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -650,7 +650,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def dangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(DangerousGoodsCodePage) map {
+  def dangerousGoodsCode(itemIndex: Index): Option[Row] = userAnswers.get(DangerousGoodsCodePage(itemIndex)) map {
     answer =>
       Row(
         key   = Key(msg"dangerousGoodsCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),

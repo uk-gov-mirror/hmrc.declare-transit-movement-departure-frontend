@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package forms.addItems.securityDetails
+package pages.addItems.securityDetails
 
-import forms.mappings.Mappings
-import javax.inject.Inject
+import base.SpecBase
 import models.Index
-import play.api.data.Form
+import pages.behaviours.PageBehaviours
 
-class AddDangerousGoodsCodeFormProvider @Inject() extends Mappings {
+class DangerousGoodsCodePageSpec extends SpecBase with PageBehaviours {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("addDangerousGoodsCode.error.required")
-    )
+  "DangerousGoodsCodePage" - {
+
+    beRetrievable[String](DangerousGoodsCodePage(index))
+
+    beSettable[String](DangerousGoodsCodePage(index))
+
+    beRemovable[String](DangerousGoodsCodePage(index))
+  }
 }

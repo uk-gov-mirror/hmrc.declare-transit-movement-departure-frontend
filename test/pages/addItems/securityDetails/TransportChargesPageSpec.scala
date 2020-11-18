@@ -16,16 +16,17 @@
 
 package pages.addItems.securityDetails
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class TransportChargesPageSpec extends PageBehaviours {
+class TransportChargesPageSpec extends SpecBase with PageBehaviours {
 
   "TransportChargesPage" - {
 
-    beRetrievable[String](TransportChargesPage)
+    beRetrievable[String](TransportChargesPage(index))
 
-    beSettable[String](TransportChargesPage)
+    beSettable[String](TransportChargesPage(index))
 
-    beRemovable[String](TransportChargesPage)
+    beRemovable[String](TransportChargesPage(index))
   }
 }

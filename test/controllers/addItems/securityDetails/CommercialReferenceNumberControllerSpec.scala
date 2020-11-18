@@ -17,14 +17,17 @@
 package controllers.addItems.securityDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import controllers.{routes => mainRoutes}
+import forms.addItems.securityDetails.CommercialReferenceNumberFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
-import navigation.annotations.AddItems
+import navigation.annotations.SecurityDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.addItems.securityDetails.CommercialReferenceNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -33,9 +36,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoutes}
-import forms.addItems.securityDetails.CommercialReferenceNumberFormProvider
-import pages.addItems.securityDetails.CommercialReferenceNumberPage
 
 import scala.concurrent.Future
 
@@ -52,7 +52,7 @@ class CommercialReferenceNumberControllerSpec extends SpecBase with MockNunjucks
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SecurityDetails]).toInstance(new FakeNavigator(onwardRoute)))
 
   "CommercialReferenceNumber Controller" - {
 
@@ -91,7 +91,7 @@ class CommercialReferenceNumberControllerSpec extends SpecBase with MockNunjucks
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(CommercialReferenceNumberPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(CommercialReferenceNumberPage(index), "answer").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, commercialReferenceNumberRoute)

@@ -16,10 +16,11 @@
 
 package forms.addItems.securityDetails
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class TransportChargesFormProviderSpec extends StringFieldBehaviours {
+class TransportChargesFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
   val requiredKey = "transportCharges.error.required"
   val lengthKey   = "transportCharges.error.length"

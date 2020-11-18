@@ -16,12 +16,14 @@
 
 package pages.addItems.securityDetails
 
+import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.items
 
-case object TransportChargesPage extends QuestionPage[String] {
+case class TransportChargesPage(itemIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ toString
 
   override def toString: String = "transportCharges"
 }

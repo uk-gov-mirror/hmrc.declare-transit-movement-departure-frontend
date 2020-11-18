@@ -16,12 +16,22 @@
 
 package pages.addItems.securityDetails
 
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.items
 
-case object AddDangerousGoodsCodePage extends QuestionPage[Boolean] {
+import scala.util.Try
 
-  override def path: JsPath = JsPath \ toString
+case class AddDangerousGoodsCodePage(itemIndex: Index) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ toString
 
   override def toString: String = "AddDangerousGoodsCode"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(DangerousGoodsCodePage(itemIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

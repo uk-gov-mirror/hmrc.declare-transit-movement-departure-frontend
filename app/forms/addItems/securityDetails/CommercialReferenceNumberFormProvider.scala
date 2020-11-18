@@ -18,13 +18,22 @@ package forms.addItems.securityDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class CommercialReferenceNumberFormProvider @Inject() extends Mappings {
+
+  val commercialReferenceNumberRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
+  val commercialRefMaxLength         = 70
 
   def apply(): Form[String] =
     Form(
       "value" -> text("commercialReferenceNumber.error.required")
-        .verifying(maxLength(70, "commercialReferenceNumber.error.length"))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(commercialRefMaxLength, "commercialReferenceNumber.error.length"),
+            regexp(commercialReferenceNumberRegex, "commercialReferenceNumber.error.invalidCharacters")
+          ))
     )
 }

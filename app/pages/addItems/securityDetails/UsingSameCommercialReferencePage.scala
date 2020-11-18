@@ -16,13 +16,22 @@
 
 package pages.addItems.securityDetails
 
-import models.Index
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.items
 
-case class UsingSameCommercialReferencePage(index: Index) extends QuestionPage[Boolean] {
+import scala.util.Try
 
-  override def path: JsPath = JsPath \ toString
+case class UsingSameCommercialReferencePage(itemIndex: Index) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ items \ itemIndex.position \ toString
 
   override def toString: String = "usingSameCommercialReference"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(true) => userAnswers.remove(CommercialReferenceNumberPage(itemIndex))
+      case _          => super.cleanup(value, userAnswers)
+    }
 }
