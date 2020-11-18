@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-import java.time.LocalDate
+import pages.behaviours.PageBehaviours
 
-import play.api.libs.json.JsPath
+class AddSealsPageSpec extends PageBehaviours {
 
-case object ControlResultDateLimitPage extends QuestionPage[LocalDate] {
+  "AddSealsPage" - {
 
-  override def path: JsPath = JsPath \ toString
+    beRetrievable[Boolean](AddSealsPage)
 
-  override def toString: String = "controlResultDateLimit"
+    beSettable[Boolean](AddSealsPage)
+
+    beRemovable[Boolean](AddSealsPage)
+  }
 }

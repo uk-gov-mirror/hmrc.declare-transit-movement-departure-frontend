@@ -29,8 +29,20 @@ import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
 import models.{Index, NormalMode, SectionDetails, Status, UserAnswers}
 import pages.addItems.CommodityCodePage
+import pages.goodsSummary.{
+  AddCustomsApprovedLocationPage,
+  AddSealsPage,
+  AuthorisedLocationCodePage,
+  ControlResultDateLimitPage,
+  CustomsApprovedLocationPage,
+  DeclarePackagesPage,
+  SealIdDetailsPage,
+  SealsInformationPage,
+  TotalGrossMassPage,
+  TotalPackagesPage
+}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
-import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, _}
+import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, goodsSummary, _}
 
 class SectionsHelper(userAnswers: UserAnswers) {
 
@@ -287,7 +299,7 @@ class SectionsHelper(userAnswers: UserAnswers) {
     }
 
     val addSealsPages: Seq[(Option[SealDomain], String)] = if (userAnswers.get(AddSealsPage).contains(true)) {
-      Seq(userAnswers.get(SealIdDetailsPage(sealIndex)) -> goodsSummaryRoutes.SealIdDetailsController.onPageLoad(lrn, sealIndex, NormalMode).url)
+      Seq(userAnswers.get(goodsSummary.SealIdDetailsPage(sealIndex)) -> goodsSummaryRoutes.SealIdDetailsController.onPageLoad(lrn, sealIndex, NormalMode).url)
     } else {
       Seq.empty
     }

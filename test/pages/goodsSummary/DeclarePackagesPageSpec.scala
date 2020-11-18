@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-import models.Index
-import models.domain.SealDomain
-import play.api.libs.json.JsPath
-import queries.Constants
+import pages.behaviours.PageBehaviours
 
-case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {
+class DeclarePackagesPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ Constants.seals \ sealIndex.position
+  "DeclarePackagesPage" - {
 
+    beRetrievable[Boolean](DeclarePackagesPage)
+
+    beSettable[Boolean](DeclarePackagesPage)
+
+    beRemovable[Boolean](DeclarePackagesPage)
+  }
 }

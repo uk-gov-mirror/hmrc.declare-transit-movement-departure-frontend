@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-import base.SpecBase
-import models.domain.SealDomain
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class SealIdDetailsPageSpec extends PageBehaviours with SpecBase {
+case object AuthorisedLocationCodePage extends QuestionPage[String] {
 
-  "SealIdDetailsPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[SealDomain](SealIdDetailsPage(sealIndex))
-
-    beSettable[SealDomain](SealIdDetailsPage(sealIndex))
-
-    beRemovable[SealDomain](SealIdDetailsPage(sealIndex))
-  }
+  override def toString: String = "authorisedLocationCode"
 }

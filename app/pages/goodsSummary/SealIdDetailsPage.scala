@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-import java.time.LocalDate
+import models.Index
+import models.domain.SealDomain
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants
 
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+case class SealIdDetailsPage(sealIndex: Index) extends QuestionPage[SealDomain] {
 
-class ControlResultDateLimitPageSpec extends PageBehaviours {
+  override def path: JsPath = JsPath \ Constants.seals \ sealIndex.position
 
-  "ControlResultDateLimitPage" - {
-
-    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
-      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
-    }
-
-    beRetrievable[LocalDate](ControlResultDateLimitPage)
-
-    beSettable[LocalDate](ControlResultDateLimitPage)
-
-    beRemovable[LocalDate](ControlResultDateLimitPage)
-  }
 }

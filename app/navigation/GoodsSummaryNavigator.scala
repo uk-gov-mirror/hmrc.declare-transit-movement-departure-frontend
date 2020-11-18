@@ -22,6 +22,21 @@ import javax.inject.{Inject, Singleton}
 import models.ProcedureType.{Normal, Simplified}
 import models._
 import pages._
+import pages.goodsSummary.{
+  AddCustomsApprovedLocationPage,
+  AddSealsLaterPage,
+  AddSealsPage,
+  AuthorisedLocationCodePage,
+  ConfirmRemoveSealPage,
+  ConfirmRemoveSealsPage,
+  ControlResultDateLimitPage,
+  CustomsApprovedLocationPage,
+  DeclarePackagesPage,
+  SealIdDetailsPage,
+  SealsInformationPage,
+  TotalGrossMassPage,
+  TotalPackagesPage
+}
 import play.api.mvc.Call
 
 @Singleton

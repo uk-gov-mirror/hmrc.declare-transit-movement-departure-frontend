@@ -19,7 +19,8 @@ package utils
 import controllers.goodsSummary.routes.{ConfirmRemoveSealController, SealIdDetailsController, SealsInformationController}
 import derivable.DeriveNumberOfSeals
 import models.{CheckMode, Index, LocalReferenceNumber, Mode, UserAnswers}
-import pages.SealIdDetailsPage
+import pages.goodsSummary
+import pages.goodsSummary.SealIdDetailsPage
 import queries.SealsQuery
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
@@ -27,7 +28,7 @@ import uk.gov.hmrc.viewmodels._
 class AddSealHelper(userAnswers: UserAnswers) {
 
   def sealRow(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Option[Row] =
-    userAnswers.get(SealIdDetailsPage(sealIndex)).map {
+    userAnswers.get(goodsSummary.SealIdDetailsPage(sealIndex)).map {
       answer =>
         Row(
           key   = Key(msg"addSeal.sealList.label".withArgs(sealIndex.display)),

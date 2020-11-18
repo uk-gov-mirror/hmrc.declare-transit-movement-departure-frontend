@@ -16,8 +16,6 @@
 
 package controllers.goodsSummary
 
-import base.SpecBase
-import controllers.{routes => mainRoutes}
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
 import forms.goodsSummary.SealsInformationFormProvider
@@ -29,8 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.goodsSummary
 import play.api.data.Form
-import pages.SealIdDetailsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -61,7 +59,7 @@ class SealsInformationControllerSpec extends SpecBase with MockNunjucksRendererA
     "must return OK and the correct view for a GET with a single seal" in {
 
       val updatedAnswers = emptyUserAnswers
-        .set(SealIdDetailsPage(Index(0)), sealDomain)
+        .set(goodsSummary.SealIdDetailsPage(Index(0)), sealDomain)
         .success
         .value
 
@@ -97,10 +95,10 @@ class SealsInformationControllerSpec extends SpecBase with MockNunjucksRendererA
     "must return OK and the correct view for a GET with multiple seals" in {
 
       val updatedAnswers = emptyUserAnswers
-        .set(SealIdDetailsPage(Index(0)), sealDomain)
+        .set(goodsSummary.SealIdDetailsPage(Index(0)), sealDomain)
         .success
         .value
-        .set(SealIdDetailsPage(Index(1)), sealDomain2)
+        .set(goodsSummary.SealIdDetailsPage(Index(1)), sealDomain2)
         .success
         .value
       dataRetrievalWithData(updatedAnswers)
@@ -150,7 +148,7 @@ class SealsInformationControllerSpec extends SpecBase with MockNunjucksRendererA
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val updatedAnswers = emptyUserAnswers
-        .set(SealIdDetailsPage(Index(0)), sealDomain)
+        .set(goodsSummary.SealIdDetailsPage(Index(0)), sealDomain)
         .success
         .value
       dataRetrievalWithData(updatedAnswers)

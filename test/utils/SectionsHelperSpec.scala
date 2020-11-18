@@ -31,8 +31,20 @@ import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models._
 import models.reference.{Country, CountryCode, TransportMode}
-import pages._
+import pages.{goodsSummary, _}
 import pages.addItems.CommodityCodePage
+import pages.goodsSummary.{
+  AddCustomsApprovedLocationPage,
+  AddSealsPage,
+  AuthorisedLocationCodePage,
+  ControlResultDateLimitPage,
+  CustomsApprovedLocationPage,
+  DeclarePackagesPage,
+  SealIdDetailsPage,
+  SealsInformationPage,
+  TotalGrossMassPage,
+  TotalPackagesPage
+}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 class SectionsHelperSpec extends SpecBase {
@@ -465,7 +477,7 @@ class SectionsHelperSpec extends SpecBase {
           .set(AddSealsPage, true)
           .toOption
           .value
-          .set(SealIdDetailsPage(sealIndex), sealDomain)
+          .set(goodsSummary.SealIdDetailsPage(sealIndex), sealDomain)
           .success
           .value
           .set(SealsInformationPage, false)

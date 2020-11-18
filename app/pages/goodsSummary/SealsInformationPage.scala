@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
 case object SealsInformationPage extends QuestionPage[Boolean] {

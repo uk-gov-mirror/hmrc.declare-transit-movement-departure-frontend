@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
 import pages.behaviours.PageBehaviours
 
-class AddCustomsApprovedLocationPageSpec extends PageBehaviours {
+class TotalPackagesPageSpec extends PageBehaviours {
 
-  "AddCustomsApprovedLocationPage" - {
+  "TotalPackagesPage" - {
 
-    beRetrievable[Boolean](AddCustomsApprovedLocationPage)
+    beRetrievable[Int](TotalPackagesPage)
 
-    beSettable[Boolean](AddCustomsApprovedLocationPage)
+    beSettable[Int](TotalPackagesPage)
 
-    beRemovable[Boolean](AddCustomsApprovedLocationPage)
+    beRemovable[Int](TotalPackagesPage)
   }
 }

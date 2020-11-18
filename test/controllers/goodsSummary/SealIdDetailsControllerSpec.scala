@@ -27,7 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.SealIdDetailsPage
+import pages.goodsSummary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -84,7 +84,7 @@ class SealIdDetailsControllerSpec extends SpecBase with MockNunjucksRendererApp 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(SealIdDetailsPage(sealIndex), sealDomain).success.value
+      val userAnswers = emptyUserAnswers.set(goodsSummary.SealIdDetailsPage(sealIndex), sealDomain).success.value
       dataRetrievalWithData(userAnswers)
 
       when(mockRenderer.render(any(), any())(any()))

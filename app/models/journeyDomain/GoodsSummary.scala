@@ -24,6 +24,15 @@ import models.ProcedureType
 import models.domain.SealDomain
 import models.journeyDomain.GoodsSummary.GoodSummaryDetails
 import pages._
+import pages.goodsSummary.{
+  AddCustomsApprovedLocationPage,
+  AuthorisedLocationCodePage,
+  ControlResultDateLimitPage,
+  CustomsApprovedLocationPage,
+  DeclarePackagesPage,
+  TotalGrossMassPage,
+  TotalPackagesPage
+}
 
 case class GoodsSummary(
   numberOfPackages: Option[Int],

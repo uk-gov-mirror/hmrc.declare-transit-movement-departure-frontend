@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
 import pages.behaviours.PageBehaviours
 
-class CustomsApprovedLocationPageSpec extends PageBehaviours {
+class TotalGrossMassPageSpec extends PageBehaviours {
 
-  "CustomsApprovedLocationPage" - {
+  "TotalGrossMassPage" - {
 
-    beRetrievable[String](CustomsApprovedLocationPage)
+    beRetrievable[String](TotalGrossMassPage)
 
-    beSettable[String](CustomsApprovedLocationPage)
+    beSettable[String](TotalGrossMassPage)
 
-    beRemovable[String](CustomsApprovedLocationPage)
+    beRemovable[String](TotalGrossMassPage)
   }
 }

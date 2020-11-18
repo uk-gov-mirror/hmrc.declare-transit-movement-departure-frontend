@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object TotalPackagesPage extends QuestionPage[Int] {
+class SealsInformationPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "SealsInformationPage" - {
 
-  override def toString: String = "totalPackages"
+    beRetrievable[Boolean](SealsInformationPage)
+
+    beSettable[Boolean](SealsInformationPage)
+
+    beRemovable[Boolean](SealsInformationPage)
+  }
 }

@@ -27,7 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.SealIdDetailsPage
+import pages.goodsSummary
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -48,7 +48,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockNunjucksRenderer
   val form: Form[Boolean] = formProvider(sealDomain)
 
   lazy val confirmRemoveSealRoute: String = routes.ConfirmRemoveSealController.onPageLoad(lrn, sealIndex, NormalMode).url
-  private val userAnswersWithSeal         = emptyUserAnswers.set(SealIdDetailsPage(sealIndex), sealDomain).success.value
+  private val userAnswersWithSeal         = emptyUserAnswers.set(goodsSummary.SealIdDetailsPage(sealIndex), sealDomain).success.value
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -103,7 +103,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with MockNunjucksRenderer
       val newUserAnswers = UserAnswers(
         id         = userAnswersWithSeal.id,
         eoriNumber = userAnswersWithSeal.eoriNumber,
-        userAnswersWithSeal.remove(SealIdDetailsPage(sealIndex)).success.value.data,
+        userAnswersWithSeal.remove(goodsSummary.SealIdDetailsPage(sealIndex)).success.value.data,
         userAnswersWithSeal.lastUpdated
       )
 

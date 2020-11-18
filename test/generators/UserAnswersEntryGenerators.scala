@@ -19,13 +19,26 @@ package generators
 import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import pages._
+import pages.{goodsSummary, _}
 import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage, _}
 import pages.addItems.traderDetails._
 import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.addItems.securityDetails._
+import pages.goodsSummary.{
+  AddCustomsApprovedLocationPage,
+  AddSealsPage,
+  AuthorisedLocationCodePage,
+  ConfirmRemoveSealsPage,
+  ControlResultDateLimitPage,
+  CustomsApprovedLocationPage,
+  DeclarePackagesPage,
+  SealIdDetailsPage,
+  SealsInformationPage,
+  TotalGrossMassPage,
+  TotalPackagesPage
+}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -480,7 +493,7 @@ trait UserAnswersEntryGenerators {
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (SealIdDetailsPage(Index(0)), value)
+      } yield (goodsSummary.SealIdDetailsPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryAddSealsUserAnswersEntry: Arbitrary[(AddSealsPage.type, JsValue)] =

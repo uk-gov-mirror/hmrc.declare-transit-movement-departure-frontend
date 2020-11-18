@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-import models.UserAnswers
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-import scala.util.Try
-
-case object DeclarePackagesPage extends QuestionPage[Boolean] {
+case object TotalGrossMassPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "declarePackages"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(TotalPackagesPage)
-      case _           => super.cleanup(value, userAnswers)
-    }
+  override def toString: String = "totalGrossMass"
 }

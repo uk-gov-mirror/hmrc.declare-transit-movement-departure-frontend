@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
+import base.SpecBase
+import models.domain.SealDomain
 import pages.behaviours.PageBehaviours
 
-class AuthorisedLocationCodePageSpec extends PageBehaviours {
+class SealIdDetailsPageSpec extends PageBehaviours with SpecBase {
 
-  "AuthorisedLocationCodePage" - {
+  "SealIdDetailsPage" - {
 
-    beRetrievable[String](AuthorisedLocationCodePage)
+    beRetrievable[SealDomain](SealIdDetailsPage(sealIndex))
 
-    beSettable[String](AuthorisedLocationCodePage)
+    beSettable[SealDomain](SealIdDetailsPage(sealIndex))
 
-    beRemovable[String](AuthorisedLocationCodePage)
+    beRemovable[SealDomain](SealIdDetailsPage(sealIndex))
   }
 }

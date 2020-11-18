@@ -24,7 +24,8 @@ import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GoodsSummary
-import pages.SealIdDetailsPage
+import pages.goodsSummary
+import pages.goodsSummary.SealIdDetailsPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -56,7 +57,7 @@ class SealIdDetailsController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, sealIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(SealIdDetailsPage(sealIndex)) match {
+      val preparedForm = request.userAnswers.get(goodsSummary.SealIdDetailsPage(sealIndex)) match {
         case Some(value) => form(sealIndex).fill(value.numberOrMark)
         case _           => form(sealIndex)
       }
@@ -75,9 +76,9 @@ class SealIdDetailsController @Inject()(
             formWithErrors => renderView(lrn, sealIndex, mode, formWithErrors).map(BadRequest(_)),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdDetailsPage(sealIndex), SealDomain(value)))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(goodsSummary.SealIdDetailsPage(sealIndex), SealDomain(value)))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(SealIdDetailsPage(sealIndex), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(goodsSummary.SealIdDetailsPage(sealIndex), mode, updatedAnswers))
           )
     }
 

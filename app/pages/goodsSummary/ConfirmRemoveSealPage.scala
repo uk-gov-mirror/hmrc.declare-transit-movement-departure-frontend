@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-import play.api.libs.json.JsPath
+import pages.Page
 
-case object AddSealsPage extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "addSeals"
-}
+final case class ConfirmRemoveSealPage() extends Page

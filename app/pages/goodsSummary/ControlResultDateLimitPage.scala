@@ -14,26 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-import models.UserAnswers
+import java.time.LocalDate
+
+import pages.QuestionPage
 import play.api.libs.json.JsPath
-import queries.SealsQuery
 
-import scala.util.Try
-
-case object ConfirmRemoveSealsPage extends QuestionPage[Boolean] {
+case object ControlResultDateLimitPage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "confirmRemoveSeals"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(true) =>
-        userAnswers
-          .remove(SealsInformationPage)
-          .flatMap(_.remove(SealsQuery()))
-      case _ => super.cleanup(value, userAnswers)
-    }
+  override def toString: String = "controlResultDateLimit"
 }

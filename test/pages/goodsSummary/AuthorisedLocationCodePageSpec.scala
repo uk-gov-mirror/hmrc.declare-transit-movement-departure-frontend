@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
 import pages.behaviours.PageBehaviours
 
-class SealsInformationPageSpec extends PageBehaviours {
+class AuthorisedLocationCodePageSpec extends PageBehaviours {
 
-  "SealsInformationPage" - {
+  "AuthorisedLocationCodePage" - {
 
-    beRetrievable[Boolean](SealsInformationPage)
+    beRetrievable[String](AuthorisedLocationCodePage)
 
-    beSettable[Boolean](SealsInformationPage)
+    beSettable[String](AuthorisedLocationCodePage)
 
-    beRemovable[Boolean](SealsInformationPage)
+    beRemovable[String](AuthorisedLocationCodePage)
   }
 }

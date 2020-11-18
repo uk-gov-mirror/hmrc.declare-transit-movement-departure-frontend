@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object CustomsApprovedLocationPage extends QuestionPage[String] {
+class AddCustomsApprovedLocationPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "AddCustomsApprovedLocationPage" - {
 
-  override def toString: String = "customsApprovedLocation"
+    beRetrievable[Boolean](AddCustomsApprovedLocationPage)
+
+    beSettable[Boolean](AddCustomsApprovedLocationPage)
+
+    beRemovable[Boolean](AddCustomsApprovedLocationPage)
+  }
 }

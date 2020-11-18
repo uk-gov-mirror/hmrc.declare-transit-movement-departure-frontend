@@ -21,7 +21,17 @@ import generators.JourneyModelGenerators
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
 import models.{Index, ProcedureType, UserAnswers}
 import org.scalacheck.{Arbitrary, Gen}
-import pages._
+import pages.{goodsSummary, _}
+import pages.goodsSummary.{
+  AddCustomsApprovedLocationPage,
+  AuthorisedLocationCodePage,
+  ControlResultDateLimitPage,
+  CustomsApprovedLocationPage,
+  DeclarePackagesPage,
+  SealIdDetailsPage,
+  TotalGrossMassPage,
+  TotalPackagesPage
+}
 
 class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   import GoodsSummarySpec._
@@ -154,7 +164,7 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
 object GoodsSummarySpec extends UserAnswersSpecHelper {
 
   private def sealIdDetailsPageForIndex(index: Int): SealIdDetailsPage =
-    SealIdDetailsPage(Index(index))
+    goodsSummary.SealIdDetailsPage(Index(index))
 
   private def procedureType(goodSummaryDetails: GoodSummaryDetails): ProcedureType =
     goodSummaryDetails match {

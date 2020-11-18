@@ -27,7 +27,22 @@ import models.{CheckMode, Index, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.{goodsSummary, _}
+import pages.goodsSummary.{
+  AddCustomsApprovedLocationPage,
+  AddSealsLaterPage,
+  AddSealsPage,
+  AuthorisedLocationCodePage,
+  ConfirmRemoveSealPage,
+  ConfirmRemoveSealsPage,
+  ControlResultDateLimitPage,
+  CustomsApprovedLocationPage,
+  DeclarePackagesPage,
+  SealIdDetailsPage,
+  SealsInformationPage,
+  TotalGrossMassPage,
+  TotalPackagesPage
+}
 import queries.SealsQuery
 
 class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -177,7 +192,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
             val updatedAnswers = answers.set(SealIdDetailsPage(sealIndex), seal).success.value
 
             navigator
-              .nextPage(SealIdDetailsPage(sealIndex), NormalMode, updatedAnswers)
+              .nextPage(goodsSummary.SealIdDetailsPage(sealIndex), NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -185,7 +200,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must go from ConfirmRemoveSealPage to SealsInformationPage when submitted" in {
         forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
           (userAnswers, seal) =>
-            val updatedAnswers = userAnswers.set(SealIdDetailsPage(sealIndex), seal).success.value
+            val updatedAnswers = userAnswers.set(goodsSummary.SealIdDetailsPage(sealIndex), seal).success.value
 
             navigator
               .nextPage(ConfirmRemoveSealPage(), NormalMode, updatedAnswers)
@@ -198,7 +213,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers]) {
             userAnswers =>
               val updatedUserAnswers = userAnswers
-                .remove(SealIdDetailsPage(sealIndex))
+                .remove(goodsSummary.SealIdDetailsPage(sealIndex))
                 .success
                 .value
                 .set(AddSealsPage, true)
@@ -216,7 +231,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
             (userAnswers, seal) =>
               val updatedUserAnswers = userAnswers
-                .set(SealIdDetailsPage(sealIndex), seal)
+                .set(goodsSummary.SealIdDetailsPage(sealIndex), seal)
                 .success
                 .value
                 .set(AddSealsPage, true)
@@ -233,7 +248,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers]) {
             userAnswers =>
               val updatedUserAnswers = userAnswers
-                .remove(SealIdDetailsPage(sealIndex))
+                .remove(goodsSummary.SealIdDetailsPage(sealIndex))
                 .success
                 .value
                 .set(AddSealsPage, false)
@@ -250,7 +265,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
             (userAnswers, seal) =>
               val updatedUserAnswers = userAnswers
-                .set(SealIdDetailsPage(sealIndex), seal).success.value
+                .set(goodsSummary.SealIdDetailsPage(sealIndex), seal).success.value
                 .set(AddSealsPage, false).success.value
 
               navigator
@@ -409,10 +424,10 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       "must go from SealIdDetailsPage to SealsInformationPage when submitted" in {
         forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
           (answers, seal) =>
-            val updatedAnswers = answers.set(SealIdDetailsPage(sealIndex), seal).success.value
+            val updatedAnswers = answers.set(goodsSummary.SealIdDetailsPage(sealIndex), seal).success.value
 
             navigator
-              .nextPage(SealIdDetailsPage(sealIndex), CheckMode, updatedAnswers)
+              .nextPage(goodsSummary.SealIdDetailsPage(sealIndex), CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.SealsInformationController.onPageLoad(updatedAnswers.id, CheckMode))
         }
       }
@@ -470,7 +485,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers]) {
             userAnswers =>
               val updatedUserAnswers = userAnswers
-                .remove(SealIdDetailsPage(sealIndex))
+                .remove(goodsSummary.SealIdDetailsPage(sealIndex))
                 .success
                 .value
                 .set(AddSealsPage, true)
@@ -487,7 +502,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
             (userAnswers, seal) =>
               val updatedUserAnswers = userAnswers
-                .set(SealIdDetailsPage(sealIndex), seal)
+                .set(goodsSummary.SealIdDetailsPage(sealIndex), seal)
                 .success
                 .value
                 .set(AddSealsPage, true)
@@ -504,7 +519,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers]) {
             userAnswers =>
               val updatedUserAnswers = userAnswers
-                .remove(SealIdDetailsPage(sealIndex))
+                .remove(goodsSummary.SealIdDetailsPage(sealIndex))
                 .success
                 .value
                 .set(AddSealsPage, false)
@@ -521,7 +536,7 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers], arbitrary[SealDomain]) {
             (userAnswers, seal) =>
               val updatedUserAnswers = userAnswers
-                .set(SealIdDetailsPage(sealIndex), seal)
+                .set(goodsSummary.SealIdDetailsPage(sealIndex), seal)
                 .success
                 .value
                 .set(AddSealsPage, false)

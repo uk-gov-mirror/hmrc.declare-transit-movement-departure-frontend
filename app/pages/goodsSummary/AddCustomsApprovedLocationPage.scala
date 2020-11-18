@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
-final case class ConfirmRemoveSealPage() extends Page
+import models.UserAnswers
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+
+import scala.util.Try
+
+case object AddCustomsApprovedLocationPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "addCustomsApprovedLocation"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(CustomsApprovedLocationPage)
+      case _           => super.cleanup(value, userAnswers)
+    }
+}

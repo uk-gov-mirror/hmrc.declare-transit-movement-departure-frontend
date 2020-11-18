@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
+
+import pages.Page
 
 case object AddSealsLaterPage extends Page

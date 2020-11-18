@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.goodsSummary
 
 import pages.behaviours.PageBehaviours
 
-class TotalPackagesPageSpec extends PageBehaviours {
+class ConfirmRemoveSealsPageSpec extends PageBehaviours {
 
-  "TotalPackagesPage" - {
+  "ConfirmRemoveSealsPage" - {
 
-    beRetrievable[Int](TotalPackagesPage)
+    beRetrievable[Boolean](ConfirmRemoveSealsPage)
 
-    beSettable[Int](TotalPackagesPage)
+    beSettable[Boolean](ConfirmRemoveSealsPage)
 
-    beRemovable[Int](TotalPackagesPage)
+    beRemovable[Boolean](ConfirmRemoveSealsPage)
   }
 }
