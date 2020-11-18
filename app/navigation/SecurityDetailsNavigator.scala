@@ -25,31 +25,41 @@ import play.api.mvc.Call
 
 @Singleton
 class SecurityDetailsNavigator @Inject()() extends Navigator {
+
   // format: off
+  //todo -update when Security Trader Details section done
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case TransportChargesPage(index) => ua => Some(routes.UsingSameCommercialReferenceController.onPageLoad(ua.id, index, NormalMode))
-    case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index)
+    case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index, NormalMode)
     case CommercialReferenceNumberPage(index) => ua => Some(routes.AddDangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
-    case AddDangerousGoodsCodePage(index) => ua => addDangerousGoodsCodeRoute(ua, index)
+    case AddDangerousGoodsCodePage(index) => ua => addDangerousGoodsCodeRoute(ua, index, NormalMode)
     case DangerousGoodsCodePage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-
   }
 
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case TransportChargesPage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index, CheckMode)
+    case CommercialReferenceNumberPage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    case AddDangerousGoodsCodePage(index) => ua => addDangerousGoodsCodeRoute(ua, index, CheckMode)
+  }
 
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  private def usingSameCommercialReferenceRoute(ua: UserAnswers, index: Index, mode: Mode) =
+    (ua.get(UsingSameCommercialReferencePage(index)), ua.get(CommercialReferenceNumberPage(index)), mode) match {
+      case (Some(true), _, NormalMode)    => Some(routes.AddDangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), _, NormalMode)   => Some(routes.CommercialReferenceNumberController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), None, CheckMode) => Some(routes.CommercialReferenceNumberController.onPageLoad(ua.id, index, CheckMode))
+      case _                              => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
 
-  // format: on
-
-  private def usingSameCommercialReferenceRoute(ua: UserAnswers, index: Index) =
-    ua.get(UsingSameCommercialReferencePage(index)) match {
-      case Some(true)  => Some(routes.UsingSameCommercialReferenceController.onPageLoad(ua.id, index, NormalMode))
-      case Some(false) => Some(routes.CommercialReferenceNumberController.onPageLoad(ua.id, index, NormalMode))
     }
 
-  private def addDangerousGoodsCodeRoute(ua: UserAnswers, index: Index) =
-    ua.get(AddDangerousGoodsCodePage(index)) match {
-      case Some(true) => Some(routes.DangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
-      case Some(false) =>
+  private def addDangerousGoodsCodeRoute(ua: UserAnswers, index: Index, mode: Mode) =
+    (ua.get(AddDangerousGoodsCodePage(index)), ua.get(DangerousGoodsCodePage(index)), mode) match {
+      case (Some(true), _, NormalMode) => Some(routes.DangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), _, NormalMode) =>
         Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo -update when Security Trader Details section done
+      case (Some(true), None, CheckMode)    => Some(routes.DangerousGoodsCodeController.onPageLoad(ua.id, index, CheckMode))
+      case (Some(true), Some(_), CheckMode) => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (Some(false), _, CheckMode)      => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
+  // format: on
 }
