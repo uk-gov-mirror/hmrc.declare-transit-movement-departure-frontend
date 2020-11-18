@@ -53,8 +53,8 @@ class UsingSameCommercialReferenceController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(UsingSameCommercialReferencePage(itemIndex)) match {
-        case None        => formProvider(itemIndex)
-        case Some(value) => formProvider(itemIndex).fill(value)
+        case None        => formProvider()
+        case Some(value) => formProvider().fill(value)
       }
 
       val json = Json.obj(
@@ -69,7 +69,7 @@ class UsingSameCommercialReferenceController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      formProvider(itemIndex)
+      formProvider()
         .bindFromRequest()
         .fold(
           formWithErrors => {

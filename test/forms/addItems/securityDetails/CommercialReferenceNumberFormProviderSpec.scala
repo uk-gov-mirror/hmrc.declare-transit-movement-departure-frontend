@@ -18,15 +18,19 @@ package forms.addItems.securityDetails
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class CommercialReferenceNumberFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "commercialReferenceNumber.error.required"
-  val lengthKey   = "commercialReferenceNumber.error.length"
-  val maxLength   = 70
+  val requiredKey                    = "commercialReferenceNumber.error.required"
+  val lengthKey                      = "commercialReferenceNumber.error.length"
+  val invalidKey                     = "commercialReferenceNumber.error.invalidCharacters"
+  val maxLength                      = 70
+  val commercialReferenceNumberRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
 
-  val form = new CommercialReferenceNumberFormProvider()(index)
+  val form = new CommercialReferenceNumberFormProvider()()
 
   ".value" - {
 
@@ -50,5 +54,20 @@ class CommercialReferenceNumberFormProviderSpec extends SpecBase with StringFiel
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match regex" in {
+
+      val expectedError = List(FormError(fieldName, invalidKey, Seq(commercialReferenceNumberRegex)))
+      val genInvalidString: Gen[String] = {
+        stringsWithLength(maxLength) suchThat (!_.matches(commercialReferenceNumberRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
+
 }

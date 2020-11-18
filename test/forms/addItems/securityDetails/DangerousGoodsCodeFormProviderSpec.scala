@@ -26,7 +26,7 @@ class DangerousGoodsCodeFormProviderSpec extends SpecBase with StringFieldBehavi
   val lengthKey   = "dangerousGoodsCode.error.length"
   val maxLength   = 4
 
-  val form = new DangerousGoodsCodeFormProvider()(index)
+  val form = new DangerousGoodsCodeFormProvider()()
 
   ".value" - {
 

@@ -44,7 +44,7 @@ class UsingSameCommercialReferenceControllerSpec extends SpecBase with MockNunju
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new UsingSameCommercialReferenceFormProvider()
-  private val form         = formProvider(index)
+  private val form         = formProvider()
   private val template     = "addItems/securityDetails/usingSameCommercialReference.njk"
 
   lazy val usingSameCommercialReferenceRoute = routes.UsingSameCommercialReferenceController.onPageLoad(lrn, index, NormalMode).url

@@ -53,8 +53,8 @@ class CommercialReferenceNumberController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(CommercialReferenceNumberPage(index)) match {
-        case None        => formProvider(index)
-        case Some(value) => formProvider(index).fill(value)
+        case None        => formProvider()
+        case Some(value) => formProvider().fill(value)
       }
 
       val json = Json.obj(
@@ -68,7 +68,7 @@ class CommercialReferenceNumberController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      formProvider(index)
+      formProvider()
         .bindFromRequest()
         .fold(
           formWithErrors => {

@@ -23,7 +23,7 @@ import play.api.data.Form
 
 class TransportChargesFormProvider @Inject() extends Mappings {
 
-  def apply(index: Index): Form[String] =
+  def apply(): Form[String] =
     Form(
       "value" -> text("transportCharges.error.required")
         .verifying(maxLength(100, "transportCharges.error.length"))

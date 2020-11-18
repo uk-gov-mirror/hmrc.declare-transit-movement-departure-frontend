@@ -25,7 +25,7 @@ class AddDangerousGoodsCodeFormProviderSpec extends SpecBase with BooleanFieldBe
   val requiredKey = "addDangerousGoodsCode.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddDangerousGoodsCodeFormProvider()(index)
+  val form = new AddDangerousGoodsCodeFormProvider()()
 
   ".value" - {
 

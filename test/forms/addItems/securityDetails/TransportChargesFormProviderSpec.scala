@@ -26,7 +26,7 @@ class TransportChargesFormProviderSpec extends SpecBase with StringFieldBehaviou
   val lengthKey   = "transportCharges.error.length"
   val maxLength   = 100
 
-  val form = new TransportChargesFormProvider()(index)
+  val form = new TransportChargesFormProvider()()
 
   ".value" - {
 

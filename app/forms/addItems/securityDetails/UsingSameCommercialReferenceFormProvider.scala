@@ -23,7 +23,7 @@ import play.api.data.Form
 
 class UsingSameCommercialReferenceFormProvider @Inject() extends Mappings {
 
-  def apply(index: Index): Form[Boolean] =
+  def apply(): Form[Boolean] =
     Form(
       "value" -> boolean("usingSameCommercialReference.error.required")
     )

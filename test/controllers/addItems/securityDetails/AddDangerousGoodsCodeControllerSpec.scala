@@ -44,7 +44,7 @@ class AddDangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRend
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new AddDangerousGoodsCodeFormProvider()
-  private val form         = formProvider(index)
+  private val form         = formProvider()
   private val template     = "addItems/securityDetails/addDangerousGoodsCode.njk"
 
   lazy val addDangerousGoodsCodeRoute = routes.AddDangerousGoodsCodeController.onPageLoad(lrn, index, NormalMode).url

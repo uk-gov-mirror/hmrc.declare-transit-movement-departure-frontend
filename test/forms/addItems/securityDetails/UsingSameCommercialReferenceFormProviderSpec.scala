@@ -25,7 +25,7 @@ class UsingSameCommercialReferenceFormProviderSpec extends SpecBase with Boolean
   val requiredKey = "usingSameCommercialReference.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new UsingSameCommercialReferenceFormProvider()(index)
+  val form = new UsingSameCommercialReferenceFormProvider()()
 
   ".value" - {
 

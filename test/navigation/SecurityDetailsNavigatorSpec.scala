@@ -28,8 +28,7 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   val navigator = new SecurityDetailsNavigator
 
-  "SecurityDetailsNavigator" - {}
-  "in Normal mode" - {
+  "In Normal mode" - {
 
     "Must go from TransportChargesPage to UsingSameCommercialReferencePage" in {
       forAll(arbitrary[UserAnswers]) {
@@ -225,9 +224,6 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
               .mustBe(routes.DangerousGoodsCodeController.onPageLoad(updatedAnswers.id, index, CheckMode))
         }
       }
-
     }
-
   }
-
 }

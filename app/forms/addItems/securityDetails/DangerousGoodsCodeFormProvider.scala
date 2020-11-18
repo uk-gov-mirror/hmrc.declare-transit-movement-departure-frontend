@@ -23,7 +23,7 @@ import play.api.data.Form
 
 class DangerousGoodsCodeFormProvider @Inject() extends Mappings {
 
-  def apply(index: Index): Form[String] =
+  def apply(): Form[String] =
     Form(
       "value" -> text("dangerousGoodsCode.error.required")
         .verifying(maxLength(4, "dangerousGoodsCode.error.length"))

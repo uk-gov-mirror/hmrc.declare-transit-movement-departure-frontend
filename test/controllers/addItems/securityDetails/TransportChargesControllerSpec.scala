@@ -44,7 +44,7 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new TransportChargesFormProvider()
-  private val form         = formProvider(index)
+  private val form         = formProvider()
   private val template     = "addItems/securityDetails/transportCharges.njk"
 
   lazy val transportChargesRoute = routes.TransportChargesController.onPageLoad(lrn, index, NormalMode).url
