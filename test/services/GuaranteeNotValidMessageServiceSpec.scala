@@ -49,7 +49,7 @@ class GuaranteeNotValidMessageServiceSpec extends SpecBase with MockServiceApp w
 
   "GuaranteeNotValidMessageService" - {
     "must return GuaranteeNotValidMessage for the input departureId" in {
-      val notificationMessage = GuaranteeNotValidMessage(Seq(InvalidGuaranteeReasonCode(G01, None)))
+      val notificationMessage = GuaranteeNotValidMessage(lrn.toString, Seq(InvalidGuaranteeReasonCode("ref", G01, None)))
       val messagesSummary =
         MessagesSummary(departureId, MessagesLocation(s"/movements/departures/${departureId.value}/messages/3", Some("/movements/departures/1234/messages/5")))
 

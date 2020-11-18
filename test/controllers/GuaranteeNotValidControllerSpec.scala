@@ -51,7 +51,7 @@ class GuaranteeNotValidControllerSpec extends SpecBase with MockNunjucksRenderer
 
   "return OK and the correct guarantee not valid view for a GET" in {
     dataRetrievalNoData()
-    val message = GuaranteeNotValidMessage(Seq(InvalidGuaranteeReasonCode(G01, None)))
+    val message = GuaranteeNotValidMessage(lrn.toString, Seq(InvalidGuaranteeReasonCode("ref", G01, None)))
     when(mockRenderer.render(any(), any())(any()))
       .thenReturn(Future.successful(Html("")))
 
@@ -70,8 +70,8 @@ class GuaranteeNotValidControllerSpec extends SpecBase with MockNunjucksRenderer
     verify(mockGuaranteeNotValidService, times(1)).guaranteeNotValidMessage(eqTo(departureId))(any(), any())
 
     val expectedJson = Json.obj(
-      "guaranteeNotValid" -> Json.toJson(message),
-      "contactUrl"        -> "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/new-computerised-transit-system-enquiries"
+      "guaranteeNotValidMessage" -> Json.toJson(message),
+      "contactUrl"               -> "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/new-computerised-transit-system-enquiries"
     )
 
     templateCaptor.getValue mustEqual "guaranteeNotValid.njk"

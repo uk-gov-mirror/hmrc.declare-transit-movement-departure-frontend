@@ -16,22 +16,20 @@
 
 package models
 
-import com.lucidchart.open.xtract.{ParseError, ParseFailure, ParseSuccess, XmlReader}
+import com.lucidchart.open.xtract.{__, XmlReader}
 import play.api.libs.json.{JsString, Writes}
 
 sealed abstract class InvalidGuaranteeCode(val code: String)
 
 object InvalidGuaranteeCode {
 
-  implicit def xmlReader: XmlReader[InvalidGuaranteeCode] = XmlReader {
-    xml =>
-      case class ErrorTypeParseError(message: String) extends ParseError
-
-      values.find(_.code.equalsIgnoreCase(xml.text.trim)) match {
-        case Some(data) => ParseSuccess(data)
-        case _          => ParseFailure(ErrorTypeParseError(s"Invalid or missing ErrorType: $xml"))
-      }
-  }
+  implicit val xmlReader: XmlReader[InvalidGuaranteeCode] =
+    __.read[String].map {
+      code =>
+        values
+          .find(_.code.equalsIgnoreCase(code.trim()))
+          .getOrElse(DefaultCode(code.trim))
+    }
 
   implicit val writes: Writes[InvalidGuaranteeCode] = Writes[InvalidGuaranteeCode] {
     invalidCode: InvalidGuaranteeCode =>
@@ -53,5 +51,6 @@ object InvalidGuaranteeCode {
   case object G11 extends InvalidGuaranteeCode("G11")
   case object G12 extends InvalidGuaranteeCode("G12")
   case object G13 extends InvalidGuaranteeCode("G13")
+  case class DefaultCode(override val code: String) extends InvalidGuaranteeCode(code)
 
 }
