@@ -21,7 +21,7 @@ import java.time.{LocalDateTime, ZoneOffset}
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
-import forms.ArrivalTimesAtOfficeFormProvider
+import forms.routeDetails.ArrivalTimesAtOfficeFormProvider
 import matchers.JsonMatchers
 import models.reference.OfficeOfTransit
 import models.{LocalDateTimeWithAMPM, NormalMode}

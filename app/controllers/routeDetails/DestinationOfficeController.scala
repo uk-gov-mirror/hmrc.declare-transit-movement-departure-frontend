@@ -19,7 +19,7 @@ package controllers.routeDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
-import forms.DestinationOfficeFormProvider
+import forms.routeDetails.DestinationOfficeFormProvider
 import javax.inject.Inject
 import models.reference.{CountryCode, CustomsOffice}
 import models.requests.DataRequest

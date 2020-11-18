@@ -18,7 +18,7 @@ package controllers.traderDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.WhatIsPrincipalEoriFormProvider
+import forms.traderDetails.WhatIsPrincipalEoriFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.TraderDetails

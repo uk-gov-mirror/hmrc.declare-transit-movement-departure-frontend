@@ -19,7 +19,7 @@ package controllers.routeDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import derivable.DeriveNumberOfOfficeOfTransits
-import forms.AddTransitOfficeFormProvider
+import forms.routeDetails.AddTransitOfficeFormProvider
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}

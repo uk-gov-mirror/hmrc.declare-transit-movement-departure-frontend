@@ -19,7 +19,7 @@ package controllers.traderDetails
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
-import forms.ConsignorAddressFormProvider
+import forms.traderDetails.ConsignorAddressFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
 import models.{ConsignorAddress, CountryList, NormalMode}

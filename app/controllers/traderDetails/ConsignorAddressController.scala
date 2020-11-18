@@ -19,7 +19,7 @@ package controllers.traderDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
-import forms.ConsignorAddressFormProvider
+import forms.traderDetails.ConsignorAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
 import models.{LocalReferenceNumber, Mode}

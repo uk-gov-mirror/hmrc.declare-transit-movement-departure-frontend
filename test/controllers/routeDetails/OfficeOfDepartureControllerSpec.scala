@@ -19,7 +19,7 @@ package controllers.routeDetails
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
-import forms.OfficeOfDepartureFormProvider
+import forms.routeDetails.OfficeOfDepartureFormProvider
 import matchers.JsonMatchers
 import models.reference.CustomsOffice
 import models.{CustomsOfficeList, NormalMode}

@@ -19,7 +19,7 @@ package controllers.routeDetails
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
-import forms.DestinationCountryFormProvider
+import forms.routeDetails.DestinationCountryFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
 import models.{CountryList, NormalMode}

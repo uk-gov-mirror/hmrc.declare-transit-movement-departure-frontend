@@ -19,7 +19,7 @@ package controllers.routeDetails
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
-import forms.ConfirmRemoveOfficeOfTransitFormProvider
+import forms.routeDetails.ConfirmRemoveOfficeOfTransitFormProvider
 import matchers.JsonMatchers
 import models.reference.OfficeOfTransit
 import models.{Index, NormalMode, UserAnswers}

@@ -18,7 +18,7 @@ package controllers.routeDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import forms.AddAnotherTransitOfficeFormProvider
+import forms.routeDetails.AddAnotherTransitOfficeFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator

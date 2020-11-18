@@ -18,7 +18,7 @@ package controllers.traderDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.AddConsigneeFormProvider
+import forms.traderDetails.AddConsigneeFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}

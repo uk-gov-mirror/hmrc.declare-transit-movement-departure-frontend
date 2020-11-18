@@ -19,7 +19,7 @@ package controllers.routeDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import derivable.DeriveNumberOfOfficeOfTransits
-import forms.ConfirmRemoveOfficeOfTransitFormProvider
+import forms.routeDetails.ConfirmRemoveOfficeOfTransitFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.DataRequest

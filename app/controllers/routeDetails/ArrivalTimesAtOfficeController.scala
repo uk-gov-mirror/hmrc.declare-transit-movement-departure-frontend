@@ -19,7 +19,7 @@ package controllers.routeDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
-import forms.ArrivalTimesAtOfficeFormProvider
+import forms.routeDetails.ArrivalTimesAtOfficeFormProvider
 import javax.inject.Inject
 import models.{Index, LocalDateTimeWithAMPM, LocalReferenceNumber, Mode}
 import navigation.Navigator

@@ -18,7 +18,7 @@ package controllers.traderDetails
 
 import controllers.actions._
 import controllers.{routes => mainRoutes}
-import forms.PrincipalAddressFormProvider
+import forms.traderDetails.PrincipalAddressFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator

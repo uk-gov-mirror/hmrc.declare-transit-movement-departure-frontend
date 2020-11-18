@@ -17,7 +17,7 @@
 package controllers.traderDetails
 
 import controllers.actions._
-import forms.IsPrincipalEoriKnownFormProvider
+import forms.traderDetails.IsPrincipalEoriKnownFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator

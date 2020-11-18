@@ -18,7 +18,7 @@ package controllers.routeDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import forms.OfficeOfDepartureFormProvider
+import forms.routeDetails.OfficeOfDepartureFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
