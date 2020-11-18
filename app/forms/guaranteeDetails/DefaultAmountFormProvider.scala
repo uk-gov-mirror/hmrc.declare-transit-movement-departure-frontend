@@ -14,32 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class DefaultAmountFormProviderSpec extends BooleanFieldBehaviours {
+class DefaultAmountFormProvider @Inject() extends Mappings {
 
-  val requiredKey = "defaultAmount.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new DefaultAmountFormProvider()()
-
-  ".value" - {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("defaultAmount.error.required")
     )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
 }

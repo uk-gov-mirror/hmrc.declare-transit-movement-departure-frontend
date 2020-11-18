@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.messages.guarantee.GuaranteeReferenceWithOther
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class OtherReferenceFormProvider @Inject()() extends Mappings {
+class AccessCodeFormProvider @Inject() extends Mappings {
 
-  val maxLength: Int                  = GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength
-  val guaranteeReferenceRegex: String = "^[A-Z0-9]*$"
+  val accessCodeLength = 4
+  val accessCodeRegex  = "^[0-9A-Za-z]{4}$"
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("otherReference.error.required")
+      "value" -> text("accessCode.error.required")
         .verifying(
-          StopOnFirstFail[String](
-            maxLength(maxLength, "otherReference.error.length"),
-            regexp(guaranteeReferenceRegex, "otherReference.error.invalid")
-          )))
+          StopOnFirstFail[String](exactLength(accessCodeLength, "accessCode.error.length"), regexp(accessCodeRegex, "accessCode.error.invalidCharacters")))
+    )
 }

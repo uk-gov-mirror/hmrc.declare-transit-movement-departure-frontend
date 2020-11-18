@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
 import forms.behaviours.StringFieldBehaviours
+import models.messages.guarantee.Guarantee.Constants._
 import org.scalacheck.Gen
 import play.api.data.FormError
-import models.messages.guarantee.Guarantee.Constants._
 
-class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviours {
+class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new OtherReferenceLiabilityAmountFormProvider()()
+  val form = new LiabilityAmountFormProvider()()
 
   ".value" - {
 
@@ -35,18 +35,14 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
       stringsWithMaxLength(maxLength)
     )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-
     "must not bind strings that do not match invalid characters regex" in {
 
-      val expectedError     = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
-      val genMaxLengthAlpha = Gen.containerOfN[List, Char](maxLength, Gen.alphaChar).map(_.mkString)
+      val expectedError = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
+      val genInvalidString: Gen[String] = {
+        stringsWithLength(maxLength) suchThat (!_.matches(liabilityAmountCharactersRegex))
+      }
 
-      forAll(genMaxLengthAlpha) {
+      forAll(genInvalidString) {
         invalidString =>
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors mustBe expectedError
@@ -57,7 +53,7 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
 
       val expectedError = List(FormError(fieldName, invalidFormatKey, Seq(liabilityAmountFormatRegex)))
       val genInvalidString: Gen[String] = {
-        decimalsPositive
+        decimals
           .suchThat(_.matches(liabilityAmountCharactersRegex))
           .suchThat(!_.matches(liabilityAmountFormatRegex))
       }

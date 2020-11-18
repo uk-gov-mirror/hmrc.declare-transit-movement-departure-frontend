@@ -18,7 +18,7 @@ package controllers.guaranteeDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.DefaultAmountFormProvider
+import forms.guaranteeDetails.DefaultAmountFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.GuaranteeDetails

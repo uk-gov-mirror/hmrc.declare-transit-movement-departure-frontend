@@ -14,28 +14,37 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class AccessCodeFormProviderSpec extends StringFieldBehaviours {
+class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey      = "accessCode.error.required"
-  val lengthKey        = "accessCode.error.length"
-  val accessCodeLength = 4
-  val accessCodeRegex  = "^[0-9A-Za-z]{4}$"
-  val form             = new AccessCodeFormProvider()()
-  val invalidKey       = "accessCode.error.invalidCharacters"
+  val requiredKey                     = "guaranteeReference.error.required"
+  val lengthKey                       = "guaranteeReference.error.length"
+  val maxLength                       = 24
+  val invalidKey                      = "guaranteeReference.error.invalid"
+  val representativeNameRegex: String = "^[A-Z0-9]*$"
+
+  val form = new GuaranteeReferenceFormProvider()(maxLength)
 
   ".value" - {
+
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(accessCodeLength)
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
@@ -46,9 +55,9 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind strings that do not match regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(accessCodeRegex)))
+      val expectedError = List(FormError(fieldName, invalidKey, Seq(representativeNameRegex)))
       val genInvalidString: Gen[String] = {
-        stringsWithLength(accessCodeLength) suchThat (!_.matches(accessCodeRegex))
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(representativeNameRegex))
       }
 
       forAll(genInvalidString) {

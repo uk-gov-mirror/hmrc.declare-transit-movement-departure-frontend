@@ -17,7 +17,7 @@
 package controllers.guaranteeDetails
 
 import controllers.actions._
-import forms.LiabilityAmountFormProvider
+import forms.guaranteeDetails.LiabilityAmountFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator

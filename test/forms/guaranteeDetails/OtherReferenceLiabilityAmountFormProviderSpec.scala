@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
 import forms.behaviours.StringFieldBehaviours
 import models.messages.guarantee.Guarantee.Constants._
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
+class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new LiabilityAmountFormProvider()()
+  val form = new OtherReferenceLiabilityAmountFormProvider()()
 
   ".value" - {
 
@@ -35,14 +35,18 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+
     "must not bind strings that do not match invalid characters regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithLength(maxLength) suchThat (!_.matches(liabilityAmountCharactersRegex))
-      }
+      val expectedError     = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
+      val genMaxLengthAlpha = Gen.containerOfN[List, Char](maxLength, Gen.alphaChar).map(_.mkString)
 
-      forAll(genInvalidString) {
+      forAll(genMaxLengthAlpha) {
         invalidString =>
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors mustBe expectedError
@@ -53,7 +57,7 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
       val expectedError = List(FormError(fieldName, invalidFormatKey, Seq(liabilityAmountFormatRegex)))
       val genInvalidString: Gen[String] = {
-        decimals
+        decimalsPositive
           .suchThat(_.matches(liabilityAmountCharactersRegex))
           .suchThat(!_.matches(liabilityAmountFormatRegex))
       }

@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.messages.guarantee.Guarantee.Constants._
-import play.api.data.{Form, Forms}
+import models.messages.guarantee.GuaranteeReferenceWithOther
+import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class LiabilityAmountFormProvider @Inject() extends Mappings {
+class OtherReferenceFormProvider @Inject()() extends Mappings {
+
+  val maxLength: Int                  = GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength
+  val guaranteeReferenceRegex: String = "^[A-Z0-9]*$"
 
   def apply(): Form[String] =
     Form(
-      "value" -> Forms.text
-        .verifying(StopOnFirstFail[String](
-          regexp(liabilityAmountCharactersRegex, "liabilityAmount.error.characters"),
-          regexp(liabilityAmountFormatRegex, "liabilityAmount.error.invalidFormat"),
-          regexp(greaterThanZeroRegex, "liabilityAmount.error.greaterThanZero"),
-        )))
+      "value" -> text("otherReference.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "otherReference.error.length"),
+            regexp(guaranteeReferenceRegex, "otherReference.error.invalid")
+          )))
 }

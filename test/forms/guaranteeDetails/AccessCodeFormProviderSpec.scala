@@ -14,38 +14,28 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
 import forms.behaviours.StringFieldBehaviours
-import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
+class AccessCodeFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey                     = "guaranteeReference.error.required"
-  val lengthKey                       = "guaranteeReference.error.length"
-  val maxLength                       = 24
-  val invalidKey                      = "guaranteeReference.error.invalid"
-  val representativeNameRegex: String = "^[A-Z0-9]*$"
-
-  val form = new GuaranteeReferenceFormProvider()(maxLength)
+  val requiredKey      = "accessCode.error.required"
+  val lengthKey        = "accessCode.error.length"
+  val accessCodeLength = 4
+  val accessCodeRegex  = "^[0-9A-Za-z]{4}$"
+  val form             = new AccessCodeFormProvider()()
+  val invalidKey       = "accessCode.error.invalidCharacters"
 
   ".value" - {
-
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      stringsWithMaxLength(accessCodeLength)
     )
 
     behave like mandatoryField(
@@ -56,9 +46,9 @@ class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind strings that do not match regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(representativeNameRegex)))
+      val expectedError = List(FormError(fieldName, invalidKey, Seq(accessCodeRegex)))
       val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(representativeNameRegex))
+        stringsWithLength(accessCodeLength) suchThat (!_.matches(accessCodeRegex))
       }
 
       forAll(genInvalidString) {

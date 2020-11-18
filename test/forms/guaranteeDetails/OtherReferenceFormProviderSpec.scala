@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
 import forms.behaviours.StringFieldBehaviours
 import models.messages.guarantee.GuaranteeReferenceWithOther

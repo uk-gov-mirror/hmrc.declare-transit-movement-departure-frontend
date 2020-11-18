@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.messages.guarantee.Guarantee.Constants._
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class AccessCodeFormProvider @Inject() extends Mappings {
-
-  val accessCodeLength = 4
-  val accessCodeRegex  = "^[0-9A-Za-z]{4}$"
+class OtherReferenceLiabilityAmountFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("accessCode.error.required")
-        .verifying(
-          StopOnFirstFail[String](exactLength(accessCodeLength, "accessCode.error.length"), regexp(accessCodeRegex, "accessCode.error.invalidCharacters")))
-    )
+      "value" -> text("liabilityAmount.error.required")
+        .verifying(StopOnFirstFail[String](
+          regexp(liabilityAmountCharactersRegex, "liabilityAmount.error.characters"),
+          regexp(liabilityAmountFormatRegex, "liabilityAmount.error.invalidFormat"),
+          regexp(greaterThanZeroRegex, "liabilityAmount.error.greaterThanZero"),
+        )))
 }

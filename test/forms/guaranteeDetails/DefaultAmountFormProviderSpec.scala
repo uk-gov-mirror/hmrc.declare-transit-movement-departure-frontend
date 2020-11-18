@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package forms
+package forms.guaranteeDetails
 
-import forms.behaviours.OptionFieldBehaviours
-import forms.guaranteeDetails.GuaranteeTypeFormProvider
-import models.GuaranteeType
+import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class GuaranteeTypeFormProviderSpec extends OptionFieldBehaviours {
+class DefaultAmountFormProviderSpec extends BooleanFieldBehaviours {
 
-  val form = new GuaranteeTypeFormProvider()()
+  val requiredKey = "defaultAmount.error.required"
+  val invalidKey  = "error.boolean"
+
+  val form = new DefaultAmountFormProvider()()
 
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "guaranteeType.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[GuaranteeType](
+    behave like booleanField(
       form,
       fieldName,
-      validValues  = GuaranteeType.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
