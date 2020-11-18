@@ -122,7 +122,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
             <GUAREF2>
               <GuaRefNumGRNREF21>GuaRefNumber1</GuaRefNumGRNREF21>
               <INVGUARNS>
-                <InvGuaReaCodRNS11>{invalidCode.code}</InvGuaReaCodRNS11>
+                <InvGuaReaCodRNS11>{invalidCode.value}</InvGuaReaCodRNS11>
               </INVGUARNS>
             </GUAREF2>
           </CC055A>

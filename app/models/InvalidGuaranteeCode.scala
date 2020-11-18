@@ -17,9 +17,9 @@
 package models
 
 import com.lucidchart.open.xtract.{__, XmlReader}
-import play.api.libs.json.{JsString, Writes}
+import play.api.libs.json.{Json, Writes}
 
-sealed abstract class InvalidGuaranteeCode(val code: String)
+sealed abstract class InvalidGuaranteeCode(val value: String, val otherInValidCode: Boolean = false)
 
 object InvalidGuaranteeCode {
 
@@ -27,13 +27,13 @@ object InvalidGuaranteeCode {
     __.read[String].map {
       code =>
         values
-          .find(_.code.equalsIgnoreCase(code.trim()))
-          .getOrElse(DefaultCode(code.trim))
+          .find(_.value.equalsIgnoreCase(code.trim()))
+          .getOrElse(DefaultCode(code.trim, otherInValidCode = true))
     }
 
   implicit val writes: Writes[InvalidGuaranteeCode] = Writes[InvalidGuaranteeCode] {
     invalidCode: InvalidGuaranteeCode =>
-      JsString(invalidCode.code)
+      Json.obj("value" -> invalidCode.value, "otherInValidCode" -> invalidCode.otherInValidCode)
   }
 
   val values = Seq(G01, G02, G03, G04, G05, G06, G07, G08, G09, G10, G11, G12, G13)
@@ -51,6 +51,6 @@ object InvalidGuaranteeCode {
   case object G11 extends InvalidGuaranteeCode("G11")
   case object G12 extends InvalidGuaranteeCode("G12")
   case object G13 extends InvalidGuaranteeCode("G13")
-  case class DefaultCode(override val code: String) extends InvalidGuaranteeCode(code)
+  case class DefaultCode(override val value: String, override val otherInValidCode: Boolean) extends InvalidGuaranteeCode(value, otherInValidCode)
 
 }

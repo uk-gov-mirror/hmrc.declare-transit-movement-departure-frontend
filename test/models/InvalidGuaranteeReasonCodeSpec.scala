@@ -36,7 +36,7 @@ class InvalidGuaranteeReasonCodeSpec extends SpecBase with MessagesModelGenerato
             <GUAREF2>
               <GuaRefNumGRNREF21>{reasonCode.guaranteeRefNumber}</GuaRefNumGRNREF21>
               <INVGUARNS>
-                <InvGuaReaCodRNS11>{reasonCode.code.code}</InvGuaReaCodRNS11>
+                <InvGuaReaCodRNS11>{reasonCode.code.value}</InvGuaReaCodRNS11>
                 ++ {reasonOptXml}
               </INVGUARNS>
             </GUAREF2>
@@ -50,7 +50,7 @@ class InvalidGuaranteeReasonCodeSpec extends SpecBase with MessagesModelGenerato
       val xml: NodeSeq =
         <GUAREF2>
               <INVGUARNS>
-                <InvGuaReaCodRNS11>{G01.code}</InvGuaReaCodRNS11>
+                <InvGuaReaCodRNS11>{G01.value}</InvGuaReaCodRNS11>
               </INVGUARNS>
             </GUAREF2>
 
