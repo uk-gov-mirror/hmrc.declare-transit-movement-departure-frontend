@@ -21,6 +21,7 @@ import controllers.addItems.containers.{routes => containerRoutes}
 import controllers.addItems.previousReferences.{routes => previousReferenceRoutes}
 import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderRoutes}
+import controllers.addItems.specialMentions.{routes => specialMentionsRoutes}
 import controllers.{routes => mainRoutes}
 import generators.Generators
 import models.reference.{CountryCode, PackageType}
@@ -763,7 +764,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                     .remove(ContainersQuery(itemIndex, containerIndex)).success.value
                   navigator
                     .nextPage(AddAnotherPackagePage(itemIndex), NormalMode, updatedAnswers)
-                    .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, itemIndex))
+                    .mustBe(specialMentionsRoutes.AddSpecialMentionController.onPageLoad(updatedAnswers.id, itemIndex, NormalMode))
               }
             }
 
@@ -1103,6 +1104,15 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 navigator
                   .nextPage(ConfirmRemoveContainerPage(index, containerIndex), NormalMode, updatedAnswer)
                   .mustBe(containerRoutes.ContainerNumberController.onPageLoad(updatedAnswer.id, index, Index(0), NormalMode))
+            }
+          }
+
+          "must go from AddAnotherContainerPage to AddSpecialMentionController" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                navigator
+                  .nextPage(AddAnotherContainerPage(index), NormalMode, answers)
+                  .mustBe(specialMentionsRoutes.AddSpecialMentionController.onPageLoad(answers.id, index, NormalMode))
             }
           }
         }

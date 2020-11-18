@@ -926,6 +926,7 @@ addItems.checkYourAnswersLabel.packages.addRemove = Add or remove packages
 addItems.checkYourAnswersLabel.containers = Containers
 addItems.checkYourAnswersLabel.containers.addRemove = Add or remove containers
 addItems.checkYourAnswersLabel.specialMentions = Special mentions
+addItems.checkYourAnswersLabel.specialMentions.addRemove = Add or remove special mentions
 addItems.checkYourAnswersLabel.certificates = Produced documents and work certificates
 addItems.checkYourAnswersLabel.references = Previous administrative references
 addItems.checkYourAnswersLabel.references.addRemove = Add or remove previous administrative references

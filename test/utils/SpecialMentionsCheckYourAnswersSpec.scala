@@ -19,9 +19,11 @@ package utils
 import base.{GeneratorSpec, SpecBase}
 import generators.ReferenceDataGenerators
 import models.reference.SpecialMention
-import models.{SpecialMentionList, UserAnswers}
+import models.{CheckMode, NormalMode, SpecialMentionList, UserAnswers}
 import pages.addItems.specialMentions.SpecialMentionTypePage
 import uk.gov.hmrc.viewmodels.Text.Message
+import uk.gov.hmrc.viewmodels._
+import viewModels.AddAnotherViewModel
 
 class SpecialMentionsCheckYourAnswersSpec extends SpecBase with GeneratorSpec with ReferenceDataGenerators {
 
@@ -42,9 +44,11 @@ class SpecialMentionsCheckYourAnswersSpec extends SpecBase with GeneratorSpec wi
 
             val cya = new SpecialMentionsCheckYourAnswers(updatedAnswers)
 
-            val row = cya.specialMentionType(itemIndex, referenceIndex, specialMentionList)
+            val row = cya.specialMentionType(itemIndex, referenceIndex, specialMentionList, NormalMode)
 
             row.value.key.content mustBe Message(rowContent)
+
+            row.value.actions.length mustBe 2
         }
       }
 
@@ -59,11 +63,68 @@ class SpecialMentionsCheckYourAnswersSpec extends SpecBase with GeneratorSpec wi
 
             val cya = new SpecialMentionsCheckYourAnswers(updatedAnswers)
 
-            val row = cya.specialMentionType(itemIndex, referenceIndex, SpecialMentionList(List(SpecialMention("code", "description"))))
+            val row = cya.specialMentionType(itemIndex, referenceIndex, SpecialMentionList(List(SpecialMention("code", "description"))), NormalMode)
 
             row mustBe None
         }
       }
+    }
+
+    "specialMentionTypeNoRemoval must " - {
+
+      "display row if answer exists in reference data" in {
+
+        forAll(arb[UserAnswers], arb[SpecialMentionList].suchThat(x => x.list.nonEmpty)) {
+          (userAnswers, specialMentionList) =>
+            val updatedAnswers = userAnswers
+              .set(SpecialMentionTypePage(itemIndex, referenceIndex), specialMentionList.list.head.code)
+              .success
+              .value
+
+            val rowContent = s"(${specialMentionList.list.head.code}) ${specialMentionList.list.head.description}"
+
+            val cya = new SpecialMentionsCheckYourAnswers(updatedAnswers)
+
+            val row = cya.specialMentionTypeNoRemoval(itemIndex, referenceIndex, specialMentionList)
+
+            row.value.key.content mustBe Message(rowContent)
+
+            row.value.actions.length mustBe 1
+        }
+      }
+
+      "not display row if answer does not exist in reference data" in {
+
+        forAll(arb[UserAnswers]) {
+          userAnswers =>
+            val updatedAnswers = userAnswers
+              .set(SpecialMentionTypePage(itemIndex, referenceIndex), "invalid")
+              .success
+              .value
+
+            val cya = new SpecialMentionsCheckYourAnswers(updatedAnswers)
+
+            val row = cya.specialMentionTypeNoRemoval(itemIndex, referenceIndex, SpecialMentionList(List(SpecialMention("code", "description"))))
+
+            row mustBe None
+        }
+      }
+    }
+
+    "addAnother" - {
+
+      "must link to correct page" - {
+
+        val cya = new SpecialMentionsCheckYourAnswers(emptyUserAnswers)
+
+        cya.addAnother(index, msg"addItems.checkYourAnswersLabel.specialMentions") mustBe
+          AddAnotherViewModel(
+            controllers.addItems.specialMentions.routes.AddAnotherSpecialMentionController.onPageLoad(lrn, itemIndex, CheckMode).url,
+            msg"addItems.checkYourAnswersLabel.specialMentions"
+          )
+
+      }
+
     }
 
   }

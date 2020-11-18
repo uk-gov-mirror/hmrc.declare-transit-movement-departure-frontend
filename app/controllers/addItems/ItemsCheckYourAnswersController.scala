@@ -48,14 +48,16 @@ class ItemsCheckYourAnswersController @Inject()(
     implicit request =>
       referenceDataConnector.getDocumentTypes() flatMap {
         documentTypes =>
-          val sections: Seq[Section] = AddItemsCheckYourAnswersViewModel(request.userAnswers, index, documentTypes).sections
-          val json = Json.obj(
-            "lrn"         -> lrn,
-            "sections"    -> Json.toJson(sections),
-            "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
-          )
-
-          renderer.render(template, json).map(Ok(_))
+          referenceDataConnector.getSpecialMention() flatMap {
+            specialMentions =>
+              val sections: Seq[Section] = AddItemsCheckYourAnswersViewModel(request.userAnswers, index, documentTypes, specialMentions).sections
+              val json = Json.obj(
+                "lrn"         -> lrn,
+                "sections"    -> Json.toJson(sections),
+                "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
+              )
+              renderer.render(template, json).map(Ok(_))
+          }
       }
   }
 }
