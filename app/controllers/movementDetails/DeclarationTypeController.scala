@@ -17,7 +17,7 @@
 package controllers.movementDetails
 
 import controllers.actions._
-import forms.DeclarationTypeFormProvider
+import forms.movementDetails.DeclarationTypeFormProvider
 import javax.inject.Inject
 import models.{DeclarationType, LocalReferenceNumber, Mode}
 import navigation.Navigator

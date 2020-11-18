@@ -17,7 +17,7 @@
 package controllers.movementDetails
 
 import controllers.actions._
-import forms.RepresentativeCapacityFormProvider
+import forms.movementDetails.RepresentativeCapacityFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode, RepresentativeCapacity}
 import navigation.Navigator

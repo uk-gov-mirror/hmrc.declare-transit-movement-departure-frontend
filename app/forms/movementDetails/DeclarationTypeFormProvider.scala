@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.movementDetails
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import javax.inject.Inject
+import models.DeclarationType
 import play.api.data.Form
 
-class DeclarationPlaceFormProvider @Inject() extends Mappings {
+class DeclarationTypeFormProvider @Inject() extends Mappings {
 
-  val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
-  val maxLengthPostCode     = 9
-
-  def apply(): Form[String] =
+  def apply(): Form[DeclarationType] =
     Form(
-      "value" -> text("declarationPlace.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(maxLengthPostCode, "declarationPlace.error.length"),
-            regexp(postCodeRegex, "declarationPlace.error.invalid")
-          )))
+      "value" -> enumerable[DeclarationType]("declarationType.error.required")
+    )
 }

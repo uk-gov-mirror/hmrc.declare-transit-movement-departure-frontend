@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.movementDetails
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class DeclarationForSomeoneElseFormProvider @Inject() extends Mappings {
+class RepresentativeNameFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  val representativeNameRegex: String = "^[a-zA-Z0-9 ]*$"
+  val maxLengthRepresentativeName     = 35
+
+  def apply(): Form[String] =
     Form(
-      "value" -> boolean("declarationForSomeoneElse.error.required")
+      "value" -> text("representativeName.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLengthRepresentativeName, "representativeName.error.length"),
+            regexp(representativeNameRegex, "representativeName.error.invalid")
+          ))
     )
 }

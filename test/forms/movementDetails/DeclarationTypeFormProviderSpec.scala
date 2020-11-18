@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 
-package forms
+package forms.movementDetails
 
-import javax.inject.Inject
-
-import forms.mappings.Mappings
-import play.api.data.Form
+import forms.behaviours.OptionFieldBehaviours
 import models.DeclarationType
+import play.api.data.FormError
 
-class DeclarationTypeFormProvider @Inject() extends Mappings {
+class DeclarationTypeFormProviderSpec extends OptionFieldBehaviours {
 
-  def apply(): Form[DeclarationType] =
-    Form(
-      "value" -> enumerable[DeclarationType]("declarationType.error.required")
+  val form = new DeclarationTypeFormProvider()()
+
+  ".value" - {
+
+    val fieldName   = "value"
+    val requiredKey = "declarationType.error.required"
+
+    behave like optionsField[DeclarationType](
+      form,
+      fieldName,
+      validValues  = DeclarationType.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

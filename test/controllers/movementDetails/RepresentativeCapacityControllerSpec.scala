@@ -18,7 +18,7 @@ package controllers.movementDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoute}
-import forms.RepresentativeCapacityFormProvider
+import forms.movementDetails.RepresentativeCapacityFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, RepresentativeCapacity}
 import navigation.annotations.MovementDetails

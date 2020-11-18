@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.movementDetails
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
-import models.RepresentativeCapacity
 
-class RepresentativeCapacityFormProvider @Inject() extends Mappings {
+class ContainersUsedPageFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[RepresentativeCapacity] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> enumerable[RepresentativeCapacity]("representativeCapacity.error.required")
+      "value" -> boolean("containersUsed.error.required")
     )
 }

@@ -18,7 +18,7 @@ package controllers.movementDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoute}
-import forms.DeclarationPlaceFormProvider
+import forms.movementDetails.DeclarationPlaceFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.MovementDetails

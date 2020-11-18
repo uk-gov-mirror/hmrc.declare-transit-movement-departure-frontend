@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package forms
+package forms.movementDetails
 
 import forms.behaviours.OptionFieldBehaviours
-import models.DeclarationType
+import models.RepresentativeCapacity
 import play.api.data.FormError
 
-class DeclarationTypeFormProviderSpec extends OptionFieldBehaviours {
+class RepresentativeCapacityFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DeclarationTypeFormProvider()()
+  val form = new RepresentativeCapacityFormProvider()()
 
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "declarationType.error.required"
+    val requiredKey = "representativeCapacity.error.required"
 
-    behave like optionsField[DeclarationType](
+    behave like optionsField[RepresentativeCapacity](
       form,
       fieldName,
-      validValues  = DeclarationType.values,
+      validValues  = RepresentativeCapacity.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 
