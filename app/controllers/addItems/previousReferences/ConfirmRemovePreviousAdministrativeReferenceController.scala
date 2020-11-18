@@ -17,7 +17,7 @@
 package controllers.addItems.previousReferences
 
 import controllers.actions._
-import forms.ConfirmRemovePreviousAdministrativeReferenceFormProvider
+import forms.addItems.previousReferences.ConfirmRemovePreviousAdministrativeReferenceFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator

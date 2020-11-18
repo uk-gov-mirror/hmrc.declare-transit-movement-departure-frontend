@@ -17,7 +17,7 @@
 package controllers.addItems.previousReferences
 
 import controllers.actions._
-import forms.ExtraInformationFormProvider
+import forms.addItems.previousReferences.ExtraInformationFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator

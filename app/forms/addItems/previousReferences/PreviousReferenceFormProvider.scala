@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems.previousReferences
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class ExtraInformationFormProvider @Inject() extends Mappings {
+class PreviousReferenceFormProvider @Inject() extends Mappings {
 
-  val maxLength = 26
-  val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<> ]{1,26}$"
+  val maxLength                        = 35
+  val previousReferenceCharactersRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("extraInformation.error.required")
+      "value" -> text("previousReference.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(maxLength, "extraInformation.error.length"),
-            regexp(regex, "extraInformation.error.invalid")
-          ))
+            maxLength(maxLength, "previousReference.error.length"),
+            regexp(previousReferenceCharactersRegex, "previousReference.error.invalidCharacters")
+          )
+        )
     )
 }

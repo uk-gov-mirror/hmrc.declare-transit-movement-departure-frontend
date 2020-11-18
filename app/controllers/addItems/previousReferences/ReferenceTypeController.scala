@@ -18,7 +18,7 @@ package controllers.addItems.previousReferences
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import forms.ReferenceTypeFormProvider
+import forms.addItems.previousReferences.ReferenceTypeFormProvider
 import javax.inject.Inject
 import models.reference.PreviousDocumentType
 import models.{Index, LocalReferenceNumber, Mode}

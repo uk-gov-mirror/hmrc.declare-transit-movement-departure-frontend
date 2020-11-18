@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
 import forms.behaviours.StringFieldBehaviours
-import forms.goodsSummary.CustomsApprovedLocationFormProvider
 import org.scalacheck.Gen
 import play.api.data.FormError
 

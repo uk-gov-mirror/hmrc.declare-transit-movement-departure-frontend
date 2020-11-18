@@ -19,7 +19,7 @@ package controllers.addItems.previousReferences
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
-import forms.ReferenceTypeFormProvider
+import forms.addItems.previousReferences.ReferenceTypeFormProvider
 import matchers.JsonMatchers
 import models.reference.PreviousDocumentType
 import models.{NormalMode, PreviousDocumentTypeList}

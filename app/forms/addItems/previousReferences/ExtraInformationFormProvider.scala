@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.addItems.previousReferences
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class ConfirmRemovePreviousAdministrativeReferenceFormProvider @Inject() extends Mappings {
+class ExtraInformationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  val maxLength = 26
+  val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<> ]{1,26}$"
+
+  def apply(): Form[String] =
     Form(
-      "value" -> boolean("confirmRemovePreviousAdministrativeReference.error.required")
+      "value" -> text("extraInformation.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "extraInformation.error.length"),
+            regexp(regex, "extraInformation.error.invalid")
+          ))
     )
 }

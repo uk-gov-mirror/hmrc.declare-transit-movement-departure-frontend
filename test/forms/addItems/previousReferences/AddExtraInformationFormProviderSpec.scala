@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems.previousReferences
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddAdministrativeReferenceFormProviderSpec extends BooleanFieldBehaviours {
+class AddExtraInformationFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addAdministrativeReference.error.required"
+  val requiredKey = "addExtraInformation.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddAdministrativeReferenceFormProvider()()
+  val form = new AddExtraInformationFormProvider()()
 
   ".value" - {
 

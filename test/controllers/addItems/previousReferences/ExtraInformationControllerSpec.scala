@@ -18,7 +18,7 @@ package controllers.addItems.previousReferences
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainItems}
-import forms.ExtraInformationFormProvider
+import forms.addItems.previousReferences.ExtraInformationFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.AddItems

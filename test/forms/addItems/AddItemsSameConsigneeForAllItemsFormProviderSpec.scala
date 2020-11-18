@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddExtraInformationFormProviderSpec extends BooleanFieldBehaviours {
+class AddItemsSameConsigneeForAllItemsFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addExtraInformation.error.required"
+  val requiredKey = "addItemsSameConsigneeForAllItems.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddExtraInformationFormProvider()()
+  val form = new AddItemsSameConsigneeForAllItemsFormProvider()()
 
   ".value" - {
 

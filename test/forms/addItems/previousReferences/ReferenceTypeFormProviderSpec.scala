@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.addItems.previousReferences
 
 import forms.behaviours.StringFieldBehaviours
 import models.PreviousDocumentTypeList
