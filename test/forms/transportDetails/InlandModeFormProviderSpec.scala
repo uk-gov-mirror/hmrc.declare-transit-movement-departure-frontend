@@ -14,23 +14,30 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transportDetails
 
 import forms.behaviours.StringFieldBehaviours
-import models.CountryList
-import models.reference.{Country, CountryCode}
+import models.TransportModeList
+import models.reference.TransportMode
 import play.api.data.FormError
 
-class NationalityCrossingBorderFormProviderSpec extends StringFieldBehaviours {
+class InlandModeFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "nationalityCrossingBorder.error.required"
-  val countries   = CountryList(Seq(Country(CountryCode("AD"), "Andorra")))
-  val form        = new NationalityCrossingBorderFormProvider()(countries)
+  val requiredKey = "inlandMode.error.required"
+  val lengthKey   = "inlandMode.error.length"
+  val maxLength   = 100
+
+  val transportModeList: TransportModeList = TransportModeList(
+    Seq(
+      TransportMode("1", "Sea transport"),
+      TransportMode("10", "Sea transport")
+    )
+  )
+  val form = new InlandModeFormProvider()(transportModeList)
 
   ".value" - {
 
     val fieldName = "value"
-    val maxLength = 2
 
     behave like fieldThatBindsValidData(
       form,
@@ -44,18 +51,19 @@ class NationalityCrossingBorderFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "not bind if country code does not exist in the country list" in {
+    "not bind if  code does not exist in the transport mode list" in {
 
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a country code which is in the list" in {
+    "bind a code which is in the transport mode list" in {
 
-      val boundForm = form.bind(Map("value" -> "AD"))
+      val boundForm = form.bind(Map("value" -> "1"))
       val field     = boundForm("value")
       field.errors must be(empty)
     }
+
   }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transportDetails
 
 import forms.behaviours.StringFieldBehaviours
 import models.CountryList

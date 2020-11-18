@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transportDetails
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class IdCrossingBorderFormProvider @Inject() extends Mappings {
+class IdAtDepartureFormProvider @Inject() extends Mappings {
 
   val idRegex: String = "^[a-zA-Z0-9]*$"
   val idMaxLength     = 27
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("idCrossingBorder.error.required")
+      "value" -> text("idAtDeparture.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(idMaxLength, "idCrossingBorder.error.length"),
-            regexp(idRegex, "idCrossingBorder.error.invalidCharacters"),
+            maxLength(idMaxLength, "idAtDeparture.error.length"),
+            regexp(idRegex, "idAtDeparture.error.invalidCharacters"),
           )))
 }

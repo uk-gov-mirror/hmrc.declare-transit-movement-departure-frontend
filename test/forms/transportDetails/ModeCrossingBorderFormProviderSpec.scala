@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transportDetails
 
 import forms.behaviours.StringFieldBehaviours
 import models.TransportModeList
 import models.reference.TransportMode
 import play.api.data.FormError
 
-class ModeAtBorderFormProviderSpec extends StringFieldBehaviours {
+class ModeCrossingBorderFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "modeAtBorder.error.required"
-  val lengthKey   = "modeAtBorder.error.length"
+  val requiredKey = "modeCrossingBorder.error.required"
+  val lengthKey   = "modeCrossingBorder.error.length"
   val maxLength   = 100
 
   val transportModeList = TransportModeList(
     Seq(
       TransportMode("1", "Sea transport"),
       TransportMode("10", "Sea transport")
-    ))
+    )
+  )
 
-  val form = new ModeAtBorderFormProvider()(transportModeList)
+  val form = new ModeCrossingBorderFormProvider()(transportModeList)
 
   ".value" - {
 
@@ -50,19 +51,21 @@ class ModeAtBorderFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-    "not bind if code which does not exit in the transport mode list" in {
+
+    "Not bind if code does not exist in the TransportModeList" in {
 
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
+
       field.errors mustNot be(empty)
     }
 
-    "bind if code which is in the transport mode list" in {
+    "Bind code which is in the TransportModeList" in {
 
       val boundForm = form.bind(Map("value" -> "1"))
       val field     = boundForm("value")
-      field.errors mustBe empty
-    }
 
+      field.errors mustBe (empty)
+    }
   }
 }

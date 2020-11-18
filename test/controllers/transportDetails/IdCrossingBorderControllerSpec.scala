@@ -18,7 +18,7 @@ package controllers.transportDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.IdCrossingBorderFormProvider
+import forms.transportDetails.IdCrossingBorderFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
 import navigation.annotations.TransportDetails

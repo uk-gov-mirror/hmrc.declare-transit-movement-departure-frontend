@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transportDetails
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.CountryList
-import models.reference.Country
+import javax.inject.Inject
 import play.api.data.Form
 
-class NationalityCrossingBorderFormProvider @Inject() extends Mappings {
+class ChangeAtBorderFormProvider @Inject() extends Mappings {
 
-  def apply(countryList: CountryList): Form[Country] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> text("nationalityCrossingBorder.error.required")
-        .verifying("nationalityCrossingBorder.error.required", value => countryList.fullList.exists(_.code.code == value))
-        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
+      "value" -> boolean("changeAtBorder.error.required")
     )
 }

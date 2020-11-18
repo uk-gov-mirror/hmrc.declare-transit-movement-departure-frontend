@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transportDetails
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.CountryList
-import models.reference.Country
+import javax.inject.Inject
+import models.TransportModeList
+import models.reference.TransportMode
 import play.api.data.Form
 
-class NationalityAtDepartureFormProvider @Inject() extends Mappings {
+class ModeAtBorderFormProvider @Inject() extends Mappings {
 
-  def apply(countryList: CountryList): Form[Country] =
+  def apply(transportModeList: TransportModeList): Form[TransportMode] =
     Form(
-      "value" -> text("nationalityAtDeparture.error.required")
-        .verifying("nationalityAtDeparture.error.required", value => countryList.fullList.exists(_.code.code == value))
-        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
+      "value" -> text("modeAtBorder.error.required")
+        .verifying("modeAtBorder.error.required", value => transportModeList.transportModes.exists(_.code == value))
+        .transform[TransportMode](value => transportModeList.transportModes.find(_.code == value).get, _.code)
     )
 }

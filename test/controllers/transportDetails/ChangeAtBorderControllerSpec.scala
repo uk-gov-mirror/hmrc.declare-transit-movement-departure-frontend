@@ -18,7 +18,7 @@ package controllers.transportDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
-import forms.ChangeAtBorderFormProvider
+import forms.transportDetails.ChangeAtBorderFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.TransportDetails

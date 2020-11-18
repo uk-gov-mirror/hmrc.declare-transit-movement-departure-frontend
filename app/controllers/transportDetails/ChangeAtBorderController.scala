@@ -17,7 +17,7 @@
 package controllers.transportDetails
 
 import controllers.actions._
-import forms.ChangeAtBorderFormProvider
+import forms.transportDetails.ChangeAtBorderFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.transportDetails
 
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.TransportModeList
+import models.reference.TransportMode
 import play.api.data.Form
 
-class ChangeAtBorderFormProvider @Inject() extends Mappings {
+class ModeCrossingBorderFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(transportModeList: TransportModeList): Form[TransportMode] =
     Form(
-      "value" -> boolean("changeAtBorder.error.required")
+      "value" -> text("modeCrossingBorder.error.required")
+        .verifying("modeCrossingBorder.error.required", value => transportModeList.transportModes.exists(_.code == value))
+        .transform[TransportMode](value => transportModeList.transportModes.find(_.code == value).get, _.code)
     )
 }

@@ -17,7 +17,7 @@
 package controllers.transportDetails
 
 import controllers.actions._
-import forms.IdCrossingBorderFormProvider
+import forms.transportDetails.IdCrossingBorderFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator

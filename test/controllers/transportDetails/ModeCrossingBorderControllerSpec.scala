@@ -19,7 +19,7 @@ package controllers.transportDetails
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
-import forms.ModeCrossingBorderFormProvider
+import forms.transportDetails.ModeCrossingBorderFormProvider
 import matchers.JsonMatchers
 import models.reference.TransportMode
 import models.{NormalMode, TransportModeList}

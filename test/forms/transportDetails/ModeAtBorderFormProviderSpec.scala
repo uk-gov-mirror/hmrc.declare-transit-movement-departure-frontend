@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transportDetails
 
 import forms.behaviours.StringFieldBehaviours
 import models.TransportModeList
 import models.reference.TransportMode
 import play.api.data.FormError
 
-class InlandModeFormProviderSpec extends StringFieldBehaviours {
+class ModeAtBorderFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "inlandMode.error.required"
-  val lengthKey   = "inlandMode.error.length"
+  val requiredKey = "modeAtBorder.error.required"
+  val lengthKey   = "modeAtBorder.error.length"
   val maxLength   = 100
 
-  val transportModeList: TransportModeList = TransportModeList(
+  val transportModeList = TransportModeList(
     Seq(
       TransportMode("1", "Sea transport"),
       TransportMode("10", "Sea transport")
-    )
-  )
-  val form = new InlandModeFormProvider()(transportModeList)
+    ))
+
+  val form = new ModeAtBorderFormProvider()(transportModeList)
 
   ".value" - {
 
@@ -50,19 +50,18 @@ class InlandModeFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-
-    "not bind if  code does not exist in the transport mode list" in {
+    "not bind if code which does not exit in the transport mode list" in {
 
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a code which is in the transport mode list" in {
+    "bind if code which is in the transport mode list" in {
 
       val boundForm = form.bind(Map("value" -> "1"))
       val field     = boundForm("value")
-      field.errors must be(empty)
+      field.errors mustBe empty
     }
 
   }

@@ -18,7 +18,7 @@ package controllers.transportDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import forms.ModeCrossingBorderFormProvider
+import forms.transportDetails.ModeCrossingBorderFormProvider
 import javax.inject.Inject
 import models.reference.TransportMode
 import models.{LocalReferenceNumber, Mode}

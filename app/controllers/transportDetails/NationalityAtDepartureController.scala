@@ -18,7 +18,7 @@ package controllers.transportDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
-import forms.NationalityAtDepartureFormProvider
+import forms.transportDetails.NationalityAtDepartureFormProvider
 import javax.inject.Inject
 import models.reference.Country
 import models.{LocalReferenceNumber, Mode}

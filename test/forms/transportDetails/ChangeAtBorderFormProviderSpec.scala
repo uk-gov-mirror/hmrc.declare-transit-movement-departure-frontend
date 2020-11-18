@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transportDetails
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddIdAtDepartureFormProviderSpec extends BooleanFieldBehaviours {
+class ChangeAtBorderFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addIdAtDeparture.error.required"
+  val requiredKey = "changeAtBorder.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddIdAtDepartureFormProvider()()
+  val form = new ChangeAtBorderFormProvider()()
 
   ".value" - {
 

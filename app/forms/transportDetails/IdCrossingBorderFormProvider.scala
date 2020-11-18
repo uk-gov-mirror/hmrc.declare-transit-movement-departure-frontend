@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transportDetails
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.TransportModeList
-import models.reference.TransportMode
+import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class ModeAtBorderFormProvider @Inject() extends Mappings {
+class IdCrossingBorderFormProvider @Inject() extends Mappings {
 
-  def apply(transportModeList: TransportModeList): Form[TransportMode] =
+  val idRegex: String = "^[a-zA-Z0-9]*$"
+  val idMaxLength     = 27
+
+  def apply(): Form[String] =
     Form(
-      "value" -> text("modeAtBorder.error.required")
-        .verifying("modeAtBorder.error.required", value => transportModeList.transportModes.exists(_.code == value))
-        .transform[TransportMode](value => transportModeList.transportModes.find(_.code == value).get, _.code)
-    )
+      "value" -> text("idCrossingBorder.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(idMaxLength, "idCrossingBorder.error.length"),
+            regexp(idRegex, "idCrossingBorder.error.invalidCharacters"),
+          )))
 }
