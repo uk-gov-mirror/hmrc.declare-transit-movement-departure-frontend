@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import forms.goodsSummary.SealIdDetailsFormProvider
 import org.scalacheck.Gen
 import play.api.data.FormError
 

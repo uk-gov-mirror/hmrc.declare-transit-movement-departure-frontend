@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
 import forms.behaviours.IntFieldBehaviours
-import forms.goodsSummary.TotalPackagesFormProvider
 import play.api.data.FormError
 
 class TotalPackagesFormProviderSpec extends IntFieldBehaviours {

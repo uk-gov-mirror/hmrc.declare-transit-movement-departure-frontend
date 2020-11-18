@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
 import forms.behaviours.BooleanFieldBehaviours
-import forms.goodsSummary.DeclarePackagesFormProvider
 import play.api.data.FormError
 
 class DeclarePackagesFormProviderSpec extends BooleanFieldBehaviours {

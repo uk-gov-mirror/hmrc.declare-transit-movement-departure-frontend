@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package forms.goodsSummary
 
 import forms.behaviours.StringFieldBehaviours
-import forms.goodsSummary.TotalGrossMassFormProvider
+import models.domain.GrossMass.Constants._
 import org.scalacheck.Gen
 import play.api.data.FormError
-import models.domain.GrossMass.Constants._
 
 class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
 
