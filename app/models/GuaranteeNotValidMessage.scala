@@ -16,16 +16,19 @@
 
 package models
 
+import cats.syntax.all._
 import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import com.lucidchart.open.xtract.{__, XmlReader}
 import play.api.libs.json.{Json, OWrites}
 
-case class GuaranteeNotValidMessage(reasonCodes: Seq[InvalidGuaranteeReasonCode])
+case class GuaranteeNotValidMessage(lrn: String, reasonCodes: Seq[InvalidGuaranteeReasonCode])
 
 object GuaranteeNotValidMessage {
 
   implicit val writes: OWrites[GuaranteeNotValidMessage] = Json.writes[GuaranteeNotValidMessage]
 
-  implicit val xmlReader: XmlReader[GuaranteeNotValidMessage] = (__ \ "GUAREF2").read(strictReadSeq[InvalidGuaranteeReasonCode]).map(apply)
-
+  implicit val xmlReader: XmlReader[GuaranteeNotValidMessage] = (
+    (__ \ "HEAHEA" \ "DocNumHEA5").read[String],
+    (__ \ "GUAREF2").read(strictReadSeq[InvalidGuaranteeReasonCode])
+  ).mapN(apply)
 }

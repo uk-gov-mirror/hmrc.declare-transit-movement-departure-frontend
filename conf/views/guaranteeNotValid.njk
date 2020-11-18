@@ -23,29 +23,48 @@
           {{ messages("guaranteeNotValid.heading") }}
         </h1>
 
-        <p class="govuk-body">{{ messages("guaranteeNotValid"+guaranteeNotValid.code) }}</p>
-           <dl class="govuk-summary-list">
-                  <div class="govuk-summary-list__row">
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+             {{ messages("guaranteeNotValid.lrn") }}
+              </dt>
+              <dd class="govuk-summary-list__value">
+              {{guaranteeNotValidMessage.lrn}}
+              </dd>
+            </div>
+         </dl>
+        {% for reasonCode in guaranteeNotValidMessage.reasonCodes %}
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
                       <dt class="govuk-summary-list__key">
-                     {{ messages("guaranteeNotValid.errorCode") }}
+                     {{ messages("guaranteeNotValid.guaranteeRefNumber") }}
                       </dt>
                       <dd class="govuk-summary-list__value">
-                      {{ error.errorType }}
+                      {{ reasonCode.guaranteeRefNumber }}
                       </dd>
                   </div>
                   <div class="govuk-summary-list__row">
                       <dt class="govuk-summary-list__key">
-                     {{ messages("guaranteeNotValid.pointer") }}
+                     {{ messages("guaranteeNotValid.reasonCode") }}
                       </dt>
                       <dd class="govuk-summary-list__value">
-                      {{ error.pointer }}
+                      {{ messages("guaranteeNotValid."+reasonCode.code) }}
                       </dd>
                   </div>
-              </dl>
+                  <div class="govuk-summary-list__row">
+                      <dt class="govuk-summary-list__key">
+                     {{ messages("guaranteeNotValid.reason") }}
+                      </dt>
+                      <dd class="govuk-summary-list__value">
+                      {{ messages("guaranteeNotValid."+reasonCode.code+".p") }}
+                      </dd>
+                </div>
+            </dl>
+         {% endfor %}
 
 
-        <p class="govuk-body">{{ messages("guaranteeNotValid.you.must") }}</p>
-            <a class="govuk-link" href={{contactUrl}} target="_blank">{{ messages("guaranteeNotValid.contact") }}</a>
+        <p class="govuk-body">{{ messages("guaranteeNotValid.you.must") }}
+            <a class="govuk-link" href={{contactUrl}} target="_blank">{{ messages("guaranteeNotValid.contact") }}</a></p>
       </div>
     </div>
   </div>

@@ -20,13 +20,14 @@ import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import play.api.libs.json.{Json, OWrites}
 
-case class InvalidGuaranteeReasonCode(code: InvalidGuaranteeCode, reason: Option[String])
+case class InvalidGuaranteeReasonCode(guaranteeRefNumber: String, code: InvalidGuaranteeCode, reason: Option[String])
 
 object InvalidGuaranteeReasonCode {
 
   implicit val writes: OWrites[InvalidGuaranteeReasonCode] = Json.writes[InvalidGuaranteeReasonCode]
 
   implicit val xmlReader: XmlReader[InvalidGuaranteeReasonCode] = (
+    (__ \ "GuaRefNumGRNREF21").read[String],
     (__ \ "INVGUARNS" \ "InvGuaReaCodRNS11").read[InvalidGuaranteeCode],
     (__ \ "INVGUARNS" \ "InvGuaReaRNS12").read[String].optional
   ).mapN(apply)

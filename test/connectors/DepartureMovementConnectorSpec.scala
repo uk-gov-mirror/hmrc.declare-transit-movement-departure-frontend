@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import generators.MessagesModelGenerators
 import helper.WireMockServerHandler
 import models.messages.DeclarationRequest
-import models.{DepartureId, GuaranteeNotValidMessage, InvalidGuaranteeCode, InvalidGuaranteeReasonCode, MessagesLocation, MessagesSummary}
+import models.{DepartureId, InvalidGuaranteeCode, MessagesLocation, MessagesSummary}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -112,33 +112,44 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
     "getGuaranteeNotValidMessage" - {
       "must return valid 'guarantee not valid message'" in {
         val location     = s"/transits-movements-trader-at-departure-stub/movements/departures/${departureId.value}/messages/1"
-        val invalidCode  = Gen.oneOf(InvalidGuaranteeCode.values).sample.value
-        val xml: NodeSeq = <CC055A>
+
+        forAll(Gen.oneOf(InvalidGuaranteeCode.values)) {
+          invalidCode =>
+            val xml: NodeSeq = <CC055A>
+            <GUAREF2>
+              <GuaRefNumGRNREF21>GuaRefNumber1</GuaRefNumGRNREF21>
+              <INVGUARNS>
+                <InvGuaReaCodRNS11>
+                  {invalidCode.code}
+                </InvGuaReaCodRNS11>
+              </INVGUARNS>
+            </GUAREF2>
+          </CC055A>
+
+            val json = Json.obj("message" -> xml.toString())
+
+            server.stubFor(
+              get(urlEqualTo(location))
+                .willReturn(
+                  okJson(json.toString)
+                )
+            )
+            val expectedResult = Some(GuaranteeNotValidMessage(Seq(InvalidGuaranteeReasonCode(invalidCode, None))))
+
+            connector.getGuaranteeNotValidMessage(location).futureValue mustBe expectedResult
+        }
+      }
+
+      "must return None for invalid input'" in {
+        val location              = s"/transits-movements-trader-at-departure/movements/departures/${departureId.value}/messages/1"
+        val rejectionXml: NodeSeq = <CC055A>
           <GUAREF2>
             <GuaRefNumGRNREF21>GuaRefNumber1</GuaRefNumGRNREF21>
             <INVGUARNS>
-              <InvGuaReaCodRNS11>invalidCode</InvGuaReaCodRNS11>
-              <InvGuaReaRNS12>Does not exist</InvGuaReaRNS12>
+              <InvGuaReaCodRNS11>notvalid</InvGuaReaCodRNS11>
             </INVGUARNS>
           </GUAREF2>
         </CC055A>
-
-        val json = Json.obj("message" -> xml.toString())
-
-        server.stubFor(
-          get(urlEqualTo(location))
-            .willReturn(
-              okJson(json.toString)
-            )
-        )
-        val expectedResult = Some(GuaranteeNotValidMessage(Seq(InvalidGuaranteeReasonCode(invalidCode, None))))
-
-        connector.getGuaranteeNotValidMessage(location).futureValue mustBe expectedResult
-      }
-
-      "must return None for malformed xml'" in {
-        val location              = s"/transits-movements-trader-at-departure/movements/departures/${departureId.value}/messages/1"
-        val rejectionXml: NodeSeq = <CC055A></CC055A>
 
         val json = Json.obj("message" -> rejectionXml.toString())
 

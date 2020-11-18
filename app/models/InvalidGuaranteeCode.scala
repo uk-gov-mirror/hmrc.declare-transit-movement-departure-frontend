@@ -27,7 +27,7 @@ object InvalidGuaranteeCode {
     xml =>
       case class ErrorTypeParseError(message: String) extends ParseError
 
-      values.find(_.code == xml.text) match {
+      values.find(_.code.equalsIgnoreCase(xml.text.trim)) match {
         case Some(data) => ParseSuccess(data)
         case _          => ParseFailure(ErrorTypeParseError(s"Invalid or missing ErrorType: $xml"))
       }
@@ -38,7 +38,7 @@ object InvalidGuaranteeCode {
       JsString(invalidCode.code)
   }
 
-  val values = Seq(G01, G02, G03, G04, G05, G06, G07, G08, G09, G010, G011, G012, G013)
+  val values = Seq(G01, G02, G03, G04, G05, G06, G07, G08, G09, G10, G11, G12, G13)
 
   case object G01 extends InvalidGuaranteeCode("G01")
   case object G02 extends InvalidGuaranteeCode("G02")
@@ -49,10 +49,9 @@ object InvalidGuaranteeCode {
   case object G07 extends InvalidGuaranteeCode("G07")
   case object G08 extends InvalidGuaranteeCode("G08")
   case object G09 extends InvalidGuaranteeCode("G09")
-  case object G010 extends InvalidGuaranteeCode("G10")
-  case object G011 extends InvalidGuaranteeCode("G11")
-  case object G012 extends InvalidGuaranteeCode("G12")
-  case object G013 extends InvalidGuaranteeCode("G13")
-  case class DefaultInvalidCode(override val code: String) extends InvalidGuaranteeCode("G08")
+  case object G10 extends InvalidGuaranteeCode("G10")
+  case object G11 extends InvalidGuaranteeCode("G11")
+  case object G12 extends InvalidGuaranteeCode("G12")
+  case object G13 extends InvalidGuaranteeCode("G13")
 
 }
