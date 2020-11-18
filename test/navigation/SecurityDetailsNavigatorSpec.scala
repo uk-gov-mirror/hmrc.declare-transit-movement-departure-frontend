@@ -21,8 +21,7 @@ import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.CountryOfDispatchPage
-import pages.addItems.securityDetails.TransportChargesPage
+import pages.addItems.securityDetails._
 import controllers.addItems.securityDetails._
 
 class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -32,15 +31,88 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
   "SecurityDetailsNavigator" - {}
   "in Normal mode" - {
 
-    "Must go from  TransportChargesPage to UsingSameCommercialReferencePage" in {
+    "Must go from TransportChargesPage to UsingSameCommercialReferencePage" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>
           navigator
             .nextPage(TransportChargesPage(index), NormalMode, answers)
             .mustBe(routes.UsingSameCommercialReferenceController.onPageLoad(answers.id, index, NormalMode))
-
       }
     }
-  }
 
+    "Must go from UsingSameCommercialReferencePage" - {
+      "to CommercialReferenceNumberPage when user selects 'No'" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(UsingSameCommercialReferencePage(index), false)
+              .success
+              .value
+            navigator
+              .nextPage(UsingSameCommercialReferencePage(index), NormalMode, updatedAnswers)
+              .mustBe(routes.CommercialReferenceNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
+        }
+      }
+
+      "to AddDangerousGoodsCodePage when user selects 'Yes'" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(UsingSameCommercialReferencePage(index), true)
+              .success
+              .value
+            navigator
+              .nextPage(UsingSameCommercialReferencePage(index), NormalMode, updatedAnswers)
+              .mustBe(routes.UsingSameCommercialReferenceController.onPageLoad(answers.id, index, NormalMode))
+        }
+      }
+    }
+
+    "Must go from CommercialReferenceNumberPage to AddDangerousGoodsCodePage" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          navigator
+            .nextPage(CommercialReferenceNumberPage(index), NormalMode, answers)
+            .mustBe(routes.AddDangerousGoodsCodeController.onPageLoad(answers.id, index, NormalMode))
+      }
+    }
+
+    "Must go from AddDangerousGoodsCodePage" - {
+      "to AddItemsCheckYourAnswersPage when user selects 'No'" in { //todo -update when Security Trader Details section done
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddDangerousGoodsCodePage(index), false)
+              .success
+              .value
+            navigator
+              .nextPage(AddDangerousGoodsCodePage(index), NormalMode, updatedAnswers)
+              .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+        }
+      }
+
+      "to DangerousGoodsCodePage when user selects 'Yes'" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddDangerousGoodsCodePage(index), true)
+              .success
+              .value
+            navigator
+              .nextPage(AddDangerousGoodsCodePage(index), NormalMode, updatedAnswers)
+              .mustBe(routes.DangerousGoodsCodeController.onPageLoad(updatedAnswers.id, index, NormalMode))
+        }
+      }
+    }
+
+    "Must go from DangerousGoodsCodePage to AddItemsCheckYourAnswersPage" in { //todo -update when Security Trader Details section done
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          navigator
+            .nextPage(DangerousGoodsCodePage(index), NormalMode, answers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+      }
+    }
+
+  }
 }

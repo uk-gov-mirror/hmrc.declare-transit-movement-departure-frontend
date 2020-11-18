@@ -15,11 +15,12 @@
  */
 
 package navigation
-import controllers.addItems.securityDetails._
+
 import javax.inject.{Inject, Singleton}
 import models._
 import pages.Page
-import pages.addItems.securityDetails.TransportChargesPage
+import controllers.addItems.securityDetails.routes
+import pages.addItems.securityDetails._
 import play.api.mvc.Call
 
 @Singleton
@@ -27,6 +28,11 @@ class SecurityDetailsNavigator @Inject()() extends Navigator {
   // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case TransportChargesPage(index) => ua => Some(routes.UsingSameCommercialReferenceController.onPageLoad(ua.id, index, NormalMode))
+    case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index)
+    case CommercialReferenceNumberPage(index) => ua => Some(routes.AddDangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
+    case AddDangerousGoodsCodePage(index) => ua => addDangerousGoodsCodeRoute(ua, index)
+    case DangerousGoodsCodePage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+
   }
 
 
@@ -34,4 +40,16 @@ class SecurityDetailsNavigator @Inject()() extends Navigator {
 
   // format: on
 
+  private def usingSameCommercialReferenceRoute(ua: UserAnswers, index: Index) =
+    ua.get(UsingSameCommercialReferencePage(index)) match {
+      case Some(true)  => Some(routes.UsingSameCommercialReferenceController.onPageLoad(ua.id, index, NormalMode))
+      case Some(false) => Some(routes.CommercialReferenceNumberController.onPageLoad(ua.id, index, NormalMode))
+    }
+
+  private def addDangerousGoodsCodeRoute(ua: UserAnswers, index: Index) =
+    ua.get(AddDangerousGoodsCodePage(index)) match {
+      case Some(true) => Some(routes.DangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
+      case Some(false) =>
+        Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)) //todo -update when Security Trader Details section done
+    }
 }
