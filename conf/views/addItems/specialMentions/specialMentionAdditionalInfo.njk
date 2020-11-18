@@ -7,7 +7,7 @@
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("specialMentionAdditionalInfo.title"), form.errors) }}
+  {{ title(messages("specialMentionAdditionalInfo.title", referenceIndex, index), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -33,7 +33,7 @@
 
           {{ govukInput({
             label: {
-              text: messages('specialMentionAdditionalInfo.heading'),
+              text: messages('specialMentionAdditionalInfo.heading', referenceIndex, index),
               isPageHeading: true,
               classes: "govuk-label--xl"
             },

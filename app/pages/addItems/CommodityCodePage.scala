@@ -25,5 +25,5 @@ case class CommodityCodePage(index: Index) extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ items \ index.position \ toString
 
-  override def toString: String = "addItems/commodityCode"
+  override def toString: String = "commodityCode"
 }

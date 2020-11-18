@@ -17,19 +17,22 @@
 package viewModels
 
 import base.SpecBase
-import models.PreviousDocumentTypeList
-import models.reference.PreviousDocumentType
+import models.reference.{DocumentType, SpecialMention}
+import models.{DocumentTypeList, SpecialMentionList}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.addItems._
 import pages.addItems.containers.ContainerNumberPage
+import pages.addItems.specialMentions.SpecialMentionTypePage
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 
 class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks {
   // format: off
 
-  private val previousDocumentTypeList = PreviousDocumentTypeList(Seq(PreviousDocumentType("code", "name")))
+  private val documentTypeList = DocumentTypeList(Seq(DocumentType("code", "name", true)))
+  private val specialMentionList = SpecialMentionList(Seq(SpecialMention("code", "name")))
+
   private val updatedAnswers = emptyUserAnswers
     .set(ItemDescriptionPage(index), "test").success.value
     .set(ItemTotalGrossMassPage(index), "100.00").success.value
@@ -38,15 +41,15 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
     .set(IsCommodityCodeKnownPage(index), true).success.value
     .set(CommodityCodePage(index), "111111").success.value
     .set(ContainerNumberPage(itemIndex, containerIndex), arbitrary[String].sample.value).success.value
+    .set(SpecialMentionTypePage(index, itemIndex), "code").success.value
 
-  //val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, previousDocumentTypeList)
-  private val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index)
+  private val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, documentTypeList, specialMentionList)
 
 
   "AddItemsCheckYourAnswersViewModel" - {
 
     "display the correct number of sections" in {
-      data.sections.length mustEqual 4
+      data.sections.length mustEqual 6
       data.sections.head.rows.length mustEqual 6
     }
     
@@ -58,6 +61,11 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
     "containers sections have title and contain all rows" in {
       data.sections(3).sectionTitle.get mustBe msg"addItems.checkYourAnswersLabel.containers"
       data.sections(3).rows.length mustEqual 1
+    }
+
+    "special mentions have title and contain all rows" in {
+      data.sections(4).sectionTitle.get mustBe msg"addItems.checkYourAnswersLabel.specialMentions"
+      data.sections(4).rows.length mustEqual 1
     }
   }
   // format: on

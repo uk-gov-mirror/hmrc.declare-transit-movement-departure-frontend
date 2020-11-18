@@ -18,6 +18,7 @@ package navigation
 
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
+import controllers.addItems.specialMentions.{routes => specialMentionsRoutes}
 import controllers.addItems.{routes => addItemsRoutes}
 import controllers.addItems.{routes => addAnotherPackageRoutes}
 import controllers.addItems.containers.{routes => containerRoutes}
@@ -76,7 +77,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ExtraInformationPage(itemIndex, _)    => ua => Some(previousReferencesRoutes.AddAnotherPreviousAdministrativeReferenceController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPreviousAdministrativeReferencePage(itemIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, ua, NormalMode)
     case ContainerNumberPage(itemIndex, containerIndex) => ua => Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, NormalMode))
-    case AddAnotherContainerPage(itemIndex) => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+    case AddAnotherContainerPage(itemIndex) => ua => Some(specialMentionsRoutes.AddSpecialMentionController.onPageLoad(ua.id, itemIndex, NormalMode))
     case ConfirmRemoveContainerPage(index, _) => ua => Some(confirmRemoveContainerRoute(ua, index, NormalMode))
   }
 
@@ -222,8 +223,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (Some(true),None,_,_,_,_,CheckMode)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, mode))
       case (Some(true),_,_,_,_,_,CheckMode)    => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
       case (Some(false),_,_,_,_,_,CheckMode)    => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-      case (Some(false),_,
-      Some(false),Some(false),
+      case (Some(false),_, Some(false),Some(false),
       Some(false),Some(false),
       NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, mode))
       case (_,_,
@@ -234,6 +234,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
       Some(false),Some(true),
       Some(false),Some(false),
       NormalMode)      => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, mode))
+      case (Some(false),_,
+      Some(true), None,
+      Some(false), Some(true),
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
+      case (Some(false),_,
+      Some(false), Some(true),
+      Some(false), Some(true),
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
       case (_,_,
       Some(true),None,
       Some(true),None,
@@ -262,6 +270,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
       Some(false), Some(true),
       Some(false), Some(false),
       NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      case (_,
+      Some(true), None,
+      Some(false), Some(true),
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
+      case (_,
+      Some(false), Some(true),
+      Some(false), Some(true),
+      NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
       case (_,
       Some(true), None,
       Some(true), None,
@@ -344,8 +360,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (Some(true), _,  _) =>
         val nextPackageIndex: Int = ua.get(DeriveNumberOfPackages(itemIndex)).getOrElse(0)
         Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, itemIndex, Index(nextPackageIndex), mode))
-      case (Some(false), Some(false), _) =>
-        Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
+      case (Some(false), Some(false), _) if mode == NormalMode =>
+        Some(specialMentionsRoutes.AddSpecialMentionController.onPageLoad(ua.id, itemIndex, mode))
       case (Some(false), _, 0) =>
         Some(containerRoutes.ContainerNumberController.onPageLoad(ua.id, itemIndex, Index(0), mode))
       case (Some(false), _,  _) if mode == CheckMode =>

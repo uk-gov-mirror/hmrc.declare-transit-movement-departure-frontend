@@ -16,31 +16,35 @@
 
 package viewModels
 
-import derivable.{DeriveNumberOfContainers, DeriveNumberOfDocuments, DeriveNumberOfPackages, DeriveNumberOfPreviousAdministrativeReferences}
-import models.{Index, PreviousDocumentTypeList, UserAnswers}
+import derivable._
+import models.{DocumentTypeList, Index, SpecialMentionList, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
-import utils.AddItemsCheckYourAnswersHelper
+import utils.{AddItemsCheckYourAnswersHelper, SpecialMentionsCheckYourAnswers}
 import viewModels.sections.Section
 
 case class AddItemsCheckYourAnswersViewModel(sections: Seq[Section])
 
 object AddItemsCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, index: Index): AddItemsCheckYourAnswersViewModel = {
-    //def apply(userAnswers: UserAnswers, index: Index, documentTypes: PreviousDocumentTypeList): AddItemsCheckYourAnswersViewModel = {
+  def apply(userAnswers: UserAnswers,
+            index: Index,
+            documentTypeList: DocumentTypeList,
+            specialMentionList: SpecialMentionList): AddItemsCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper = new AddItemsCheckYourAnswersHelper(userAnswers)
+
+    val specialMentionsCheckYourAnswers = new SpecialMentionsCheckYourAnswers(userAnswers)
 
     AddItemsCheckYourAnswersViewModel(
       Seq(
         itemsDetailsSection(checkYourAnswersHelper, index),
         traderDetailsSection(checkYourAnswersHelper, index),
         packagesSection(checkYourAnswersHelper, index)(userAnswers),
-        containersSection(checkYourAnswersHelper, index)(userAnswers)
+        containersSection(checkYourAnswersHelper, index)(userAnswers),
+        specialMentionsSection(specialMentionsCheckYourAnswers, index, specialMentionList)(userAnswers),
+        documentsSection(checkYourAnswersHelper, index, documentTypeList)(userAnswers)
         /*
-        ,
         referencesSection(checkYourAnswersHelper, index)(userAnswers),
-        documentsSection(checkYourAnswersHelper, index)(userAnswers)
        */
       )
     )
@@ -102,16 +106,17 @@ object AddItemsCheckYourAnswersViewModel {
     )
   }*/
 
-  private def documentsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index)(implicit userAnswers: UserAnswers) = {
+  private def documentsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index, documentTypeList: DocumentTypeList)(
+    implicit userAnswers: UserAnswers) = {
     val documentRows: Seq[SummaryList.Row] =
       List.range(0, userAnswers.get(DeriveNumberOfDocuments(index)).getOrElse(0)).flatMap {
         documentPosition =>
-          checkYourAnswersHelper.documentRow(index, Index(documentPosition), userAnswers)
+          checkYourAnswersHelper.documentRow(index, Index(documentPosition), userAnswers, documentTypeList)
       }
 
     Section(
       msg"addItems.checkYourAnswersLabel.documents",
-      Seq(checkYourAnswersHelper.addDocuments(index).toSeq, checkYourAnswersHelper.documentReference(index).toSeq, documentRows).flatten,
+      Seq(checkYourAnswersHelper.addDocuments(index).toSeq, documentRows).flatten,
       checkYourAnswersHelper.addAnotherDocument(index, msg"addItems.checkYourAnswersLabel.documents.addRemove")
     )
   }
@@ -127,6 +132,21 @@ object AddItemsCheckYourAnswersViewModel {
       msg"addItems.checkYourAnswersLabel.containers",
       containerRows,
       checkYourAnswersHelper.addAnotherContainer(index, msg"addItems.checkYourAnswersLabel.containers.addRemove")
+    )
+  }
+
+  private def specialMentionsSection(checkYourAnswersHelper: SpecialMentionsCheckYourAnswers, index: Index, specialMentionList: SpecialMentionList)(
+    implicit userAnswers: UserAnswers): Section = {
+    val containerRows: Seq[SummaryList.Row] =
+      List.range(0, userAnswers.get(DeriveNumberOfSpecialMentions(index)).getOrElse(0)).flatMap {
+        containerPosition =>
+          checkYourAnswersHelper.specialMentionTypeNoRemoval(index, Index(containerPosition), specialMentionList)
+      }
+
+    Section(
+      msg"addItems.checkYourAnswersLabel.specialMentions",
+      Seq(checkYourAnswersHelper.addSpecialMention(index).toSeq, containerRows).flatten,
+      checkYourAnswersHelper.addAnother(index, msg"addItems.checkYourAnswersLabel.specialMentions.addRemove")
     )
   }
 
