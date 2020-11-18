@@ -82,4 +82,8 @@ class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClie
     http.GET[Seq[SpecialMention]](serviceUrl).map(SpecialMentionList)
   }
 
+  def getMethodOfPayment()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[MethodOfPaymentList] = {
+    val serviceUrl = s"${config.referenceDataUrl}/method-of-payment"
+    http.GET[Seq[MethodOfPayment]](serviceUrl).map(MethodOfPaymentList)
+  }
 }

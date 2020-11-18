@@ -16,13 +16,16 @@
 
 package controllers.addItems.securityDetails
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.addItems.securityDetails.TransportChargesFormProvider
 import javax.inject.Inject
+import models.reference.MethodOfPayment
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.{AddItems, SecurityDetails}
 import pages.addItems.securityDetails.TransportChargesPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,6 +43,7 @@ class TransportChargesController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
   formProvider: TransportChargesFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -52,40 +56,54 @@ class TransportChargesController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TransportChargesPage(itemIndex)) match {
-        case None        => formProvider()
-        case Some(value) => formProvider().fill(value)
+      referenceDataConnector.getMethodOfPayment() flatMap {
+        payments =>
+          val form: Form[MethodOfPayment] = formProvider(payments)
+
+          val preparedForm = request.userAnswers
+            .get(TransportChargesPage(itemIndex))
+            .flatMap(payments.getMethodOfPayment)
+            .map(form.fill)
+            .getOrElse(form)
+
+          val json = Json.obj(
+            "form"  -> preparedForm,
+            "index" -> itemIndex.display,
+            //"payments"     -> getPaymentsAsJson(preparedForm.value, payments.methodsOfPayment),
+            "lrn"  -> lrn,
+            "mode" -> mode
+          )
+
+          renderer.render(template, json).map(Ok(_))
       }
-
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render(template, json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      formProvider()
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
+      referenceDataConnector.getMethodOfPayment() flatMap {
+        payments =>
+          val form = formProvider(payments)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
 
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
+                val json = Json.obj(
+                  "form"  -> formWithErrors,
+                  "index" -> itemIndex.display,
+                  //"payments"     -> getPaymentsAsJson(preparedForm.value, payments.methodsOfPayment),
+                  "lrn"  -> lrn,
+                  "mode" -> mode
+                )
+
+                renderer.render(template, json).map(BadRequest(_))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportChargesPage(itemIndex), value.code))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(TransportChargesPage(itemIndex), mode, updatedAnswers))
             )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportChargesPage(itemIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TransportChargesPage(itemIndex), mode, updatedAnswers))
-        )
+      }
   }
 }
