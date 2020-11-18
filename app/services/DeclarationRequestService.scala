@@ -22,17 +22,18 @@ import cats.data.NonEmptyList
 import cats.implicits._
 import javax.inject.Inject
 import models.domain.{Address, SealDomain}
+import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.TransportDetails.DetailsAtBorder
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
-import models.journeyDomain.{GoodsSummary, GuaranteeDetails, ItemSection, JourneyDomain, MovementDetails, Packages, TraderDetails, UserAnswersReader}
-import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
-import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage}
-import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
-import models.messages.header.{Header, Transport}
-import models.messages.trader.{TraderConsignee, TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
-import models.messages.{booleanToInt, DeclarationRequest, InterchangeControlReference, Meta, Representative, Seals}
+import models.journeyDomain._
+import models.messages._
+import models.messages.customsoffice._
+import models.messages.goodsitem._
+import models.messages.guarantee._
+import models.messages.header._
+import models.messages.trader._
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
 import repositories.InterchangeControlReferenceIdRepository
 
@@ -110,11 +111,11 @@ class DeclarationRequestService @Inject()(
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
             specialMention                   = Seq.empty,
-            traderConsignorGoodsItem         = None, // TODO look up this (we dont capture in domain model)
-            traderConsigneeGoodsItem         = None, // TODO look up this (we dont capture in domain model)
+            traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
+            traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,
             packages                         = packages(itemSection.packages).toList,
-            sensitiveGoodsInformation        = None //TODO look up this
+            sensitiveGoodsInformation        = Seq.empty //TODO look up this
           )
       }
 
@@ -197,6 +198,31 @@ class DeclarationRequestService @Inject()(
           Some(Representative(companyName, Some(capacity.toString)))
       }
 
+    def traderConsignor(requiredDetails: Option[RequiredDetails]): Option[TraderConsignorGoodsItem] =
+      requiredDetails
+        .flatMap {
+          case ItemTraderDetails.PersonalInformation(name, address) =>
+            Address.prismAddressToConsignorAddress.getOption(address).map {
+              case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
+                TraderConsignorGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+            }
+
+          case ItemTraderDetails.TraderEori(EoriNumber(eori)) =>
+            Some(TraderConsignorGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
+        }
+
+    def traderConsignee(requiredDetails: Option[RequiredDetails]): Option[TraderConsigneeGoodsItem] =
+      requiredDetails
+        .flatMap {
+          case ItemTraderDetails.PersonalInformation(name, address) =>
+            Address.prismAddressToConsigneeAddress.getOption(address).map {
+              case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
+                TraderConsigneeGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+            }
+          case ItemTraderDetails.TraderEori(EoriNumber(eori)) =>
+            Some(TraderConsigneeGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
+        }
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
@@ -220,7 +246,7 @@ class DeclarationRequestService @Inject()(
           natOfMeaOfTraAtDHEA80 = None, // Have a chat with Amaal about this bit
           ideOfMeaOfTraCroHEA85 = None, // Have a chat with Amaal about this bit
           natOfMeaOfTraCroHEA87 = None, // Have a chat with Amaal about this bit
-          typOfMeaOfTraCroHEA88 = None  // TODO look up this
+          typOfMeaOfTraCroHEA88 = None // TODO look up this
         ),
         conIndHEA96        = booleanToInt(movementDetails.containersUsed),
         totNumOfIteHEA305  = itemDetails.size,
