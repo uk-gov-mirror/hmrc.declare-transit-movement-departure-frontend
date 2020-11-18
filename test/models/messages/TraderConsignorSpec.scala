@@ -62,7 +62,7 @@ class TraderConsignorSpec
               <CouCO125>
                 {trader.countryCode}
               </CouCO125>
-              <NADLNGCO>EN</NADLNGCO>{eori.getOrElse(NodeSeq.Empty)}
+              {eori.getOrElse(NodeSeq.Empty)}
             </TRACONCO1>
 
           trader.toXml mustEqual expectedResult
