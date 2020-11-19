@@ -31,7 +31,7 @@ import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, Unpack
 import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
 import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
-import models.messages.{booleanToInt, DeclarationRequest, InterchangeControlReference, Meta}
+import models.messages._
 import models.{ConsignorAddress, EoriNumber, UserAnswers}
 import repositories.InterchangeControlReferenceIdRepository
 
@@ -208,7 +208,8 @@ class DeclarationRequestService @Inject()(
       None,
       None,
       guaranteeDetails(guarantee),
-      goodsItems(journeyDomain.itemDetails)
+      goodsItems(journeyDomain.itemDetails),
+      Seq.empty[Itinerary]
     )
   }
 }
