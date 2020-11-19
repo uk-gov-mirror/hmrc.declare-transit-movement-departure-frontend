@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
-import pages.behaviours.PageBehaviours
+import models.UserAnswers
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class InlandModePageSpec extends PageBehaviours {
+import scala.util.Try
 
-  "InlandModePage" - {
+case object AddIdAtDeparturePage extends QuestionPage[Boolean] {
 
-    beRetrievable[String](InlandModePage)
+  override def path: JsPath = JsPath \ toString
 
-    beSettable[String](InlandModePage)
+  override def toString: String = "addIdAtDeparture"
 
-    beRemovable[String](InlandModePage)
-  }
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(IdAtDeparturePage)
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

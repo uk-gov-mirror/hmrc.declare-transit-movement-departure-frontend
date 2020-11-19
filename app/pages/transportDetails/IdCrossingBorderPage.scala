@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object ModeAtBorderPage extends QuestionPage[String] {
+case object IdCrossingBorderPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "modeAtBorder"
+  override def toString: String = "idCrossingBorder"
 }

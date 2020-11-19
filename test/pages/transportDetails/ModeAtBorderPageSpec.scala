@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
 import pages.behaviours.PageBehaviours
 
-class IdCrossingBorderPageSpec extends PageBehaviours {
+class ModeAtBorderPageSpec extends PageBehaviours {
 
-  "IdCrossingBorderPage" - {
+  "ModeAtBorderPage" - {
 
-    beRetrievable[String](IdCrossingBorderPage)
+    beRetrievable[String](ModeAtBorderPage)
 
-    beSettable[String](IdCrossingBorderPage)
+    beSettable[String](ModeAtBorderPage)
 
-    beRemovable[String](IdCrossingBorderPage)
+    beRemovable[String](ModeAtBorderPage)
   }
 }

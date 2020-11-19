@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
+import models.UserAnswers
+import models.journeyDomain.TransportDetails.InlandMode.Constants
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object IdCrossingBorderPage extends QuestionPage[String] {
+case object ModeCrossingBorderPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "idCrossingBorder"
+  override def toString: String = "modeCrossingBorder"
+
+  override def cleanup(value: Option[String], userAnswers: UserAnswers) =
+    value match {
+      case Some(x) if Constants.codesSingleDigit.contains(x) => userAnswers.remove(NationalityCrossingBorderPage)
+      case _                                                 => super.cleanup(value, userAnswers)
+    }
 }

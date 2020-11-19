@@ -72,6 +72,17 @@ import pages.traderDetails.{
   WhatIsConsigneeEoriPage,
   WhatIsPrincipalEoriPage
 }
+import pages.transportDetails.{
+  AddIdAtDeparturePage,
+  ChangeAtBorderPage,
+  IdAtDeparturePage,
+  IdCrossingBorderPage,
+  InlandModePage,
+  ModeAtBorderPage,
+  ModeCrossingBorderPage,
+  NationalityAtDeparturePage,
+  NationalityCrossingBorderPage
+}
 
 class SectionsHelperSpec extends SpecBase {
 

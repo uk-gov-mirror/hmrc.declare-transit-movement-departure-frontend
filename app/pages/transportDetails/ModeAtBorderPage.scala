@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class ModeCrossingBorderPageSpec extends PageBehaviours {
+case object ModeAtBorderPage extends QuestionPage[String] {
 
-  "ModeCrossingBorderPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](ModeCrossingBorderPage)
-
-    beSettable[String](ModeCrossingBorderPage)
-
-    beRemovable[String](ModeCrossingBorderPage)
-  }
+  override def toString: String = "modeAtBorder"
 }

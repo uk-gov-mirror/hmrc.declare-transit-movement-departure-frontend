@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
-import models.reference.CountryCode
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object NationalityAtDeparturePage extends QuestionPage[CountryCode] {
+class ModeCrossingBorderPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "ModeCrossingBorderPage" - {
 
-  override def toString: String = "nationalityAtDeparture"
+    beRetrievable[String](ModeCrossingBorderPage)
+
+    beSettable[String](ModeCrossingBorderPage)
+
+    beRemovable[String](ModeCrossingBorderPage)
+  }
 }

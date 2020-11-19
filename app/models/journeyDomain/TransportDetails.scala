@@ -21,17 +21,7 @@ import cats.implicits._
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, Rail}
 import models.journeyDomain.TransportDetails._
 import models.reference.CountryCode
-import pages.{
-  AddIdAtDeparturePage,
-  ChangeAtBorderPage,
-  IdAtDeparturePage,
-  IdCrossingBorderPage,
-  InlandModePage,
-  ModeAtBorderPage,
-  ModeCrossingBorderPage,
-  NationalityAtDeparturePage,
-  NationalityCrossingBorderPage
-}
+import pages.transportDetails._
 
 case class TransportDetails(
   inlandMode: InlandMode,

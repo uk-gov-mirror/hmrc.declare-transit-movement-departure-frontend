@@ -19,6 +19,17 @@ package utils
 import controllers.transportDetails.routes
 import models.{CheckMode, CountryList, LocalReferenceNumber, TransportModeList, UserAnswers}
 import pages._
+import pages.transportDetails.{
+  AddIdAtDeparturePage,
+  ChangeAtBorderPage,
+  IdAtDeparturePage,
+  IdCrossingBorderPage,
+  InlandModePage,
+  ModeAtBorderPage,
+  ModeCrossingBorderPage,
+  NationalityAtDeparturePage,
+  NationalityCrossingBorderPage
+}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 

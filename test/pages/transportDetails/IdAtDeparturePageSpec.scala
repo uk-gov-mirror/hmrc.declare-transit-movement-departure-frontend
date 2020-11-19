@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object InlandModePage extends QuestionPage[String] {
+class IdAtDeparturePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "IdAtDeparturePage" - {
 
-  override def toString: String = "inlandMode"
+    beRetrievable[String](IdAtDeparturePage)
+
+    beSettable[String](IdAtDeparturePage)
+
+    beRemovable[String](IdAtDeparturePage)
+  }
 }

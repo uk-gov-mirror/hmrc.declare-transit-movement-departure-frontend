@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
 import models.UserAnswers
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case object AddIdAtDeparturePage extends QuestionPage[Boolean] {
+case object ChangeAtBorderPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "addIdAtDeparture"
+  override def toString: String = "changeAtBorder"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(IdAtDeparturePage)
-      case _           => super.cleanup(value, userAnswers)
+      case Some(false) =>
+        userAnswers
+          .remove(ModeAtBorderPage)
+          .flatMap(_.remove(IdCrossingBorderPage))
+          .flatMap(_.remove(ModeCrossingBorderPage))
+          .flatMap(_.remove(NationalityCrossingBorderPage))
+      case _ => super.cleanup(value, userAnswers)
     }
 }

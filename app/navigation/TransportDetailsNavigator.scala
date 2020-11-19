@@ -23,6 +23,18 @@ import pages._
 import play.api.mvc.Call
 import models.journeyDomain.TransportDetails.InlandMode._
 import models.journeyDomain.TransportDetails.InlandMode
+import pages.transportDetails.{
+  AddIdAtDepartureLaterPage,
+  AddIdAtDeparturePage,
+  ChangeAtBorderPage,
+  IdAtDeparturePage,
+  IdCrossingBorderPage,
+  InlandModePage,
+  ModeAtBorderPage,
+  ModeCrossingBorderPage,
+  NationalityAtDeparturePage,
+  NationalityCrossingBorderPage
+}
 
 @Singleton
 class TransportDetailsNavigator @Inject()() extends Navigator {

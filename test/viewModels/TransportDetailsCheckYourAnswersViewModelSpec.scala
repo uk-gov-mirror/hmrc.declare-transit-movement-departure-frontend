@@ -21,6 +21,17 @@ import models.reference.{Country, CountryCode, TransportMode}
 import models.{CountryList, TransportModeList}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.transportDetails.{
+  AddIdAtDeparturePage,
+  ChangeAtBorderPage,
+  IdAtDeparturePage,
+  IdCrossingBorderPage,
+  InlandModePage,
+  ModeAtBorderPage,
+  ModeCrossingBorderPage,
+  NationalityAtDeparturePage,
+  NationalityCrossingBorderPage
+}
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
 
 class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks {

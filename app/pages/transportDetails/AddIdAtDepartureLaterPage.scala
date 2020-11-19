@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
+
+import pages.Page
 
 case object AddIdAtDepartureLaterPage extends Page

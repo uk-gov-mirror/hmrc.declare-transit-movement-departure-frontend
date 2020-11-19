@@ -25,6 +25,17 @@ import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNatio
 import models.journeyDomain.TransportDetails._
 import org.scalatest.TryValues
 import pages._
+import pages.transportDetails.{
+  AddIdAtDeparturePage,
+  ChangeAtBorderPage,
+  IdAtDeparturePage,
+  IdCrossingBorderPage,
+  InlandModePage,
+  ModeAtBorderPage,
+  ModeCrossingBorderPage,
+  NationalityAtDeparturePage,
+  NationalityCrossingBorderPage
+}
 
 class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators {
   import TransportDetailsSpec._

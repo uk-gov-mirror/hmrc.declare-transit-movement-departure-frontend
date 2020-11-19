@@ -24,7 +24,7 @@ import models.reference.Country
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TransportDetails
-import pages.NationalityCrossingBorderPage
+import pages.transportDetails.NationalityCrossingBorderPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

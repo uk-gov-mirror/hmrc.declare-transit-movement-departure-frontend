@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
 import pages.behaviours.PageBehaviours
 
-class ChangeAtBorderPageSpec extends PageBehaviours {
+class InlandModePageSpec extends PageBehaviours {
 
-  "ChangeAtBorderPage" - {
+  "InlandModePage" - {
 
-    beRetrievable[Boolean](ChangeAtBorderPage)
+    beRetrievable[String](InlandModePage)
 
-    beSettable[Boolean](ChangeAtBorderPage)
+    beSettable[String](InlandModePage)
 
-    beRemovable[Boolean](ChangeAtBorderPage)
+    beRemovable[String](InlandModePage)
   }
 }

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
 import pages.behaviours.PageBehaviours
 
-class IdAtDeparturePageSpec extends PageBehaviours {
+class ChangeAtBorderPageSpec extends PageBehaviours {
 
-  "IdAtDeparturePage" - {
+  "ChangeAtBorderPage" - {
 
-    beRetrievable[String](IdAtDeparturePage)
+    beRetrievable[Boolean](ChangeAtBorderPage)
 
-    beSettable[String](IdAtDeparturePage)
+    beSettable[Boolean](ChangeAtBorderPage)
 
-    beRemovable[String](IdAtDeparturePage)
+    beRemovable[Boolean](ChangeAtBorderPage)
   }
 }

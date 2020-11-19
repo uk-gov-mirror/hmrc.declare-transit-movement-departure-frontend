@@ -35,6 +35,17 @@ import pages.guaranteeDetails._
 import pages.movementDetails._
 import pages.routeDetails._
 import pages.traderDetails._
+import pages.transportDetails.{
+  AddIdAtDeparturePage,
+  ChangeAtBorderPage,
+  IdAtDeparturePage,
+  IdCrossingBorderPage,
+  InlandModePage,
+  ModeAtBorderPage,
+  ModeCrossingBorderPage,
+  NationalityAtDeparturePage,
+  NationalityCrossingBorderPage
+}
 
 class SectionsHelper(userAnswers: UserAnswers) {
 

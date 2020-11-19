@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
+import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
-class ModeAtBorderPageSpec extends PageBehaviours {
+class NationalityCrossingBorderPageSpec extends PageBehaviours {
 
-  "ModeAtBorderPage" - {
+  "NationalityCrossingBorderPage" - {
 
-    beRetrievable[String](ModeAtBorderPage)
+    beRetrievable[CountryCode](NationalityCrossingBorderPage)
 
-    beSettable[String](ModeAtBorderPage)
+    beSettable[CountryCode](NationalityCrossingBorderPage)
 
-    beRemovable[String](ModeAtBorderPage)
+    beRemovable[CountryCode](NationalityCrossingBorderPage)
   }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
 import models.reference.CountryCode
 import pages.behaviours.PageBehaviours

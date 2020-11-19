@@ -24,6 +24,18 @@ import models.reference.{Country, CountryCode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.transportDetails.{
+  AddIdAtDepartureLaterPage,
+  AddIdAtDeparturePage,
+  ChangeAtBorderPage,
+  IdAtDeparturePage,
+  IdCrossingBorderPage,
+  InlandModePage,
+  ModeAtBorderPage,
+  ModeCrossingBorderPage,
+  NationalityAtDeparturePage,
+  NationalityCrossingBorderPage
+}
 
 class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

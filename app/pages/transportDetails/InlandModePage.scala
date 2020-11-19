@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportDetails
 
-import models.reference.CountryCode
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object NationalityCrossingBorderPage extends QuestionPage[CountryCode] {
+case object InlandModePage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "nationalityCrossingBorder"
+  override def toString: String = "inlandMode"
 }
