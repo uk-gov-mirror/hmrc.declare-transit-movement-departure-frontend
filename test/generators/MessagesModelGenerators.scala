@@ -18,7 +18,7 @@ package generators
 
 import java.time.{LocalDate, LocalTime}
 
-import models.LocalReferenceNumber
+import models.{InvalidGuaranteeCode, InvalidGuaranteeReasonCode, LocalReferenceNumber}
 import models.messages._
 import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem._
@@ -26,6 +26,7 @@ import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeRefere
 import models.messages.header.{Header, Transport}
 import models.messages.trader._
 import models.reference.CountryCode
+import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.{alphaNumChar, choose}
 import org.scalacheck.{Arbitrary, Gen}
@@ -476,4 +477,14 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
           quantity
         )
     }
+
+  implicit lazy val arbitraryInvalidGuaranteeReasonCode: Arbitrary[InvalidGuaranteeReasonCode] =
+    Arbitrary {
+      for {
+        guaranteeRefNumber <- stringsWithMaxLength(21, alphaNumChar)
+        invalidCode        <- Gen.oneOf(InvalidGuaranteeCode.values)
+        invalidReason      <- Gen.option(nonEmptyString)
+      } yield InvalidGuaranteeReasonCode(guaranteeRefNumber, invalidCode, invalidReason)
+    }
+
 }
