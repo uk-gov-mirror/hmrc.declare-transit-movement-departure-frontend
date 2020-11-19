@@ -33,7 +33,6 @@ import scala.concurrent.Future
 class GuaranteeNotValidMessageServiceSpec extends SpecBase with MockServiceApp with BeforeAndAfterEach with Matchers {
 
   private val mockDepartureConnector: DepartureMovementConnector = mock[DepartureMovementConnector]
-  private val departureId                                        = DepartureId(1)
 
   override def beforeEach: Unit = {
     super.beforeEach()

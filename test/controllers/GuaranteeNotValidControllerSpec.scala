@@ -37,7 +37,6 @@ import scala.concurrent.Future
 class GuaranteeNotValidControllerSpec extends SpecBase with MockNunjucksRendererApp with BeforeAndAfterEach {
 
   private val mockGuaranteeNotValidService = mock[GuaranteeNotValidMessageService]
-  private val departureId                  = DepartureId(1)
 
   override def beforeEach: Unit = {
     reset(mockGuaranteeNotValidService)

@@ -42,7 +42,7 @@ class DeclarationRejectionControllerSpec extends SpecBase with MockNunjucksRende
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, routes.DeclarationRejectionController.onPageLoad(lrn).url)
+      val request        = FakeRequest(GET, routes.DeclarationRejectionController.onPageLoad(departureId).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -52,7 +52,7 @@ class DeclarationRejectionControllerSpec extends SpecBase with MockNunjucksRende
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj("lrn" -> lrn)
+      val expectedJson = Json.obj()
 
       templateCaptor.getValue mustEqual "declarationRejection.njk"
       jsonCaptor.getValue must containJson(expectedJson)

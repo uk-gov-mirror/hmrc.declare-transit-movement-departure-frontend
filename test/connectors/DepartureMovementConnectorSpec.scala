@@ -46,7 +46,6 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
     .build()
 
   private lazy val connector                = app.injector.instanceOf[DepartureMovementConnector]
-  private val departureId                   = DepartureId(1)
   private val errorResponsesCodes: Gen[Int] = Gen.chooseNum(400, 599)
 
   "DepartureMovementConnector" - {

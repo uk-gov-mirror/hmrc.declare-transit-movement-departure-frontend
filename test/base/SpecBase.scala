@@ -17,7 +17,7 @@
 package base
 
 import models.domain.SealDomain
-import models.{EoriNumber, Index, LocalReferenceNumber, PrincipalAddress, UserAnswers}
+import models.{DepartureId, EoriNumber, Index, LocalReferenceNumber, PrincipalAddress, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -52,6 +52,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with OptionValues with TryValue
   val principalAddress: PrincipalAddress = PrincipalAddress("numberAndStreet", "town", "SW1A 1AA")
 
   val configKey = "config"
+
+  val departureId: DepartureId = DepartureId(1)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
