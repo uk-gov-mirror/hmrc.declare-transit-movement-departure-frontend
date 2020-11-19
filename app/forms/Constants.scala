@@ -17,5 +17,7 @@
 package forms
 
 object Constants {
-  val addressRegex: String = "^[a-zA-Z0-9/@?%,.\\- ]*$"
+  val addressRegex: String                 = "^[a-zA-Z0-9/@?%,.\\- ]*$"
+  val validPostcodeCharactersRegex: String = "^[a-zA-Z\\s*0-9]*$"
+  val postCodeRegex: String                = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
 }
