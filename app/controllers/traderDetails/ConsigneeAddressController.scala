@@ -24,7 +24,6 @@ import javax.inject.Inject
 import models.reference.{Country, CountryCode}
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.{ConsigneeAddressPage, ConsigneeNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,6 +32,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import navigation.annotations.TraderDetails
+import pages.traderDetails.{ConsigneeAddressPage, ConsigneeNamePage}
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -28,45 +28,13 @@ import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
 import models.{Index, NormalMode, SectionDetails, Status, UserAnswers}
+import pages._
 import pages.addItems.CommodityCodePage
-import pages.goodsSummary.{
-  AddCustomsApprovedLocationPage,
-  AddSealsPage,
-  AuthorisedLocationCodePage,
-  ControlResultDateLimitPage,
-  CustomsApprovedLocationPage,
-  DeclarePackagesPage,
-  SealIdDetailsPage,
-  SealsInformationPage,
-  TotalGrossMassPage,
-  TotalPackagesPage
-}
-import pages.guaranteeDetails.{
-  AccessCodePage,
-  DefaultAmountPage,
-  GuaranteeReferencePage,
-  GuaranteeTypePage,
-  LiabilityAmountPage,
-  OtherReferenceLiabilityAmountPage,
-  OtherReferencePage
-}
-import pages.movementDetails.{
-  ContainersUsedPage,
-  DeclarationForSomeoneElsePage,
-  DeclarationPlacePage,
-  DeclarationTypePage,
-  RepresentativeCapacityPage,
-  RepresentativeNamePage
-}
-import pages.routeDetails.{
-  AddAnotherTransitOfficePage,
-  ArrivalTimesAtOfficePage,
-  CountryOfDispatchPage,
-  DestinationCountryPage,
-  DestinationOfficePage,
-  OfficeOfDeparturePage
-}
-import pages.{IsPrincipalEoriKnownPage, goodsSummary, _}
+import pages.goodsSummary._
+import pages.guaranteeDetails._
+import pages.movementDetails._
+import pages.routeDetails._
+import pages.traderDetails._
 
 class SectionsHelper(userAnswers: UserAnswers) {
 

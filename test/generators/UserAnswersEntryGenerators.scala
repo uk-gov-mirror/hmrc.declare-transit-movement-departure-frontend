@@ -66,6 +66,22 @@ import pages.routeDetails.{
   DestinationOfficePage,
   OfficeOfDeparturePage
 }
+import pages.traderDetails.{
+  AddConsigneePage,
+  AddConsignorPage,
+  ConsigneeAddressPage,
+  ConsigneeNamePage,
+  ConsignorAddressPage,
+  ConsignorEoriPage,
+  ConsignorNamePage,
+  IsConsigneeEoriKnownPage,
+  IsConsignorEoriKnownPage,
+  IsPrincipalEoriKnownPage,
+  PrincipalAddressPage,
+  PrincipalNamePage,
+  WhatIsConsigneeEoriPage,
+  WhatIsPrincipalEoriPage
+}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators {

@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TraderDetails
-import pages.ConsignorForAllItemsPage
+import pages.traderDetails.ConsignorForAllItemsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

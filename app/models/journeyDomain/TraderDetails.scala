@@ -21,22 +21,7 @@ import cats.implicits._
 import models.{EoriNumber, UserAnswers}
 import TraderDetails.RequiredDetails
 import models.domain.Address
-import pages.{
-  AddConsigneePage,
-  AddConsignorPage,
-  ConsigneeAddressPage,
-  ConsigneeNamePage,
-  ConsignorAddressPage,
-  ConsignorEoriPage,
-  ConsignorNamePage,
-  IsConsigneeEoriKnownPage,
-  IsConsignorEoriKnownPage,
-  IsPrincipalEoriKnownPage,
-  PrincipalAddressPage,
-  PrincipalNamePage,
-  WhatIsConsigneeEoriPage,
-  WhatIsPrincipalEoriPage
-}
+import pages.traderDetails._
 
 case class TraderDetails(
   principalTraderDetails: RequiredDetails,

@@ -22,6 +22,22 @@ import models.journeyDomain.TraderDetails.{PersonalInformation, TraderEori}
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, UserAnswers}
 import org.scalatest.TryValues
 import pages._
+import pages.traderDetails.{
+  AddConsigneePage,
+  AddConsignorPage,
+  ConsigneeAddressPage,
+  ConsigneeNamePage,
+  ConsignorAddressPage,
+  ConsignorEoriPage,
+  ConsignorNamePage,
+  IsConsigneeEoriKnownPage,
+  IsConsignorEoriKnownPage,
+  IsPrincipalEoriKnownPage,
+  PrincipalAddressPage,
+  PrincipalNamePage,
+  WhatIsConsigneeEoriPage,
+  WhatIsPrincipalEoriPage
+}
 
 class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
   import TraderDetailsSpec._

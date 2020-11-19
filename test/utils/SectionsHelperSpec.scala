@@ -62,6 +62,16 @@ import pages.movementDetails.{
   RepresentativeNamePage
 }
 import pages.routeDetails.{AddAnotherTransitOfficePage, CountryOfDispatchPage, DestinationCountryPage, DestinationOfficePage, OfficeOfDeparturePage}
+import pages.traderDetails.{
+  AddConsigneePage,
+  AddConsignorPage,
+  ConsignorEoriPage,
+  IsConsigneeEoriKnownPage,
+  IsConsignorEoriKnownPage,
+  IsPrincipalEoriKnownPage,
+  WhatIsConsigneeEoriPage,
+  WhatIsPrincipalEoriPage
+}
 
 class SectionsHelperSpec extends SpecBase {
 

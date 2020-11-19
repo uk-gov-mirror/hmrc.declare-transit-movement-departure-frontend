@@ -20,6 +20,24 @@ import controllers.traderDetails.routes
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
+import pages.traderDetails.{
+  AddConsigneePage,
+  AddConsignorPage,
+  ConsigneeAddressPage,
+  ConsigneeForAllItemsPage,
+  ConsigneeNamePage,
+  ConsignorAddressPage,
+  ConsignorEoriPage,
+  ConsignorForAllItemsPage,
+  ConsignorNamePage,
+  IsConsigneeEoriKnownPage,
+  IsConsignorEoriKnownPage,
+  IsPrincipalEoriKnownPage,
+  PrincipalAddressPage,
+  PrincipalNamePage,
+  WhatIsConsigneeEoriPage,
+  WhatIsPrincipalEoriPage
+}
 import play.api.mvc.Call
 
 @Singleton

@@ -33,6 +33,7 @@ import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
 import pages.movementDetails.{ContainersUsedPage, DeclarationTypePage}
 import pages.routeDetails.CountryOfDispatchPage
+import pages.traderDetails.{AddConsigneePage, AddConsignorPage, ConsigneeForAllItemsPage, ConsignorForAllItemsPage}
 import play.api.mvc.Call
 
 @Singleton
