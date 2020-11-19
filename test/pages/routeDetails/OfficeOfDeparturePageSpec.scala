@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object OfficeOfDeparturePage extends QuestionPage[String] {
+class OfficeOfDeparturePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "OfficeOfDeparturePage" - {
 
-  override def toString: String = "officeOfDeparture"
+    beRetrievable[String](OfficeOfDeparturePage)
+
+    beSettable[String](OfficeOfDeparturePage)
+
+    beRemovable[String](OfficeOfDeparturePage)
+  }
 }

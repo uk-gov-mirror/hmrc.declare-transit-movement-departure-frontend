@@ -24,7 +24,7 @@ import javax.inject.Inject
 import models.reference.CountryCode
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, NormalMode}
-import pages.DestinationCountryPage
+import pages.routeDetails.DestinationCountryPage
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class AddTransitOfficePageSpec extends PageBehaviours {
+case object OfficeOfDeparturePage extends QuestionPage[String] {
 
-  "AddTransitOfficePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[Boolean](AddTransitOfficePage)
-
-    beSettable[Boolean](AddTransitOfficePage)
-
-    beRemovable[Boolean](AddTransitOfficePage)
-  }
+  override def toString: String = "officeOfDeparture"
 }

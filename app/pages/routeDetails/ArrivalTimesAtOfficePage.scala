@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
-import models.reference.CountryCode
-import pages.behaviours.PageBehaviours
+import models.{Index, LocalDateTimeWithAMPM}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.routeDetailsOfficesOfTransit
 
-class DestinationCountryPageSpec extends PageBehaviours {
+case class ArrivalTimesAtOfficePage(index: Index) extends QuestionPage[LocalDateTimeWithAMPM] {
 
-  "DestinationCountryPage" - {
+  override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit \ index.position \ toString
 
-    beRetrievable[CountryCode](DestinationCountryPage)
+  override def toString: String = ArrivalTimesAtOfficePage.key
+}
 
-    beSettable[CountryCode](DestinationCountryPage)
-
-    beRemovable[CountryCode](DestinationCountryPage)
-  }
+object ArrivalTimesAtOfficePage {
+  val key: String = "arrivalTimesAtOffice"
 }

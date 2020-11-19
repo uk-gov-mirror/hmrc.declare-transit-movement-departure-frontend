@@ -56,6 +56,16 @@ import pages.movementDetails.{
   RepresentativeCapacityPage,
   RepresentativeNamePage
 }
+import pages.routeDetails.{
+  AddAnotherTransitOfficePage,
+  AddTransitOfficePage,
+  ArrivalTimesAtOfficePage,
+  ConfirmRemoveOfficeOfTransitPage,
+  CountryOfDispatchPage,
+  DestinationCountryPage,
+  DestinationOfficePage,
+  OfficeOfDeparturePage
+}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators {

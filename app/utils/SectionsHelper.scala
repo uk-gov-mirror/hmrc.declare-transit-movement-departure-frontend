@@ -58,6 +58,14 @@ import pages.movementDetails.{
   RepresentativeCapacityPage,
   RepresentativeNamePage
 }
+import pages.routeDetails.{
+  AddAnotherTransitOfficePage,
+  ArrivalTimesAtOfficePage,
+  CountryOfDispatchPage,
+  DestinationCountryPage,
+  DestinationOfficePage,
+  OfficeOfDeparturePage
+}
 import pages.{IsPrincipalEoriKnownPage, goodsSummary, _}
 
 class SectionsHelper(userAnswers: UserAnswers) {

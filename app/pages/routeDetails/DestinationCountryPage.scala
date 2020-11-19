@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import models.reference.CountryCode
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class AddAnotherTransitOfficePageSpec extends PageBehaviours {
+case object DestinationCountryPage extends QuestionPage[CountryCode] {
 
-  "AddAnotherTransitOfficePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    val index = Index(0)
-
-    beRetrievable[String](AddAnotherTransitOfficePage(index))
-
-    beSettable[String](AddAnotherTransitOfficePage(index))
-
-    beRemovable[String](AddAnotherTransitOfficePage(index))
-  }
+  override def toString: String = "destinationCountry"
 }

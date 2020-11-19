@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
-import models.{Index, LocalDateTimeWithAMPM}
-import play.api.libs.json.JsPath
-import queries.Constants.routeDetailsOfficesOfTransit
+import pages.behaviours.PageBehaviours
 
-case class ArrivalTimesAtOfficePage(index: Index) extends QuestionPage[LocalDateTimeWithAMPM] {
+class AddTransitOfficePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit \ index.position \ toString
+  "AddTransitOfficePage" - {
 
-  override def toString: String = ArrivalTimesAtOfficePage.key
-}
+    beRetrievable[Boolean](AddTransitOfficePage)
 
-object ArrivalTimesAtOfficePage {
-  val key: String = "arrivalTimesAtOffice"
+    beSettable[Boolean](AddTransitOfficePage)
+
+    beRemovable[Boolean](AddTransitOfficePage)
+  }
 }

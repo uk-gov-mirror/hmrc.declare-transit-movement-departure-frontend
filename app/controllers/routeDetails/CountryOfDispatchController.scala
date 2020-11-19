@@ -23,7 +23,6 @@ import javax.inject.Inject
 import models.reference.Country
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.CountryOfDispatchPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -34,6 +33,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils._
 import navigation.annotations.RouteDetails
+import pages.routeDetails.CountryOfDispatchPage
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
-import play.api.libs.json.JsPath
+import models.reference.CountryCode
+import pages.behaviours.PageBehaviours
 
-case object ConfirmRemoveOfficeOfTransitPage extends QuestionPage[Boolean] {
+class DestinationCountryPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "DestinationCountryPage" - {
 
-  override def toString: String = "confirmRemoveOfficeOfTransit"
+    beRetrievable[CountryCode](DestinationCountryPage)
+
+    beSettable[CountryCode](DestinationCountryPage)
+
+    beRemovable[CountryCode](DestinationCountryPage)
+  }
 }

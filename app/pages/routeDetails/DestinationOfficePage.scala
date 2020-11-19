@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object AddTransitOfficePage extends QuestionPage[Boolean] {
+case object DestinationOfficePage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "addTransitOffice"
+  override def toString: String = "destinationOffice"
 }

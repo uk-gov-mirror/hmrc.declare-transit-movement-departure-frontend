@@ -24,6 +24,14 @@ import models.journeyDomain.RouteDetails.TransitInformation
 import models.{Index, LocalDateTimeWithAMPM, UserAnswers}
 import org.scalacheck.Arbitrary
 import pages._
+import pages.routeDetails.{
+  AddAnotherTransitOfficePage,
+  ArrivalTimesAtOfficePage,
+  CountryOfDispatchPage,
+  DestinationCountryPage,
+  DestinationOfficePage,
+  OfficeOfDeparturePage
+}
 
 class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   import RouteDetailsSpec._

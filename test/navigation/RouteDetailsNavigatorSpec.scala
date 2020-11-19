@@ -24,6 +24,16 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.routeDetails.{
+  AddAnotherTransitOfficePage,
+  AddTransitOfficePage,
+  ArrivalTimesAtOfficePage,
+  ConfirmRemoveOfficeOfTransitPage,
+  CountryOfDispatchPage,
+  DestinationCountryPage,
+  DestinationOfficePage,
+  OfficeOfDeparturePage
+}
 import queries.OfficeOfTransitQuery
 
 class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

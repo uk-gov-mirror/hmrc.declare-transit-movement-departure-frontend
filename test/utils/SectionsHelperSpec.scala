@@ -61,6 +61,7 @@ import pages.movementDetails.{
   RepresentativeCapacityPage,
   RepresentativeNamePage
 }
+import pages.routeDetails.{AddAnotherTransitOfficePage, CountryOfDispatchPage, DestinationCountryPage, DestinationOfficePage, OfficeOfDeparturePage}
 
 class SectionsHelperSpec extends SpecBase {
 

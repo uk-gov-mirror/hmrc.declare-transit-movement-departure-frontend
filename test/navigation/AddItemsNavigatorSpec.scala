@@ -33,6 +33,7 @@ import pages.addItems.containers._
 import pages.addItems.traderDetails._
 import pages.goodsSummary.TotalPackagesPage
 import pages.movementDetails.{ContainersUsedPage, DeclarationTypePage}
+import pages.routeDetails.CountryOfDispatchPage
 import queries.{ContainersQuery, _}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

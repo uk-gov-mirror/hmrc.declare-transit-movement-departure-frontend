@@ -27,6 +27,14 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import RouteDetails.TransitInformation
 import models.{Index, UserAnswers}
+import pages.routeDetails.{
+  AddAnotherTransitOfficePage,
+  ArrivalTimesAtOfficePage,
+  CountryOfDispatchPage,
+  DestinationCountryPage,
+  DestinationOfficePage,
+  OfficeOfDeparturePage
+}
 
 final case class RouteDetails(
   countryOfDispatch: CountryCode,

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
-import pages.behaviours.PageBehaviours
+import models.reference.CountryCode
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class DestinationOfficePageSpec extends PageBehaviours {
+case object CountryOfDispatchPage extends QuestionPage[CountryCode] {
 
-  "DestinationOfficePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](DestinationOfficePage)
-
-    beSettable[String](DestinationOfficePage)
-
-    beRemovable[String](DestinationOfficePage)
-  }
+  override def toString: String = "countryOfDispatch"
 }

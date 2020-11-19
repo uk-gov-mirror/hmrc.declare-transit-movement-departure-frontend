@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
+import models.Index
 import pages.behaviours.PageBehaviours
 
-class ConfirmRemoveOfficeOfTransitPageSpec extends PageBehaviours {
+class AddAnotherTransitOfficePageSpec extends PageBehaviours {
 
-  "ConfirmRemoveOfficeOfTransitPage" - {
+  "AddAnotherTransitOfficePage" - {
 
-    beRetrievable[Boolean](ConfirmRemoveOfficeOfTransitPage)
+    val index = Index(0)
 
-    beSettable[Boolean](ConfirmRemoveOfficeOfTransitPage)
+    beRetrievable[String](AddAnotherTransitOfficePage(index))
 
-    beRemovable[Boolean](ConfirmRemoveOfficeOfTransitPage)
+    beSettable[String](AddAnotherTransitOfficePage(index))
+
+    beRemovable[String](AddAnotherTransitOfficePage(index))
   }
 }

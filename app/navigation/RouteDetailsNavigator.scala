@@ -21,6 +21,16 @@ import derivable.DeriveNumberOfOfficeOfTransits
 import javax.inject.{Inject, Singleton}
 import models._
 import pages._
+import pages.routeDetails.{
+  AddAnotherTransitOfficePage,
+  AddTransitOfficePage,
+  ArrivalTimesAtOfficePage,
+  ConfirmRemoveOfficeOfTransitPage,
+  CountryOfDispatchPage,
+  DestinationCountryPage,
+  DestinationOfficePage,
+  OfficeOfDeparturePage
+}
 import play.api.mvc.Call
 
 @Singleton

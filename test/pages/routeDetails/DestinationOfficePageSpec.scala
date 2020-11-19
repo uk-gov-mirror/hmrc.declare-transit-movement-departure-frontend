@@ -14,28 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
-import java.time.LocalDateTime
-
-import models.{Index, LocalDateTimeWithAMPM}
-import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
-class ArrivalTimesAtOfficePageSpec extends PageBehaviours {
+class DestinationOfficePageSpec extends PageBehaviours {
 
-  "ArrivalTimesAtOfficePage" - {
+  "DestinationOfficePage" - {
 
-    implicit lazy val arbitraryLocalDateTime: Arbitrary[LocalDateTime] = Arbitrary {
-      LocalDateTime.of(1900, 1, 1, 12, 0, 0)
-    }
+    beRetrievable[String](DestinationOfficePage)
 
-    val index = Index(0)
+    beSettable[String](DestinationOfficePage)
 
-    beRetrievable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
-
-    beSettable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
-
-    beRemovable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
+    beRemovable[String](DestinationOfficePage)
   }
 }

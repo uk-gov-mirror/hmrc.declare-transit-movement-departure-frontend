@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routeDetails
 
-import models.reference.CountryCode
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object DestinationCountryPage extends QuestionPage[CountryCode] {
+case object ConfirmRemoveOfficeOfTransitPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "destinationCountry"
+  override def toString: String = "confirmRemoveOfficeOfTransit"
 }
