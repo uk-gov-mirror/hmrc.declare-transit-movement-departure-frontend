@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import models.GuaranteeType
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
+class GuaranteeTypeSpec extends PageBehaviours {
 
-case object LiabilityAmountPage extends QuestionPage[String] {
+  "GuaranteeTypePage" - {
 
-  override def path: JsPath = JsPath \ toString
+    beRetrievable[GuaranteeType](GuaranteeTypePage)
 
-  override def toString: String = "liabilityAmount"
+    beSettable[GuaranteeType](GuaranteeTypePage)
 
-  override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(x) if (x.trim.isEmpty) => userAnswers.remove(LiabilityAmountPage)
-      case _                           => super.cleanup(value, userAnswers)
-    }
+    beRemovable[GuaranteeType](GuaranteeTypePage)
+  }
 }

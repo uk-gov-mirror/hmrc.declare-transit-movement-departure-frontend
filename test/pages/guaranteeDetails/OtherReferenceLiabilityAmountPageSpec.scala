@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
 import pages.behaviours.PageBehaviours
 
-class DefaultAmountPageSpec extends PageBehaviours {
+class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
 
-  "DefaultAmountPage" - {
+  "OtherReferenceliabilityAmountPage" - {
 
-    beRetrievable[Boolean](DefaultAmountPage)
+    beRetrievable[String](OtherReferenceLiabilityAmountPage)
 
-    beSettable[Boolean](DefaultAmountPage)
+    beSettable[String](OtherReferenceLiabilityAmountPage)
 
-    beRemovable[Boolean](DefaultAmountPage)
+    beRemovable[String](OtherReferenceLiabilityAmountPage)
   }
 }

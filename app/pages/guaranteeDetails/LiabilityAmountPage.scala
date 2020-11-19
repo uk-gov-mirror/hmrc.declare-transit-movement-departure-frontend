@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
+import models.UserAnswers
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object OtherReferenceLiabilityAmountPage extends QuestionPage[String] {
+import scala.util.Try
+
+case object LiabilityAmountPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "otherReferenceLiabilityAmount"
+  override def toString: String = "liabilityAmount"
+
+  override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(x) if x.trim.isEmpty => userAnswers.remove(LiabilityAmountPage)
+      case _                         => super.cleanup(value, userAnswers)
+    }
 }

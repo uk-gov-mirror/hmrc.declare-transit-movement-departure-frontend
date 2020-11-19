@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object AccessCodePage extends QuestionPage[String] {
+case object OtherReferencePage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "accessCode"
+  override def toString: String = "otherReference"
 }

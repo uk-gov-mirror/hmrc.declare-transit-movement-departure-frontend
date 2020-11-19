@@ -19,7 +19,15 @@ package models.journeyDomain
 import cats.implicits._
 import models.GuaranteeType
 import pages._
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.guaranteeDetails.{
+  AccessCodePage,
+  DefaultAmountPage,
+  GuaranteeReferencePage,
+  GuaranteeTypePage,
+  LiabilityAmountPage,
+  OtherReferenceLiabilityAmountPage,
+  OtherReferencePage
+}
 
 sealed trait GuaranteeDetails
 

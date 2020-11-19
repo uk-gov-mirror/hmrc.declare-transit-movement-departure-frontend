@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class AccessCodePageSpec extends PageBehaviours {
+case object AccessCodePage extends QuestionPage[String] {
 
-  "AccessCodePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](AccessCodePage)
-
-    beSettable[String](AccessCodePage)
-
-    beRemovable[String](AccessCodePage)
-  }
+  override def toString: String = "accessCode"
 }

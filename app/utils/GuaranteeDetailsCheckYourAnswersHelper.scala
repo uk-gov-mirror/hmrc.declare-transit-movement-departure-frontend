@@ -19,7 +19,15 @@ package utils
 import controllers.guaranteeDetails.routes
 import models._
 import pages._
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.guaranteeDetails.{
+  AccessCodePage,
+  DefaultAmountPage,
+  GuaranteeReferencePage,
+  GuaranteeTypePage,
+  LiabilityAmountPage,
+  OtherReferenceLiabilityAmountPage,
+  OtherReferencePage
+}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 

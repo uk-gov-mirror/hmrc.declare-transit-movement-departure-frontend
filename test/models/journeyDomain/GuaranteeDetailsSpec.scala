@@ -23,7 +23,15 @@ import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.guaranteeDetails.{
+  AccessCodePage,
+  DefaultAmountPage,
+  GuaranteeReferencePage,
+  GuaranteeTypePage,
+  LiabilityAmountPage,
+  OtherReferenceLiabilityAmountPage,
+  OtherReferencePage
+}
 
 class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 

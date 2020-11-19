@@ -41,7 +41,15 @@ import pages.goodsSummary.{
   TotalGrossMassPage,
   TotalPackagesPage
 }
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.guaranteeDetails.{
+  AccessCodePage,
+  DefaultAmountPage,
+  GuaranteeReferencePage,
+  GuaranteeTypePage,
+  LiabilityAmountPage,
+  OtherReferenceLiabilityAmountPage,
+  OtherReferencePage
+}
 import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, goodsSummary, _}
 
 class SectionsHelper(userAnswers: UserAnswers) {

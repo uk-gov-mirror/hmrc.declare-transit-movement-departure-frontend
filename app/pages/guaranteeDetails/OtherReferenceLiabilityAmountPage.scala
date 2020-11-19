@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class OtherReferencePageSpec extends PageBehaviours {
+case object OtherReferenceLiabilityAmountPage extends QuestionPage[String] {
 
-  "OtherReferencePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](OtherReferencePage)
-
-    beSettable[String](OtherReferencePage)
-
-    beRemovable[String](OtherReferencePage)
-  }
+  override def toString: String = "otherReferenceLiabilityAmount"
 }

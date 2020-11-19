@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
 import pages.behaviours.PageBehaviours
-import pages.guaranteeDetails.GuaranteeReferencePage
 
 class GuaranteeReferencePageSpec extends PageBehaviours {
 

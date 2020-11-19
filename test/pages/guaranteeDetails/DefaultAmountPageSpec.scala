@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object DefaultAmountPage extends QuestionPage[Boolean] {
+class DefaultAmountPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "DefaultAmountPage" - {
 
-  override def toString: String = "defaultAmount"
+    beRetrievable[Boolean](DefaultAmountPage)
+
+    beSettable[Boolean](DefaultAmountPage)
+
+    beRemovable[Boolean](DefaultAmountPage)
+  }
 }

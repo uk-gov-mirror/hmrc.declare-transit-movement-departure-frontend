@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.guaranteeDetails
 
-import generators.Generators
-import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
-class LiabilityAmountPageSpec extends PageBehaviours with Generators {
+class OtherReferencePageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryNonEmptyString: Arbitrary[String] = Arbitrary(nonEmptyString)
+  "OtherReferencePage" - {
 
-  "LiabilityAmountPage" - {
+    beRetrievable[String](OtherReferencePage)
 
-    beRetrievable[String](LiabilityAmountPage)
+    beSettable[String](OtherReferencePage)
 
-    beSettable[String](LiabilityAmountPage)
-
-    beRemovable[String](LiabilityAmountPage)
+    beRemovable[String](OtherReferencePage)
   }
 }

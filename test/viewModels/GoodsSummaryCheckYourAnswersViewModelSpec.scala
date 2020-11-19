@@ -21,17 +21,7 @@ import java.time.format.DateTimeFormatter
 
 import base.SpecBase
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
-import pages.goodsSummary.{
-  AddCustomsApprovedLocationPage,
-  AddSealsPage,
-  AuthorisedLocationCodePage,
-  ControlResultDateLimitPage,
-  CustomsApprovedLocationPage,
-  DeclarePackagesPage,
-  TotalGrossMassPage,
-  TotalPackagesPage
-}
+import pages.goodsSummary._
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
 
 class GoodsSummaryCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks {

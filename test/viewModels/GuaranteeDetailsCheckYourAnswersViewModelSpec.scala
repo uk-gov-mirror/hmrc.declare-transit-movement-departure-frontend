@@ -20,8 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.GuaranteeType.GuaranteeWaiver
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
-import pages.{AccessCodePage, DefaultAmountPage, LiabilityAmountPage, OtherReferencePage}
+import pages.guaranteeDetails._
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
 
 class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

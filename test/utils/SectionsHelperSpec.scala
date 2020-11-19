@@ -45,7 +45,14 @@ import pages.goodsSummary.{
   TotalGrossMassPage,
   TotalPackagesPage
 }
-import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
+import pages.guaranteeDetails.{
+  AccessCodePage,
+  GuaranteeReferencePage,
+  GuaranteeTypePage,
+  LiabilityAmountPage,
+  OtherReferenceLiabilityAmountPage,
+  OtherReferencePage
+}
 
 class SectionsHelperSpec extends SpecBase {
 
