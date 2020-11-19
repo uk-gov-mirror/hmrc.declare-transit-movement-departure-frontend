@@ -24,6 +24,7 @@ import models.{
   CountryList,
   CustomsOfficeList,
   DocumentTypeList,
+  MethodOfPaymentList,
   OfficeOfTransitList,
   PackageTypeList,
   PreviousDocumentTypeList,
@@ -182,6 +183,20 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |  {
       |    "code": "30400",
       |    "description": "RET-EXP – Copy 3 to be returned"
+      |  }
+      |]
+      |""".stripMargin
+
+  private val methodOfPaymentJson: String =
+    """
+      |[
+      | {
+      |    "code": "A",
+      |    "description": "Payment in cash"
+      |  },
+      |  {
+      |    "code": "B",
+      |    "description": "Payment by credit card"
       |  }
       |]
       |""".stripMargin
@@ -450,6 +465,24 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         checkErrorResponse(s"/$startUrl/special-mention", connector.getSpecialMention())
       }
 
+    }
+    "getMethodOfPayment" - {
+      "must return list of methods of payment when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/method-of-payment"))
+            .willReturn(okJson(methodOfPaymentJson))
+        )
+        val expectResult = MethodOfPaymentList(
+          Seq(
+            MethodOfPayment("A", "Payment in cash"),
+            MethodOfPayment("B", "Payment by credit card")
+          )
+        )
+        connector.getMethodOfPayment().futureValue mustEqual expectResult
+      }
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$startUrl/method-of-payment", connector.getMethodOfPayment())
+      }
     }
   }
 

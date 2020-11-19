@@ -27,7 +27,6 @@ class TransportChargesFormProvider @Inject() extends Mappings {
   def apply(methodOfPaymentList: MethodOfPaymentList): Form[MethodOfPayment] =
     Form(
       "value" -> text("transportCharges.error.required")
-        .verifying(maxLength(100, "transportCharges.error.length"))
         .verifying("transportCharges.error.required", value => methodOfPaymentList.methodsOfPayment.exists(_.code == value))
         .transform[MethodOfPayment](value => methodOfPaymentList.getMethodOfPayment(value).get, _.code)
     )

@@ -33,7 +33,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-
+import utils.getPaymentsAsJson
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportChargesController @Inject()(
@@ -67,11 +67,11 @@ class TransportChargesController @Inject()(
             .getOrElse(form)
 
           val json = Json.obj(
-            "form"  -> preparedForm,
-            "index" -> itemIndex.display,
-            //"payments"     -> getPaymentsAsJson(preparedForm.value, payments.methodsOfPayment),
-            "lrn"  -> lrn,
-            "mode" -> mode
+            "form"     -> preparedForm,
+            "index"    -> itemIndex.display,
+            "payments" -> getPaymentsAsJson(preparedForm.value, payments.methodsOfPayment),
+            "lrn"      -> lrn,
+            "mode"     -> mode
           )
 
           renderer.render(template, json).map(Ok(_))
@@ -89,11 +89,11 @@ class TransportChargesController @Inject()(
               formWithErrors => {
 
                 val json = Json.obj(
-                  "form"  -> formWithErrors,
-                  "index" -> itemIndex.display,
-                  //"payments"     -> getPaymentsAsJson(preparedForm.value, payments.methodsOfPayment),
-                  "lrn"  -> lrn,
-                  "mode" -> mode
+                  "form"     -> formWithErrors,
+                  "index"    -> itemIndex.display,
+                  "payments" -> getPaymentsAsJson(form.value, payments.methodsOfPayment),
+                  "lrn"      -> lrn,
+                  "mode"     -> mode
                 )
 
                 renderer.render(template, json).map(BadRequest(_))
