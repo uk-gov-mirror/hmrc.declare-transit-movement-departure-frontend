@@ -17,10 +17,12 @@
 package controllers.addItems.specialMentions
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import forms.addItems.specialMentions.SpecialMentionTypeFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
-import navigation.annotations.PreTaskListDetails
+import models.reference.SpecialMention
+import models.{NormalMode, SpecialMentionList}
+import navigation.annotations.SpecialMentions
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -43,15 +45,24 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
   private def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new SpecialMentionTypeFormProvider()
-  private val form         = formProvider()
-  private val template     = "addItems/specialMentions/specialMentionType.njk"
+  private val specialMentionList = SpecialMentionList(
+    Seq(
+      SpecialMention("10600", "Negotiable Bill of lading 'to order blank endorsed'"),
+      SpecialMention("30400", "RET-EXP – Copy 3 to be returned")
+    )
+  )
+  private val form     = formProvider(specialMentionList, itemIndex)
+  private val template = "addItems/specialMentions/specialMentionType.njk"
+
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   lazy val specialMentionTypeRoute = routes.SpecialMentionTypeController.onPageLoad(lrn, itemIndex, referenceIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SpecialMentions]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
 
   "SpecialMentionType Controller" - {
 
@@ -62,6 +73,8 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
 
       dataRetrievalWithData(emptyUserAnswers)
 
+      when(mockRefDataConnector.getSpecialMention()(any(), any())).thenReturn(Future.successful(specialMentionList))
+
       val request        = FakeRequest(GET, specialMentionTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -72,17 +85,25 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val expectedSpecialMentionJson = Seq(
+        Json.obj("value" -> "", "text"      -> ""),
+        Json.obj("value" -> "10600", "text" -> "(10600) Negotiable Bill of lading 'to order blank endorsed'", "selected" -> false),
+        Json.obj("value" -> "30400", "text" -> "(30400) RET-EXP – Copy 3 to be returned", "selected" -> false)
+      )
+
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"           -> form,
+        "index"          -> itemIndex.display,
+        "referenceIndex" -> referenceIndex.display,
+        "specialMention" -> expectedSpecialMentionJson,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
       jsonWithoutConfig mustBe expectedJson
-
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -90,8 +111,10 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(SpecialMentionTypePage(itemIndex, referenceIndex), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(SpecialMentionTypePage(itemIndex, referenceIndex), "10600").success.value
       dataRetrievalWithData(userAnswers)
+
+      when(mockRefDataConnector.getSpecialMention()(any(), any())).thenReturn(Future.successful(specialMentionList))
 
       val request        = FakeRequest(GET, specialMentionTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -103,12 +126,21 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "10600"))
+
+      val expectedSpecialMentionJson = Seq(
+        Json.obj("value" -> "", "text"      -> ""),
+        Json.obj("value" -> "10600", "text" -> "(10600) Negotiable Bill of lading 'to order blank endorsed'", "selected" -> true),
+        Json.obj("value" -> "30400", "text" -> "(30400) RET-EXP – Copy 3 to be returned", "selected" -> false)
+      )
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"           -> filledForm,
+        "index"          -> itemIndex.display,
+        "referenceIndex" -> referenceIndex.display,
+        "specialMention" -> expectedSpecialMentionJson,
+        "lrn"            -> lrn,
+        "mode"           -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -120,25 +152,25 @@ class SpecialMentionTypeControllerSpec extends SpecBase with MockNunjucksRendere
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       dataRetrievalWithData(emptyUserAnswers)
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockRefDataConnector.getSpecialMention()(any(), any())).thenReturn(Future.successful(specialMentionList))
 
       val request =
         FakeRequest(POST, specialMentionTypeRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "10600"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual onwardRoute.url
-
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getSpecialMention()(any(), any())).thenReturn(Future.successful(specialMentionList))
 
       dataRetrievalWithData(emptyUserAnswers)
 

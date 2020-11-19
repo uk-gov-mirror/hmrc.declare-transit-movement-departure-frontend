@@ -35,6 +35,14 @@ import models.messages.guarantee._
 import models.messages.header._
 import models.messages.trader._
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
+import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader}
+import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
+import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage}
+import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
+import models.messages.header.{Header, Transport}
+import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
+import models.messages._
+import models.{ConsignorAddress, EoriNumber, UserAnswers}
 import repositories.InterchangeControlReferenceIdRepository
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -85,11 +93,11 @@ class DeclarationRequestService @Inject()(
     def packages(packages: NonEmptyList[Packages]): NonEmptyList[models.messages.goodsitem.Package] =
       packages.map {
         case Packages.UnpackedPackages(packageType, _, totalPieces, markOrNumber) =>
-          UnpackedPackage(packageType.toString, totalPieces, markOrNumber)
+          UnpackedPackage(packageType.code, totalPieces, markOrNumber)
         case Packages.BulkPackages(packageType, _, markOrNumber) =>
-          BulkPackage(packageType.toString, markOrNumber)
+          BulkPackage(packageType.code, markOrNumber)
         case Packages.OtherPackages(packageType, howManyPackagesPage, markOrNumber) =>
-          RegularPackage(packageType.toString, howManyPackagesPage, markOrNumber)
+          RegularPackage(packageType.code, howManyPackagesPage, markOrNumber)
       }
 
     // TODO finish this off
@@ -130,7 +138,7 @@ class DeclarationRequestService @Inject()(
             countryCode     = Constants.principalTraderCountryCode.code
           )
         case TraderDetails.TraderEori(traderEori) =>
-          TraderPrincipalWithEori(eori = traderEori.toString, None, None, None, None, None)
+          TraderPrincipalWithEori(eori = traderEori.value, None, None, None, None, None)
       }
 
     def headerConsignor(traderDetails: TraderDetails): Option[TraderConsignor] =
@@ -230,7 +238,7 @@ class DeclarationRequestService @Inject()(
         timeOfPreparation           = dateTimeOfPrep.toLocalTime
       ),
       Header(
-        refNumHEA4          = preTaskList.lrn.toString,
+        refNumHEA4          = preTaskList.lrn.value,
         typOfDecHEA24       = movementDetails.declarationType.code,
         couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
         agrLocOfGooCodHEA38 = None, // prelodge
@@ -276,7 +284,8 @@ class DeclarationRequestService @Inject()(
       representative(movementDetails),
       headerSeals(goodsSummary.sealNumbers),
       guaranteeDetails(guarantee),
-      goodsItems(journeyDomain.itemDetails)
+      goodsItems(journeyDomain.itemDetails),
+      Seq.empty[Itinerary]
     )
   }
 }

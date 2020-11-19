@@ -16,31 +16,38 @@
 
 package controllers.addItems.specialMentions
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
+import derivable.DeriveNumberOfSpecialMentions
 import forms.addItems.specialMentions.AddAnotherSpecialMentionFormProvider
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.PreTaskListDetails
+import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.AddAnotherSpecialMentionPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import utils.SpecialMentionsCheckYourAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherSpecialMentionController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @PreTaskListDetails navigator: Navigator,
+  @SpecialMentions navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: AddAnotherSpecialMentionFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -53,19 +60,7 @@ class AddAnotherSpecialMentionController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddAnotherSpecialMentionPage(itemIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
+      renderPage(lrn, itemIndex, form, mode).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -73,22 +68,42 @@ class AddAnotherSpecialMentionController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
+          formWithErrors => renderPage(lrn, itemIndex, formWithErrors, mode).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSpecialMentionPage(itemIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(AddAnotherSpecialMentionPage(itemIndex), mode, updatedAnswers))
         )
+  }
+
+  private def renderPage(lrn: LocalReferenceNumber, itemIndex: Index, form: Form[Boolean], mode: Mode)(
+    implicit request: DataRequest[AnyContent]): Future[Html] = {
+
+    val cya                   = new SpecialMentionsCheckYourAnswers(request.userAnswers)
+    val numberOfReferences    = request.userAnswers.get(DeriveNumberOfSpecialMentions(itemIndex)).getOrElse(0)
+    val indexList: Seq[Index] = List.range(0, numberOfReferences).map(Index(_))
+
+    referenceDataConnector.getSpecialMention() flatMap {
+      specialMentions =>
+        val referenceRows = indexList.map {
+          referenceIndex =>
+            cya.specialMentionType(itemIndex, referenceIndex, specialMentions, mode)
+        }
+
+        val singularOrPlural = if (numberOfReferences == 1) "singular" else "plural"
+
+        val json = Json.obj(
+          "form"          -> form,
+          "lrn"           -> lrn,
+          "pageTitle"     -> msg"addAnotherSpecialMention.title.$singularOrPlural".withArgs(numberOfReferences, itemIndex.display),
+          "heading"       -> msg"addAnotherSpecialMention.heading.$singularOrPlural".withArgs(numberOfReferences, itemIndex.display),
+          "referenceRows" -> referenceRows,
+          "radios"        -> Radios.yesNo(form("value"))
+        )
+
+        renderer.render(template, json)
+    }
+
   }
 }

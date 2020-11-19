@@ -17,10 +17,11 @@
 package controllers.addItems.specialMentions
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import forms.addItems.specialMentions.AddAnotherSpecialMentionFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
-import navigation.annotations.PreTaskListDetails
+import models.{NormalMode, SpecialMentionList, UserAnswers}
+import navigation.annotations.SpecialMentions
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -48,10 +49,13 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
 
   lazy val addAnotherSpecialMentionRoute = routes.AddAnotherSpecialMentionController.onPageLoad(lrn, itemIndex, NormalMode).url
 
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SpecialMentions]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockRefDataConnector))
 
   "AddAnotherSpecialMention Controller" - {
 
@@ -59,6 +63,8 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockRefDataConnector.getSpecialMention()(any(), any())).thenReturn(Future.successful(SpecialMentionList(Nil)))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -73,10 +79,12 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form"          -> form,
+        "lrn"           -> lrn,
+        "radios"        -> Radios.yesNo(form("value")),
+        "pageTitle"     -> msg"addAnotherSpecialMention.title.plural".withArgs(0, 1),
+        "heading"       -> msg"addAnotherSpecialMention.heading.plural".withArgs(0, 1),
+        "referenceRows" -> Nil
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -104,20 +112,18 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "true"))
-
       val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
+        "form"          -> form,
+        "lrn"           -> lrn,
+        "pageTitle"     -> msg"addAnotherSpecialMention.title.plural".withArgs(0, 1),
+        "heading"       -> msg"addAnotherSpecialMention.heading.plural".withArgs(0, 1),
+        "referenceRows" -> Nil
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
-
+      jsonWithoutConfig must containJson(expectedJson)
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -157,17 +163,16 @@ class AddAnotherSpecialMentionControllerSpec extends SpecBase with MockNunjucksR
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"      -> boundForm,
+        "lrn"       -> lrn,
+        "pageTitle" -> msg"addAnotherSpecialMention.title.plural".withArgs(0, 1),
+        "heading"   -> msg"addAnotherSpecialMention.heading.plural".withArgs(0, 1),
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
-
+      jsonWithoutConfig must containJson(expectedJson)
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
