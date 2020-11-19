@@ -27,22 +27,14 @@ import models.journeyDomain.JourneyDomain.Constants
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.TransportDetails.DetailsAtBorder
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
-import models.journeyDomain._
+import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
 import models.messages._
-import models.messages.customsoffice._
-import models.messages.goodsitem._
-import models.messages.guarantee._
-import models.messages.header._
-import models.messages.trader._
-import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
-import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader}
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
-import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage}
+import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
 import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
-import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
-import models.messages._
-import models.{ConsignorAddress, EoriNumber, UserAnswers}
+import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
+import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
 import repositories.InterchangeControlReferenceIdRepository
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -109,13 +101,13 @@ class DeclarationRequestService @Inject()(
             commodityCode                    = itemSection.itemDetails.commodityCode,
             declarationType                  = None,
             description                      = itemSection.itemDetails.itemDescription,
-            grossMass                        = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)), //TODO Pass this as a string rather than BigDecimal
-            netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)), //TODO same here
+            grossMass                        = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)),
+            netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)),
             countryOfDispatch                = None,
             countryOfDestination             = None,
-            methodOfPayment                  = None,
-            commercialReferenceNumber        = None,
-            dangerousGoodsCode               = None,
+            methodOfPayment                  = None, // Add items Security details
+            commercialReferenceNumber        = None, // Add items Security details
+            dangerousGoodsCode               = None, // Add items security details
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
             specialMention                   = Seq.empty,
