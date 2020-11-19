@@ -18,6 +18,7 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import forms.Constants.addressRegex
 import play.api.data.Form
 import play.api.data.Forms._
 import models.{ConsignorAddress, CountryList}
@@ -25,8 +26,6 @@ import models.reference.Country
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ConsignorAddressFormProvider @Inject() extends Mappings {
-
-  val addressRegex: String = "^[a-zA-Z0-9 ]*$"
 
   def apply(countryList: CountryList): Form[ConsignorAddress] = Form(
     mapping(
