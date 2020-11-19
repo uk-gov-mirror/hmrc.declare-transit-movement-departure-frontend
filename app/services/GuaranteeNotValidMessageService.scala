@@ -19,6 +19,7 @@ package services
 import connectors.DepartureMovementConnector
 import javax.inject.Inject
 import models.{DepartureId, GuaranteeNotValidMessage}
+import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,11 +30,14 @@ class GuaranteeNotValidMessageService @Inject()(connectors: DepartureMovementCon
     connectors.getSummary(departureId) flatMap {
       case Some(summary) =>
         summary.messagesLocation.guaranteeNotValid match {
-          case Some(location) => {
+          case Some(location) =>
             connectors.getGuaranteeNotValidMessage(location)
-          }
-          case _ => Future.successful(None)
+          case _ =>
+            Logger.error(s"Get Summary failed to get guaranteeNotValid location")
+            Future.successful(None)
         }
-      case _ => Future.successful(None)
+      case _ =>
+        Logger.error(s"Get Summary failed to return data")
+        Future.successful(None)
     }
 }
