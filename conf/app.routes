@@ -612,3 +612,5 @@ GET        /:lrn/add-items/:itemIndex/security-details/dangerous-goods-code     
 POST       /:lrn/add-items/:itemIndex/security-details/dangerous-goods-code                        controllers.addItems.securityDetails.DangerousGoodsCodeController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/:itemIndex/security-details/change-dangerous-goods-code                  controllers.addItems.securityDetails.DangerousGoodsCodeController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/security-details/change-dangerous-goods-code                  controllers.addItems.securityDetails.DangerousGoodsCodeController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/declarationRejection                       controllers.DeclarationRejectionController.onPageLoad(lrn: LocalReferenceNumber)
