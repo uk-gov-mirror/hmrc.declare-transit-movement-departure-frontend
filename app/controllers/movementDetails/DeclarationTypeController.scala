@@ -21,7 +21,6 @@ import forms.movementDetails.DeclarationTypeFormProvider
 import javax.inject.Inject
 import models.{DeclarationType, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import pages.DeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,6 +29,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import navigation.annotations.MovementDetails
+import pages.movementDetails.DeclarationTypePage
 
 import scala.concurrent.{ExecutionContext, Future}
 

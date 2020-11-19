@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.movementDetails
 
-import models.UserAnswers
+import models.RepresentativeCapacity
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-import scala.util.Try
-
-case object DeclarationForSomeoneElsePage extends QuestionPage[Boolean] {
+case object RepresentativeCapacityPage extends QuestionPage[RepresentativeCapacity] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "declarationForSomeoneElse"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) =>
-        userAnswers
-          .remove(RepresentativeNamePage)
-          .flatMap(_.remove(RepresentativeCapacityPage))
-      case _ => super.cleanup(value, userAnswers)
-    }
+  override def toString: String = "representativeCapacity"
 }

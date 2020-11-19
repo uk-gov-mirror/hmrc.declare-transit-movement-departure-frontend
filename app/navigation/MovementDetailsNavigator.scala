@@ -21,7 +21,15 @@ import javax.inject.{Inject, Singleton}
 import models.ProcedureType._
 import models._
 import pages._
-import pages.movementDetails.PreLodgeDeclarationPage
+import pages.movementDetails.{
+  ContainersUsedPage,
+  DeclarationForSomeoneElsePage,
+  DeclarationPlacePage,
+  DeclarationTypePage,
+  PreLodgeDeclarationPage,
+  RepresentativeCapacityPage,
+  RepresentativeNamePage
+}
 import play.api.mvc.Call
 
 @Singleton

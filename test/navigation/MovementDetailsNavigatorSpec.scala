@@ -24,7 +24,15 @@ import models.ProcedureType._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import pages.movementDetails.PreLodgeDeclarationPage
+import pages.movementDetails.{
+  ContainersUsedPage,
+  DeclarationForSomeoneElsePage,
+  DeclarationPlacePage,
+  DeclarationTypePage,
+  PreLodgeDeclarationPage,
+  RepresentativeCapacityPage,
+  RepresentativeNamePage
+}
 
 class MovementDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

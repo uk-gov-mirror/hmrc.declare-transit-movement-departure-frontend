@@ -53,6 +53,14 @@ import pages.guaranteeDetails.{
   OtherReferenceLiabilityAmountPage,
   OtherReferencePage
 }
+import pages.movementDetails.{
+  ContainersUsedPage,
+  DeclarationForSomeoneElsePage,
+  DeclarationPlacePage,
+  DeclarationTypePage,
+  RepresentativeCapacityPage,
+  RepresentativeNamePage
+}
 
 class SectionsHelperSpec extends SpecBase {
 

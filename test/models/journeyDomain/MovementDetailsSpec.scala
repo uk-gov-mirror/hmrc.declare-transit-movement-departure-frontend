@@ -22,7 +22,7 @@ import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForS
 import models.{ProcedureType, UserAnswers}
 import org.scalacheck.{Arbitrary, Gen}
 import pages._
-import pages.movementDetails.PreLodgeDeclarationPage
+import pages.movementDetails._
 
 class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 

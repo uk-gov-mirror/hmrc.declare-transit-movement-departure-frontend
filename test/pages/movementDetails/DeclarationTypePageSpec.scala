@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.movementDetails
 
+import models.DeclarationType
 import pages.behaviours.PageBehaviours
 
-class RepresentativeNamePageSpec extends PageBehaviours {
+class DeclarationTypeSpec extends PageBehaviours {
 
-  "RepresentativeNamePage" - {
+  "DeclarationTypePage" - {
 
-    beRetrievable[String](RepresentativeNamePage)
+    beRetrievable[DeclarationType](DeclarationTypePage)
 
-    beSettable[String](RepresentativeNamePage)
+    beSettable[DeclarationType](DeclarationTypePage)
 
-    beRemovable[String](RepresentativeNamePage)
+    beRemovable[DeclarationType](DeclarationTypePage)
   }
 }

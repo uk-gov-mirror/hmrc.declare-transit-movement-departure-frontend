@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.movementDetails
 
-import models.DeclarationType
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class DeclarationTypeSpec extends PageBehaviours {
+case object DeclarationPlacePage extends QuestionPage[String] {
 
-  "DeclarationTypePage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[DeclarationType](DeclarationTypePage)
-
-    beSettable[DeclarationType](DeclarationTypePage)
-
-    beRemovable[DeclarationType](DeclarationTypePage)
-  }
+  override def toString: String = "declarationPlace"
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages
+package pages.movementDetails
 
 import generators.UserAnswersGenerator
 import models.{RepresentativeCapacity, UserAnswers}

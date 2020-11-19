@@ -31,6 +31,7 @@ import pages._
 import pages.addItems.containers._
 import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
+import pages.movementDetails.{ContainersUsedPage, DeclarationTypePage}
 import play.api.mvc.Call
 
 @Singleton

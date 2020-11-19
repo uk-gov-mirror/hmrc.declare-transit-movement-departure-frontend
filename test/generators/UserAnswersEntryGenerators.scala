@@ -47,7 +47,15 @@ import pages.guaranteeDetails.{
   OtherReferenceLiabilityAmountPage,
   OtherReferencePage
 }
-import pages.movementDetails.PreLodgeDeclarationPage
+import pages.movementDetails.{
+  ContainersUsedPage,
+  DeclarationForSomeoneElsePage,
+  DeclarationPlacePage,
+  DeclarationTypePage,
+  PreLodgeDeclarationPage,
+  RepresentativeCapacityPage,
+  RepresentativeNamePage
+}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators {

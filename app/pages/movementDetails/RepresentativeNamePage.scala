@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.movementDetails
 
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object DeclarationPlacePage extends QuestionPage[String] {
+case object RepresentativeNamePage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "declarationPlace"
+  override def toString: String = "representativeName"
 }

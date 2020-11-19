@@ -20,7 +20,15 @@ import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.{DeclarationType, RepresentativeCapacity}
 import pages._
-import pages.movementDetails.PreLodgeDeclarationPage
+import pages.movementDetails.{
+  ContainersUsedPage,
+  DeclarationForSomeoneElsePage,
+  DeclarationPlacePage,
+  DeclarationTypePage,
+  PreLodgeDeclarationPage,
+  RepresentativeCapacityPage,
+  RepresentativeNamePage
+}
 
 sealed trait MovementDetails {
   val declarationType: DeclarationType

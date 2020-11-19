@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.movementDetails
 
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class ContainersUsedPageSpec extends PageBehaviours {
+case object ContainersUsedPage extends QuestionPage[Boolean] {
 
-  "ContainersUsedPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[Boolean](ContainersUsedPage)
-
-    beSettable[Boolean](ContainersUsedPage)
-
-    beRemovable[Boolean](ContainersUsedPage)
-  }
+  override def toString: String = "containersUsed"
 }

@@ -50,7 +50,15 @@ import pages.guaranteeDetails.{
   OtherReferenceLiabilityAmountPage,
   OtherReferencePage
 }
-import pages.{IsPrincipalEoriKnownPage, RepresentativeNamePage, goodsSummary, _}
+import pages.movementDetails.{
+  ContainersUsedPage,
+  DeclarationForSomeoneElsePage,
+  DeclarationPlacePage,
+  DeclarationTypePage,
+  RepresentativeCapacityPage,
+  RepresentativeNamePage
+}
+import pages.{IsPrincipalEoriKnownPage, goodsSummary, _}
 
 class SectionsHelper(userAnswers: UserAnswers) {
 

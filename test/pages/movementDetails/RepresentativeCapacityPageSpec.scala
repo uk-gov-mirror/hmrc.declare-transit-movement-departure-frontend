@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.movementDetails
 
-import play.api.libs.json.JsPath
+import models.RepresentativeCapacity
+import pages.behaviours.PageBehaviours
 
-case object RepresentativeNamePage extends QuestionPage[String] {
+class RepresentativeCapacitySpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "RepresentativeCapacityPage" - {
 
-  override def toString: String = "representativeName"
+    beRetrievable[RepresentativeCapacity](RepresentativeCapacityPage)
+
+    beSettable[RepresentativeCapacity](RepresentativeCapacityPage)
+
+    beRemovable[RepresentativeCapacity](RepresentativeCapacityPage)
+  }
 }
