@@ -30,7 +30,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class GuaranteeNotValidMessageServiceSpec extends SpecBase with MockServiceApp with BeforeAndAfterEach with Matchers {
+class DepartureMessageServiceSpec extends SpecBase with MockServiceApp with BeforeAndAfterEach with Matchers {
 
   private val mockDepartureConnector: DepartureMovementConnector = mock[DepartureMovementConnector]
 
@@ -44,13 +44,18 @@ class GuaranteeNotValidMessageServiceSpec extends SpecBase with MockServiceApp w
       .guiceApplicationBuilder()
       .overrides(bind[DepartureMovementConnector].toInstance(mockDepartureConnector))
 
-  private val messageService = app.injector.instanceOf[GuaranteeNotValidMessageService]
+  private val messageService = app.injector.instanceOf[DepartureMessageService]
 
   "GuaranteeNotValidMessageService" - {
     "must return GuaranteeNotValidMessage for the input departureId" in {
       val notificationMessage = GuaranteeNotValidMessage(lrn.toString, Seq(InvalidGuaranteeReasonCode("ref", G01, None)))
       val messagesSummary =
-        MessagesSummary(departureId, MessagesLocation(s"/movements/departures/${departureId.value}/messages/3", Some("/movements/departures/1234/messages/5")))
+        MessagesSummary(
+          departureId,
+          MessagesLocation(s"/movements/departures/${departureId.value}/messages/3",
+                           Some("/movements/departures/1234/messages/5"),
+                           Some("/movements/departures/1234/messages/7"))
+        )
 
       when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(Some(messagesSummary)))
       when(mockDepartureConnector.getGuaranteeNotValidMessage(any())(any()))
@@ -61,7 +66,7 @@ class GuaranteeNotValidMessageServiceSpec extends SpecBase with MockServiceApp w
 
     "must return None when getSummary fails to get guaranteeNotValid message" in {
       val messagesSummary =
-        MessagesSummary(departureId, MessagesLocation(s"/movements/departures/${departureId.value}/messages/3", None))
+        MessagesSummary(departureId, MessagesLocation(s"/movements/departures/${departureId.value}/messages/3", None, None))
       when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(Some(messagesSummary)))
 
       messageService.guaranteeNotValidMessage(departureId).futureValue mustBe None

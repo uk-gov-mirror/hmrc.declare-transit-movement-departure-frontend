@@ -16,13 +16,23 @@
 
 package connectors
 
+import java.time.LocalDate
+
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import generators.MessagesModelGenerators
 import helper.WireMockServerHandler
 import models.messages.DeclarationRequest
-import models.{DepartureId, GuaranteeNotValidMessage, InvalidGuaranteeCode, InvalidGuaranteeReasonCode, MessagesLocation, MessagesSummary}
+import models.{
+  DeclarationRejectionMessage,
+  DepartureId,
+  GuaranteeNotValidMessage,
+  InvalidGuaranteeCode,
+  InvalidGuaranteeReasonCode,
+  MessagesLocation,
+  MessagesSummary
+}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -80,14 +90,20 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
           "departureId" -> departureId.value,
           "messages" -> Json.obj(
             "IE015" -> s"/movements/departures/${departureId.value}/messages/3",
-            "IE055" -> s"/movements/departures/${departureId.value}/messages/5"
+            "IE055" -> s"/movements/departures/${departureId.value}/messages/5",
+            "IE016" -> s"/movements/departures/${departureId.value}/messages/7"
           )
         )
 
         val messageAction =
-          MessagesSummary(departureId,
-                          MessagesLocation(s"/movements/departures/${departureId.value}/messages/3",
-                                           Some(s"/movements/departures/${departureId.value}/messages/5")))
+          MessagesSummary(
+            departureId,
+            MessagesLocation(
+              s"/movements/departures/${departureId.value}/messages/3",
+              Some(s"/movements/departures/${departureId.value}/messages/5"),
+              Some(s"/movements/departures/${departureId.value}/messages/7")
+            )
+          )
 
         server.stubFor(
           get(urlEqualTo(s"/transits-movements-trader-at-departure/movements/departures/${departureId.value}/messages/summary"))
@@ -170,6 +186,69 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
             stubGetResponse(errorResponseCode, location)
 
             connector.getGuaranteeNotValidMessage(location).futureValue mustBe None
+        }
+      }
+    }
+
+    "getDeclarationRejectionMessage" - {
+      "must return valid 'declaration reject message'" in {
+        val location = s"/transits-movements-trader-at-departure-stub/movements/departures/${departureId.value}/messages/2"
+
+        val xml: NodeSeq = <CC016A>
+              <HEAHEA>
+                <RefNumHEA4>05CTC20190913113500</RefNumHEA4>
+                <DecRejDatHEA159>20190913</DecRejDatHEA159>
+                <DecRejReaHEA252>The IE015 message received was invalid</DecRejReaHEA252>
+              </HEAHEA>
+              <FUNERRER1>
+                <ErrTypER11>15</ErrTypER11>
+                <ErrPoiER12>GUA(2).REF(1).Other guarantee reference</ErrPoiER12>
+                <ErrReaER13>C130</ErrReaER13>
+              </FUNERRER1>
+            </CC016A>
+
+        val json = Json.obj("message" -> xml.toString())
+
+        server.stubFor(
+          get(urlEqualTo(location))
+            .willReturn(
+              okJson(json.toString)
+            )
+        )
+        val expectedResult =
+          Some(DeclarationRejectionMessage("05CTC20190913113500", LocalDate.parse("2019-09-13"), "The IE015 message received was invalid", Seq.empty))
+
+        connector.getDeclarationRejectionMessage(location).futureValue mustBe expectedResult
+
+      }
+
+      "must return None for malformed input'" in {
+        val location              = s"/transits-movements-trader-at-departure/movements/departures/${departureId.value}/messages/2"
+        val rejectionXml: NodeSeq = <CC016A>
+          <FUNERRER1>
+            <ErrTypER11>15</ErrTypER11>
+            <ErrPoiER12>not valid</ErrPoiER12>
+            <ErrReaER13>malformed</ErrReaER13>
+          </FUNERRER1>
+        </CC016A>
+
+        val json = Json.obj("message" -> rejectionXml.toString())
+
+        server.stubFor(
+          get(urlEqualTo(location))
+            .willReturn(
+              okJson(json.toString)
+            )
+        )
+        connector.getDeclarationRejectionMessage(location).futureValue mustBe None
+      }
+
+      "must return None when an error response is returned from getGuaranteeNotValidMessage" in {
+        val location: String = "/transits-movements-trader-at-departure/movements/departures/1/messages/2"
+        forAll(errorResponsesCodes) {
+          errorResponseCode =>
+            stubGetResponse(errorResponseCode, location)
+            connector.getDeclarationRejectionMessage(location).futureValue mustBe None
         }
       }
     }

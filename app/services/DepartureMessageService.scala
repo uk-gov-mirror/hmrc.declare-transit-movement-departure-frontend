@@ -23,12 +23,24 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GuaranteeNotValidMessageService @Inject()(connectors: DepartureMovementConnector) {
+class DepartureMessageService @Inject()(connectors: DepartureMovementConnector) {
 
   def guaranteeNotValidMessage(departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[GuaranteeNotValidMessage]] =
     connectors.getSummary(departureId) flatMap {
       case Some(summary) =>
         summary.messagesLocation.guaranteeNotValid match {
+          case Some(location) => {
+            connectors.getGuaranteeNotValidMessage(location)
+          }
+          case _ => Future.successful(None)
+        }
+      case _ => Future.successful(None)
+    }
+
+  def declarationRejectionMessage(departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Any] =
+    connectors.getSummary(departureId) flatMap {
+      case Some(summary) =>
+        summary.messagesLocation.declarationRejection match {
           case Some(location) => {
             connectors.getGuaranteeNotValidMessage(location)
           }

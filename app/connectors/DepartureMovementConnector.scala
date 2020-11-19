@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.XMLWrites._
 import models.messages.DeclarationRequest
-import models.{DepartureId, GuaranteeNotValidMessage, MessagesSummary, ResponseMessage}
+import models.{DeclarationRejectionMessage, DepartureId, GuaranteeNotValidMessage, MessagesSummary, ResponseMessage}
 import uk.gov.hmrc.http.RawReads.is2xx
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -53,6 +53,16 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
       case responseMessage if is2xx(responseMessage.status) =>
         val message: NodeSeq = responseMessage.json.as[ResponseMessage].message
         XmlReader.of[GuaranteeNotValidMessage].read(message).toOption
+      case _ => None
+    }
+  }
+
+  def getDeclarationRejectionMessage(location: String)(implicit hc: HeaderCarrier): Future[Option[DeclarationRejectionMessage]] = {
+    val serviceUrl = s"${appConfig.departureBaseUrl}$location"
+    http.GET[HttpResponse](serviceUrl) map {
+      case responseMessage if is2xx(responseMessage.status) =>
+        val message: NodeSeq = responseMessage.json.as[ResponseMessage].message
+        XmlReader.of[DeclarationRejectionMessage].read(message).toOption
       case _ => None
     }
   }
