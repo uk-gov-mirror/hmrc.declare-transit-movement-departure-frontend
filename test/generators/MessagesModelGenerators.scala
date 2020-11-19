@@ -25,12 +25,22 @@ import models.messages.goodsitem._
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
 import models.messages.trader._
+import models.reference.CountryCode
+import models.messages.trader._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.{alphaNumChar, choose}
 import org.scalacheck.{Arbitrary, Gen}
 import utils.Format.dateFormatted
 
-trait MessagesModelGenerators extends Generators {
+trait MessagesModelGenerators extends ModelGenerators with Generators {
+
+  implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] = {
+    Arbitrary {
+      for {
+        country <- arbitrary[CountryCode]
+      } yield Itinerary(country.code)
+    }
+  }
 
   implicit lazy val arbitraryInterchangeControlReference: Arbitrary[InterchangeControlReference] = {
     Arbitrary {
@@ -89,6 +99,7 @@ trait MessagesModelGenerators extends Generators {
         seals                     <- Gen.option(arbitrary[Seals])
         guarantee                 <- arbitrary[Guarantee]
         goodsItems                <- nonEmptyListWithMaxSize(10, arbitrary[GoodsItem])
+        itinerary                 <- listWithMaxLength[Itinerary](Itinerary.Constants.maxCount)
       } yield
         DeclarationRequest(
           meta,
@@ -104,7 +115,8 @@ trait MessagesModelGenerators extends Generators {
           representative,
           seals,
           guarantee,
-          goodsItems
+          goodsItems,
+          itinerary
         )
     }
   }

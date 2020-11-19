@@ -44,7 +44,8 @@ case class DeclarationRequest(meta: Meta,
                               representative: Option[Representative],
                               seals: Option[Seals],
                               guarantee: Guarantee,
-                              goodsItems: NonEmptyList[GoodsItem])
+                              goodsItems: NonEmptyList[GoodsItem],
+                              itinerary: Seq[Itinerary])
 
 object DeclarationRequest {
 
@@ -66,7 +67,8 @@ object DeclarationRequest {
           declarationRequest.representative.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.seals.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.guarantee.toXml ++
-          declarationRequest.goodsItems.toList.flatMap(_.toXml)
+          declarationRequest.goodsItems.toList.flatMap(_.toXml) ++
+          declarationRequest.itinerary.flatMap(_.toXml)
       }
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
@@ -92,6 +94,7 @@ object DeclarationRequest {
      (__ \ "REPREP").read[Representative].optional,
      (__ \ "SEAINFSLI").read[Seals].optional,
      (__ \ "GUAGUA").read[Guarantee],
-     (__ \ "GOOITEGDS").read(xmlNonEmptyListReads[GoodsItem])) mapN apply
+     (__ \ "GOOITEGDS").read(xmlNonEmptyListReads[GoodsItem]),
+     (__ \ "ITI").read(strictReadSeq[Itinerary])) mapN apply
 
 }
