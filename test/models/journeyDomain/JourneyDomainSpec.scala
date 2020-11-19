@@ -17,23 +17,18 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
-import controllers.traderDetails.ConsignorAddressControllerSpec
 import generators.JourneyModelGenerators
-import models.{ConsigneeAddress, ConsignorAddress, PrincipalAddress, UserAnswers}
-import models.domain.Address
-import models.journeyDomain.RouteDetails.TransitInformation
-import org.scalacheck.Arbitrary
+import models.UserAnswers
 
 class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
   "JourneyDomain" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(arb[JourneyDomain], arb[UserAnswers]) {
-          case (journeyDomain, userAnswers) =>
-            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
-
-            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+        forAll(arb[JourneyDomain]) {
+          case journeyDomain =>
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
+            val result            = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
 
             result.value mustEqual journeyDomain
         }

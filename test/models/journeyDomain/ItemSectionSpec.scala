@@ -80,6 +80,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     (
       ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, itemIndex) _ andThen
+        ItemTraderDetailsSpec.setItemTraderDetails(ItemTraderDetails(itemSection.consignor, itemSection.consignee), itemIndex) andThen
         setPackages(itemSection.packages, itemIndex)
     )(startUserAnswers)
 
