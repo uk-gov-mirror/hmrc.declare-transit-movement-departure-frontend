@@ -36,7 +36,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.referenceData").fullServiceUrl
 
   //TODO: Move out into it's own config object like `ManageTransitMovementsService`
-  val departureHost = configuration.get[Service]("microservice.services.departures").fullServiceUrl
+  val departureHost    = configuration.get[Service]("microservice.services.departures").fullServiceUrl
+  val departureBaseUrl = configuration.get[Service]("microservice.services.departures").baseUrl
 
   // TODO: Move config values for IdentifierAction to it's own config class
   // TODO: Make these values eagerly evaluated. I.e. non lazy
