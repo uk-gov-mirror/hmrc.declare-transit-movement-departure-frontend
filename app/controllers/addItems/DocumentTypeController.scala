@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.reference.DocumentType
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.{AddItems, Document}
+import navigation.annotations.Document
 import pages.addItems
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

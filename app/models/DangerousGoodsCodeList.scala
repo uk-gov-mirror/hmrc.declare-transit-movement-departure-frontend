@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package forms.addItems.securityDetails
+package models
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.DangerousGoodsCodeList
 import models.reference.DangerousGoodsCode
-import play.api.data.Form
 
-class DangerousGoodsCodeFormProvider @Inject() extends Mappings {
+case class DangerousGoodsCodeList(dangerousGoodsCodes: Seq[DangerousGoodsCode]) {
 
-  def apply(dangerousGoodsCodeList: DangerousGoodsCodeList): Form[DangerousGoodsCode] =
-    Form(
-      "value" -> text("dangerousGoodsCode.error.required")
-        .verifying("dangerousGoodsCode.error.reuired", value => dangerousGoodsCodeList.dangerousGoodsCodes.exists(_.code == value))
-        .transform[DangerousGoodsCode](value => dangerousGoodsCodeList.getDangerousGoodsCode(value).get, _.code)
-    )
+  def getDangerousGoodsCode(code: String): Option[DangerousGoodsCode] =
+    dangerousGoodsCodes.find(_.code == code)
+
 }
