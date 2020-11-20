@@ -16,11 +16,11 @@
 
 package navigation
 
-import javax.inject.{Inject, Singleton}
-import models._
-import pages.Page
 import controllers.addItems.securityDetails.routes
-import pages.addItems.securityDetails._
+import javax.inject.{Inject, Singleton}
+import models.{CheckMode, _}
+import pages.Page
+import pages.addItems.securityDetails.{UsingSameMethodOfPaymentPage, _}
 import play.api.mvc.Call
 
 @Singleton
@@ -29,6 +29,7 @@ class SecurityDetailsNavigator @Inject()() extends Navigator {
   // format: off
   //todo -update when Security Trader Details section done
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case UsingSameMethodOfPaymentPage(index) => ua => usingSameMethodOfPaymentRoute(ua, index, NormalMode)
     case TransportChargesPage(index) => ua => Some(routes.UsingSameCommercialReferenceController.onPageLoad(ua.id, index, NormalMode))
     case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index, NormalMode)
     case CommercialReferenceNumberPage(index) => ua => Some(routes.AddDangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
@@ -37,11 +38,22 @@ class SecurityDetailsNavigator @Inject()() extends Navigator {
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case UsingSameMethodOfPaymentPage(index) => ua => usingSameMethodOfPaymentRoute(ua, index, CheckMode)
     case TransportChargesPage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index, CheckMode)
     case CommercialReferenceNumberPage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case AddDangerousGoodsCodePage(index) => ua => addDangerousGoodsCodeRoute(ua, index, CheckMode)
+    case DangerousGoodsCodePage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+
   }
+
+  private def usingSameMethodOfPaymentRoute(ua:UserAnswers, index:Index, mode: Mode) =
+    (ua.get(UsingSameMethodOfPaymentPage(index)), mode, ua.get(TransportChargesPage(index))) match {
+      case (Some(true), NormalMode, _) => Some(routes.UsingSameCommercialReferenceController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), NormalMode,_) => Some(routes.TransportChargesController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), CheckMode, None) =>  Some(routes.TransportChargesController.onPageLoad(ua.id, index, CheckMode))
+      case  _ => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    }
 
   private def usingSameCommercialReferenceRoute(ua: UserAnswers, index: Index, mode: Mode) =
     (ua.get(UsingSameCommercialReferencePage(index)), ua.get(CommercialReferenceNumberPage(index)), mode) match {

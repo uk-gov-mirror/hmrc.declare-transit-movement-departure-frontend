@@ -34,6 +34,13 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryUsingSameMethodOfPaymentUserAnswersEntry: Arbitrary[(UsingSameMethodOfPaymentPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (UsingSameMethodOfPaymentPage(Index(0)), value)
+    }
+
   implicit lazy val arbitraryDangerousGoodsCodeUserAnswersEntry: Arbitrary[(DangerousGoodsCodePage, JsValue)] =
     Arbitrary {
       for {
