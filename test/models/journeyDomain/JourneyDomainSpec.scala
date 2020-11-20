@@ -57,10 +57,10 @@ object JourneyDomainSpec {
         MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails) andThen
         RouteDetailsSpec.setRouteDetails(journeyDomain.routeDetails, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
         TransportDetailsSpec.setTransportDetail(journeyDomain.transportDetails) andThen
-        TraderDetailsSpec.setTraderDetails(journeyDomain.traderDetails) andThen
         ItemSectionSpec.setItemSections(journeyDomain.itemDetails.toList) andThen
         GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
-        GuaranteeDetailsSpec.setGuaranteeDetails(journeyDomain.guarantee)
+        GuaranteeDetailsSpec.setGuaranteeDetails(journeyDomain.guarantee) andThen
+        TraderDetailsSpec.setTraderDetails(journeyDomain.traderDetails)
     )(startUserAnswers)
 
 }
