@@ -103,7 +103,7 @@ class DangerousGoodsCodeController @Inject()(
                 },
                 value =>
                   for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(DangerousGoodsCodePage(index), value.id))
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(DangerousGoodsCodePage(index), value.code))
                     _              <- sessionRepository.set(updatedAnswers)
                   } yield Redirect(navigator.nextPage(DangerousGoodsCodePage(index), mode, updatedAnswers))
               )

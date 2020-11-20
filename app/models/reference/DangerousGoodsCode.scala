@@ -18,7 +18,7 @@ package models.reference
 
 import play.api.libs.json.{Json, Reads}
 
-case class DangerousGoodsCode(id: String, name: String)
+case class DangerousGoodsCode(code: String, description: String)
 
 object DangerousGoodsCode {
 

@@ -21,6 +21,6 @@ import models.reference.DangerousGoodsCode
 case class DangerousGoodsCodeList(dangerousGoodsCodes: Seq[DangerousGoodsCode]) {
 
   def getDangerousGoodsCode(id: String): Option[DangerousGoodsCode] =
-    dangerousGoodsCodes.find(_.id == id)
+    dangerousGoodsCodes.find(_.code == id)
 
 }

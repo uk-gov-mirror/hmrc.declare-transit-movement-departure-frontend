@@ -129,8 +129,8 @@ package object utils {
     val dangerousGoodsCodeObjects = dangerousGoodsCodeList.map {
       dangerousGoodsCode =>
         Json.obj(
-          "value"    -> dangerousGoodsCode.id,
-          "text"     -> s"(${dangerousGoodsCode.id}) ${dangerousGoodsCode.name}",
+          "value"    -> dangerousGoodsCode.code,
+          "text"     -> s"(${dangerousGoodsCode.code}) ${dangerousGoodsCode.description}",
           "selected" -> value.contains(dangerousGoodsCode)
         )
     }
