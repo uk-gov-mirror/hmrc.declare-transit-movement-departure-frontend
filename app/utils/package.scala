@@ -125,6 +125,18 @@ package object utils {
     defaultOption +: documentObjects
   }
 
+  def getDangerousGoodsCodeAsJson(value: Option[DangerousGoodsCode], dangerousGoodsCodeList: Seq[DangerousGoodsCode]): Seq[JsObject] = {
+    val dangerousGoodsCodeObjects = dangerousGoodsCodeList.map {
+      dangerousGoodsCode =>
+        Json.obj(
+          "value"    -> dangerousGoodsCode.id,
+          "text"     -> s"(${dangerousGoodsCode.id}) ${dangerousGoodsCode.name}",
+          "selected" -> value.contains(dangerousGoodsCode)
+        )
+    }
+    defaultOption +: dangerousGoodsCodeObjects
+  }
+
   def yesOrNo(answer: Boolean): Content =
     if (answer) {
       msg"site.yes"

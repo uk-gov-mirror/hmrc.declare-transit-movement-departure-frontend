@@ -18,14 +18,16 @@ package forms.addItems.securityDetails
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.Index
+import models.DangerousGoodsCodeList
+import models.reference.DangerousGoodsCode
 import play.api.data.Form
 
 class DangerousGoodsCodeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(dangerousGoodsCodeList: DangerousGoodsCodeList): Form[DangerousGoodsCode] =
     Form(
       "value" -> text("dangerousGoodsCode.error.required")
-        .verifying(maxLength(4, "dangerousGoodsCode.error.length"))
+        .verifying("dangerousGoodsCode.error.reuired", value => dangerousGoodsCodeList.dangerousGoodsCodes.exists(_.id == value))
+        .transform[DangerousGoodsCode](value => dangerousGoodsCodeList.getDangerousGoodsCode(value).get, _.id)
     )
 }
