@@ -18,14 +18,11 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import forms.Constants._
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class WhatIsConsigneeEoriFormProvider @Inject() extends Mappings {
-
-  val eoriNumberRegex: String          = "^[a-zA-Z]{2}[0-9]{1,15}"
-  val maxLengthEoriNumber: Int         = 17
-  val validEoriCharactersRegex: String = "^[a-zA-Z0-9]*$"
 
   def apply(): Form[String] =
     Form(

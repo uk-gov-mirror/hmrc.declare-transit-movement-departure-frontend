@@ -18,20 +18,18 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import forms.Constants.{vehicleIdMaxLength, vehicleIdRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class IdAtDepartureFormProvider @Inject() extends Mappings {
-
-  val idRegex: String = "^[a-zA-Z0-9]*$"
-  val idMaxLength     = 27
 
   def apply(): Form[String] =
     Form(
       "value" -> text("idAtDeparture.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(idMaxLength, "idAtDeparture.error.length"),
-            regexp(idRegex, "idAtDeparture.error.invalidCharacters"),
+            maxLength(vehicleIdMaxLength, "idAtDeparture.error.length"),
+            regexp(vehicleIdRegex, "idAtDeparture.error.invalidCharacters"),
           )))
 }

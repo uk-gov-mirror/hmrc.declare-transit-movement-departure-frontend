@@ -19,10 +19,13 @@ package models.journeyDomain
 import cats.data._
 import cats.implicits._
 import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
+import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.{Index, UserAnswers}
 
 case class ItemSection(
   itemDetails: ItemDetails,
+  consignor: Option[RequiredDetails],
+  consignee: Option[RequiredDetails],
   packages: NonEmptyList[Packages]
 )
 
@@ -30,19 +33,21 @@ object ItemSection {
 
   private def derivePackage(itemIndex: Index): ReaderT[Option, UserAnswers, NonEmptyList[Packages]] =
     DeriveNumberOfPackages(itemIndex).reader
-      .filter(_.size > 0)
+      .filter(_.nonEmpty)
       .flatMap {
         _.zipWithIndex
           .traverse[UserAnswersReader, Packages]({
             case (_, index) =>
               Packages.packagesReader(itemIndex, Index(index))
           })
-          .map(NonEmptyList.fromListUnsafe _)
+          .map(NonEmptyList.fromListUnsafe)
       }
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
       ItemDetails.itemDetailsReader(index),
+      ItemTraderDetails.consignorDetails(index),
+      ItemTraderDetails.consigneeDetails(index),
       derivePackage(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
@@ -55,7 +60,7 @@ object ItemSection {
             case (_, index) =>
               readerItemSection(Index(index))
           })
-          .map(NonEmptyList.fromListUnsafe _)
+          .map(NonEmptyList.fromListUnsafe)
       }
 
 }

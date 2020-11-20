@@ -62,6 +62,7 @@ class DeclarationRequestSpec
               {declarationRequest.seals.map(_.toXml).getOrElse(NodeSeq.Empty)}
               {declarationRequest.guarantee.toXml}
               {declarationRequest.goodsItems.toList.flatMap(_.toXml)}
+              {declarationRequest.itinerary.flatMap(_.toXml)}
             </CC015B>
 
           declarationRequest.toXml.map(trim) mustBe expectedResult.map(trim)

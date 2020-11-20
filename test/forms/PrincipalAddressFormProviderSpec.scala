@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.Constants._
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -50,6 +51,24 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
+
+    "must not bind strings that do not match the address line regex" in {
+
+      val invalidChars = "principalAddress.error.numberAndStreet.invalidCharacters"
+
+      val expectedError =
+        List(FormError(fieldName, invalidChars, Seq(principalName)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 
   ".town" - {
@@ -77,18 +96,34 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
+
+    "must not bind strings that do not match the address line regex" in {
+
+      val invalidChars = "principalAddress.error.town.invalidCharacters"
+
+      val expectedError =
+        List(FormError(fieldName, invalidChars, Seq(principalName)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 
   ".postcode" - {
 
-    val fieldName                            = "postcode"
-    val requiredKey                          = "principalAddress.error.postcode.required"
-    val lengthKey                            = "principalAddress.error.postcode.length"
-    val invalidFormatKey                     = "principalAddress.error.postcode.invalidFormat"
-    val invalidCharactersKey                 = "principalAddress.error.postcode.invalidCharacters"
-    val validPostcodeCharactersRegex: String = "^[a-zA-Z\\s*0-9]*$"
-    val postCodeRegex: String                = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
-    val maxLength                            = 9
+    val fieldName            = "postcode"
+    val requiredKey          = "principalAddress.error.postcode.required"
+    val lengthKey            = "principalAddress.error.postcode.length"
+    val invalidFormatKey     = "principalAddress.error.postcode.invalidFormat"
+    val invalidCharactersKey = "principalAddress.error.postcode.invalidCharacters"
+    val maxLength            = 9
 
     behave like fieldThatBindsValidData(
       form,

@@ -125,6 +125,18 @@ package object utils {
     defaultOption +: documentObjects
   }
 
+  def getDangerousGoodsCodeAsJson(value: Option[DangerousGoodsCode], dangerousGoodsCodeList: Seq[DangerousGoodsCode]): Seq[JsObject] = {
+    val dangerousGoodsCodeObjects = dangerousGoodsCodeList.map {
+      dangerousGoodsCode =>
+        Json.obj(
+          "value"    -> dangerousGoodsCode.code,
+          "text"     -> s"(${dangerousGoodsCode.code}) ${dangerousGoodsCode.description}",
+          "selected" -> value.contains(dangerousGoodsCode)
+        )
+    }
+    defaultOption +: dangerousGoodsCodeObjects
+  }
+
   def getPaymentsAsJson(value: Option[MethodOfPayment], methodOfPaymentList: Seq[MethodOfPayment]): Seq[JsObject] = {
     val paymentObjects = methodOfPaymentList.map {
       methodOfPayment =>

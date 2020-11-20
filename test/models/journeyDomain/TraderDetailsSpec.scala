@@ -17,13 +17,14 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
+import generators.{JourneyModelGenerators, ModelGenerators}
 import models.domain.Address
-import models.journeyDomain.TraderDetails.{PersonalInformation, TraderEori}
+import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori}
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, UserAnswers}
 import org.scalatest.TryValues
 import pages._
 
-class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
+class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators {
   import TraderDetailsSpec._
 
   "TraderDetail can be parser from UserAnswers" - {
@@ -70,26 +71,10 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
 
     "when there is consignor eori details" in {
       forAll(arb[UserAnswers], arb[EoriNumber], arb[EoriNumber]) {
-        case (baseUserAnswers, eori1 @ EoriNumber(eoriNumber1), eori2 @ EoriNumber(eoriNumber2)) =>
-          val userAnswers = baseUserAnswers
-            .set(IsPrincipalEoriKnownPage, true)
-            .success
-            .value
-            .set(WhatIsPrincipalEoriPage, eoriNumber1)
-            .success
-            .value
-            .set(AddConsigneePage, false)
-            .success
-            .value
-            .set(AddConsignorPage, true)
-            .success
-            .value
-            .set(IsConsignorEoriKnownPage, true)
-            .success
-            .value
-            .set(ConsignorEoriPage, eoriNumber2)
-            .success
-            .value
+        case (baseUserAnswers, eori1, eori2) =>
+          val trader = TraderDetails(RequiredDetails.apply(eori1), Some(RequiredDetails.apply(eori2)), Some(RequiredDetails.apply(eori2)))
+
+          val userAnswers = setTraderDetails(trader)(baseUserAnswers)
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
@@ -195,6 +180,17 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues {
 
           result.consignee.value mustEqual PersonalInformation(name, expectedAddress)
 
+      }
+    }
+
+    "when there is a TraderDetails" in {
+      forAll(arb[UserAnswers], arb[TraderDetails]) {
+        (baseUserAnswers, traderDetails) =>
+          val userAnswers = setTraderDetails(traderDetails)(baseUserAnswers)
+
+          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+          result mustEqual traderDetails
       }
     }
 
