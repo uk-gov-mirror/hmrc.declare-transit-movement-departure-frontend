@@ -19,7 +19,7 @@ package models
 import com.lucidchart.open.xtract.{__, XmlReader}
 import play.api.libs.json.{Json, Writes}
 
-sealed abstract class InvalidGuaranteeCode(val value: String, val otherInValidCode: Boolean = false)
+sealed abstract class InvalidGuaranteeCode(val value: String)
 
 object InvalidGuaranteeCode {
 
@@ -28,12 +28,12 @@ object InvalidGuaranteeCode {
       code =>
         values
           .find(_.value.equalsIgnoreCase(code.trim()))
-          .getOrElse(DefaultCode(code.trim, otherInValidCode = true))
+          .getOrElse(DefaultCode(code.trim))
     }
 
   implicit val writes: Writes[InvalidGuaranteeCode] = Writes[InvalidGuaranteeCode] {
     invalidCode: InvalidGuaranteeCode =>
-      Json.obj("value" -> invalidCode.value, "otherInValidCode" -> invalidCode.otherInValidCode)
+      Json.obj("value" -> invalidCode.value)
   }
 
   val values = Seq(G01, G02, G03, G04, G05, G06, G07, G08, G09, G10, G11, G12, G13)
@@ -51,6 +51,6 @@ object InvalidGuaranteeCode {
   case object G11 extends InvalidGuaranteeCode("G11")
   case object G12 extends InvalidGuaranteeCode("G12")
   case object G13 extends InvalidGuaranteeCode("G13")
-  case class DefaultCode(override val value: String, override val otherInValidCode: Boolean) extends InvalidGuaranteeCode(value, otherInValidCode)
+  case class DefaultCode(override val value: String) extends InvalidGuaranteeCode(value)
 
 }

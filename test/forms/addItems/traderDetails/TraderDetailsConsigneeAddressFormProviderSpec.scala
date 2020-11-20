@@ -19,7 +19,9 @@ package forms.addItems.traderDetails
 import forms.behaviours.StringFieldBehaviours
 import models.CountryList
 import models.reference.{Country, CountryCode}
+import org.scalacheck.Gen
 import play.api.data.FormError
+import forms.Constants.addressRegex
 
 class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
 
@@ -54,6 +56,24 @@ class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviour
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the address line regex" in {
+
+      val invalidChars = "traderDetailsConsigneeAddress.error.line1.invalid"
+
+      val expectedError =
+        List(FormError(fieldName, invalidChars, Seq(addressRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 
   ".AddressLine2" - {
@@ -81,6 +101,24 @@ class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviour
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the address line regex" in {
+
+      val invalidChars = "traderDetailsConsigneeAddress.error.line2.invalid"
+
+      val expectedError =
+        List(FormError(fieldName, invalidChars, Seq(addressRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 
   ".AddressLine3" - {
@@ -108,5 +146,23 @@ class TraderDetailsConsigneeAddressFormProviderSpec extends StringFieldBehaviour
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the address line regex" in {
+
+      val invalidChars = "traderDetailsConsigneeAddress.error.line3.invalid"
+
+      val expectedError =
+        List(FormError(fieldName, invalidChars, Seq(addressRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }

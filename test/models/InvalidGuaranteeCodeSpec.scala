@@ -37,10 +37,17 @@ class InvalidGuaranteeCodeSpec extends AnyFreeSpec with Generators with ScalaChe
       }
     }
 
-    "must return DefaultInvalidCode" in {
+    "must return DefaultCode if the code not in allowed code list" in {
 
       val xml = <test>someInvalidStr</test>
-      XmlReader.of[InvalidGuaranteeCode].read(xml).toOption.value mustBe DefaultCode("someInvalidStr", otherInValidCode = true)
+      XmlReader.of[InvalidGuaranteeCode].read(xml).toOption.value mustBe DefaultCode("someInvalidStr")
+
+    }
+
+    "must return DefaultCode" in {
+
+      val xml = <InvGuaReaCodRNS11>someInvalidStr</InvGuaReaCodRNS11>
+      XmlReader.of[InvalidGuaranteeCode].read(xml).toOption.value mustBe DefaultCode("someInvalidStr")
 
     }
   }

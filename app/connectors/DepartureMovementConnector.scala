@@ -21,6 +21,8 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.XMLWrites._
 import models.messages.DeclarationRequest
+import models.{DepartureId, GuaranteeNotValidMessage, MessagesSummary, ResponseMessage}
+import play.api.Logger
 import models.{DeclarationRejectionMessage, DepartureId, GuaranteeNotValidMessage, MessagesSummary, ResponseMessage}
 import uk.gov.hmrc.http.RawReads.is2xx
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -43,7 +45,9 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
     val serviceUrl: String = s"${appConfig.departureHost}/movements/departures/${departureId.value}/messages/summary"
     http.GET[HttpResponse](serviceUrl) map {
       case responseMessage if is2xx(responseMessage.status) => Some(responseMessage.json.as[MessagesSummary])
-      case _                                                => None
+      case _ =>
+        Logger.error(s"Get Summary failed to return data")
+        None
     }
   }
 
@@ -53,7 +57,9 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
       case responseMessage if is2xx(responseMessage.status) =>
         val message: NodeSeq = responseMessage.json.as[ResponseMessage].message
         XmlReader.of[GuaranteeNotValidMessage].read(message).toOption
-      case _ => None
+      case _ =>
+        Logger.error(s"GetGuaranteeNotValidMessage failed to return data")
+        None
     }
   }
 

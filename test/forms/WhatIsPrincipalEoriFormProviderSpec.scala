@@ -17,18 +17,16 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.Constants._
 import play.api.data.FormError
 import org.scalacheck.Gen
 
 class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey                      = "whatIsPrincipalEori.error.required"
-  val lengthKey                        = "whatIsPrincipalEori.error.length"
-  val invalidCharactersKey             = "whatIsPrincipalEori.error.invalidCharacters"
-  val invalidFormatKey                 = "whatIsPrincipalEori.error.invalidFormat"
-  val maxLength                        = 17
-  val eoriNumberRegex: String          = "^[A-Z]{2}[0-9]{1,15}"
-  val validEoriCharactersRegex: String = "^[A-Z0-9]*$"
+  val requiredKey          = "whatIsPrincipalEori.error.required"
+  val lengthKey            = "whatIsPrincipalEori.error.length"
+  val invalidCharactersKey = "whatIsPrincipalEori.error.invalidCharacters"
+  val invalidFormatKey     = "whatIsPrincipalEori.error.invalidFormat"
 
   val form = new WhatIsPrincipalEoriFormProvider()()
 
@@ -39,14 +37,14 @@ class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(maxLengthEoriNumber)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength   = maxLengthEoriNumber,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLengthEoriNumber))
     )
 
     behave like mandatoryField(
@@ -61,7 +59,7 @@ class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
         List(FormError(fieldName, invalidCharactersKey, Seq(validEoriCharactersRegex)))
 
       val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(validEoriCharactersRegex))
+        stringsWithMaxLength(maxLengthEoriNumber) suchThat (!_.matches(validEoriCharactersRegex))
       }
 
       forAll(genInvalidString) {
@@ -71,13 +69,13 @@ class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "must not bind strings that do not match the eori number regex" in {
+    "must not bind strings that do not match the eori number format regex" in {
 
       val expectedError =
         List(FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex)))
 
       val genInvalidString: Gen[String] = {
-        alphaNumericWithMaxLength(maxLength).map(_.toUpperCase) suchThat (!_.matches(eoriNumberRegex))
+        alphaNumericWithMaxLength(maxLengthEoriNumber).map(_.toUpperCase) suchThat (!_.matches(eoriNumberRegex))
       }
 
       forAll(genInvalidString) {

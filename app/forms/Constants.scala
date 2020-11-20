@@ -16,20 +16,11 @@
 
 package forms
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import forms.Constants._
-import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
-
-class ConsignorEoriFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("consignorEori.error.required")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLengthEoriNumber, "consignorEori.error.length"),
-          regexp(validEoriCharactersRegex, "consignorEori.error.invalidCharacters"),
-          regexp(eoriNumberRegex, "consignorEori.error.invalidFormat")
-        )))
+object Constants {
+  lazy val addressRegex: String                 = "^[a-zA-Z0-9/@?%,.\\- ]*$"
+  lazy val validPostcodeCharactersRegex: String = "^[a-zA-Z\\s*0-9]*$"
+  lazy val postCodeRegex: String                = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
+  lazy val eoriNumberRegex: String              = "^[a-zA-Z]{2}[0-9a-zA-Z]{1,15}"
+  lazy val maxLengthEoriNumber: Int             = 17
+  lazy val validEoriCharactersRegex: String     = "^[a-zA-Z0-9]*$"
 }

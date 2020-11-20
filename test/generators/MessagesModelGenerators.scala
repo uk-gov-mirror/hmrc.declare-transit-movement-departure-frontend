@@ -27,6 +27,7 @@ import models.messages.header.{Header, Transport}
 import models.messages.trader._
 import models.reference.CountryCode
 import org.scalacheck.Arbitrary.arbitrary
+import models.messages.trader._
 import org.scalacheck.Gen.{alphaNumChar, choose}
 import org.scalacheck.{Arbitrary, Gen}
 import utils.Format.dateFormatted

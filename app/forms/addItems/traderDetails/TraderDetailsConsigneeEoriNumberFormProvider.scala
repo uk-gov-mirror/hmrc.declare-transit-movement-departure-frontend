@@ -17,16 +17,13 @@
 package forms.addItems.traderDetails
 
 import forms.mappings.Mappings
+import forms.Constants._
 import javax.inject.Inject
 import models.Index
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class TraderDetailsConsigneeEoriNumberFormProvider @Inject() extends Mappings {
-
-  val eoriNumberRegex: String          = "^[a-zA-Z]{2}[0-9]{1,15}"
-  val maxLengthEoriNumber: Int         = 17
-  val validEoriCharactersRegex: String = "^[a-zA-Z0-9]*$"
 
   def apply(index: Index): Form[String] =
     Form(

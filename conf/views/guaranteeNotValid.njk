@@ -48,25 +48,19 @@
                      {{ messages("guaranteeNotValid.reasonCode") }}
                       </dt>
                       <dd class="govuk-summary-list__value">
-                        {% if reasonCode.code.otherInValidCode %}
                             {{ reasonCode.code.value }}
-                        {% else %}
-                            {{ messages("guaranteeNotValid."+reasonCode.code.value) }}
-                         {% endif %}
                       </dd>
                   </div>
-                  <div class="govuk-summary-list__row">
-                      <dt class="govuk-summary-list__key">
-                     {{ messages("guaranteeNotValid.reason") }}
-                      </dt>
-                      <dd class="govuk-summary-list__value">
-                          {% if reasonCode.code.otherInValidCode %}
+                  {% if reasonCode.reason  %}
+                      <div class="govuk-summary-list__row">
+                          <dt class="govuk-summary-list__key">
+                         {{ messages("guaranteeNotValid.reason") }}
+                          </dt>
+                          <dd class="govuk-summary-list__value">
                               {{ reasonCode.reason }}
-                          {% else %}
-                              {{ messages("guaranteeNotValid."+reasonCode.code.value+".p") }}
-                           {% endif %}
-                      </dd>
-                </div>
+                          </dd>
+                       </div>
+                {% endif %}
             </dl>
          {% endfor %}
 
