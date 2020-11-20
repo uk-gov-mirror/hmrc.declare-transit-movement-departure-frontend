@@ -229,13 +229,39 @@ trait JourneyModelGenerators {
       } yield PersonalInformation(name, address)
     }
 
-  implicit lazy val arbitraryItemSection: Arbitrary[ItemSection] =
+  implicit lazy val arbitraryItemTraderEori: Arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori] =
+    Arbitrary(Arbitrary.arbitrary[EoriNumber].map(models.journeyDomain.ItemTraderDetails.TraderEori))
+
+  implicit def arbitraryItemPersonalInformation(
+    implicit arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation] =
     Arbitrary {
       for {
-        itemDetail <- arbitrary[ItemDetails]
-        packages   <- nonEmptyListOf[Packages](10)
-      } yield ItemSection(itemDetail, packages)
+        name    <- stringsWithMaxLength(stringMaxLength)
+        address <- arbAddress.arbitrary
+      } yield models.journeyDomain.ItemTraderDetails.PersonalInformation(name, address)
     }
+
+  implicit def arbitraryItemRequiredDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.RequiredDetails] =
+    Arbitrary(
+      Gen.oneOf(
+        Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation],
+        Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori]
+      ))
+
+  implicit lazy val arbitraryItemSection: Arbitrary[ItemSection] = {
+
+    val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
+    val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
+
+    Arbitrary {
+      for {
+        itemDetail    <- arbitrary[ItemDetails]
+        itemConsignor <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+        itemConsignee <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+        packages      <- nonEmptyListOf[Packages](10)
+      } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages)
+    }
+  }
 
   implicit lazy val arbitraryPreTaskListDetails: Arbitrary[PreTaskListDetails] =
     Arbitrary {

@@ -21,18 +21,20 @@ import java.time.LocalDateTime
 import cats.data.NonEmptyList
 import cats.implicits._
 import javax.inject.Inject
-import models.domain.Address
+import models.domain.{Address, SealDomain}
+import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
+import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.TransportDetails.DetailsAtBorder
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
-import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader}
+import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
+import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
-import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage}
+import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
 import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
-import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
-import models.messages._
-import models.{ConsignorAddress, EoriNumber, UserAnswers}
+import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
+import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
 import repositories.InterchangeControlReferenceIdRepository
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -90,6 +92,7 @@ class DeclarationRequestService @Inject()(
           RegularPackage(packageType.code, howManyPackagesPage, markOrNumber)
       }
 
+    // TODO finish this off
     def goodsItems(goodsItems: NonEmptyList[ItemSection]): NonEmptyList[GoodsItem] =
       goodsItems.zipWithIndex.map {
         case (itemSection, index) =>
@@ -98,21 +101,21 @@ class DeclarationRequestService @Inject()(
             commodityCode                    = itemSection.itemDetails.commodityCode,
             declarationType                  = None,
             description                      = itemSection.itemDetails.itemDescription,
-            grossMass                        = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)), //TODO Pass this as a string rather than BigDecimal
-            netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)), //TODO same here
+            grossMass                        = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)),
+            netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)),
             countryOfDispatch                = None,
             countryOfDestination             = None,
-            methodOfPayment                  = None,
-            commercialReferenceNumber        = None,
-            dangerousGoodsCode               = None,
+            methodOfPayment                  = None, // Add items Security details
+            commercialReferenceNumber        = None, // Add items Security details
+            dangerousGoodsCode               = None, // Add items security details
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
             specialMention                   = Seq.empty,
-            traderConsignorGoodsItem         = None,
-            traderConsigneeGoodsItem         = None,
+            traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
+            traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,
             packages                         = packages(itemSection.packages).toList,
-            sensitiveGoodsInformation        = Seq.empty
+            sensitiveGoodsInformation        = Seq.empty //TODO look up this
           )
       }
 
@@ -143,6 +146,18 @@ class DeclarationRequestService @Inject()(
             Some(TraderConsignor("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
         }
 
+    def headerConsignee(traderDetails: TraderDetails): Option[TraderConsignee] =
+      traderDetails.consignee
+        .flatMap {
+          case TraderDetails.PersonalInformation(name, address) =>
+            Address.prismAddressToConsigneeAddress.getOption(address).map {
+              case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
+                TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+            }
+          case TraderDetails.TraderEori(EoriNumber(eori)) =>
+            Some(TraderConsignee("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
+        }
+
     def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder): Option[String] =
       detailsAtBorder match {
         case SameDetailsAtBorder                            => None
@@ -155,6 +170,59 @@ class DeclarationRequestService @Inject()(
         case DetailsAtBorder.NewDetailsAtBorder(_, idCrossing, _) => Some(idCrossing)
       }
 
+    def customsOfficeTransit(transitInformation: NonEmptyList[TransitInformation]): Seq[CustomsOfficeTransit] =
+      transitInformation.map {
+        case TransitInformation(office, arrivalTime) => CustomsOfficeTransit(office, arrivalTime)
+      }.toList
+
+    // TODO confirm if authorisedLocationCode is the same thing (else last case just returns None)
+    def customsSubPlace(goodsSummary: GoodsSummary): Option[String] =
+      goodsSummary.goodSummaryDetails match {
+        case GoodsSummary.GoodSummaryNormalDetails(customsApprovedLocation) =>
+          customsApprovedLocation
+        case GoodsSummary.GoodSummarySimplifiedDetails(authorisedLocationCode, _) =>
+          Some(authorisedLocationCode)
+      }
+
+    def headerSeals(domainSeals: Seq[SealDomain]): Option[Seals] =
+      if (domainSeals.nonEmpty) {
+        val sealList = domainSeals.map(_.numberOrMark)
+        Some(Seals(domainSeals.size, sealList))
+      } else None
+
+    def representative(movementDetails: MovementDetails): Option[Representative] =
+      movementDetails.declarationForSomeoneElse match {
+        case MovementDetails.DeclarationForSelf =>
+          None
+        case MovementDetails.DeclarationForSomeoneElse(companyName, capacity) =>
+          Some(Representative(companyName, Some(capacity.toString)))
+      }
+
+    def traderConsignor(requiredDetails: Option[RequiredDetails]): Option[TraderConsignorGoodsItem] =
+      requiredDetails
+        .flatMap {
+          case ItemTraderDetails.PersonalInformation(name, address) =>
+            Address.prismAddressToConsignorAddress.getOption(address).map {
+              case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
+                TraderConsignorGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+            }
+
+          case ItemTraderDetails.TraderEori(EoriNumber(eori)) =>
+            Some(TraderConsignorGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
+        }
+
+    def traderConsignee(requiredDetails: Option[RequiredDetails]): Option[TraderConsigneeGoodsItem] =
+      requiredDetails
+        .flatMap {
+          case ItemTraderDetails.PersonalInformation(name, address) =>
+            Address.prismAddressToConsigneeAddress.getOption(address).map {
+              case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
+                TraderConsigneeGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+            }
+          case ItemTraderDetails.TraderEori(EoriNumber(eori)) =>
+            Some(TraderConsigneeGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
+        }
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
@@ -165,12 +233,12 @@ class DeclarationRequestService @Inject()(
         refNumHEA4          = preTaskList.lrn.value,
         typOfDecHEA24       = movementDetails.declarationType.code,
         couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
-        agrLocOfGooCodHEA38 = None,
-        agrLocOfGooHEA39    = None,
+        agrLocOfGooCodHEA38 = None, // prelodge
+        agrLocOfGooHEA39    = None, // prelodge
         autLocOfGooCodHEA41 = None,
         plaOfLoaCodHEA46    = None,
         couOfDisCodHEA55    = Some(routeDetails.countryOfDispatch.code),
-        cusSubPlaHEA66      = None,
+        cusSubPlaHEA66      = customsSubPlace(goodsSummary),
         transportDetails = Transport(
           inlTraModHEA75        = Some(transportDetails.inlandMode.code),
           traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
@@ -186,27 +254,27 @@ class DeclarationRequestService @Inject()(
         totGroMasHEA307    = goodsSummary.totalMass,
         decDatHEA383       = dateTimeOfPrep.toLocalDate,
         decPlaHEA394       = movementDetails.declarationPlacePage,
-        speCirIndHEA1      = None,
+        speCirIndHEA1      = None, // safety and security
         traChaMetOfPayHEA1 = None,
-        comRefNumHEA       = None,
-        secHEA358          = None,
-        conRefNumHEA       = None,
-        codPlUnHEA357      = None
+        comRefNumHEA       = None, // safety and security
+        secHEA358          = None, // local ref number & security
+        conRefNumHEA       = None, // safety and security
+        codPlUnHEA357      = None // safety and security
       ),
       principalTrader(traderDetails),
       headerConsignor(traderDetails),
-      None,
+      headerConsignee(traderDetails),
       None,
       CustomsOfficeDeparture(
         referenceNumber = routeDetails.officeOfDeparture
       ),
-      Seq.empty[CustomsOfficeTransit],
+      customsOfficeTransit(routeDetails.transitInformation),
       CustomsOfficeDestination(
         referenceNumber = routeDetails.destinationOffice
       ),
       None,
-      None,
-      None,
+      representative(movementDetails),
+      headerSeals(goodsSummary.sealNumbers),
       guaranteeDetails(guarantee),
       goodsItems(journeyDomain.itemDetails),
       Seq.empty[Itinerary]

@@ -94,7 +94,7 @@ object TraderDetails {
             RequiredDetails(name, address)
         }
 
-    val asdf: UserAnswersReader[RequiredDetails] =
+    val isEoriKnown: UserAnswersReader[RequiredDetails] =
       IsConsignorEoriKnownPage.reader.flatMap(
         isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
@@ -102,7 +102,7 @@ object TraderDetails {
     AddConsignorPage.reader
       .filter(identity)
       .flatMap(
-        _ => asdf
+        _ => isEoriKnown
       )
       .lower
   }
@@ -125,7 +125,7 @@ object TraderDetails {
             RequiredDetails(name, address)
         }
 
-    val asdf: UserAnswersReader[RequiredDetails] =
+    val isConsigneeEoriKnown: UserAnswersReader[RequiredDetails] =
       IsConsigneeEoriKnownPage.reader.flatMap {
         isEoriKnown =>
           if (isEoriKnown) useEori else useAddress
@@ -134,7 +134,7 @@ object TraderDetails {
     AddConsigneePage.reader
       .filter(identity)
       .flatMap(
-        _ => asdf
+        _ => isConsigneeEoriKnown
       )
       .lower
   }
