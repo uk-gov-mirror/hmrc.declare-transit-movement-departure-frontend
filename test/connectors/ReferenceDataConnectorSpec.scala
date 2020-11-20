@@ -190,8 +190,8 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
   private val dangerousGoodsCodeJson: String =
     """
       |  {
-      |    "id": "0004",
-      |    "name": "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"
+      |    "code": "0004",
+      |    "description": "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"
       |  }
       |""".stripMargin
 
@@ -199,12 +199,12 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
     """
       |[
       |  {
-      |    "id": "0004",
-      |    "name": "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"
+      |    "code": "0004",
+      |    "description": "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"
       |  },
       |  {
-      |    "id": "0005",
-      |    "name": "CARTRIDGES FOR WEAPONS with bursting charge"
+      |    "code": "0005",
+      |    "description": "CARTRIDGES FOR WEAPONS with bursting charge"
       |  }
       |]
       |""".stripMargin
