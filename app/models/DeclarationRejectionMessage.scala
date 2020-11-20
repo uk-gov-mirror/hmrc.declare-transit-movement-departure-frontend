@@ -34,18 +34,18 @@ object DeclarationRejectionMessage {
     (__ \ "HEAHEA" \ "RefNumHEA4").read[String],
     (__ \ "HEAHEA" \ "DecRejDatHEA159").read[LocalDate],
     (__ \ "HEAHEA" \ "DecRejReaHEA252").read[String],
-    (__ \ "HEAHEA" \ "FUNERRER1").read(strictReadSeq[RejectionError])
+    (__ \ "FUNERRER1").read(strictReadSeq[RejectionError])
   ).mapN(apply)
 }
 
-case class RejectionError(errorType: String, pointer: String, reason: String)
+case class RejectionError(errorType: String, pointer: String, reason: Option[String])
 
 object RejectionError {
 
   implicit val writes: OWrites[RejectionError] = Json.writes[RejectionError]
   implicit val xmlReader: XmlReader[RejectionError] = (
-    (__ \ "FUNERRER1" \ "ErrTypER11").read[String],
-    (__ \ "FUNERRER1" \ "ErrPoiER12").read[String],
-    (__ \ "FUNERRER1" \ "ErrReaER13").read[String]
+    (__ \ "ErrTypER11").read[String],
+    (__ \ "ErrPoiER12").read[String],
+    (__ \ "ErrReaER13").read[Option[String]]
   ).mapN(apply)
 }

@@ -31,7 +31,8 @@ import models.{
   InvalidGuaranteeCode,
   InvalidGuaranteeReasonCode,
   MessagesLocation,
-  MessagesSummary
+  MessagesSummary,
+  RejectionError
 }
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -216,7 +217,16 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
             )
         )
         val expectedResult =
-          Some(DeclarationRejectionMessage("05CTC20190913113500", LocalDate.parse("2019-09-13"), "The IE015 message received was invalid", Seq.empty))
+          Some(
+            DeclarationRejectionMessage(
+              "05CTC20190913113500",
+              LocalDate.parse("2019-09-13"),
+              "The IE015 message received was invalid",
+              Seq(
+                RejectionError("15", "GUA(2).REF(1).Other guarantee reference", Some("C130"))
+              )
+            )
+          )
 
         connector.getDeclarationRejectionMessage(location).futureValue mustBe expectedResult
 
