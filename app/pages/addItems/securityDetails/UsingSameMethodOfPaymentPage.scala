@@ -31,7 +31,7 @@ case class UsingSameMethodOfPaymentPage(index: Index) extends QuestionPage[Boole
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(true) | Some(false) =>
+      case Some(true) =>
         userAnswers
           .remove(TransportChargesPage(index))
 

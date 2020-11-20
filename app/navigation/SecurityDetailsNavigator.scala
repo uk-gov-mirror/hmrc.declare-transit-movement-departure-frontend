@@ -20,7 +20,7 @@ import controllers.addItems.securityDetails.routes
 import javax.inject.{Inject, Singleton}
 import models.{CheckMode, _}
 import pages.Page
-import pages.addItems.securityDetails.{UsingSameMethodOfPaymentPage, _}
+import pages.addItems.securityDetails._
 import play.api.mvc.Call
 
 @Singleton
