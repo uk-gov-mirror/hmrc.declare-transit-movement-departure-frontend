@@ -20,6 +20,7 @@ import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
 import models.UserAnswers
 import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
+import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
@@ -214,31 +215,17 @@ object GuaranteeDetailsSpec {
   def setGuaranteeOtherUserAnswers(otherGuarantee: GuaranteeOther)(startUserAnswers: UserAnswers): UserAnswers = {
 
     val guaranteeOtherUserAnswers = startUserAnswers
-      .set(GuaranteeTypePage, otherGuarantee.guaranteeType)
-      .toOption
-      .get
-      .set(OtherReferencePage, otherGuarantee.otherReference)
-      .toOption
-      .get
-      .set(OtherReferenceLiabilityAmountPage, otherGuarantee.liabilityAmount)
-      .toOption
-      .get
+      .unsafeSetVal(GuaranteeTypePage)(otherGuarantee.guaranteeType)
+      .unsafeSetVal(OtherReferencePage)(otherGuarantee.otherReference)
+      .unsafeSetVal(OtherReferenceLiabilityAmountPage)(otherGuarantee.liabilityAmount)
 
     guaranteeOtherUserAnswers
   }
 
   def setGuaranteeReferenceUserAnswers(guaranteeReference: GuaranteeReference)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
-      .set(GuaranteeTypePage, guaranteeReference.guaranteeType)
-      .toOption
-      .get
-      .set(GuaranteeReferencePage, guaranteeReference.guaranteeReferenceNumber)
-      .toOption
-      .get
-      .set(LiabilityAmountPage, guaranteeReference.liabilityAmount)
-      .toOption
-      .get
-      .set(AccessCodePage, guaranteeReference.accessCode)
-      .toOption
-      .get
+      .unsafeSetVal(GuaranteeTypePage)(guaranteeReference.guaranteeType)
+      .unsafeSetVal(GuaranteeReferencePage)(guaranteeReference.guaranteeReferenceNumber)
+      .unsafeSetVal(LiabilityAmountPage)(guaranteeReference.liabilityAmount)
+      .unsafeSetVal(AccessCodePage)(guaranteeReference.accessCode)
 }
