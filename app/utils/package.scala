@@ -137,6 +137,18 @@ package object utils {
     defaultOption +: dangerousGoodsCodeObjects
   }
 
+  def getPaymentsAsJson(value: Option[MethodOfPayment], methodOfPaymentList: Seq[MethodOfPayment]): Seq[JsObject] = {
+    val paymentObjects = methodOfPaymentList.map {
+      methodOfPayment =>
+        Json.obj(
+          "value"    -> methodOfPayment.code,
+          "text"     -> s"(${methodOfPayment.code}) ${methodOfPayment.description}",
+          "selected" -> value.contains(methodOfPayment)
+        )
+    }
+    defaultOption +: paymentObjects
+  }
+
   def yesOrNo(answer: Boolean): Content =
     if (answer) {
       msg"site.yes"

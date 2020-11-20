@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package forms.addItems.securityDetails
+package models
 
-import forms.mappings.Mappings
-import javax.inject.Inject
 import models.reference.MethodOfPayment
-import models.{Index, MethodOfPaymentList}
-import play.api.data.Form
 
-class TransportChargesFormProvider @Inject() extends Mappings {
+case class MethodOfPaymentList(methodsOfPayment: Seq[MethodOfPayment]) {
 
-  def apply(methodOfPaymentList: MethodOfPaymentList): Form[MethodOfPayment] =
-    Form(
-      "value" -> text("transportCharges.error.required")
-        .verifying("transportCharges.error.required", value => methodOfPaymentList.methodsOfPayment.exists(_.code == value))
-        .transform[MethodOfPayment](value => methodOfPaymentList.getMethodOfPayment(value).get, _.code)
-    )
+  def getMethodOfPayment(code: String): Option[MethodOfPayment] =
+    methodsOfPayment.find(_.code == code)
 }
