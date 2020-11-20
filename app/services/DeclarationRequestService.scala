@@ -25,7 +25,7 @@ import models.domain.{Address, SealDomain}
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.journeyDomain.TransportDetails.DetailsAtBorder
+import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode}
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
 import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
 import models.messages._
@@ -34,6 +34,7 @@ import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, Unpack
 import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
 import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
+import models.reference.CountryCode
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
 import repositories.InterchangeControlReferenceIdRepository
 
@@ -223,6 +224,13 @@ class DeclarationRequestService @Inject()(
             Some(TraderConsigneeGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
         }
 
+    def nationalityAtDeparture(inlandMode: InlandMode): Option[String] =
+      inlandMode match {
+        case InlandMode.Mode5or7(_, nationalityAtDeparture)          => Some(nationalityAtDeparture.code)
+        case InlandMode.NonSpecialMode(_, nationalityAtDeparture, _) => Some(nationalityAtDeparture.code)
+        case _                                                       => None
+      }
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
@@ -243,7 +251,7 @@ class DeclarationRequestService @Inject()(
           inlTraModHEA75        = Some(transportDetails.inlandMode.code),
           traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
           ideOfMeaOfTraAtDHEA78 = detailsAtBorderIdCrossing(transportDetails.detailsAtBorder),
-          natOfMeaOfTraAtDHEA80 = None,
+          natOfMeaOfTraAtDHEA80 = nationalityAtDeparture(transportDetails.inlandMode),
           ideOfMeaOfTraCroHEA85 = None,
           natOfMeaOfTraCroHEA87 = None,
           typOfMeaOfTraCroHEA88 = None
