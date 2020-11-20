@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
 import base.SpecBase
 import models.UserAnswers
 import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
-import pages.addItems._
+import pages.PackageTypePage
 import pages.behaviours.PageBehaviours
 
 class PackageTypePageSpec extends PageBehaviours with SpecBase {

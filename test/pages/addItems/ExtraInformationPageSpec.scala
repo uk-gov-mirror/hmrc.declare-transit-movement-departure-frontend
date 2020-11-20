@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import base.SpecBase
+import models.Index
 import pages.behaviours.PageBehaviours
 
-class AddTotalNetMassPageSpec extends PageBehaviours with SpecBase {
+class ExtraInformationPageSpec extends PageBehaviours {
 
-  "AddTotalNetMassPage" - {
+  private val index = Index(0)
 
-    beRetrievable[Boolean](AddTotalNetMassPage(index))
+  "ExtraInformationPage" - {
 
-    beSettable[Boolean](AddTotalNetMassPage(index))
+    beRetrievable[String](ExtraInformationPage(index, index))
 
-    beRemovable[Boolean](AddTotalNetMassPage(index))
+    beSettable[String](ExtraInformationPage(index, index))
+
+    beRemovable[String](ExtraInformationPage(index, index))
   }
 }

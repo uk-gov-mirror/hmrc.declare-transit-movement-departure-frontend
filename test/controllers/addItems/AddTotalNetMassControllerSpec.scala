@@ -27,7 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddTotalNetMassPage
+import pages.addItems
+import pages.addItems.AddTotalNetMassPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -87,7 +88,7 @@ class AddTotalNetMassControllerSpec extends SpecBase with MockNunjucksRendererAp
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddTotalNetMassPage(index), true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(addItems.AddTotalNetMassPage(index), true).success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, addTotalNetMassRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

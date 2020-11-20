@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import models.Index
-import pages.addItems.ExtraInformationPage
+import base.SpecBase
+import pages.addItems
 import pages.behaviours.PageBehaviours
 
-class ExtraInformationPageSpec extends PageBehaviours {
+class IsCommodityCodeKnownPageSpec extends PageBehaviours with SpecBase {
 
-  private val index = Index(0)
+  "IsCommodityCodeKnownPage" - {
 
-  "ExtraInformationPage" - {
+    beRetrievable[Boolean](IsCommodityCodeKnownPage(index))
 
-    beRetrievable[String](ExtraInformationPage(index, index))
+    beSettable[Boolean](addItems.IsCommodityCodeKnownPage(index))
 
-    beSettable[String](ExtraInformationPage(index, index))
-
-    beRemovable[String](ExtraInformationPage(index, index))
+    beRemovable[Boolean](addItems.IsCommodityCodeKnownPage(index))
   }
 }

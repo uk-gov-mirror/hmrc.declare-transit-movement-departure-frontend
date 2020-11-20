@@ -22,7 +22,8 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.IsCommodityCodeKnownPage
+import pages.addItems
+import pages.addItems.IsCommodityCodeKnownPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +51,7 @@ class IsCommodityCodeKnownController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(IsCommodityCodeKnownPage(index)) match {
+      val preparedForm = request.userAnswers.get(addItems.IsCommodityCodeKnownPage(index)) match {
         case None        => formProvider(index)
         case Some(value) => formProvider(index).fill(value)
       }
@@ -85,9 +86,9 @@ class IsCommodityCodeKnownController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(IsCommodityCodeKnownPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(addItems.IsCommodityCodeKnownPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(IsCommodityCodeKnownPage(index), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(addItems.IsCommodityCodeKnownPage(index), mode, updatedAnswers))
         )
   }
 }

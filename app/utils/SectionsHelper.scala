@@ -28,8 +28,8 @@ import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models.domain.SealDomain
 import models.{Index, NormalMode, SectionDetails, Status, UserAnswers}
-import pages._
-import pages.addItems.CommodityCodePage
+import pages.{addItems, _}
+import pages.addItems.{AddTotalNetMassPage, CommodityCodePage, IsCommodityCodeKnownPage, ItemDescriptionPage, ItemTotalGrossMassPage}
 import pages.goodsSummary._
 import pages.guaranteeDetails._
 import pages.movementDetails._
@@ -270,12 +270,12 @@ class SectionsHelper(userAnswers: UserAnswers) {
     } else { Seq.empty }
 
     Seq(
-      userAnswers.get(ItemDescriptionPage(index))    -> addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url,
-      userAnswers.get(ItemTotalGrossMassPage(index)) -> addItemsRoutes.ItemTotalGrossMassController.onPageLoad(lrn, index, NormalMode).url,
-      userAnswers.get(AddTotalNetMassPage(index))    -> addItemsRoutes.AddTotalNetMassController.onPageLoad(lrn, index, NormalMode).url
+      userAnswers.get(ItemDescriptionPage(index))          -> addItemsRoutes.ItemDescriptionController.onPageLoad(lrn, index, NormalMode).url,
+      userAnswers.get(ItemTotalGrossMassPage(index))       -> addItemsRoutes.ItemTotalGrossMassController.onPageLoad(lrn, index, NormalMode).url,
+      userAnswers.get(addItems.AddTotalNetMassPage(index)) -> addItemsRoutes.AddTotalNetMassController.onPageLoad(lrn, index, NormalMode).url
     ) ++
       addTotalGrossMassPages ++
-      Seq(userAnswers.get(IsCommodityCodeKnownPage(index)) -> addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(lrn, index, NormalMode).url) ++
+      Seq(userAnswers.get(addItems.IsCommodityCodeKnownPage(index)) -> addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(lrn, index, NormalMode).url) ++
       commodityCodePages
   }
 

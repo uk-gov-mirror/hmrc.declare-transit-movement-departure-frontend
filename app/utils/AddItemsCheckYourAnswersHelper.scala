@@ -114,7 +114,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
     }
 
   def itemRows(index: Index): Option[Row] =
-    userAnswers.get(ItemDescriptionPage(index)).map {
+    userAnswers.get(addItems.ItemDescriptionPage(index)).map {
       answer =>
         Row(
           key   = Key(lit"$answer"),
@@ -343,7 +343,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def isCommodityCodeKnown(index: Index): Option[Row] = userAnswers.get(IsCommodityCodeKnownPage(index)) map {
+  def isCommodityCodeKnown(index: Index): Option[Row] = userAnswers.get(addItems.IsCommodityCodeKnownPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"isCommodityCodeKnown.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
@@ -359,7 +359,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def addTotalNetMass(index: Index): Option[Row] = userAnswers.get(AddTotalNetMassPage(index)) map {
+  def addTotalNetMass(index: Index): Option[Row] = userAnswers.get(addItems.AddTotalNetMassPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"addTotalNetMass.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
@@ -375,7 +375,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def itemTotalGrossMass(index: Index): Option[Row] = userAnswers.get(ItemTotalGrossMassPage(index)) map {
+  def itemTotalGrossMass(index: Index): Option[Row] = userAnswers.get(addItems.ItemTotalGrossMassPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"itemTotalGrossMass.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
@@ -391,7 +391,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def itemDescription(index: Index): Option[Row] = userAnswers.get(ItemDescriptionPage(index)) map {
+  def itemDescription(index: Index): Option[Row] = userAnswers.get(addItems.ItemDescriptionPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"itemDescription.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),

@@ -27,7 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ItemDescriptionPage
+import pages.addItems
+import pages.addItems.ItemDescriptionPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -90,7 +91,7 @@ class ConfirmRemoveItemControllerSpec extends SpecBase with MockNunjucksRenderer
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      val updatedUserAnswers                             = emptyUserAnswers.set(ItemDescriptionPage(index), "item1").success.value
+      val updatedUserAnswers                             = emptyUserAnswers.set(addItems.ItemDescriptionPage(index), "item1").success.value
 
       dataRetrievalWithData(updatedUserAnswers)
 
@@ -103,7 +104,7 @@ class ConfirmRemoveItemControllerSpec extends SpecBase with MockNunjucksRenderer
       status(result) mustEqual SEE_OTHER
 
       verify(mockSessionRepository, times(1)).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue.get(ItemDescriptionPage(index)) mustBe None
+      userAnswersCaptor.getValue.get(addItems.ItemDescriptionPage(index)) mustBe None
 
       redirectLocation(result).value mustEqual onwardRoute.url
     }

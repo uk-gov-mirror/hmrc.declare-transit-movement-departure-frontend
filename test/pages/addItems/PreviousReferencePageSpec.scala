@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import models.{Index, UserAnswers}
-import play.api.libs.json.JsPath
-import queries.Constants.items
+import models.Index
+import pages.addItems
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
+class PreviousReferencePageSpec extends PageBehaviours {
 
-case class AddTotalNetMassPage(index: Index) extends QuestionPage[Boolean] {
+  private val index          = Index(0)
+  private val referenceIndex = Index(0)
 
-  override def path: JsPath = JsPath \ items \ index.position \ toString
+  "PreviousReferencePage" - {
 
-  override def toString: String = "addTotalNetMass"
+    beRetrievable[String](PreviousReferencePage(index, referenceIndex))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(TotalNetMassPage(index))
-      case _           => super.cleanup(value, userAnswers)
-    }
+    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
+
+    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
+  }
 }

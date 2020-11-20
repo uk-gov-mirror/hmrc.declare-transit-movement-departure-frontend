@@ -27,7 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.IsCommodityCodeKnownPage
+import pages.addItems
+import pages.addItems.IsCommodityCodeKnownPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -85,7 +86,7 @@ class IsCommodityCodeKnownControllerSpec extends SpecBase with MockNunjucksRende
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(IsCommodityCodeKnownPage(index), true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(addItems.IsCommodityCodeKnownPage(index), true).success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, isCommodityCodeKnownRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

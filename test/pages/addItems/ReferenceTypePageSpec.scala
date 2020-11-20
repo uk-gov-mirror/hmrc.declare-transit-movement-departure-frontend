@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
 import models.Index
-import pages.addItems.PreviousReferencePage
 import pages.behaviours.PageBehaviours
 
-class PreviousReferencePageSpec extends PageBehaviours {
+class ReferenceTypePageSpec extends PageBehaviours {
 
   private val index          = Index(0)
   private val referenceIndex = Index(0)
 
-  "PreviousReferencePage" - {
+  "ReferenceTypePage" - {
 
-    beRetrievable[String](PreviousReferencePage(index, referenceIndex))
+    beRetrievable[String](ReferenceTypePage(index, referenceIndex))
 
-    beSettable[String](addItems.PreviousReferencePage(index, referenceIndex))
+    beSettable[String](ReferenceTypePage(index, referenceIndex))
 
-    beRemovable[String](addItems.PreviousReferencePage(index, referenceIndex))
+    beRemovable[String](ReferenceTypePage(index, referenceIndex))
   }
 }

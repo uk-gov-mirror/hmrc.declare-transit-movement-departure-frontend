@@ -22,8 +22,8 @@ import models.journeyDomain.ItemDetailsSpec.setItemDetailsUserAnswers
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.addItems.CommodityCodePage
-import pages.{AddTotalNetMassPage, IsCommodityCodeKnownPage, ItemDescriptionPage, ItemTotalGrossMassPage, QuestionPage, TotalNetMassPage}
+import pages.addItems.{AddTotalNetMassPage, CommodityCodePage, IsCommodityCodeKnownPage, ItemDescriptionPage, ItemTotalGrossMassPage}
+import pages.{addItems, QuestionPage, TotalNetMassPage}
 
 class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
@@ -105,7 +105,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
-              .set(AddTotalNetMassPage(index), true)
+              .set(addItems.AddTotalNetMassPage(index), true)
               .toOption
               .get
 
@@ -122,7 +122,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
-              .set(IsCommodityCodeKnownPage(index), true)
+              .set(addItems.IsCommodityCodeKnownPage(index), true)
               .toOption
               .get
 
@@ -142,17 +142,17 @@ object ItemDetailsSpec {
   def setItemDetailsUserAnswers(itemDetails: ItemDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val userAnswers =
       startUserAnswers
-        .set(ItemTotalGrossMassPage(index), itemDetails.totalGrossMass)
+        .set(addItems.ItemTotalGrossMassPage(index), itemDetails.totalGrossMass)
         .toOption
         .get
-        .set(ItemDescriptionPage(index), itemDetails.itemDescription)
+        .set(addItems.ItemDescriptionPage(index), itemDetails.itemDescription)
         .toOption
         .get
 
     val totalNetMass = itemDetails.totalNetMass match {
       case Some(value) =>
         userAnswers
-          .set(AddTotalNetMassPage(index), true)
+          .set(addItems.AddTotalNetMassPage(index), true)
           .toOption
           .get
           .set(TotalNetMassPage(index), value)
@@ -161,7 +161,7 @@ object ItemDetailsSpec {
 
       case _ =>
         userAnswers
-          .set(AddTotalNetMassPage(index), false)
+          .set(addItems.AddTotalNetMassPage(index), false)
           .toOption
           .get
     }
@@ -169,7 +169,7 @@ object ItemDetailsSpec {
     val commodityCode = itemDetails.commodityCode match {
       case Some(value) =>
         totalNetMass
-          .set(IsCommodityCodeKnownPage(index), true)
+          .set(addItems.IsCommodityCodeKnownPage(index), true)
           .toOption
           .get
           .set(CommodityCodePage(index), value)
@@ -177,7 +177,7 @@ object ItemDetailsSpec {
           .get
       case _ =>
         totalNetMass
-          .set(IsCommodityCodeKnownPage(index), false)
+          .set(addItems.IsCommodityCodeKnownPage(index), false)
           .toOption
           .get
     }

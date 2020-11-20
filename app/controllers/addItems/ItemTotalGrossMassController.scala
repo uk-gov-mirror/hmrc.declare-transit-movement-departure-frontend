@@ -22,7 +22,8 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.ItemTotalGrossMassPage
+import pages.addItems
+import pages.addItems.ItemTotalGrossMassPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +51,7 @@ class ItemTotalGrossMassController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ItemTotalGrossMassPage(index)) match {
+      val preparedForm = request.userAnswers.get(addItems.ItemTotalGrossMassPage(index)) match {
         case None        => formProvider(index)
         case Some(value) => formProvider(index).fill(value)
       }
@@ -83,9 +84,9 @@ class ItemTotalGrossMassController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemTotalGrossMassPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(addItems.ItemTotalGrossMassPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ItemTotalGrossMassPage(index), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(addItems.ItemTotalGrossMassPage(index), mode, updatedAnswers))
         )
   }
 }

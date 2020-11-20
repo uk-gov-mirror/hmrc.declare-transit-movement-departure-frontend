@@ -27,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 import models._
 import models.reference.CountryCode
 import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCodes}
-import pages._
+import pages.{addItems, _}
 import pages.addItems.containers._
 import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
@@ -216,7 +216,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
 
   // TODO revisit
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
-    (ua.get(IsCommodityCodeKnownPage(index)),ua.get(CommodityCodePage(index)),
+    (ua.get(addItems.IsCommodityCodeKnownPage(index)),ua.get(CommodityCodePage(index)),
       ua.get(ConsignorForAllItemsPage), ua.get(AddConsignorPage),
       ua.get(ConsigneeForAllItemsPage), ua.get(AddConsigneePage),
       mode
@@ -292,7 +292,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
   private def addTotalNetMassRoute(index: Index, ua: UserAnswers, mode: Mode) =
-    (ua.get(AddTotalNetMassPage(index)), ua.get(TotalNetMassPage(index)), mode) match {
+    (ua.get(addItems.AddTotalNetMassPage(index)), ua.get(TotalNetMassPage(index)), mode) match {
       case (Some(false), _, NormalMode)    => Some(addItemsRoutes.IsCommodityCodeKnownController.onPageLoad(ua.id, index, NormalMode))
       case (Some(true), None , _)          => Some(addItemsRoutes.TotalNetMassController.onPageLoad(ua.id, index, mode))
       case _                               => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))

@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
+import pages.addItems
 import pages.behaviours.PageBehaviours
 
-class ItemDescriptionPageSpec extends PageBehaviours {
+class ItemTotalGrossMassPageSpec extends PageBehaviours {
 
   private val index = models.Index(0)
 
-  "ItemDescriptionPage" - {
+  "ItemTotalGrossMassPage" - {
 
-    beRetrievable[String](ItemDescriptionPage(index))
+    beRetrievable[String](ItemTotalGrossMassPage(index))
 
-    beSettable[String](ItemDescriptionPage(index))
+    beSettable[String](addItems.ItemTotalGrossMassPage(index))
 
-    beRemovable[String](ItemDescriptionPage(index))
+    beRemovable[String](addItems.ItemTotalGrossMassPage(index))
   }
 }

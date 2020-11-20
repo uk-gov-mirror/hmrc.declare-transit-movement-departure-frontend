@@ -31,8 +31,8 @@ import models.ProcedureType.{Normal, Simplified}
 import models.Status.{Completed, InProgress, NotStarted}
 import models._
 import models.reference.{Country, CountryCode, TransportMode}
-import pages.{goodsSummary, _}
-import pages.addItems.CommodityCodePage
+import pages.{addItems, goodsSummary, _}
+import pages.addItems.{AddTotalNetMassPage, CommodityCodePage, IsCommodityCodeKnownPage, ItemDescriptionPage, ItemTotalGrossMassPage}
 import pages.goodsSummary.{
   AddCustomsApprovedLocationPage,
   AddSealsPage,
@@ -393,10 +393,10 @@ class SectionsHelperSpec extends SpecBase {
 
       "must return items section with status as Completed" in {
         val userAnswers = emptyUserAnswers
-          .set(ItemDescriptionPage(index), "")
+          .set(addItems.ItemDescriptionPage(index), "")
           .toOption
           .value
-          .set(ItemTotalGrossMassPage(index), "100")
+          .set(addItems.ItemTotalGrossMassPage(index), "100")
           .toOption
           .value
           .set(AddTotalNetMassPage(index), true)

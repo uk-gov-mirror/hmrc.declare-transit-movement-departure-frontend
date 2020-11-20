@@ -19,7 +19,7 @@ package generators
 import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{goodsSummary, _}
+import pages.{addItems, goodsSummary, _}
 import pages.addItems.{CommodityCodePage, ConfirmRemoveItemPage, _}
 import pages.addItems.traderDetails._
 import pages.addItems._
@@ -440,28 +440,28 @@ trait UserAnswersEntryGenerators {
     Arbitrary {
       for {
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (IsCommodityCodeKnownPage(Index(0)), value)
+      } yield (addItems.IsCommodityCodeKnownPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryItemTotalGrossMassUserAnswersEntry: Arbitrary[(ItemTotalGrossMassPage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (ItemTotalGrossMassPage(Index(0)), value)
+      } yield (addItems.ItemTotalGrossMassPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryAddTotalNetMassUserAnswersEntry: Arbitrary[(AddTotalNetMassPage, JsValue)] =
     Arbitrary {
       for {
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (AddTotalNetMassPage(Index(0)), value)
+      } yield (addItems.AddTotalNetMassPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryItemDescriptionUserAnswersEntry: Arbitrary[(ItemDescriptionPage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (ItemDescriptionPage(Index(0)), value)
+      } yield (addItems.ItemDescriptionPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryOtherReferenceLiabilityAmountUserAnswersEntry: Arbitrary[(OtherReferenceLiabilityAmountPage.type, JsValue)] =

@@ -27,7 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ItemDescriptionPage
+import pages.addItems
+import pages.addItems.ItemDescriptionPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -84,7 +85,7 @@ class ItemDescriptionControllerSpec extends SpecBase with MockNunjucksRendererAp
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ItemDescriptionPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(addItems.ItemDescriptionPage(index), "answer").success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, itemDescriptionRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

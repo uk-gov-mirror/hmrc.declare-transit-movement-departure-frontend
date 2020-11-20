@@ -19,7 +19,7 @@ package models.journeyDomain
 import cats.implicits._
 import models.Index
 import pages._
-import pages.addItems.CommodityCodePage
+import pages.addItems.{AddTotalNetMassPage, CommodityCodePage, IsCommodityCodeKnownPage, ItemDescriptionPage, ItemTotalGrossMassPage}
 
 final case class ItemDetails(
   itemDescription: String,

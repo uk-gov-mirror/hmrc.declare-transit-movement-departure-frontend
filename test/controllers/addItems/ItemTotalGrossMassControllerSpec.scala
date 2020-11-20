@@ -27,7 +27,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ItemTotalGrossMassPage
+import pages.addItems
+import pages.addItems.ItemTotalGrossMassPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -84,7 +85,7 @@ class ItemTotalGrossMassControllerSpec extends SpecBase with MockNunjucksRendere
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ItemTotalGrossMassPage(index), "1.000").success.value
+      val userAnswers = emptyUserAnswers.set(addItems.ItemTotalGrossMassPage(index), "1.000").success.value
       dataRetrievalWithData(userAnswers)
       val request        = FakeRequest(GET, itemTotalGrossMassRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])

@@ -21,7 +21,7 @@ import models.{DocumentTypeList, PreviousDocumentTypeList}
 import models.reference.{DocumentType, PreviousDocumentType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.{addItems, _}
 import pages.addItems._
 import pages.addItems.containers.ContainerNumberPage
 import uk.gov.hmrc.viewmodels.MessageInterpolators
@@ -32,11 +32,11 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
   private val previousDocumentTypeList = PreviousDocumentTypeList(Seq(PreviousDocumentType("code", "name")))
   private val documentTypeList = DocumentTypeList(Seq(DocumentType("code", "name", true)))
   private val updatedAnswers = emptyUserAnswers
-    .set(ItemDescriptionPage(index), "test").success.value
-    .set(ItemTotalGrossMassPage(index), "100.00").success.value
-    .set(AddTotalNetMassPage(index), true).success.value
+    .set(addItems.ItemDescriptionPage(index), "test").success.value
+    .set(addItems.ItemTotalGrossMassPage(index), "100.00").success.value
+    .set(addItems.AddTotalNetMassPage(index), true).success.value
     .set(TotalNetMassPage(index), "20").success.value
-    .set(IsCommodityCodeKnownPage(index), true).success.value
+    .set(addItems.IsCommodityCodeKnownPage(index), true).success.value
     .set(CommodityCodePage(index), "111111").success.value
     .set(ContainerNumberPage(itemIndex, containerIndex), arbitrary[String].sample.value).success.value
 

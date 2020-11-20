@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
 import base.SpecBase
+import pages.addItems
 import pages.behaviours.PageBehaviours
 
-class IsCommodityCodeKnownPageSpec extends PageBehaviours with SpecBase {
+class AddTotalNetMassPageSpec extends PageBehaviours with SpecBase {
 
-  "IsCommodityCodeKnownPage" - {
+  "AddTotalNetMassPage" - {
 
-    beRetrievable[Boolean](IsCommodityCodeKnownPage(index))
+    beRetrievable[Boolean](AddTotalNetMassPage(index))
 
-    beSettable[Boolean](IsCommodityCodeKnownPage(index))
+    beSettable[Boolean](addItems.AddTotalNetMassPage(index))
 
-    beRemovable[Boolean](IsCommodityCodeKnownPage(index))
+    beRemovable[Boolean](addItems.AddTotalNetMassPage(index))
   }
 }

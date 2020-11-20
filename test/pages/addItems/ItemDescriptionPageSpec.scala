@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package pages.addItems
 
-import models.Index
-import pages.addItems.ReferenceTypePage
+import pages.addItems
 import pages.behaviours.PageBehaviours
 
-class ReferenceTypePageSpec extends PageBehaviours {
+class ItemDescriptionPageSpec extends PageBehaviours {
 
-  private val index          = Index(0)
-  private val referenceIndex = Index(0)
+  private val index = models.Index(0)
 
-  "ReferenceTypePage" - {
+  "ItemDescriptionPage" - {
 
-    beRetrievable[String](ReferenceTypePage(index, referenceIndex))
+    beRetrievable[String](ItemDescriptionPage(index))
 
-    beSettable[String](ReferenceTypePage(index, referenceIndex))
+    beSettable[String](addItems.ItemDescriptionPage(index))
 
-    beRemovable[String](ReferenceTypePage(index, referenceIndex))
+    beRemovable[String](addItems.ItemDescriptionPage(index))
   }
 }

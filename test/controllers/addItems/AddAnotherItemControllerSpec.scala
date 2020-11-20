@@ -26,7 +26,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ItemDescriptionPage
+import pages.addItems
+import pages.addItems.ItemDescriptionPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -55,7 +56,7 @@ class AddAnotherItemControllerSpec extends SpecBase with MockNunjucksRendererApp
   "AddAnotherItem Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = emptyUserAnswers.set(ItemDescriptionPage(index), "test").success.value
+      val userAnswers = emptyUserAnswers.set(addItems.ItemDescriptionPage(index), "test").success.value
 
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
@@ -101,7 +102,7 @@ class AddAnotherItemControllerSpec extends SpecBase with MockNunjucksRendererApp
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val userAnswers = emptyUserAnswers.set(ItemDescriptionPage(index), "test").success.value
+      val userAnswers = emptyUserAnswers.set(addItems.ItemDescriptionPage(index), "test").success.value
 
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
