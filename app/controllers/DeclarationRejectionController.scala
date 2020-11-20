@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.{DepartureId, LocalReferenceNumber}
+import models.{DepartureId, LocalReferenceNumber, RejectionError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +38,13 @@ class DeclarationRejectionController @Inject()(
 
   def onPageLoad(departureId: DepartureId): Action[AnyContent] = (identify).async {
     implicit request =>
-      val json = Json.obj()
+      val json = Json.obj(
+        "rejectionReason" -> "It is rejected due to If the caption should be considered part of the page heading",
+        "errors" -> Seq(
+          Json.obj("errorType" -> "ABC", "pointer" -> "Sample Pointer 1", "reason" -> "Something messed up!"),
+          Json.obj("errorType" -> "DEF", "pointer" -> "Sample Pointer 2", "reason" -> "Something messed up too!")
+        )
+      )
       renderer.render("declarationRejection.njk", json).map(Ok(_))
   }
 }

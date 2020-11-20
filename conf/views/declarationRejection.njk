@@ -1,12 +1,18 @@
 {% extends "includes/layout.njk" %}
 
+{% from "govuk/components/back-link/macro.njk"        import govukBackLink %}
 {% from "macros/title.njk"                         import title %}
+
 
 {% block pageTitle %}
   {{ title(messages("declarationRejection.title")) }}
 {% endblock %}
 
 {% block mainContent %}
+
+{{ govukBackLink({
+    text: messages("site.back")
+  }) }}
 
   <div class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -15,6 +21,41 @@
         <h1 class="govuk-heading-xl">
           {{ messages("declarationRejection.heading") }}
         </h1>
+
+        <p class="govuk-body-l">
+            {{ rejectionReason}}
+        </p>
+
+                {% for error in errors %}
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                              <dt class="govuk-summary-list__key">
+                             {{ messages("declarationRejection.errorType") }}
+                              </dt>
+                              <dd class="govuk-summary-list__value">
+                              {{ error.errorType }}
+                              </dd>
+                          </div>
+                          <div class="govuk-summary-list__row">
+                              <dt class="govuk-summary-list__key">
+                             {{ messages("declarationRejection.pointer") }}
+                              </dt>
+                              <dd class="govuk-summary-list__value">
+                                    {{ error.pointer }}
+                              </dd>
+                          </div>
+                          {% if error.reason  %}
+                              <div class="govuk-summary-list__row">
+                                  <dt class="govuk-summary-list__key">
+                                 {{ messages("declarationRejection.reason") }}
+                                  </dt>
+                                  <dd class="govuk-summary-list__value">
+                                      {{ error.reason }}
+                                  </dd>
+                               </div>
+                        {% endif %}
+                    </dl>
+                 {% endfor %}
 
       </div>
     </div>

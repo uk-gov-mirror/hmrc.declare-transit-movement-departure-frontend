@@ -1115,5 +1115,8 @@ guaranteeNotValid.you.must = You must
 guaranteeNotValid.lrn = Local reference number
 guaranteeNotValid.guaranteeRefNumber = Guarantee Reference number
 
-declarationRejection.title = declarationRejection
-declarationRejection.heading = declarationRejection
+declarationRejection.title = There is a problem with this departure declaration
+declarationRejection.heading = There is a problem with this departure declaration
+declarationRejection.errorType =  Error Type
+declarationRejection.pointer =  Error Pointer
+declarationRejection.reason =  Reason
