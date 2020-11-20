@@ -18,6 +18,7 @@ package models.journeyDomain
 
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
+import models.journeyDomain.MovementDetails.DeclarationForSomeoneElseAnswer
 import models.{DeclarationType, RepresentativeCapacity}
 import pages._
 import pages.movementDetails.PreLodgeDeclarationPage
@@ -26,6 +27,7 @@ sealed trait MovementDetails {
   val declarationType: DeclarationType
   val containersUsed: Boolean
   val declarationPlacePage: String
+  val declarationForSomeoneElse: DeclarationForSomeoneElseAnswer
 }
 
 object MovementDetails {
