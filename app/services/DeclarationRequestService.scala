@@ -165,12 +165,6 @@ class DeclarationRequestService @Inject()(
         case DetailsAtBorder.NewDetailsAtBorder(mode, _, _) => Some(mode)
       }
 
-    def detailsAtBorderIdCrossing(detailsAtBorder: DetailsAtBorder): Option[String] =
-      detailsAtBorder match {
-        case SameDetailsAtBorder                                  => None
-        case DetailsAtBorder.NewDetailsAtBorder(_, idCrossing, _) => Some(idCrossing)
-      }
-
     def customsOfficeTransit(transitInformation: NonEmptyList[TransitInformation]): Seq[CustomsOfficeTransit] =
       transitInformation.map {
         case TransitInformation(office, arrivalTime) => CustomsOfficeTransit(office, arrivalTime)
@@ -231,6 +225,12 @@ class DeclarationRequestService @Inject()(
         case _                                                       => None
       }
 
+    def identityOfTransportAtDeparture(inlandMode: InlandMode): Option[String] =
+      inlandMode match {
+        case InlandMode.NonSpecialMode(_, _, departureId) => departureId
+        case _                                            => None
+      }
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
@@ -250,7 +250,7 @@ class DeclarationRequestService @Inject()(
         transportDetails = Transport(
           inlTraModHEA75        = Some(transportDetails.inlandMode.code),
           traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
-          ideOfMeaOfTraAtDHEA78 = detailsAtBorderIdCrossing(transportDetails.detailsAtBorder),
+          ideOfMeaOfTraAtDHEA78 = identityOfTransportAtDeparture(transportDetails.inlandMode),
           natOfMeaOfTraAtDHEA80 = nationalityAtDeparture(transportDetails.inlandMode),
           ideOfMeaOfTraCroHEA85 = None,
           natOfMeaOfTraCroHEA87 = None,
