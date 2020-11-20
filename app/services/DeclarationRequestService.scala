@@ -235,18 +235,18 @@ class DeclarationRequestService @Inject()(
         couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
         agrLocOfGooCodHEA38 = None, // prelodge
         agrLocOfGooHEA39    = None, // prelodge
-        autLocOfGooCodHEA41 = None, //TODO look up this
-        plaOfLoaCodHEA46    = None, //TODO look up this (routeDetails)
+        autLocOfGooCodHEA41 = None,
+        plaOfLoaCodHEA46    = None,
         couOfDisCodHEA55    = Some(routeDetails.countryOfDispatch.code),
         cusSubPlaHEA66      = customsSubPlace(goodsSummary),
         transportDetails = Transport(
           inlTraModHEA75        = Some(transportDetails.inlandMode.code),
           traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
           ideOfMeaOfTraAtDHEA78 = detailsAtBorderIdCrossing(transportDetails.detailsAtBorder),
-          natOfMeaOfTraAtDHEA80 = None, // Have a chat with Amaal about this bit
-          ideOfMeaOfTraCroHEA85 = None, // Have a chat with Amaal about this bit
-          natOfMeaOfTraCroHEA87 = None, // Have a chat with Amaal about this bit
-          typOfMeaOfTraCroHEA88 = None // TODO look up this
+          natOfMeaOfTraAtDHEA80 = None,
+          ideOfMeaOfTraCroHEA85 = None,
+          natOfMeaOfTraCroHEA87 = None,
+          typOfMeaOfTraCroHEA88 = None
         ),
         conIndHEA96        = booleanToInt(movementDetails.containersUsed),
         totNumOfIteHEA305  = itemDetails.size,
@@ -255,7 +255,7 @@ class DeclarationRequestService @Inject()(
         decDatHEA383       = dateTimeOfPrep.toLocalDate,
         decPlaHEA394       = movementDetails.declarationPlacePage,
         speCirIndHEA1      = None, // safety and security
-        traChaMetOfPayHEA1 = None, // TODO look up this
+        traChaMetOfPayHEA1 = None,
         comRefNumHEA       = None, // safety and security
         secHEA358          = None, // local ref number & security
         conRefNumHEA       = None, // safety and security
@@ -264,7 +264,7 @@ class DeclarationRequestService @Inject()(
       principalTrader(traderDetails),
       headerConsignor(traderDetails),
       headerConsignee(traderDetails),
-      None, // TODO Lookup this
+      None,
       CustomsOfficeDeparture(
         referenceNumber = routeDetails.officeOfDeparture
       ),
@@ -272,7 +272,7 @@ class DeclarationRequestService @Inject()(
       CustomsOfficeDestination(
         referenceNumber = routeDetails.destinationOffice
       ),
-      None, //TODO Lookup this
+      None,
       representative(movementDetails),
       headerSeals(goodsSummary.sealNumbers),
       guaranteeDetails(guarantee),
