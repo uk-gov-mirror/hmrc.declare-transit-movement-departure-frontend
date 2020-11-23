@@ -637,3 +637,38 @@ GET        /:lrn/add-items/:itemIndex/traders-security-details/security-consigne
 POST       /:lrn/add-items/:itemIndex/traders-security-details/security-consignee-all-items                        controllers.addItems.traderSecurityDetails.SecurityConsigneeAllItemsController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = NormalMode)
 GET        /:lrn/add-items/:itemIndex/traders-security-details/change-security-consignee-all-items                 controllers.addItems.traderSecurityDetails.SecurityConsigneeAllItemsController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/traders-security-details/change-security-consignee-all-items                controllers.addItems.traderSecurityDetails.SecurityConsigneeAllItemsController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/securityConsignorEori                        controllers.SecurityConsignorEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/securityConsignorEori                        controllers.SecurityConsignorEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSecurityConsignorEori                  controllers.SecurityConsignorEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSecurityConsignorEori                  controllers.SecurityConsignorEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/securityConsigneeEori                        controllers.SecurityConsigneeEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/securityConsigneeEori                        controllers.SecurityConsigneeEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSecurityConsigneeEori                  controllers.SecurityConsigneeEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSecurityConsigneeEori                  controllers.SecurityConsigneeEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/securityConsignorAddress                        controllers.SecurityConsignorAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/securityConsignorAddress                        controllers.SecurityConsignorAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSecurityConsignorAddress                  controllers.SecurityConsignorAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSecurityConsignorAddress                  controllers.SecurityConsignorAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/securityConsigneeEori                        controllers.SecurityConsigneeEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/securityConsigneeEori                        controllers.SecurityConsigneeEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSecurityConsigneeEori                  controllers.SecurityConsigneeEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSecurityConsigneeEori                  controllers.SecurityConsigneeEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/securityConsigneeAddress                        controllers.SecurityConsigneeAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/securityConsigneeAddress                        controllers.SecurityConsigneeAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSecurityConsigneeAddress                  controllers.SecurityConsigneeAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSecurityConsigneeAddress                  controllers.SecurityConsigneeAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/securityConsignorName                        controllers.SecurityConsignorNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/securityConsignorName                        controllers.SecurityConsignorNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSecurityConsignorName                  controllers.SecurityConsignorNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSecurityConsignorName                  controllers.SecurityConsignorNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/securityConsigneeName                        controllers.SecurityConsigneeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/securityConsigneeName                        controllers.SecurityConsigneeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSecurityConsigneeName                  controllers.SecurityConsigneeNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSecurityConsigneeName                  controllers.SecurityConsigneeNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

@@ -35,6 +35,48 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitrarySecurityConsigneeNameUserAnswersEntry: Arbitrary[(SecurityConsigneeNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SecurityConsigneeNamePage.type#Data].map(Json.toJson(_))
+      } yield (SecurityConsigneeNamePage, value)
+    }
+
+  implicit lazy val arbitrarySecurityConsignorNameUserAnswersEntry: Arbitrary[(SecurityConsignorNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SecurityConsignorNamePage.type#Data].map(Json.toJson(_))
+      } yield (SecurityConsignorNamePage, value)
+    }
+
+  implicit lazy val arbitrarySecurityConsigneeAddressUserAnswersEntry: Arbitrary[(SecurityConsigneeAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SecurityConsigneeAddressPage.type#Data].map(Json.toJson(_))
+      } yield (SecurityConsigneeAddressPage, value)
+    }
+
+  implicit lazy val arbitrarySecurityConsignorAddressUserAnswersEntry: Arbitrary[(SecurityConsignorAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SecurityConsignorAddressPage.type#Data].map(Json.toJson(_))
+      } yield (SecurityConsignorAddressPage, value)
+    }
+
+  implicit lazy val arbitrarySecurityConsigneeEoriUserAnswersEntry: Arbitrary[(SecurityConsigneeEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SecurityConsigneeEoriPage.type#Data].map(Json.toJson(_))
+      } yield (SecurityConsigneeEoriPage, value)
+    }
+
+  implicit lazy val arbitrarySecurityConsignorEoriUserAnswersEntry: Arbitrary[(SecurityConsignorEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SecurityConsignorEoriPage.type#Data].map(Json.toJson(_))
+      } yield (SecurityConsignorEoriPage, value)
+    }
+
   implicit lazy val arbitrarySecurityConsigneeAllItemsUserAnswersEntry: Arbitrary[(SecurityConsigneeAllItemsPage, JsValue)] =
     Arbitrary {
       for {
