@@ -64,10 +64,9 @@ class SpecialMentionSpec extends SpecBase with GeneratorSpec with JourneyModelGe
 
 object SpecialMentionSpec extends UserAnswersSpecHelper {
 
-  def setSpecialMentionsUserAnswers(specialMention: SpecialMention, index: Index, referenceIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
+  def setSpecialMentionsUserAnswers(specialMention: SpecialMention, index: Index, referenceIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
-      .set(SpecialMentionTypePage(index, referenceIndex),specialMention.specialMention).toOption.get
-      .set(SpecialMentionAdditionalInfoPage(index, referenceIndex),specialMention.additionalInfo).toOption.get
-  }
+      .unsafeSetVal(SpecialMentionTypePage(index, referenceIndex))(specialMention.specialMention)
+      .unsafeSetVal(SpecialMentionAdditionalInfoPage(index, referenceIndex))(specialMention.additionalInfo)
 
 }

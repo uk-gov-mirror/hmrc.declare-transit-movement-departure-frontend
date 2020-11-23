@@ -77,13 +77,11 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         ItemSectionSpec.setItemSection(section, Index(i))(ua)
     }
 
-  private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
+  private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     specialMentions.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
-      case (userAnswers, (specialMention, index)) => {
+      case (userAnswers, (specialMention, index)) =>
         SpecialMentionSpec.setSpecialMentionsUserAnswers(specialMention, itemIndex, Index(index))(userAnswers)
-      }
     })
-  }
 
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     (
