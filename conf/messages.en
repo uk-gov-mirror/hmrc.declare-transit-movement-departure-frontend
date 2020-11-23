@@ -1118,3 +1118,9 @@ usingSameMethodOfPayment.title = Are you using the same payment method for all i
 usingSameMethodOfPayment.heading = Are you using the same payment method for all items?
 usingSameMethodOfPayment.checkYourAnswersLabel = Same payment method for all items?
 usingSameMethodOfPayment.error.required = Select yes if you are using the same payment method for all items
+
+useTradersDetails.title = Do you want to use this trader's details for the security information?
+useTradersDetails.heading = Do you want to use this trader's details for the security information?
+useTradersDetails.checkYourAnswersLabel = Use this trader's details for the security information?
+useTradersDetails.error.required = Select yes if you want to use this trader's details for the security information
+

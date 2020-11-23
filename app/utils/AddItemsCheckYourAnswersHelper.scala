@@ -21,11 +21,13 @@ import controllers.addItems.routes
 import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.containers.{routes => containerRoutes}
 import controllers.addItems.securityDetails.{routes => securityDetailsRoutes}
+import controllers.addItems.traderSecurityDetails.{routes => tradersSecurityDetailsRoutes}
 import models._
 import pages.addItems._
 import pages.addItems.containers._
 import pages.addItems.securityDetails.{UsingSameMethodOfPaymentPage, _}
 import pages.addItems.traderDetails._
+import pages.addItems.traderSecurityDetails.UseTradersDetailsPage
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
@@ -675,6 +677,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = securityDetailsRoutes.UsingSameMethodOfPaymentController.onPageLoad(lrn, index, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"usingSameMethodOfPayment.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def useTradersDetails(index: Index): Option[Row] = userAnswers.get(UseTradersDetailsPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"useTradersDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = tradersSecurityDetailsRoutes.UseTradersDetailsController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"useTradersDetails.checkYourAnswersLabel"))
           )
         )
       )
