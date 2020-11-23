@@ -1113,3 +1113,8 @@ guaranteeNotValid.contact = contact the New Computerised Transit System helpdesk
 guaranteeNotValid.you.must = You must
 guaranteeNotValid.lrn = Local reference number
 guaranteeNotValid.guaranteeRefNumber = Guarantee Reference number
+
+usingSameMethodOfPayment.title = Are you using the same payment method for all items?
+usingSameMethodOfPayment.heading = Are you using the same payment method for all items?
+usingSameMethodOfPayment.checkYourAnswersLabel = Same payment method for all items?
+usingSameMethodOfPayment.error.required = Select yes if you are using the same payment method for all items

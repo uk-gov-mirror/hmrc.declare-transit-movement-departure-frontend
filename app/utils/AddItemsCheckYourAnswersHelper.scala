@@ -24,7 +24,7 @@ import controllers.addItems.securityDetails.{routes => securityDetailsRoutes}
 import models._
 import pages.addItems._
 import pages.addItems.containers._
-import pages.addItems.securityDetails._
+import pages.addItems.securityDetails.{UsingSameMethodOfPaymentPage, _}
 import pages.addItems.traderDetails._
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -660,6 +660,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = securityDetailsRoutes.DangerousGoodsCodeController.onPageLoad(lrn, itemIndex, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"dangerousGoodsCode.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def usingSameMethodOfPayment(index: Index): Option[Row] = userAnswers.get(UsingSameMethodOfPaymentPage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"usingSameMethodOfPayment.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = securityDetailsRoutes.UsingSameMethodOfPaymentController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"usingSameMethodOfPayment.checkYourAnswersLabel"))
           )
         )
       )
