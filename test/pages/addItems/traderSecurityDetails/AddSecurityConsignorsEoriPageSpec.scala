@@ -16,14 +16,17 @@
 
 package pages.addItems.traderSecurityDetails
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.items
+import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-case class UseTradersDetailsPage(index: Index) extends QuestionPage[Boolean] {
+class AddSecurityConsignorsEoriPageSpec extends SpecBase with PageBehaviours {
 
-  override def path: JsPath = JsPath \ items \ index.position \ toString
+  "AddSecurityConsignorsEoriPage" - {
 
-  override def toString: String = "useTradersDetails"
+    beRetrievable[Boolean](AddSecurityConsignorsEoriPage(index))
+
+    beSettable[Boolean](AddSecurityConsignorsEoriPage(index))
+
+    beRemovable[Boolean](AddSecurityConsignorsEoriPage(index))
+  }
 }

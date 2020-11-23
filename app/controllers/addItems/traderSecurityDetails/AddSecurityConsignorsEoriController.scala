@@ -17,12 +17,12 @@
 package controllers.addItems.traderSecurityDetails
 
 import controllers.actions._
-import forms.addItems.traderSecurityDetails.UseTradersDetailsFormProvider
+import forms.addItems.traderSecurityDetails.AddSecurityConsignorsEoriFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.traderSecurityDetails.UseTradersDetailsPage
+import pages.addItems.traderSecurityDetails.AddSecurityConsignorsEoriPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,14 +33,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UseTradersDetailsController @Inject()(
+class AddSecurityConsignorsEoriController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: UseTradersDetailsFormProvider,
+  formProvider: AddSecurityConsignorsEoriFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -49,11 +49,11 @@ class UseTradersDetailsController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "addItems/traderSecurityDetails/useTradersDetails.njk"
+  private val template = "addSecurityConsignorsEori.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(UseTradersDetailsPage(itemIndex)) match {
+      val preparedForm = request.userAnswers.get(AddSecurityConsignorsEoriPage(itemIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -86,9 +86,9 @@ class UseTradersDetailsController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(UseTradersDetailsPage(itemIndex), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSecurityConsignorsEoriPage(itemIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UseTradersDetailsPage(itemIndex), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddSecurityConsignorsEoriPage(itemIndex), mode, updatedAnswers))
         )
   }
 }

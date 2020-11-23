@@ -21,9 +21,9 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.items
 
-case class UseTradersDetailsPage(index: Index) extends QuestionPage[Boolean] {
+case class AddSecurityConsignorsEoriPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ items \ index.position \ toString
 
-  override def toString: String = "useTradersDetails"
+  override def toString: String = "addSecurityConsignorsEori"
 }

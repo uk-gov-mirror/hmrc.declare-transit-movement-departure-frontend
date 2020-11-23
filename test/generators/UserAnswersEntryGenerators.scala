@@ -26,7 +26,7 @@ import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.addItems.securityDetails._
-import pages.addItems.traderSecurityDetails.UseTradersDetailsPage
+import pages.addItems.traderSecurityDetails.{AddSecurityConsignorsEoriPage, UseTradersDetailsPage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -35,11 +35,18 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
-  implicit lazy val arbitraryUseTradersDetailsUserAnswersEntry: Arbitrary[(UseTradersDetailsPage.type, JsValue)] =
+  implicit lazy val arbitraryAddSecurityConsignorsEoriUserAnswersEntry: Arbitrary[(AddSecurityConsignorsEoriPage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[UseTradersDetailsPage.type#Data].map(Json.toJson(_))
-      } yield (UseTradersDetailsPage, value)
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (AddSecurityConsignorsEoriPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitraryUseTradersDetailsUserAnswersEntry: Arbitrary[(UseTradersDetailsPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (UseTradersDetailsPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryUsingSameMethodOfPaymentUserAnswersEntry: Arbitrary[(UsingSameMethodOfPaymentPage, JsValue)] =

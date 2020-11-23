@@ -17,8 +17,7 @@
 package controllers.addItems.traderSecurityDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import controllers.routes
-import forms.addItems.traderSecurityDetails.UseTradersDetailsFormProvider
+import forms.addItems.traderSecurityDetails.AddSecurityConsignorsEoriFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.AddItems
@@ -27,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.traderSecurityDetails.UseTradersDetailsPage
+import pages.addItems.traderSecurityDetails.AddSecurityConsignorsEoriPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -40,22 +39,22 @@ import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class UseTradersDetailsControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddSecurityConsignorsEoriControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new UseTradersDetailsFormProvider()
+  private val formProvider = new AddSecurityConsignorsEoriFormProvider()
   private val form         = formProvider()
-  private val template     = "addItems/traderSecurityDetails/useTradersDetails.njk"
+  private val template     = "addSecurityConsignorsEori.njk"
 
-  lazy val useTradersDetailsRoute = routes.UseTradersDetailsController.onPageLoad(lrn, index, NormalMode).url
+  lazy val addSecurityConsignorsEoriRoute = routes.AddSecurityConsignorsEoriController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "UseTradersDetails Controller" - {
+  "AddSecurityConsignorsEori Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -64,7 +63,7 @@ class UseTradersDetailsControllerSpec extends SpecBase with MockNunjucksRenderer
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, useTradersDetailsRoute)
+      val request        = FakeRequest(GET, addSecurityConsignorsEoriRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -93,10 +92,10 @@ class UseTradersDetailsControllerSpec extends SpecBase with MockNunjucksRenderer
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(UseTradersDetailsPage(index), true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddSecurityConsignorsEoriPage(index), true).success.value
       dataRetrievalWithData(userAnswers)
 
-      val request        = FakeRequest(GET, useTradersDetailsRoute)
+      val request        = FakeRequest(GET, addSecurityConsignorsEoriRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -129,7 +128,7 @@ class UseTradersDetailsControllerSpec extends SpecBase with MockNunjucksRenderer
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, useTradersDetailsRoute)
+        FakeRequest(POST, addSecurityConsignorsEoriRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -147,7 +146,7 @@ class UseTradersDetailsControllerSpec extends SpecBase with MockNunjucksRenderer
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, useTradersDetailsRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, addSecurityConsignorsEoriRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -176,7 +175,7 @@ class UseTradersDetailsControllerSpec extends SpecBase with MockNunjucksRenderer
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, useTradersDetailsRoute)
+      val request = FakeRequest(GET, addSecurityConsignorsEoriRoute)
 
       val result = route(app, request).value
 
@@ -191,7 +190,7 @@ class UseTradersDetailsControllerSpec extends SpecBase with MockNunjucksRenderer
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, useTradersDetailsRoute)
+        FakeRequest(POST, addSecurityConsignorsEoriRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value

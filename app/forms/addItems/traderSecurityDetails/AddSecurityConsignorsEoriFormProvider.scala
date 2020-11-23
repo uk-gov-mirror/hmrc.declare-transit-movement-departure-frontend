@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package pages.addItems.traderSecurityDetails
+package forms.addItems.traderSecurityDetails
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.items
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case class UseTradersDetailsPage(index: Index) extends QuestionPage[Boolean] {
+class AddSecurityConsignorsEoriFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ items \ index.position \ toString
-
-  override def toString: String = "useTradersDetails"
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addSecurityConsignorsEori.error.required")
+    )
 }

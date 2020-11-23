@@ -1124,3 +1124,9 @@ useTradersDetails.heading = Do you want to use this trader's details for the sec
 useTradersDetails.checkYourAnswersLabel = Use this trader's details for the security information?
 useTradersDetails.error.required = Select yes if you want to use this trader's details for the security information
 
+
+addSecurityConsignorsEori.title = Do you know the security consignor’s EORI number?
+addSecurityConsignorsEori.heading = Do you know the security consignor’s EORI number?
+addSecurityConsignorsEori.checkYourAnswersLabel = Know the security consignor’s EORI number?
+addSecurityConsignorsEori.error.required = Select yes if you know the security consignor’s EORI number?
+

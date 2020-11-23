@@ -27,7 +27,7 @@ import pages.addItems._
 import pages.addItems.containers._
 import pages.addItems.securityDetails.{UsingSameMethodOfPaymentPage, _}
 import pages.addItems.traderDetails._
-import pages.addItems.traderSecurityDetails.UseTradersDetailsPage
+import pages.addItems.traderSecurityDetails.{AddSecurityConsignorsEoriPage, UseTradersDetailsPage}
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
@@ -682,7 +682,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def useTradersDetails(index: Index): Option[Row] = userAnswers.get(UseTradersDetailsPage) map {
+  def useTradersDetails(index: Index): Option[Row] = userAnswers.get(UseTradersDetailsPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"useTradersDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -697,6 +697,21 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
+  def addSecurityConsignorsEori(index: Index): Option[Row] = userAnswers.get(AddSecurityConsignorsEoriPage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"addSecurityConsignorsEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = tradersSecurityDetailsRoutes.AddSecurityConsignorsEoriController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSecurityConsignorsEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+
+  }
   def lrn: LocalReferenceNumber = userAnswers.id
 
 }
