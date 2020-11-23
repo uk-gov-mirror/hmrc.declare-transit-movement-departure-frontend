@@ -27,7 +27,18 @@ import pages.addItems._
 import pages.addItems.containers._
 import pages.addItems.securityDetails.{UsingSameMethodOfPaymentPage, _}
 import pages.addItems.traderDetails._
-import pages.addItems.traderSecurityDetails.{AddSecurityConsigneesEoriPage, AddSecurityConsignorsEoriPage, SecurityConsigneeAllItemsPage, UseTradersDetailsPage}
+import pages.addItems.traderSecurityDetails.{
+  AddSecurityConsigneesEoriPage,
+  AddSecurityConsignorsEoriPage,
+  SecurityConsigneeAddressPage,
+  SecurityConsigneeAllItemsPage,
+  SecurityConsigneeEoriPage,
+  SecurityConsigneeNamePage,
+  SecurityConsignorAddressPage,
+  SecurityConsignorEoriPage,
+  SecurityConsignorNamePage,
+  UseTradersDetailsPage
+}
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
@@ -738,6 +749,96 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = tradersSecurityDetailsRoutes.SecurityConsigneeAllItemsController.onPageLoad(lrn, index, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeAllItems.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def securityConsigneeName(index: Index): Option[Row] = userAnswers.get(SecurityConsigneeNamePage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"securityConsigneeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = tradersSecurityDetailsRoutes.SecurityConsigneeNameController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeName.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def securityConsignorName(index: Index): Option[Row] = userAnswers.get(SecurityConsignorNamePage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"securityConsignorName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = tradersSecurityDetailsRoutes.SecurityConsignorNameController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsignorName.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def securityConsigneeAddress(index: Index): Option[Row] = userAnswers.get(SecurityConsigneeAddressPage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"securityConsigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = tradersSecurityDetailsRoutes.SecurityConsigneeAddressController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeAddress.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def securityConsignorAddress(index: Index): Option[Row] = userAnswers.get(SecurityConsignorAddressPage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"securityConsignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = tradersSecurityDetailsRoutes.SecurityConsignorAddressController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsignorAddress.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def securityConsigneeEori(index: Index): Option[Row] = userAnswers.get(SecurityConsigneeEoriPage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"securityConsigneeEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = tradersSecurityDetailsRoutes.SecurityConsigneeEoriController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def securityConsignorEori(index: Index): Option[Row] = userAnswers.get(SecurityConsignorEoriPage(index)) map {
+    answer =>
+      Row(
+        key   = Key(msg"securityConsignorEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = tradersSecurityDetailsRoutes.SecurityConsignorEoriController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsignorEori.checkYourAnswersLabel"))
           )
         )
       )

@@ -21,100 +21,18 @@ import java.time.format.DateTimeFormatter
 import controllers.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.addItems.traderSecurityDetails.{
+  SecurityConsigneeAddressPage,
+  SecurityConsigneeEoriPage,
+  SecurityConsigneeNamePage,
+  SecurityConsignorAddressPage,
+  SecurityConsignorEoriPage,
+  SecurityConsignorNamePage
+}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
-
-  def securityConsigneeName: Option[Row] = userAnswers.get(SecurityConsigneeNamePage) map {
-    answer =>
-      Row(
-        key   = Key(msg"securityConsigneeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.SecurityConsigneeNameController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeName.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def securityConsignorName: Option[Row] = userAnswers.get(SecurityConsignorNamePage) map {
-    answer =>
-      Row(
-        key   = Key(msg"securityConsignorName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.SecurityConsignorNameController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsignorName.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def securityConsigneeAddress: Option[Row] = userAnswers.get(SecurityConsigneeAddressPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"securityConsigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.SecurityConsigneeAddressController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeAddress.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def securityConsignorAddress: Option[Row] = userAnswers.get(SecurityConsignorAddressPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"securityConsignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.SecurityConsignorAddressController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsignorAddress.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def securityConsigneeEori: Option[Row] = userAnswers.get(SecurityConsigneeEoriPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"securityConsigneeEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.SecurityConsigneeEoriController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeEori.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def securityConsignorEori: Option[Row] = userAnswers.get(SecurityConsignorEoriPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"securityConsignorEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.SecurityConsignorEoriController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsignorEori.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
 
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
