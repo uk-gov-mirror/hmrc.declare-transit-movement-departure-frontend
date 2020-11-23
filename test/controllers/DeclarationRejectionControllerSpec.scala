@@ -19,23 +19,43 @@ package controllers
 import base.SpecBase
 import base.MockNunjucksRendererApp
 import matchers.JsonMatchers
+import models.DeclarationRejectionMessage
+import java.time.LocalDate
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.guice.GuiceApplicationBuilder // TODO: Do we need?
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import services.DepartureMessageService
 
 import scala.concurrent.Future
 
 class DeclarationRejectionControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
+  private val mockDepartureMessageService = mock[DepartureMessageService]
+
+  override def beforeEach: Unit = {
+    reset(mockDepartureMessageService)
+    super.beforeEach
+  }
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[DepartureMessageService].toInstance(mockDepartureMessageService))
+
   "DeclarationRejection Controller" - {
 
     "return OK and the correct view for a GET" in {
+      val message = DeclarationRejectionMessage("", LocalDate.parse("2010-10-10"), "", Seq.empty)
+
+      when(mockDepartureMessageService.declarationRejectionMessage(any())(any(), any()))
+        .thenReturn(Future.successful(Some(message)))
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -58,5 +78,23 @@ class DeclarationRejectionControllerSpec extends SpecBase with MockNunjucksRende
       jsonCaptor.getValue must containJson(expectedJson)
 
     }
+  }
+
+  "redirect to technical difficulties when no response from service" in {
+
+    when(mockDepartureMessageService.declarationRejectionMessage(any())(any(), any()))
+      .thenReturn(Future.successful(None))
+
+    when(mockRenderer.render(any(), any())(any()))
+      .thenReturn(Future.successful(Html("")))
+
+    dataRetrievalWithData(emptyUserAnswers)
+
+    val request = FakeRequest(GET, routes.DeclarationRejectionController.onPageLoad(departureId).url)
+
+    val result = route(app, request).value
+
+    status(result) mustEqual SEE_OTHER
+    redirectLocation(result).value mustEqual routes.TechnicalDifficultiesController.onPageLoad().url
   }
 }

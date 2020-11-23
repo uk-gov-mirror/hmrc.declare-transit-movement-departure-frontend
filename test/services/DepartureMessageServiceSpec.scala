@@ -17,9 +17,10 @@
 package services
 
 import base.{MockServiceApp, SpecBase}
+import java.time.LocalDate
 import connectors.DepartureMovementConnector
 import models.InvalidGuaranteeCode.G01
-import models.{DepartureId, GuaranteeNotValidMessage, InvalidGuaranteeReasonCode, MessagesLocation, MessagesSummary}
+import models.{DeclarationRejectionMessage, DepartureId, GuaranteeNotValidMessage, InvalidGuaranteeReasonCode, MessagesLocation, MessagesSummary}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -46,36 +47,71 @@ class DepartureMessageServiceSpec extends SpecBase with MockServiceApp with Befo
 
   private val messageService = app.injector.instanceOf[DepartureMessageService]
 
-  "GuaranteeNotValidMessageService" - {
-    "must return GuaranteeNotValidMessage for the input departureId" in {
-      val notificationMessage = GuaranteeNotValidMessage(lrn.toString, Seq(InvalidGuaranteeReasonCode("ref", G01, None)))
-      val messagesSummary =
-        MessagesSummary(
-          departureId,
-          MessagesLocation(s"/movements/departures/${departureId.value}/messages/3",
-                           Some("/movements/departures/1234/messages/5"),
-                           Some("/movements/departures/1234/messages/7"))
-        )
+  "DepartureMessageService" - {
+    "getGuaranteeNotValidMessage" - {
+      "must return GuaranteeNotValidMessage for the input departureId" in {
+        val notificationMessage = GuaranteeNotValidMessage(lrn.toString, Seq(InvalidGuaranteeReasonCode("ref", G01, None)))
+        val messagesSummary =
+          MessagesSummary(
+            departureId,
+            MessagesLocation(s"/movements/departures/${departureId.value}/messages/3",
+                             Some("/movements/departures/1234/messages/5"),
+                             Some("/movements/departures/1234/messages/7"))
+          )
 
-      when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(Some(messagesSummary)))
-      when(mockDepartureConnector.getGuaranteeNotValidMessage(any())(any()))
-        .thenReturn(Future.successful(Some(notificationMessage)))
+        when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(Some(messagesSummary)))
+        when(mockDepartureConnector.getGuaranteeNotValidMessage(any())(any()))
+          .thenReturn(Future.successful(Some(notificationMessage)))
 
-      messageService.guaranteeNotValidMessage(departureId).futureValue mustBe Some(notificationMessage)
+        messageService.guaranteeNotValidMessage(departureId).futureValue mustBe Some(notificationMessage)
+      }
+
+      "must return None when getSummary fails to get guaranteeNotValid message" in {
+        val messagesSummary =
+          MessagesSummary(departureId, MessagesLocation(s"/movements/departures/${departureId.value}/messages/3", None, None))
+        when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(Some(messagesSummary)))
+
+        messageService.guaranteeNotValidMessage(departureId).futureValue mustBe None
+      }
+
+      "must return None when getSummary call fails to get MessagesSummary" in {
+        when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(None))
+
+        messageService.guaranteeNotValidMessage(departureId).futureValue mustBe None
+      }
     }
 
-    "must return None when getSummary fails to get guaranteeNotValid message" in {
-      val messagesSummary =
-        MessagesSummary(departureId, MessagesLocation(s"/movements/departures/${departureId.value}/messages/3", None, None))
-      when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(Some(messagesSummary)))
+    "DeclarationRejectionMessage" - {
+      "must return DeclarationRejectionMessage for the input departureId" in {
+        val notificationMessage = DeclarationRejectionMessage("", LocalDate.parse("2010-10-10"), "", Seq.empty)
+        val messagesSummary =
+          MessagesSummary(
+            departureId,
+            MessagesLocation(s"/movements/departures/${departureId.value}/messages/3",
+                             Some("/movements/departures/1234/messages/5"),
+                             Some("/movements/departures/1234/messages/7"))
+          )
 
-      messageService.guaranteeNotValidMessage(departureId).futureValue mustBe None
-    }
+        when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(Some(messagesSummary)))
+        when(mockDepartureConnector.getDeclarationRejectionMessage(any())(any()))
+          .thenReturn(Future.successful(Some(notificationMessage)))
 
-    "must return None when getSummary call fails to get MessagesSummary" in {
-      when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(None))
+        messageService.declarationRejectionMessage(departureId).futureValue mustBe Some(notificationMessage)
+      }
 
-      messageService.guaranteeNotValidMessage(departureId).futureValue mustBe None
+      "must return None when getSummary fails to get DeclarationRejectionMessage message" in {
+        val messagesSummary =
+          MessagesSummary(departureId, MessagesLocation(s"/movements/departures/${departureId.value}/messages/3", None, None))
+        when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(Some(messagesSummary)))
+
+        messageService.declarationRejectionMessage(departureId).futureValue mustBe None
+      }
+
+      "must return None when getSummary call fails to get MessagesSummary" in {
+        when(mockDepartureConnector.getSummary(any())(any())).thenReturn(Future.successful(None))
+
+        messageService.declarationRejectionMessage(departureId).futureValue mustBe None
+      }
     }
   }
 }
