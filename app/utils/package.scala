@@ -125,6 +125,30 @@ package object utils {
     defaultOption +: documentObjects
   }
 
+  def getDangerousGoodsCodeAsJson(value: Option[DangerousGoodsCode], dangerousGoodsCodeList: Seq[DangerousGoodsCode]): Seq[JsObject] = {
+    val dangerousGoodsCodeObjects = dangerousGoodsCodeList.map {
+      dangerousGoodsCode =>
+        Json.obj(
+          "value"    -> dangerousGoodsCode.code,
+          "text"     -> s"(${dangerousGoodsCode.code}) ${dangerousGoodsCode.description}",
+          "selected" -> value.contains(dangerousGoodsCode)
+        )
+    }
+    defaultOption +: dangerousGoodsCodeObjects
+  }
+
+  def getPaymentsAsJson(value: Option[MethodOfPayment], methodOfPaymentList: Seq[MethodOfPayment]): Seq[JsObject] = {
+    val paymentObjects = methodOfPaymentList.map {
+      methodOfPayment =>
+        Json.obj(
+          "value"    -> methodOfPayment.code,
+          "text"     -> s"(${methodOfPayment.code}) ${methodOfPayment.description}",
+          "selected" -> value.contains(methodOfPayment)
+        )
+    }
+    defaultOption +: paymentObjects
+  }
+
   def yesOrNo(answer: Boolean): Content =
     if (answer) {
       msg"site.yes"

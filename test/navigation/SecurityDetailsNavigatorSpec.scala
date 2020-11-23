@@ -30,6 +30,32 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   "In Normal mode" - {
 
+    "Must go from UsingSameMethodOfPayment page to MethodOfPayment page when user selects 'No'" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(UsingSameMethodOfPaymentPage(index), false)
+            .success
+            .value
+          navigator
+            .nextPage(UsingSameMethodOfPaymentPage(index), NormalMode, updatedAnswers)
+            .mustBe(routes.TransportChargesController.onPageLoad(updatedAnswers.id, index, NormalMode))
+      }
+    }
+
+    "Must go from UsingSameMethodOfPayment page to UsingSameCommercialReferencePage when user selects 'Yes'" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(UsingSameMethodOfPaymentPage(index), true)
+            .success
+            .value
+          navigator
+            .nextPage(UsingSameMethodOfPaymentPage(index), NormalMode, updatedAnswers)
+            .mustBe(routes.UsingSameCommercialReferenceController.onPageLoad(updatedAnswers.id, index, NormalMode))
+      }
+    }
+
     "Must go from TransportChargesPage to UsingSameCommercialReferencePage" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>
@@ -115,6 +141,51 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   }
   "In CheckMode" - {
+
+    "Must go from UsingSameMethodOfPayment page to MethodOfPayment page when user selects 'No' and no previous answer exists" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(UsingSameMethodOfPaymentPage(index), false)
+            .success
+            .value
+            .remove(TransportChargesPage(index))
+            .success
+            .value
+          navigator
+            .nextPage(UsingSameMethodOfPaymentPage(index), CheckMode, updatedAnswers)
+            .mustBe(routes.TransportChargesController.onPageLoad(updatedAnswers.id, index, CheckMode))
+      }
+    }
+
+    "Must go from UsingSameMethodOfPayment page to AddItemsCheckYourAnswerPage when user selects 'No' and previous answer exists" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(UsingSameMethodOfPaymentPage(index), false)
+            .success
+            .value
+            .set(TransportChargesPage(index), "1.00")
+            .success
+            .value
+          navigator
+            .nextPage(UsingSameMethodOfPaymentPage(index), CheckMode, updatedAnswers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+      }
+    }
+
+    "Must go from UsingSameMethodOfPayment page to AddItemsCheckYourAnswerPage when user selects 'Yes'" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(UsingSameMethodOfPaymentPage(index), true)
+            .success
+            .value
+          navigator
+            .nextPage(UsingSameMethodOfPaymentPage(index), CheckMode, updatedAnswers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+      }
+    }
     "Must go from TransportChargesPage to AddItemsCheckYourAnswersPage" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>

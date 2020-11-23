@@ -409,7 +409,7 @@ idAtDeparture.heading = What is the name, registration or reference of the vehic
 idAtDeparture.checkYourAnswersLabel = Name, registration or reference at departure
 idAtDeparture.error.required = Enter the name, registration or reference of the vehicle at departure
 idAtDeparture.error.length = The name, registration or reference of the vehicle at departure must be 27 characters or less
-idAtDeparture.error.invalidCharacters = The name, registration or reference of the vehicle at departure must only include letters a to z and numbers 0 to 9
+idAtDeparture.error.invalidCharacters = The name, registration or reference of the vehicle at departure must only include letters a to z, numbers 0 to 9 and blank spaces
 
 nationalityAtDeparture.title = What is the nationality at departure?
 nationalityAtDeparture.heading = What is the nationality at departure?
@@ -421,7 +421,7 @@ idCrossingBorder.heading = What is the name, registration or reference of the ve
 idCrossingBorder.checkYourAnswersLabel = Name, registration or reference of the vehicle crossing the border
 idCrossingBorder.error.required = Enter the name, registration or reference of the vehicle crossing the border
 idCrossingBorder.error.length = The name, registration or reference of the vehicle crossing the border must be 27 characters or less
-idCrossingBorder.error.invalidCharacters = The name, registration or reference of the vehicle crossing the border must only include letters a to z and numbers 0 to 9
+idCrossingBorder.error.invalidCharacters = The name, registration or reference of the vehicle crossing the border must only include letters a to z, numbers 0 to 9 and blank spaces
 
 changeAtBorder.title = Will these details change at the border?
 changeAtBorder.heading = Will these details change at the border?
@@ -1081,7 +1081,6 @@ transportCharges.title = What payment method are you using for the transport cha
 transportCharges.heading = What payment method are you using for the transport charges?
 transportCharges.checkYourAnswersLabel = Payment method for transport charges
 transportCharges.error.required = Enter the payment method you are using for the transport charges
-transportCharges.error.length = TransportCharges must be 100 characters or less
 
 usingSameCommercialReference.title = Are you using the same commercial reference number across all items?
 usingSameCommercialReference.heading = Are you using the same commercial reference number across all items?
@@ -1110,10 +1109,15 @@ guaranteeNotValid.title = There is a problem with this departure declaration
 guaranteeNotValid.heading = There is a problem with this departure declaration
 guaranteeNotValid.reasonCode = Invalid guarantee reason code
 guaranteeNotValid.reason = Invalid guarantee reason
-guaranteeNotValid.contact =  You must contact the New Computerised Transit System helpdesk to get this fixed (opens in a new window).
+guaranteeNotValid.contact = contact the New Computerised Transit System helpdesk to get this fixed (opens in a new window)
 guaranteeNotValid.you.must = You must
 guaranteeNotValid.lrn = Local reference number
 guaranteeNotValid.guaranteeRefNumber = Guarantee Reference number
+
+usingSameMethodOfPayment.title = Are you using the same payment method for all items?
+usingSameMethodOfPayment.heading = Are you using the same payment method for all items?
+usingSameMethodOfPayment.checkYourAnswersLabel = Same payment method for all items?
+usingSameMethodOfPayment.error.required = Select yes if you are using the same payment method for all items
 
 declarationRejection.title = There is a problem with this departure declaration
 declarationRejection.heading = There is a problem with this departure declaration

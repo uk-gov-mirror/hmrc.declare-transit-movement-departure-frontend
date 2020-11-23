@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.Constants.{vehicleIdMaxLength, vehicleIdRegex}
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -24,9 +25,7 @@ class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey       = "idCrossingBorder.error.required"
   val lengthKey         = "idCrossingBorder.error.length"
-  val maxLength         = 27
   val invalidCharacters = "idCrossingBorder.error.invalidCharacters"
-  val idRegex: String   = "^[a-zA-Z0-9]*$"
   val form              = new IdCrossingBorderFormProvider()()
 
   ".value" - {
@@ -36,14 +35,14 @@ class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(vehicleIdMaxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength   = vehicleIdMaxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(vehicleIdMaxLength))
     )
 
     behave like mandatoryField(
@@ -55,10 +54,10 @@ class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
     "must not bind strings that do not match the id regex" in {
 
       val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(idRegex)))
+        List(FormError(fieldName, invalidCharacters, Seq(vehicleIdRegex)))
 
       val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(idRegex))
+        stringsWithMaxLength(vehicleIdMaxLength) suchThat (!_.matches(vehicleIdRegex))
       }
 
       forAll(genInvalidString) {

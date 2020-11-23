@@ -17,10 +17,12 @@
 package controllers.addItems.securityDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.addItems.securityDetails.DangerousGoodsCodeFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{DangerousGoodsCodeList, NormalMode}
+import models.reference.DangerousGoodsCode
 import navigation.annotations.SecurityDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -36,6 +38,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.getDangerousGoodsCodeAsJson
 
 import scala.concurrent.Future
 
@@ -43,9 +46,14 @@ class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendere
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new DangerousGoodsCodeFormProvider()
-  private val form         = formProvider()
-  private val template     = "addItems/securityDetails/dangerousGoodsCode.njk"
+  val dangerousGoodsCode1 = DangerousGoodsCode("0004", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass")
+  val dangerousGoodsCode2 = DangerousGoodsCode("0005", "CARTRIDGES FOR WEAPONS with bursting charge")
+  val dangerousGoodsCodes = DangerousGoodsCodeList(Seq(dangerousGoodsCode1, dangerousGoodsCode2))
+
+  private val form     = new DangerousGoodsCodeFormProvider()(dangerousGoodsCodes)
+  private val template = "addItems/securityDetails/dangerousGoodsCode.njk"
+
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   lazy val dangerousGoodsCodeRoute = routes.DangerousGoodsCodeController.onPageLoad(lrn, index, NormalMode).url
 
@@ -53,6 +61,7 @@ class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendere
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SecurityDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockRefDataConnector))
 
   "DangerousGoodsCode Controller" - {
 
@@ -60,6 +69,7 @@ class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendere
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getDangerousGoodsCodeList()(any(), any())).thenReturn(Future.successful(dangerousGoodsCodes))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -73,16 +83,24 @@ class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendere
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
+      val expectedDangerousGoodsCodeJson = Seq(
+        Json.obj("value" -> "", "text"     -> ""),
+        Json.obj("value" -> "0004", "text" -> "(0004) AMMONIUM PICRATE dry or wetted with less than 10% water, by mass", "selected" -> false),
+        Json.obj("value" -> "0005", "text" -> "(0005) CARTRIDGES FOR WEAPONS with bursting charge", "selected" -> false),
+      )
+
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"                -> form,
+        "index"               -> index.display,
+        "dangerousGoodsCodes" -> expectedDangerousGoodsCodeJson,
+        "lrn"                 -> lrn,
+        "mode"                -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonWithoutConfig must containJson(expectedJson)
 
     }
 
@@ -90,8 +108,9 @@ class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendere
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+      when(mockRefDataConnector.getDangerousGoodsCodeList()(any(), any())).thenReturn(Future.successful(dangerousGoodsCodes))
 
-      val userAnswers = emptyUserAnswers.set(DangerousGoodsCodePage(index), "test").success.value
+      val userAnswers = emptyUserAnswers.set(DangerousGoodsCodePage(index), dangerousGoodsCode1.code).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, dangerousGoodsCodeRoute)
@@ -104,30 +123,37 @@ class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendere
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "test"))
+      val filledForm = form.bind(Map("value" -> "0004"))
+
+      val expectedDangerousGoodsCodeJson = Seq(
+        Json.obj("value" -> "", "text"     -> ""),
+        Json.obj("value" -> "0004", "text" -> "(0004) AMMONIUM PICRATE dry or wetted with less than 10% water, by mass", "selected" -> true),
+        Json.obj("value" -> "0005", "text" -> "(0005) CARTRIDGES FOR WEAPONS with bursting charge", "selected" -> false),
+      )
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"                -> filledForm,
+        "index"               -> index.display,
+        "dangerousGoodsCodes" -> expectedDangerousGoodsCodeJson,
+        "lrn"                 -> lrn,
+        "mode"                -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonWithoutConfig must containJson(expectedJson)
 
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
+      when(mockRefDataConnector.getDangerousGoodsCodeList()(any(), any())).thenReturn(Future.successful(dangerousGoodsCodes))
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
         FakeRequest(POST, dangerousGoodsCodeRoute)
-          .withFormUrlEncodedBody(("value", "test"))
+          .withFormUrlEncodedBody(("value", "0004"))
 
       val result = route(app, request).value
 
@@ -140,7 +166,7 @@ class DangerousGoodsCodeControllerSpec extends SpecBase with MockNunjucksRendere
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-
+      when(mockRefDataConnector.getDangerousGoodsCodeList()(any(), any())).thenReturn(Future.successful(dangerousGoodsCodes))
       dataRetrievalWithData(emptyUserAnswers)
 
       val request        = FakeRequest(POST, dangerousGoodsCodeRoute).withFormUrlEncodedBody(("value", ""))

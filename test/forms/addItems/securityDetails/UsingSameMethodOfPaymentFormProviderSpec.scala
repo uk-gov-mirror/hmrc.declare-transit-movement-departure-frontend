@@ -16,18 +16,30 @@
 
 package forms.addItems.securityDetails
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.reference.MethodOfPayment
-import models.{Index, MethodOfPaymentList}
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class TransportChargesFormProvider @Inject() extends Mappings {
+class UsingSameMethodOfPaymentFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(methodOfPaymentList: MethodOfPaymentList): Form[MethodOfPayment] =
-    Form(
-      "value" -> text("transportCharges.error.required")
-        .verifying("transportCharges.error.required", value => methodOfPaymentList.methodsOfPayment.exists(_.code == value))
-        .transform[MethodOfPayment](value => methodOfPaymentList.getMethodOfPayment(value).get, _.code)
+  val requiredKey = "usingSameMethodOfPayment.error.required"
+  val invalidKey  = "error.boolean"
+
+  val form = new UsingSameMethodOfPaymentFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

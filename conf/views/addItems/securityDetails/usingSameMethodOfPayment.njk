@@ -4,11 +4,10 @@
 {% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% from "govuk/components/summary-list/macro.njk"  import govukSummaryList %}
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages(pageTitle, totalTypes), form.errors) }}
+  {{ title(messages("usingSameMethodOfPayment.title"), form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -28,29 +27,17 @@
           }) }}
         {% endif %}
 
-        <span class="govuk-caption-xl">{{messages('items.preHeading')}}</span>
-        <h1 class="govuk-heading-xl">
-          {{ messages(heading, totalTypes) }}
-        </h1>
-
-        {{ govukSummaryList({
-            classes: 'govuk-!-margin-bottom-9 ctc-add-to-a-list',
-            rows: packageRows
-        }) }}
-
-        <form action="{{ routes.controllers.addItems.AddAnotherPackageController.onSubmit(lrn, mode).url }}" method="post">
+        <form action="{{ routes.controllers.addItems.securityDetails.UsingSameMethodOfPaymentController.onSubmit(lrn, mode).url }}" method="post">
 
           {{ csrf() | safe }}
 
           {{ govukRadios({
-            classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {
-
-                text: messages('addAnotherPackage.yesNo'),
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--m"
+                text: messages('usingSameMethodOfPayment.heading'),
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl"
               }
             },
             items: radios,

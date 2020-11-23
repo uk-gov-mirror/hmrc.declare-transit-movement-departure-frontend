@@ -17,12 +17,10 @@
 package viewModels
 
 import derivable._
-import models.{DocumentTypeList, Index, SpecialMentionList, UserAnswers}
+import models.{DangerousGoodsCodeList, DocumentTypeList, Index, MethodOfPaymentList, SpecialMentionList, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.{AddItemsCheckYourAnswersHelper, SpecialMentionsCheckYourAnswers}
 import viewModels.sections.Section
-
-case class AddItemsCheckYourAnswersViewModel(sections: Seq[Section])
 
 object AddItemsCheckYourAnswersViewModel {
 
@@ -42,13 +40,27 @@ object AddItemsCheckYourAnswersViewModel {
         packagesSection(checkYourAnswersHelper, index)(userAnswers),
         containersSection(checkYourAnswersHelper, index)(userAnswers),
         specialMentionsSection(specialMentionsCheckYourAnswers, index, specialMentionList)(userAnswers),
-        documentsSection(checkYourAnswersHelper, index, documentTypeList)(userAnswers)
+        documentsSection(checkYourAnswersHelper, index, documentTypeList)(userAnswers),
+        securitySection(checkYourAnswersHelper, index)
+
         /*
         referencesSection(checkYourAnswersHelper, index)(userAnswers),
        */
       )
     )
   }
+
+  private def securitySection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
+    msg"addItems.checkYourAnswersLabel.itemDetails",
+    Seq(
+      checkYourAnswersHelper.usingSameMethodOfPayment(index),
+      checkYourAnswersHelper.transportCharges(index),
+      checkYourAnswersHelper.usingSameCommercialReference(index),
+      checkYourAnswersHelper.commercialReferenceNumber(index),
+      checkYourAnswersHelper.AddDangerousGoodsCode(index),
+      checkYourAnswersHelper.dangerousGoodsCode(index)
+    ).flatten
+  )
 
   private def itemsDetailsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
     msg"addItems.checkYourAnswersLabel.itemDetails",
@@ -151,3 +163,5 @@ object AddItemsCheckYourAnswersViewModel {
   }
 
 }
+
+case class AddItemsCheckYourAnswersViewModel(sections: Seq[Section])

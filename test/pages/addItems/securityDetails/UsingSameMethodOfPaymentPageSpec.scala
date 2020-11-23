@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages.addItems.securityDetails
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import forms.Constants.{vehicleIdMaxLength, vehicleIdRegex}
-import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-class IdCrossingBorderFormProvider @Inject() extends Mappings {
+class UsingSameMethodOfPaymentPageSpec extends SpecBase with PageBehaviours {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("idCrossingBorder.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(vehicleIdMaxLength, "idCrossingBorder.error.length"),
-            regexp(vehicleIdRegex, "idCrossingBorder.error.invalidCharacters"),
-          )))
+  "UsingSameMethodOfPaymentPage" - {
+
+    beRetrievable[Boolean](UsingSameMethodOfPaymentPage(index))
+
+    beSettable[Boolean](UsingSameMethodOfPaymentPage(index))
+
+    beRemovable[Boolean](UsingSameMethodOfPaymentPage(index))
+  }
 }

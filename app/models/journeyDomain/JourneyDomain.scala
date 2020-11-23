@@ -16,8 +16,6 @@
 
 package models.journeyDomain
 
-import java.time.LocalDateTime
-
 import cats.data._
 import cats.implicits._
 import models.UserAnswers

@@ -18,6 +18,8 @@ package forms.addItems.securityDetails
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import models.DangerousGoodsCodeList
+import models.reference.DangerousGoodsCode
 import play.api.data.FormError
 
 class DangerousGoodsCodeFormProviderSpec extends SpecBase with StringFieldBehaviours {
@@ -26,7 +28,11 @@ class DangerousGoodsCodeFormProviderSpec extends SpecBase with StringFieldBehavi
   val lengthKey   = "dangerousGoodsCode.error.length"
   val maxLength   = 4
 
-  val form = new DangerousGoodsCodeFormProvider()()
+  val dangerousGoodsCode1 = DangerousGoodsCode("0004", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass")
+  val dangerousGoodsCode2 = DangerousGoodsCode("0005", "CARTRIDGES FOR WEAPONS with bursting charge")
+  val dangerousGoodsCodes = DangerousGoodsCodeList(Seq(dangerousGoodsCode1, dangerousGoodsCode2))
+
+  val form = new DangerousGoodsCodeFormProvider()(dangerousGoodsCodes)
 
   ".value" - {
 
@@ -38,17 +44,24 @@ class DangerousGoodsCodeFormProviderSpec extends SpecBase with StringFieldBehavi
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind if dangerous goods code does not exist in the dangerous goods code list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a dangerous goods code which is in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "0004"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
   }
 }
