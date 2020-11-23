@@ -45,6 +45,7 @@ import models.journeyDomain.{
   Packages,
   PreTaskListDetails,
   RouteDetails,
+  SpecialMention,
   TraderDetails,
   TransportDetails
 }
@@ -255,11 +256,12 @@ trait JourneyModelGenerators {
 
     Arbitrary {
       for {
-        itemDetail    <- arbitrary[ItemDetails]
-        itemConsignor <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-        itemConsignee <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-        packages      <- nonEmptyListOf[Packages](10)
-      } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages)
+        itemDetail      <- arbitrary[ItemDetails]
+        itemConsignor   <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+        itemConsignee   <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+        packages        <- nonEmptyListOf[Packages](10)
+        specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](10))
+      } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, specialMentions)
     }
   }
 
@@ -334,6 +336,14 @@ trait JourneyModelGenerators {
         totalNetMass    <- Gen.option(genNumberString)
         commodityCode   <- Gen.option(arbitrary[String])
       } yield ItemDetails(itemDescription, totalGrossMass, totalNetMass, commodityCode)
+    }
+
+  implicit lazy val arbitrarySpecialMention: Arbitrary[SpecialMention] =
+    Arbitrary {
+      for {
+        specialMentionType <- nonEmptyString
+        additionalInfo     <- nonEmptyString
+      } yield SpecialMention(specialMentionType, additionalInfo)
     }
 
   implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =

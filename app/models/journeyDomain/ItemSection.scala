@@ -18,7 +18,7 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages}
+import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages, DeriveNumberOfSpecialMentions}
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.{Index, UserAnswers}
 
@@ -26,7 +26,8 @@ case class ItemSection(
   itemDetails: ItemDetails,
   consignor: Option[RequiredDetails],
   consignee: Option[RequiredDetails],
-  packages: NonEmptyList[Packages]
+  packages: NonEmptyList[Packages],
+  specialMentions: Option[NonEmptyList[SpecialMention]]
 )
 
 object ItemSection {
@@ -43,17 +44,34 @@ object ItemSection {
           .map(NonEmptyList.fromListUnsafe)
       }
 
+  private def deriveSpecialMentions(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[SpecialMention]]] = {
+    DeriveNumberOfSpecialMentions(itemIndex).reader
+      .filter(_.nonEmpty)
+      .flatMap {
+        _.zipWithIndex
+          .traverse[UserAnswersReader, SpecialMention]({
+            case (_, index) =>
+              SpecialMention.specialMentionsReader(itemIndex, Index(index))
+          })
+          .map(NonEmptyList.fromList)
+      }
+  } recover {
+    case _ =>
+      None
+  }
+
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
       ItemDetails.itemDetailsReader(index),
       ItemTraderDetails.consignorDetails(index),
       ItemTraderDetails.consigneeDetails(index),
-      derivePackage(index)
+      derivePackage(index),
+      deriveSpecialMentions(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =
     DeriveNumberOfItems.reader
-      .filter(_.size > 0)
+      .filter(_.nonEmpty)
       .flatMap {
         _.zipWithIndex
           .traverse[UserAnswersReader, ItemSection]({
