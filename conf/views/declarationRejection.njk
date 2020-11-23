@@ -22,11 +22,11 @@
           {{ messages("declarationRejection.heading") }}
         </h1>
 
-        <p class="govuk-body-l">
-            {{ rejectionReason}}
+        <p class="govuk-body">
+            {{ declarationRejectionMessage.reason}}
         </p>
 
-                {% for error in errors %}
+                {% for error in declarationRejectionMessage.errors %}
                     <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
                               <dt class="govuk-summary-list__key">
@@ -56,6 +56,10 @@
                         {% endif %}
                     </dl>
                  {% endfor %}
+
+                 <p class="govuk-body">
+                 You must <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/new-computerised-transit-system-enquiries">contact the New Computerised Transit System helpdesk to get this fixed (opens in a new window)</a>.
+                 </p>
 
       </div>
     </div>

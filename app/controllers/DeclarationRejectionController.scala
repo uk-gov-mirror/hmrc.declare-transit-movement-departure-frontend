@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
 import models.{DepartureId, LocalReferenceNumber, RejectionError}
@@ -23,28 +24,30 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
+import services.DepartureMessageService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationRejectionController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  renderer: Renderer,
+  appConfig: FrontendAppConfig,
+  departureMessageService: DepartureMessageService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: DepartureId): Action[AnyContent] = (identify).async {
     implicit request =>
-      val json = Json.obj(
-        "rejectionReason" -> "It is rejected due to If the caption should be considered part of the page heading",
-        "errors" -> Seq(
-          Json.obj("errorType" -> "ABC", "pointer" -> "Sample Pointer 1", "reason" -> "Something messed up!"),
-          Json.obj("errorType" -> "DEF", "pointer" -> "Sample Pointer 2", "reason" -> "Something messed up too!")
-        )
-      )
-      renderer.render("declarationRejection.njk", json).map(Ok(_))
+      departureMessageService.declarationRejectionMessage(departureId).flatMap {
+        case Some(message) =>
+          val json = Json.obj("declarationRejectionMessage" -> Json.toJson(message), "contactUrl" -> appConfig.nctsEnquiriesUrl)
+          renderer.render("declarationRejection.njk", json).map(Ok(_))
+        case _ =>
+          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
+      }
   }
 }
