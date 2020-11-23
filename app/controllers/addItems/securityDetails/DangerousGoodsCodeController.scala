@@ -16,13 +16,16 @@
 
 package controllers.addItems.securityDetails
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.addItems.securityDetails.DangerousGoodsCodeFormProvider
 import javax.inject.Inject
+import models.reference.DangerousGoodsCode
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.{AddItems, SecurityDetails}
+import navigation.annotations.SecurityDetails
 import pages.addItems.securityDetails.DangerousGoodsCodePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,6 +33,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.getDangerousGoodsCodeAsJson
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,6 +45,7 @@ class DangerousGoodsCodeController @Inject()(
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: DangerousGoodsCodeFormProvider,
+  referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -50,42 +55,58 @@ class DangerousGoodsCodeController @Inject()(
 
   private val template = "addItems/securityDetails/dangerousGoodsCode.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(DangerousGoodsCodePage(index)) match {
-        case None        => formProvider()
-        case Some(value) => formProvider().fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        referenceDataConnector.getDangerousGoodsCodeList() flatMap {
+          dangerousGoodsCodes =>
+            val form: Form[DangerousGoodsCode] = formProvider(dangerousGoodsCodes)
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      formProvider()
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
+            val preparedForm = request.userAnswers
+              .get(DangerousGoodsCodePage(index))
+              .flatMap(dangerousGoodsCodes.getDangerousGoodsCode)
+              .map(form.fill)
+              .getOrElse(form)
 
             val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
+              "form"                -> preparedForm,
+              "index"               -> index.display,
+              "dangerousGoodsCodes" -> getDangerousGoodsCodeAsJson(preparedForm.value, dangerousGoodsCodes.dangerousGoodsCodes),
+              "lrn"                 -> lrn,
+              "mode"                -> mode
             )
 
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DangerousGoodsCodePage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DangerousGoodsCodePage(index), mode, updatedAnswers))
-        )
-  }
+            renderer.render(template, json).map(Ok(_))
+        }
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        referenceDataConnector.getDangerousGoodsCodeList() flatMap {
+          dangerousGoodsCodes =>
+            val form: Form[DangerousGoodsCode] = formProvider(dangerousGoodsCodes)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => {
+
+                  val json = Json.obj(
+                    "form"                -> formWithErrors,
+                    "index"               -> index.display,
+                    "dangerousGoodsCodes" -> getDangerousGoodsCodeAsJson(form.value, dangerousGoodsCodes.dangerousGoodsCodes),
+                    "lrn"                 -> lrn,
+                    "mode"                -> mode
+                  )
+
+                  renderer.render(template, json).map(BadRequest(_))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(DangerousGoodsCodePage(index), value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(DangerousGoodsCodePage(index), mode, updatedAnswers))
+              )
+        }
+    }
 }

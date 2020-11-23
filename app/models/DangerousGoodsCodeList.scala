@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import forms.Constants.{vehicleIdMaxLength, vehicleIdRegex}
-import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import models.reference.DangerousGoodsCode
 
-class IdCrossingBorderFormProvider @Inject() extends Mappings {
+case class DangerousGoodsCodeList(dangerousGoodsCodes: Seq[DangerousGoodsCode]) {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("idCrossingBorder.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(vehicleIdMaxLength, "idCrossingBorder.error.length"),
-            regexp(vehicleIdRegex, "idCrossingBorder.error.invalidCharacters"),
-          )))
+  def getDangerousGoodsCode(code: String): Option[DangerousGoodsCode] =
+    dangerousGoodsCodes.find(_.code == code)
+
 }

@@ -25,7 +25,7 @@ import models.domain.{Address, SealDomain}
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.journeyDomain.TransportDetails.DetailsAtBorder
+import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode}
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
 import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
 import models.messages._
@@ -34,6 +34,7 @@ import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, Unpack
 import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
 import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
+import models.reference.CountryCode
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
 import repositories.InterchangeControlReferenceIdRepository
 
@@ -164,12 +165,6 @@ class DeclarationRequestService @Inject()(
         case DetailsAtBorder.NewDetailsAtBorder(mode, _, _) => Some(mode)
       }
 
-    def detailsAtBorderIdCrossing(detailsAtBorder: DetailsAtBorder): Option[String] =
-      detailsAtBorder match {
-        case SameDetailsAtBorder                                  => None
-        case DetailsAtBorder.NewDetailsAtBorder(_, idCrossing, _) => Some(idCrossing)
-      }
-
     def customsOfficeTransit(transitInformation: NonEmptyList[TransitInformation]): Seq[CustomsOfficeTransit] =
       transitInformation.map {
         case TransitInformation(office, arrivalTime) => CustomsOfficeTransit(office, arrivalTime)
@@ -223,6 +218,19 @@ class DeclarationRequestService @Inject()(
             Some(TraderConsigneeGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
         }
 
+    def nationalityAtDeparture(inlandMode: InlandMode): Option[String] =
+      inlandMode match {
+        case InlandMode.Mode5or7(_, nationalityAtDeparture)          => Some(nationalityAtDeparture.code)
+        case InlandMode.NonSpecialMode(_, nationalityAtDeparture, _) => Some(nationalityAtDeparture.code)
+        case _                                                       => None
+      }
+
+    def identityOfTransportAtDeparture(inlandMode: InlandMode): Option[String] =
+      inlandMode match {
+        case InlandMode.NonSpecialMode(_, _, departureId) => departureId
+        case _                                            => None
+      }
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
@@ -242,8 +250,8 @@ class DeclarationRequestService @Inject()(
         transportDetails = Transport(
           inlTraModHEA75        = Some(transportDetails.inlandMode.code),
           traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
-          ideOfMeaOfTraAtDHEA78 = detailsAtBorderIdCrossing(transportDetails.detailsAtBorder),
-          natOfMeaOfTraAtDHEA80 = None,
+          ideOfMeaOfTraAtDHEA78 = identityOfTransportAtDeparture(transportDetails.inlandMode),
+          natOfMeaOfTraAtDHEA80 = nationalityAtDeparture(transportDetails.inlandMode),
           ideOfMeaOfTraCroHEA85 = None,
           natOfMeaOfTraCroHEA87 = None,
           typOfMeaOfTraCroHEA88 = None

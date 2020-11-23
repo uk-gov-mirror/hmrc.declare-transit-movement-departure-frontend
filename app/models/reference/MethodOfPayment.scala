@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package models.reference
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import forms.Constants.{vehicleIdMaxLength, vehicleIdRegex}
-import play.api.data.Form
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import play.api.libs.json.{Json, OFormat}
 
-class IdCrossingBorderFormProvider @Inject() extends Mappings {
+case class MethodOfPayment(code: String, description: String)
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("idCrossingBorder.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(vehicleIdMaxLength, "idCrossingBorder.error.length"),
-            regexp(vehicleIdRegex, "idCrossingBorder.error.invalidCharacters"),
-          )))
+object MethodOfPayment {
+  implicit val format: OFormat[MethodOfPayment] = Json.format[MethodOfPayment]
 }

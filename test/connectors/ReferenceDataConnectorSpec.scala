@@ -23,7 +23,9 @@ import models.reference._
 import models.{
   CountryList,
   CustomsOfficeList,
+  DangerousGoodsCodeList,
   DocumentTypeList,
+  MethodOfPaymentList,
   OfficeOfTransitList,
   PackageTypeList,
   PreviousDocumentTypeList,
@@ -182,6 +184,42 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |  {
       |    "code": "30400",
       |    "description": "RET-EXP – Copy 3 to be returned"
+      |  }
+      |]
+      |""".stripMargin
+
+  private val dangerousGoodsCodeJson: String =
+    """
+      |  {
+      |    "code": "0004",
+      |    "description": "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"
+      |  }
+      |""".stripMargin
+
+  private val dangerousGoodsCodeResponseJson: String =
+    """
+      |[
+      |  {
+      |    "code": "0004",
+      |    "description": "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"
+      |  },
+      |  {
+      |    "code": "0005",
+      |    "description": "CARTRIDGES FOR WEAPONS with bursting charge"
+      |  }
+      |]
+      |""".stripMargin
+
+  private val methodOfPaymentJson: String =
+    """
+      |[
+      | {
+      |    "code": "A",
+      |    "description": "Payment in cash"
+      |  },
+      |  {
+      |    "code": "B",
+      |    "description": "Payment by credit card"
       |  }
       |]
       |""".stripMargin
@@ -450,6 +488,67 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         checkErrorResponse(s"/$startUrl/special-mention", connector.getSpecialMention())
       }
 
+    }
+
+    "getDangerousGoodsCodeList" - {
+
+      "must return Seq of Dangerous goods codes when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/dangerous-goods-code"))
+            .willReturn(okJson(dangerousGoodsCodeResponseJson))
+        )
+
+        val expectedResult: DangerousGoodsCodeList = DangerousGoodsCodeList(
+          Seq(
+            DangerousGoodsCode("0004", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"),
+            DangerousGoodsCode("0005", "CARTRIDGES FOR WEAPONS with bursting charge")
+          )
+        )
+
+        connector.getDangerousGoodsCodeList().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/dangerous-goods-code", connector.getDangerousGoodsCodeList())
+      }
+    }
+
+    "getDangerousGoodsCode" - {
+
+      "must return Dangerous goods code when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/dangerous-goods-code/0004"))
+            .willReturn(okJson(dangerousGoodsCodeJson))
+        )
+
+        val expectedResult: DangerousGoodsCode = DangerousGoodsCode("0004", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass")
+
+        connector.getDangerousGoodsCode("0004").futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/dangerous-goods-code/0004", connector.getDangerousGoodsCodeList())
+      }
+    }
+    "getMethodOfPayment" - {
+      "must return list of methods of payment when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/method-of-payment"))
+            .willReturn(okJson(methodOfPaymentJson))
+        )
+        val expectResult = MethodOfPaymentList(
+          Seq(
+            MethodOfPayment("A", "Payment in cash"),
+            MethodOfPayment("B", "Payment by credit card")
+          )
+        )
+        connector.getMethodOfPayment().futureValue mustEqual expectResult
+      }
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$startUrl/method-of-payment", connector.getMethodOfPayment())
+      }
     }
   }
 
