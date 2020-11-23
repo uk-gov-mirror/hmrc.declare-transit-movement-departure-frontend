@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import controllers.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.traderSecurityDetails.AddSecurityConsignorsEoriPage
+import pages.addItems.traderSecurityDetails.{AddSecurityConsigneesEoriPage, AddSecurityConsignorsEoriPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
