@@ -26,7 +26,7 @@ import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.addItems.securityDetails._
-import pages.addItems.traderSecurityDetails.{AddSecurityConsigneesEoriPage, AddSecurityConsignorsEoriPage, UseTradersDetailsPage}
+import pages.addItems.traderSecurityDetails.{AddSecurityConsigneesEoriPage, AddSecurityConsignorsEoriPage, SecurityConsigneeAllItemsPage, UseTradersDetailsPage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -34,6 +34,13 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitrarySecurityConsigneeAllItemsUserAnswersEntry: Arbitrary[(SecurityConsigneeAllItemsPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (SecurityConsigneeAllItemsPage(Index(0)), value)
+    }
 
   implicit lazy val arbitraryAddSecurityConsigneesEoriUserAnswersEntry: Arbitrary[(AddSecurityConsigneesEoriPage, JsValue)] =
     Arbitrary {

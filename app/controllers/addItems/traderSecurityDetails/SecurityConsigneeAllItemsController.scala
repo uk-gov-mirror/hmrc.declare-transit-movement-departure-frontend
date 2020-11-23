@@ -17,12 +17,13 @@
 package controllers.addItems.traderSecurityDetails
 
 import controllers.actions._
-import forms.addItems.traderSecurityDetails.AddSecurityConsignorsEoriFormProvider
+import forms.addItems.traderSecurityDetails.SecurityConsigneeAllItemsFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
-import pages.addItems.traderSecurityDetails.AddSecurityConsignorsEoriPage
+import pages.addItems.traderSecurityDetails
+import pages.addItems.traderSecurityDetails.SecurityConsigneeAllItemsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,14 +34,14 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddSecurityConsignorsEoriController @Inject()(
+class SecurityConsigneeAllItemsController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddSecurityConsignorsEoriFormProvider,
+  formProvider: SecurityConsigneeAllItemsFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -49,11 +50,11 @@ class AddSecurityConsignorsEoriController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "addItems/traderSecurityDetails/addSecurityConsignorsEori.njk"
+  private val template = "addItems/traderSecurityDetails/securityConsigneeAllItems.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddSecurityConsignorsEoriPage(itemIndex)) match {
+      val preparedForm = request.userAnswers.get(traderSecurityDetails.SecurityConsigneeAllItemsPage(itemIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -86,9 +87,9 @@ class AddSecurityConsignorsEoriController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSecurityConsignorsEoriPage(itemIndex), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(traderSecurityDetails.SecurityConsigneeAllItemsPage(itemIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddSecurityConsignorsEoriPage(itemIndex), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(traderSecurityDetails.SecurityConsigneeAllItemsPage(itemIndex), mode, updatedAnswers))
         )
   }
 }

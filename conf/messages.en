@@ -1129,7 +1129,12 @@ addSecurityConsignorsEori.heading = Do you know the security consignor’s EORI 
 addSecurityConsignorsEori.checkYourAnswersLabel = Know the security consignor’s EORI number?
 addSecurityConsignorsEori.error.required = Select yes if you know the security consignor’s EORI number?
 
-addSecurityConsigneesEori.title = Is this the security consignee for all the items?
-addSecurityConsigneesEori.heading = Is this the security consignee for all the items?
-addSecurityConsigneesEori.checkYourAnswersLabel = Security consignee for all items
-addSecurityConsigneesEori.error.required = Select yes if this is the security consignee for all the items
+addSecurityConsigneesEori.title = Do you know the security consignee’s EORI number?
+addSecurityConsigneesEori.heading = Do you know the security consignee’s EORI number?
+addSecurityConsigneesEori.checkYourAnswersLabel = Know the security consignee’s EORI number?
+addSecurityConsigneesEori.error.required = Select yes if you know the security consignee’s EORI number?
+
+securityConsigneeAllItems.title = Is this the security consignee for all the items?
+securityConsigneeAllItems.heading = Is this the security consignee for all the items?
+securityConsigneeAllItems.checkYourAnswersLabel = Security consignee for all items
+securityConsigneeAllItems.error.required = Select yes if this the security consignee for all the items
