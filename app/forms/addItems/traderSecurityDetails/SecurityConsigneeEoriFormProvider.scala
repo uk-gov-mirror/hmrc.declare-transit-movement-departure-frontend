@@ -16,6 +16,7 @@
 
 package forms.addItems.traderSecurityDetails
 
+import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber, validEoriCharactersRegex}
 import forms.mappings.Mappings
 import javax.inject.Inject
 import models.Index
@@ -24,16 +25,14 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class SecurityConsigneeEoriFormProvider @Inject() extends Mappings {
 
-  val maxLength = 17
-  val eoriRegex = "^[a-zA-Z0-9]*$"
-
   def apply(index: Index): Form[String] =
     Form(
       "value" -> text("securityConsigneeEori.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(maxLength, "securityConsigneeEori.error.length"),
-            regexp(eoriRegex, "securityConsigneeEori.error.invalid")
+            maxLength(maxLengthEoriNumber, "securityConsigneeEori.error.length"),
+            regexp(validEoriCharactersRegex, "securityConsigneeEori.error.invalid"),
+            regexp(eoriNumberRegex, "securityConsigneeEori.error.invalidFormat")
           ))
     )
 }
