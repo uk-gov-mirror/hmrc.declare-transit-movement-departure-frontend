@@ -37,8 +37,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
   def addCommercialReferenceNumber: Option[Row] = userAnswers.get(AddCommercialReferenceNumberPage) map {
     answer =>
       Row(
-        key     = Key(msg"addCommercialReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"addCommercialReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -52,8 +52,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
   def addTransportChargesPaymentMethod: Option[Row] = userAnswers.get(AddTransportChargesPaymentMethodPage) map {
     answer =>
       Row(
-        key     = Key(msg"addTransportChargesPaymentMethod.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"addTransportChargesPaymentMethod.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
