@@ -239,9 +239,33 @@ class SectionsHelper(userAnswers: UserAnswers) {
       addConsigneePage
     }
 
+    val consignorForAllItemsPage: Seq[(Option[Boolean], String)] = Seq(
+      userAnswers.get(ConsignorForAllItemsPage) -> traderDetailsRoutes.ConsignorForAllItemsController.onPageLoad(lrn, NormalMode).url)
+
+    val consigneeForAllItemsPage: Seq[(Option[Boolean], String)] = Seq(
+      userAnswers.get(ConsigneeForAllItemsPage) -> traderDetailsRoutes.ConsigneeForAllItemsController.onPageLoad(lrn, NormalMode).url)
+
+    val addConsignorForAllPageDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(ConsignorForAllItemsPage).contains(true)) {
+      Seq(userAnswers.get(ConsigneeForAllItemsPage) -> traderDetailsRoutes.ConsigneeForAllItemsController.onPageLoad(lrn, NormalMode).url)
+
+    } else {
+      addConsignorPage
+    }
+
+    val addConsigneeForAllPageDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(ConsigneeForAllItemsPage).contains(true)) {
+      Seq(userAnswers.get(ConsigneeForAllItemsPage) -> traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+
+    } else {
+      addConsigneePage
+    }
+
+    //TODO: Add consigneeForAll
+
+    //TODO: Add diversion
+
     Seq(
       userAnswers.get(IsPrincipalEoriKnownPage) -> traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
-    ) ++ isPrincipalEoriKnowDiversionPages ++ addConsignorPage ++ addConsignorPageDiversionPage ++ isConsignorEoriKnownPage ++ addConsigneePage ++ addConsigneeDiversionPage ++ isConsigneeEoriKnownPage
+    ) ++ isPrincipalEoriKnowDiversionPages ++ addConsignorForAllPageDiversionPage ++ addConsignorPage ++ addConsignorPageDiversionPage ++ isConsignorEoriKnownPage ++ addConsigneeForAllPageDiversionPage ++ addConsigneePage ++ addConsigneeDiversionPage ++ isConsigneeEoriKnownPage
   }
 
   private val addItemPages: Seq[(Option[_], String)] = {
