@@ -669,3 +669,8 @@ GET        /:lrn/add-items/:itemIndex/traders-security-details/change-security-c
 POST       /:lrn/add-items/:itemIndex/traders-security-details/change-security-consignee-name                  controllers.addItems.traderSecurityDetails.SecurityConsigneeNameController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 
 GET        /:departureId/departure-declaration-fail                                                              controllers.DeclarationRejectionController.onPageLoad(departureId: DepartureId)
+
+GET        /:lrn/addCircumstanceIndicator                        controllers.AddCircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addCircumstanceIndicator                        controllers.AddCircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddCircumstanceIndicator                  controllers.AddCircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddCircumstanceIndicator                  controllers.AddCircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

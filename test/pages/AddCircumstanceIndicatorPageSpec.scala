@@ -16,11 +16,16 @@
 
 package pages
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object AddCircumstanceIndicatorPage extends QuestionPage[Boolean] {
+class AddCircumstanceIndicatorPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "AddCircumstanceIndicatorPage" - {
 
-  override def toString: String = "addCircumstanceIndicator"
+    beRetrievable[Boolean](AddCircumstanceIndicatorPage)
+
+    beSettable[Boolean](AddCircumstanceIndicatorPage)
+
+    beRemovable[Boolean](AddCircumstanceIndicatorPage)
+  }
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers
 
 import base.SpecBase
@@ -29,8 +45,8 @@ class AddCircumstanceIndicatorControllerSpec extends SpecBase with MockNunjucksR
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new AddCircumstanceIndicatorFormProvider()
-  private val form = formProvider()
-  private val template = "addCircumstanceIndicator.njk"
+  private val form         = formProvider()
+  private val template     = "addCircumstanceIndicator.njk"
 
   lazy val addCircumstanceIndicatorRoute = routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url
 
@@ -48,9 +64,9 @@ class AddCircumstanceIndicatorControllerSpec extends SpecBase with MockNunjucksR
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addCircumstanceIndicatorRoute)
+      val request        = FakeRequest(GET, addCircumstanceIndicatorRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -80,9 +96,9 @@ class AddCircumstanceIndicatorControllerSpec extends SpecBase with MockNunjucksR
       val userAnswers = UserAnswers(lrn, eoriNumber).set(AddCircumstanceIndicatorPage, true).success.value
       dataRetrievalWithData(userAnswers)
 
-      val request = FakeRequest(GET, addCircumstanceIndicatorRoute)
+      val request        = FakeRequest(GET, addCircumstanceIndicatorRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -131,10 +147,10 @@ class AddCircumstanceIndicatorControllerSpec extends SpecBase with MockNunjucksR
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(POST, addCircumstanceIndicatorRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, addCircumstanceIndicatorRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 

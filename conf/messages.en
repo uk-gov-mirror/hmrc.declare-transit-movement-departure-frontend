@@ -1181,3 +1181,7 @@ declarationRejection.heading = There is a problem with this departure declaratio
 declarationRejection.errorType =  Error Type
 declarationRejection.pointer =  Error Pointer
 declarationRejection.reason =  Reason
+addCircumstanceIndicator.title = addCircumstanceIndicator
+addCircumstanceIndicator.heading = addCircumstanceIndicator
+addCircumstanceIndicator.checkYourAnswersLabel = addCircumstanceIndicator
+addCircumstanceIndicator.error.required = Select yes if addCircumstanceIndicator
