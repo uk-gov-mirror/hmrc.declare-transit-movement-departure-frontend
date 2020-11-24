@@ -16,7 +16,7 @@
 
 package base
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.{JsResultException, Json, Writes}
 
@@ -43,6 +43,16 @@ trait UserAnswersSpecHelper {
       value.zipWithIndex
         .map {
           case (value, index) => (pageFn(index), value)
+        }
+        .foldLeft(userAnswers) {
+          case (ua, (page, value)) =>
+            ua.unsafeSetVal(page)(value)
+        }
+
+    def unsafeSetSeqIndex[A: Writes](pageFn: Index => QuestionPage[A])(value: Seq[A]): UserAnswers =
+      value.zipWithIndex
+        .map {
+          case (value, index) => (pageFn(Index(index)), value)
         }
         .foldLeft(userAnswers) {
           case (ua, (page, value)) =>

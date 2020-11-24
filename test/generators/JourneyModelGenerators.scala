@@ -88,7 +88,7 @@ trait JourneyModelGenerators {
         routeDetails     <- arbitraryRouteDetails(transitInformation).arbitrary
         transportDetails <- arbitrary[TransportDetails]
         traderDetails    <- arbitrary[TraderDetails]
-        itemDetails      <- nonEmptyListOf[ItemSection](3)
+        itemDetails      <- nonEmptyListOf(3)(Arbitrary(genItemSection(movementDetails.containersUsed)))
         goodsummarydetaislType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
         } else {
@@ -250,21 +250,27 @@ trait JourneyModelGenerators {
         Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori]
       ))
 
-  implicit lazy val arbitraryItemSection: Arbitrary[ItemSection] = {
+  implicit def arbitraryItemSection: Arbitrary[ItemSection] =
+    Arbitrary {
+      for {
+        bool        <- arbitrary[Boolean]
+        itemSection <- genItemSection(bool)
+      } yield itemSection
+    }
+
+  def genItemSection(containersUsed: Boolean = false): Gen[ItemSection] = {
 
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
-    Arbitrary {
-      for {
-        itemDetail      <- arbitrary[ItemDetails]
-        itemConsignor   <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-        itemConsignee   <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-        packages        <- nonEmptyListOf[Packages](10)
-        containers      <- Gen.option(nonEmptyListOf[Container](10))
-        specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](10))
-      } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions)
-    }
+    for {
+      itemDetail      <- arbitrary[ItemDetails]
+      itemConsignor   <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee   <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      packages        <- nonEmptyListOf[Packages](10)
+      containers      <- if (containersUsed) { nonEmptyListOf[Container](10).map(Some(_)) } else { Gen.const(None) }
+      specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](10))
+    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions)
   }
 
   implicit lazy val arbitraryPreTaskListDetails: Arbitrary[PreTaskListDetails] =

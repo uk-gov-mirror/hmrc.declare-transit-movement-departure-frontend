@@ -19,6 +19,7 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.journeyDomain.ContainerSpec.setContainerUserAnswers
+import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.ContainersUsedPage
@@ -55,6 +56,9 @@ class ContainerSpec extends SpecBase with GeneratorSpec with JourneyModelGenerat
 }
 
 object ContainerSpec extends UserAnswersSpecHelper {
+
+  def setContainers(containers: Seq[Container], index: Index)(userAnswers: UserAnswers): UserAnswers =
+    userAnswers.unsafeSetSeqIndex(ContainerNumberPage(index, _))(containers.map(_.containerNumber))
 
   def setContainerUserAnswers(container: Container, index: Index, referenceIndex: Index)(userAnswers: UserAnswers): UserAnswers =
     userAnswers
