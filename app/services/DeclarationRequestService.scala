@@ -22,11 +22,12 @@ import cats.data.NonEmptyList
 import cats.implicits._
 import javax.inject.Inject
 import models.domain.{Address, SealDomain}
+import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails}
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode}
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
+import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode}
 import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
@@ -34,7 +35,6 @@ import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, Unpack
 import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
 import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
-import models.reference.CountryCode
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
 import repositories.InterchangeControlReferenceIdRepository
 
@@ -231,6 +231,15 @@ class DeclarationRequestService @Inject()(
         case _                                            => None
       }
 
+    def agreedLocationOfGoods(movementDetails: MovementDetails, goodsSummaryDetails: GoodSummaryDetails): Option[String] =
+      (movementDetails, goodsSummaryDetails) match {
+        case (MovementDetails.NormalMovementDetails(_, prelodge, _, _, _), GoodSummaryNormalDetails(approvedLocation)) =>
+          if (prelodge) Some("Pre-lodge") else approvedLocation
+        case _ => None
+      }
+
+    def safetyAndSecurityFlag(boolFlag: Boolean): Int = if (boolFlag) 1 else 0
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
@@ -242,7 +251,7 @@ class DeclarationRequestService @Inject()(
         typOfDecHEA24       = movementDetails.declarationType.code,
         couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
         agrLocOfGooCodHEA38 = None, // prelodge
-        agrLocOfGooHEA39    = None, // prelodge
+        agrLocOfGooHEA39    = agreedLocationOfGoods(movementDetails, goodsSummary.goodSummaryDetails), // prelodge
         autLocOfGooCodHEA41 = None,
         plaOfLoaCodHEA46    = None,
         couOfDisCodHEA55    = Some(routeDetails.countryOfDispatch.code),
@@ -265,7 +274,7 @@ class DeclarationRequestService @Inject()(
         speCirIndHEA1      = None, // safety and security
         traChaMetOfPayHEA1 = None,
         comRefNumHEA       = None, // safety and security
-        secHEA358          = None, // local ref number & security
+        secHEA358          = Some(safetyAndSecurityFlag(preTaskList.addSecurityDetails)), // local ref number & security
         conRefNumHEA       = None, // safety and security
         codPlUnHEA357      = None // safety and security
       ),

@@ -53,7 +53,6 @@ object AddItemsCheckYourAnswersViewModel {
   private def securitySection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
     msg"addItems.checkYourAnswersLabel.itemDetails",
     Seq(
-      checkYourAnswersHelper.usingSameMethodOfPayment(index),
       checkYourAnswersHelper.transportCharges(index),
       checkYourAnswersHelper.usingSameCommercialReference(index),
       checkYourAnswersHelper.commercialReferenceNumber(index),

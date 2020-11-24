@@ -80,8 +80,8 @@ object ItemTraderDetails {
         TraderDetailsConsigneeAddressPage(index).reader
       ).tupled
         .map {
-          case (name, consignorAddress) =>
-            val address = Address.prismAddressToConsigneeAddress(consignorAddress)
+          case (name, consigneeAddress) =>
+            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
             RequiredDetails(name, address)
         }
 

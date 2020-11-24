@@ -19,6 +19,7 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
 import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, NormalMovementDetails, SimplifiedMovementDetails}
+import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.{ProcedureType, UserAnswers}
 import org.scalacheck.{Arbitrary, Gen}
 import pages._
@@ -39,7 +40,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
     }
   }
 
-  "NormalMovmentDetails" - {
+  "NormalMovementDetails" - {
 
     val mandatoryPages: Gen[QuestionPage[_]] = Gen.oneOf(
       ProcedureTypePage,
@@ -165,36 +166,20 @@ object MovementDetailsSpec {
   def setNormalMovement(movementDetails: NormalMovementDetails)(startUserAnswers: UserAnswers): UserAnswers = {
     val interstitialUserAnswers =
       startUserAnswers
-        .set(ProcedureTypePage, ProcedureType.Normal)
-        .toOption
-        .get
-        .set(DeclarationTypePage, movementDetails.declarationType)
-        .toOption
-        .get
-        .set(PreLodgeDeclarationPage, movementDetails.prelodge)
-        .toOption
-        .get
-        .set(ContainersUsedPage, movementDetails.containersUsed)
-        .toOption
-        .get
-        .set(DeclarationPlacePage, movementDetails.declarationPlacePage)
-        .toOption
-        .get
-        .set(DeclarationForSomeoneElsePage, movementDetails.declarationForSomeoneElse != DeclarationForSelf)
-        .toOption
-        .get
+        .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+        .unsafeSetVal(DeclarationTypePage)(movementDetails.declarationType)
+        .unsafeSetVal(PreLodgeDeclarationPage)(movementDetails.prelodge)
+        .unsafeSetVal(ContainersUsedPage)(movementDetails.containersUsed)
+        .unsafeSetVal(DeclarationPlacePage)(movementDetails.declarationPlacePage)
+        .unsafeSetVal(DeclarationForSomeoneElsePage)(movementDetails.declarationForSomeoneElse != DeclarationForSelf)
 
     val userAnswers = movementDetails.declarationForSomeoneElse match {
       case DeclarationForSelf =>
         interstitialUserAnswers
       case DeclarationForSomeoneElse(companyName, capacity) =>
         interstitialUserAnswers
-          .set(RepresentativeNamePage, companyName)
-          .toOption
-          .get
-          .set(RepresentativeCapacityPage, capacity)
-          .toOption
-          .get
+          .unsafeSetVal(RepresentativeNamePage)(companyName)
+          .unsafeSetVal(RepresentativeCapacityPage)(capacity)
     }
 
     userAnswers
@@ -203,34 +188,19 @@ object MovementDetailsSpec {
   def setSimplifiedMovement(movementDetails: SimplifiedMovementDetails)(startUserAnswers: UserAnswers): UserAnswers = {
     val interstitialUserAnswers =
       startUserAnswers
-        .set(ProcedureTypePage, ProcedureType.Simplified)
-        .toOption
-        .get
-        .set(DeclarationTypePage, movementDetails.declarationType)
-        .toOption
-        .get
-        .set(ContainersUsedPage, movementDetails.containersUsed)
-        .toOption
-        .get
-        .set(DeclarationPlacePage, movementDetails.declarationPlacePage)
-        .toOption
-        .get
-        .set(DeclarationForSomeoneElsePage, movementDetails.declarationForSomeoneElse != DeclarationForSelf)
-        .toOption
-        .get
+        .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
+        .unsafeSetVal(DeclarationTypePage)(movementDetails.declarationType)
+        .unsafeSetVal(ContainersUsedPage)(movementDetails.containersUsed)
+        .unsafeSetVal(DeclarationPlacePage)(movementDetails.declarationPlacePage)
+        .unsafeSetVal(DeclarationForSomeoneElsePage)(movementDetails.declarationForSomeoneElse != DeclarationForSelf)
 
     val userAnswers = movementDetails.declarationForSomeoneElse match {
       case DeclarationForSelf =>
         interstitialUserAnswers
       case DeclarationForSomeoneElse(companyName, capacity) =>
         interstitialUserAnswers
-          .set(RepresentativeNamePage, companyName)
-          .toOption
-          .get
-          .set(RepresentativeCapacityPage, capacity)
-          .toOption
-          .get
-
+          .unsafeSetVal(RepresentativeNamePage)(companyName)
+          .unsafeSetVal(RepresentativeCapacityPage)(capacity)
     }
 
     userAnswers
