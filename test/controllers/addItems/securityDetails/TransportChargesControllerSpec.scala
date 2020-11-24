@@ -23,11 +23,11 @@ import forms.addItems.securityDetails.TransportChargesFormProvider
 import matchers.JsonMatchers
 import models.reference.MethodOfPayment
 import models.{MethodOfPaymentList, NormalMode}
-import navigation.annotations.{AddItems, SecurityDetails}
+import navigation.annotations.SecurityDetails
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.addItems.securityDetails.TransportChargesPage
 import play.api.inject.bind
