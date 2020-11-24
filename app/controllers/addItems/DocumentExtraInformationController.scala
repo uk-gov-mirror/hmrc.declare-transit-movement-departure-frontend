@@ -21,7 +21,7 @@ import forms.addItems.DocumentExtraInformationFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.{AddItems, Document}
+import navigation.annotations.Document
 import pages.addItems.DocumentExtraInformationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

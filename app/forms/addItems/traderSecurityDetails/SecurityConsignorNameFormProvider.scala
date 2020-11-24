@@ -16,15 +16,24 @@
 
 package forms.addItems.traderSecurityDetails
 
+import forms.Constants.{consigneeNameMaxLength, consignorNameRegex}
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.Index
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class SecurityConsignorNameFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  val maxLengthConsigneeName = 35
+
+  def apply(index: Index): Form[String] =
     Form(
       "value" -> text("securityConsignorName.error.required")
-        .verifying(maxLength(35, "securityConsignorName.error.length"))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(consigneeNameMaxLength, "securityConsignorName.error.length"),
+            regexp(consignorNameRegex, "securityConsignorName.error.invalid")
+          ))
     )
 }

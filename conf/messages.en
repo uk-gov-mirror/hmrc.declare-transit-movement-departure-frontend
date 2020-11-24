@@ -1163,17 +1163,19 @@ securityConsigneeAddress.checkYourAnswersLabel = securityConsigneeAddress
 securityConsigneeAddress.error.required = Enter securityConsigneeAddress
 securityConsigneeAddress.error.length = SecurityConsigneeAddress must be 100 characters or less
 
-securityConsignorName.title = securityConsignorName
-securityConsignorName.heading = securityConsignorName
-securityConsignorName.checkYourAnswersLabel = securityConsignorName
-securityConsignorName.error.required = Enter securityConsignorName
-securityConsignorName.error.length = SecurityConsignorName must be 35 characters or less
+securityConsignorName.title = What is the security consignor’s name?
+securityConsignorName.heading = What is the security consignor’s name?
+securityConsignorName.checkYourAnswersLabel = Security consignor’s name
+securityConsignorName.error.required = Enter the security consignor’s name
+securityConsignorName.error.length = The security consignor's name must be 35 characters or less
+securityConsignorName.error.invalid = The security consignor’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
-securityConsigneeName.title = securityConsigneeName
-securityConsigneeName.heading = securityConsigneeName
-securityConsigneeName.checkYourAnswersLabel = securityConsigneeName
-securityConsigneeName.error.required = Enter securityConsigneeName
-securityConsigneeName.error.length = SecurityConsigneeName must be 35 characters or less
+securityConsigneeName.title = What is the security consignee’s name?
+securityConsigneeName.heading = What is the security consignee’s name?
+securityConsigneeName.checkYourAnswersLabel =  Security consignee’s name
+securityConsigneeName.error.required = Enter the security consignee’s name
+securityConsigneeName.error.length =  The security consignee’s name must be 35 characters or less
+securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
 
 declarationRejection.title = There is a problem with this departure declaration

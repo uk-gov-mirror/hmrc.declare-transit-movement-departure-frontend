@@ -16,12 +16,13 @@
 
 package forms
 
+import base.SpecBase
 import forms.Constants._
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class ConsignorEoriFormProviderSpec extends StringFieldBehaviours {
+class ConsignorEoriFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
   val requiredKey      = "consignorEori.error.required"
   val lengthKey        = "consignorEori.error.length"

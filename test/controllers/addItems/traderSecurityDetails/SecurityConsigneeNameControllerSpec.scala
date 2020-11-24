@@ -44,7 +44,7 @@ class SecurityConsigneeNameControllerSpec extends SpecBase with MockNunjucksRend
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new SecurityConsigneeNameFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(index)
   private val template     = "addItems/traderSecurityDetails/securityConsigneeName.njk"
 
   lazy val securityConsigneeNameRoute = routes.SecurityConsigneeNameController.onPageLoad(lrn, index, NormalMode).url
@@ -74,9 +74,10 @@ class SecurityConsigneeNameControllerSpec extends SpecBase with MockNunjucksRend
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"  -> form,
+        "mode"  -> NormalMode,
+        "index" -> index.display,
+        "lrn"   -> lrn
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -107,9 +108,10 @@ class SecurityConsigneeNameControllerSpec extends SpecBase with MockNunjucksRend
       val filledForm = form.bind(Map("value" -> "answer"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"  -> filledForm,
+        "lrn"   -> lrn,
+        "index" -> index.display,
+        "mode"  -> NormalMode
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey

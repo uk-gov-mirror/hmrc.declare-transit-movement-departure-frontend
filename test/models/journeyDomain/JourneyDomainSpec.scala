@@ -53,7 +53,7 @@ object JourneyDomainSpec {
 
   def setJourneyDomain(journeyDomain: JourneyDomain)(startUserAnswers: UserAnswers): UserAnswers =
     (
-        PreTaskListDetailsSpec.setPreTaskListDetails(journeyDomain.preTaskList) _ andThen
+      PreTaskListDetailsSpec.setPreTaskListDetails(journeyDomain.preTaskList) _ andThen
         RouteDetailsSpec.setRouteDetails(journeyDomain.routeDetails, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
         TransportDetailsSpec.setTransportDetail(journeyDomain.transportDetails) andThen
         ItemSectionSpec.setItemSections(journeyDomain.itemDetails.toList) andThen
