@@ -31,11 +31,9 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(genItemSection(), arb[UserAnswers]) {
           case (itemSection, userAnswers) =>
             val updatedUserAnswer           = ItemSectionSpec.setItemSection(itemSection, index)(userAnswers)
-            val containerUsed               = updatedUserAnswer.get(ContainersUsedPage).getOrElse(false)
-            val expectedItemSection         = if (containerUsed) itemSection else itemSection.copy(containers = None)
             val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
 
-            result.value mustEqual expectedItemSection
+            result.value mustEqual itemSection
         }
       }
     }
