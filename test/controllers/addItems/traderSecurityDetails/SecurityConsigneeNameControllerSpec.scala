@@ -45,7 +45,7 @@ class SecurityConsigneeNameControllerSpec extends SpecBase with MockNunjucksRend
 
   private val formProvider = new SecurityConsigneeNameFormProvider()
   private val form         = formProvider()
-  private val template     = "securityConsigneeName.njk"
+  private val template     = "addItems/traderSecurityDetails/securityConsigneeName.njk"
 
   lazy val securityConsigneeNameRoute = routes.SecurityConsigneeNameController.onPageLoad(lrn, index, NormalMode).url
 

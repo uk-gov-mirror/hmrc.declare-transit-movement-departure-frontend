@@ -49,7 +49,7 @@ class SecurityConsigneeNameController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "securityConsigneeName.njk"
+  private val template = "addItems/traderSecurityDetails/securityConsigneeName.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
