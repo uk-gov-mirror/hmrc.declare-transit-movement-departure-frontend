@@ -26,6 +26,18 @@ import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.addItems.securityDetails._
+import pages.addItems.traderSecurityDetails.{
+  AddSecurityConsigneesEoriPage,
+  AddSecurityConsignorsEoriPage,
+  SecurityConsigneeAddressPage,
+  SecurityConsigneeAllItemsPage,
+  SecurityConsigneeEoriPage,
+  SecurityConsigneeNamePage,
+  SecurityConsignorAddressPage,
+  SecurityConsignorEoriPage,
+  SecurityConsignorNamePage,
+  UseTradersDetailsPage
+}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import play.api.libs.json.{JsValue, Json}
@@ -33,6 +45,83 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitrarySecurityConsigneeNameUserAnswersEntry: Arbitrary[(SecurityConsigneeNamePage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (SecurityConsigneeNamePage(Index(0)), value)
+    }
+
+  implicit lazy val arbitrarySecurityConsignorNameUserAnswersEntry: Arbitrary[(SecurityConsignorNamePage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (SecurityConsignorNamePage(Index(0)), value)
+    }
+
+  implicit lazy val arbitrarySecurityConsigneeAddressUserAnswersEntry: Arbitrary[(SecurityConsigneeAddressPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (SecurityConsigneeAddressPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitrarySecurityConsignorAddressUserAnswersEntry: Arbitrary[(SecurityConsignorAddressPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (SecurityConsignorAddressPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitrarySecurityConsigneeEoriUserAnswersEntry: Arbitrary[(SecurityConsigneeEoriPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (SecurityConsigneeEoriPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitrarySecurityConsignorEoriUserAnswersEntry: Arbitrary[(SecurityConsignorEoriPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (SecurityConsignorEoriPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitrarySecurityConsigneeAllItemsUserAnswersEntry: Arbitrary[(SecurityConsigneeAllItemsPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (SecurityConsigneeAllItemsPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitraryAddSecurityConsigneesEoriUserAnswersEntry: Arbitrary[(AddSecurityConsigneesEoriPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (AddSecurityConsigneesEoriPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitraryAddSecurityConsignorsEoriUserAnswersEntry: Arbitrary[(AddSecurityConsignorsEoriPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (AddSecurityConsignorsEoriPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitraryUseTradersDetailsUserAnswersEntry: Arbitrary[(UseTradersDetailsPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (UseTradersDetailsPage(Index(0)), value)
+    }
+
+  implicit lazy val arbitraryUsingSameMethodOfPaymentUserAnswersEntry: Arbitrary[(UsingSameMethodOfPaymentPage, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (UsingSameMethodOfPaymentPage(Index(0)), value)
+    }
 
   implicit lazy val arbitraryDangerousGoodsCodeUserAnswersEntry: Arbitrary[(DangerousGoodsCodePage, JsValue)] =
     Arbitrary {

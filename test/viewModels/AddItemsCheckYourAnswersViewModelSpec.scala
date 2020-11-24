@@ -49,7 +49,7 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
   "AddItemsCheckYourAnswersViewModel" - {
 
     "display the correct number of sections" in {
-      data.sections.length mustEqual 6
+      data.sections.length mustEqual 7
       data.sections.head.rows.length mustEqual 6
     }
     
