@@ -68,5 +68,6 @@ class SecurityConsignorNameFormProviderSpec extends SpecBase with StringFieldBeh
           result.errors mustBe expectedError
       }
     }
+
   }
 }
