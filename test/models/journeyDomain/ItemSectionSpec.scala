@@ -30,9 +30,11 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(arb[ItemSection], arb[UserAnswers]) {
           case (itemSection, userAnswers) =>
             val updatedUserAnswer           = ItemSectionSpec.setItemSection(itemSection, index)(userAnswers)
+            val containerUsed               = updatedUserAnswer.get(ContainersUsedPage).getOrElse(false)
+            val expectedItemSection         = if (containerUsed) itemSection else itemSection.copy(containers = None)
             val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
 
-            result.value mustEqual itemSection
+            result.value mustEqual expectedItemSection
         }
       }
     }
@@ -56,10 +58,15 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(nonEmptyListOf[ItemSection](3), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
             val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
+            val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
 
-            val result = ItemSection.readerItemSections.run(updatedUserAnswer)
+            val containerUsed = updatedUserAnswer.get(ContainersUsedPage).getOrElse(false)
+            val expectedItemSections = itemSections.map {
+              x =>
+                if (containerUsed) x else x.copy(containers = None)
+            }
 
-            result.value mustEqual itemSections
+            result.value mustEqual expectedItemSections
         }
       }
     }
@@ -80,14 +87,20 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
     }
 
   private def setContainers(containers: Option[NonEmptyList[Container]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
-    val smUserAnswers = startUserAnswers.set(ContainersUsedPage, false).toOption.get
-    containers.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
-      case (userAnswers, (container, index)) =>
-        ContainerSpec.setContainerUserAnswers(container, itemIndex, Index(index))(userAnswers)
-    })
+    val isContainersUsed = startUserAnswers.get(ContainersUsedPage).getOrElse(false)
+    (isContainersUsed, containers.isDefined) match {
+      case (true, true) =>
+        containers.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
+          case (userAnswers, (container, index)) =>
+            ContainerSpec.setContainerUserAnswers(container, itemIndex, Index(index))(userAnswers)
+        })
+      case _ => startUserAnswers.set(ContainersUsedPage, false).toOption.get
+    }
+
   }
   private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val smUserAnswers = startUserAnswers.set(AddSpecialMentionPage(itemIndex), false).toOption.get
+
     specialMentions.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
       case (userAnswers, (specialMention, index)) =>
         SpecialMentionSpec.setSpecialMentionsUserAnswers(specialMention, itemIndex, Index(index))(userAnswers)

@@ -58,7 +58,6 @@ object ContainerSpec extends UserAnswersSpecHelper {
 
   def setContainerUserAnswers(container: Container, index: Index, referenceIndex: Index)(userAnswers: UserAnswers): UserAnswers =
     userAnswers
-      .unsafeSetVal(ContainersUsedPage)(true)
       .unsafeSetVal(ContainerNumberPage(index, referenceIndex))(container.containerNumber)
 
 }
