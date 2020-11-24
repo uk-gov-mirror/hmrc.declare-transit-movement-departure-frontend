@@ -46,21 +46,6 @@ import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def usingSameCommercialReference(index: Index): Option[Row] = userAnswers.get(UsingSameCommercialReferencePage(index)) map {
-    answer =>
-      Row(
-        key   = Key(msg"usingSameCommercialReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = securityDetailsRoutes.UsingSameCommercialReferenceController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"usingSameCommercialReference.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def transportCharges(itemIndex: Index): Option[Row] = userAnswers.get(TransportChargesPage(itemIndex)) map {
     answer =>
       Row(

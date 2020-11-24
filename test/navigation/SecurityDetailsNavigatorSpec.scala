@@ -30,40 +30,12 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   "In Normal mode" - {
 
-    "Must go from TransportChargesPage to UsingSameCommercialReferencePage" in {
+    "Must go from TransportChargesPage to CommercialReferencePage" in { //todo update when Safety and security section done
       forAll(arbitrary[UserAnswers]) {
         answers =>
           navigator
             .nextPage(TransportChargesPage(index), NormalMode, answers)
-            .mustBe(routes.UsingSameCommercialReferenceController.onPageLoad(answers.id, index, NormalMode))
-      }
-    }
-
-    "Must go from UsingSameCommercialReferencePage" - {
-      "to CommercialReferenceNumberPage when user selects 'No'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(UsingSameCommercialReferencePage(index), false)
-              .success
-              .value
-            navigator
-              .nextPage(UsingSameCommercialReferencePage(index), NormalMode, updatedAnswers)
-              .mustBe(routes.CommercialReferenceNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
-        }
-      }
-
-      "to AddDangerousGoodsCodePage when user selects 'Yes'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(UsingSameCommercialReferencePage(index), true)
-              .success
-              .value
-            navigator
-              .nextPage(UsingSameCommercialReferencePage(index), NormalMode, updatedAnswers)
-              .mustBe(routes.AddDangerousGoodsCodeController.onPageLoad(answers.id, index, NormalMode))
-        }
+            .mustBe(routes.CommercialReferenceNumberController.onPageLoad(answers.id, index, NormalMode))
       }
     }
 
@@ -125,106 +97,62 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
     }
 
-    "Must go from UsingSameCommercialReferencePage" - {
-      "to CommercialReferenceNumberPage when user selects 'No' and previously answered 'Yes'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(UsingSameCommercialReferencePage(index), false)
-              .success
-              .value
-              .remove(CommercialReferenceNumberPage(index))
-              .success
-              .value
-            navigator
-              .nextPage(UsingSameCommercialReferencePage(index), CheckMode, updatedAnswers)
-              .mustBe(routes.CommercialReferenceNumberController.onPageLoad(updatedAnswers.id, index, CheckMode))
-        }
-      }
-      "to AddItemsCheckYourAnswersPage when user selects 'No' and previously answered 'No'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(UsingSameCommercialReferencePage(index), false)
-              .success
-              .value
-              .set(CommercialReferenceNumberPage(index), "test")
-              .success
-              .value
-            navigator
-              .nextPage(UsingSameCommercialReferencePage(index), CheckMode, updatedAnswers)
-              .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
-        }
-      }
+  }
 
-      "to AddItemsCheckYourAnswersPage when user selects 'Yes'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(UsingSameCommercialReferencePage(index), true)
-              .success
-              .value
-            navigator
-              .nextPage(UsingSameCommercialReferencePage(index), CheckMode, updatedAnswers)
-              .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
-        }
-      }
+  "Must go from CommercialReferenceNumberPage to AddItemsCheckYourAnswersPage" in {
+    forAll(arbitrary[UserAnswers]) {
+      answers =>
+        navigator
+          .nextPage(CommercialReferenceNumberPage(index), CheckMode, answers)
+          .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
     }
+  }
 
-    "Must go from CommercialReferenceNumberPage to AddItemsCheckYourAnswersPage" in {
+  "Must go from AddDangerousGoodsCodePage" - {
+    "to AddItemsCheckYourAnswersPage when user selects 'No'" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>
+          val updatedAnswers = answers
+            .set(AddDangerousGoodsCodePage(index), false)
+            .success
+            .value
           navigator
-            .nextPage(CommercialReferenceNumberPage(index), CheckMode, answers)
-            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+            .nextPage(AddDangerousGoodsCodePage(index), CheckMode, updatedAnswers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
       }
     }
 
-    "Must go from AddDangerousGoodsCodePage" - {
-      "to AddItemsCheckYourAnswersPage when user selects 'No'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(AddDangerousGoodsCodePage(index), false)
-              .success
-              .value
-            navigator
-              .nextPage(AddDangerousGoodsCodePage(index), CheckMode, updatedAnswers)
-              .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-        }
+    "to AddItemsCheckYourAnswersPage when user selects 'Yes' and previously answered 'Yes'" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(AddDangerousGoodsCodePage(index), false)
+            .success
+            .value
+            .set(DangerousGoodsCodePage(index), "test")
+            .success
+            .value
+          navigator
+            .nextPage(AddDangerousGoodsCodePage(index), CheckMode, updatedAnswers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
       }
+    }
 
-      "to AddItemsCheckYourAnswersPage when user selects 'Yes' and previously answered 'Yes'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(AddDangerousGoodsCodePage(index), false)
-              .success
-              .value
-              .set(DangerousGoodsCodePage(index), "test")
-              .success
-              .value
-            navigator
-              .nextPage(AddDangerousGoodsCodePage(index), CheckMode, updatedAnswers)
-              .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-        }
-      }
-
-      "to DangerousGoodsCodePage when user selects 'Yes' and previously answered 'No'" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(AddDangerousGoodsCodePage(index), true)
-              .success
-              .value
-              .remove(DangerousGoodsCodePage(index))
-              .success
-              .value
-            navigator
-              .nextPage(AddDangerousGoodsCodePage(index), CheckMode, updatedAnswers)
-              .mustBe(routes.DangerousGoodsCodeController.onPageLoad(updatedAnswers.id, index, CheckMode))
-        }
+    "to DangerousGoodsCodePage when user selects 'Yes' and previously answered 'No'" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(AddDangerousGoodsCodePage(index), true)
+            .success
+            .value
+            .remove(DangerousGoodsCodePage(index))
+            .success
+            .value
+          navigator
+            .nextPage(AddDangerousGoodsCodePage(index), CheckMode, updatedAnswers)
+            .mustBe(routes.DangerousGoodsCodeController.onPageLoad(updatedAnswers.id, index, CheckMode))
       }
     }
   }
+
 }

@@ -54,7 +54,6 @@ object AddItemsCheckYourAnswersViewModel {
     msg"addItems.checkYourAnswersLabel.itemDetails",
     Seq(
       checkYourAnswersHelper.transportCharges(index),
-      checkYourAnswersHelper.usingSameCommercialReference(index),
       checkYourAnswersHelper.commercialReferenceNumber(index),
       checkYourAnswersHelper.AddDangerousGoodsCode(index),
       checkYourAnswersHelper.dangerousGoodsCode(index)

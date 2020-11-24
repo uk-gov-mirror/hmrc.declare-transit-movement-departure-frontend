@@ -54,7 +54,6 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
       arbitraryDangerousGoodsCodeUserAnswersEntry.arbitrary ::
       arbitraryAddDangerousGoodsCodeUserAnswersEntry.arbitrary ::
       arbitraryCommercialReferenceNumberUserAnswersEntry.arbitrary ::
-      arbitraryUsingSameCommercialReferenceUserAnswersEntry.arbitrary ::
       arbitraryTransportChargesUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherDocumentUserAnswersEntry.arbitrary ::
       arbitraryDocumentExtraInformationUserAnswersEntry.arbitrary ::
