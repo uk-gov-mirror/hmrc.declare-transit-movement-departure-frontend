@@ -21,6 +21,8 @@ import cats.implicits._
 import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages, DeriveNumberOfSpecialMentions}
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.{Index, UserAnswers}
+import pages.ContainersUsedPage
+import pages.addItems.specialMentions.AddSpecialMentionPage
 
 case class ItemSection(
   itemDetails: ItemDetails,
@@ -44,21 +46,23 @@ object ItemSection {
           .map(NonEmptyList.fromListUnsafe)
       }
 
-  private def deriveSpecialMentions(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[SpecialMention]]] = {
-    DeriveNumberOfSpecialMentions(itemIndex).reader
-      .filter(_.nonEmpty)
+  private def deriveSpecialMentions(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[SpecialMention]]] =
+    AddSpecialMentionPage(itemIndex).reader
       .flatMap {
-        _.zipWithIndex
-          .traverse[UserAnswersReader, SpecialMention]({
-            case (_, index) =>
-              SpecialMention.specialMentionsReader(itemIndex, Index(index))
-          })
-          .map(NonEmptyList.fromList)
+        isTrue =>
+          if (isTrue) {
+            DeriveNumberOfSpecialMentions(itemIndex).reader
+              .filter(_.nonEmpty)
+              .flatMap {
+                _.zipWithIndex
+                  .traverse[UserAnswersReader, SpecialMention]({
+                    case (_, index) =>
+                      SpecialMention.specialMentionsReader(itemIndex, Index(index))
+                  })
+                  .map(NonEmptyList.fromList)
+              }
+          } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
-  } recover {
-    case _ =>
-      None
-  }
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
