@@ -127,7 +127,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
     "getGuaranteeNotValidMessage" - {
       "must return valid 'guarantee not valid message'" in {
-        val location = s"/transits-movements-trader-at-departure-stub/movements/departures/${departureId.value}/messages/1"
+        val location = s"/transits-movements-trader-at-departure/movements/departures/${departureId.value}/messages/1"
 
         forAll(Gen.oneOf(InvalidGuaranteeCode.values)) {
           invalidCode =>
@@ -193,7 +193,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
     "getDeclarationRejectionMessage" - {
       "must return valid 'declaration reject message'" in {
-        val location = s"/transits-movements-trader-at-departure-stub/movements/departures/${departureId.value}/messages/2"
+        val location = s"/transits-movements-trader-at-departure/movements/departures/${departureId.value}/messages/2"
 
         val xml: NodeSeq = <CC016A>
               <HEAHEA>
