@@ -668,4 +668,4 @@ POST       /:lrn/add-items/:itemIndex/traders-security-details/security-consigne
 GET        /:lrn/add-items/:itemIndex/traders-security-details/change-security-consignee-name                  controllers.addItems.traderSecurityDetails.SecurityConsigneeNameController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 POST       /:lrn/add-items/:itemIndex/traders-security-details/change-security-consignee-name                  controllers.addItems.traderSecurityDetails.SecurityConsigneeNameController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode = CheckMode)
 
-GET        /:departureId/declaration-rejection                                                              controllers.DeclarationRejectionController.onPageLoad(departureId: DepartureId)
+GET        /:departureId/departure-declaration-fail                                                              controllers.DeclarationRejectionController.onPageLoad(departureId: DepartureId)
