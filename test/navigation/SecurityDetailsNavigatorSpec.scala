@@ -126,7 +126,10 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       forAll(arbitrary[UserAnswers]) {
         answers =>
           val updatedAnswers = answers
-            .set(AddDangerousGoodsCodePage(index), false)
+            .set(DangerousGoodsCodePage(index), "test")
+            .success
+            .value
+            .set(AddDangerousGoodsCodePage(index), true)
             .success
             .value
             .set(DangerousGoodsCodePage(index), "test")
@@ -142,6 +145,9 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       forAll(arbitrary[UserAnswers]) {
         answers =>
           val updatedAnswers = answers
+            .remove(DangerousGoodsCodePage(index))
+            .success
+            .value
             .set(AddDangerousGoodsCodePage(index), true)
             .success
             .value
