@@ -674,3 +674,8 @@ GET        /:lrn/addCircumstanceIndicator                        controllers.Add
 POST       /:lrn/addCircumstanceIndicator                        controllers.AddCircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeAddCircumstanceIndicator                  controllers.AddCircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddCircumstanceIndicator                  controllers.AddCircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/addTransportChargesPaymentMethod                        controllers.AddTransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addTransportChargesPaymentMethod                        controllers.AddTransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddTransportChargesPaymentMethod                  controllers.AddTransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddTransportChargesPaymentMethod                  controllers.AddTransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

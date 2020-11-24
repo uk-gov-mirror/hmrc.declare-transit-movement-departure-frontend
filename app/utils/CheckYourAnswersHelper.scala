@@ -34,6 +34,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def addTransportChargesPaymentMethod: Option[Row] = userAnswers.get(AddTransportChargesPaymentMethodPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addTransportChargesPaymentMethod.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddTransportChargesPaymentMethodController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addTransportChargesPaymentMethod.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addCircumstanceIndicator: Option[Row] = userAnswers.get(AddCircumstanceIndicatorPage) map {
     answer =>
       Row(
