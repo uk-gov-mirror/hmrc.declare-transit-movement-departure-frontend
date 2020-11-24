@@ -1157,12 +1157,6 @@ securityConsignorAddress.checkYourAnswersLabel = securityConsignorAddress
 securityConsignorAddress.error.required = Enter securityConsignorAddress
 securityConsignorAddress.error.length = SecurityConsignorAddress must be 100 characters or less
 
-securityConsigneeEori.title = securityConsigneeEori
-securityConsigneeEori.heading = securityConsigneeEori
-securityConsigneeEori.checkYourAnswersLabel = securityConsigneeEori
-securityConsigneeEori.error.required = Enter securityConsigneeEori
-securityConsigneeEori.error.length = SecurityConsigneeEori must be 100 characters or less
-
 securityConsigneeAddress.title = securityConsigneeAddress
 securityConsigneeAddress.heading = securityConsigneeAddress
 securityConsigneeAddress.checkYourAnswersLabel = securityConsigneeAddress
