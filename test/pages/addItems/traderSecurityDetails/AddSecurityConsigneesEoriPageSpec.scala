@@ -21,53 +21,53 @@ import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
-class AddSecurityConsignorsEoriPageSpec extends SpecBase with PageBehaviours {
+class AddSecurityConsigneesEoriPageSpec extends SpecBase with PageBehaviours {
 
-  "AddSecurityConsignorsEoriPage" - {
+  "AddSecurityConsigneesEoriPage" - {
 
-    beRetrievable[Boolean](AddSecurityConsignorsEoriPage(index))
+    beRetrievable[Boolean](AddSecurityConsigneesEoriPage(index))
 
-    beSettable[Boolean](AddSecurityConsignorsEoriPage(index))
+    beSettable[Boolean](AddSecurityConsigneesEoriPage(index))
 
-    beRemovable[Boolean](AddSecurityConsignorsEoriPage(index))
+    beRemovable[Boolean](AddSecurityConsigneesEoriPage(index))
   }
 
   "cleanup" - {
 
-    "must remove ConsignorAddressPage and ConsignorNamePage when there is a change of the answer to 'Yes'" in {
+    "must remove ConsigneeAddressPage and ConsigneeNamePage when there is a change of the answer to 'Yes'" in {
 
-//      val consignorAddress = arbitrary[ConsignorAddress].sample.value
+      //      val consignorAddress = arbitrary[ConsignorAddress].sample.value
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers
-            .set(SecurityConsignorNamePage(index), "answer")
+            .set(SecurityConsigneeNamePage(index), "answer")
             .success
             .value
-            .set(SecurityConsignorAddressPage(index), "value") //TODO: Update to use SecurityConsignorAddress model when implemented
+            .set(SecurityConsigneeAddressPage(index), "value") //TODO: Update to use SecurityConsigneeAddress model when implemented
             .success
             .value
-            .set(AddSecurityConsignorsEoriPage(index), true)
+            .set(AddSecurityConsigneesEoriPage(index), true)
             .success
             .value
 
-          result.get(SecurityConsignorNamePage(index)) must not be defined
-          result.get(SecurityConsignorAddressPage(index)) must not be defined
+          result.get(SecurityConsigneeNamePage(index)) must not be defined
+          result.get(SecurityConsigneeAddressPage(index)) must not be defined
       }
     }
 
-    "must remove ConsignorEoriPage when there is a change of the answer to 'No'" in {
+    "must remove ConsigneeEoriPage when there is a change of the answer to 'No'" in {
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers
-            .set(SecurityConsignorEoriPage(index), "GB123456")
+            .set(SecurityConsigneeEoriPage(index), "GB123456")
             .success
             .value
-            .set(AddSecurityConsignorsEoriPage(index), false)
+            .set(AddSecurityConsigneesEoriPage(index), false)
             .success
             .value
 
-          result.get(SecurityConsignorEoriPage(index)) must not be defined
+          result.get(SecurityConsigneeEoriPage(index)) must not be defined
       }
     }
   }
