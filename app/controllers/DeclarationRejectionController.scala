@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
-import models.DepartureId
+import models.{DepartureId, LocalReferenceNumber, RejectionError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,24 +29,25 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GuaranteeNotValidController @Inject()(
+class DeclarationRejectionController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer,
   appConfig: FrontendAppConfig,
-  guaranteeNotValidMessageService: DepartureMessageService
+  departureMessageService: DepartureMessageService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(departureId: DepartureId): Action[AnyContent] = identify.async {
+  def onPageLoad(departureId: DepartureId): Action[AnyContent] = (identify).async {
     implicit request =>
-      guaranteeNotValidMessageService.guaranteeNotValidMessage(departureId).flatMap {
+      departureMessageService.declarationRejectionMessage(departureId).flatMap {
         case Some(message) =>
-          val json = Json.obj("guaranteeNotValidMessage" -> Json.toJson(message), "contactUrl" -> appConfig.nctsEnquiriesUrl)
-          renderer.render("guaranteeNotValid.njk", json).map(Ok(_))
-        case _ => Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
+          val json = Json.obj("declarationRejectionMessage" -> Json.toJson(message), "contactUrl" -> appConfig.nctsEnquiriesUrl)
+          renderer.render("declarationRejection.njk", json).map(Ok(_))
+        case _ =>
+          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
       }
   }
 }

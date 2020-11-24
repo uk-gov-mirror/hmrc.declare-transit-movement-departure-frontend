@@ -30,14 +30,13 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import services.GuaranteeNotValidMessageService
+import services.DepartureMessageService
 
 import scala.concurrent.Future
 
 class GuaranteeNotValidControllerSpec extends SpecBase with MockNunjucksRendererApp with BeforeAndAfterEach {
 
-  private val mockGuaranteeNotValidService = mock[GuaranteeNotValidMessageService]
-  private val departureId                  = DepartureId(1)
+  private val mockGuaranteeNotValidService = mock[DepartureMessageService]
 
   override def beforeEach: Unit = {
     reset(mockGuaranteeNotValidService)
@@ -47,7 +46,7 @@ class GuaranteeNotValidControllerSpec extends SpecBase with MockNunjucksRenderer
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[GuaranteeNotValidMessageService].toInstance(mockGuaranteeNotValidService))
+      .overrides(bind[DepartureMessageService].toInstance(mockGuaranteeNotValidService))
 
   "return OK and the correct guarantee not valid view for a GET" in {
     dataRetrievalNoData()
