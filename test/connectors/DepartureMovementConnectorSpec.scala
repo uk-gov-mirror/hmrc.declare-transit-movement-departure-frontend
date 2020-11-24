@@ -221,7 +221,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
             DeclarationRejectionMessage(
               "05CTC20190913113500",
               LocalDate.parse("2019-09-13"),
-              "The IE015 message received was invalid",
+              Some("The IE015 message received was invalid"),
               Seq(
                 RejectionError("15", "GUA(2).REF(1).Other guarantee reference", Some("C130"))
               )
@@ -229,7 +229,6 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
           )
 
         connector.getDeclarationRejectionMessage(location).futureValue mustBe expectedResult
-
       }
 
       "must return None for malformed input'" in {

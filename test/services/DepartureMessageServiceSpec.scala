@@ -83,7 +83,7 @@ class DepartureMessageServiceSpec extends SpecBase with MockServiceApp with Befo
 
     "DeclarationRejectionMessage" - {
       "must return DeclarationRejectionMessage for the input departureId" in {
-        val notificationMessage = DeclarationRejectionMessage("", LocalDate.parse("2010-10-10"), "", Seq.empty)
+        val notificationMessage = DeclarationRejectionMessage("", LocalDate.parse("2010-10-10"), Some(""), Seq.empty)
         val messagesSummary =
           MessagesSummary(
             departureId,

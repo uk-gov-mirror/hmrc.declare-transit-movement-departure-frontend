@@ -69,7 +69,9 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
       case responseMessage if is2xx(responseMessage.status) =>
         val message: NodeSeq = responseMessage.json.as[ResponseMessage].message
         XmlReader.of[DeclarationRejectionMessage].read(message).toOption
-      case _ => None
+      case _ =>
+        Logger.error("getDeclarationRejectionMessage failed to return data")
+        None
     }
   }
 }

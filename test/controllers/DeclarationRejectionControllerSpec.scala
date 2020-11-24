@@ -52,7 +52,7 @@ class DeclarationRejectionControllerSpec extends SpecBase with MockNunjucksRende
   "DeclarationRejection Controller" - {
 
     "return OK and the correct view for a GET" in {
-      val message = DeclarationRejectionMessage("", LocalDate.parse("2010-10-10"), "", Seq.empty)
+      val message = DeclarationRejectionMessage("", LocalDate.parse("2010-10-10"), Some(""), Seq.empty)
 
       when(mockDepartureMessageService.declarationRejectionMessage(any())(any(), any()))
         .thenReturn(Future.successful(Some(message)))

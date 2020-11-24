@@ -17,14 +17,13 @@
 package models
 
 import java.time.LocalDate
-
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import play.api.libs.json.{Json, OWrites}
 import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import models.XMLReads._
 
-case class DeclarationRejectionMessage(reference: String, rejectionDate: LocalDate, reason: String, errors: Seq[RejectionError])
+case class DeclarationRejectionMessage(reference: String, rejectionDate: LocalDate, reason: Option[String], errors: Seq[RejectionError])
 
 object DeclarationRejectionMessage {
 
@@ -33,7 +32,7 @@ object DeclarationRejectionMessage {
   implicit val xmlReader: XmlReader[DeclarationRejectionMessage] = (
     (__ \ "HEAHEA" \ "RefNumHEA4").read[String],
     (__ \ "HEAHEA" \ "DecRejDatHEA159").read[LocalDate],
-    (__ \ "HEAHEA" \ "DecRejReaHEA252").read[String],
+    (__ \ "HEAHEA" \ "DecRejReaHEA252").read[Option[String]],
     (__ \ "FUNERRER1").read(strictReadSeq[RejectionError])
   ).mapN(apply)
 }

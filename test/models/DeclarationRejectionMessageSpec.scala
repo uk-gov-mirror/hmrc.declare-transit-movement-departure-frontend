@@ -34,7 +34,7 @@ class DeclarationRejectionMessageSpec extends AnyFreeSpec with Generators with S
         RejectionError("15", "GUA(1).REF(1).Other guarantee reference", Some("C130")),
         RejectionError("12", "GUA(1).REF(1).Guarantee reference number (GRN)", None)
       )
-      val expected = DeclarationRejectionMessage("05CTC20190913113500", LocalDate.parse("2019-09-13"), "The IE015 message received was invalid", errors)
+      val expected = DeclarationRejectionMessage("05CTC20190913113500", LocalDate.parse("2019-09-13"), Some("The IE015 message received was invalid"), errors)
       XmlReader.of[DeclarationRejectionMessage].read(validXml).toOption.value mustBe expected
     }
   }
