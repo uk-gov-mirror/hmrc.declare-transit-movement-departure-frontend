@@ -47,7 +47,7 @@ object Address {
         Address(numberAndStreet, town, postcode, Some(country))
     })
 
-  def prismAddressToConsignorAddress: Prism[Address, ConsignorAddress] =
+  val prismAddressToConsignorAddress: Prism[Address, ConsignorAddress] =
     Prism.partial[Address, ConsignorAddress]({
       case Address(numberAndStreet, town, postcode, Some(country)) =>
         ConsignorAddress(numberAndStreet, town, postcode, country)
