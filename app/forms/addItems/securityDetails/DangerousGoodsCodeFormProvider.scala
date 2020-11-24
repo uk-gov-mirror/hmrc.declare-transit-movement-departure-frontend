@@ -27,7 +27,7 @@ class DangerousGoodsCodeFormProvider @Inject() extends Mappings {
   def apply(dangerousGoodsCodeList: DangerousGoodsCodeList): Form[DangerousGoodsCode] =
     Form(
       "value" -> text("dangerousGoodsCode.error.required")
-        .verifying("dangerousGoodsCode.error.reuired", value => dangerousGoodsCodeList.dangerousGoodsCodes.exists(_.code == value))
+        .verifying("dangerousGoodsCode.error.required", value => dangerousGoodsCodeList.dangerousGoodsCodes.exists(_.code == value))
         .transform[DangerousGoodsCode](value => dangerousGoodsCodeList.getDangerousGoodsCode(value).get, _.code)
     )
 }

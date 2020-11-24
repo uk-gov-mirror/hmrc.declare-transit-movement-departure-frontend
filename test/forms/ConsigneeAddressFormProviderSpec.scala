@@ -74,6 +74,7 @@ class ConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
           result.errors mustBe expectedError
       }
     }
+
   }
 
   ".AddressLine2" - {

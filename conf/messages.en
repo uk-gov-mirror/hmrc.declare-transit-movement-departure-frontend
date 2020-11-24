@@ -1144,12 +1144,16 @@ securityConsignorEori.heading = securityConsignorEori
 securityConsignorEori.checkYourAnswersLabel = securityConsignorEori
 securityConsignorEori.error.required = Enter securityConsignorEori
 securityConsignorEori.error.length = SecurityConsignorEori must be 17 characters or less
+securityConsignorEori.error.invalid = The security consignor’s EORI number must only include letters a to z and numbers 0 to 9
+
 
 securityConsigneeEori.title = securityConsigneeEori
 securityConsigneeEori.heading = securityConsigneeEori
 securityConsigneeEori.checkYourAnswersLabel = securityConsigneeEori
 securityConsigneeEori.error.required = Enter securityConsigneeEori
 securityConsigneeEori.error.length = SecurityConsigneeEori must be 17 characters or less
+securityConsigneeEori.error.invalid = The security consignee’s EORI number must only include letters a to z and numbers 0 to 9
+
 
 securityConsignorAddress.title = securityConsignorAddress
 securityConsignorAddress.heading = securityConsignorAddress

@@ -16,16 +16,19 @@
 
 package forms.addItems.traderSecurityDetails
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
-class SecurityConsigneeEoriFormProviderSpec extends StringFieldBehaviours {
+class SecurityConsigneeEoriFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "securityConsigneeEori.error.required"
-  val lengthKey   = "securityConsigneeEori.error.length"
-  val maxLength   = 17
-
-  val form = new SecurityConsigneeEoriFormProvider()()
+  val requiredKey         = "securityConsigneeEori.error.required"
+  val lengthKey           = "securityConsigneeEori.error.length"
+  val invalidCharacterKey = "securityConsigneeEori.error.invalid"
+  val maxLength           = 17
+  val eoriRegex           = "^[a-zA-Z0-9]*$"
+  val form                = new SecurityConsigneeEoriFormProvider()(index)
 
   ".value" - {
 
@@ -49,5 +52,22 @@ class SecurityConsigneeEoriFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the eori invalid characters regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidCharacterKey, Seq(eoriRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(eoriRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
+
   }
 }

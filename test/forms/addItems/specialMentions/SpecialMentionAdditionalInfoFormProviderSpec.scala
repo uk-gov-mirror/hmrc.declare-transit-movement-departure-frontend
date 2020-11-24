@@ -50,5 +50,6 @@ class SpecialMentionAdditionalInfoFormProviderSpec extends StringFieldBehaviours
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(itemIndex.display, referenceIndex.display))
     )
+
   }
 }
