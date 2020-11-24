@@ -34,6 +34,6 @@ class SecurityConsigneeEoriFormProvider @Inject() extends Mappings {
           StopOnFirstFail[String](
             maxLength(maxLength, "securityConsigneeEori.error.length"),
             regexp(eoriRegex, "securityConsigneeEori.error.invalid")
-          ))``
+          ))
     )
 }
