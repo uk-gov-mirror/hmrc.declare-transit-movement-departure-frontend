@@ -231,6 +231,8 @@ class DeclarationRequestService @Inject()(
         case _                                            => None
       }
 
+    def safetyAndSecurityFlag(boolFlag: Boolean): Int = if (boolFlag) 1 else 0
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
@@ -265,7 +267,7 @@ class DeclarationRequestService @Inject()(
         speCirIndHEA1      = None, // safety and security
         traChaMetOfPayHEA1 = None,
         comRefNumHEA       = None, // safety and security
-        secHEA358          = None, // local ref number & security
+        secHEA358          = Some(safetyAndSecurityFlag(preTaskList.addSecurityDetails)), // local ref number & security
         conRefNumHEA       = None, // safety and security
         codPlUnHEA357      = None // safety and security
       ),
