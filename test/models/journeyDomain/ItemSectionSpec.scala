@@ -20,6 +20,8 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
 import models.{Index, UserAnswers}
+import pages.ContainersUsedPage
+import pages.addItems.specialMentions.AddSpecialMentionPage
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
@@ -77,17 +79,27 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         ItemSectionSpec.setItemSection(section, Index(i))(ua)
     }
 
-  private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
-    specialMentions.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
+  private def setContainers(containers: Option[NonEmptyList[Container]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
+    val smUserAnswers = startUserAnswers.set(ContainersUsedPage, false).toOption.get
+    containers.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
+      case (userAnswers, (container, index)) =>
+        ContainerSpec.setContainerUserAnswers(container, itemIndex, Index(index))(userAnswers)
+    })
+  }
+  private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
+    val smUserAnswers = startUserAnswers.set(AddSpecialMentionPage(itemIndex), false).toOption.get
+    specialMentions.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
       case (userAnswers, (specialMention, index)) =>
         SpecialMentionSpec.setSpecialMentionsUserAnswers(specialMention, itemIndex, Index(index))(userAnswers)
     })
+  }
 
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     (
       ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, itemIndex) _ andThen
         ItemTraderDetailsSpec.setItemTraderDetails(ItemTraderDetails(itemSection.consignor, itemSection.consignee), itemIndex) andThen
         setPackages(itemSection.packages, itemIndex) andThen
+        setContainers(itemSection.containers, itemIndex) andThen
         setSpecialMentions(itemSection.specialMentions, itemIndex)
     )(startUserAnswers)
 

@@ -18,15 +18,18 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages, DeriveNumberOfSpecialMentions}
+import derivable.{DeriveNumberOfContainers, DeriveNumberOfItems, DeriveNumberOfPackages, DeriveNumberOfSpecialMentions}
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.{Index, UserAnswers}
+import pages.ContainersUsedPage
+import pages.addItems.specialMentions.AddSpecialMentionPage
 
 case class ItemSection(
   itemDetails: ItemDetails,
   consignor: Option[RequiredDetails],
   consignee: Option[RequiredDetails],
   packages: NonEmptyList[Packages],
+  containers: Option[NonEmptyList[Container]],
   specialMentions: Option[NonEmptyList[SpecialMention]]
 )
 
@@ -44,21 +47,41 @@ object ItemSection {
           .map(NonEmptyList.fromListUnsafe)
       }
 
-  private def deriveSpecialMentions(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[SpecialMention]]] = {
-    DeriveNumberOfSpecialMentions(itemIndex).reader
-      .filter(_.nonEmpty)
+  private def deriveContainers(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[Container]]] =
+    ContainersUsedPage.reader
       .flatMap {
-        _.zipWithIndex
-          .traverse[UserAnswersReader, SpecialMention]({
-            case (_, index) =>
-              SpecialMention.specialMentionsReader(itemIndex, Index(index))
-          })
-          .map(NonEmptyList.fromList)
+        isTrue =>
+          if (isTrue) {
+            DeriveNumberOfContainers(itemIndex).reader
+              .filter(_.nonEmpty)
+              .flatMap {
+                _.zipWithIndex
+                  .traverse[UserAnswersReader, Container]({
+                    case (_, index) =>
+                      Container.containerReader(itemIndex, Index(index))
+                  })
+                  .map(NonEmptyList.fromList)
+              }
+          } else none[NonEmptyList[Container]].pure[UserAnswersReader]
       }
-  } recover {
-    case _ =>
-      None
-  }
+
+  private def deriveSpecialMentions(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[SpecialMention]]] =
+    AddSpecialMentionPage(itemIndex).reader
+      .flatMap {
+        isTrue =>
+          if (isTrue) {
+            DeriveNumberOfSpecialMentions(itemIndex).reader
+              .filter(_.nonEmpty)
+              .flatMap {
+                _.zipWithIndex
+                  .traverse[UserAnswersReader, SpecialMention]({
+                    case (_, index) =>
+                      SpecialMention.specialMentionsReader(itemIndex, Index(index))
+                  })
+                  .map(NonEmptyList.fromList)
+              }
+          } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
+      }
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
@@ -66,6 +89,7 @@ object ItemSection {
       ItemTraderDetails.consignorDetails(index),
       ItemTraderDetails.consigneeDetails(index),
       derivePackage(index),
+      deriveContainers(index),
       deriveSpecialMentions(index)
     ).tupled.map((ItemSection.apply _).tupled)
 

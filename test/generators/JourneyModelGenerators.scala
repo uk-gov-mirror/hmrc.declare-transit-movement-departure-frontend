@@ -36,6 +36,7 @@ import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMod
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
 import models.journeyDomain.{
+  Container,
   GoodsSummary,
   GuaranteeDetails,
   ItemDetails,
@@ -260,8 +261,9 @@ trait JourneyModelGenerators {
         itemConsignor   <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
         itemConsignee   <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
         packages        <- nonEmptyListOf[Packages](10)
+        containers      <- Gen.option(nonEmptyListOf[Container](10))
         specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](10))
-      } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, specialMentions)
+      } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions)
     }
   }
 
@@ -344,6 +346,13 @@ trait JourneyModelGenerators {
         specialMentionType <- nonEmptyString
         additionalInfo     <- nonEmptyString
       } yield SpecialMention(specialMentionType, additionalInfo)
+    }
+
+  implicit lazy val arbitraryContainer: Arbitrary[Container] =
+    Arbitrary {
+      for {
+        containerNumber <- nonEmptyString
+      } yield Container(containerNumber)
     }
 
   implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =

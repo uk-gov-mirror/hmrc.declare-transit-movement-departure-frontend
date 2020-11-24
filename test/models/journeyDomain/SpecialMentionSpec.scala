@@ -23,7 +23,7 @@ import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.addItems.specialMentions.{SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
+import pages.addItems.specialMentions.{AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 
 class SpecialMentionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
@@ -64,8 +64,9 @@ class SpecialMentionSpec extends SpecBase with GeneratorSpec with JourneyModelGe
 
 object SpecialMentionSpec extends UserAnswersSpecHelper {
 
-  def setSpecialMentionsUserAnswers(specialMention: SpecialMention, index: Index, referenceIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
-    startUserAnswers
+  def setSpecialMentionsUserAnswers(specialMention: SpecialMention, index: Index, referenceIndex: Index)(userAnswers: UserAnswers): UserAnswers =
+    userAnswers
+      .unsafeSetVal(AddSpecialMentionPage(index))(true)
       .unsafeSetVal(SpecialMentionTypePage(index, referenceIndex))(specialMention.specialMention)
       .unsafeSetVal(SpecialMentionAdditionalInfoPage(index, referenceIndex))(specialMention.additionalInfo)
 
