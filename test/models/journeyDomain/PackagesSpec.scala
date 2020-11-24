@@ -22,9 +22,8 @@ import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPacka
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.addItems.{AddMarkPage, DeclareMarkPage, DeclareNumberOfPackagesPage, HowManyPackagesPage, TotalPiecesPage}
+import pages.addItems._
 import pages.{PackageTypePage, QuestionPage}
-import play.api.libs.json.Json
 
 class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with ModelGenerators {
 

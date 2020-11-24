@@ -16,7 +16,6 @@
 
 package forms.addItems.traderDetails
 
-import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import models.Index
 import play.api.data.FormError

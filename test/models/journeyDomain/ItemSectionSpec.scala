@@ -89,11 +89,11 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
 
   private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val smUserAnswers = startUserAnswers.set(AddSpecialMentionPage(itemIndex), false).toOption.get
-
     specialMentions.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
       case (userAnswers, (specialMention, index)) =>
         SpecialMentionSpec.setSpecialMentionsUserAnswers(specialMention, itemIndex, Index(index))(userAnswers)
     })
+  }
 
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     (
