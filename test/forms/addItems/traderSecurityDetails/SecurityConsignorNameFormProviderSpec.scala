@@ -49,5 +49,6 @@ class SecurityConsignorNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
   }
 }

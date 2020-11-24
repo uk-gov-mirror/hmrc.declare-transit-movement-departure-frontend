@@ -53,7 +53,7 @@ class SecurityConsigneeEoriFormProviderSpec extends SpecBase with StringFieldBeh
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the eori invalid characters regex" in {
+    "must not bind strings that do not match the eori valid characters regex" in {
 
       val expectedError =
         List(FormError(fieldName, invalidCharacterKey, Seq(eoriRegex)))
