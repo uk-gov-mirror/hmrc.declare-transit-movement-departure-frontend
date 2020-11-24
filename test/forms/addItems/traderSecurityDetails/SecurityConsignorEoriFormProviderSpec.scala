@@ -16,16 +16,20 @@
 
 package forms.addItems.traderSecurityDetails
 
+import base.SpecBase
+import forms.Constants._
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
-class SecurityConsignorEoriFormProviderSpec extends StringFieldBehaviours {
+class SecurityConsignorEoriFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "securityConsignorEori.error.required"
-  val lengthKey   = "securityConsignorEori.error.length"
-  val maxLength   = 17
+  val requiredKey      = "securityConsignorEori.error.required"
+  val lengthKey        = "securityConsignorEori.error.length"
+  val invalidCharsKey  = "securityConsignorEori.error.invalid"
+  val invalidFormatKey = "securityConsignorEori.error.invalidFormat"
 
-  val form = new SecurityConsignorEoriFormProvider()()
+  val form = new SecurityConsignorEoriFormProvider()(index)
 
   ".value" - {
 
@@ -34,14 +38,14 @@ class SecurityConsignorEoriFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(maxLengthEoriNumber)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength   = maxLengthEoriNumber,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLengthEoriNumber))
     )
 
     behave like mandatoryField(
@@ -49,5 +53,37 @@ class SecurityConsignorEoriFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the EORI number regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidCharsKey, Seq(validEoriCharactersRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLengthEoriNumber) suchThat (!_.matches(validEoriCharactersRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
+
+    "must not bind strings that do not match the EORI number format regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex)))
+
+      val genInvalidString: Gen[String] = {
+        alphaNumericWithMaxLength(maxLengthEoriNumber).map(_.toUpperCase) suchThat (!_.matches(eoriNumberRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }
