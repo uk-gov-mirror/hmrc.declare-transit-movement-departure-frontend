@@ -16,10 +16,10 @@
 
 package navigation
 
+import controllers.addItems.securityDetails.routes
 import javax.inject.{Inject, Singleton}
 import models._
 import pages.Page
-import controllers.addItems.securityDetails.routes
 import pages.addItems.securityDetails._
 import play.api.mvc.Call
 
@@ -27,7 +27,7 @@ import play.api.mvc.Call
 class SecurityDetailsNavigator @Inject()() extends Navigator {
 
   // format: off
-  //todo -update when Security Trader Details section done
+  //todo -update when Security section done
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case TransportChargesPage(index) => ua => Some(routes.UsingSameCommercialReferenceController.onPageLoad(ua.id, index, NormalMode))
     case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index, NormalMode)
@@ -41,6 +41,8 @@ class SecurityDetailsNavigator @Inject()() extends Navigator {
     case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index, CheckMode)
     case CommercialReferenceNumberPage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case AddDangerousGoodsCodePage(index) => ua => addDangerousGoodsCodeRoute(ua, index, CheckMode)
+    case DangerousGoodsCodePage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+
   }
 
   private def usingSameCommercialReferenceRoute(ua: UserAnswers, index: Index, mode: Mode) =

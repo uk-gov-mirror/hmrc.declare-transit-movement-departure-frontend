@@ -115,6 +115,7 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   }
   "In CheckMode" - {
+
     "Must go from TransportChargesPage to AddItemsCheckYourAnswersPage" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>

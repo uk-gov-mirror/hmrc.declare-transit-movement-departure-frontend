@@ -19,8 +19,16 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import controllers.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.addItems.traderSecurityDetails.{
+  SecurityConsigneeAddressPage,
+  SecurityConsigneeEoriPage,
+  SecurityConsigneeNamePage,
+  SecurityConsignorAddressPage,
+  SecurityConsignorEoriPage,
+  SecurityConsignorNamePage
+}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 

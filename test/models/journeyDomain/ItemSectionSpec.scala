@@ -20,6 +20,7 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
 import models.{Index, UserAnswers}
+import pages.addItems.specialMentions.AddSpecialMentionPage
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
@@ -77,11 +78,20 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         ItemSectionSpec.setItemSection(section, Index(i))(ua)
     }
 
+  private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
+    val smUserAnswers = startUserAnswers.set(AddSpecialMentionPage(itemIndex), false).toOption.get
+    specialMentions.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
+      case (userAnswers, (specialMention, index)) =>
+        SpecialMentionSpec.setSpecialMentionsUserAnswers(specialMention, itemIndex, Index(index))(userAnswers)
+    })
+  }
+
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     (
       ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, itemIndex) _ andThen
         ItemTraderDetailsSpec.setItemTraderDetails(ItemTraderDetails(itemSection.consignor, itemSection.consignee), itemIndex) andThen
-        setPackages(itemSection.packages, itemIndex)
+        setPackages(itemSection.packages, itemIndex) andThen
+        setSpecialMentions(itemSection.specialMentions, itemIndex)
     )(startUserAnswers)
 
 }

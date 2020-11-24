@@ -18,13 +18,13 @@ package services
 
 import connectors.DepartureMovementConnector
 import javax.inject.Inject
-import models.{DepartureId, GuaranteeNotValidMessage}
+import models.{DeclarationRejectionMessage, DepartureId, GuaranteeNotValidMessage}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GuaranteeNotValidMessageService @Inject()(connectors: DepartureMovementConnector) {
+class DepartureMessageService @Inject()(connectors: DepartureMovementConnector) {
 
   def guaranteeNotValidMessage(departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[GuaranteeNotValidMessage]] =
     connectors.getSummary(departureId) flatMap {
@@ -38,6 +38,22 @@ class GuaranteeNotValidMessageService @Inject()(connectors: DepartureMovementCon
         }
       case _ =>
         Logger.error(s"Get Summary failed to return data")
+        Future.successful(None)
+    }
+
+  def declarationRejectionMessage(departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DeclarationRejectionMessage]] =
+    connectors.getSummary(departureId) flatMap {
+      case Some(summary) =>
+        summary.messagesLocation.declarationRejection match {
+          case Some(location) => {
+            connectors.getDeclarationRejectionMessage(location)
+          }
+          case _ =>
+            Logger.error(s"Get Summary failed to get declaration rejection location")
+            Future.successful(None)
+        }
+      case _ =>
+        Logger.error(s"Get Summary failed to return declaration rejection data")
         Future.successful(None)
     }
 }

@@ -1081,7 +1081,6 @@ transportCharges.title = What payment method are you using for the transport cha
 transportCharges.heading = What payment method are you using for the transport charges?
 transportCharges.checkYourAnswersLabel = Payment method for transport charges
 transportCharges.error.required = Enter the payment method you are using for the transport charges
-transportCharges.error.length = TransportCharges must be 100 characters or less
 
 usingSameCommercialReference.title = Are you using the same commercial reference number across all items?
 usingSameCommercialReference.heading = Are you using the same commercial reference number across all items?
@@ -1114,3 +1113,71 @@ guaranteeNotValid.contact = contact the New Computerised Transit System helpdesk
 guaranteeNotValid.you.must = You must
 guaranteeNotValid.lrn = Local reference number
 guaranteeNotValid.guaranteeRefNumber = Guarantee Reference number
+
+usingSameMethodOfPayment.title = Are you using the same payment method for all items?
+usingSameMethodOfPayment.heading = Are you using the same payment method for all items?
+usingSameMethodOfPayment.checkYourAnswersLabel = Same payment method for all items?
+usingSameMethodOfPayment.error.required = Select yes if you are using the same payment method for all items
+
+useTradersDetails.title = Do you want to use this trader's details for the security information?
+useTradersDetails.heading = Do you want to use this trader's details for the security information?
+useTradersDetails.checkYourAnswersLabel = Use this trader's details for the security information?
+useTradersDetails.error.required = Select yes if you want to use this trader's details for the security information
+
+addSecurityConsignorsEori.title = Do you know the security consignor’s EORI number?
+addSecurityConsignorsEori.heading = Do you know the security consignor’s EORI number?
+addSecurityConsignorsEori.checkYourAnswersLabel = Know the security consignor’s EORI number?
+addSecurityConsignorsEori.error.required = Select yes if you know the security consignor’s EORI number?
+
+addSecurityConsigneesEori.title = Do you know the security consignee’s EORI number?
+addSecurityConsigneesEori.heading = Do you know the security consignee’s EORI number?
+addSecurityConsigneesEori.checkYourAnswersLabel = Know the security consignee’s EORI number?
+addSecurityConsigneesEori.error.required = Select yes if you know the security consignee’s EORI number?
+
+securityConsigneeAllItems.title = Is this the security consignee for all the items?
+securityConsigneeAllItems.heading = Is this the security consignee for all the items?
+securityConsigneeAllItems.checkYourAnswersLabel = Security consignee for all items
+securityConsigneeAllItems.error.required = Select yes if this the security consignee for all the items
+
+securityConsignorEori.title = securityConsignorEori
+securityConsignorEori.heading = securityConsignorEori
+securityConsignorEori.checkYourAnswersLabel = securityConsignorEori
+securityConsignorEori.error.required = Enter securityConsignorEori
+securityConsignorEori.error.length = SecurityConsignorEori must be 17 characters or less
+
+securityConsigneeEori.title = securityConsigneeEori
+securityConsigneeEori.heading = securityConsigneeEori
+securityConsigneeEori.checkYourAnswersLabel = securityConsigneeEori
+securityConsigneeEori.error.required = Enter securityConsigneeEori
+securityConsigneeEori.error.length = SecurityConsigneeEori must be 17 characters or less
+
+securityConsignorAddress.title = securityConsignorAddress
+securityConsignorAddress.heading = securityConsignorAddress
+securityConsignorAddress.checkYourAnswersLabel = securityConsignorAddress
+securityConsignorAddress.error.required = Enter securityConsignorAddress
+securityConsignorAddress.error.length = SecurityConsignorAddress must be 100 characters or less
+
+securityConsigneeAddress.title = securityConsigneeAddress
+securityConsigneeAddress.heading = securityConsigneeAddress
+securityConsigneeAddress.checkYourAnswersLabel = securityConsigneeAddress
+securityConsigneeAddress.error.required = Enter securityConsigneeAddress
+securityConsigneeAddress.error.length = SecurityConsigneeAddress must be 100 characters or less
+
+securityConsignorName.title = securityConsignorName
+securityConsignorName.heading = securityConsignorName
+securityConsignorName.checkYourAnswersLabel = securityConsignorName
+securityConsignorName.error.required = Enter securityConsignorName
+securityConsignorName.error.length = SecurityConsignorName must be 35 characters or less
+
+securityConsigneeName.title = securityConsigneeName
+securityConsigneeName.heading = securityConsigneeName
+securityConsigneeName.checkYourAnswersLabel = securityConsigneeName
+securityConsigneeName.error.required = Enter securityConsigneeName
+securityConsigneeName.error.length = SecurityConsigneeName must be 35 characters or less
+
+
+declarationRejection.title = There is a problem with this departure declaration
+declarationRejection.heading = There is a problem with this departure declaration
+declarationRejection.errorType =  Error Type
+declarationRejection.pointer =  Error Pointer
+declarationRejection.reason =  Reason

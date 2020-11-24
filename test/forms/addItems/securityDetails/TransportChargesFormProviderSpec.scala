@@ -18,6 +18,8 @@ package forms.addItems.securityDetails
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import models.MethodOfPaymentList
+import models.reference.MethodOfPayment
 import play.api.data.FormError
 
 class TransportChargesFormProviderSpec extends SpecBase with StringFieldBehaviours {
@@ -26,7 +28,14 @@ class TransportChargesFormProviderSpec extends SpecBase with StringFieldBehaviou
   val lengthKey   = "transportCharges.error.length"
   val maxLength   = 100
 
-  val form = new TransportChargesFormProvider()()
+  private val methodOfPaymentList = MethodOfPaymentList(
+    Seq(
+      MethodOfPayment("A", "Payment in cash"),
+      MethodOfPayment("B", "Payment by credit card")
+    )
+  )
+
+  val form = new TransportChargesFormProvider()(methodOfPaymentList)
 
   ".value" - {
 
@@ -38,17 +47,24 @@ class TransportChargesFormProviderSpec extends SpecBase with StringFieldBehaviou
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind if previous method of payment that does not exist in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "foobar"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a method of payment code which is in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "A"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
   }
 }

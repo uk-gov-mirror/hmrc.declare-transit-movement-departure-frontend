@@ -17,15 +17,17 @@
 package controllers.addItems.securityDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.addItems.securityDetails.TransportChargesFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
-import navigation.annotations.{AddItems, SecurityDetails}
+import models.reference.MethodOfPayment
+import models.{MethodOfPaymentList, NormalMode}
+import navigation.annotations.SecurityDetails
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.addItems.securityDetails.TransportChargesPage
 import play.api.inject.bind
@@ -44,23 +46,39 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new TransportChargesFormProvider()
-  private val form         = formProvider()
-  private val template     = "addItems/securityDetails/transportCharges.njk"
+  private val methodOfPaymentList = MethodOfPaymentList(
+    Seq(
+      MethodOfPayment("A", "Payment in cash"),
+      MethodOfPayment("B", "Payment by credit card")
+    )
+  )
+  private val form     = formProvider(methodOfPaymentList)
+  private val template = "addItems/securityDetails/transportCharges.njk"
+
+  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   lazy val transportChargesRoute = routes.TransportChargesController.onPageLoad(lrn, index, NormalMode).url
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SecurityDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockRefDataConnector)
+  }
 
   "TransportCharges Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      dataRetrievalWithData(emptyUserAnswers)
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      dataRetrievalWithData(emptyUserAnswers)
+      when(mockRefDataConnector.getMethodOfPayment()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
 
       val request        = FakeRequest(GET, transportChargesRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -72,12 +90,19 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+      val expectedMethodOfPaymentJson = Seq(
+        Json.obj("value" -> "", "text"  -> ""),
+        Json.obj("value" -> "A", "text" -> "(A) Payment in cash", "selected" -> false),
+        Json.obj("value" -> "B", "text" -> "(B) Payment by credit card", "selected" -> false)
       )
 
+      val expectedJson = Json.obj(
+        "form"     -> form,
+        "index"    -> itemIndex.display,
+        "payments" -> expectedMethodOfPaymentJson,
+        "lrn"      -> lrn,
+        "mode"     -> NormalMode
+      )
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
@@ -90,7 +115,9 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(TransportChargesPage(index), "answer").success.value
+      when(mockRefDataConnector.getMethodOfPayment()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
+
+      val userAnswers = emptyUserAnswers.set(TransportChargesPage(index), "A").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, transportChargesRoute)
@@ -103,14 +130,21 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "A"))
 
-      val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+      val expectedMethodOfPaymentJson = Seq(
+        Json.obj("value" -> "", "text"  -> ""),
+        Json.obj("value" -> "A", "text" -> "(A) Payment in cash", "selected" -> true),
+        Json.obj("value" -> "B", "text" -> "(B) Payment by credit card", "selected" -> false)
       )
 
+      val expectedJson = Json.obj(
+        "form"     -> filledForm,
+        "index"    -> itemIndex.display,
+        "payments" -> expectedMethodOfPaymentJson,
+        "lrn"      -> lrn,
+        "mode"     -> NormalMode
+      )
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
 
       templateCaptor.getValue mustEqual template
@@ -122,11 +156,13 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      when(mockRefDataConnector.getMethodOfPayment()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
+
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
         FakeRequest(POST, transportChargesRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "A"))
 
       val result = route(app, request).value
 
@@ -139,6 +175,8 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockRefDataConnector.getMethodOfPayment()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -154,9 +192,10 @@ class TransportChargesControllerSpec extends SpecBase with MockNunjucksRendererA
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"  -> boundForm,
+        "index" -> itemIndex.display,
+        "lrn"   -> lrn,
+        "mode"  -> NormalMode
       )
 
       templateCaptor.getValue mustEqual template

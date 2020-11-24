@@ -26,14 +26,15 @@ class MessagesSummarySpec extends AnyFreeSpec with Matchers {
 
       val messagesSummary = MessagesSummary(
         DepartureId(1),
-        MessagesLocation("/movements/arrivals/1/messages/1", Some("/movements/arrivals/1/messages/2"))
+        MessagesLocation("/movements/arrivals/1/messages/1", Some("/movements/arrivals/1/messages/2"), Some("/movements/arrivals/1/messages/3"))
       )
 
       val json = Json.obj(
         "departureId" -> 1,
         "messages" -> Json.obj(
           "IE015" -> "/movements/arrivals/1/messages/1",
-          "IE055" -> "/movements/arrivals/1/messages/2"
+          "IE055" -> "/movements/arrivals/1/messages/2",
+          "IE016" -> "/movements/arrivals/1/messages/3"
         )
       )
 
