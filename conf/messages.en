@@ -1190,3 +1190,8 @@ addTransportChargesPaymentMethod.title = addTransportChargesPaymentMethod
 addTransportChargesPaymentMethod.heading = addTransportChargesPaymentMethod
 addTransportChargesPaymentMethod.checkYourAnswersLabel = addTransportChargesPaymentMethod
 addTransportChargesPaymentMethod.error.required = Select yes if addTransportChargesPaymentMethod
+
+addCommercialReferenceNumber.title = addCommercialReferenceNumber
+addCommercialReferenceNumber.heading = addCommercialReferenceNumber
+addCommercialReferenceNumber.checkYourAnswersLabel = addCommercialReferenceNumber
+addCommercialReferenceNumber.error.required = Select yes if addCommercialReferenceNumber
