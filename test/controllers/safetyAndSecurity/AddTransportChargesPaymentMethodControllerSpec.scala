@@ -45,7 +45,7 @@ class AddTransportChargesPaymentMethodControllerSpec extends SpecBase with MockN
 
   private val formProvider = new AddTransportChargesPaymentMethodFormProvider()
   private val form         = formProvider()
-  private val template     = "addTransportChargesPaymentMethod.njk"
+  private val template     = "safetyAndSecurity/addTransportChargesPaymentMethod.njk"
 
   lazy val addTransportChargesPaymentMethodRoute = routes.AddTransportChargesPaymentMethodController.onPageLoad(lrn, NormalMode).url
 

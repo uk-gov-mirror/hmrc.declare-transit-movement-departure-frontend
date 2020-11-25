@@ -45,7 +45,7 @@ class CommercialReferenceNumberAllItemsControllerSpec extends SpecBase with Mock
 
   private val formProvider = new CommercialReferenceNumberAllItemsFormProvider()
   private val form         = formProvider()
-  private val template     = "commercialReferenceNumberAllItems.njk"
+  private val template     = "safetyAndSecurity/commercialReferenceNumberAllItems.njk"
 
   lazy val commercialReferenceNumberAllItemsRoute = routes.CommercialReferenceNumberAllItemsController.onPageLoad(lrn, NormalMode).url
 

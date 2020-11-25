@@ -50,7 +50,7 @@ class AddCommercialReferenceNumberAllItemsControllerSpec
 
   private val formProvider = new AddCommercialReferenceNumberAllItemsFormProvider()
   private val form         = formProvider()
-  private val template     = "addCommercialReferenceNumberAllItems.njk"
+  private val template     = "safetyAndSecurity/addCommercialReferenceNumberAllItems.njk"
 
   lazy val addCommercialReferenceNumberAllItemsRoute = routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(lrn, NormalMode).url
 

@@ -45,7 +45,7 @@ class AddPlaceOfUnloadingCodeControllerSpec extends SpecBase with MockNunjucksRe
 
   private val formProvider = new AddPlaceOfUnloadingCodeFormProvider()
   private val form         = formProvider()
-  private val template     = "addPlaceOfUnloadingCode.njk"
+  private val template     = "safetyAndSecurity/addPlaceOfUnloadingCode.njk"
 
   lazy val addPlaceOfUnloadingCodeRoute = routes.AddPlaceOfUnloadingCodeController.onPageLoad(lrn, NormalMode).url
 
