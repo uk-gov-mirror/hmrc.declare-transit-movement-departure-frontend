@@ -20,13 +20,15 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
 import models.{Index, UserAnswers}
+import org.scalacheck.Arbitrary
+import pages.ContainersUsedPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(arb[ItemSection], arb[UserAnswers]) {
+        forAll(genItemSection(), arb[UserAnswers]) {
           case (itemSection, userAnswers) =>
             val updatedUserAnswer           = ItemSectionSpec.setItemSection(itemSection, index)(userAnswers)
             val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
@@ -52,11 +54,10 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
   "Seq of ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(nonEmptyListOf[ItemSection](3), arb[UserAnswers]) {
+        forAll(nonEmptyListOf[ItemSection](3)(Arbitrary(genItemSection())), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
             val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
-
-            val result = ItemSection.readerItemSections.run(updatedUserAnswer)
+            val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
 
             result.value mustEqual itemSections
         }
@@ -78,6 +79,14 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         ItemSectionSpec.setItemSection(section, Index(i))(ua)
     }
 
+  private def setContainers(containers: Option[NonEmptyList[Container]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
+    val ua = startUserAnswers.unsafeSetVal(ContainersUsedPage)(containers.isDefined)
+    containers match {
+      case Some(containers) => ContainerSpec.setContainers(containers.toList, itemIndex)(startUserAnswers)
+      case None             => ua
+    }
+  }
+
   private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val smUserAnswers = startUserAnswers.set(AddSpecialMentionPage(itemIndex), false).toOption.get
     specialMentions.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
@@ -91,6 +100,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
       ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, itemIndex) _ andThen
         ItemTraderDetailsSpec.setItemTraderDetails(ItemTraderDetails(itemSection.consignor, itemSection.consignee), itemIndex) andThen
         setPackages(itemSection.packages, itemIndex) andThen
+        setContainers(itemSection.containers, itemIndex) andThen
         setSpecialMentions(itemSection.specialMentions, itemIndex)
     )(startUserAnswers)
 

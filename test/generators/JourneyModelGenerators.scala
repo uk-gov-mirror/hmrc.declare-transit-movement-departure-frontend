@@ -36,6 +36,7 @@ import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMod
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
 import models.journeyDomain.{
+  Container,
   GoodsSummary,
   GuaranteeDetails,
   ItemDetails,
@@ -87,7 +88,7 @@ trait JourneyModelGenerators {
         routeDetails     <- arbitraryRouteDetails(transitInformation).arbitrary
         transportDetails <- arbitrary[TransportDetails]
         traderDetails    <- arbitrary[TraderDetails]
-        itemDetails      <- nonEmptyListOf[ItemSection](3)
+        itemDetails      <- nonEmptyListOf(3)(Arbitrary(genItemSection(movementDetails.containersUsed)))
         goodsummarydetaislType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
         } else {
@@ -249,20 +250,27 @@ trait JourneyModelGenerators {
         Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori]
       ))
 
-  implicit lazy val arbitraryItemSection: Arbitrary[ItemSection] = {
+  implicit def arbitraryItemSection: Arbitrary[ItemSection] =
+    Arbitrary {
+      for {
+        bool        <- arbitrary[Boolean]
+        itemSection <- genItemSection(bool)
+      } yield itemSection
+    }
+
+  def genItemSection(containersUsed: Boolean = false): Gen[ItemSection] = {
 
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
-    Arbitrary {
-      for {
-        itemDetail      <- arbitrary[ItemDetails]
-        itemConsignor   <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-        itemConsignee   <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-        packages        <- nonEmptyListOf[Packages](10)
-        specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](10))
-      } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, specialMentions)
-    }
+    for {
+      itemDetail      <- arbitrary[ItemDetails]
+      itemConsignor   <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee   <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      packages        <- nonEmptyListOf[Packages](10)
+      containers      <- if (containersUsed) { nonEmptyListOf[Container](10).map(Some(_)) } else { Gen.const(None) }
+      specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](10))
+    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions)
   }
 
   implicit lazy val arbitraryPreTaskListDetails: Arbitrary[PreTaskListDetails] =
@@ -344,6 +352,13 @@ trait JourneyModelGenerators {
         specialMentionType <- nonEmptyString
         additionalInfo     <- nonEmptyString
       } yield SpecialMention(specialMentionType, additionalInfo)
+    }
+
+  implicit lazy val arbitraryContainer: Arbitrary[Container] =
+    Arbitrary {
+      for {
+        containerNumber <- nonEmptyString
+      } yield Container(containerNumber)
     }
 
   implicit lazy val arbitraryDeclarationForSelf: Arbitrary[DeclarationForSelf.type] =

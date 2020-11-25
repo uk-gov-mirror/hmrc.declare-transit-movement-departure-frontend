@@ -16,11 +16,12 @@
 
 package services
 
-import base.{MockServiceApp, SpecBase}
 import java.time.LocalDate
+
+import base.{MockServiceApp, SpecBase}
 import connectors.DepartureMovementConnector
 import models.InvalidGuaranteeCode.G01
-import models.{DeclarationRejectionMessage, DepartureId, GuaranteeNotValidMessage, InvalidGuaranteeReasonCode, MessagesLocation, MessagesSummary}
+import models.{DeclarationRejectionMessage, GuaranteeNotValidMessage, InvalidGuaranteeReasonCode, MessagesLocation, MessagesSummary}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach

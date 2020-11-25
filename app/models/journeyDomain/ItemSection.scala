@@ -18,7 +18,7 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import derivable.{DeriveNumberOfItems, DeriveNumberOfPackages, DeriveNumberOfSpecialMentions}
+import derivable.{DeriveNumberOfContainers, DeriveNumberOfItems, DeriveNumberOfPackages, DeriveNumberOfSpecialMentions}
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.{Index, UserAnswers}
 import pages.ContainersUsedPage
@@ -29,6 +29,7 @@ case class ItemSection(
   consignor: Option[RequiredDetails],
   consignee: Option[RequiredDetails],
   packages: NonEmptyList[Packages],
+  containers: Option[NonEmptyList[Container]],
   specialMentions: Option[NonEmptyList[SpecialMention]]
 )
 
@@ -44,6 +45,24 @@ object ItemSection {
               Packages.packagesReader(itemIndex, Index(index))
           })
           .map(NonEmptyList.fromListUnsafe)
+      }
+
+  private def deriveContainers(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[Container]]] =
+    ContainersUsedPage.reader
+      .flatMap {
+        isTrue =>
+          if (isTrue) {
+            DeriveNumberOfContainers(itemIndex).reader
+              .filter(_.nonEmpty)
+              .flatMap {
+                _.zipWithIndex
+                  .traverse[UserAnswersReader, Container]({
+                    case (_, index) =>
+                      Container.containerReader(itemIndex, Index(index))
+                  })
+                  .map(NonEmptyList.fromList)
+              }
+          } else none[NonEmptyList[Container]].pure[UserAnswersReader]
       }
 
   private def deriveSpecialMentions(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[SpecialMention]]] =
@@ -70,6 +89,7 @@ object ItemSection {
       ItemTraderDetails.consignorDetails(index),
       ItemTraderDetails.consigneeDetails(index),
       derivePackage(index),
+      deriveContainers(index),
       deriveSpecialMentions(index)
     ).tupled.map((ItemSection.apply _).tupled)
 

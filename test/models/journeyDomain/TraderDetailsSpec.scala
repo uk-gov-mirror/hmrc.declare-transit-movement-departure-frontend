@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
-import generators.{JourneyModelGenerators, ModelGenerators}
+import generators.JourneyModelGenerators
 import models.domain.Address
 import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori}
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, UserAnswers}
