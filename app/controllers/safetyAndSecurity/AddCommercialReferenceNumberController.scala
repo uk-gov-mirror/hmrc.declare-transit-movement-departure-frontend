@@ -49,7 +49,7 @@ class AddCommercialReferenceNumberController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "addCommercialReferenceNumber.njk"
+  private val template = "safetyAndSecurity/addCommercialReferenceNumber.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

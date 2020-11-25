@@ -49,7 +49,7 @@ class AddAnotherCountryOfRoutingController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "addAnotherCountryOfRouting.njk"
+  private val template = "safetyAndSecurity/addAnotherCountryOfRouting.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
