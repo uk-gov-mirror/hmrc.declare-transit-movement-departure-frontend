@@ -19,7 +19,7 @@ package viewModels
 import models.Status._
 import models.journeyDomain._
 import models.{NormalMode, SectionDetails, Status, UserAnswers}
-import pages.ProcedureTypePage
+import pages.{CountryOfDispatchPage, ProcedureTypePage}
 import play.api.libs.json._
 import cats.implicits._
 import cats.data.ReaderT
@@ -49,8 +49,7 @@ class TaskListDslIfInProgressStage[A, B](userAnswers: UserAnswers)(sectionName: 
                                                                    readerIfCompleted: UserAnswersReader[A],
                                                                    urlIfCompleted: String,
                                                                    readerIfInProgress: UserAnswersReader[B],
-                                                                   urlIfInProgress: String
-) {
+                                                                   urlIfInProgress: String) {
 
   def ifNotStarted(urlIfNotStarted: String): TaskListDslAllInfoStage[A, B] =
     new TaskListDslAllInfoStage(userAnswers)(sectionName, readerIfCompleted, urlIfCompleted, readerIfInProgress, urlIfInProgress, urlIfNotStarted)
@@ -81,7 +80,7 @@ class TaskListDslAllInfoStage[A, B](userAnswers: UserAnswers)(
       .run(userAnswers)
       .getOrElse((urlIfNotStarted, NotStarted))
 
-    SectionDetails("declarationSummary.section.movementDetails", onwardRoute, status)
+    SectionDetails(sectionName, onwardRoute, status)
   }
 }
 
@@ -110,8 +109,23 @@ class TaskListViewModel(userAnswers: UserAnswers) {
         .ifNotStarted(controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url)
         .section
 
+    val routeDetails =
+      taskListDsl
+        .sectionName("declarationSummary.section.routes")
+        .ifCompleted(
+          UserAnswersReader[RouteDetails],
+          controllers.routeDetails.routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        )
+        .ifInProgress(
+          CountryOfDispatchPage.reader,
+          controllers.routeDetails.routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
+        )
+        .ifNotStarted(controllers.routeDetails.routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url)
+        .section
+
     Seq(
-      movementDetails
+      movementDetails,
+      routeDetails
     )
   }
 }
@@ -128,5 +142,5 @@ object TaskListViewModel {
     taskListViewModel =>
       Json.obj(
         Constants.sections -> taskListViewModel.taskListSections
-      )
+    )
 }
