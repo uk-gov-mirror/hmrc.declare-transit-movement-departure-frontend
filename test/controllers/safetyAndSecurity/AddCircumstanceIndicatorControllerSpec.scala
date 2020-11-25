@@ -45,7 +45,7 @@ class AddCircumstanceIndicatorControllerSpec extends SpecBase with MockNunjucksR
 
   private val formProvider = new AddCircumstanceIndicatorFormProvider()
   private val form         = formProvider()
-  private val template     = "addCircumstanceIndicator.njk"
+  private val template     = "safetyAndSecurity/addCircumstanceIndicator.njk"
 
   lazy val addCircumstanceIndicatorRoute = routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url
 

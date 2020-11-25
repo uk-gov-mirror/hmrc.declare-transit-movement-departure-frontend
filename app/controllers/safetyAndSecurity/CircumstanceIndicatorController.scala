@@ -49,7 +49,7 @@ class CircumstanceIndicatorController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "circumstanceIndicator.njk"
+  private val template = "safetyAndSecurity/circumstanceIndicator.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

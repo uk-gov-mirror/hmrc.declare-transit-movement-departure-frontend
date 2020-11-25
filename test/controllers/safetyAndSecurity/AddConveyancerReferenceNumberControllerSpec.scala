@@ -45,7 +45,7 @@ class AddConveyancerReferenceNumberControllerSpec extends SpecBase with MockNunj
 
   private val formProvider = new AddConveyancerReferenceNumberFormProvider()
   private val form         = formProvider()
-  private val template     = "addConveyancerReferenceNumber.njk"
+  private val template     = "safetyAndSecurity/addConveyancerReferenceNumber.njk"
 
   lazy val addConveyancerReferenceNumberRoute = routes.AddConveyancerReferenceNumberController.onPageLoad(lrn, NormalMode).url
 

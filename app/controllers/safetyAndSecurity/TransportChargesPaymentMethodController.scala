@@ -49,7 +49,7 @@ class TransportChargesPaymentMethodController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "transportChargesPaymentMethod.njk"
+  private val template = "safetyAndSecurity/transportChargesPaymentMethod.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

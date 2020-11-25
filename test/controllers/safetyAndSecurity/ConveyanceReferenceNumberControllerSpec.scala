@@ -45,7 +45,7 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with MockNunjucks
 
   private val formProvider = new ConveyanceReferenceNumberFormProvider()
   private val form         = formProvider()
-  private val template     = "conveyanceReferenceNumber.njk"
+  private val template     = "safetyAndSecurity/conveyanceReferenceNumber.njk"
 
   lazy val conveyanceReferenceNumberRoute = routes.ConveyanceReferenceNumberController.onPageLoad(lrn, NormalMode).url
 
