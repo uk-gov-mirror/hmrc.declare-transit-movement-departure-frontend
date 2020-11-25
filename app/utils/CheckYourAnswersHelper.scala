@@ -34,6 +34,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def commercialReferenceNumberAllItems: Option[Row] = userAnswers.get(CommercialReferenceNumberAllItemsPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"commercialReferenceNumberAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CommercialReferenceNumberAllItemsController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"commercialReferenceNumberAllItems.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addCommercialReferenceNumberAllItems: Option[Row] = userAnswers.get(AddCommercialReferenceNumberAllItemsPage) map {
     answer =>
       Row(

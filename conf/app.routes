@@ -699,3 +699,8 @@ GET        /:lrn/addCommercialReferenceNumberAllItems                        con
 POST       /:lrn/addCommercialReferenceNumberAllItems                        controllers.AddCommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeAddCommercialReferenceNumberAllItems                  controllers.AddCommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddCommercialReferenceNumberAllItems                  controllers.AddCommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/commercialReferenceNumberAllItems                        controllers.CommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/commercialReferenceNumberAllItems                        controllers.CommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeCommercialReferenceNumberAllItems                  controllers.CommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeCommercialReferenceNumberAllItems                  controllers.CommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
