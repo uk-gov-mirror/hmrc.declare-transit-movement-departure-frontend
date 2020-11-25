@@ -26,23 +26,46 @@ import cats.data.ReaderT
 
 class TaskListDsl(userAnswers: UserAnswers) {
 
-  class IntermediateDslCompletedStage[A](readerIfCompleted: UserAnswersReader[A], urlIfCompleted: String) {
+  def sectionName(sectionName: String): TaskListDslSectionNameStage =
+    new TaskListDslSectionNameStage(userAnswers)(sectionName)
 
-    def ifInProgress[B](readerIfInProgress: UserAnswersReader[B], urlIfInProgress: String): TaskListFullDsl[A, B] =
-      new TaskListFullDsl(userAnswers)(readerIfCompleted, urlIfCompleted, readerIfInProgress, urlIfInProgress)
-
-  }
-
-  def ifCompleted[A, B](readerIfCompleted: UserAnswersReader[A], urlIfCompleted: String): IntermediateDslCompletedStage[A] =
-    new IntermediateDslCompletedStage[A](readerIfCompleted, urlIfCompleted)
 }
 
-class TaskListFullDsl[A, B](userAnswers: UserAnswers)(readerIfCompleted: UserAnswersReader[A],
-                                                      urlIfCompleted: String,
-                                                      readerIfInProgress: UserAnswersReader[B],
-                                                      urlIfInProgress: String) {
+class TaskListDslSectionNameStage(userAnswers: UserAnswers)(sectionName: String) {
 
-  def ifNotStarted(urlIfNotStarted: String): (String, Status) = {
+  def ifCompleted[A, B](readerIfCompleted: UserAnswersReader[A], urlIfCompleted: String): TaskListDslIfCompletedStage[A] =
+    new TaskListDslIfCompletedStage[A](userAnswers)(sectionName, readerIfCompleted, urlIfCompleted)
+
+}
+
+class TaskListDslIfCompletedStage[A](userAnswers: UserAnswers)(sectionName: String, readerIfCompleted: UserAnswersReader[A], urlIfCompleted: String) {
+
+  def ifInProgress[B](readerIfInProgress: UserAnswersReader[B], urlIfInProgress: String): TaskListDslIfInProgressStage[A, B] =
+    new TaskListDslIfInProgressStage(userAnswers)(sectionName, readerIfCompleted, urlIfCompleted, readerIfInProgress, urlIfInProgress)
+
+}
+
+class TaskListDslIfInProgressStage[A, B](userAnswers: UserAnswers)(sectionName: String,
+                                                                   readerIfCompleted: UserAnswersReader[A],
+                                                                   urlIfCompleted: String,
+                                                                   readerIfInProgress: UserAnswersReader[B],
+                                                                   urlIfInProgress: String
+) {
+
+  def ifNotStarted(urlIfNotStarted: String): TaskListDslAllInfoStage[A, B] =
+    new TaskListDslAllInfoStage(userAnswers)(sectionName, readerIfCompleted, urlIfCompleted, readerIfInProgress, urlIfInProgress, urlIfNotStarted)
+}
+
+class TaskListDslAllInfoStage[A, B](userAnswers: UserAnswers)(
+  sectionName: String,
+  readerIfCompleted: UserAnswersReader[A],
+  urlIfCompleted: String,
+  readerIfInProgress: UserAnswersReader[B],
+  urlIfInProgress: String,
+  urlIfNotStarted: String
+) {
+
+  def section: SectionDetails = {
     val completed = readerIfCompleted
       .map[(String, Status)](
         _ => (urlIfCompleted, Completed)
@@ -53,13 +76,13 @@ class TaskListFullDsl[A, B](userAnswers: UserAnswers)(readerIfCompleted: UserAns
         _ => (urlIfInProgress, InProgress)
       )
 
-    completed
+    val (onwardRoute, status) = completed
       .orElse(inProgress)
       .run(userAnswers)
       .getOrElse((urlIfNotStarted, NotStarted))
 
+    SectionDetails("declarationSummary.section.movementDetails", onwardRoute, status)
   }
-
 }
 
 class TaskListViewModel(userAnswers: UserAnswers) {
@@ -68,12 +91,14 @@ class TaskListViewModel(userAnswers: UserAnswers) {
   implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
     ReaderT[Option, UserAnswers, A](parser.run _)
 
-  private val lrn       = userAnswers.id
-  private val statusDsl = new TaskListDsl(userAnswers)
+  private val lrn         = userAnswers.id
+  private val taskListDsl = new TaskListDsl(userAnswers)
 
   def taskListSections: Seq[SectionDetails] = {
-    val (onwardRoute, status) =
-      statusDsl
+
+    val movementDetails =
+      taskListDsl
+        .sectionName("declarationSummary.section.movementDetails")
         .ifCompleted(
           UserAnswersReader[MovementDetails],
           controllers.movementDetails.routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
@@ -83,8 +108,7 @@ class TaskListViewModel(userAnswers: UserAnswers) {
           controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
         )
         .ifNotStarted(controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url)
-
-    val movementDetails = SectionDetails("declarationSummary.section.movementDetails", onwardRoute, status)
+        .section
 
     Seq(
       movementDetails
@@ -93,9 +117,6 @@ class TaskListViewModel(userAnswers: UserAnswers) {
 }
 
 object TaskListViewModel {
-
-  private val inProgressStartedReader: UserAnswersReader[Status] = InProgress.pure[UserAnswersReader].widen[Status]
-  private val notStartedReader: UserAnswersReader[Status]        = NotStarted.pure[UserAnswersReader].widen[Status]
 
   object Constants {
     val sections: String = "sections"
@@ -107,5 +128,5 @@ object TaskListViewModel {
     taskListViewModel =>
       Json.obj(
         Constants.sections -> taskListViewModel.taskListSections
-    )
+      )
 }
