@@ -714,3 +714,8 @@ GET        /:lrn/conveyanceReferenceNumber                        controllers.Co
 POST       /:lrn/conveyanceReferenceNumber                        controllers.ConveyanceReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeConveyanceReferenceNumber                  controllers.ConveyanceReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeConveyanceReferenceNumber                  controllers.ConveyanceReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/addPlaceOfUnloadingCode                        controllers.AddPlaceOfUnloadingCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addPlaceOfUnloadingCode                        controllers.AddPlaceOfUnloadingCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddPlaceOfUnloadingCode                  controllers.AddPlaceOfUnloadingCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddPlaceOfUnloadingCode                  controllers.AddPlaceOfUnloadingCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

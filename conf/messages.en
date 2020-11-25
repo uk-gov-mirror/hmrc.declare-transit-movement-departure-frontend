@@ -1229,3 +1229,8 @@ conveyanceReferenceNumber.heading = conveyanceReferenceNumber
 conveyanceReferenceNumber.checkYourAnswersLabel = conveyanceReferenceNumber
 conveyanceReferenceNumber.error.required = Enter conveyanceReferenceNumber
 conveyanceReferenceNumber.error.length = ConveyanceReferenceNumber must be 10 characters or less
+
+addPlaceOfUnloadingCode.title = addPlaceOfUnloadingCode
+addPlaceOfUnloadingCode.heading = addPlaceOfUnloadingCode
+addPlaceOfUnloadingCode.checkYourAnswersLabel = addPlaceOfUnloadingCode
+addPlaceOfUnloadingCode.error.required = Select yes if addPlaceOfUnloadingCode

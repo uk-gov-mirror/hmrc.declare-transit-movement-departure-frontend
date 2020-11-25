@@ -46,6 +46,13 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryAddPlaceOfUnloadingCodeUserAnswersEntry: Arbitrary[(AddPlaceOfUnloadingCodePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddPlaceOfUnloadingCodePage.type#Data].map(Json.toJson(_))
+      } yield (AddPlaceOfUnloadingCodePage, value)
+    }
+
   implicit lazy val arbitraryConveyanceReferenceNumberUserAnswersEntry: Arbitrary[(ConveyanceReferenceNumberPage.type, JsValue)] =
     Arbitrary {
       for {
