@@ -121,13 +121,6 @@ trait UserAnswersEntryGenerators {
       } yield (CommercialReferenceNumberPage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryUsingSameCommercialReferenceUserAnswersEntry: Arbitrary[(UsingSameCommercialReferencePage, JsValue)] =
-    Arbitrary {
-      for {
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (UsingSameCommercialReferencePage(Index(0)), value)
-    }
-
   implicit lazy val arbitraryTransportChargesUserAnswersEntry: Arbitrary[(TransportChargesPage, JsValue)] =
     Arbitrary {
       for {
