@@ -31,13 +31,11 @@ import pages.addItems.traderSecurityDetails.{
   AddSecurityConsigneesEoriPage,
   AddSecurityConsignorsEoriPage,
   SecurityConsigneeAddressPage,
-  SecurityConsigneeAllItemsPage,
   SecurityConsigneeEoriPage,
   SecurityConsigneeNamePage,
   SecurityConsignorAddressPage,
   SecurityConsignorEoriPage,
-  SecurityConsignorNamePage,
-  UseTradersDetailsPage
+  SecurityConsignorNamePage
 }
 import pages.{addItems, _}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -45,21 +43,6 @@ import uk.gov.hmrc.viewmodels._
 import viewModels.AddAnotherViewModel
 
 class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
-
-  def usingSameCommercialReference(index: Index): Option[Row] = userAnswers.get(UsingSameCommercialReferencePage(index)) map {
-    answer =>
-      Row(
-        key   = Key(msg"usingSameCommercialReference.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = securityDetailsRoutes.UsingSameCommercialReferenceController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"usingSameCommercialReference.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
 
   def transportCharges(itemIndex: Index): Option[Row] = userAnswers.get(TransportChargesPage(itemIndex)) map {
     answer =>
@@ -678,21 +661,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def useTradersDetails(index: Index): Option[Row] = userAnswers.get(UseTradersDetailsPage(index)) map {
-    answer =>
-      Row(
-        key   = Key(msg"useTradersDetails.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = tradersSecurityDetailsRoutes.UseTradersDetailsController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"useTradersDetails.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def addSecurityConsignorsEori(index: Index): Option[Row] = userAnswers.get(AddSecurityConsignorsEoriPage(index)) map {
     answer =>
       Row(
@@ -719,21 +687,6 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             content            = msg"site.edit",
             href               = tradersSecurityDetailsRoutes.AddSecurityConsignorsEoriController.onPageLoad(lrn, index, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSecurityConsigneesEori.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def securityConsigneeAllItems(index: Index): Option[Row] = userAnswers.get(SecurityConsigneeAllItemsPage(index)) map {
-    answer =>
-      Row(
-        key   = Key(msg"securityConsigneeAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = tradersSecurityDetailsRoutes.SecurityConsigneeAllItemsController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeAllItems.checkYourAnswersLabel"))
           )
         )
       )

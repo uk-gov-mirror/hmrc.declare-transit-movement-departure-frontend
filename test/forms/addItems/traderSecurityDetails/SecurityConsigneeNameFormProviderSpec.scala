@@ -16,16 +16,19 @@
 
 package forms.addItems.traderSecurityDetails
 
+import base.SpecBase
+import forms.Constants.{consigneeNameMaxLength, consignorNameRegex}
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
-class SecurityConsigneeNameFormProviderSpec extends StringFieldBehaviours {
+class SecurityConsigneeNameFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
   val requiredKey = "securityConsigneeName.error.required"
   val lengthKey   = "securityConsigneeName.error.length"
-  val maxLength   = 35
+  val invalidKey  = "securityConsigneeName.error.invalid"
 
-  val form = new SecurityConsigneeNameFormProvider()()
+  val form = new SecurityConsigneeNameFormProvider()(index)
 
   ".value" - {
 
@@ -34,14 +37,14 @@ class SecurityConsigneeNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(consigneeNameMaxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength   = consigneeNameMaxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(consigneeNameMaxLength))
     )
 
     behave like mandatoryField(
@@ -49,5 +52,21 @@ class SecurityConsigneeNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the principal eori name regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidKey, Seq(consignorNameRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(consigneeNameMaxLength) suchThat (!_.matches(consignorNameRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }

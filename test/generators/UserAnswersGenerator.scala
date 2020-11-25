@@ -60,14 +60,11 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
       arbitrarySecurityConsignorAddressUserAnswersEntry.arbitrary ::
       arbitrarySecurityConsigneeEoriUserAnswersEntry.arbitrary ::
       arbitrarySecurityConsignorEoriUserAnswersEntry.arbitrary ::
-      arbitrarySecurityConsigneeAllItemsUserAnswersEntry.arbitrary ::
       arbitraryAddSecurityConsigneesEoriUserAnswersEntry.arbitrary ::
       arbitraryAddSecurityConsignorsEoriUserAnswersEntry.arbitrary ::
-      arbitraryUseTradersDetailsUserAnswersEntry.arbitrary ::
       arbitraryDangerousGoodsCodeUserAnswersEntry.arbitrary ::
       arbitraryAddDangerousGoodsCodeUserAnswersEntry.arbitrary ::
       arbitraryCommercialReferenceNumberUserAnswersEntry.arbitrary ::
-      arbitraryUsingSameCommercialReferenceUserAnswersEntry.arbitrary ::
       arbitraryTransportChargesUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherDocumentUserAnswersEntry.arbitrary ::
       arbitraryDocumentExtraInformationUserAnswersEntry.arbitrary ::

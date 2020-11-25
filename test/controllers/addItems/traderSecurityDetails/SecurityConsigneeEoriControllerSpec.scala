@@ -44,7 +44,7 @@ class SecurityConsigneeEoriControllerSpec extends SpecBase with MockNunjucksRend
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new SecurityConsigneeEoriFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(index)
   private val template     = "addItems/traderSecurityDetails/securityConsigneeEori.njk"
 
   lazy val securityConsigneeEoriRoute = routes.SecurityConsigneeEoriController.onPageLoad(lrn, index, NormalMode).url
