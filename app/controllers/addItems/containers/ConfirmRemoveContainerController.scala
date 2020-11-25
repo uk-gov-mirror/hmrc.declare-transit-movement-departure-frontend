@@ -20,7 +20,7 @@ import controllers.actions._
 import derivable.DeriveNumberOfContainers
 import forms.addItems.containers.ConfirmRemoveContainerFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode, NormalMode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.containers.{ConfirmRemoveContainerPage, ContainerNumberPage}

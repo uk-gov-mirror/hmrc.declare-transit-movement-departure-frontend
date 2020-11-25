@@ -38,11 +38,117 @@ import pages.addItems.traderSecurityDetails.{
 }
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
+import pages.safetyAndSecurity.{
+  AddAnotherCountryOfRoutingPage,
+  AddCircumstanceIndicatorPage,
+  AddCommercialReferenceNumberAllItemsPage,
+  AddCommercialReferenceNumberPage,
+  AddConveyancerReferenceNumberPage,
+  AddPlaceOfUnloadingCodePage,
+  AddTransportChargesPaymentMethodPage,
+  CircumstanceIndicatorPage,
+  CommercialReferenceNumberAllItemsPage,
+  ConveyanceReferenceNumberPage,
+  CountryOfRoutingPage,
+  PlaceOfUnloadingCodePage,
+  TransportChargesPaymentMethodPage
+}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryAddAnotherCountryOfRoutingUserAnswersEntry: Arbitrary[(AddAnotherCountryOfRoutingPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddAnotherCountryOfRoutingPage.type#Data].map(Json.toJson(_))
+      } yield (AddAnotherCountryOfRoutingPage, value)
+    }
+
+  implicit lazy val arbitraryCountryOfRoutingUserAnswersEntry: Arbitrary[(CountryOfRoutingPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CountryOfRoutingPage.type#Data].map(Json.toJson(_))
+      } yield (CountryOfRoutingPage, value)
+    }
+
+  implicit lazy val arbitraryPlaceOfUnloadingCodeUserAnswersEntry: Arbitrary[(PlaceOfUnloadingCodePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[PlaceOfUnloadingCodePage.type#Data].map(Json.toJson(_))
+      } yield (PlaceOfUnloadingCodePage, value)
+    }
+
+  implicit lazy val arbitraryAddPlaceOfUnloadingCodeUserAnswersEntry: Arbitrary[(AddPlaceOfUnloadingCodePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddPlaceOfUnloadingCodePage.type#Data].map(Json.toJson(_))
+      } yield (AddPlaceOfUnloadingCodePage, value)
+    }
+
+  implicit lazy val arbitraryConveyanceReferenceNumberUserAnswersEntry: Arbitrary[(ConveyanceReferenceNumberPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[ConveyanceReferenceNumberPage.type#Data].map(Json.toJson(_))
+      } yield (ConveyanceReferenceNumberPage, value)
+    }
+
+  implicit lazy val arbitraryAddConveyancerReferenceNumberUserAnswersEntry: Arbitrary[(AddConveyancerReferenceNumberPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddConveyancerReferenceNumberPage.type#Data].map(Json.toJson(_))
+      } yield (AddConveyancerReferenceNumberPage, value)
+    }
+
+  implicit lazy val arbitraryCommercialReferenceNumberAllItemsUserAnswersEntry: Arbitrary[(CommercialReferenceNumberAllItemsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CommercialReferenceNumberAllItemsPage.type#Data].map(Json.toJson(_))
+      } yield (CommercialReferenceNumberAllItemsPage, value)
+    }
+
+  implicit lazy val arbitraryAddCommercialReferenceNumberAllItemsUserAnswersEntry: Arbitrary[(AddCommercialReferenceNumberAllItemsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddCommercialReferenceNumberAllItemsPage.type#Data].map(Json.toJson(_))
+      } yield (AddCommercialReferenceNumberAllItemsPage, value)
+    }
+
+  implicit lazy val arbitraryTransportChargesPaymentMethodUserAnswersEntry: Arbitrary[(TransportChargesPaymentMethodPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[TransportChargesPaymentMethodPage.type#Data].map(Json.toJson(_))
+      } yield (TransportChargesPaymentMethodPage, value)
+    }
+
+  implicit lazy val arbitraryCircumstanceIndicatorUserAnswersEntry: Arbitrary[(CircumstanceIndicatorPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CircumstanceIndicatorPage.type#Data].map(Json.toJson(_))
+      } yield (CircumstanceIndicatorPage, value)
+    }
+
+  implicit lazy val arbitraryAddCommercialReferenceNumberUserAnswersEntry: Arbitrary[(AddCommercialReferenceNumberPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddCommercialReferenceNumberPage.type#Data].map(Json.toJson(_))
+      } yield (AddCommercialReferenceNumberPage, value)
+    }
+
+  implicit lazy val arbitraryAddTransportChargesPaymentMethodUserAnswersEntry: Arbitrary[(AddTransportChargesPaymentMethodPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddTransportChargesPaymentMethodPage.type#Data].map(Json.toJson(_))
+      } yield (AddTransportChargesPaymentMethodPage, value)
+    }
+
+  implicit lazy val arbitraryAddCircumstanceIndicatorUserAnswersEntry: Arbitrary[(AddCircumstanceIndicatorPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddCircumstanceIndicatorPage.type#Data].map(Json.toJson(_))
+      } yield (AddCircumstanceIndicatorPage, value)
+    }
 
   implicit lazy val arbitrarySecurityConsigneeNameUserAnswersEntry: Arbitrary[(SecurityConsigneeNamePage, JsValue)] =
     Arbitrary {

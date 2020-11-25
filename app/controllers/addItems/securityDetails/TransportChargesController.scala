@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.reference.MethodOfPayment
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.{AddItems, SecurityDetails}
+import navigation.annotations.SecurityDetails
 import pages.addItems.securityDetails.TransportChargesPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,6 +34,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.getPaymentsAsJson
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportChargesController @Inject()(

@@ -29,6 +29,21 @@ import pages.addItems.traderSecurityDetails.{
   SecurityConsignorEoriPage,
   SecurityConsignorNamePage
 }
+import pages.safetyAndSecurity.{
+  AddAnotherCountryOfRoutingPage,
+  AddCircumstanceIndicatorPage,
+  AddCommercialReferenceNumberAllItemsPage,
+  AddCommercialReferenceNumberPage,
+  AddConveyancerReferenceNumberPage,
+  AddPlaceOfUnloadingCodePage,
+  AddTransportChargesPaymentMethodPage,
+  CircumstanceIndicatorPage,
+  CommercialReferenceNumberAllItemsPage,
+  ConveyanceReferenceNumberPage,
+  CountryOfRoutingPage,
+  PlaceOfUnloadingCodePage,
+  TransportChargesPaymentMethodPage
+}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
