@@ -16,6 +16,7 @@
 
 package forms.addItems.traderSecurityDetails
 
+import base.SpecBase
 import forms.Constants.addressRegex
 import forms.behaviours.StringFieldBehaviours
 import models.CountryList
@@ -23,13 +24,14 @@ import models.reference.{Country, CountryCode}
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class SecurityConsignorAddressFormProviderSpec extends StringFieldBehaviours {
+class SecurityConsignorAddressFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "securityConsignorAddress.error.required"
-  val lengthKey   = "securityConsignorAddress.error.length"
-  val country     = Country(CountryCode("GB"), "United Kingdom")
-  val countries   = CountryList(Seq(country))
-  val form        = new SecurityConsignorAddressFormProvider()(countries)
+  val requiredKey   = "securityConsignorAddress.error.required"
+  val lengthKey     = "securityConsignorAddress.error.length"
+  val country       = Country(CountryCode("GB"), "United Kingdom")
+  val countries     = CountryList(Seq(country))
+  val consignorName = "Frank"
+  val form          = new SecurityConsignorAddressFormProvider()(countries, consignorName)
 
   ".AddressLine1" - {
 
@@ -54,7 +56,7 @@ class SecurityConsignorAddressFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(consignorName))
     )
 
     "must not bind strings that do not match the address line regex" in {

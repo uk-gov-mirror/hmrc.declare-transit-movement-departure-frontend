@@ -49,7 +49,7 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
   private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   private val formProvider = new SecurityConsignorAddressFormProvider()
-  private val form         = formProvider(countries)
+  private val form         = formProvider(countries, "Frank")
   private val template     = "addItems/traderSecurityDetails/securityConsignorAddress.njk"
 
   lazy val securityConsignorAddressRoute = routes.SecurityConsignorAddressController.onPageLoad(lrn, index, NormalMode).url
