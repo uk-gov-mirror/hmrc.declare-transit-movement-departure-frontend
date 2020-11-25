@@ -694,3 +694,8 @@ GET        /:lrn/transportChargesPaymentMethod                        controller
 POST       /:lrn/transportChargesPaymentMethod                        controllers.TransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeTransportChargesPaymentMethod                  controllers.TransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeTransportChargesPaymentMethod                  controllers.TransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/addCommercialReferenceNumberAllItems                        controllers.AddCommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addCommercialReferenceNumberAllItems                        controllers.AddCommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddCommercialReferenceNumberAllItems                  controllers.AddCommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddCommercialReferenceNumberAllItems                  controllers.AddCommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

@@ -46,6 +46,13 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryAddCommercialReferenceNumberAllItemsUserAnswersEntry: Arbitrary[(AddCommercialReferenceNumberAllItemsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddCommercialReferenceNumberAllItemsPage.type#Data].map(Json.toJson(_))
+      } yield (AddCommercialReferenceNumberAllItemsPage, value)
+    }
+
   implicit lazy val arbitraryTransportChargesPaymentMethodUserAnswersEntry: Arbitrary[(TransportChargesPaymentMethodPage.type, JsValue)] =
     Arbitrary {
       for {
