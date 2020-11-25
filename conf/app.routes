@@ -719,3 +719,8 @@ GET        /:lrn/addPlaceOfUnloadingCode                        controllers.AddP
 POST       /:lrn/addPlaceOfUnloadingCode                        controllers.AddPlaceOfUnloadingCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeAddPlaceOfUnloadingCode                  controllers.AddPlaceOfUnloadingCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddPlaceOfUnloadingCode                  controllers.AddPlaceOfUnloadingCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/placeOfUnloadingCode                        controllers.PlaceOfUnloadingCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/placeOfUnloadingCode                        controllers.PlaceOfUnloadingCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changePlaceOfUnloadingCode                  controllers.PlaceOfUnloadingCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changePlaceOfUnloadingCode                  controllers.PlaceOfUnloadingCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

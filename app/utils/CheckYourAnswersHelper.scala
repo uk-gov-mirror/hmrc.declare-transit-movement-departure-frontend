@@ -34,6 +34,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def placeOfUnloadingCode: Option[Row] = userAnswers.get(PlaceOfUnloadingCodePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"placeOfUnloadingCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.PlaceOfUnloadingCodeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"placeOfUnloadingCode.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addPlaceOfUnloadingCode: Option[Row] = userAnswers.get(AddPlaceOfUnloadingCodePage) map {
     answer =>
       Row(

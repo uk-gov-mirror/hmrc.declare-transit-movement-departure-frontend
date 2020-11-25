@@ -1234,3 +1234,9 @@ addPlaceOfUnloadingCode.title = addPlaceOfUnloadingCode
 addPlaceOfUnloadingCode.heading = addPlaceOfUnloadingCode
 addPlaceOfUnloadingCode.checkYourAnswersLabel = addPlaceOfUnloadingCode
 addPlaceOfUnloadingCode.error.required = Select yes if addPlaceOfUnloadingCode
+
+placeOfUnloadingCode.title = placeOfUnloadingCode
+placeOfUnloadingCode.heading = placeOfUnloadingCode
+placeOfUnloadingCode.checkYourAnswersLabel = placeOfUnloadingCode
+placeOfUnloadingCode.error.required = Enter placeOfUnloadingCode
+placeOfUnloadingCode.error.length = PlaceOfUnloadingCode must be 10 characters or less
