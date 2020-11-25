@@ -16,7 +16,6 @@
 
 package forms.addItems.traderSecurityDetails
 
-import base.SpecBase
 import forms.Constants.addressRegex
 import forms.behaviours.StringFieldBehaviours
 import models.CountryList
@@ -24,7 +23,7 @@ import models.reference.{Country, CountryCode}
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class SecurityConsignorAddressFormProviderSpec extends SpecBase with StringFieldBehaviours {
+class SecurityConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey   = "securityConsignorAddress.error.required"
   val lengthKey     = "securityConsignorAddress.error.length"

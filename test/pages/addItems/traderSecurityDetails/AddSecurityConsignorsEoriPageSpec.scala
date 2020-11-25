@@ -43,7 +43,7 @@ class AddSecurityConsignorsEoriPageSpec extends SpecBase with PageBehaviours {
             .set(SecurityConsignorNamePage(index), "answer")
             .success
             .value
-            .set(SecurityConsignorAddressPage(index), consignorAddress) //TODO: Update to use SecurityConsignorAddress model when implemented
+            .set(SecurityConsignorAddressPage(index), consignorAddress)
             .success
             .value
             .set(AddSecurityConsignorsEoriPage(index), true)
