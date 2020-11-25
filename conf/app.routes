@@ -729,3 +729,8 @@ GET        /:lrn/countryOfRouting                        controllers.CountryOfRo
 POST       /:lrn/countryOfRouting                        controllers.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeCountryOfRouting                  controllers.CountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeCountryOfRouting                  controllers.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/addAnotherCountryOfRouting                        controllers.AddAnotherCountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addAnotherCountryOfRouting                        controllers.AddAnotherCountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddAnotherCountryOfRouting                  controllers.AddAnotherCountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddAnotherCountryOfRouting                  controllers.AddAnotherCountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

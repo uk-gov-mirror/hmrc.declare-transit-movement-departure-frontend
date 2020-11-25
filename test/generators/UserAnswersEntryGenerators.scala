@@ -46,6 +46,13 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryAddAnotherCountryOfRoutingUserAnswersEntry: Arbitrary[(AddAnotherCountryOfRoutingPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddAnotherCountryOfRoutingPage.type#Data].map(Json.toJson(_))
+      } yield (AddAnotherCountryOfRoutingPage, value)
+    }
+
   implicit lazy val arbitraryCountryOfRoutingUserAnswersEntry: Arbitrary[(CountryOfRoutingPage.type, JsValue)] =
     Arbitrary {
       for {

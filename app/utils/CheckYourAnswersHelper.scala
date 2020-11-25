@@ -34,6 +34,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def addAnotherCountryOfRouting: Option[Row] = userAnswers.get(AddAnotherCountryOfRoutingPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addAnotherCountryOfRouting.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherCountryOfRouting.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def countryOfRouting: Option[Row] = userAnswers.get(CountryOfRoutingPage) map {
     answer =>
       Row(

@@ -1246,3 +1246,8 @@ countryOfRouting.heading = countryOfRouting
 countryOfRouting.checkYourAnswersLabel = countryOfRouting
 countryOfRouting.error.required = Enter countryOfRouting
 countryOfRouting.error.length = CountryOfRouting must be 2 characters or less
+
+addAnotherCountryOfRouting.title = addAnotherCountryOfRouting
+addAnotherCountryOfRouting.heading = addAnotherCountryOfRouting
+addAnotherCountryOfRouting.checkYourAnswersLabel = addAnotherCountryOfRouting
+addAnotherCountryOfRouting.error.required = Select yes if addAnotherCountryOfRouting
