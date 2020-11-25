@@ -54,25 +54,16 @@ object RouteDetailsSpec extends UserAnswersSpecHelper {
   def setRouteDetails(routeDetails: RouteDetails, addSecurityDetails: Option[Boolean])(startUserAnswers: UserAnswers): UserAnswers = {
     val interstitialUserAnswers =
       startUserAnswers
-        .set(CountryOfDispatchPage, routeDetails.countryOfDispatch)
-        .toOption
-        .get
-        .set(OfficeOfDeparturePage, routeDetails.officeOfDeparture)
-        .toOption
-        .get
-        .set(DestinationCountryPage, routeDetails.destinationCountry)
-        .toOption
-        .get
-        .set(DestinationOfficePage, routeDetails.destinationOffice)
-        .toOption
-        .get
+        .unsafeSetVal(CountryOfDispatchPage)(routeDetails.countryOfDispatch)
+        .unsafeSetVal(OfficeOfDeparturePage)(routeDetails.officeOfDeparture)
+        .unsafeSetVal(DestinationCountryPage)(routeDetails.destinationCountry)
+        .unsafeSetVal(DestinationOfficePage)(routeDetails.destinationOffice)
 
     val userAnswers = routeDetails.transitInformation.zipWithIndex.foldLeft(interstitialUserAnswers) {
       case (ua, (TransitInformation(transitOffice, arrivalTime), index)) =>
         ua.unsafeSetVal(AddAnotherTransitOfficePage(Index(index)))(transitOffice)
           .unsafeSetVal(AddSecurityDetailsPage)(addSecurityDetails.getOrElse(arrivalTime.isDefined))
           .unsafeSetOpt(ArrivalTimesAtOfficePage(Index(index)))(arrivalTime.map(LocalDateTimeWithAMPM(_, "PM")))
-
     }
 
     userAnswers

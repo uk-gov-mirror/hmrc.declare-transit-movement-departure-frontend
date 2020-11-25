@@ -147,43 +147,149 @@ class SectionsHelperSpec extends SpecBase {
         result mustBe expectedSections
       }
 
-      "must return trader's details section with status as Completed" in {
-        val userAnswers = emptyUserAnswers
-          .set(IsPrincipalEoriKnownPage, true)
-          .success
-          .value
-          .set(WhatIsPrincipalEoriPage, "GB123456")
-          .success
-          .value
-          .set(AddConsignorPage, true)
-          .success
-          .value
-          .set(IsConsignorEoriKnownPage, true)
-          .success
-          .value
-          .set(ConsignorEoriPage, "GB123456")
-          .success
-          .value
-          .set(AddConsigneePage, true)
-          .success
-          .value
-          .set(IsConsigneeEoriKnownPage, true)
-          .success
-          .value
-          .set(WhatIsConsigneeEoriPage, "GB123456")
-          .success
-          .value
+      "must return trader's details section with status as Completed" - {
 
-        val sectionsHelper = new SectionsHelper(userAnswers)
+        "when all questions are answered" in {
+          val userAnswers = emptyUserAnswers
+            .set(IsPrincipalEoriKnownPage, true)
+            .success
+            .value
+            .set(WhatIsPrincipalEoriPage, "GB123456")
+            .success
+            .value
+            .set(ConsignorForAllItemsPage, false)
+            .success
+            .value
+            .set(AddConsignorPage, true)
+            .success
+            .value
+            .set(IsConsignorEoriKnownPage, true)
+            .success
+            .value
+            .set(ConsignorEoriPage, "GB123456")
+            .success
+            .value
+            .set(ConsigneeForAllItemsPage, false)
+            .success
+            .value
+            .set(AddConsigneePage, true)
+            .success
+            .value
+            .set(IsConsigneeEoriKnownPage, true)
+            .success
+            .value
+            .set(WhatIsConsigneeEoriPage, "GB123456")
+            .success
+            .value
 
-        val url              = traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
-        val sectionName      = "declarationSummary.section.tradersDetails"
-        val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
+          val sectionsHelper = new SectionsHelper(userAnswers)
 
-        val result: Seq[SectionDetails] = sectionsHelper.getSections
+          val url              = traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
+          val sectionName      = "declarationSummary.section.tradersDetails"
+          val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
 
-        result mustBe expectedSections
+          val result: Seq[SectionDetails] = sectionsHelper.getSections
+
+          result mustBe expectedSections
+        }
+
+        "when only Consignor/ee for all questions are answered" in {
+          val userAnswers = emptyUserAnswers
+            .set(IsPrincipalEoriKnownPage, true)
+            .success
+            .value
+            .set(WhatIsPrincipalEoriPage, "GB123456")
+            .success
+            .value
+            .set(ConsignorForAllItemsPage, true)
+            .success
+            .value
+            .set(ConsigneeForAllItemsPage, true)
+            .success
+            .value
+
+          val sectionsHelper = new SectionsHelper(userAnswers)
+
+          val url              = traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
+          val sectionName      = "declarationSummary.section.tradersDetails"
+          val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
+
+          val result: Seq[SectionDetails] = sectionsHelper.getSections
+
+          result mustBe expectedSections
+        }
+
+        "when Consignor is for all but Consignee is not" in {
+          val userAnswers = emptyUserAnswers
+            .set(IsPrincipalEoriKnownPage, true)
+            .success
+            .value
+            .set(WhatIsPrincipalEoriPage, "GB123456")
+            .success
+            .value
+            .set(ConsignorForAllItemsPage, true)
+            .success
+            .value
+            .set(ConsigneeForAllItemsPage, false)
+            .success
+            .value
+            .set(AddConsigneePage, true)
+            .success
+            .value
+            .set(IsConsigneeEoriKnownPage, true)
+            .success
+            .value
+            .set(WhatIsConsigneeEoriPage, "GB123456")
+            .success
+            .value
+
+          val sectionsHelper = new SectionsHelper(userAnswers)
+
+          val url              = traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
+          val sectionName      = "declarationSummary.section.tradersDetails"
+          val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
+
+          val result: Seq[SectionDetails] = sectionsHelper.getSections
+
+          result mustBe expectedSections
+        }
+
+        "when Consignee is for all but Consignor is not" in {
+          val userAnswers = emptyUserAnswers
+            .set(IsPrincipalEoriKnownPage, true)
+            .success
+            .value
+            .set(WhatIsPrincipalEoriPage, "GB123456")
+            .success
+            .value
+            .set(ConsignorForAllItemsPage, false)
+            .success
+            .value
+            .set(AddConsignorPage, true)
+            .success
+            .value
+            .set(IsConsignorEoriKnownPage, true)
+            .success
+            .value
+            .set(ConsignorEoriPage, "GB123456")
+            .success
+            .value
+            .set(ConsigneeForAllItemsPage, true)
+            .success
+            .value
+
+          val sectionsHelper = new SectionsHelper(userAnswers)
+
+          val url              = traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
+          val sectionName      = "declarationSummary.section.tradersDetails"
+          val expectedSections = updateSectionsWithExpectedValue(SectionDetails(sectionName, url, Completed))
+
+          val result: Seq[SectionDetails] = sectionsHelper.getSections
+
+          result mustBe expectedSections
+        }
       }
+
     }
 
     "Transport Details" - {

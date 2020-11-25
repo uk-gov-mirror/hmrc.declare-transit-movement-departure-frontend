@@ -17,14 +17,30 @@
 package forms.addItems.traderSecurityDetails
 
 import forms.mappings.Mappings
+import forms.Constants.addressRegex
 import javax.inject.Inject
+import models.reference.Country
+import models.{ConsignorAddress, CountryList, Index}
 import play.api.data.Form
+import play.api.data.Forms.mapping
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class SecurityConsignorAddressFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("securityConsignorAddress.error.required")
-        .verifying(maxLength(100, "securityConsignorAddress.error.length"))
-    )
+  def apply(countryList: CountryList, consignorName: String): Form[ConsignorAddress] = Form(
+    mapping(
+      "AddressLine1" -> text("securityConsignorAddress.error.AddressLine1.required", Seq(consignorName))
+        .verifying(StopOnFirstFail[String](maxLength(35, "securityConsignorAddress.error.AddressLine1.length"),
+                                           regexp(addressRegex, "securityConsignorAddress.error.line1.invalid"))),
+      "AddressLine2" -> text("securityConsignorAddress.error.AddressLine2.required")
+        .verifying(StopOnFirstFail[String](maxLength(35, "securityConsignorAddress.error.AddressLine2.length"),
+                                           regexp(addressRegex, "securityConsignorAddress.error.line2.invalid"))),
+      "AddressLine3" -> text("securityConsignorAddress.error.AddressLine3.required")
+        .verifying(StopOnFirstFail[String](maxLength(35, "securityConsignorAddress.error.AddressLine3.length"),
+                                           regexp(addressRegex, "securityConsignorAddress.error.line3.invalid"))),
+      "country" -> text("securityConsignorAddress.error.country.required")
+        .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))
+        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
+    )(ConsignorAddress.apply)(ConsignorAddress.unapply)
+  )
 }

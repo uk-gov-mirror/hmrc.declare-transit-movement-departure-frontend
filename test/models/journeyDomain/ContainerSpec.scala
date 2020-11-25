@@ -19,10 +19,8 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.journeyDomain.ContainerSpec.setContainerUserAnswers
-import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.ContainersUsedPage
 import pages.addItems.containers.ContainerNumberPage
 
 class ContainerSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {

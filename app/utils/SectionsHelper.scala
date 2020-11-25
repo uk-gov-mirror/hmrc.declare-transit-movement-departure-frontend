@@ -239,9 +239,23 @@ class SectionsHelper(userAnswers: UserAnswers) {
       addConsigneePage
     }
 
+    val addConsignorForAllPageDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(ConsignorForAllItemsPage).contains(true)) {
+      Seq(userAnswers.get(ConsigneeForAllItemsPage) -> traderDetailsRoutes.ConsigneeForAllItemsController.onPageLoad(lrn, NormalMode).url)
+
+    } else {
+      addConsignorPage
+    }
+
+    val addConsigneeForAllPageDiversionPage: Seq[(Option[Boolean], String)] = if (userAnswers.get(ConsigneeForAllItemsPage).contains(true)) {
+      Seq(userAnswers.get(ConsigneeForAllItemsPage) -> traderDetailsRoutes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+
+    } else {
+      addConsigneePage
+    }
+
     Seq(
       userAnswers.get(IsPrincipalEoriKnownPage) -> traderDetailsRoutes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url,
-    ) ++ isPrincipalEoriKnowDiversionPages ++ addConsignorPage ++ addConsignorPageDiversionPage ++ isConsignorEoriKnownPage ++ addConsigneePage ++ addConsigneeDiversionPage ++ isConsigneeEoriKnownPage
+    ) ++ isPrincipalEoriKnowDiversionPages ++ addConsignorForAllPageDiversionPage ++ isConsignorEoriKnownPage ++ addConsigneeForAllPageDiversionPage ++ isConsigneeEoriKnownPage
   }
 
   private val addItemPages: Seq[(Option[_], String)] = {

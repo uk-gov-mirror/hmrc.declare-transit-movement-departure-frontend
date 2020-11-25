@@ -401,7 +401,7 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
       }
 
-      "must go from Consignor for all items page to Consignee for all items page when 'YES' is selected" in {
+      "must go from Consignor for all items page to CYA page when 'YES' is selected" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -411,7 +411,7 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
               .value
             navigator
               .nextPage(ConsignorForAllItemsPage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.ConsigneeForAllItemsController.onPageLoad(answers.id, CheckMode))
+              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
 

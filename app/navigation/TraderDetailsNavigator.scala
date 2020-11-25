@@ -189,7 +189,7 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
   private def consignorForAllRoute(ua: UserAnswers, mode: Mode): Call =
     (ua.get(ConsignorForAllItemsPage), mode) match {
       case (Some(true), NormalMode)  => routes.ConsigneeForAllItemsController.onPageLoad(ua.id, NormalMode)
-      case (Some(true), CheckMode)   => routes.ConsigneeForAllItemsController.onPageLoad(ua.id, CheckMode)
+      case (Some(true), CheckMode)   => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
       case (Some(false), NormalMode) => routes.AddConsignorController.onPageLoad(ua.id, NormalMode)
       case (Some(false), CheckMode)  => routes.AddConsignorController.onPageLoad(ua.id, CheckMode)
       case _                         => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
@@ -197,8 +197,7 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
 
   private def consigneeForAllRoute(ua: UserAnswers, mode: Mode): Call =
     (ua.get(ConsigneeForAllItemsPage), mode) match {
-      case (Some(false), NormalMode) => routes.AddConsigneeController.onPageLoad(ua.id, NormalMode)
-      case (Some(false), CheckMode)  => routes.AddConsigneeController.onPageLoad(ua.id, CheckMode)
-      case _                         => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(false), _) => routes.AddConsigneeController.onPageLoad(ua.id, mode)
+      case _                => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
 }

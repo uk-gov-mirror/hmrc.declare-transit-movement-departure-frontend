@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
-import generators.{JourneyModelGenerators, ModelGenerators}
+import generators.JourneyModelGenerators
 import models.domain.Address
 import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori}
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, UserAnswers}
@@ -244,17 +244,8 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
 
   def setTraderDetailsPrincipalEoriOnly(eoriNumber: EoriNumber)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
-      .set(IsPrincipalEoriKnownPage, true)
-      .toOption
-      .get
-      .set(WhatIsPrincipalEoriPage, eoriNumber.value)
-      .toOption
-      .get
-      .set(AddConsigneePage, false)
-      .toOption
-      .get
-      .set(AddConsignorPage, false)
-      .toOption
-      .get
-
+      .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+      .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber.value)
+      .unsafeSetVal(AddConsigneePage)(false)
+      .unsafeSetVal(AddConsignorPage)(false)
 }

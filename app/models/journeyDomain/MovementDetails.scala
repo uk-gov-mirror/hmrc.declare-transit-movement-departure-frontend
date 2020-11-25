@@ -16,10 +16,11 @@
 
 package models.journeyDomain
 
+import cats.data.ReaderT
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain.MovementDetails.DeclarationForSomeoneElseAnswer
-import models.{DeclarationType, RepresentativeCapacity}
+import models.{DeclarationType, RepresentativeCapacity, UserAnswers}
 import pages._
 import pages.movementDetails.PreLodgeDeclarationPage
 

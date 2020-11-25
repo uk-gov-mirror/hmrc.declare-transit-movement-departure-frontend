@@ -861,16 +861,16 @@ traderDetailsConsignorAddress.AddressLine1 = Address line 1
 traderDetailsConsignorAddress.AddressLine2 = Address line 2
 traderDetailsConsignorAddress.AddressLine3 = Address line 3
 traderDetailsConsignorAddress.AddressLine4 = Country
-traderDetailsConsignorAddress.error.AddressLine1.required = Enter the first line of the consignor’s address
-traderDetailsConsignorAddress.error.AddressLine2.required = Enter the second line of the consignor’s address
-traderDetailsConsignorAddress.error.AddressLine3.required = Enter the third line of the consignor’s address
-traderDetailsConsignorAddress.error.country.required = Enter the country of the consignor’s address
+traderDetailsConsignorAddress.error.AddressLine1.required = Enter the first line of {0}’s address
+traderDetailsConsignorAddress.error.AddressLine2.required = Enter the second line of {0}’s address
+traderDetailsConsignorAddress.error.AddressLine3.required = Enter the third line of {0}’s address
+traderDetailsConsignorAddress.error.country.required = Enter the country of {0}’s address
 traderDetailsConsignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
 traderDetailsConsignorAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
 traderDetailsConsignorAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
-traderDetailsConsignorAddress.error.line1.invalid= The first line of the consignor’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-traderDetailsConsignorAddress.error.line2.invalid= The second line of the consignor’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-traderDetailsConsignorAddress.error.line3.invalid= The third line of the consignor’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+traderDetailsConsignorAddress.error.line1.invalid= The first line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+traderDetailsConsignorAddress.error.line2.invalid= The second line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+traderDetailsConsignorAddress.error.line3.invalid= The third line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 traderDetailsConsignorEoriKnown.title = Do you know the consignor’s EORI number for item {0}?
 traderDetailsConsignorEoriKnown.heading = Do you know the consignor’s EORI number for item {0}?
@@ -1139,23 +1139,39 @@ securityConsigneeAllItems.heading = Is this the security consignee for all the i
 securityConsigneeAllItems.checkYourAnswersLabel = Security consignee for all items
 securityConsigneeAllItems.error.required = Select yes if this the security consignee for all the items
 
-securityConsignorEori.title = securityConsignorEori
-securityConsignorEori.heading = securityConsignorEori
-securityConsignorEori.checkYourAnswersLabel = securityConsignorEori
-securityConsignorEori.error.required = Enter securityConsignorEori
-securityConsignorEori.error.length = SecurityConsignorEori must be 17 characters or less
+securityConsignorEori.title = What is the security consignor’s EORI number?
+securityConsignorEori.heading = What is the security consignor’s EORI number?
+securityConsignorEori.checkYourAnswersLabel = Security consignor’s EORI number
+securityConsignorEori.error.required = Enter the security consignor’s EORI number
+securityConsignorEori.error.length = The security consignor’s EORI number must 17 characters or less
+securityConsignorEori.error.invalid = The security consignor’s EORI number must only include letters a to z and numbers 0 to 9
+securityConsignorEori.error.invalidFormat = Enter the security consignor’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
-securityConsigneeEori.title = securityConsigneeEori
-securityConsigneeEori.heading = securityConsigneeEori
-securityConsigneeEori.checkYourAnswersLabel = securityConsigneeEori
-securityConsigneeEori.error.required = Enter securityConsigneeEori
-securityConsigneeEori.error.length = SecurityConsigneeEori must be 17 characters or less
+securityConsigneeEori.title = What is the security consignee’s EORI number?
+securityConsigneeEori.heading = What is the security consignee’s EORI number?
+securityConsigneeEori.checkYourAnswersLabel = Security consignee’s EORI number
+securityConsigneeEori.error.required = Enter the security consignee’s EORI number
+securityConsigneeEori.error.length = The security consignee’s EORI number must 17 characters or less
+securityConsigneeEori.error.invalid = The security consignee’s EORI number must only include letters a to z and numbers 0 to 9
+securityConsigneeEori.error.invalidFormat = Enter the security consignee’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
-securityConsignorAddress.title = securityConsignorAddress
-securityConsignorAddress.heading = securityConsignorAddress
-securityConsignorAddress.checkYourAnswersLabel = securityConsignorAddress
-securityConsignorAddress.error.required = Enter securityConsignorAddress
-securityConsignorAddress.error.length = SecurityConsignorAddress must be 100 characters or less
+securityConsignorAddress.title = What is the security consignor’s address
+securityConsignorAddress.heading = What is {0}’s address?
+securityConsignorAddress.AddressLine1 = Address line 1
+securityConsignorAddress.AddressLine2 = Address line 2
+securityConsignorAddress.AddressLine3 = Address line 3
+securityConsignorAddress.AddressLine4 = Country
+securityConsignorAddress.checkYourAnswersLabel = Consignor address
+securityConsignorAddress.error.AddressLine1.required = Enter the first line of {0}’s address
+securityConsignorAddress.error.AddressLine2.required = Enter the second line of {0}’s address
+securityConsignorAddress.error.AddressLine3.required = Enter the third line of {0}’s address
+securityConsignorAddress.error.country.required = Enter the country of {0}’s address
+securityConsignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
+securityConsignorAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
+securityConsignorAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
+securityConsignorAddress.error.line1.invalid= The first line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsignorAddress.error.line2.invalid= The second line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsignorAddress.error.line3.invalid= The third line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 securityConsigneeAddress.title = securityConsigneeAddress
 securityConsigneeAddress.heading = securityConsigneeAddress
@@ -1163,14 +1179,93 @@ securityConsigneeAddress.checkYourAnswersLabel = securityConsigneeAddress
 securityConsigneeAddress.error.required = Enter securityConsigneeAddress
 securityConsigneeAddress.error.length = SecurityConsigneeAddress must be 100 characters or less
 
-securityConsignorName.title = securityConsignorName
-securityConsignorName.heading = securityConsignorName
-securityConsignorName.checkYourAnswersLabel = securityConsignorName
-securityConsignorName.error.required = Enter securityConsignorName
-securityConsignorName.error.length = SecurityConsignorName must be 35 characters or less
+securityConsignorName.title = What is the security consignor’s name?
+securityConsignorName.heading = What is the security consignor’s name?
+securityConsignorName.checkYourAnswersLabel = Security consignor’s name
+securityConsignorName.error.required = Enter the security consignor’s name
+securityConsignorName.error.length = The security consignor's name must be 35 characters or less
+securityConsignorName.error.invalid = The security consignor’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
-securityConsigneeName.title = securityConsigneeName
-securityConsigneeName.heading = securityConsigneeName
-securityConsigneeName.checkYourAnswersLabel = securityConsigneeName
-securityConsigneeName.error.required = Enter securityConsigneeName
-securityConsigneeName.error.length = SecurityConsigneeName must be 35 characters or less
+securityConsigneeName.title = What is the security consignee’s name?
+securityConsigneeName.heading = What is the security consignee’s name?
+securityConsigneeName.checkYourAnswersLabel =  Security consignee’s name
+securityConsigneeName.error.required = Enter the security consignee’s name
+securityConsigneeName.error.length =  The security consignee’s name must be 35 characters or less
+securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
+declarationRejection.title = There is a problem with this departure declaration
+declarationRejection.heading = There is a problem with this departure declaration
+declarationRejection.errorType =  Error Type
+declarationRejection.pointer =  Error Pointer
+declarationRejection.reason =  Reason
+
+addCircumstanceIndicator.title = addCircumstanceIndicator
+addCircumstanceIndicator.heading = addCircumstanceIndicator
+addCircumstanceIndicator.checkYourAnswersLabel = addCircumstanceIndicator
+addCircumstanceIndicator.error.required = Select yes if addCircumstanceIndicator
+
+addTransportChargesPaymentMethod.title = addTransportChargesPaymentMethod
+addTransportChargesPaymentMethod.heading = addTransportChargesPaymentMethod
+addTransportChargesPaymentMethod.checkYourAnswersLabel = addTransportChargesPaymentMethod
+addTransportChargesPaymentMethod.error.required = Select yes if addTransportChargesPaymentMethod
+
+addCommercialReferenceNumber.title = addCommercialReferenceNumber
+addCommercialReferenceNumber.heading = addCommercialReferenceNumber
+addCommercialReferenceNumber.checkYourAnswersLabel = addCommercialReferenceNumber
+addCommercialReferenceNumber.error.required = Select yes if addCommercialReferenceNumber
+
+circumstanceIndicator.title = circumstanceIndicator
+circumstanceIndicator.heading = circumstanceIndicator
+circumstanceIndicator.checkYourAnswersLabel = circumstanceIndicator
+circumstanceIndicator.error.required = Enter circumstanceIndicator
+circumstanceIndicator.error.length = CircumstanceIndicator must be 2 characters or less
+
+transportChargesPaymentMethod.title = transportChargesPaymentMethod
+transportChargesPaymentMethod.heading = transportChargesPaymentMethod
+transportChargesPaymentMethod.checkYourAnswersLabel = transportChargesPaymentMethod
+transportChargesPaymentMethod.error.required = Enter transportChargesPaymentMethod
+transportChargesPaymentMethod.error.length = TransportChargesPaymentMethod must be 2 characters or less
+
+addCommercialReferenceNumberAllItems.title = addCommercialReferenceNumberAllItems
+addCommercialReferenceNumberAllItems.heading = addCommercialReferenceNumberAllItems
+addCommercialReferenceNumberAllItems.checkYourAnswersLabel = addCommercialReferenceNumberAllItems
+addCommercialReferenceNumberAllItems.error.required = Select yes if addCommercialReferenceNumberAllItems
+
+commercialReferenceNumberAllItems.title = commercialReferenceNumberAllItems
+commercialReferenceNumberAllItems.heading = commercialReferenceNumberAllItems
+commercialReferenceNumberAllItems.checkYourAnswersLabel = commercialReferenceNumberAllItems
+commercialReferenceNumberAllItems.error.required = Enter commercialReferenceNumberAllItems
+commercialReferenceNumberAllItems.error.length = CommercialReferenceNumberAllItems must be 10 characters or less
+
+addConveyancerReferenceNumber.title = addConveyancerReferenceNumber
+addConveyancerReferenceNumber.heading = addConveyancerReferenceNumber
+addConveyancerReferenceNumber.checkYourAnswersLabel = addConveyancerReferenceNumber
+addConveyancerReferenceNumber.error.required = Select yes if addConveyancerReferenceNumber
+
+conveyanceReferenceNumber.title = conveyanceReferenceNumber
+conveyanceReferenceNumber.heading = conveyanceReferenceNumber
+conveyanceReferenceNumber.checkYourAnswersLabel = conveyanceReferenceNumber
+conveyanceReferenceNumber.error.required = Enter conveyanceReferenceNumber
+conveyanceReferenceNumber.error.length = ConveyanceReferenceNumber must be 10 characters or less
+
+addPlaceOfUnloadingCode.title = addPlaceOfUnloadingCode
+addPlaceOfUnloadingCode.heading = addPlaceOfUnloadingCode
+addPlaceOfUnloadingCode.checkYourAnswersLabel = addPlaceOfUnloadingCode
+addPlaceOfUnloadingCode.error.required = Select yes if addPlaceOfUnloadingCode
+
+placeOfUnloadingCode.title = placeOfUnloadingCode
+placeOfUnloadingCode.heading = placeOfUnloadingCode
+placeOfUnloadingCode.checkYourAnswersLabel = placeOfUnloadingCode
+placeOfUnloadingCode.error.required = Enter placeOfUnloadingCode
+placeOfUnloadingCode.error.length = PlaceOfUnloadingCode must be 10 characters or less
+
+countryOfRouting.title = countryOfRouting
+countryOfRouting.heading = countryOfRouting
+countryOfRouting.checkYourAnswersLabel = countryOfRouting
+countryOfRouting.error.required = Enter countryOfRouting
+countryOfRouting.error.length = CountryOfRouting must be 2 characters or less
+
+addAnotherCountryOfRouting.title = addAnotherCountryOfRouting
+addAnotherCountryOfRouting.heading = addAnotherCountryOfRouting
+addAnotherCountryOfRouting.checkYourAnswersLabel = addAnotherCountryOfRouting
+addAnotherCountryOfRouting.error.required = Select yes if addAnotherCountryOfRouting

@@ -19,11 +19,11 @@ package pages.addItems.traderSecurityDetails
 import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import queries.Constants.items
+import queries.Constants.{items, traderSecurityDetails}
 
 case class SecurityConsigneeAddressPage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ items \ index.position \ toString
+  override def path: JsPath = JsPath \ items \ index.position \ traderSecurityDetails \ toString
 
   override def toString: String = "securityConsigneeAddress"
 }

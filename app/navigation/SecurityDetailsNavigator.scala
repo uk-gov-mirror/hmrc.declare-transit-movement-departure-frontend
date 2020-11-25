@@ -27,44 +27,23 @@ import play.api.mvc.Call
 class SecurityDetailsNavigator @Inject()() extends Navigator {
 
   // format: off
-  //todo -update when Security Trader Details section done
+  //todo -update when Safety and Security section built
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case UsingSameMethodOfPaymentPage(index) => ua => usingSameMethodOfPaymentRoute(ua, index, NormalMode)
-    case TransportChargesPage(index) => ua => Some(routes.UsingSameCommercialReferenceController.onPageLoad(ua.id, index, NormalMode))
-    case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index, NormalMode)
+    case TransportChargesPage(index) => ua => Some(routes.CommercialReferenceNumberController.onPageLoad(ua.id, index, NormalMode))//todo update when Safety and security section built
     case CommercialReferenceNumberPage(index) => ua => Some(routes.AddDangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
     case AddDangerousGoodsCodePage(index) => ua => addDangerousGoodsCodeRoute(ua, index, NormalMode)
     case DangerousGoodsCodePage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case UsingSameMethodOfPaymentPage(index) => ua => usingSameMethodOfPaymentRoute(ua, index, CheckMode)
     case TransportChargesPage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case UsingSameCommercialReferencePage(index) => ua => usingSameCommercialReferenceRoute(ua, index, CheckMode)
     case CommercialReferenceNumberPage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case AddDangerousGoodsCodePage(index) => ua => addDangerousGoodsCodeRoute(ua, index, CheckMode)
     case DangerousGoodsCodePage(index) => ua => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
 
   }
 
-  private def usingSameMethodOfPaymentRoute(ua:UserAnswers, index:Index, mode: Mode) =
-    (ua.get(UsingSameMethodOfPaymentPage(index)), mode, ua.get(TransportChargesPage(index))) match {
-      case (Some(true), NormalMode, _) => Some(routes.UsingSameCommercialReferenceController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), NormalMode,_) => Some(routes.TransportChargesController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), CheckMode, None) =>  Some(routes.TransportChargesController.onPageLoad(ua.id, index, CheckMode))
-      case  _ => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-    }
-
-  private def usingSameCommercialReferenceRoute(ua: UserAnswers, index: Index, mode: Mode) =
-    (ua.get(UsingSameCommercialReferencePage(index)), ua.get(CommercialReferenceNumberPage(index)), mode) match {
-      case (Some(true), _, NormalMode)    => Some(routes.AddDangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), _, NormalMode)   => Some(routes.CommercialReferenceNumberController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), None, CheckMode) => Some(routes.CommercialReferenceNumberController.onPageLoad(ua.id, index, CheckMode))
-      case _                              => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-
-    }
-
-  private def addDangerousGoodsCodeRoute(ua: UserAnswers, index: Index, mode: Mode) =
+   private def addDangerousGoodsCodeRoute(ua: UserAnswers, index: Index, mode: Mode) =
     (ua.get(AddDangerousGoodsCodePage(index)), ua.get(DangerousGoodsCodePage(index)), mode) match {
       case (Some(true), _, NormalMode) => Some(routes.DangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
       case (Some(false), _, NormalMode) =>

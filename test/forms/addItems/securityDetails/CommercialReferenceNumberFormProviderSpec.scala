@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
-import wolfendale.scalacheck.regexp.RegexpGen
 
 class CommercialReferenceNumberFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
