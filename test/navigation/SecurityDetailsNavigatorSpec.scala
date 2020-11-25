@@ -122,7 +122,7 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
     }
 
-    "to AddItemsCheckYourAnswersPage when user selects 'Yes' and previously answered 'Yes'" in {
+    "to AddItemsCheckYourAnswersPage when user selects 'Yes' and an answer for DangerousGoodsCodePage already exists" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>
           val updatedAnswers = answers
@@ -132,16 +132,14 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .set(AddDangerousGoodsCodePage(index), true)
             .success
             .value
-            .set(DangerousGoodsCodePage(index), "test")
-            .success
-            .value
+
           navigator
             .nextPage(AddDangerousGoodsCodePage(index), CheckMode, updatedAnswers)
             .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
       }
     }
 
-    "to DangerousGoodsCodePage when user selects 'Yes' and previously answered 'No'" in {
+    "to DangerousGoodsCodePage when user selects 'Yes' and no answer for DangerousGoodsCodePage already exists" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>
           val updatedAnswers = answers
@@ -151,9 +149,7 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .set(AddDangerousGoodsCodePage(index), true)
             .success
             .value
-            .remove(DangerousGoodsCodePage(index))
-            .success
-            .value
+
           navigator
             .nextPage(AddDangerousGoodsCodePage(index), CheckMode, updatedAnswers)
             .mustBe(routes.DangerousGoodsCodeController.onPageLoad(updatedAnswers.id, index, CheckMode))
