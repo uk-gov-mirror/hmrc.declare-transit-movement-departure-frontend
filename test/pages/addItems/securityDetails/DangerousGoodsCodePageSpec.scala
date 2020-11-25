@@ -17,7 +17,6 @@
 package pages.addItems.securityDetails
 
 import base.SpecBase
-import models.Index
 import pages.behaviours.PageBehaviours
 
 class DangerousGoodsCodePageSpec extends SpecBase with PageBehaviours {

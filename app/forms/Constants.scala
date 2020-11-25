@@ -25,4 +25,7 @@ object Constants {
   lazy val validEoriCharactersRegex: String     = "^[a-zA-Z0-9]*$"
   lazy val vehicleIdRegex: String               = "^[a-zA-Z0-9 ]*$"
   lazy val vehicleIdMaxLength                   = 27
+  lazy val consignorNameRegex                   = s"^[a-zA-Z0-9&'@\\/.\\-%?<> ]{1,35}"
+  lazy val consigneeNameMaxLength: Int          = 35
+
 }
