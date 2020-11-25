@@ -46,6 +46,13 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryCircumstanceIndicatorUserAnswersEntry: Arbitrary[(CircumstanceIndicatorPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CircumstanceIndicatorPage.type#Data].map(Json.toJson(_))
+      } yield (CircumstanceIndicatorPage, value)
+    }
+
   implicit lazy val arbitraryAddCommercialReferenceNumberUserAnswersEntry: Arbitrary[(AddCommercialReferenceNumberPage.type, JsValue)] =
     Arbitrary {
       for {

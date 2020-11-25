@@ -1195,3 +1195,9 @@ addCommercialReferenceNumber.title = addCommercialReferenceNumber
 addCommercialReferenceNumber.heading = addCommercialReferenceNumber
 addCommercialReferenceNumber.checkYourAnswersLabel = addCommercialReferenceNumber
 addCommercialReferenceNumber.error.required = Select yes if addCommercialReferenceNumber
+
+circumstanceIndicator.title = circumstanceIndicator
+circumstanceIndicator.heading = circumstanceIndicator
+circumstanceIndicator.checkYourAnswersLabel = circumstanceIndicator
+circumstanceIndicator.error.required = Enter circumstanceIndicator
+circumstanceIndicator.error.length = CircumstanceIndicator must be 2 characters or less

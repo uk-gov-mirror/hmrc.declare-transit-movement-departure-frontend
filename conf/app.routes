@@ -684,3 +684,8 @@ GET        /:lrn/addCommercialReferenceNumber                        controllers
 POST       /:lrn/addCommercialReferenceNumber                        controllers.AddCommercialReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeAddCommercialReferenceNumber                  controllers.AddCommercialReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddCommercialReferenceNumber                  controllers.AddCommercialReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/circumstanceIndicator                        controllers.CircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/circumstanceIndicator                        controllers.CircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeCircumstanceIndicator                  controllers.CircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeCircumstanceIndicator                  controllers.CircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

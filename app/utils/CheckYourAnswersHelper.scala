@@ -34,6 +34,21 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def circumstanceIndicator: Option[Row] = userAnswers.get(CircumstanceIndicatorPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"circumstanceIndicator.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CircumstanceIndicatorController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"circumstanceIndicator.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addCommercialReferenceNumber: Option[Row] = userAnswers.get(AddCommercialReferenceNumberPage) map {
     answer =>
       Row(
