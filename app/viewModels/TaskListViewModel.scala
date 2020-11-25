@@ -26,34 +26,37 @@ import cats.data.ReaderT
 
 class TaskListDsl(userAnswers: UserAnswers) {
 
-  class IntermediateDslCompletedStage[A](readerIfCompleted: UserAnswersReader[A]) {
+  class IntermediateDslCompletedStage[A](readerIfCompleted: UserAnswersReader[A], urlIfCompleted: String) {
 
-    def ifInProgress[B](readerIfInProgress: UserAnswersReader[B]): TaskListFullDsl[A, B] =
-      new TaskListFullDsl(userAnswers)(readerIfCompleted, readerIfInProgress)
+    def ifInProgress[B](readerIfInProgress: UserAnswersReader[B], urlIfInProgress: String): TaskListFullDsl[A, B] =
+      new TaskListFullDsl(userAnswers)(readerIfCompleted, urlIfCompleted, readerIfInProgress, urlIfInProgress)
 
   }
 
-  def ifCompleted[A, B](readerIfCompleted: UserAnswersReader[A]): IntermediateDslCompletedStage[A] =
-    new IntermediateDslCompletedStage[A](readerIfCompleted)
+  def ifCompleted[A, B](readerIfCompleted: UserAnswersReader[A], urlIfCompleted: String): IntermediateDslCompletedStage[A] =
+    new IntermediateDslCompletedStage[A](readerIfCompleted, urlIfCompleted)
 }
 
-class TaskListFullDsl[A, B](userAnswers: UserAnswers)(readerIfCompleted: UserAnswersReader[A], readerIfInProgress: UserAnswersReader[B]) {
+class TaskListFullDsl[A, B](userAnswers: UserAnswers)(readerIfCompleted: UserAnswersReader[A],
+                                                      urlIfCompleted: String,
+                                                      readerIfInProgress: UserAnswersReader[B],
+                                                      urlIfInProgress: String) {
 
-  def run: (String, Status) = {
+  def ifNotStarted(urlIfNotStarted: String): (String, Status) = {
     val completed = readerIfCompleted
       .map[(String, Status)](
-        _ => (controllers.movementDetails.routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url, Completed)
+        _ => (urlIfCompleted, Completed)
       )
 
     val inProgress = readerIfInProgress
       .map[(String, Status)](
-        _ => (controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url, InProgress)
+        _ => (urlIfInProgress, InProgress)
       )
 
     completed
       .orElse(inProgress)
       .run(userAnswers)
-      .getOrElse((controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url, NotStarted))
+      .getOrElse((urlIfNotStarted, NotStarted))
 
   }
 
@@ -71,9 +74,15 @@ class TaskListViewModel(userAnswers: UserAnswers) {
   def taskListSections: Seq[SectionDetails] = {
     val (onwardRoute, status) =
       statusDsl
-        .ifCompleted(UserAnswersReader[MovementDetails])
-        .ifInProgress(ProcedureTypePage.reader)
-        .run
+        .ifCompleted(
+          UserAnswersReader[MovementDetails],
+          controllers.movementDetails.routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
+        )
+        .ifInProgress(
+          ProcedureTypePage.reader,
+          controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
+        )
+        .ifNotStarted(controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url)
 
     val movementDetails = SectionDetails("declarationSummary.section.movementDetails", onwardRoute, status)
 
