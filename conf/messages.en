@@ -1240,3 +1240,9 @@ placeOfUnloadingCode.heading = placeOfUnloadingCode
 placeOfUnloadingCode.checkYourAnswersLabel = placeOfUnloadingCode
 placeOfUnloadingCode.error.required = Enter placeOfUnloadingCode
 placeOfUnloadingCode.error.length = PlaceOfUnloadingCode must be 10 characters or less
+
+countryOfRouting.title = countryOfRouting
+countryOfRouting.heading = countryOfRouting
+countryOfRouting.checkYourAnswersLabel = countryOfRouting
+countryOfRouting.error.required = Enter countryOfRouting
+countryOfRouting.error.length = CountryOfRouting must be 2 characters or less
