@@ -62,7 +62,7 @@ class SecurityConsignorAddressFormProviderSpec extends StringFieldBehaviours {
       val invalidKey = "securityConsignorAddress.error.line1.invalid"
 
       val expectedError =
-        List(FormError(fieldName, invalidKey, Seq(addressRegex)))
+        List(FormError(fieldName, invalidKey, Seq(consignorName)))
 
       val genInvalidString: Gen[String] = {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))
@@ -99,14 +99,14 @@ class SecurityConsignorAddressFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(consignorName))
     )
 
     "must not bind strings that do not match the address line regex" in {
       val invalidKey = "securityConsignorAddress.error.line2.invalid"
 
       val expectedError =
-        List(FormError(fieldName, invalidKey, Seq(addressRegex)))
+        List(FormError(fieldName, invalidKey, Seq(consignorName)))
 
       val genInvalidString: Gen[String] = {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))
@@ -143,14 +143,14 @@ class SecurityConsignorAddressFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(consignorName))
     )
 
     "must not bind strings that do not match the address line regex" in {
       val invalidKey = "securityConsignorAddress.error.line3.invalid"
 
       val expectedError =
-        List(FormError(fieldName, invalidKey, Seq(addressRegex)))
+        List(FormError(fieldName, invalidKey, Seq(consignorName)))
 
       val genInvalidString: Gen[String] = {
         stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))

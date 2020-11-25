@@ -39,18 +39,18 @@ import models.reference.{Country, CountryCode}
 import scala.concurrent.{ExecutionContext, Future}
 
 class SecurityConsigneeAddressController @Inject()(
-                                                    override val messagesApi: MessagesApi,
-                                                    sessionRepository: SessionRepository,
-                                                    @AddItems navigator: Navigator,
-                                                    identify: IdentifierAction,
-                                                    getData: DataRetrievalActionProvider,
-                                                    requireData: DataRequiredAction,
-                                                    referenceDataConnector: ReferenceDataConnector,
-                                                    formProvider: SecurityConsigneeAddressFormProvider,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    renderer: Renderer
-                                                  )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @AddItems navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
+  formProvider: SecurityConsigneeAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
 
@@ -64,16 +64,16 @@ class SecurityConsigneeAddressController @Inject()(
             case Some(consigneeName) =>
               val preparedForm = request.userAnswers.get(SecurityConsigneeAddressPage(index)) match {
                 case Some(value) => formProvider(countries, consigneeName).fill(value)
-                case None => formProvider(countries, consigneeName)
+                case None        => formProvider(countries, consigneeName)
               }
 
               val json = Json.obj(
-                "form" -> preparedForm,
-                "lrn" -> lrn,
-                "index" -> index.display,
-                "mode" -> mode,
+                "form"          -> preparedForm,
+                "lrn"           -> lrn,
+                "index"         -> index.display,
+                "mode"          -> mode,
                 "consigneeName" -> consigneeName,
-                "countries" -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
+                "countries"     -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
               )
 
               renderer.render(template, json).map(Ok(_))
@@ -98,12 +98,12 @@ class SecurityConsigneeAddressController @Inject()(
                       }
 
                     val json = Json.obj(
-                      "form" -> formWithErrors,
-                      "lrn" -> lrn,
-                      "mode" -> mode,
-                      "mode" -> mode,
+                      "form"          -> formWithErrors,
+                      "lrn"           -> lrn,
+                      "mode"          -> mode,
+                      "mode"          -> mode,
                       "consigneeName" -> consigneeName,
-                      "countries" -> countryJsonList(countryValue, countries.fullList)
+                      "countries"     -> countryJsonList(countryValue, countries.fullList)
                     )
 
                     renderer.render(template, json).map(BadRequest(_))
@@ -111,7 +111,7 @@ class SecurityConsigneeAddressController @Inject()(
                   value =>
                     for {
                       updatedAnswers <- Future.fromTry(request.userAnswers.set(SecurityConsigneeAddressPage(index), value))
-                      _ <- sessionRepository.set(updatedAnswers)
+                      _              <- sessionRepository.set(updatedAnswers)
                     } yield Redirect(navigator.nextPage(SecurityConsigneeAddressPage(index), mode, updatedAnswers))
                 )
           }
