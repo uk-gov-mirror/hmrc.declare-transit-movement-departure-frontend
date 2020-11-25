@@ -40,6 +40,21 @@ import pages.addItems.traderSecurityDetails.{
 }
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
+import pages.safetyAndSecurity.{
+  AddAnotherCountryOfRoutingPage,
+  AddCircumstanceIndicatorPage,
+  AddCommercialReferenceNumberAllItemsPage,
+  AddCommercialReferenceNumberPage,
+  AddConveyancerReferenceNumberPage,
+  AddPlaceOfUnloadingCodePage,
+  AddTransportChargesPaymentMethodPage,
+  CircumstanceIndicatorPage,
+  CommercialReferenceNumberAllItemsPage,
+  ConveyanceReferenceNumberPage,
+  CountryOfRoutingPage,
+  PlaceOfUnloadingCodePage,
+  TransportChargesPaymentMethodPage
+}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators {

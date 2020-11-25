@@ -23,7 +23,6 @@ import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.traderSecurityDetails
-import pages.addItems.traderSecurityDetails.SecurityConsigneeAllItemsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

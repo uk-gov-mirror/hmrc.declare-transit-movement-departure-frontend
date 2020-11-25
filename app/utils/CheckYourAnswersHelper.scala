@@ -29,205 +29,25 @@ import pages.addItems.traderSecurityDetails.{
   SecurityConsignorEoriPage,
   SecurityConsignorNamePage
 }
+import pages.safetyAndSecurity.{
+  AddAnotherCountryOfRoutingPage,
+  AddCircumstanceIndicatorPage,
+  AddCommercialReferenceNumberAllItemsPage,
+  AddCommercialReferenceNumberPage,
+  AddConveyancerReferenceNumberPage,
+  AddPlaceOfUnloadingCodePage,
+  AddTransportChargesPaymentMethodPage,
+  CircumstanceIndicatorPage,
+  CommercialReferenceNumberAllItemsPage,
+  ConveyanceReferenceNumberPage,
+  CountryOfRoutingPage,
+  PlaceOfUnloadingCodePage,
+  TransportChargesPaymentMethodPage
+}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
-
-  def addAnotherCountryOfRouting: Option[Row] = userAnswers.get(AddAnotherCountryOfRoutingPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"addAnotherCountryOfRouting.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherCountryOfRouting.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def countryOfRouting: Option[Row] = userAnswers.get(CountryOfRoutingPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"countryOfRouting.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.CountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"countryOfRouting.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def placeOfUnloadingCode: Option[Row] = userAnswers.get(PlaceOfUnloadingCodePage) map {
-    answer =>
-      Row(
-        key     = Key(msg"placeOfUnloadingCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.PlaceOfUnloadingCodeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"placeOfUnloadingCode.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addPlaceOfUnloadingCode: Option[Row] = userAnswers.get(AddPlaceOfUnloadingCodePage) map {
-    answer =>
-      Row(
-        key     = Key(msg"addPlaceOfUnloadingCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddPlaceOfUnloadingCodeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addPlaceOfUnloadingCode.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def conveyanceReferenceNumber: Option[Row] = userAnswers.get(ConveyanceReferenceNumberPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"conveyanceReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.ConveyanceReferenceNumberController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"conveyanceReferenceNumber.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addConveyancerReferenceNumber: Option[Row] = userAnswers.get(AddConveyancerReferenceNumberPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"addConveyancerReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddConveyancerReferenceNumberController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConveyancerReferenceNumber.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def commercialReferenceNumberAllItems: Option[Row] = userAnswers.get(CommercialReferenceNumberAllItemsPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"commercialReferenceNumberAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.CommercialReferenceNumberAllItemsController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"commercialReferenceNumberAllItems.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addCommercialReferenceNumberAllItems: Option[Row] = userAnswers.get(AddCommercialReferenceNumberAllItemsPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"addCommercialReferenceNumberAllItems.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addCommercialReferenceNumberAllItems.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def transportChargesPaymentMethod: Option[Row] = userAnswers.get(TransportChargesPaymentMethodPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"transportChargesPaymentMethod.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.TransportChargesPaymentMethodController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"transportChargesPaymentMethod.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def circumstanceIndicator: Option[Row] = userAnswers.get(CircumstanceIndicatorPage) map {
-    answer =>
-      Row(
-        key     = Key(msg"circumstanceIndicator.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.CircumstanceIndicatorController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"circumstanceIndicator.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addCommercialReferenceNumber: Option[Row] = userAnswers.get(AddCommercialReferenceNumberPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addCommercialReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddCommercialReferenceNumberController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addCommercialReferenceNumber.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addTransportChargesPaymentMethod: Option[Row] = userAnswers.get(AddTransportChargesPaymentMethodPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addTransportChargesPaymentMethod.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddTransportChargesPaymentMethodController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addTransportChargesPaymentMethod.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
-  def addCircumstanceIndicator: Option[Row] = userAnswers.get(AddCircumstanceIndicatorPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addCircumstanceIndicator.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddCircumstanceIndicatorController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addCircumstanceIndicator.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
 
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>

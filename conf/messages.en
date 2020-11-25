@@ -1175,12 +1175,12 @@ securityConsigneeName.checkYourAnswersLabel = securityConsigneeName
 securityConsigneeName.error.required = Enter securityConsigneeName
 securityConsigneeName.error.length = SecurityConsigneeName must be 35 characters or less
 
-
 declarationRejection.title = There is a problem with this departure declaration
 declarationRejection.heading = There is a problem with this departure declaration
 declarationRejection.errorType =  Error Type
 declarationRejection.pointer =  Error Pointer
 declarationRejection.reason =  Reason
+
 addCircumstanceIndicator.title = addCircumstanceIndicator
 addCircumstanceIndicator.heading = addCircumstanceIndicator
 addCircumstanceIndicator.checkYourAnswersLabel = addCircumstanceIndicator

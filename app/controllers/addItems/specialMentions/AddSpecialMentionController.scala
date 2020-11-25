@@ -21,7 +21,7 @@ import forms.addItems.specialMentions.AddSpecialMentionFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.{PreTaskListDetails, SpecialMentions}
+import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.AddSpecialMentionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

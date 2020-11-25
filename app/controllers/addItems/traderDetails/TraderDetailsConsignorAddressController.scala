@@ -18,6 +18,7 @@ package controllers.addItems.traderDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
+import controllers.{routes => mainRoutes}
 import forms.addItems.traderDetails.TraderDetailsConsignorAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
@@ -33,7 +34,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.countryJsonList
-import controllers.{routes => mainRoutes}
 
 import scala.concurrent.{ExecutionContext, Future}
 
