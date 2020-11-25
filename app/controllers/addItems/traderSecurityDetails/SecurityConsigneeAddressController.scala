@@ -101,7 +101,7 @@ class SecurityConsigneeAddressController @Inject()(
                       "form"          -> formWithErrors,
                       "lrn"           -> lrn,
                       "mode"          -> mode,
-                      "mode"          -> mode,
+                      "index"         -> index.display,
                       "consigneeName" -> consigneeName,
                       "countries"     -> countryJsonList(countryValue, countries.fullList)
                     )
