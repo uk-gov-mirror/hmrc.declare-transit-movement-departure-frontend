@@ -1201,3 +1201,9 @@ circumstanceIndicator.heading = circumstanceIndicator
 circumstanceIndicator.checkYourAnswersLabel = circumstanceIndicator
 circumstanceIndicator.error.required = Enter circumstanceIndicator
 circumstanceIndicator.error.length = CircumstanceIndicator must be 2 characters or less
+
+transportChargesPaymentMethod.title = transportChargesPaymentMethod
+transportChargesPaymentMethod.heading = transportChargesPaymentMethod
+transportChargesPaymentMethod.checkYourAnswersLabel = transportChargesPaymentMethod
+transportChargesPaymentMethod.error.required = Enter transportChargesPaymentMethod
+transportChargesPaymentMethod.error.length = TransportChargesPaymentMethod must be 2 characters or less
