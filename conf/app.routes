@@ -704,3 +704,13 @@ GET        /:lrn/commercialReferenceNumberAllItems                        contro
 POST       /:lrn/commercialReferenceNumberAllItems                        controllers.CommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeCommercialReferenceNumberAllItems                  controllers.CommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeCommercialReferenceNumberAllItems                  controllers.CommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/addConveyancerReferenceNumber                        controllers.AddConveyancerReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addConveyancerReferenceNumber                        controllers.AddConveyancerReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddConveyancerReferenceNumber                  controllers.AddConveyancerReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddConveyancerReferenceNumber                  controllers.AddConveyancerReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/conveyanceReferenceNumber                        controllers.ConveyanceReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/conveyanceReferenceNumber                        controllers.ConveyanceReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeConveyanceReferenceNumber                  controllers.ConveyanceReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeConveyanceReferenceNumber                  controllers.ConveyanceReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

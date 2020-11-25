@@ -1218,3 +1218,14 @@ commercialReferenceNumberAllItems.heading = commercialReferenceNumberAllItems
 commercialReferenceNumberAllItems.checkYourAnswersLabel = commercialReferenceNumberAllItems
 commercialReferenceNumberAllItems.error.required = Enter commercialReferenceNumberAllItems
 commercialReferenceNumberAllItems.error.length = CommercialReferenceNumberAllItems must be 10 characters or less
+
+addConveyancerReferenceNumber.title = addConveyancerReferenceNumber
+addConveyancerReferenceNumber.heading = addConveyancerReferenceNumber
+addConveyancerReferenceNumber.checkYourAnswersLabel = addConveyancerReferenceNumber
+addConveyancerReferenceNumber.error.required = Select yes if addConveyancerReferenceNumber
+
+conveyanceReferenceNumber.title = conveyanceReferenceNumber
+conveyanceReferenceNumber.heading = conveyanceReferenceNumber
+conveyanceReferenceNumber.checkYourAnswersLabel = conveyanceReferenceNumber
+conveyanceReferenceNumber.error.required = Enter conveyanceReferenceNumber
+conveyanceReferenceNumber.error.length = ConveyanceReferenceNumber must be 10 characters or less

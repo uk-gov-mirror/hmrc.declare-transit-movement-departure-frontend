@@ -34,6 +34,36 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def conveyanceReferenceNumber: Option[Row] = userAnswers.get(ConveyanceReferenceNumberPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"conveyanceReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConveyanceReferenceNumberController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"conveyanceReferenceNumber.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addConveyancerReferenceNumber: Option[Row] = userAnswers.get(AddConveyancerReferenceNumberPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addConveyancerReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddConveyancerReferenceNumberController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addConveyancerReferenceNumber.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def commercialReferenceNumberAllItems: Option[Row] = userAnswers.get(CommercialReferenceNumberAllItemsPage) map {
     answer =>
       Row(
