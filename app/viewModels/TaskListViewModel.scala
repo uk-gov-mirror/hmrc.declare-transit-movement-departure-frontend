@@ -18,10 +18,9 @@ package viewModels
 
 import cats.data.{NonEmptyList, ReaderT}
 import derivable.DeriveNumberOfItems
-import models.journeyDomain.TransportDetails.InlandMode
 import models.journeyDomain._
 import models.{Index, NormalMode, SectionDetails, UserAnswers}
-import pages.{CountryOfDispatchPage, InlandModePage, IsPrincipalEoriKnownPage, ItemDescriptionPage, ProcedureTypePage}
+import pages.{CountryOfDispatchPage, DeclarePackagesPage, InlandModePage, IsPrincipalEoriKnownPage, ItemDescriptionPage, ProcedureTypePage}
 import play.api.libs.json._
 
 class TaskListViewModel(userAnswers: UserAnswers) {
@@ -105,13 +104,28 @@ class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.addItems.routes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(0), NormalMode).url)
       .section
 
+  private val goodsSummary =
+    taskListDsl
+      .sectionName("declarationSummary.section.goodsSummary")
+      .ifCompleted(
+        UserAnswersReader[GoodsSummary],
+        controllers.goodsSummary.routes.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn).url
+      )
+      .ifInProgress(
+        DeclarePackagesPage.reader,
+        controllers.goodsSummary.routes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url
+      )
+      .ifNotStarted(controllers.goodsSummary.routes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url)
+      .section
+
   def taskListSections: Seq[SectionDetails] =
     Seq(
       movementDetails,
       routeDetails,
       transportDetails,
       traderDetails,
-      itemDetails
+      itemDetails,
+      goodsSummary
     )
 }
 
@@ -127,5 +141,5 @@ object TaskListViewModel {
     taskListViewModel =>
       Json.obj(
         Constants.sections -> taskListViewModel.taskListSections
-    )
+      )
 }
