@@ -21,6 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, 
 import helper.WireMockServerHandler
 import models.reference._
 import models.{
+  CircumstanceIndicatorList,
   CountryList,
   CustomsOfficeList,
   DangerousGoodsCodeList,
@@ -220,6 +221,20 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |  {
       |    "code": "B",
       |    "description": "Payment by credit card"
+      |  }
+      |]
+      |""".stripMargin
+
+  private val circumstanceIndicatorJson: String =
+    """
+      |[
+      |  {
+      |    "code": "A",
+      |    "description": "Data1"
+      |  },
+      |  {
+      |    "code": "B",
+      |    "description": "Data2"
       |  }
       |]
       |""".stripMargin
@@ -532,6 +547,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         checkErrorResponse(s"/$startUrl/dangerous-goods-code/0004", connector.getDangerousGoodsCodeList())
       }
     }
+
     "getMethodOfPayment" - {
       "must return list of methods of payment when successful" in {
         server.stubFor(
@@ -550,6 +566,31 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         checkErrorResponse(s"/$startUrl/method-of-payment", connector.getMethodOfPayment())
       }
     }
+
+    "getCircumstanceIndicatorList" - {
+
+      "must return Seq of circumstance indicators when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$startUrl/circumstance-indicators"))
+            .willReturn(okJson(circumstanceIndicatorJson))
+        )
+
+        val expectedResult: CircumstanceIndicatorList = CircumstanceIndicatorList(
+          Seq(
+            CircumstanceIndicator("A", "Data1"),
+            CircumstanceIndicator("B", "Data2")
+          )
+        )
+
+        connector.getCircumstanceIndicatorList().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$startUrl/circumstance-indicators", connector.getCircumstanceIndicatorList())
+      }
+    }
+
   }
 
   private def checkErrorResponse(url: String, result: Future[_]): Assertion =
