@@ -17,7 +17,7 @@
 package viewModels
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
-import generators.{JourneyModelGenerators, UserAnswersGenerator}
+import generators.{JourneyModelGenerators, ModelGenerators, UserAnswersGenerator}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.{
   GoodsSummary,
@@ -35,9 +35,10 @@ import models.journeyDomain.{
   TransportDetailsSpec
 }
 import models.reference.CountryCode
-import models.{GuaranteeType, Index, NormalMode, ProcedureType, Status, UserAnswers}
+import models.{DeclarationType, GuaranteeType, Index, NormalMode, ProcedureType, Status, UserAnswers}
 import org.scalacheck.{Arbitrary, Gen}
 import pages.guaranteeDetails.GuaranteeTypePage
+import pages.DeclarationTypePage
 import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
 import pages.{
   AddSecurityDetailsPage,
@@ -50,7 +51,13 @@ import pages.{
 }
 import play.api.libs.json.{JsArray, JsObject, Json}
 
-class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with UserAnswersSpecHelper with UserAnswersGenerator {
+class TaskListViewModelSpec
+    extends SpecBase
+    with GeneratorSpec
+    with JourneyModelGenerators
+    with UserAnswersSpecHelper
+    with UserAnswersGenerator
+    with ModelGenerators {
   import TaskListViewModelSpec._
 
   val movementSectionName          = "declarationSummary.section.movementDetails"
@@ -79,9 +86,9 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
         }
 
         "is InProgress when the first question for the section has been answered" in {
-          forAll(arb[ProcedureType]) {
-            procedure =>
-              val userAnswers = emptyUserAnswers.unsafeSetVal(ProcedureTypePage)(procedure)
+          forAll(arb[DeclarationType]) {
+            data =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(DeclarationTypePage)(data)
 
               val viewModel = TaskListViewModel(userAnswers)
 

@@ -25,6 +25,7 @@ import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
 import pages.{
   AddSecurityDetailsPage,
   CountryOfDispatchPage,
+  DeclarationTypePage,
   DeclarePackagesPage,
   InlandModePage,
   IsPrincipalEoriKnownPage,
@@ -47,7 +48,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
         controllers.movementDetails.routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
       )
       .ifInProgress(
-        ProcedureTypePage.reader,
+        DeclarationTypePage.reader,
         controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
       )
       .ifNotStarted(controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url)
