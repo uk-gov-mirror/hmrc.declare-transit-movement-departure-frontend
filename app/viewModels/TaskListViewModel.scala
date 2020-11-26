@@ -21,7 +21,16 @@ import derivable.DeriveNumberOfItems
 import models.journeyDomain._
 import models.{Index, NormalMode, SectionDetails, UserAnswers}
 import pages.guaranteeDetails.GuaranteeTypePage
-import pages.{CountryOfDispatchPage, DeclarePackagesPage, InlandModePage, IsPrincipalEoriKnownPage, ItemDescriptionPage, ProcedureTypePage}
+import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
+import pages.{
+  AddSecurityDetailsPage,
+  CountryOfDispatchPage,
+  DeclarePackagesPage,
+  InlandModePage,
+  IsPrincipalEoriKnownPage,
+  ItemDescriptionPage,
+  ProcedureTypePage
+}
 import play.api.libs.json._
 
 class TaskListViewModel(userAnswers: UserAnswers) {
@@ -133,12 +142,37 @@ class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url)
       .section
 
+  val safetyAndSecurityDetails: Seq[SectionDetails] =
+    userAnswers
+      .get(AddSecurityDetailsPage)
+      .map({
+        case true =>
+          Seq(
+            taskListDsl
+              .sectionName("declarationSummary.section.safetyAndSecurity")
+              .ifCompleted(
+                UserAnswersReader.unsafeEmpty[Unit],
+                ""
+              )
+              .ifInProgress(
+                AddCircumstanceIndicatorPage.reader,
+                controllers.safetyAndSecurity.routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url
+              )
+              .ifNotStarted(controllers.safetyAndSecurity.routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url)
+              .section
+          )
+
+        case _ => Seq.empty
+      })
+      .getOrElse(Seq.empty)
+
   def taskListSections: Seq[SectionDetails] =
     Seq(
       movementDetails,
       routeDetails,
       transportDetails,
-      traderDetails,
+      traderDetails
+    ) ++ safetyAndSecurityDetails ++ Seq(
       itemDetails,
       goodsSummaryDetails,
       guaranteeDetails

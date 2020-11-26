@@ -17,7 +17,7 @@
 package viewModels
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
-import generators.JourneyModelGenerators
+import generators.{JourneyModelGenerators, UserAnswersGenerator}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.{
   GoodsSummary,
@@ -35,12 +35,21 @@ import models.journeyDomain.{
   TransportDetailsSpec
 }
 import models.reference.CountryCode
-import models.{GuaranteeType, Index, NormalMode, ProcedureType, Status}
+import models.{GuaranteeType, Index, NormalMode, ProcedureType, Status, UserAnswers}
 import org.scalacheck.{Arbitrary, Gen}
 import pages.guaranteeDetails.GuaranteeTypePage
-import pages.{CountryOfDispatchPage, DeclarePackagesPage, InlandModePage, IsPrincipalEoriKnownPage, ItemDescriptionPage, ProcedureTypePage}
+import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
+import pages.{
+  AddSecurityDetailsPage,
+  CountryOfDispatchPage,
+  DeclarePackagesPage,
+  InlandModePage,
+  IsPrincipalEoriKnownPage,
+  ItemDescriptionPage,
+  ProcedureTypePage
+}
 
-class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with UserAnswersSpecHelper {
+class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with UserAnswersSpecHelper with UserAnswersGenerator {
 
   val movementSectionName          = "declarationSummary.section.movementDetails"
   val tradersSectionName           = "declarationSummary.section.tradersDetails"
@@ -359,44 +368,78 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
       }
     }
 
-    "SecurityDetails" ignore {
+    "SecurityDetails" - {
 
       "section task" - {
         "is included when user has chosen to add Security Details" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
+          val useranswers = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
+
+          val viewModel = TaskListViewModel(useranswers)
 
           viewModel.getSection(safetyAndSecuritySectionName) must be(defined)
         }
 
         "is not included when user has chosen to not add Security Details" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
+          val useranswers = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
 
-          viewModel.getSection(safetyAndSecuritySectionName) must be(defined)
+          val viewModel = TaskListViewModel(useranswers)
+
+          viewModel.getSection(safetyAndSecuritySectionName) must not be defined
         }
       }
 
-      "status" - {
+      "status when section is required" - {
         "is Not started when there are no answers for the section" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
+          val userAnswers = emptyUserAnswers
+            .unsafeSetVal(AddSecurityDetailsPage)(true)
+
+          val viewModel = TaskListViewModel(userAnswers)
 
           viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.NotStarted
         }
 
-        "is InProgress when the first question for the section has been answered" ignore {}
+        "is InProgress when the first question for the section has been answered" in {
+          forAll(arb[Boolean]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers
+                .unsafeSetVal(AddSecurityDetailsPage)(true)
+                .unsafeSetVal(AddCircumstanceIndicatorPage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.InProgress
+          }
+        }
 
         "is Completed when all the answers are completed" ignore {}
       }
 
-      "navigation" - {
+      "navigation when section is required" - {
         "when the status is Not started, links to the first page" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
+          val userAnswers = emptyUserAnswers
+            .unsafeSetVal(AddSecurityDetailsPage)(true)
 
-          val expectedHref: String = controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
+          val viewModel = TaskListViewModel(userAnswers)
+
+          val expectedHref: String = controllers.safetyAndSecurity.routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url
 
           viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
         }
 
-        "when the status is InProgress, links to the first page" ignore {}
+        "when the status is InProgress, links to the first page" in {
+          forAll(arb[Boolean]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers
+                .unsafeSetVal(AddSecurityDetailsPage)(true)
+                .unsafeSetVal(AddCircumstanceIndicatorPage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.safetyAndSecurity.routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url
+
+              viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
+          }
+        }
 
         "when the status is Completed, links to the Check your answers page for the section" ignore {}
       }

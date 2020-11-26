@@ -63,7 +63,7 @@ private[viewModels] class TaskListDsl[A, B](userAnswers: UserAnswers)(
   urlIfNotStarted: String
 ) {
 
-  def section: SectionDetails = {
+  val section: SectionDetails = {
     val completed = readerIfCompleted
       .map[(String, Status)](
         _ => (urlIfCompleted, Completed)
