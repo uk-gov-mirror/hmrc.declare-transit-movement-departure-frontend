@@ -203,6 +203,118 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
               .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(answers.id, NormalMode))
         }
       }
+
+      "must go from AddConveyanceReferenceNumber to AddPlaceOfUnloadingCode if 'false' and CircumstanceIndicator is '(E) Authorised Economic Operators'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            val updatedAnswers = answers
+              .set(AddConveyancerReferenceNumberPage, false).success.value
+              .set(CircumstanceIndicatorPage, "E").success.value
+
+            navigator
+              .nextPage(AddConveyancerReferenceNumberPage, NormalMode, updatedAnswers)
+              .mustBe(routes.AddPlaceOfUnloadingCodeController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from AddConveyanceReferenceNumber to PlaceOfUnloadingCode if 'false' and CircumstanceIndicator is not '(E) Authorised Economic Operators'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            val updatedAnswers = answers
+              .set(AddConveyancerReferenceNumberPage, false).success.value
+              .set(CircumstanceIndicatorPage, "A").success.value
+
+            navigator
+              .nextPage(AddConveyancerReferenceNumberPage, NormalMode, updatedAnswers)
+              .mustBe(routes.PlaceOfUnloadingCodeController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+
+      "must go from ConveyanceReferenceNumber to AddPlaceOfUnloadingCode if 'false' and CircumstanceIndicator is '(E) Authorised Economic Operators'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            val updatedAnswers = answers
+              .set(ConveyanceReferenceNumberPage, "answer").success.value
+              .set(CircumstanceIndicatorPage, "E").success.value
+
+            navigator
+              .nextPage(ConveyanceReferenceNumberPage, NormalMode, updatedAnswers)
+              .mustBe(routes.AddPlaceOfUnloadingCodeController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from ConveyanceReferenceNumber to PlaceOfUnloadingCode if 'false' and CircumstanceIndicator is not '(E) Authorised Economic Operators'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            val updatedAnswers = answers
+              .set(ConveyanceReferenceNumberPage, "answer").success.value
+              .set(CircumstanceIndicatorPage, "A").success.value
+
+            navigator
+              .nextPage(ConveyanceReferenceNumberPage, NormalMode, updatedAnswers)
+              .mustBe(routes.PlaceOfUnloadingCodeController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+
+      "must go from AddPlaceOfUnloadingCode to PlaceOfUnloadingCode if 'true'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            val updatedAnswers = answers
+              .set(AddPlaceOfUnloadingCodePage, true).success.value
+
+            navigator
+              .nextPage(AddPlaceOfUnloadingCodePage, NormalMode, updatedAnswers)
+              .mustBe(routes.PlaceOfUnloadingCodeController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from AddPlaceOfUnloadingCode to CountryOfRouting if 'false'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            val updatedAnswers = answers
+              .set(AddPlaceOfUnloadingCodePage, false).success.value
+
+            navigator
+              .nextPage(ConveyanceReferenceNumberPage, NormalMode, updatedAnswers)
+              .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from PlaceOfUnloadingCode to CountryOfRouting" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator
+              .nextPage(PlaceOfUnloadingCodePage, NormalMode, answers)
+              .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from CountryOfRouting to AddAnotherCountryOfRouting" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            navigator
+              .nextPage(CountryOfRoutingPage, NormalMode, answers)
+              .mustBe(routes.AddAnotherCountryOfRoutingController.onPageLoad(answers.id, NormalMode))
+        }
+      }
     }
 
     "in CheckMode" - {
