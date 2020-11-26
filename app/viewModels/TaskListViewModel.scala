@@ -96,14 +96,12 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url)
       .section
 
-  private val itemsDetailsLastIndex: Index = userAnswers.get(DeriveNumberOfItems).fold(Index(0))(Index(_))
-
   private val itemDetails =
     taskListDsl
       .sectionName("declarationSummary.section.addItems")
       .ifCompleted(
         UserAnswersReader[NonEmptyList[ItemSection]],
-        controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, itemsDetailsLastIndex).url
+        controllers.addItems.routes.AddAnotherItemController.onPageLoad(userAnswers.id).url
       )
       .ifInProgress(
         ItemDescriptionPage(Index(0)).reader,

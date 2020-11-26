@@ -515,6 +515,7 @@ class TaskListViewModelSpec
           }
         }
 
+        // TODO: to be uncommmented when section is complete
         "when the status is Completed, links to the Check your answers page for the section" ignore {
           forAll(arb[ItemSection]) {
             sectionDetails =>
@@ -522,7 +523,7 @@ class TaskListViewModelSpec
 
               val viewModel = TaskListViewModel(userAnswers)
 
-              val expectedHref: String = controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(lrn, zeroIndex).url
+              val expectedHref: String = controllers.addItems.routes.AddAnotherItemController.onPageLoad(lrn).url
 
               viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
           }
