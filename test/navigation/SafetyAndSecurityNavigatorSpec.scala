@@ -204,6 +204,20 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
+      "must go from AddConveyanceReferenceNumber to ConveyanceReferenceNumber if 'true'" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            val updatedAnswers = answers
+              .set(AddConveyancerReferenceNumberPage, true).success.value
+
+            navigator
+              .nextPage(AddConveyancerReferenceNumberPage, NormalMode, updatedAnswers)
+              .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
       "must go from AddConveyanceReferenceNumber to AddPlaceOfUnloadingCode if 'false' and CircumstanceIndicator is '(E) Authorised Economic Operators'" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -233,7 +247,6 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
               .mustBe(routes.PlaceOfUnloadingCodeController.onPageLoad(answers.id, NormalMode))
         }
       }
-
 
       "must go from ConveyanceReferenceNumber to AddPlaceOfUnloadingCode if 'false' and CircumstanceIndicator is '(E) Authorised Economic Operators'" in {
 
@@ -265,7 +278,6 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
-
       "must go from AddPlaceOfUnloadingCode to PlaceOfUnloadingCode if 'true'" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -289,7 +301,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
               .set(AddPlaceOfUnloadingCodePage, false).success.value
 
             navigator
-              .nextPage(ConveyanceReferenceNumberPage, NormalMode, updatedAnswers)
+              .nextPage(AddPlaceOfUnloadingCodePage, NormalMode, updatedAnswers)
               .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode))
         }
       }

@@ -33,11 +33,10 @@ package navigation
  */
 
 import controllers.safetyAndSecurity.routes
-import controllers.{routes => mainRoutes}
 import javax.inject.{Inject, Singleton}
 import models._
-import pages.{ModeAtBorderPage, Page}
 import pages.safetyAndSecurity._
+import pages.{ModeAtBorderPage, Page}
 import play.api.mvc.Call
 
 @Singleton
@@ -52,6 +51,11 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     case TransportChargesPaymentMethodPage        => ua => Some(routes.AddCommercialReferenceNumberController.onPageLoad(ua.id, NormalMode))
     case AddCommercialReferenceNumberPage         => ua => addCommercialReferenceNumber(ua)
     case AddCommercialReferenceNumberAllItemsPage => ua => addCommercialReferenceNumberAllItems(ua)
+    case AddConveyancerReferenceNumberPage        => ua => addConveyancerReferenceNumber(ua)
+    case ConveyanceReferenceNumberPage            => ua => conveyanceReferenceNumber(ua)
+    case AddPlaceOfUnloadingCodePage              => ua => addPlaceOfUnloadingCodePage(ua)
+    case PlaceOfUnloadingCodePage                 => ua => Some(routes.CountryOfRoutingController.onPageLoad(ua.id, NormalMode))
+    case CountryOfRoutingPage                     => ua => Some(routes.AddAnotherCountryOfRoutingController.onPageLoad(ua.id, NormalMode))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
@@ -75,7 +79,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
       case (Some(true), _)                        => Some(routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(ua.id, NormalMode))
       case (Some(false), Some("4") | Some("40"))  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case (Some(false), _)                       => Some(routes.AddConveyancerReferenceNumberController.onPageLoad(ua.id, NormalMode))
-      case _                                      => Some(mainRoutes.SessionExpiredController.onPageLoad())
+      case _                                      => None
     }
 
   def addCommercialReferenceNumberAllItems(ua: UserAnswers): Option[Call] =
@@ -83,7 +87,28 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
       case (Some(true), _)                        => Some(routes.CommercialReferenceNumberAllItemsController.onPageLoad(ua.id, NormalMode))
       case (Some(false), Some("4") | Some("40"))  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case (Some(false), _)                       => Some(routes.AddConveyancerReferenceNumberController.onPageLoad(ua.id, NormalMode))
-      case _                                      => Some(mainRoutes.SessionExpiredController.onPageLoad())
+      case _                                      => None
+    }
+
+  def addConveyancerReferenceNumber(ua: UserAnswers): Option[Call] =
+    (ua.get(AddConveyancerReferenceNumberPage), ua.get(CircumstanceIndicatorPage)) match {
+      case (Some(true), _)            => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
+      case (Some(false) , Some("E"))  => Some(routes.AddPlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
+      case (Some(false) , Some(_))    => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode ))
+      case _                          => None
+    }
+
+  def conveyanceReferenceNumber(ua: UserAnswers): Option[Call] =
+    (ua.get(CircumstanceIndicatorPage), ua.get(ConveyanceReferenceNumberPage)) match {
+      case (Some("E"), Some(_)) => Some(routes.AddPlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
+      case (Some(_),   Some(_)) => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
+      case _                    => None
+    }
+
+  def addPlaceOfUnloadingCodePage(ua: UserAnswers): Option[Call] =
+    ua.get(AddPlaceOfUnloadingCodePage).map {
+      case true   => routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.CountryOfRoutingController.onPageLoad(ua.id, NormalMode)
     }
 
   
