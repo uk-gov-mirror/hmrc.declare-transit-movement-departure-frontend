@@ -34,7 +34,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
     "in NormalMode" - {
 
-      "must go from AddCircumstanceIndicator page to CircumstanceIndicator page if 'true'" in {
+      "must got from AddCircumstanceIndicator page to CircumstanceIndicator page if 'true'" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -142,12 +142,12 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       }
 
       "must go from AddCommercialReferenceNumber to ConveyanceReferenceNumber if 'false' and if transport mode at border 4 or 40" in {
-        
+
         val genTransportMode: Gen[String] = Gen.oneOf(Seq("4", "40"))
-        
+
         forAll(arbitrary[UserAnswers], genTransportMode) {
           (answers, transportMode) =>
-          
+
             val updatedAnswers = answers
               .set(AddCommercialReferenceNumberPage, false).success.value
               .set(ModeAtBorderPage, transportMode).success.value
@@ -160,28 +160,28 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "must go from AddCommercialReferenceNumberAllItems to CommercialReferenceNumberAllItems when 'true'" in {
 
-      forAll(arbitrary[UserAnswers]) {
-        answers =>
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
 
-          val updatedAnswers = answers
-            .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
+            val updatedAnswers = answers
+              .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
 
-          navigator
-            .nextPage(AddCommercialReferenceNumberAllItemsPage, NormalMode, updatedAnswers)
-            .mustBe(routes.CommercialReferenceNumberAllItemsController.onPageLoad(answers.id, NormalMode))
+            navigator
+              .nextPage(AddCommercialReferenceNumberAllItemsPage, NormalMode, updatedAnswers)
+              .mustBe(routes.CommercialReferenceNumberAllItemsController.onPageLoad(answers.id, NormalMode))
         }
       }
 
       "must go from AddCommercialReferenceNumberAllItems to AddConveyanceReferenceNumber when 'false' and if transport mode at border is not 4 or 40" in {
-        
+
         forAll(arbitrary[UserAnswers]) {
           answers =>
 
             val updatedAnswers = answers
               .set(AddCommercialReferenceNumberAllItemsPage, false).success.value
               .set(ModeAtBorderPage, "1").success.value
-          
-          navigator
+
+            navigator
               .nextPage(AddCommercialReferenceNumberAllItemsPage, NormalMode, updatedAnswers)
               .mustBe(routes.AddConveyancerReferenceNumberController.onPageLoad(answers.id, NormalMode))
         }
@@ -190,7 +190,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       "must go from AddCommercialReferenceNumberAllItems to ConveyanceReferenceNumber when 'false' and if transport mode at border is 4 or 40" in {
 
         val genTransportMode: Gen[String] = Gen.oneOf(Seq("4", "40"))
-        
+
         forAll(arbitrary[UserAnswers], genTransportMode) {
           (answers, transportMode) =>
 
@@ -327,6 +327,88 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
               .mustBe(routes.AddAnotherCountryOfRoutingController.onPageLoad(answers.id, NormalMode))
         }
       }
+
+      "must go from AddAnotherCountryOfRouting to CountryOfRouting if 'true'" in {
+
+      }
+
+      "must go from AddAnotherCountryOfRouting to AddSafetyAndSecurityConsignor if 'false'" in {
+
+      }
+
+      "must go from AddSafetyAndSecurityConsignor to AddSafetyAndSecurityConsignorEori if 'true'" in {
+
+      }
+
+      "must go from AddSafetyAndSecurityConsignor to AddSafetyAndSecurityConsignee if 'false'" in {
+
+      }
+
+      "must go from AddSafetyAndSecurityConsignorEori to SafetyAndSecurityConsignorEori if 'true'" in {
+
+      }
+
+      "must go from AddSafetyAndSecurityConsignorEori to SafetyAndSecurityConsignorName if 'false'" in {
+
+      }
+
+      "must go from SafetyAndSecurityConsignorName to SafetyAndSecurityConsignorAddress" in {
+
+      }
+
+      "must go from SafetyAndSecurityConsignorEori to AddSafetyAndSecurityConsignee" in {
+
+      }
+
+      "must go from AddSafetyAndSecurityConsignee to AddSafetyAndSecurityConsigneeEori if 'true'" in {
+
+      }
+
+      "must go from AddSafetyAndSecurityConsignee to AddCarrier if 'false'" in {
+
+      }
+
+      "must go from AddSafetyAndSecurityConsigneeEori to SafetyAndSecurityConsigneeEori if 'true'" in {
+
+      }
+
+      "must go from AddSafetyAndSecurityConsigneeEori to SafetyAndSecurityConsigneeName if 'false'" in {
+
+      }
+
+      "must go from SafetyAndSecurityConsigneeName to SafetyAndSecurityConsigneeAddress" in {
+
+      }
+
+      "must go from SafetyAndSecurityConsigneeEori to AddCarrier" in {
+
+      }
+
+      "must go from AddCarrier to AddCarrierEori if 'true'" in {
+
+      }
+
+      "must go from AddCarrier to CheckYourAnswers if 'false'" in {
+
+      }
+
+      "must go from AddCarrierEori to CarrierEori if 'true'" in {
+
+      }
+
+      "must go from AddCarrierEori to CarrierName if 'false'" in {
+
+      }
+
+      "must go from CarrierName to CarrierAddress" in {
+
+      }
+
+      "must go from CarrierEori to CheckYourAnswers" in {
+
+      }
+
+
     }
 
     "in CheckMode" - {
