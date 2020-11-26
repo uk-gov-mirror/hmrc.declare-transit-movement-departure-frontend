@@ -1325,3 +1325,31 @@ safetyAndSecurityConsigneeName.heading = safetyAndSecurityConsigneeName
 safetyAndSecurityConsigneeName.checkYourAnswersLabel = safetyAndSecurityConsigneeName
 safetyAndSecurityConsigneeName.error.required = Enter safetyAndSecurityConsigneeName
 safetyAndSecurityConsigneeName.error.length = SafetyAndSecurityConsigneeName must be 10 characters or less
+
+addCarrierEori.title = addCarrierEori
+addCarrierEori.heading = addCarrierEori
+addCarrierEori.checkYourAnswersLabel = addCarrierEori
+addCarrierEori.error.required = Select yes if addCarrierEori
+
+addCarrier.title = addCarrier
+addCarrier.heading = addCarrier
+addCarrier.checkYourAnswersLabel = addCarrier
+addCarrier.error.required = Select yes if addCarrier
+
+carrierAddress.title = carrierAddress
+carrierAddress.heading = carrierAddress
+carrierAddress.checkYourAnswersLabel = carrierAddress
+carrierAddress.error.required = Enter carrierAddress
+carrierAddress.error.length = CarrierAddress must be 10 characters or less
+
+carrierEori.title = carrierEori
+carrierEori.heading = carrierEori
+carrierEori.checkYourAnswersLabel = carrierEori
+carrierEori.error.required = Enter carrierEori
+carrierEori.error.length = CarrierEori must be 10 characters or less
+
+carrierName.title = carrierName
+carrierName.heading = carrierName
+carrierName.checkYourAnswersLabel = carrierName
+carrierName.error.required = Enter carrierName
+carrierName.error.length = CarrierName must be 10 characters or less

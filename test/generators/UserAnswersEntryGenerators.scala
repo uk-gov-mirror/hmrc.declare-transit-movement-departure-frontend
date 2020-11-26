@@ -29,12 +29,47 @@ import pages.addItems.securityDetails._
 import pages.addItems.traderSecurityDetails.{AddSecurityConsigneesEoriPage, AddSecurityConsignorsEoriPage, SecurityConsigneeAddressPage, SecurityConsigneeEoriPage, SecurityConsigneeNamePage, SecurityConsignorAddressPage, SecurityConsignorEoriPage, SecurityConsignorNamePage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
-import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, AddCircumstanceIndicatorPage, AddCommercialReferenceNumberAllItemsPage, AddCommercialReferenceNumberPage, AddConveyancerReferenceNumberPage, AddPlaceOfUnloadingCodePage, AddSafetyAndSecurityConsigneeEoriPage, AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorEoriPage, AddSafetyAndSecurityConsignorPage, AddTransportChargesPaymentMethodPage, CircumstanceIndicatorPage, CommercialReferenceNumberAllItemsPage, ConveyanceReferenceNumberPage, CountryOfRoutingPage, PlaceOfUnloadingCodePage, SafetyAndSecurityConsigneeAddressPage, SafetyAndSecurityConsigneeEoriPage, SafetyAndSecurityConsigneeNamePage, SafetyAndSecurityConsignorAddressPage, SafetyAndSecurityConsignorEoriPage, SafetyAndSecurityConsignorNamePage, TransportChargesPaymentMethodPage}
+import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, AddCarrierEoriPage, AddCarrierPage, AddCircumstanceIndicatorPage, AddCommercialReferenceNumberAllItemsPage, AddCommercialReferenceNumberPage, AddConveyancerReferenceNumberPage, AddPlaceOfUnloadingCodePage, AddSafetyAndSecurityConsigneeEoriPage, AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorEoriPage, AddSafetyAndSecurityConsignorPage, AddTransportChargesPaymentMethodPage, CarrierAddressPage, CarrierEoriPage, CarrierNamePage, CircumstanceIndicatorPage, CommercialReferenceNumberAllItemsPage, ConveyanceReferenceNumberPage, CountryOfRoutingPage, PlaceOfUnloadingCodePage, SafetyAndSecurityConsigneeAddressPage, SafetyAndSecurityConsigneeEoriPage, SafetyAndSecurityConsigneeNamePage, SafetyAndSecurityConsignorAddressPage, SafetyAndSecurityConsignorEoriPage, SafetyAndSecurityConsignorNamePage, TransportChargesPaymentMethodPage}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryCarrierNameUserAnswersEntry: Arbitrary[(CarrierNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CarrierNamePage.type#Data].map(Json.toJson(_))
+      } yield (CarrierNamePage, value)
+    }
+
+  implicit lazy val arbitraryCarrierEoriUserAnswersEntry: Arbitrary[(CarrierEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CarrierEoriPage.type#Data].map(Json.toJson(_))
+      } yield (CarrierEoriPage, value)
+    }
+
+  implicit lazy val arbitraryCarrierAddressUserAnswersEntry: Arbitrary[(CarrierAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CarrierAddressPage.type#Data].map(Json.toJson(_))
+      } yield (CarrierAddressPage, value)
+    }
+
+  implicit lazy val arbitraryAddCarrierUserAnswersEntry: Arbitrary[(AddCarrierPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddCarrierPage.type#Data].map(Json.toJson(_))
+      } yield (AddCarrierPage, value)
+    }
+
+  implicit lazy val arbitraryAddCarrierEoriUserAnswersEntry: Arbitrary[(AddCarrierEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddCarrierEoriPage.type#Data].map(Json.toJson(_))
+      } yield (AddCarrierEoriPage, value)
+    }
 
   implicit lazy val arbitrarySafetyAndSecurityConsigneeNameUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsigneeNamePage.type, JsValue)] =
     Arbitrary {

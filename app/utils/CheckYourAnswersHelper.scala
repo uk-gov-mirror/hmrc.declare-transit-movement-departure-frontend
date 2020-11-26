@@ -22,11 +22,86 @@ import controllers.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
 import pages.addItems.traderSecurityDetails.{SecurityConsigneeAddressPage, SecurityConsigneeEoriPage, SecurityConsigneeNamePage, SecurityConsignorAddressPage, SecurityConsignorEoriPage, SecurityConsignorNamePage}
-import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, AddCircumstanceIndicatorPage, AddCommercialReferenceNumberAllItemsPage, AddCommercialReferenceNumberPage, AddConveyancerReferenceNumberPage, AddPlaceOfUnloadingCodePage, AddSafetyAndSecurityConsigneeEoriPage, AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorEoriPage, AddSafetyAndSecurityConsignorPage, AddTransportChargesPaymentMethodPage, CircumstanceIndicatorPage, CommercialReferenceNumberAllItemsPage, ConveyanceReferenceNumberPage, CountryOfRoutingPage, PlaceOfUnloadingCodePage, SafetyAndSecurityConsigneeAddressPage, SafetyAndSecurityConsigneeEoriPage, SafetyAndSecurityConsigneeNamePage, SafetyAndSecurityConsignorAddressPage, SafetyAndSecurityConsignorEoriPage, SafetyAndSecurityConsignorNamePage, TransportChargesPaymentMethodPage}
+import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, AddCarrierEoriPage, AddCarrierPage, AddCircumstanceIndicatorPage, AddCommercialReferenceNumberAllItemsPage, AddCommercialReferenceNumberPage, AddConveyancerReferenceNumberPage, AddPlaceOfUnloadingCodePage, AddSafetyAndSecurityConsigneeEoriPage, AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorEoriPage, AddSafetyAndSecurityConsignorPage, AddTransportChargesPaymentMethodPage, CarrierAddressPage, CarrierEoriPage, CarrierNamePage, CircumstanceIndicatorPage, CommercialReferenceNumberAllItemsPage, ConveyanceReferenceNumberPage, CountryOfRoutingPage, PlaceOfUnloadingCodePage, SafetyAndSecurityConsigneeAddressPage, SafetyAndSecurityConsigneeEoriPage, SafetyAndSecurityConsigneeNamePage, SafetyAndSecurityConsignorAddressPage, SafetyAndSecurityConsignorEoriPage, SafetyAndSecurityConsignorNamePage, TransportChargesPaymentMethodPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def carrierName: Option[Row] = userAnswers.get(CarrierNamePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"carrierName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CarrierNameController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"carrierName.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def carrierEori: Option[Row] = userAnswers.get(CarrierEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"carrierEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CarrierEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"carrierEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def carrierAddress: Option[Row] = userAnswers.get(CarrierAddressPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"carrierAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.CarrierAddressController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"carrierAddress.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addCarrier: Option[Row] = userAnswers.get(AddCarrierPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addCarrier.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddCarrierController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addCarrier.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addCarrierEori: Option[Row] = userAnswers.get(AddCarrierEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addCarrierEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddCarrierEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addCarrierEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def safetyAndSecurityConsigneeName: Option[Row] = userAnswers.get(SafetyAndSecurityConsigneeNamePage) map {
     answer =>
