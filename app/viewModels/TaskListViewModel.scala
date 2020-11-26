@@ -33,7 +33,7 @@ import pages.{
 }
 import play.api.libs.json._
 
-class TaskListViewModel(userAnswers: UserAnswers) {
+private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
   import TaskListViewModel.fromUserAnswersParser
 
   private val lrn         = userAnswers.id
@@ -188,9 +188,6 @@ object TaskListViewModel {
 
   def apply(userAnswers: UserAnswers): TaskListViewModel = new TaskListViewModel(userAnswers)
 
-  implicit val writes: OWrites[TaskListViewModel] =
-    taskListViewModel =>
-      Json.obj(
-        Constants.sections -> taskListViewModel.sections
-    )
+  implicit val writes: Writes[TaskListViewModel] =
+    taskListViewModel => Json.toJson(taskListViewModel.sections)
 }

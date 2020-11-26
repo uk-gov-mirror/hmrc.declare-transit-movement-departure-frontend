@@ -19,30 +19,6 @@ import play.api.libs.json.{JsArray, JsObject, Json, Reads}
 
 package object viewModels {
 
-  implicit class SectionSpecHelper(vm: TaskListViewModel) {
-
-    def getSection(sectionName: String): Option[JsObject] = {
-      val json     = Json.toJsObject(vm)
-      val sections = (json \ TaskListViewModel.Constants.sections).as[JsArray]
-      sections.value
-        .find(
-          section => (section \ "name").as[String] == sectionName
-        )
-        .map(_.as[JsObject])
-    }
-
-    def getStatus(sectionName: String): Option[Status] =
-      getSection(sectionName: String).map(
-        section => (section \ "status").as[Status]
-      )
-
-    def getHref(sectionName: String): Option[String] =
-      getSection(sectionName: String).map(
-        section => (section \ "href").as[String]
-      )
-
-  }
-
   implicit val readsStatus: Reads[Status] = implicitly[Reads[String]].map {
     case "notStarted" => Status.NotStarted
     case "inProgress" => Status.InProgress

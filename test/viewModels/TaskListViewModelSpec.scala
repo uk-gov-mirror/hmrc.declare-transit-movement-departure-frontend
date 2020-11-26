@@ -48,8 +48,10 @@ import pages.{
   ItemDescriptionPage,
   ProcedureTypePage
 }
+import play.api.libs.json.{JsArray, JsObject, Json}
 
 class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with UserAnswersSpecHelper with UserAnswersGenerator {
+  import TaskListViewModelSpec._
 
   val movementSectionName          = "declarationSummary.section.movementDetails"
   val tradersSectionName           = "declarationSummary.section.tradersDetails"
@@ -671,5 +673,31 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
         }
       }
     }
+  }
+}
+
+object TaskListViewModelSpec {
+
+  implicit class TaskListViewModelSpecHelper(vm: TaskListViewModel) {
+
+    def getSection(sectionName: String): Option[JsObject] =
+      Json
+        .toJson(vm)
+        .as[List[JsObject]]
+        .find(
+          section => (section \ "name").as[String] == sectionName
+        )
+        .map(_.as[JsObject])
+
+    def getStatus(sectionName: String): Option[Status] =
+      getSection(sectionName: String).map(
+        section => (section \ "status").as[Status]
+      )
+
+    def getHref(sectionName: String): Option[String] =
+      getSection(sectionName: String).map(
+        section => (section \ "href").as[String]
+      )
+
   }
 }
