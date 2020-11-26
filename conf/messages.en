@@ -1269,3 +1269,8 @@ addAnotherCountryOfRouting.title = addAnotherCountryOfRouting
 addAnotherCountryOfRouting.heading = addAnotherCountryOfRouting
 addAnotherCountryOfRouting.checkYourAnswersLabel = addAnotherCountryOfRouting
 addAnotherCountryOfRouting.error.required = Select yes if addAnotherCountryOfRouting
+
+addSafetyAndSecurityConsignor.title = addSafetyAndSecurityConsignor
+addSafetyAndSecurityConsignor.heading = addSafetyAndSecurityConsignor
+addSafetyAndSecurityConsignor.checkYourAnswersLabel = addSafetyAndSecurityConsignor
+addSafetyAndSecurityConsignor.error.required = Select yes if addSafetyAndSecurityConsignor

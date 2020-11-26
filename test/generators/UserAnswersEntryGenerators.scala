@@ -45,6 +45,7 @@ import pages.safetyAndSecurity.{
   AddCommercialReferenceNumberPage,
   AddConveyancerReferenceNumberPage,
   AddPlaceOfUnloadingCodePage,
+  AddSafetyAndSecurityConsignorPage,
   AddTransportChargesPaymentMethodPage,
   CircumstanceIndicatorPage,
   CommercialReferenceNumberAllItemsPage,
@@ -58,6 +59,13 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryAddSafetyAndSecurityConsignorUserAnswersEntry: Arbitrary[(AddSafetyAndSecurityConsignorPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddSafetyAndSecurityConsignorPage.type#Data].map(Json.toJson(_))
+      } yield (AddSafetyAndSecurityConsignorPage, value)
+    }
 
   implicit lazy val arbitraryAddAnotherCountryOfRoutingUserAnswersEntry: Arbitrary[(AddAnotherCountryOfRoutingPage.type, JsValue)] =
     Arbitrary {

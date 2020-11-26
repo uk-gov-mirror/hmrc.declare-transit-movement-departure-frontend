@@ -36,6 +36,7 @@ import pages.safetyAndSecurity.{
   AddCommercialReferenceNumberPage,
   AddConveyancerReferenceNumberPage,
   AddPlaceOfUnloadingCodePage,
+  AddSafetyAndSecurityConsignorPage,
   AddTransportChargesPaymentMethodPage,
   CircumstanceIndicatorPage,
   CommercialReferenceNumberAllItemsPage,
