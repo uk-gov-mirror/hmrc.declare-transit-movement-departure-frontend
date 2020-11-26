@@ -1195,8 +1195,8 @@ securityConsigneeName.error.invalid = The security consignee’s name must only 
 
 declarationRejection.title = There is a problem with this departure declaration
 declarationRejection.heading = There is a problem with this departure declaration
-declarationRejection.errorType =  Error Type
-declarationRejection.pointer =  Error Pointer
+declarationRejection.errorType =  Error type
+declarationRejection.pointer =  Error pointer
 declarationRejection.reason =  Reason
 
 addCircumstanceIndicator.title = addCircumstanceIndicator
