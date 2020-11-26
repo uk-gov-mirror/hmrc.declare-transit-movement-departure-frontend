@@ -18,18 +18,16 @@ package viewModels
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
-import models.journeyDomain.GoodsSummary.GoodSummaryDetails
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.{
   GoodsSummary,
   GoodsSummarySpec,
   GuaranteeDetails,
   GuaranteeDetailsSpec,
-  ItemDetails,
-  ItemDetailsSpec,
+  ItemSection,
+  ItemSectionSpec,
   MovementDetails,
   MovementDetailsSpec,
-  RouteDetails,
   RouteDetailsSpec,
   TraderDetails,
   TraderDetailsSpec,
@@ -404,7 +402,7 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
       }
     }
 
-    "ItemsDetails" ignore {
+    "ItemsDetails" - {
       val zeroIndex = Index(0)
 
       "section task is always included" in {
@@ -431,10 +429,10 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
           }
         }
 
-        "is Completed when all the answers are completed" in {
-          forAll(arb[ItemDetails]) {
+        "is Completed when all the answers are completed" ignore {
+          forAll(arb[ItemSection]) {
             sectionDetails =>
-              val userAnswers = ItemDetailsSpec.setItemDetailsUserAnswers(sectionDetails, zeroIndex)(emptyUserAnswers)
+              val userAnswers = ItemSectionSpec.setItemSection(sectionDetails, zeroIndex)(emptyUserAnswers)
 
               val viewModel = TaskListViewModel(userAnswers)
 
@@ -465,10 +463,10 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
           }
         }
 
-        "when the status is Completed, links to the Check your answers page for the section" in {
-          forAll(arb[ItemDetails]) {
+        "when the status is Completed, links to the Check your answers page for the section" ignore {
+          forAll(arb[ItemSection]) {
             sectionDetails =>
-              val userAnswers = ItemDetailsSpec.setItemDetailsUserAnswers(sectionDetails, zeroIndex)(emptyUserAnswers)
+              val userAnswers = ItemSectionSpec.setItemSection(sectionDetails, zeroIndex)(emptyUserAnswers)
 
               val viewModel = TaskListViewModel(userAnswers)
 

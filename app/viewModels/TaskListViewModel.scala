@@ -16,11 +16,12 @@
 
 package viewModels
 
-import cats.data.ReaderT
+import cats.data.{NonEmptyList, ReaderT}
+import derivable.DeriveNumberOfItems
 import models.journeyDomain.TransportDetails.InlandMode
 import models.journeyDomain._
-import models.{NormalMode, SectionDetails, UserAnswers}
-import pages.{CountryOfDispatchPage, InlandModePage, IsPrincipalEoriKnownPage, ProcedureTypePage}
+import models.{Index, NormalMode, SectionDetails, UserAnswers}
+import pages.{CountryOfDispatchPage, InlandModePage, IsPrincipalEoriKnownPage, ItemDescriptionPage, ProcedureTypePage}
 import play.api.libs.json._
 
 class TaskListViewModel(userAnswers: UserAnswers) {
@@ -88,12 +89,29 @@ class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url)
       .section
 
+  private val itemsDetailsLastIndex: Index = userAnswers.get(DeriveNumberOfItems).fold(Index(0))(Index(_))
+
+  private val itemDetails =
+    taskListDsl
+      .sectionName("declarationSummary.section.addItems")
+      .ifCompleted(
+        UserAnswersReader[NonEmptyList[ItemSection]],
+        controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(userAnswers.id, itemsDetailsLastIndex).url
+      )
+      .ifInProgress(
+        ItemDescriptionPage(Index(0)).reader,
+        controllers.addItems.routes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(0), NormalMode).url
+      )
+      .ifNotStarted(controllers.addItems.routes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(0), NormalMode).url)
+      .section
+
   def taskListSections: Seq[SectionDetails] =
     Seq(
       movementDetails,
       routeDetails,
       transportDetails,
-      traderDetails
+      traderDetails,
+      itemDetails
     )
 }
 
