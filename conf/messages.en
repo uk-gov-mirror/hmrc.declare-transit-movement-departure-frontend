@@ -1269,3 +1269,87 @@ addAnotherCountryOfRouting.title = addAnotherCountryOfRouting
 addAnotherCountryOfRouting.heading = addAnotherCountryOfRouting
 addAnotherCountryOfRouting.checkYourAnswersLabel = addAnotherCountryOfRouting
 addAnotherCountryOfRouting.error.required = Select yes if addAnotherCountryOfRouting
+
+addSafetyAndSecurityConsignor.title = addSafetyAndSecurityConsignor
+addSafetyAndSecurityConsignor.heading = addSafetyAndSecurityConsignor
+addSafetyAndSecurityConsignor.checkYourAnswersLabel = addSafetyAndSecurityConsignor
+addSafetyAndSecurityConsignor.error.required = Select yes if addSafetyAndSecurityConsignor
+
+addSafetyAndSecurityConsignorEori.title = addSafetyAndSecurityConsignorEori
+addSafetyAndSecurityConsignorEori.heading = addSafetyAndSecurityConsignorEori
+addSafetyAndSecurityConsignorEori.checkYourAnswersLabel = addSafetyAndSecurityConsignorEori
+addSafetyAndSecurityConsignorEori.error.required = Select yes if addSafetyAndSecurityConsignorEori
+
+safetyAndSecurityConsignorAddress.title = safetyAndSecurityConsignorAddress
+safetyAndSecurityConsignorAddress.heading = safetyAndSecurityConsignorAddress
+safetyAndSecurityConsignorAddress.checkYourAnswersLabel = safetyAndSecurityConsignorAddress
+safetyAndSecurityConsignorAddress.error.required = Enter safetyAndSecurityConsignorAddress
+safetyAndSecurityConsignorAddress.error.length = SafetyAndSecurityConsignorAddress must be 10 characters or less
+
+safetyAndSecurityConsignorEori.title = safetyAndSecurityConsignorEori
+safetyAndSecurityConsignorEori.heading = safetyAndSecurityConsignorEori
+safetyAndSecurityConsignorEori.checkYourAnswersLabel = safetyAndSecurityConsignorEori
+safetyAndSecurityConsignorEori.error.required = Enter safetyAndSecurityConsignorEori
+safetyAndSecurityConsignorEori.error.length = SafetyAndSecurityConsignorEori must be 10 characters or less
+
+safetyAndSecurityConsignorName.title = safetyAndSecurityConsignorName
+safetyAndSecurityConsignorName.heading = safetyAndSecurityConsignorName
+safetyAndSecurityConsignorName.checkYourAnswersLabel = safetyAndSecurityConsignorName
+safetyAndSecurityConsignorName.error.required = Enter safetyAndSecurityConsignorName
+safetyAndSecurityConsignorName.error.length = SafetyAndSecurityConsignorName must be 10 characters or less
+
+addSafetyAndSecurityConsignee.title = addSafetyAndSecurityConsignee
+addSafetyAndSecurityConsignee.heading = addSafetyAndSecurityConsignee
+addSafetyAndSecurityConsignee.checkYourAnswersLabel = addSafetyAndSecurityConsignee
+addSafetyAndSecurityConsignee.error.required = Select yes if addSafetyAndSecurityConsignee
+
+addSafetyAndSecurityConsigneeEori.title = addSafetyAndSecurityConsigneeEori
+addSafetyAndSecurityConsigneeEori.heading = addSafetyAndSecurityConsigneeEori
+addSafetyAndSecurityConsigneeEori.checkYourAnswersLabel = addSafetyAndSecurityConsigneeEori
+addSafetyAndSecurityConsigneeEori.error.required = Select yes if addSafetyAndSecurityConsigneeEori
+
+safetyAndSecurityConsigneeAddress.title = safetyAndSecurityConsigneeAddress
+safetyAndSecurityConsigneeAddress.heading = safetyAndSecurityConsigneeAddress
+safetyAndSecurityConsigneeAddress.checkYourAnswersLabel = safetyAndSecurityConsigneeAddress
+safetyAndSecurityConsigneeAddress.error.required = Enter safetyAndSecurityConsigneeAddress
+safetyAndSecurityConsigneeAddress.error.length = SafetyAndSecurityConsigneeAddress must be 10 characters or less
+
+safetyAndSecurityConsigneeEori.title = safetyAndSecurityConsigneeEori
+safetyAndSecurityConsigneeEori.heading = safetyAndSecurityConsigneeEori
+safetyAndSecurityConsigneeEori.checkYourAnswersLabel = safetyAndSecurityConsigneeEori
+safetyAndSecurityConsigneeEori.error.required = Enter safetyAndSecurityConsigneeEori
+safetyAndSecurityConsigneeEori.error.length = SafetyAndSecurityConsigneeEori must be 10 characters or less
+
+safetyAndSecurityConsigneeName.title = safetyAndSecurityConsigneeName
+safetyAndSecurityConsigneeName.heading = safetyAndSecurityConsigneeName
+safetyAndSecurityConsigneeName.checkYourAnswersLabel = safetyAndSecurityConsigneeName
+safetyAndSecurityConsigneeName.error.required = Enter safetyAndSecurityConsigneeName
+safetyAndSecurityConsigneeName.error.length = SafetyAndSecurityConsigneeName must be 10 characters or less
+
+addCarrierEori.title = addCarrierEori
+addCarrierEori.heading = addCarrierEori
+addCarrierEori.checkYourAnswersLabel = addCarrierEori
+addCarrierEori.error.required = Select yes if addCarrierEori
+
+addCarrier.title = addCarrier
+addCarrier.heading = addCarrier
+addCarrier.checkYourAnswersLabel = addCarrier
+addCarrier.error.required = Select yes if addCarrier
+
+carrierAddress.title = carrierAddress
+carrierAddress.heading = carrierAddress
+carrierAddress.checkYourAnswersLabel = carrierAddress
+carrierAddress.error.required = Enter carrierAddress
+carrierAddress.error.length = CarrierAddress must be 10 characters or less
+
+carrierEori.title = carrierEori
+carrierEori.heading = carrierEori
+carrierEori.checkYourAnswersLabel = carrierEori
+carrierEori.error.required = Enter carrierEori
+carrierEori.error.length = CarrierEori must be 10 characters or less
+
+carrierName.title = carrierName
+carrierName.heading = carrierName
+carrierName.checkYourAnswersLabel = carrierName
+carrierName.error.required = Enter carrierName
+carrierName.error.length = CarrierName must be 10 characters or less
