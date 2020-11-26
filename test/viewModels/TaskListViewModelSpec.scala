@@ -554,7 +554,7 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
       }
     }
 
-    "GuranteeDetails" ignore {
+    "GuranteeDetails" - {
       "section task is always included" in {
         val viewModel = TaskListViewModel(emptyUserAnswers)
 

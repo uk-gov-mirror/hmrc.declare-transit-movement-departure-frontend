@@ -20,6 +20,7 @@ import cats.data.{NonEmptyList, ReaderT}
 import derivable.DeriveNumberOfItems
 import models.journeyDomain._
 import models.{Index, NormalMode, SectionDetails, UserAnswers}
+import pages.guaranteeDetails.GuaranteeTypePage
 import pages.{CountryOfDispatchPage, DeclarePackagesPage, InlandModePage, IsPrincipalEoriKnownPage, ItemDescriptionPage, ProcedureTypePage}
 import play.api.libs.json._
 
@@ -104,7 +105,7 @@ class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.addItems.routes.ItemDescriptionController.onPageLoad(userAnswers.id, Index(0), NormalMode).url)
       .section
 
-  private val goodsSummary =
+  private val goodsSummaryDetails =
     taskListDsl
       .sectionName("declarationSummary.section.goodsSummary")
       .ifCompleted(
@@ -118,6 +119,20 @@ class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.goodsSummary.routes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url)
       .section
 
+  val guaranteeDetails =
+    taskListDsl
+      .sectionName("declarationSummary.section.guarantee")
+      .ifCompleted(
+        UserAnswersReader[GuaranteeDetails],
+        controllers.guaranteeDetails.routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn).url
+      )
+      .ifInProgress(
+        GuaranteeTypePage.reader,
+        controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url
+      )
+      .ifNotStarted(controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url)
+      .section
+
   def taskListSections: Seq[SectionDetails] =
     Seq(
       movementDetails,
@@ -125,7 +140,8 @@ class TaskListViewModel(userAnswers: UserAnswers) {
       transportDetails,
       traderDetails,
       itemDetails,
-      goodsSummary
+      goodsSummaryDetails,
+      guaranteeDetails
     )
 }
 
@@ -141,5 +157,5 @@ object TaskListViewModel {
     taskListViewModel =>
       Json.obj(
         Constants.sections -> taskListViewModel.taskListSections
-      )
+    )
 }
