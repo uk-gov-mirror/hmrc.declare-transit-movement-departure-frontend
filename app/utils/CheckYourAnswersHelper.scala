@@ -50,6 +50,66 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def safetyAndSecurityConsignorName: Option[Row] = userAnswers.get(SafetyAndSecurityConsignorNamePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"safetyAndSecurityConsignorName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.SafetyAndSecurityConsignorNameController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"safetyAndSecurityConsignorName.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def safetyAndSecurityConsignorEori: Option[Row] = userAnswers.get(SafetyAndSecurityConsignorEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"safetyAndSecurityConsignorEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.SafetyAndSecurityConsignorEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"safetyAndSecurityConsignorEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def safetyAndSecurityConsignorAddress: Option[Row] = userAnswers.get(SafetyAndSecurityConsignorAddressPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"safetyAndSecurityConsignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.SafetyAndSecurityConsignorAddressController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"safetyAndSecurityConsignorAddress.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addSafetyAndSecurityConsignorEori: Option[Row] = userAnswers.get(AddSafetyAndSecurityConsignorEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addSafetyAndSecurityConsignorEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSafetyAndSecurityConsignorEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(

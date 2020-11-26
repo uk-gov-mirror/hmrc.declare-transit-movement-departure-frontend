@@ -60,6 +60,34 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitrarySafetyAndSecurityConsignorNameUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsignorNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsignorNamePage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsignorNamePage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsignorEoriUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsignorEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsignorEoriPage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsignorEoriPage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsignorAddressUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsignorAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsignorAddressPage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsignorAddressPage, value)
+    }
+
+  implicit lazy val arbitraryAddSafetyAndSecurityConsignorEoriUserAnswersEntry: Arbitrary[(AddSafetyAndSecurityConsignorEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddSafetyAndSecurityConsignorEoriPage.type#Data].map(Json.toJson(_))
+      } yield (AddSafetyAndSecurityConsignorEoriPage, value)
+    }
+
   implicit lazy val arbitraryAddSafetyAndSecurityConsignorUserAnswersEntry: Arbitrary[(AddSafetyAndSecurityConsignorPage.type, JsValue)] =
     Arbitrary {
       for {

@@ -724,3 +724,23 @@ GET        /:lrn/addSafetyAndSecurityConsignor                     controllers.s
 POST       /:lrn/addSafetyAndSecurityConsignor                     controllers.safetyAndSecurity.AddSafetyAndSecurityConsignorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeAddSafetyAndSecurityConsignor               controllers.safetyAndSecurity.AddSafetyAndSecurityConsignorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddSafetyAndSecurityConsignor               controllers.safetyAndSecurity.AddSafetyAndSecurityConsignorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/addSafetyAndSecurityConsignorEori                        controllers.AddSafetyAndSecurityConsignorEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addSafetyAndSecurityConsignorEori                        controllers.AddSafetyAndSecurityConsignorEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddSafetyAndSecurityConsignorEori                  controllers.AddSafetyAndSecurityConsignorEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddSafetyAndSecurityConsignorEori                  controllers.AddSafetyAndSecurityConsignorEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/safetyAndSecurityConsignorAddress                        controllers.SafetyAndSecurityConsignorAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/safetyAndSecurityConsignorAddress                        controllers.SafetyAndSecurityConsignorAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSafetyAndSecurityConsignorAddress                  controllers.SafetyAndSecurityConsignorAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSafetyAndSecurityConsignorAddress                  controllers.SafetyAndSecurityConsignorAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/safetyAndSecurityConsignorEori                        controllers.SafetyAndSecurityConsignorEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/safetyAndSecurityConsignorEori                        controllers.SafetyAndSecurityConsignorEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSafetyAndSecurityConsignorEori                  controllers.SafetyAndSecurityConsignorEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSafetyAndSecurityConsignorEori                  controllers.SafetyAndSecurityConsignorEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/safetyAndSecurityConsignorName                        controllers.SafetyAndSecurityConsignorNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/safetyAndSecurityConsignorName                        controllers.SafetyAndSecurityConsignorNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeSafetyAndSecurityConsignorName                  controllers.SafetyAndSecurityConsignorNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeSafetyAndSecurityConsignorName                  controllers.SafetyAndSecurityConsignorNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
