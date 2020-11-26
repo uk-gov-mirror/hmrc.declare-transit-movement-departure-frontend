@@ -17,8 +17,7 @@
 package pages.addItems
 
 import generators.UserAnswersGenerator
-import models.{Index, UserAnswers}
-import org.scalacheck.Arbitrary.arbitrary
+import models.Index
 import pages.behaviours.PageBehaviours
 
 class DocumentTypePageSpec extends PageBehaviours with UserAnswersGenerator {
@@ -34,34 +33,5 @@ class DocumentTypePageSpec extends PageBehaviours with UserAnswersGenerator {
 
     beRemovable[String](DocumentTypePage(index, documentIndex))
 
-    "cleanUp" - {
-      "must remove DocumentReferencePage when documentType is anything other then '952 (TIR carnet)'" in {
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            val result = userAnswers
-              .set(DocumentTypePage(index, documentIndex), "xyz")
-              .success
-              .value
-
-            result.get(DocumentReferencePage(index, documentIndex)) must not be defined
-        }
-      }
-
-      "must not remove DocumentReferencePage when documentType is anything other then '952 (TIR carnet)'" in {
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            val result = userAnswers
-              .set(DocumentReferencePage(index, documentIndex), "test")
-              .success
-              .value
-              .set(DocumentTypePage(index, documentIndex), "952")
-              .success
-              .value
-
-            result.get(DocumentReferencePage(index, documentIndex)) mustBe defined
-
-        }
-      }
-    }
   }
 }

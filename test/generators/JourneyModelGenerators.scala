@@ -254,8 +254,8 @@ trait JourneyModelGenerators {
   implicit def arbitraryItemSection: Arbitrary[ItemSection] =
     Arbitrary {
       for {
-        bool        <- arbitrary[Boolean]
-        itemSection <- genItemSection(bool)
+        containersUsed    <- arbitrary[Boolean]
+        itemSection       <- genItemSection(containersUsed, safetyAndSecurity)
       } yield itemSection
     }
 
@@ -359,9 +359,8 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryProducedDocument: Arbitrary[ProducedDocument] =
     Arbitrary {
       for {
-        codes             <- nonEmptyString
-        documentType      <- Gen.oneOf(Seq(DocumentType.TirCarnet952, codes))
-        documentReference <- if (documentType == DocumentType.TirCarnet952) { nonEmptyString.map(Some(_)) } else { Gen.const(None) }
+        documentType      <- nonEmptyString
+        documentReference <- nonEmptyString
         extraInformation  <- Gen.option(nonEmptyString)
       } yield ProducedDocument(documentType, documentReference, extraInformation)
     }

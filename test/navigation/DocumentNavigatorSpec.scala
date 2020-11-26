@@ -46,22 +46,13 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           .mustBe(routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, index, NormalMode))
       }
 
-      "DocumentTypePage must go to DocumentReferencePage when documentType is  952 (TIR carnet)" in {
-        val updatedAnswers = emptyUserAnswers
-          .set(DocumentTypePage(index, documentIndex), "952").success.value
-        navigator
-          .nextPage(DocumentTypePage(index, documentIndex), NormalMode, updatedAnswers)
-          .mustBe(routes.DocumentReferenceController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
-      }
-
-      "DocumentTypePage must go to AddExtraDocumentInformation when documentType is anything other then 952 (TIR carnet)" in {
+      "DocumentTypePage must go to DocumentReferencePage" in {
         val updatedAnswers = emptyUserAnswers
           .set(DocumentTypePage(index, documentIndex), "test").success.value
         navigator
           .nextPage(DocumentTypePage(index, documentIndex), NormalMode, updatedAnswers)
-          .mustBe(routes.AddExtraDocumentInformationController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
+          .mustBe(routes.DocumentReferenceController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
       }
-
 
       "DocumentReferencePage must go to AddExtraDocumentInformation page" in {
         val updatedAnswers = emptyUserAnswers
@@ -162,21 +153,13 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
-    "DocumentTypePage must go to DocumentReferencePage when documentType is '952 (TIR carnet)'" in {
+    "DocumentTypePage must go to DocumentReferencePage" in {
       val updatedAnswers = emptyUserAnswers
-        .set(DocumentTypePage(index, documentIndex), "952").success.value
+        .set(DocumentTypePage(index, documentIndex), "Test").success.value
       navigator
         .nextPage(DocumentTypePage(index, documentIndex), CheckMode, updatedAnswers)
         .mustBe(routes.DocumentReferenceController.onPageLoad(updatedAnswers.id, index, documentIndex, CheckMode))
     }
-
-  "DocumentTypePage must go to AddExtraDocumentInformationPage when documentType is anything other then '952 (TIR carnet)'" in {
-    val updatedAnswers = emptyUserAnswers
-      .set(DocumentTypePage(index, documentIndex), "Test").success.value
-    navigator
-      .nextPage(DocumentTypePage(index, documentIndex), CheckMode, updatedAnswers)
-      .mustBe(routes.AddExtraDocumentInformationController.onPageLoad(updatedAnswers.id, index, documentIndex, CheckMode))
-  }
 
     "DocumentReferencePage must go to AddExtraDocumentInformationPage" in {
       val updatedAnswers = emptyUserAnswers

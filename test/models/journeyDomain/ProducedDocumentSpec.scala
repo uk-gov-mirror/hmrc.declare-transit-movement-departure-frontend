@@ -18,7 +18,6 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
-import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.journeyDomain.ProducedDocumentSpec.setProducedDocumentsUserAnswers
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -31,11 +30,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
     "can be parsed from UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(arbitrary[ProducedDocument], arbitrary[UserAnswers]) {
-          case (specialMention, userAnswers) =>
-            val updatedUserAnswers = setProducedDocumentsUserAnswers(specialMention, index, referenceIndex)(userAnswers)
+          case (producedDocument, userAnswers) =>
+            val updatedUserAnswers = setProducedDocumentsUserAnswers(producedDocument, index, referenceIndex)(userAnswers)
             val result             = UserAnswersReader[ProducedDocument](ProducedDocument.producedDocumentReader(index, referenceIndex)).run(updatedUserAnswers)
 
-            result.value mustEqual specialMention
+            result.value mustEqual producedDocument
         }
       }
     }
@@ -59,17 +58,13 @@ object ProducedDocumentSpec extends UserAnswersSpecHelper {
 
   def setProducedDocumentsUserAnswers(document: ProducedDocument, index: Index, referenceIndex: Index)(statUserAnswers: UserAnswers): UserAnswers = {
     val ua = statUserAnswers
-      .set(DocumentTypePage(index, referenceIndex),document.documentType).toOption.get
+      .unsafeSetVal(DocumentTypePage(index, referenceIndex))(document.documentType)
+      .unsafeSetVal(DocumentReferencePage(index, referenceIndex))(document.documentReference)
       .unsafeSetVal(AddExtraInformationPage(index, referenceIndex))(document.extraInformation.isDefined)
 
-    val userAnswers: UserAnswers = document.documentReference.fold(ua) {
-        ref =>
-          ua.unsafeSetVal(DocumentReferencePage(index, referenceIndex))(ref)
-      }
-
-    document.extraInformation.fold(userAnswers) {
+    document.extraInformation.fold(ua) {
       info =>
-        userAnswers.unsafeSetVal(DocumentExtraInformationPage(index, referenceIndex))(info)
+        ua.unsafeSetVal(DocumentExtraInformationPage(index, referenceIndex))(info)
     }
   }
 }
