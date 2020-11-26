@@ -22,7 +22,7 @@ import models.UserAnswers
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.{AddSecurityDetailsPage, LocalReferenceNumberPage, ProcedureTypePage, QuestionPage}
+import pages.{AddSecurityDetailsPage, ProcedureTypePage, QuestionPage}
 
 class PreTaskListDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "PreTaskListDetails" - {

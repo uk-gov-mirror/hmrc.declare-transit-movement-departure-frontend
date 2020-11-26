@@ -22,4 +22,6 @@ case class DocumentType(code: String, description: String, transportDocument: Bo
 
 object DocumentType {
   implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
+
+  val TirCarnet952 = "952"
 }

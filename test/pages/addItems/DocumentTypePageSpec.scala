@@ -16,10 +16,15 @@
 
 package pages.addItems
 
-import base.SpecBase
+import generators.UserAnswersGenerator
+import models.{Index, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
-class DocumentTypePageSpec extends PageBehaviours with SpecBase {
+class DocumentTypePageSpec extends PageBehaviours with UserAnswersGenerator {
+
+  private val index         = Index(0)
+  private val documentIndex = Index(0)
 
   "DocumentTypePage" - {
 
@@ -28,5 +33,35 @@ class DocumentTypePageSpec extends PageBehaviours with SpecBase {
     beSettable[String](DocumentTypePage(index, documentIndex))
 
     beRemovable[String](DocumentTypePage(index, documentIndex))
+
+    "cleanUp" - {
+      "must remove DocumentReferencePage when documentType is anything other then '952 (TIR carnet)'" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result = userAnswers
+              .set(DocumentTypePage(index, documentIndex), "xyz")
+              .success
+              .value
+
+            result.get(DocumentReferencePage(index, documentIndex)) must not be defined
+        }
+      }
+
+      "must not remove DocumentReferencePage when documentType is anything other then '952 (TIR carnet)'" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result = userAnswers
+              .set(DocumentReferencePage(index, documentIndex), "test")
+              .success
+              .value
+              .set(DocumentTypePage(index, documentIndex), "952")
+              .success
+              .value
+
+            result.get(DocumentReferencePage(index, documentIndex)) mustBe defined
+
+        }
+      }
+    }
   }
 }

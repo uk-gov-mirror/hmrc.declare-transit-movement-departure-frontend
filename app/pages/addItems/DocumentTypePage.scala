@@ -16,14 +16,23 @@
 
 package pages.addItems
 
-import models.Index
+import models.reference.DocumentType
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import queries.Constants.{documents, items}
+
+import scala.util.Try
 
 case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ items \ itemIndex.position \ documents \ documentIndex.position \ toString
 
   override def toString: String = "documentType"
+
+  override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(DocumentType.TirCarnet952) => super.cleanup(value, userAnswers)
+      case _                               => userAnswers.remove(DocumentReferencePage(itemIndex, documentIndex))
+    }
 }
