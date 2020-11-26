@@ -28,7 +28,7 @@ import pages.safetyAndSecurity._
 
 class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   // format: off
-  val navigator = new AddItemsNavigator
+  val navigator = new SafetyAndSecurityNavigator
 
   "SafetyAndSecurity section" - {
 
@@ -154,7 +154,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
             navigator
               .nextPage(AddCommercialReferenceNumberPage, NormalMode, updatedAnswers)
-              .mustBe(routes.AddConveyancerReferenceNumberController.onPageLoad(answers.id, NormalMode))
+              .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -200,7 +200,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
             navigator
               .nextPage(AddCommercialReferenceNumberAllItemsPage, NormalMode, updatedAnswers)
-              .mustBe(routes.AddConveyancerReferenceNumberController.onPageLoad(answers.id, NormalMode))
+              .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(answers.id, NormalMode))
         }
       }
     }
