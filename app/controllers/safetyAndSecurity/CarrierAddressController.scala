@@ -49,7 +49,7 @@ class CarrierAddressController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "carrierAddress.njk"
+  private val template = "safetyAndSecurity/carrierAddress.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

@@ -35,6 +35,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoute}
 
 import scala.concurrent.Future
 
@@ -44,7 +45,7 @@ class AddSafetyAndSecurityConsignorControllerSpec extends SpecBase with MockNunj
 
   private val formProvider = new AddSafetyAndSecurityConsignorFormProvider()
   private val form         = formProvider()
-  private val template     = "addSafetyAndSecurityConsignor.njk"
+  private val template     = "safetyAndSecurity/addSafetyAndSecurityConsignor.njk"
 
   lazy val addSafetyAndSecurityConsignorRoute = routes.AddSafetyAndSecurityConsignorController.onPageLoad(lrn, NormalMode).url
 
@@ -180,7 +181,7 @@ class AddSafetyAndSecurityConsignorControllerSpec extends SpecBase with MockNunj
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -196,7 +197,7 @@ class AddSafetyAndSecurityConsignorControllerSpec extends SpecBase with MockNunj
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
     }
   }

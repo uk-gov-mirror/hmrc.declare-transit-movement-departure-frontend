@@ -18,7 +18,6 @@ package pages.safetyAndSecurity
 
 import pages.behaviours.PageBehaviours
 
-
 class SafetyAndSecurityConsignorAddressPageSpec extends PageBehaviours {
 
   "SafetyAndSecurityConsignorAddressPage" - {

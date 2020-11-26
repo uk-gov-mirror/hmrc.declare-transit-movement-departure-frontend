@@ -49,7 +49,7 @@ class SafetyAndSecurityConsigneeNameController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "safetyAndSecurityConsigneeName.njk"
+  private val template = "safetyAndSecurity/safetyAndSecurityConsigneeName.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

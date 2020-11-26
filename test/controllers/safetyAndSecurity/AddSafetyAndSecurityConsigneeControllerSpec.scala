@@ -35,6 +35,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import controllers.{routes => mainRoute}
 
 import scala.concurrent.Future
 
@@ -43,8 +44,8 @@ class AddSafetyAndSecurityConsigneeControllerSpec extends SpecBase with MockNunj
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new AddSafetyAndSecurityConsigneeFormProvider()
-  private val form = formProvider()
-  private val template = "addSafetyAndSecurityConsignee.njk"
+  private val form         = formProvider()
+  private val template     = "safetyAndSecurity/addSafetyAndSecurityConsignee.njk"
 
   lazy val addSafetyAndSecurityConsigneeRoute = routes.AddSafetyAndSecurityConsigneeController.onPageLoad(lrn, NormalMode).url
 
@@ -62,9 +63,9 @@ class AddSafetyAndSecurityConsigneeControllerSpec extends SpecBase with MockNunj
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addSafetyAndSecurityConsigneeRoute)
+      val request        = FakeRequest(GET, addSafetyAndSecurityConsigneeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -94,9 +95,9 @@ class AddSafetyAndSecurityConsigneeControllerSpec extends SpecBase with MockNunj
       val userAnswers = UserAnswers(lrn, eoriNumber).set(AddSafetyAndSecurityConsigneePage, true).success.value
       dataRetrievalWithData(userAnswers)
 
-      val request = FakeRequest(GET, addSafetyAndSecurityConsigneeRoute)
+      val request        = FakeRequest(GET, addSafetyAndSecurityConsigneeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -145,10 +146,10 @@ class AddSafetyAndSecurityConsigneeControllerSpec extends SpecBase with MockNunj
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(POST, addSafetyAndSecurityConsigneeRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, addSafetyAndSecurityConsigneeRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -180,7 +181,7 @@ class AddSafetyAndSecurityConsigneeControllerSpec extends SpecBase with MockNunj
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -196,7 +197,7 @@ class AddSafetyAndSecurityConsigneeControllerSpec extends SpecBase with MockNunj
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
     }
   }

@@ -49,7 +49,7 @@ class CarrierEoriController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "carrierEori.njk"
+  private val template = "safetyAndSecurity/carrierEori.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

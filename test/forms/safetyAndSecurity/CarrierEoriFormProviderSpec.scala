@@ -22,8 +22,8 @@ import play.api.data.FormError
 class CarrierEoriFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "carrierEori.error.required"
-  val lengthKey = "carrierEori.error.length"
-  val maxLength = 10
+  val lengthKey   = "carrierEori.error.length"
+  val maxLength   = 10
 
   val form = new CarrierEoriFormProvider()()
 
@@ -40,7 +40,7 @@ class CarrierEoriFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

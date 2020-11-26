@@ -35,6 +35,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoute}
 
 import scala.concurrent.Future
 
@@ -43,8 +44,8 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new CarrierAddressFormProvider()
-  private val form = formProvider()
-  private val template = "carrierAddress.njk"
+  private val form         = formProvider()
+  private val template     = "safetyAndSecurity/carrierAddress.njk"
 
   lazy val carrierAddressRoute = routes.CarrierAddressController.onPageLoad(lrn, NormalMode).url
 
@@ -62,9 +63,9 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(GET, carrierAddressRoute)
+      val request        = FakeRequest(GET, carrierAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -73,9 +74,9 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "form" -> form,
+        "mode" -> NormalMode,
+        "lrn"  -> lrn
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -93,9 +94,9 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
       val userAnswers = emptyUserAnswers.set(CarrierAddressPage, "answer").success.value
       dataRetrievalWithData(userAnswers)
 
-      val request = FakeRequest(GET, carrierAddressRoute)
+      val request        = FakeRequest(GET, carrierAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -142,10 +143,10 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(POST, carrierAddressRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, carrierAddressRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -174,7 +175,7 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -190,7 +191,7 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
     }
   }

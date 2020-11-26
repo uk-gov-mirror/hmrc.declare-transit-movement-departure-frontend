@@ -18,7 +18,6 @@ package pages.safetyAndSecurity
 
 import pages.behaviours.PageBehaviours
 
-
 class SafetyAndSecurityConsigneeNamePageSpec extends PageBehaviours {
 
   "SafetyAndSecurityConsigneeNamePage" - {

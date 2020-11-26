@@ -41,20 +41,20 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
 
   final val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitraryCarrierNameUserAnswersEntry.arbitrary ::
-    arbitraryCarrierEoriUserAnswersEntry.arbitrary ::
-    arbitraryCarrierAddressUserAnswersEntry.arbitrary ::
-    arbitraryAddCarrierUserAnswersEntry.arbitrary ::
-    arbitraryAddCarrierEoriUserAnswersEntry.arbitrary ::
-    arbitrarySafetyAndSecurityConsigneeNameUserAnswersEntry.arbitrary ::
-    arbitrarySafetyAndSecurityConsigneeEoriUserAnswersEntry.arbitrary ::
-    arbitrarySafetyAndSecurityConsigneeAddressUserAnswersEntry.arbitrary ::
-    arbitraryAddSafetyAndSecurityConsigneeEoriUserAnswersEntry.arbitrary ::
-    arbitraryAddSafetyAndSecurityConsigneeUserAnswersEntry.arbitrary ::
-    arbitrarySafetyAndSecurityConsignorNameUserAnswersEntry.arbitrary ::
-    arbitrarySafetyAndSecurityConsignorEoriUserAnswersEntry.arbitrary ::
-    arbitrarySafetyAndSecurityConsignorAddressUserAnswersEntry.arbitrary ::
-    arbitraryAddSafetyAndSecurityConsignorEoriUserAnswersEntry.arbitrary ::
-    arbitraryAddSafetyAndSecurityConsignorUserAnswersEntry.arbitrary ::
+      arbitraryCarrierEoriUserAnswersEntry.arbitrary ::
+      arbitraryCarrierAddressUserAnswersEntry.arbitrary ::
+      arbitraryAddCarrierUserAnswersEntry.arbitrary ::
+      arbitraryAddCarrierEoriUserAnswersEntry.arbitrary ::
+      arbitrarySafetyAndSecurityConsigneeNameUserAnswersEntry.arbitrary ::
+      arbitrarySafetyAndSecurityConsigneeEoriUserAnswersEntry.arbitrary ::
+      arbitrarySafetyAndSecurityConsigneeAddressUserAnswersEntry.arbitrary ::
+      arbitraryAddSafetyAndSecurityConsigneeEoriUserAnswersEntry.arbitrary ::
+      arbitraryAddSafetyAndSecurityConsigneeUserAnswersEntry.arbitrary ::
+      arbitrarySafetyAndSecurityConsignorNameUserAnswersEntry.arbitrary ::
+      arbitrarySafetyAndSecurityConsignorEoriUserAnswersEntry.arbitrary ::
+      arbitrarySafetyAndSecurityConsignorAddressUserAnswersEntry.arbitrary ::
+      arbitraryAddSafetyAndSecurityConsignorEoriUserAnswersEntry.arbitrary ::
+      arbitraryAddSafetyAndSecurityConsignorUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherCountryOfRoutingUserAnswersEntry.arbitrary ::
       arbitraryCountryOfRoutingUserAnswersEntry.arbitrary ::
       arbitraryPlaceOfUnloadingCodeUserAnswersEntry.arbitrary ::
