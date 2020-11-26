@@ -34,10 +34,7 @@ import pages.{
 import play.api.libs.json._
 
 class TaskListViewModel(userAnswers: UserAnswers) {
-
-  // TODO: This is a workaround till we remove UserAnswersParser
-  implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
-    ReaderT[Option, UserAnswers, A](parser.run _)
+  import TaskListViewModel.fromUserAnswersParser
 
   private val lrn         = userAnswers.id
   private val taskListDsl = new TaskListDslCollectSectionName(userAnswers)
@@ -128,7 +125,7 @@ class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.goodsSummary.routes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url)
       .section
 
-  val guaranteeDetails =
+  private val guaranteeDetails =
     taskListDsl
       .sectionName("declarationSummary.section.guarantee")
       .ifCompleted(
@@ -142,7 +139,7 @@ class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url)
       .section
 
-  val safetyAndSecurityDetails: Seq[SectionDetails] =
+  private val safetyAndSecurityDetails: Seq[SectionDetails] =
     userAnswers
       .get(AddSecurityDetailsPage)
       .map({
@@ -166,7 +163,7 @@ class TaskListViewModel(userAnswers: UserAnswers) {
       })
       .getOrElse(Seq.empty)
 
-  def taskListSections: Seq[SectionDetails] =
+  private val sections: Seq[SectionDetails] =
     Seq(
       movementDetails,
       routeDetails,
@@ -181,6 +178,10 @@ class TaskListViewModel(userAnswers: UserAnswers) {
 
 object TaskListViewModel {
 
+  // TODO: This is a workaround till we remove UserAnswersParser
+  implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
+    ReaderT[Option, UserAnswers, A](parser.run _)
+
   object Constants {
     val sections: String = "sections"
   }
@@ -190,6 +191,6 @@ object TaskListViewModel {
   implicit val writes: OWrites[TaskListViewModel] =
     taskListViewModel =>
       Json.obj(
-        Constants.sections -> taskListViewModel.taskListSections
+        Constants.sections -> taskListViewModel.sections
     )
 }
