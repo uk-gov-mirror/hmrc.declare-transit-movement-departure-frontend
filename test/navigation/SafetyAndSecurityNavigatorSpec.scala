@@ -34,7 +34,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
     "in NormalMode" - {
 
-      "must got from AddCircumstanceIndicator page to CircumstanceIndicator page if 'true'" in {
+      "must go from AddCircumstanceIndicator page to CircumstanceIndicator page if 'true'" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -48,7 +48,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
-      "must got from AddCircumstanceIndicator to AddTransportChargesPaymentMethod if 'false'" in {
+      "must go from AddCircumstanceIndicator to AddTransportChargesPaymentMethod if 'false'" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -62,7 +62,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
-      "must got from CircumstanceIndicator to AddTransportChargesPaymentMethod" in {
+      "must go from CircumstanceIndicator to AddTransportChargesPaymentMethod" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -73,7 +73,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
-      "must got from AddTransportChargesPaymentMethod to TransportChargesPaymentMethod if 'true'" in {
+      "must go from AddTransportChargesPaymentMethod to TransportChargesPaymentMethod if 'true'" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -380,7 +380,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
             navigator
               .nextPage(AddSafetyAndSecurityConsignorPage, NormalMode, updatedAnswers)
-              .mustBe(routes.AddSafetyAndSecurityConsignorController.onPageLoad(answers.id, NormalMode))
+              .mustBe(routes.AddSafetyAndSecurityConsigneeController.onPageLoad(answers.id, NormalMode))
         }
       }
 
