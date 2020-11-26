@@ -18,23 +18,40 @@ package viewModels
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
+import models.journeyDomain.GoodsSummary.GoodSummaryDetails
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.journeyDomain.{MovementDetails, MovementDetailsSpec, RouteDetails, RouteDetailsSpec}
+import models.journeyDomain.{
+  GoodsSummary,
+  GoodsSummarySpec,
+  GuaranteeDetails,
+  GuaranteeDetailsSpec,
+  ItemDetails,
+  ItemDetailsSpec,
+  MovementDetails,
+  MovementDetailsSpec,
+  RouteDetails,
+  RouteDetailsSpec,
+  TraderDetails,
+  TraderDetailsSpec,
+  TransportDetails,
+  TransportDetailsSpec
+}
 import models.reference.CountryCode
-import models.{NormalMode, ProcedureType, Status}
-import navigation.MovementDetailsNavigator
+import models.{GuaranteeType, Index, NormalMode, ProcedureType, Status}
 import org.scalacheck.{Arbitrary, Gen}
-import pages.{CountryOfDispatchPage, ProcedureTypePage}
+import pages.guaranteeDetails.GuaranteeTypePage
+import pages.{CountryOfDispatchPage, DeclarePackagesPage, InlandModePage, IsPrincipalEoriKnownPage, ItemDescriptionPage, ProcedureTypePage}
 
 class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with UserAnswersSpecHelper {
 
-  val movementSectionName     = "declarationSummary.section.movementDetails"
-  val tradersSectionName      = "declarationSummary.section.tradersDetails"
-  val transportSectionName    = "declarationSummary.section.transport"
-  val routeSectionName        = "declarationSummary.section.routes"
-  val addItemsSectionName     = "declarationSummary.section.addItems"
-  val goodsSummarySectionName = "declarationSummary.section.goodsSummary"
-  val guaranteeSectionName    = "declarationSummary.section.guarantee"
+  val movementSectionName          = "declarationSummary.section.movementDetails"
+  val tradersSectionName           = "declarationSummary.section.tradersDetails"
+  val transportSectionName         = "declarationSummary.section.transport"
+  val routeSectionName             = "declarationSummary.section.routes"
+  val addItemsSectionName          = "declarationSummary.section.addItems"
+  val goodsSummarySectionName      = "declarationSummary.section.goodsSummary"
+  val guaranteeSectionName         = "declarationSummary.section.guarantee"
+  val safetyAndSecuritySectionName = "declarationSummary.section.safetyAndSecurity"
 
   "TaskListViewModelSpec" - {
 
@@ -194,55 +211,178 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
       }
     }
 
-    "TransportDetail" ignore {
-      "section task is always included" ignore {}
+    "TransportDetail" - {
+      "section task is always included" in {
+        val viewModel = TaskListViewModel(emptyUserAnswers)
+
+        viewModel.getSection(transportSectionName) must be(defined)
+      }
 
       "status" - {
-        "is Not started when there are no answers for the section" ignore {}
+        "is Not started when there are no answers for the section" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "is InProgress when the first question for the section has been answered" ignore {}
+          viewModel.getStatus(transportSectionName).value mustEqual Status.NotStarted
+        }
 
-        "is Completed when all the answers are completed" ignore {}
+        "is InProgress when the first question for the section has been answered" in {
+          forAll(Gen.chooseNum(10, 100)) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(InlandModePage)(pageAnswer.toString)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(transportSectionName).value mustEqual Status.InProgress
+          }
+        }
+
+        "is Completed when all the answers are completed" in {
+          forAll(arb[TransportDetails]) {
+            sectionDetails =>
+              val userAnswers = TransportDetailsSpec.setTransportDetail(sectionDetails)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(transportSectionName).value mustEqual Status.Completed
+          }
+        }
       }
 
       "navigation" - {
-        "when the status is Not started, links to the first page" ignore {}
+        "when the status is Not started, links to the first page" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "when the status is InProgress, links to the first page" ignore {}
+          val expectedHref: String = controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url
 
-        "when the status is Completed, links to the Check your answers page for the section" ignore {}
+          viewModel.getHref(transportSectionName).value mustEqual expectedHref
+        }
+
+        "when the status is InProgress, links to the first page" in {
+          forAll(Gen.chooseNum(10, 100)) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(InlandModePage)(pageAnswer.toString)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url
+
+              viewModel.getHref(transportSectionName).value mustEqual expectedHref
+          }
+        }
+
+        "when the status is Completed, links to the Check your answers page for the section" in {
+          forAll(arb[TransportDetails]) {
+            sectionDetails =>
+              val userAnswers = TransportDetailsSpec.setTransportDetail(sectionDetails)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.transportDetails.routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
+
+              viewModel.getHref(transportSectionName).value mustEqual expectedHref
+          }
+
+        }
       }
     }
 
-    "TraderDetails" ignore {
-      "section task is always included" ignore {}
+    "TraderDetails" - {
+      "section task is always included" in {
+        val viewModel = TaskListViewModel(emptyUserAnswers)
+
+        viewModel.getSection(tradersSectionName) must be(defined)
+      }
 
       "status" - {
-        "is Not started when there are no answers for the section" ignore {}
+        "is Not started when there are no answers for the section" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "is InProgress when the first question for the section has been answered" ignore {}
+          viewModel.getStatus(tradersSectionName).value mustEqual Status.NotStarted
+        }
 
-        "is Completed when all the answers are completed" ignore {}
+        "is InProgress when the first question for the section has been answered" in {
+          forAll(arb[Boolean]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(IsPrincipalEoriKnownPage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(tradersSectionName).value mustEqual Status.InProgress
+          }
+        }
+
+        "is Completed when all the answers are completed" in {
+          forAll(arb[TraderDetails]) {
+            sectionDetails =>
+              val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(tradersSectionName).value mustEqual Status.Completed
+          }
+        }
       }
 
       "navigation" - {
-        "when the status is Not started, links to the first page" ignore {}
+        "when the status is Not started, links to the first page" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "when the status is InProgress, links to the first page" ignore {}
+          val expectedHref: String = controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
 
-        "when the status is Completed, links to the Check your answers page for the section" ignore {}
+          viewModel.getHref(tradersSectionName).value mustEqual expectedHref
+        }
+
+        "when the status is InProgress, links to the first page" in {
+          forAll(arb[Boolean]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(IsPrincipalEoriKnownPage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
+
+              viewModel.getHref(tradersSectionName).value mustEqual expectedHref
+          }
+        }
+
+        "when the status is Completed, links to the Check your answers page for the section" in {
+          forAll(arb[TraderDetails]) {
+            sectionDetails =>
+              val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.traderDetails.routes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
+
+              viewModel.getHref(tradersSectionName).value mustEqual expectedHref
+          }
+
+        }
       }
     }
 
     "SecurityDetails" ignore {
-      "section task" - {
-        "is included when user has chosen to add Security Details" ignore {}
 
-        "is not included when user has chosen to not add Security Details" ignore {}
+      "section task" - {
+        "is included when user has chosen to add Security Details" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
+
+          viewModel.getSection(safetyAndSecuritySectionName) must be(defined)
+        }
+
+        "is not included when user has chosen to not add Security Details" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
+
+          viewModel.getSection(safetyAndSecuritySectionName) must be(defined)
+        }
       }
 
       "status" - {
-        "is Not started when there are no answers for the section" ignore {}
+        "is Not started when there are no answers for the section" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
+
+          viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.NotStarted
+        }
 
         "is InProgress when the first question for the section has been answered" ignore {}
 
@@ -250,7 +390,13 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
       }
 
       "navigation" - {
-        "when the status is Not started, links to the first page" ignore {}
+        "when the status is Not started, links to the first page" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
+
+          val expectedHref: String = controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
+
+          viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
+        }
 
         "when the status is InProgress, links to the first page" ignore {}
 
@@ -259,141 +405,230 @@ class TaskListViewModelSpec extends SpecBase with GeneratorSpec with JourneyMode
     }
 
     "ItemsDetails" ignore {
-      "section task is always included" ignore {}
+      val zeroIndex = Index(0)
+
+      "section task is always included" in {
+        val viewModel = TaskListViewModel(emptyUserAnswers)
+
+        viewModel.getSection(addItemsSectionName) must be(defined)
+      }
 
       "status" - {
-        "is Not started when there are no answers for the section" ignore {}
+        "is Not started when there are no answers for the section" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "is InProgress when the first question for the section has been answered" ignore {}
+          viewModel.getStatus(addItemsSectionName).value mustEqual Status.NotStarted
+        }
 
-        "is Completed when all the answers are completed" ignore {}
+        "is InProgress when the first question for the section has been answered" in {
+          forAll(stringsWithMaxLength(stringMaxLength)) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(addItemsSectionName).value mustEqual Status.InProgress
+          }
+        }
+
+        "is Completed when all the answers are completed" in {
+          forAll(arb[ItemDetails]) {
+            sectionDetails =>
+              val userAnswers = ItemDetailsSpec.setItemDetailsUserAnswers(sectionDetails, zeroIndex)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(addItemsSectionName).value mustEqual Status.Completed
+          }
+        }
       }
 
       "navigation" - {
-        "when the status is Not started, links to the first page" ignore {}
+        "when the status is Not started, links to the first page" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "when the status is InProgress, links to the first page" ignore {}
+          val expectedHref: String = controllers.addItems.routes.ItemDescriptionController.onPageLoad(lrn, zeroIndex, NormalMode).url
 
-        "when the status is Completed, links to the Check your answers page for the section" ignore {}
+          viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
+        }
+
+        "when the status is InProgress, links to the first page" in {
+          forAll(stringsWithMaxLength(stringMaxLength)) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.addItems.routes.ItemDescriptionController.onPageLoad(lrn, zeroIndex, NormalMode).url
+
+              viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
+          }
+        }
+
+        "when the status is Completed, links to the Check your answers page for the section" in {
+          forAll(arb[ItemDetails]) {
+            sectionDetails =>
+              val userAnswers = ItemDetailsSpec.setItemDetailsUserAnswers(sectionDetails, zeroIndex)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(lrn, zeroIndex).url
+
+              viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
+          }
+
+        }
       }
     }
 
     "GoodsSummaryDetails" ignore {
-      "section task is always included" ignore {}
+      "section task is always included" in {
+        val viewModel = TaskListViewModel(emptyUserAnswers)
+
+        viewModel.getSection(goodsSummarySectionName) must be(defined)
+      }
 
       "status" - {
-        "is Not started when there are no answers for the section" ignore {}
+        "is Not started when there are no answers for the section" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "is InProgress when the first question for the section has been answered" ignore {}
+          viewModel.getStatus(goodsSummarySectionName).value mustEqual Status.NotStarted
+        }
 
-        "is Completed when all the answers are completed" ignore {}
+        "is InProgress when the first question for the section has been answered" in {
+          forAll(arb[Boolean]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(DeclarePackagesPage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(goodsSummarySectionName).value mustEqual Status.InProgress
+          }
+        }
+
+        "is Completed when all the answers are completed" in {
+          forAll(arb[GoodsSummary]) {
+            sectionDetails =>
+              val userAnswers = GoodsSummarySpec.setGoodsSummary(sectionDetails, None)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(goodsSummarySectionName).value mustEqual Status.Completed
+          }
+        }
       }
 
       "navigation" - {
-        "when the status is Not started, links to the first page" ignore {}
+        "when the status is Not started, links to the first page" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "when the status is InProgress, links to the first page" ignore {}
+          val expectedHref: String = controllers.goodsSummary.routes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url
 
-        "when the status is Completed, links to the Check your answers page for the section" ignore {}
+          viewModel.getHref(goodsSummarySectionName).value mustEqual expectedHref
+        }
+
+        "when the status is InProgress, links to the first page" in {
+          forAll(arb[Boolean]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(DeclarePackagesPage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.goodsSummary.routes.DeclarePackagesController.onPageLoad(lrn, NormalMode).url
+
+              viewModel.getHref(goodsSummarySectionName).value mustEqual expectedHref
+          }
+        }
+
+        "when the status is Completed, links to the Check your answers page for the section" in {
+          forAll(arb[GoodsSummary]) {
+            sectionDetails =>
+              val userAnswers = GoodsSummarySpec.setGoodsSummary(sectionDetails, None)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.goodsSummary.routes.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn).url
+
+              viewModel.getHref(goodsSummarySectionName).value mustEqual expectedHref
+          }
+
+        }
       }
     }
 
     "GuranteeDetails" ignore {
-      "section task is always included" ignore {}
+      "section task is always included" in {
+        val viewModel = TaskListViewModel(emptyUserAnswers)
+
+        viewModel.getSection(guaranteeSectionName) must be(defined)
+      }
 
       "status" - {
-        "is Not started when there are no answers for the section" ignore {}
+        "is Not started when there are no answers for the section" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "is InProgress when the first question for the section has been answered" ignore {}
+          viewModel.getStatus(guaranteeSectionName).value mustEqual Status.NotStarted
+        }
 
-        "is Completed when all the answers are completed" ignore {}
+        "is InProgress when the first question for the section has been answered" in {
+          forAll(arb[GuaranteeType]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(GuaranteeTypePage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(guaranteeSectionName).value mustEqual Status.InProgress
+          }
+        }
+
+        "is Completed when all the answers are completed" in {
+          forAll(arb[GuaranteeDetails]) {
+            sectionDetails =>
+              val userAnswers = GuaranteeDetailsSpec.setGuaranteeDetails(sectionDetails)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(guaranteeSectionName).value mustEqual Status.Completed
+          }
+        }
       }
 
       "navigation" - {
-        "when the status is Not started, links to the first page" ignore {}
+        "when the status is Not started, links to the first page" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "when the status is InProgress, links to the first page" ignore {}
+          val expectedHref: String = controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url
 
-        "when the status is Completed, links to the Check your answers page for the section" ignore {}
+          viewModel.getHref(guaranteeSectionName).value mustEqual expectedHref
+        }
+
+        "when the status is InProgress, links to the first page" in {
+          forAll(arb[GuaranteeType]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(GuaranteeTypePage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url
+
+              viewModel.getHref(guaranteeSectionName).value mustEqual expectedHref
+          }
+        }
+
+        "when the status is Completed, links to the Check your answers page for the section" in {
+          forAll(arb[GuaranteeDetails]) {
+            sectionDetails =>
+              val userAnswers = GuaranteeDetailsSpec.setGuaranteeDetails(sectionDetails)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.guaranteeDetails.routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn).url
+
+              viewModel.getHref(guaranteeSectionName).value mustEqual expectedHref
+          }
+
+        }
       }
     }
   }
 }
-
-//object Foo {
-//  vla asdf = {
-//    "section task is always included" in {
-//      val viewModel = TaskListViewModel(emptyUserAnswers)
-//
-//      viewModel.getSection(???) must be(defined)
-//    }
-//
-//    "status" - {
-//      "is Not started when there are no answers for the section" in {
-//        val viewModel = TaskListViewModel(emptyUserAnswers)
-//
-//        viewModel.getStatus(???).value mustEqual Status.NotStarted
-//      }
-//
-//      "is InProgress when the first question for the section has been answered" in {
-//        forAll(arb[???]) {
-//          pageAnswer =>
-//            val userAnswers = emptyUserAnswers.unsafeSetVal(???)(pageAnswer)
-//
-//            val viewModel = TaskListViewModel(userAnswers)
-//
-//            viewModel.getStatus(???).value mustEqual Status.InProgress
-//        }
-//      }
-//
-//      "is Completed when all the answers are completed" in {
-//        forAll(arb[MovementDetails]) {
-//          sectionDetails =>
-//            val userAnswers = ???(sectionDetails)(emptyUserAnswers)
-//
-//            val viewModel = TaskListViewModel(userAnswers)
-//
-//            viewModel.getStatus(???).value mustEqual Status.Completed
-//        }
-//      }
-//    }
-//
-//    "navigation" - {
-//      "when the status is Not started, links to the first page" in {
-//        val viewModel = TaskListViewModel(emptyUserAnswers)
-//
-//        val expectedHref: String = controllers.???
-//
-//        viewModel.getHref(???).value mustEqual expectedHref
-//      }
-//
-//      "when the status is InProgress, links to the first page" in {
-//        forAll(arb[???]) {
-//          procedure =>
-//            val userAnswers = emptyUserAnswers.unsafeSetVal(???)(???)
-//
-//            val viewModel = TaskListViewModel(userAnswers)
-//
-//            val expectedHref: String = controllers.???
-//
-//            viewModel.getHref(???).value mustEqual expectedHref
-//        }
-//      }
-//
-//      "when the status is Completed, links to the Check your answers page for the section" in {
-//        forAll(arb[???]) {
-//          sectionDetails =>
-//            val userAnswers = ???(movementDetails)(sectionDetails)
-//
-//            val viewModel = TaskListViewModel(userAnswers)
-//
-//            val expectedHref: String = controllers.???
-//
-//            viewModel.getHref(movementSectionName).value mustEqual expectedHref
-//        }
-//
-//      }
-//    }
-//  }
-//
-//}

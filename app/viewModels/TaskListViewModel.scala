@@ -16,73 +16,12 @@
 
 package viewModels
 
-import models.Status._
-import models.journeyDomain._
-import models.{NormalMode, SectionDetails, Status, UserAnswers}
-import pages.{CountryOfDispatchPage, ProcedureTypePage}
-import play.api.libs.json._
-import cats.implicits._
 import cats.data.ReaderT
-
-class TaskListDsl(userAnswers: UserAnswers) {
-
-  def sectionName(sectionName: String): TaskListDslSectionNameStage =
-    new TaskListDslSectionNameStage(userAnswers)(sectionName)
-
-}
-
-class TaskListDslSectionNameStage(userAnswers: UserAnswers)(sectionName: String) {
-
-  def ifCompleted[A, B](readerIfCompleted: UserAnswersReader[A], urlIfCompleted: String): TaskListDslIfCompletedStage[A] =
-    new TaskListDslIfCompletedStage[A](userAnswers)(sectionName, readerIfCompleted, urlIfCompleted)
-
-}
-
-class TaskListDslIfCompletedStage[A](userAnswers: UserAnswers)(sectionName: String, readerIfCompleted: UserAnswersReader[A], urlIfCompleted: String) {
-
-  def ifInProgress[B](readerIfInProgress: UserAnswersReader[B], urlIfInProgress: String): TaskListDslIfInProgressStage[A, B] =
-    new TaskListDslIfInProgressStage(userAnswers)(sectionName, readerIfCompleted, urlIfCompleted, readerIfInProgress, urlIfInProgress)
-
-}
-
-class TaskListDslIfInProgressStage[A, B](userAnswers: UserAnswers)(sectionName: String,
-                                                                   readerIfCompleted: UserAnswersReader[A],
-                                                                   urlIfCompleted: String,
-                                                                   readerIfInProgress: UserAnswersReader[B],
-                                                                   urlIfInProgress: String) {
-
-  def ifNotStarted(urlIfNotStarted: String): TaskListDslAllInfoStage[A, B] =
-    new TaskListDslAllInfoStage(userAnswers)(sectionName, readerIfCompleted, urlIfCompleted, readerIfInProgress, urlIfInProgress, urlIfNotStarted)
-}
-
-class TaskListDslAllInfoStage[A, B](userAnswers: UserAnswers)(
-  sectionName: String,
-  readerIfCompleted: UserAnswersReader[A],
-  urlIfCompleted: String,
-  readerIfInProgress: UserAnswersReader[B],
-  urlIfInProgress: String,
-  urlIfNotStarted: String
-) {
-
-  def section: SectionDetails = {
-    val completed = readerIfCompleted
-      .map[(String, Status)](
-        _ => (urlIfCompleted, Completed)
-      )
-
-    val inProgress = readerIfInProgress
-      .map[(String, Status)](
-        _ => (urlIfInProgress, InProgress)
-      )
-
-    val (onwardRoute, status) = completed
-      .orElse(inProgress)
-      .run(userAnswers)
-      .getOrElse((urlIfNotStarted, NotStarted))
-
-    SectionDetails(sectionName, onwardRoute, status)
-  }
-}
+import models.journeyDomain.TransportDetails.InlandMode
+import models.journeyDomain._
+import models.{NormalMode, SectionDetails, UserAnswers}
+import pages.{CountryOfDispatchPage, InlandModePage, IsPrincipalEoriKnownPage, ProcedureTypePage}
+import play.api.libs.json._
 
 class TaskListViewModel(userAnswers: UserAnswers) {
 
@@ -91,43 +30,71 @@ class TaskListViewModel(userAnswers: UserAnswers) {
     ReaderT[Option, UserAnswers, A](parser.run _)
 
   private val lrn         = userAnswers.id
-  private val taskListDsl = new TaskListDsl(userAnswers)
+  private val taskListDsl = new TaskListDslCollectSectionName(userAnswers)
 
-  def taskListSections: Seq[SectionDetails] = {
+  private val movementDetails =
+    taskListDsl
+      .sectionName("declarationSummary.section.movementDetails")
+      .ifCompleted(
+        UserAnswersReader[MovementDetails],
+        controllers.movementDetails.routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
+      )
+      .ifInProgress(
+        ProcedureTypePage.reader,
+        controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
+      )
+      .ifNotStarted(controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url)
+      .section
 
-    val movementDetails =
-      taskListDsl
-        .sectionName("declarationSummary.section.movementDetails")
-        .ifCompleted(
-          UserAnswersReader[MovementDetails],
-          controllers.movementDetails.routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
-        )
-        .ifInProgress(
-          ProcedureTypePage.reader,
-          controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url
-        )
-        .ifNotStarted(controllers.movementDetails.routes.DeclarationTypeController.onPageLoad(userAnswers.id, NormalMode).url)
-        .section
+  private val routeDetails =
+    taskListDsl
+      .sectionName("declarationSummary.section.routes")
+      .ifCompleted(
+        UserAnswersReader[RouteDetails],
+        controllers.routeDetails.routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url
+      )
+      .ifInProgress(
+        CountryOfDispatchPage.reader,
+        controllers.routeDetails.routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
+      )
+      .ifNotStarted(controllers.routeDetails.routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url)
+      .section
 
-    val routeDetails =
-      taskListDsl
-        .sectionName("declarationSummary.section.routes")
-        .ifCompleted(
-          UserAnswersReader[RouteDetails],
-          controllers.routeDetails.routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url
-        )
-        .ifInProgress(
-          CountryOfDispatchPage.reader,
-          controllers.routeDetails.routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url
-        )
-        .ifNotStarted(controllers.routeDetails.routes.CountryOfDispatchController.onPageLoad(lrn, NormalMode).url)
-        .section
+  private val transportDetails =
+    taskListDsl
+      .sectionName("declarationSummary.section.transport")
+      .ifCompleted(
+        UserAnswersReader[TransportDetails],
+        controllers.transportDetails.routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
+      )
+      .ifInProgress(
+        InlandModePage.reader,
+        controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url
+      )
+      .ifNotStarted(controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url)
+      .section
 
+  private val traderDetails =
+    taskListDsl
+      .sectionName("declarationSummary.section.tradersDetails")
+      .ifCompleted(
+        UserAnswersReader[TraderDetails],
+        controllers.traderDetails.routes.TraderDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
+      )
+      .ifInProgress(
+        IsPrincipalEoriKnownPage.reader,
+        controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
+      )
+      .ifNotStarted(controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url)
+      .section
+
+  def taskListSections: Seq[SectionDetails] =
     Seq(
       movementDetails,
-      routeDetails
+      routeDetails,
+      transportDetails,
+      traderDetails
     )
-  }
 }
 
 object TaskListViewModel {
