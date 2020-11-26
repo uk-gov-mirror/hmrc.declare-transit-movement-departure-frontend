@@ -21,34 +21,87 @@ import java.time.format.DateTimeFormatter
 import controllers.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages._
-import pages.addItems.traderSecurityDetails.{
-  SecurityConsigneeAddressPage,
-  SecurityConsigneeEoriPage,
-  SecurityConsigneeNamePage,
-  SecurityConsignorAddressPage,
-  SecurityConsignorEoriPage,
-  SecurityConsignorNamePage
-}
-import pages.safetyAndSecurity.{
-  AddAnotherCountryOfRoutingPage,
-  AddCircumstanceIndicatorPage,
-  AddCommercialReferenceNumberAllItemsPage,
-  AddCommercialReferenceNumberPage,
-  AddConveyancerReferenceNumberPage,
-  AddPlaceOfUnloadingCodePage,
-  AddSafetyAndSecurityConsignorPage,
-  AddTransportChargesPaymentMethodPage,
-  CircumstanceIndicatorPage,
-  CommercialReferenceNumberAllItemsPage,
-  ConveyanceReferenceNumberPage,
-  CountryOfRoutingPage,
-  PlaceOfUnloadingCodePage,
-  TransportChargesPaymentMethodPage
-}
+import pages.addItems.traderSecurityDetails.{SecurityConsigneeAddressPage, SecurityConsigneeEoriPage, SecurityConsigneeNamePage, SecurityConsignorAddressPage, SecurityConsignorEoriPage, SecurityConsignorNamePage}
+import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, AddCircumstanceIndicatorPage, AddCommercialReferenceNumberAllItemsPage, AddCommercialReferenceNumberPage, AddConveyancerReferenceNumberPage, AddPlaceOfUnloadingCodePage, AddSafetyAndSecurityConsigneeEoriPage, AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorEoriPage, AddSafetyAndSecurityConsignorPage, AddTransportChargesPaymentMethodPage, CircumstanceIndicatorPage, CommercialReferenceNumberAllItemsPage, ConveyanceReferenceNumberPage, CountryOfRoutingPage, PlaceOfUnloadingCodePage, SafetyAndSecurityConsigneeAddressPage, SafetyAndSecurityConsigneeEoriPage, SafetyAndSecurityConsigneeNamePage, SafetyAndSecurityConsignorAddressPage, SafetyAndSecurityConsignorEoriPage, SafetyAndSecurityConsignorNamePage, TransportChargesPaymentMethodPage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def safetyAndSecurityConsigneeName: Option[Row] = userAnswers.get(SafetyAndSecurityConsigneeNamePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"safetyAndSecurityConsigneeName.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.SafetyAndSecurityConsigneeNameController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"safetyAndSecurityConsigneeName.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def safetyAndSecurityConsigneeEori: Option[Row] = userAnswers.get(SafetyAndSecurityConsigneeEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"safetyAndSecurityConsigneeEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.SafetyAndSecurityConsigneeEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"safetyAndSecurityConsigneeEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def safetyAndSecurityConsigneeAddress: Option[Row] = userAnswers.get(SafetyAndSecurityConsigneeAddressPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"safetyAndSecurityConsigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.SafetyAndSecurityConsigneeAddressController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"safetyAndSecurityConsigneeAddress.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addSafetyAndSecurityConsigneeEori: Option[Row] = userAnswers.get(AddSafetyAndSecurityConsigneeEoriPage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addSafetyAndSecurityConsigneeEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddSafetyAndSecurityConsigneeEoriController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSafetyAndSecurityConsigneeEori.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
+
+  def addSafetyAndSecurityConsignee: Option[Row] = userAnswers.get(AddSafetyAndSecurityConsigneePage) map {
+    answer =>
+      Row(
+        key     = Key(msg"addSafetyAndSecurityConsignee.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value   = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddSafetyAndSecurityConsigneeController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addSafetyAndSecurityConsignee.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
   def safetyAndSecurityConsignorName: Option[Row] = userAnswers.get(SafetyAndSecurityConsignorNamePage) map {
     answer =>

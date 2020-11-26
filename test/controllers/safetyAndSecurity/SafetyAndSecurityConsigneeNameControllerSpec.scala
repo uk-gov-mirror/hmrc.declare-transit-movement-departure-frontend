@@ -1,45 +1,43 @@
-package controllers
+package controllers.safetyAndSecurity
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
+import base.{MockNunjucksRendererApp, SpecBase}
+import forms.safetyAndSecurity.SafetyAndSecurityConsigneeNameFormProvider
 import matchers.JsonMatchers
-import forms.SafetyAndSecurityConsignorNameFormProvider
-import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import models.NormalMode
 import navigation.annotations.SafetyAndSecurity
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.SafetyAndSecurityConsignorNamePage
+import pages.safetyAndSecurity.SafetyAndSecurityConsigneeNamePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.Future
 
-class SafetyAndSecurityConsignorNameControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class SafetyAndSecurityConsigneeNameControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new SafetyAndSecurityConsignorNameFormProvider()
+  private val formProvider = new SafetyAndSecurityConsigneeNameFormProvider()
   private val form = formProvider()
-  private val template = "safetyAndSecurityConsignorName.njk"
+  private val template = "safetyAndSecurityConsigneeName.njk"
 
-  lazy val safetyAndSecurityConsignorNameRoute = routes.SafetyAndSecurityConsignorNameController.onPageLoad(lrn, NormalMode).url
+  lazy val safetyAndSecurityConsigneeNameRoute = routes.SafetyAndSecurityConsigneeNameController.onPageLoad(lrn, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SafetyAndSecurity]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "SafetyAndSecurityConsignorName Controller" - {
+  "SafetyAndSecurityConsigneeName Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -48,7 +46,7 @@ class SafetyAndSecurityConsignorNameControllerSpec extends SpecBase with MockNun
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(GET, safetyAndSecurityConsignorNameRoute)
+      val request = FakeRequest(GET, safetyAndSecurityConsigneeNameRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -76,10 +74,10 @@ class SafetyAndSecurityConsignorNameControllerSpec extends SpecBase with MockNun
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(SafetyAndSecurityConsignorNamePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(SafetyAndSecurityConsigneeNamePage, "answer").success.value
       dataRetrievalWithData(userAnswers)
 
-      val request = FakeRequest(GET, safetyAndSecurityConsignorNameRoute)
+      val request = FakeRequest(GET, safetyAndSecurityConsigneeNameRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -111,7 +109,7 @@ class SafetyAndSecurityConsignorNameControllerSpec extends SpecBase with MockNun
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, safetyAndSecurityConsignorNameRoute)
+        FakeRequest(POST, safetyAndSecurityConsigneeNameRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
@@ -128,7 +126,7 @@ class SafetyAndSecurityConsignorNameControllerSpec extends SpecBase with MockNun
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(POST, safetyAndSecurityConsignorNameRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, safetyAndSecurityConsigneeNameRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -154,7 +152,7 @@ class SafetyAndSecurityConsignorNameControllerSpec extends SpecBase with MockNun
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, safetyAndSecurityConsignorNameRoute)
+      val request = FakeRequest(GET, safetyAndSecurityConsigneeNameRoute)
 
       val result = route(app, request).value
 
@@ -169,7 +167,7 @@ class SafetyAndSecurityConsignorNameControllerSpec extends SpecBase with MockNun
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, safetyAndSecurityConsignorNameRoute)
+        FakeRequest(POST, safetyAndSecurityConsigneeNameRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value

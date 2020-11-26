@@ -4,10 +4,10 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class AddSafetyAndSecurityConsignorEoriFormProvider @Inject() extends Mappings {
+class AddSafetyAndSecurityConsigneeEoriFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("addSafetyAndSecurityConsignorEori.error.required")
+      "value" -> boolean("addSafetyAndSecurityConsigneeEori.error.required")
     )
 }

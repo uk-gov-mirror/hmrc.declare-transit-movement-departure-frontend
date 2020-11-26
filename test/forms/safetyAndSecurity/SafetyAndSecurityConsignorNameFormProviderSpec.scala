@@ -1,15 +1,15 @@
-package forms
+package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class SafetyAndSecurityConsignorAddressFormProviderSpec extends StringFieldBehaviours {
+class SafetyAndSecurityConsignorNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "safetyAndSecurityConsignorAddress.error.required"
-  val lengthKey = "safetyAndSecurityConsignorAddress.error.length"
+  val requiredKey = "safetyAndSecurityConsignorName.error.required"
+  val lengthKey = "safetyAndSecurityConsignorName.error.length"
   val maxLength = 10
 
-  val form = new SafetyAndSecurityConsignorAddressFormProvider()()
+  val form = new SafetyAndSecurityConsignorNameFormProvider()()
 
   ".value" - {
 

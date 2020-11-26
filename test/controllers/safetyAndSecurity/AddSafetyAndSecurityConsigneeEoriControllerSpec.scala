@@ -1,45 +1,43 @@
-package controllers
+package controllers.safetyAndSecurity
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
+import base.{MockNunjucksRendererApp, SpecBase}
+import forms.safetyAndSecurity.AddSafetyAndSecurityConsigneeEoriFormProvider
 import matchers.JsonMatchers
-import forms.SafetyAndSecurityConsignorEoriFormProvider
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.SafetyAndSecurity
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.SafetyAndSecurityConsignorEoriPage
+import pages.safetyAndSecurity.AddSafetyAndSecurityConsigneeEoriPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddSafetyAndSecurityConsigneeEoriControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new SafetyAndSecurityConsignorEoriFormProvider()
+  private val formProvider = new AddSafetyAndSecurityConsigneeEoriFormProvider()
   private val form = formProvider()
-  private val template = "safetyAndSecurityConsignorEori.njk"
+  private val template = "addSafetyAndSecurityConsigneeEori.njk"
 
-  lazy val safetyAndSecurityConsignorEoriRoute = routes.SafetyAndSecurityConsignorEoriController.onPageLoad(lrn, NormalMode).url
+  lazy val addSafetyAndSecurityConsigneeEoriRoute = routes.AddSafetyAndSecurityConsigneeEoriController.onPageLoad(lrn, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SafetyAndSecurity]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "SafetyAndSecurityConsignorEori Controller" - {
+  "AddSafetyAndSecurityConsigneeEori Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -48,7 +46,7 @@ class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNun
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(GET, safetyAndSecurityConsignorEoriRoute)
+      val request = FakeRequest(GET, addSafetyAndSecurityConsigneeEoriRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -61,7 +59,8 @@ class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNun
       val expectedJson = Json.obj(
         "form"   -> form,
         "mode"   -> NormalMode,
-        "lrn"    -> lrn
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -76,10 +75,10 @@ class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNun
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(SafetyAndSecurityConsignorEoriPage, "answer").success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddSafetyAndSecurityConsigneeEoriPage, true).success.value
       dataRetrievalWithData(userAnswers)
 
-      val request = FakeRequest(GET, safetyAndSecurityConsignorEoriRoute)
+      val request = FakeRequest(GET, addSafetyAndSecurityConsigneeEoriRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -89,12 +88,13 @@ class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNun
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "true"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"   -> filledForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(filledForm("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -111,12 +111,13 @@ class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNun
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, safetyAndSecurityConsignorEoriRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, addSafetyAndSecurityConsigneeEoriRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
 
     }
@@ -128,7 +129,7 @@ class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNun
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(POST, safetyAndSecurityConsignorEoriRoute).withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, addSafetyAndSecurityConsigneeEoriRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
@@ -140,13 +141,16 @@ class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNun
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> boundForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"   -> boundForm,
+        "mode"   -> NormalMode,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(boundForm("value"))
       )
 
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
       templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonWithoutConfig mustBe expectedJson
 
     }
 
@@ -154,7 +158,7 @@ class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNun
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, safetyAndSecurityConsignorEoriRoute)
+      val request = FakeRequest(GET, addSafetyAndSecurityConsigneeEoriRoute)
 
       val result = route(app, request).value
 
@@ -169,8 +173,8 @@ class SafetyAndSecurityConsignorEoriControllerSpec extends SpecBase with MockNun
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, safetyAndSecurityConsignorEoriRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+        FakeRequest(POST, addSafetyAndSecurityConsigneeEoriRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

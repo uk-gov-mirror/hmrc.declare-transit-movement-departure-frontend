@@ -1,7 +1,6 @@
-package pages
+package pages.safetyAndSecurity
 
 import pages.behaviours.PageBehaviours
-import pages.safetyAndSecurity.AddSafetyAndSecurityConsignorEoriPage
 
 class AddSafetyAndSecurityConsignorEoriPageSpec extends PageBehaviours {
 

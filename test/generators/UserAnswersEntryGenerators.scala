@@ -26,39 +26,50 @@ import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.addItems.securityDetails._
-import pages.addItems.traderSecurityDetails.{
-  AddSecurityConsigneesEoriPage,
-  AddSecurityConsignorsEoriPage,
-  SecurityConsigneeAddressPage,
-  SecurityConsigneeEoriPage,
-  SecurityConsigneeNamePage,
-  SecurityConsignorAddressPage,
-  SecurityConsignorEoriPage,
-  SecurityConsignorNamePage
-}
+import pages.addItems.traderSecurityDetails.{AddSecurityConsigneesEoriPage, AddSecurityConsignorsEoriPage, SecurityConsigneeAddressPage, SecurityConsigneeEoriPage, SecurityConsigneeNamePage, SecurityConsignorAddressPage, SecurityConsignorEoriPage, SecurityConsignorNamePage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
-import pages.safetyAndSecurity.{
-  AddAnotherCountryOfRoutingPage,
-  AddCircumstanceIndicatorPage,
-  AddCommercialReferenceNumberAllItemsPage,
-  AddCommercialReferenceNumberPage,
-  AddConveyancerReferenceNumberPage,
-  AddPlaceOfUnloadingCodePage,
-  AddSafetyAndSecurityConsignorPage,
-  AddTransportChargesPaymentMethodPage,
-  CircumstanceIndicatorPage,
-  CommercialReferenceNumberAllItemsPage,
-  ConveyanceReferenceNumberPage,
-  CountryOfRoutingPage,
-  PlaceOfUnloadingCodePage,
-  TransportChargesPaymentMethodPage
-}
+import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, AddCircumstanceIndicatorPage, AddCommercialReferenceNumberAllItemsPage, AddCommercialReferenceNumberPage, AddConveyancerReferenceNumberPage, AddPlaceOfUnloadingCodePage, AddSafetyAndSecurityConsigneeEoriPage, AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorEoriPage, AddSafetyAndSecurityConsignorPage, AddTransportChargesPaymentMethodPage, CircumstanceIndicatorPage, CommercialReferenceNumberAllItemsPage, ConveyanceReferenceNumberPage, CountryOfRoutingPage, PlaceOfUnloadingCodePage, SafetyAndSecurityConsigneeAddressPage, SafetyAndSecurityConsigneeEoriPage, SafetyAndSecurityConsigneeNamePage, SafetyAndSecurityConsignorAddressPage, SafetyAndSecurityConsignorEoriPage, SafetyAndSecurityConsignorNamePage, TransportChargesPaymentMethodPage}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitrarySafetyAndSecurityConsigneeNameUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsigneeNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsigneeNamePage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsigneeNamePage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsigneeEoriUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsigneeEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsigneeEoriPage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsigneeEoriPage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsigneeAddressUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsigneeAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsigneeAddressPage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsigneeAddressPage, value)
+    }
+
+  implicit lazy val arbitraryAddSafetyAndSecurityConsigneeEoriUserAnswersEntry: Arbitrary[(AddSafetyAndSecurityConsigneeEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddSafetyAndSecurityConsigneeEoriPage.type#Data].map(Json.toJson(_))
+      } yield (AddSafetyAndSecurityConsigneeEoriPage, value)
+    }
+
+  implicit lazy val arbitraryAddSafetyAndSecurityConsigneeUserAnswersEntry: Arbitrary[(AddSafetyAndSecurityConsigneePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddSafetyAndSecurityConsigneePage.type#Data].map(Json.toJson(_))
+      } yield (AddSafetyAndSecurityConsigneePage, value)
+    }
 
   implicit lazy val arbitrarySafetyAndSecurityConsignorNameUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsignorNamePage.type, JsValue)] =
     Arbitrary {

@@ -1,14 +1,14 @@
-package forms
+package forms.safetyAndSecurity
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddSafetyAndSecurityConsignorEoriFormProviderSpec extends BooleanFieldBehaviours {
+class AddSafetyAndSecurityConsigneeFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addSafetyAndSecurityConsignorEori.error.required"
+  val requiredKey = "addSafetyAndSecurityConsignee.error.required"
   val invalidKey = "error.boolean"
 
-  val form = new AddSafetyAndSecurityConsignorEoriFormProvider()()
+  val form = new AddSafetyAndSecurityConsigneeFormProvider()()
 
   ".value" - {
 

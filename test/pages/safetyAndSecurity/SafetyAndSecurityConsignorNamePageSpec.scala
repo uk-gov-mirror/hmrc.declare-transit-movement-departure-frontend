@@ -1,7 +1,6 @@
-package pages
+package pages.safetyAndSecurity
 
 import pages.behaviours.PageBehaviours
-import pages.safetyAndSecurity.SafetyAndSecurityConsignorNamePage
 
 
 class SafetyAndSecurityConsignorNamePageSpec extends PageBehaviours {

@@ -1,12 +1,12 @@
-package controllers
+package controllers.safetyAndSecurity
 
 import controllers.actions._
-import forms.SafetyAndSecurityConsignorAddressFormProvider
+import forms.safetyAndSecurity.SafetyAndSecurityConsignorAddressFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
-import pages.SafetyAndSecurityConsignorAddressPage
+import pages.safetyAndSecurity.SafetyAndSecurityConsignorAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

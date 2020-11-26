@@ -1,12 +1,12 @@
-package controllers
+package controllers.safetyAndSecurity
 
 import controllers.actions._
-import forms.SafetyAndSecurityConsignorEoriFormProvider
+import forms.safetyAndSecurity.SafetyAndSecurityConsignorEoriFormProvider
 import javax.inject.Inject
-import models.{Mode, LocalReferenceNumber}
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
-import pages.SafetyAndSecurityConsignorEoriPage
+import pages.safetyAndSecurity.SafetyAndSecurityConsignorEoriPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

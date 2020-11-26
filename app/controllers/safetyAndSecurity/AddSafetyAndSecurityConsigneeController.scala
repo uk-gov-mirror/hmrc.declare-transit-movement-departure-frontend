@@ -1,12 +1,12 @@
 package controllers.safetyAndSecurity
 
 import controllers.actions._
-import forms.safetyAndSecurity.AddSafetyAndSecurityConsignorEoriFormProvider
+import forms.safetyAndSecurity.AddSafetyAndSecurityConsigneeFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
-import pages.safetyAndSecurity.AddSafetyAndSecurityConsignorEoriPage
+import pages.safetyAndSecurity.AddSafetyAndSecurityConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -17,25 +17,25 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddSafetyAndSecurityConsignorEoriController @Inject()(
+class AddSafetyAndSecurityConsigneeController @Inject()(
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     @SafetyAndSecurity navigator: Navigator,
     identify: IdentifierAction,
     getData: DataRetrievalActionProvider,
     requireData: DataRequiredAction,
-    formProvider: AddSafetyAndSecurityConsignorEoriFormProvider,
+    formProvider: AddSafetyAndSecurityConsigneeFormProvider,
     val controllerComponents: MessagesControllerComponents,
     renderer: Renderer
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with NunjucksSupport {
 
   private val form = formProvider()
-  private val template = "addSafetyAndSecurityConsignorEori.njk"
+  private val template = "addSafetyAndSecurityConsignee.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddSafetyAndSecurityConsignorEoriPage) match {
+      val preparedForm = request.userAnswers.get(AddSafetyAndSecurityConsigneePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -67,9 +67,9 @@ class AddSafetyAndSecurityConsignorEoriController @Inject()(
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSafetyAndSecurityConsignorEoriPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSafetyAndSecurityConsigneePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddSafetyAndSecurityConsignorEoriPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddSafetyAndSecurityConsigneePage, mode, updatedAnswers))
       )
   }
 }
