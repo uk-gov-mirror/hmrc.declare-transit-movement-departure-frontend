@@ -16,13 +16,12 @@
 
 package derivable
 
-import models.Index
-import play.api.libs.json.{JsObject, JsPath}
+import play.api.libs.json.JsPath
 import queries.Constants.countriesOfRouting
 
-case object DeriveNumberOfCountryOfRouting extends Derivable[List[JsObject], Int] {
+case object DeriveNumberOfCountryOfRouting extends Derivable[List[String], Int] {
 
-  override val derive: List[JsObject] => Int = _.size
+  override val derive: List[String] => Int = _.size
 
   override def path: JsPath = JsPath \ countriesOfRouting
 }

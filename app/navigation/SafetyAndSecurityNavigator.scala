@@ -118,7 +118,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     (ua.get(AddConveyancerReferenceNumberPage), ua.get(CircumstanceIndicatorPage)) match {
       case (Some(true), _)            => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case (Some(false) , Some("E"))  => Some(routes.AddPlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
-      case (Some(false) , Some(_))    => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode ))
+      case (Some(false) , _)          => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode ))
       case _                          => None
     }
 
@@ -136,7 +136,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
       case true => routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode)
       case false =>
         if (totalNumberOfCountriesOfRouting == 0) {
-          routes.CountryOfRoutingController.onPageLoad(ua.id, NormalMode, Index(0))
+          routes.CountryOfRoutingController.onPageLoad(ua.id, Index(0), NormalMode)
         } else {
           routes.AddAnotherCountryOfRoutingController.onPageLoad(ua.id, NormalMode)
         }
@@ -144,10 +144,12 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
   }
 
   def addAnotherCountryOfRouting(ua: UserAnswers): Option[Call] = {
-    val totalNumberOfCountriesOfRouting = ua.get(DeriveNumberOfCountryOfRouting).getOrElse(0)
+    val totalNumberOfCountriesOfRouting = ua.get(DeriveNumberOfCountryOfRouting)
+
+    println(s"\n\n\n\n $totalNumberOfCountriesOfRouting \n\n\n")
 
     ua.get(AddAnotherCountryOfRoutingPage).map {
-      case true   => routes.CountryOfRoutingController.onPageLoad(ua.id, NormalMode, Index(totalNumberOfCountriesOfRouting))
+      case true   => routes.CountryOfRoutingController.onPageLoad(ua.id, Index(totalNumberOfCountriesOfRouting.getOrElse(0)), NormalMode)
       case false  => routes.AddSafetyAndSecurityConsignorController.onPageLoad(ua.id, NormalMode)
     }
   }
@@ -194,7 +196,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     ua.get(PlaceOfUnloadingCodePage).map {
       _ =>
         if (totalNumberOfCountriesOfRouting == 0) {
-          routes.CountryOfRoutingController.onPageLoad(ua.id, NormalMode, Index(0))
+          routes.CountryOfRoutingController.onPageLoad(ua.id, Index(0), NormalMode)
         } else {
           routes.AddAnotherCountryOfRoutingController.onPageLoad(ua.id, NormalMode)
         }
