@@ -20,10 +20,12 @@ import cats.data._
 import cats.implicits._
 import derivable._
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
+import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
-import pages.ContainersUsedPage
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
+import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 
 case class ItemSection(
   itemDetails: ItemDetails,
@@ -85,8 +87,19 @@ object ItemSection {
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
 
+  private def canReadDocumentType(itemIndex: Index): ReaderT[Option, UserAnswers, Boolean] =
+    AddSecurityDetailsPage.reader.flatMap {
+      case true =>
+        AddCircumstanceIndicatorPage.reader.flatMap {
+          case true =>
+            CircumstanceIndicatorPage.reader.map(x => CircumstanceIndicator.conditionalIndicators.contains(x))
+          case false => true.pure[UserAnswersReader]
+        }
+      case false => AddDocumentsPage(itemIndex).reader
+    }
+
   private def deriveProducedDocuments(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] =
-    AddDocumentsPage(itemIndex).reader //TODO need to add few more conditions based on safety and security section - Karens handy spread sheet
+    canReadDocumentType(itemIndex)
       .flatMap {
         isTrue =>
           if (isTrue) {
