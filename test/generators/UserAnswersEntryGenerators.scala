@@ -186,11 +186,11 @@ trait UserAnswersEntryGenerators {
       } yield (AddAnotherCountryOfRoutingPage, value)
     }
 
-  implicit lazy val arbitraryCountryOfRoutingUserAnswersEntry: Arbitrary[(CountryOfRoutingPage.type, JsValue)] =
+  implicit lazy val arbitraryCountryOfRoutingUserAnswersEntry: Arbitrary[(CountryOfRoutingPage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[CountryOfRoutingPage.type#Data].map(Json.toJson(_))
-      } yield (CountryOfRoutingPage, value)
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (CountryOfRoutingPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryPlaceOfUnloadingCodeUserAnswersEntry: Arbitrary[(PlaceOfUnloadingCodePage.type, JsValue)] =

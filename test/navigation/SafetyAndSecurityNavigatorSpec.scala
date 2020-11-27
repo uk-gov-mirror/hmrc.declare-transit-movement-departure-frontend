@@ -341,8 +341,11 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         forAll(arbitrary[UserAnswers]) {
           answers =>
 
+            val updatedAnswers = answers
+              .set(PlaceOfUnloadingCodePage, "answer").success.value
+
             navigator
-              .nextPage(PlaceOfUnloadingCodePage, NormalMode, answers)
+              .nextPage(PlaceOfUnloadingCodePage, NormalMode, updatedAnswers)
               .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode, index))
         }
       }

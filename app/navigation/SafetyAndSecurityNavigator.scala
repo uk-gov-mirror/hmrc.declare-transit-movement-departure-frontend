@@ -111,7 +111,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     ua.get(ModeAtBorderPage) match {
       case Some("4") | Some("40") => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case Some(_)                => Some(routes.AddConveyancerReferenceNumberController.onPageLoad(ua.id, NormalMode))
-      case _                                      => None
+      case _                      => None
     }
 
   def addConveyancerReferenceNumber(ua: UserAnswers): Option[Call] =
@@ -125,7 +125,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
   def conveyanceReferenceNumber(ua: UserAnswers): Option[Call] =
     (ua.get(CircumstanceIndicatorPage), ua.get(ConveyanceReferenceNumberPage)) match {
       case (Some("E"), Some(_)) => Some(routes.AddPlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
-      case (Some(_),   Some(_)) => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
+      case (_,         Some(_)) => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
       case _                    => None
     }
 
