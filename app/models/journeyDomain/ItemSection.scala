@@ -87,19 +87,20 @@ object ItemSection {
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
 
-  private def canReadDocumentType(itemIndex: Index): ReaderT[Option, UserAnswers, Boolean] =
-    AddSecurityDetailsPage.reader.flatMap {
-      case true =>
-        AddCircumstanceIndicatorPage.reader.flatMap {
-          case true =>
-            CircumstanceIndicatorPage.reader.map(x => CircumstanceIndicator.conditionalIndicators.contains(x))
-          case false => true.pure[UserAnswersReader]
-        }
-      case false => AddDocumentsPage(itemIndex).reader
-    }
+  private def readDocumentType(itemIndex: Index): ReaderT[Option, UserAnswers, Boolean] =
+    AddSecurityDetailsPage.reader
+      .flatMap {
+        case true =>
+          AddCircumstanceIndicatorPage.reader.flatMap {
+            case true =>
+              CircumstanceIndicatorPage.reader.map(x => CircumstanceIndicator.conditionalIndicators.contains(x))
+            case false => true.pure[UserAnswersReader]
+          }
+        case false => AddDocumentsPage(itemIndex).reader
+      }
 
   private def deriveProducedDocuments(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] =
-    canReadDocumentType(itemIndex)
+    readDocumentType(itemIndex)
       .flatMap {
         isTrue =>
           if (isTrue) {

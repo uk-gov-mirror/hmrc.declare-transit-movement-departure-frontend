@@ -269,9 +269,9 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .set(AddCircumstanceIndicatorPage, true)
             .success
             .value
-            /*.set(AddSecurityDetailsPage, true)
+            .set(AddSecurityDetailsPage, true)
             .success
-            .value*/
+            .value
             .set(AddAnotherSpecialMentionPage(index), false)
             .success
             .value
