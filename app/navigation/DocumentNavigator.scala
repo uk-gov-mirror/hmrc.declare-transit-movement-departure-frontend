@@ -16,9 +16,10 @@
 
 package navigation
 
-import derivable.DeriveNumberOfDocuments
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import derivable.{DeriveNumberOfDocuments, DeriveNumberOfPreviousAdministrativeReferences}
+import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
+import models.{CheckMode, DeclarationType, Index, Mode, NormalMode, UserAnswers}
+import pages.{CountryOfDispatchPage, DeclarationTypePage, Page}
 import pages.addItems.{
   AddAnotherDocumentPage,
   AddDocumentsPage,
@@ -31,6 +32,7 @@ import pages.addItems.{
 import play.api.mvc.Call
 import controllers.addItems.routes
 import javax.inject.{Inject, Singleton}
+import models.reference.CountryCode
 
 @Singleton
 class DocumentNavigator @Inject()() extends Navigator {
@@ -64,7 +66,17 @@ class DocumentNavigator @Inject()() extends Navigator {
   private def addAnotherDocumentRoute(ua:UserAnswers, index:Index, mode:Mode) =
     ua.get(AddAnotherDocumentPage(index)) match {
       case Some(true) => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), mode))
-      case Some(false) => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case Some(false) => {
+        val nonEUCountries = Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
+        val declarationTypes = Seq(DeclarationType.Option2, DeclarationType.Option4)
+        val isNonEUCountry: Boolean = ua.get(CountryOfDispatchPage).fold(false)(code => nonEUCountries.contains(code))
+        val isAllowedDeclarationType: Boolean = ua.get(DeclarationTypePage).fold(false)(declarationTypes.contains(_))
+        val referenceIndex = ua.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
+        (isNonEUCountry, isAllowedDeclarationType) match {
+          case (true, true) => Some(previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, index, Index(referenceIndex), mode))
+          case _ => Some(previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(ua.id, index, mode))
+        }
+      }
     }
 
   private def addExtraDocumentInformationRoute(ua:UserAnswers, index:Index, documentIndex:Index, mode:Mode) =
@@ -78,6 +90,17 @@ class DocumentNavigator @Inject()() extends Navigator {
     (ua.get(AddDocumentsPage(index)), mode) match {
       case (Some(true), NormalMode)  => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), NormalMode))
       case (Some(true), CheckMode) if (count(index)(ua) == 0) => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), CheckMode))
+      case (Some(false), NormalMode) => {
+        val nonEUCountries = Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
+        val declarationTypes = Seq(DeclarationType.Option2, DeclarationType.Option4)
+        val isNonEUCountry: Boolean = ua.get(CountryOfDispatchPage).fold(false)(code => nonEUCountries.contains(code))
+        val isAllowedDeclarationType: Boolean = ua.get(DeclarationTypePage).fold(false)(declarationTypes.contains(_))
+        val referenceIndex = ua.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
+        (isNonEUCountry, isAllowedDeclarationType) match {
+          case (true, true) => Some(previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, index, Index(referenceIndex), mode))
+          case _ => Some(previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(ua.id, index, mode))
+        }
+      }
       case _ => Some(routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
   
