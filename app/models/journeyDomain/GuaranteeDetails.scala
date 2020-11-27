@@ -26,8 +26,7 @@ sealed trait GuaranteeDetails
 object GuaranteeDetails {
 
   implicit val parseGuaranteeDetails: UserAnswersReader[GuaranteeDetails] =
-    UserAnswersReader[GuaranteeReference].widen[GuaranteeDetails] orElse
-      UserAnswersReader[GuaranteeOther].widen[GuaranteeDetails]
+    UserAnswersReader[GuaranteeReference].widen[GuaranteeDetails] orElse UserAnswersReader[GuaranteeOther].widen[GuaranteeDetails]
 
   final case class GuaranteeReference(
     guaranteeType: GuaranteeType,

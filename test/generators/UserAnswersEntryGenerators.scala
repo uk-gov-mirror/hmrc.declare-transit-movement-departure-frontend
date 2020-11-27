@@ -40,17 +40,32 @@ import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
 import pages.safetyAndSecurity.{
   AddAnotherCountryOfRoutingPage,
+  AddCarrierEoriPage,
+  AddCarrierPage,
   AddCircumstanceIndicatorPage,
   AddCommercialReferenceNumberAllItemsPage,
   AddCommercialReferenceNumberPage,
   AddConveyancerReferenceNumberPage,
   AddPlaceOfUnloadingCodePage,
+  AddSafetyAndSecurityConsigneeEoriPage,
+  AddSafetyAndSecurityConsigneePage,
+  AddSafetyAndSecurityConsignorEoriPage,
+  AddSafetyAndSecurityConsignorPage,
   AddTransportChargesPaymentMethodPage,
+  CarrierAddressPage,
+  CarrierEoriPage,
+  CarrierNamePage,
   CircumstanceIndicatorPage,
   CommercialReferenceNumberAllItemsPage,
   ConveyanceReferenceNumberPage,
   CountryOfRoutingPage,
   PlaceOfUnloadingCodePage,
+  SafetyAndSecurityConsigneeAddressPage,
+  SafetyAndSecurityConsigneeEoriPage,
+  SafetyAndSecurityConsigneeNamePage,
+  SafetyAndSecurityConsignorAddressPage,
+  SafetyAndSecurityConsignorEoriPage,
+  SafetyAndSecurityConsignorNamePage,
   TransportChargesPaymentMethodPage
 }
 import play.api.libs.json.{JsValue, Json}
@@ -58,6 +73,111 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryCarrierNameUserAnswersEntry: Arbitrary[(CarrierNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CarrierNamePage.type#Data].map(Json.toJson(_))
+      } yield (CarrierNamePage, value)
+    }
+
+  implicit lazy val arbitraryCarrierEoriUserAnswersEntry: Arbitrary[(CarrierEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CarrierEoriPage.type#Data].map(Json.toJson(_))
+      } yield (CarrierEoriPage, value)
+    }
+
+  implicit lazy val arbitraryCarrierAddressUserAnswersEntry: Arbitrary[(CarrierAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[CarrierAddressPage.type#Data].map(Json.toJson(_))
+      } yield (CarrierAddressPage, value)
+    }
+
+  implicit lazy val arbitraryAddCarrierUserAnswersEntry: Arbitrary[(AddCarrierPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddCarrierPage.type#Data].map(Json.toJson(_))
+      } yield (AddCarrierPage, value)
+    }
+
+  implicit lazy val arbitraryAddCarrierEoriUserAnswersEntry: Arbitrary[(AddCarrierEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddCarrierEoriPage.type#Data].map(Json.toJson(_))
+      } yield (AddCarrierEoriPage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsigneeNameUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsigneeNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsigneeNamePage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsigneeNamePage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsigneeEoriUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsigneeEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsigneeEoriPage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsigneeEoriPage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsigneeAddressUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsigneeAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsigneeAddressPage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsigneeAddressPage, value)
+    }
+
+  implicit lazy val arbitraryAddSafetyAndSecurityConsigneeEoriUserAnswersEntry: Arbitrary[(AddSafetyAndSecurityConsigneeEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddSafetyAndSecurityConsigneeEoriPage.type#Data].map(Json.toJson(_))
+      } yield (AddSafetyAndSecurityConsigneeEoriPage, value)
+    }
+
+  implicit lazy val arbitraryAddSafetyAndSecurityConsigneeUserAnswersEntry: Arbitrary[(AddSafetyAndSecurityConsigneePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddSafetyAndSecurityConsigneePage.type#Data].map(Json.toJson(_))
+      } yield (AddSafetyAndSecurityConsigneePage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsignorNameUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsignorNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsignorNamePage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsignorNamePage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsignorEoriUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsignorEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsignorEoriPage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsignorEoriPage, value)
+    }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsignorAddressUserAnswersEntry: Arbitrary[(SafetyAndSecurityConsignorAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[SafetyAndSecurityConsignorAddressPage.type#Data].map(Json.toJson(_))
+      } yield (SafetyAndSecurityConsignorAddressPage, value)
+    }
+
+  implicit lazy val arbitraryAddSafetyAndSecurityConsignorEoriUserAnswersEntry: Arbitrary[(AddSafetyAndSecurityConsignorEoriPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddSafetyAndSecurityConsignorEoriPage.type#Data].map(Json.toJson(_))
+      } yield (AddSafetyAndSecurityConsignorEoriPage, value)
+    }
+
+  implicit lazy val arbitraryAddSafetyAndSecurityConsignorUserAnswersEntry: Arbitrary[(AddSafetyAndSecurityConsignorPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddSafetyAndSecurityConsignorPage.type#Data].map(Json.toJson(_))
+      } yield (AddSafetyAndSecurityConsignorPage, value)
+    }
 
   implicit lazy val arbitraryAddAnotherCountryOfRoutingUserAnswersEntry: Arbitrary[(AddAnotherCountryOfRoutingPage.type, JsValue)] =
     Arbitrary {

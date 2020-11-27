@@ -56,11 +56,25 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     case AddPlaceOfUnloadingCodePage              => ua => addPlaceOfUnloadingCodePage(ua)
     case PlaceOfUnloadingCodePage                 => ua => Some(routes.CountryOfRoutingController.onPageLoad(ua.id, NormalMode))
     case CountryOfRoutingPage                     => ua => Some(routes.AddAnotherCountryOfRoutingController.onPageLoad(ua.id, NormalMode))
+    case AddAnotherCountryOfRoutingPage           => ua => addAnotherCountryOfRouting(ua)
+    case AddSafetyAndSecurityConsignorPage        => ua => addSafetyAndSecurityConsignor(ua)
+    case AddSafetyAndSecurityConsignorEoriPage    => ua => addSafetyAndSecurityConsignorEori(ua)
+    case SafetyAndSecurityConsignorEoriPage       => ua => Some(routes.AddSafetyAndSecurityConsigneeController.onPageLoad(ua.id, NormalMode))
+    case SafetyAndSecurityConsignorNamePage       => ua => Some(routes.SafetyAndSecurityConsignorAddressController.onPageLoad(ua.id, NormalMode))
+    case SafetyAndSecurityConsignorAddressPage    => ua => Some(routes.AddSafetyAndSecurityConsigneeController.onPageLoad(ua.id, NormalMode))
+    case AddSafetyAndSecurityConsigneePage        => ua => addSafetyAndSecurityConsignee(ua)
+    case AddSafetyAndSecurityConsigneeEoriPage    => ua => addSafetyAndSecurityConsigneeEoriPage(ua)
+    case SafetyAndSecurityConsigneeEoriPage       => ua => Some(routes.AddCarrierController.onPageLoad(ua.id, NormalMode))
+    case SafetyAndSecurityConsigneeNamePage       => ua => Some(routes.SafetyAndSecurityConsigneeAddressController.onPageLoad(ua.id, NormalMode))
+    case SafetyAndSecurityConsigneeAddressPage    => ua => Some(routes.AddCarrierController.onPageLoad(ua.id, NormalMode))
+    case AddCarrierPage                           => ua => addCarrierPage(ua)
+    case AddCarrierEoriPage                       => ua => addCarrierEori(ua)
+    case CarrierEoriPage                          => ua => ??? // CYA not implemented
+    case CarrierNamePage                          => ua => Some(routes.CarrierAddressController.onPageLoad(ua.id, NormalMode))
+    case CarrierAddressPage                       => ua => ??? // CYA not implemented
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
-
-
 
   def addCircumstanceIndicator(ua: UserAnswers): Option[Call] =
     ua.get(AddCircumstanceIndicatorPage).map {
@@ -111,6 +125,46 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
       case false  => routes.CountryOfRoutingController.onPageLoad(ua.id, NormalMode)
     }
 
-  
+  def addAnotherCountryOfRouting(ua: UserAnswers): Option[Call] =
+    ua.get(AddAnotherCountryOfRoutingPage).map {
+      case true   => routes.CountryOfRoutingController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.AddSafetyAndSecurityConsignorController.onPageLoad(ua.id, NormalMode)
+    }
+
+  def addSafetyAndSecurityConsignor(ua: UserAnswers): Option[Call] =
+    ua.get(AddSafetyAndSecurityConsignorPage).map {
+      case true   => routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.AddSafetyAndSecurityConsigneeController.onPageLoad(ua.id, NormalMode)
+    }
+
+  def addSafetyAndSecurityConsignorEori(ua: UserAnswers): Option[Call] =
+    ua.get(AddSafetyAndSecurityConsignorEoriPage).map {
+      case true   => routes.SafetyAndSecurityConsignorEoriController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.SafetyAndSecurityConsignorNameController.onPageLoad(ua.id, NormalMode)
+    }
+
+  def addSafetyAndSecurityConsignee(ua: UserAnswers): Option[Call] =
+    ua.get(AddSafetyAndSecurityConsigneePage).map {
+      case true   => routes.AddSafetyAndSecurityConsigneeEoriController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.AddCarrierController.onPageLoad(ua.id, NormalMode)
+    }
+
+  def addSafetyAndSecurityConsigneeEoriPage(ua: UserAnswers): Option[Call] =
+    ua.get(AddSafetyAndSecurityConsigneeEoriPage).map {
+      case true   => routes.SafetyAndSecurityConsigneeEoriController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.SafetyAndSecurityConsigneeNameController.onPageLoad(ua.id, NormalMode)
+    }
+
+  def addCarrierPage(ua: UserAnswers): Option[Call] =
+    ua.get(AddCarrierPage).map {
+      case true   => routes.AddCarrierEoriController.onPageLoad(ua.id, NormalMode)
+      case false  => ??? // CYA not implemented
+    }
+
+  def addCarrierEori(ua: UserAnswers): Option[Call] =
+    ua.get(AddCarrierEoriPage).map {
+      case true   => routes.CarrierEoriController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.CarrierNameController.onPageLoad(ua.id, NormalMode)
+    }
   // format: on
 }

@@ -31,17 +31,32 @@ import pages.addItems.traderSecurityDetails.{
 }
 import pages.safetyAndSecurity.{
   AddAnotherCountryOfRoutingPage,
+  AddCarrierEoriPage,
+  AddCarrierPage,
   AddCircumstanceIndicatorPage,
   AddCommercialReferenceNumberAllItemsPage,
   AddCommercialReferenceNumberPage,
   AddConveyancerReferenceNumberPage,
   AddPlaceOfUnloadingCodePage,
+  AddSafetyAndSecurityConsigneeEoriPage,
+  AddSafetyAndSecurityConsigneePage,
+  AddSafetyAndSecurityConsignorEoriPage,
+  AddSafetyAndSecurityConsignorPage,
   AddTransportChargesPaymentMethodPage,
+  CarrierAddressPage,
+  CarrierEoriPage,
+  CarrierNamePage,
   CircumstanceIndicatorPage,
   CommercialReferenceNumberAllItemsPage,
   ConveyanceReferenceNumberPage,
   CountryOfRoutingPage,
   PlaceOfUnloadingCodePage,
+  SafetyAndSecurityConsigneeAddressPage,
+  SafetyAndSecurityConsigneeEoriPage,
+  SafetyAndSecurityConsigneeNamePage,
+  SafetyAndSecurityConsignorAddressPage,
+  SafetyAndSecurityConsignorEoriPage,
+  SafetyAndSecurityConsignorNamePage,
   TransportChargesPaymentMethodPage
 }
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
