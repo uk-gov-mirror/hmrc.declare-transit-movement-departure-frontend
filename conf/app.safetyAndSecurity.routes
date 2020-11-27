@@ -1,5 +1,9 @@
 # microservice specific routes
 
+GET        /assets/*file                                            controllers.Assets.versioned(path="/public", file: Asset)
+
+GET        /language/:lang                                          controllers.LanguageSwitchController.switchToLanguage(lang: String)
+
 GET        /:lrn/addCircumstanceIndicator                           controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/addCircumstanceIndicator                           controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeAddCircumstanceIndicator                     controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
@@ -55,13 +59,13 @@ POST       /:lrn/placeOfUnloadingCode                               controllers.
 GET        /:lrn/changePlaceOfUnloadingCode                         controllers.safetyAndSecurity.PlaceOfUnloadingCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changePlaceOfUnloadingCode                         controllers.safetyAndSecurity.PlaceOfUnloadingCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/countryOfRouting                                   controllers.safetyAndSecurity.CountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/countryOfRouting                                   controllers.safetyAndSecurity.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeCountryOfRouting                             controllers.safetyAndSecurity.CountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeCountryOfRouting                             controllers.safetyAndSecurity.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/countryOfRouting/:index                           controllers.safetyAndSecurity.CountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
+POST       /:lrn/countryOfRouting/:index                           controllers.safetyAndSecurity.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, index: Index)
+GET        /:lrn/changeCountryOfRouting/:index                     controllers.safetyAndSecurity.CountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
+POST       /:lrn/changeCountryOfRouting/:index                     controllers.safetyAndSecurity.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, index: Index)
 
 GET        /:lrn/addAnotherCountryOfRouting                        controllers.safetyAndSecurity.AddAnotherCountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/addAnotherCountryOfRouting                        controllers.safetyAndSecurity.AddAnotherCountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addAnotherCountryOfRoutingx                       controllers.safetyAndSecurity.AddAnotherCountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeAddAnotherCountryOfRouting                  controllers.safetyAndSecurity.AddAnotherCountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddAnotherCountryOfRouting                  controllers.safetyAndSecurity.AddAnotherCountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 

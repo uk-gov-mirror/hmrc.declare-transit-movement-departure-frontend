@@ -19,7 +19,7 @@ package controllers.safetyAndSecurity
 import controllers.actions._
 import forms.safetyAndSecurity.CountryOfRoutingFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.CountryOfRoutingPage
@@ -51,9 +51,9 @@ class CountryOfRoutingController @Inject()(
   private val form     = formProvider()
   private val template = "safetyAndSecurity/countryOfRouting.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CountryOfRoutingPage) match {
+      val preparedForm = request.userAnswers.get(CountryOfRoutingPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -67,7 +67,7 @@ class CountryOfRoutingController @Inject()(
       renderer.render(template, json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
@@ -84,9 +84,9 @@ class CountryOfRoutingController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfRoutingPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfRoutingPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(CountryOfRoutingPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(CountryOfRoutingPage(index), mode, updatedAnswers))
         )
   }
 }

@@ -204,6 +204,36 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
+      "must go from commercialReferenceNumberAllItems to ConveyanceReferenceNumber if transport mode at border is 4 or 40" in {
+
+        val genTransportMode: Gen[String] = Gen.oneOf(Seq("4", "40"))
+
+        forAll(arbitrary[UserAnswers], genTransportMode) {
+          (answers, transportMode) =>
+
+            val updatedAnswers = answers
+              .set(ModeAtBorderPage, transportMode).success.value
+
+            navigator
+              .nextPage(CommercialReferenceNumberAllItemsPage, NormalMode, updatedAnswers)
+              .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from commercialReferenceNumberAllItems to AddConveyanceReferenceNumber if transport mode at border is not 4 or 40" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            val updatedAnswers = answers
+              .set(ModeAtBorderPage, "1").success.value
+
+            navigator
+              .nextPage(CommercialReferenceNumberAllItemsPage, NormalMode, updatedAnswers)
+              .mustBe(routes.AddConveyancerReferenceNumberController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
       "must go from AddConveyanceReferenceNumber to ConveyanceReferenceNumber if 'true'" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -302,7 +332,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
             navigator
               .nextPage(AddPlaceOfUnloadingCodePage, NormalMode, updatedAnswers)
-              .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode))
+              .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode, index))
         }
       }
 
@@ -313,7 +343,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
             navigator
               .nextPage(PlaceOfUnloadingCodePage, NormalMode, answers)
-              .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode))
+              .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode, index))
         }
       }
 
@@ -323,7 +353,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           answers =>
 
             navigator
-              .nextPage(CountryOfRoutingPage, NormalMode, answers)
+              .nextPage(CountryOfRoutingPage(index), NormalMode, answers)
               .mustBe(routes.AddAnotherCountryOfRoutingController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -338,7 +368,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
             navigator
               .nextPage(AddAnotherCountryOfRoutingPage, NormalMode, updatedAnswers)
-              .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode))
+              .mustBe(routes.CountryOfRoutingController.onPageLoad(answers.id, NormalMode, index))
         }
       }
 

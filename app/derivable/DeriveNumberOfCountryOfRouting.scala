@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pages.safetyAndSecurity
+package derivable
 
 import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsObject, JsPath}
 import queries.Constants.countriesOfRouting
 
-case class CountryOfRoutingPage(index: Index) extends QuestionPage[String] {
+case object DeriveNumberOfCountryOfRouting extends Derivable[List[JsObject], Int] {
 
-  override def path: JsPath = JsPath \ countriesOfRouting \ index.position
+  override val derive: List[JsObject] => Int = _.size
 
-  override def toString: String = "countryOfRouting"
+  override def path: JsPath = JsPath \ countriesOfRouting
 }
