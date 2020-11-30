@@ -17,7 +17,7 @@
 package viewModels
 
 import derivable._
-import models.{DangerousGoodsCodeList, DocumentTypeList, Index, MethodOfPaymentList, SpecialMentionList, UserAnswers}
+import models.{CountryList, DangerousGoodsCodeList, DocumentTypeList, Index, MethodOfPaymentList, SpecialMentionList, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.{AddItemsCheckYourAnswersHelper, SpecialMentionsCheckYourAnswers}
 import viewModels.sections.Section
@@ -27,7 +27,8 @@ object AddItemsCheckYourAnswersViewModel {
   def apply(userAnswers: UserAnswers,
             index: Index,
             documentTypeList: DocumentTypeList,
-            specialMentionList: SpecialMentionList): AddItemsCheckYourAnswersViewModel = {
+            specialMentionList: SpecialMentionList,
+            countryList: CountryList): AddItemsCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper = new AddItemsCheckYourAnswersHelper(userAnswers)
 
@@ -41,7 +42,8 @@ object AddItemsCheckYourAnswersViewModel {
         containersSection(checkYourAnswersHelper, index)(userAnswers),
         specialMentionsSection(specialMentionsCheckYourAnswers, index, specialMentionList)(userAnswers),
         documentsSection(checkYourAnswersHelper, index, documentTypeList)(userAnswers),
-        securitySection(checkYourAnswersHelper, index)
+        securitySection(checkYourAnswersHelper, index),
+        traderSecuritySection(checkYourAnswersHelper, countryList, index)
 
         /*
         referencesSection(checkYourAnswersHelper, index)(userAnswers),
@@ -49,6 +51,20 @@ object AddItemsCheckYourAnswersViewModel {
       )
     )
   }
+
+  private def traderSecuritySection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, countryList: CountryList, index: Index) = Section(
+    msg"addItems.checkYourAnswersLabel.itemDetails",
+    Seq(
+      checkYourAnswersHelper.addSecurityConsignorsEori(index),
+      checkYourAnswersHelper.securityConsignorEori(index),
+      checkYourAnswersHelper.securityConsignorName(index),
+      checkYourAnswersHelper.securityConsignorAddress(index, countryList),
+      checkYourAnswersHelper.addSecurityConsigneesEori(index),
+      checkYourAnswersHelper.securityConsigneeEori(index),
+      checkYourAnswersHelper.securityConsigneeName(index),
+      checkYourAnswersHelper.securityConsigneeAddress(index, countryList)
+    ).flatten
+  )
 
   private def securitySection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
     msg"addItems.checkYourAnswersLabel.itemDetails",
