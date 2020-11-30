@@ -64,6 +64,7 @@ transportDetails.preHeading = Transport details
 goodsSummary.preHeading = Goods summary
 guaranteeDetails.preHeading = Guarantee details
 items.preHeading = Items
+safetyAndSecurity.preHeading = Safety and Security
 
 routeDetailsCheckYourAnswers.heading = Check your answers
 routeDetailsCheckYourAnswers.title = Check your answers
@@ -1346,8 +1347,8 @@ carrierEori.checkYourAnswersLabel = carrierEori
 carrierEori.error.required = Enter carrierEori
 carrierEori.error.length = CarrierEori must be 10 characters or less
 
-carrierName.title = carrierName
-carrierName.heading = carrierName
-carrierName.checkYourAnswersLabel = carrierName
-carrierName.error.required = Enter carrierName
-carrierName.error.length = CarrierName must be 10 characters or less
+carrierName.title =  What is the carrier’s name?
+carrierName.heading = What is the carrier’s name?
+carrierName.checkYourAnswersLabel =  Carrier’s name
+carrierName.error.required =  Enter the carrier’s name
+carrierName.error.length = carrier’s name must be 35 characters or less
