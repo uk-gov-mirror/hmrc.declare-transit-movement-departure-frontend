@@ -89,7 +89,7 @@ package object utils {
     defaultOption +: officeOfTransitObjects
   }
 
-  def getPreviousDocumentsAsJson(value: Option[PreviousDocumentType], documentList: Seq[PreviousDocumentType]): Seq[JsObject] = {
+  def getPreviousDocumentsAsJson(value: Option[PreviousReferencesDocumentType], documentList: Seq[PreviousReferencesDocumentType]): Seq[JsObject] = {
     val documentObjects = documentList.map {
       documentType =>
         Json.obj(

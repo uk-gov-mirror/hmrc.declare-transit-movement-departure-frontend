@@ -46,17 +46,21 @@ class ItemsCheckYourAnswersController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getDocumentTypes() flatMap {
-        documentTypes =>
-          referenceDataConnector.getSpecialMention() flatMap {
-            specialMentions =>
-              val sections: Seq[Section] = AddItemsCheckYourAnswersViewModel(request.userAnswers, index, documentTypes, specialMentions).sections
-              val json = Json.obj(
-                "lrn"         -> lrn,
-                "sections"    -> Json.toJson(sections),
-                "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
-              )
-              renderer.render(template, json).map(Ok(_))
+      referenceDataConnector.getPreviousReferencesDocumentTypes() flatMap {
+        previousReferencesDocumentTypes =>
+          referenceDataConnector.getDocumentTypes() flatMap {
+            documentTypes =>
+              referenceDataConnector.getSpecialMention() flatMap {
+                specialMentions =>
+                  val sections: Seq[Section] =
+                    AddItemsCheckYourAnswersViewModel(request.userAnswers, index, documentTypes, previousReferencesDocumentTypes, specialMentions).sections
+                  val json = Json.obj(
+                    "lrn"         -> lrn,
+                    "sections"    -> Json.toJson(sections),
+                    "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
+                  )
+                  renderer.render(template, json).map(Ok(_))
+              }
           }
       }
   }

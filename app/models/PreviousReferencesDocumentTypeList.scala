@@ -16,11 +16,11 @@
 
 package models
 
-import models.reference.PreviousDocumentType
+import models.reference.PreviousReferencesDocumentType
 
-case class PreviousDocumentTypeList(previousDocumentTypes: Seq[PreviousDocumentType]) {
+case class PreviousReferencesDocumentTypeList(previousReferencesDocumentTypes: Seq[PreviousReferencesDocumentType]) {
 
-  def getPreviousDocumentType(code: String): Option[PreviousDocumentType] =
-    previousDocumentTypes.find(_.code == code)
+  def getPreviousReferencesDocumentType(code: String): Option[PreviousReferencesDocumentType] =
+    previousReferencesDocumentTypes.find(_.code == code)
 
 }
