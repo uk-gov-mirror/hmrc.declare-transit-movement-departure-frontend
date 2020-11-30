@@ -139,13 +139,8 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
         "consignorName" -> consignorName,
         "countries"     -> countryJsonList(countries.getCountry(CountryCode(country.toString)), countries.fullList)
       )
-
-//      templateCaptor.getValue mustEqual template
-//      jsonCaptor.getValue must containJson(expectedJson)
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey - "selected"
-
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonCaptor.getValue must containJson(expectedJson)
 
     }
 
