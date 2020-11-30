@@ -45,12 +45,13 @@ import models.journeyDomain.{
   MovementDetails,
   Packages,
   PreTaskListDetails,
+  ProducedDocument,
   RouteDetails,
   SpecialMention,
   TraderDetails,
   TransportDetails
 }
-import models.reference.{CountryCode, PackageType}
+import models.reference.{CountryCode, DocumentType, PackageType}
 import models.{
   ConsigneeAddress,
   ConsignorAddress,
@@ -253,8 +254,8 @@ trait JourneyModelGenerators {
   implicit def arbitraryItemSection: Arbitrary[ItemSection] =
     Arbitrary {
       for {
-        bool        <- arbitrary[Boolean]
-        itemSection <- genItemSection(bool)
+        containersUsed <- arbitrary[Boolean]
+        itemSection    <- genItemSection(containersUsed)
       } yield itemSection
     }
 
@@ -264,13 +265,14 @@ trait JourneyModelGenerators {
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
     for {
-      itemDetail      <- arbitrary[ItemDetails]
-      itemConsignor   <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-      itemConsignee   <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages        <- nonEmptyListOf[Packages](10)
-      containers      <- if (containersUsed) { nonEmptyListOf[Container](10).map(Some(_)) } else { Gen.const(None) }
-      specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](10))
-    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions)
+      itemDetail        <- arbitrary[ItemDetails]
+      itemConsignor     <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee     <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      packages          <- nonEmptyListOf[Packages](10)
+      containers        <- if (containersUsed) { nonEmptyListOf[Container](10).map(Some(_)) } else { Gen.const(None) }
+      specialMentions   <- Gen.option(nonEmptyListOf[SpecialMention](10))
+      producedDocuments <- Gen.option(nonEmptyListOf[ProducedDocument](10))
+    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments)
   }
 
   implicit lazy val arbitraryPreTaskListDetails: Arbitrary[PreTaskListDetails] =
@@ -352,6 +354,15 @@ trait JourneyModelGenerators {
         specialMentionType <- nonEmptyString
         additionalInfo     <- nonEmptyString
       } yield SpecialMention(specialMentionType, additionalInfo)
+    }
+
+  implicit lazy val arbitraryProducedDocument: Arbitrary[ProducedDocument] =
+    Arbitrary {
+      for {
+        documentType      <- nonEmptyString
+        documentReference <- nonEmptyString
+        extraInformation  <- Gen.option(nonEmptyString)
+      } yield ProducedDocument(documentType, documentReference, extraInformation)
     }
 
   implicit lazy val arbitraryContainer: Arbitrary[Container] =

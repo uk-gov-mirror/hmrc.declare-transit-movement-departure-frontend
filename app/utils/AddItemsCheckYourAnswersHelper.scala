@@ -403,10 +403,10 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def previousReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList): Option[Row] =
+  def previousReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousReferencesDocumentTypeList): Option[Row] =
     userAnswers.get(ReferenceTypePage(index, referenceIndex)) flatMap {
       answer =>
-        previousDocumentType.getPreviousDocumentType(answer) map {
+        previousDocumentType.getPreviousReferencesDocumentType(answer) map {
           referenceType =>
             Row(
               key   = Key(lit"(${referenceType.code}) ${referenceType.description}"),
@@ -423,10 +423,13 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         }
     }
 
-  def previousAdministrativeReferenceRows(index: Index, referenceIndex: Index, previousDocumentType: PreviousDocumentTypeList, mode: Mode): Option[Row] =
+  def previousAdministrativeReferenceRows(index: Index,
+                                          referenceIndex: Index,
+                                          previousDocumentType: PreviousReferencesDocumentTypeList,
+                                          mode: Mode): Option[Row] =
     userAnswers.get(ReferenceTypePage(index, referenceIndex)) flatMap {
       answer =>
-        previousDocumentType.getPreviousDocumentType(answer) map {
+        previousDocumentType.getPreviousReferencesDocumentType(answer) map {
           referenceType =>
             Row(
               key   = Key(lit"(${referenceType.code}) ${referenceType.description}"),

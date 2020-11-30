@@ -17,8 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.PreviousDocumentTypeList
-import models.reference.PreviousDocumentType
+import models.PreviousReferencesDocumentTypeList
+import models.reference.PreviousReferencesDocumentType
 import play.api.data.FormError
 
 class ReferenceTypeFormProviderSpec extends StringFieldBehaviours {
@@ -27,10 +27,10 @@ class ReferenceTypeFormProviderSpec extends StringFieldBehaviours {
   val lengthKey   = "referenceType.error.length"
   val maxLength   = 12
 
-  private val documentList = PreviousDocumentTypeList(
+  private val documentList = PreviousReferencesDocumentTypeList(
     Seq(
-      PreviousDocumentType("T1", "Description T1"),
-      PreviousDocumentType("T2F", "Description T2F")
+      PreviousReferencesDocumentType("T1", "Description T1"),
+      PreviousReferencesDocumentType("T2F", "Description T2F")
     )
   )
 

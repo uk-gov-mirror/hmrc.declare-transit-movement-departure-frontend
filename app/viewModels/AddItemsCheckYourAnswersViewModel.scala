@@ -17,7 +17,7 @@
 package viewModels
 
 import derivable._
-import models.{CountryList, DangerousGoodsCodeList, DocumentTypeList, Index, MethodOfPaymentList, SpecialMentionList, UserAnswers}
+import models.{CountryList, DocumentTypeList, Index, PreviousReferencesDocumentTypeList, SpecialMentionList, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.{AddItemsCheckYourAnswersHelper, SpecialMentionsCheckYourAnswers}
 import viewModels.sections.Section
@@ -27,6 +27,7 @@ object AddItemsCheckYourAnswersViewModel {
   def apply(userAnswers: UserAnswers,
             index: Index,
             documentTypeList: DocumentTypeList,
+            previousDocumentTypes: PreviousReferencesDocumentTypeList,
             specialMentionList: SpecialMentionList,
             countryList: CountryList): AddItemsCheckYourAnswersViewModel = {
 
@@ -42,6 +43,7 @@ object AddItemsCheckYourAnswersViewModel {
         containersSection(checkYourAnswersHelper, index)(userAnswers),
         specialMentionsSection(specialMentionsCheckYourAnswers, index, specialMentionList)(userAnswers),
         documentsSection(checkYourAnswersHelper, index, documentTypeList)(userAnswers),
+        referencesSection(checkYourAnswersHelper, index, previousDocumentTypes)(userAnswers),
         securitySection(checkYourAnswersHelper, index),
         traderSecuritySection(checkYourAnswersHelper, countryList, index)
 
@@ -118,11 +120,13 @@ object AddItemsCheckYourAnswersViewModel {
     )
   }
 
-  /* private def referencesSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index)(implicit userAnswers: UserAnswers) = {
+  private def referencesSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper,
+                                index: Index,
+                                previousDocumentTypes: PreviousReferencesDocumentTypeList)(implicit userAnswers: UserAnswers) = {
     val referencesRows: Seq[SummaryList.Row] =
       List.range(0, userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)).flatMap {
         position =>
-        //checkYourAnswersHelper.previousReferenceRows(index, Index(position), documentTypes) //todo: will need docTypes added back in
+          checkYourAnswersHelper.previousReferenceRows(index, Index(position), previousDocumentTypes)
       }
 
     Section(
@@ -130,7 +134,7 @@ object AddItemsCheckYourAnswersViewModel {
       Seq(checkYourAnswersHelper.addAdministrativeReference(index).toSeq, referencesRows).flatten,
       checkYourAnswersHelper.addAnotherPreviousReferences(index, msg"addItems.checkYourAnswersLabel.references.addRemove")
     )
-  }*/
+  }
 
   private def documentsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index, documentTypeList: DocumentTypeList)(
     implicit userAnswers: UserAnswers) = {

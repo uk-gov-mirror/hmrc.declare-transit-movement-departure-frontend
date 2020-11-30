@@ -17,6 +17,8 @@
 package viewModels
 
 import base.SpecBase
+import models.reference.{DocumentType, PreviousReferencesDocumentType, SpecialMention}
+import models.{DocumentTypeList, PreviousReferencesDocumentTypeList, SpecialMentionList}
 import models.reference.{Country, CountryCode, DocumentType, SpecialMention}
 import models.{CountryList, DocumentTypeList, SpecialMentionList}
 import org.scalacheck.Arbitrary.arbitrary
@@ -31,6 +33,7 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
   // format: off
 
   private val documentTypeList = DocumentTypeList(Seq(DocumentType("code", "name", true)))
+  private val previousReferencesDocumentTypeList = PreviousReferencesDocumentTypeList(Seq(PreviousReferencesDocumentType("code", "name")))
   private val specialMentionList = SpecialMentionList(Seq(SpecialMention("code", "name")))
   val countryList = new CountryList(Seq(Country(CountryCode("FR"), "France")))
 
@@ -44,13 +47,13 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
     .set(ContainerNumberPage(itemIndex, containerIndex), arbitrary[String].sample.value).success.value
     .set(SpecialMentionTypePage(index, itemIndex), "code").success.value
 
-  private val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, documentTypeList, specialMentionList, countryList)
+  private val data = AddItemsCheckYourAnswersViewModel(updatedAnswers, index, documentTypeList, previousReferencesDocumentTypeList, specialMentionList, countryList)
 
 
   "AddItemsCheckYourAnswersViewModel" - {
 
     "display the correct number of sections" in {
-      data.sections.length mustEqual 8
+      data.sections.length mustEqual 9
       data.sections.head.rows.length mustEqual 6
     }
     
