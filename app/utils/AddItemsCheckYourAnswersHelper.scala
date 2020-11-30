@@ -724,14 +724,19 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def securityConsigneeAddress(index: Index, countryList: CountryList): Option[Row] = userAnswers.get(SecurityConsigneeAddressPage(index)) map {
     answer =>
+      val consigneesName =
+        userAnswers.get(SecurityConsigneeNamePage(index)).getOrElse(msg"securityDetailsConsigneeAddress.checkYourAnswersLabel.fallback")
+      val address = Html(
+        Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+          .mkString("<br>"))
       Row(
         key   = Key(msg"securityConsigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = tradersSecurityDetailsRoutes.SecurityConsigneeAddressController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeAddress.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsigneeAddress.checkYourAnswersLabel".withArgs(consigneesName)))
           )
         )
       )
@@ -739,14 +744,19 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def securityConsignorAddress(index: Index, countryList: CountryList): Option[Row] = userAnswers.get(SecurityConsignorAddressPage(index)) map {
     answer =>
+      val consignorsName =
+        userAnswers.get(SecurityConsignorNamePage(index)).getOrElse(msg"securityDetailsConsignorAddress.checkYourAnswersLabel.fallback")
+      val address = Html(
+        Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+          .mkString("<br>"))
       Row(
         key   = Key(msg"securityConsignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(address),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = tradersSecurityDetailsRoutes.SecurityConsignorAddressController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsignorAddress.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"securityConsignorAddress.checkYourAnswersLabel".withArgs(consignorsName)))
           )
         )
       )

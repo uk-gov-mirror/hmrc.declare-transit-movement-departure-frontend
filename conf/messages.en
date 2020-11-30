@@ -1351,3 +1351,17 @@ carrierName.heading = carrierName
 carrierName.checkYourAnswersLabel = carrierName
 carrierName.error.required = Enter carrierName
 carrierName.error.length = CarrierName must be 10 characters or less
+
+securityConsignorName.title = What is the security consignor’s name?
+securityConsignorName.heading = What is the security consignor’s name?
+securityConsignorName.checkYourAnswersLabel = Security consignor’s name
+securityConsignorName.error.required = Enter the security consignor’s name
+securityConsignorName.error.length = The security consignor's name must be 35 characters or less
+securityConsignorName.error.invalid = The security consignor’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
+securityConsigneeName.title = What is the security consignee’s name?
+securityConsigneeName.heading = What is the security consignee’s name?
+securityConsigneeName.checkYourAnswersLabel =  Security consignee’s name
+securityConsigneeName.error.required = Enter the security consignee’s name
+securityConsigneeName.error.length =  The security consignee’s name must be 35 characters or less
+securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
