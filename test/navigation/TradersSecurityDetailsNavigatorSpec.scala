@@ -26,7 +26,7 @@ import pages.addItems.traderSecurityDetails.{AddSecurityConsignorsEoriPage, Secu
 
 class TradersSecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new SecurityDetailsNavigator
+  val navigator = new TradersSecurityDetailsNavigator
 
   "In Normal mode" - {
 
