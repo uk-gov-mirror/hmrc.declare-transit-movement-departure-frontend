@@ -128,16 +128,14 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
           "AddressLine1" -> "Address line 1",
           "AddressLine2" -> "Address line 2",
           "AddressLine3" -> "Address line 3",
-          "country"      -> "United Kingdom"
+          "country"      -> "GB"
         )
       )
       val expectedJson = Json.obj(
-        "form"          -> filledForm,
-        "lrn"           -> lrn,
-        "mode"          -> NormalMode,
-        "index"         -> index.display,
-        "consignorName" -> consignorName,
-        "countries"     -> countryJsonList(countries.getCountry(CountryCode(country.toString)), countries.fullList)
+        "form"  -> filledForm,
+        "lrn"   -> lrn,
+        "mode"  -> NormalMode,
+        "index" -> index.display
       )
       templateCaptor.getValue mustEqual template
       jsonCaptor.getValue must containJson(expectedJson)
