@@ -47,7 +47,7 @@ class CountryOfRoutingControllerSpec extends SpecBase with MockNunjucksRendererA
   private val form         = formProvider()
   private val template     = "safetyAndSecurity/countryOfRouting.njk"
 
-  lazy val countryOfRoutingRoute = routes.CountryOfRoutingController.onPageLoad(lrn, NormalMode, index).url
+  lazy val countryOfRoutingRoute = routes.CountryOfRoutingController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

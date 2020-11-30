@@ -32,7 +32,6 @@ package navigation
  * limitations under the License.
  */
 
-import controllers.{routes => mainRoutes}
 import controllers.safetyAndSecurity.routes
 import derivable.DeriveNumberOfCountryOfRouting
 import javax.inject.{Inject, Singleton}
@@ -54,7 +53,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     case AddCommercialReferenceNumberPage         => ua => addCommercialReferenceNumber(ua)
     case AddCommercialReferenceNumberAllItemsPage => ua => addCommercialReferenceNumberAllItems(ua)
     case CommercialReferenceNumberAllItemsPage    => ua => commercialReferenceNumberAllItems(ua)
-    case AddConveyancerReferenceNumberPage        => ua => addConveyancerReferenceNumber(ua)
+    case AddConveyanceReferenceNumberPage        => ua => addConveyancerReferenceNumber(ua)
     case ConveyanceReferenceNumberPage            => ua => conveyanceReferenceNumber(ua)
     case AddPlaceOfUnloadingCodePage              => ua => addPlaceOfUnloadingCodePage(ua)
     case PlaceOfUnloadingCodePage                 => ua => placeOfUnloadingCode(ua)
@@ -95,7 +94,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     (ua.get(AddCommercialReferenceNumberPage), ua.get(ModeAtBorderPage)) match {
       case (Some(true), _)                        => Some(routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(ua.id, NormalMode))
       case (Some(false), Some("4") | Some("40"))  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
-      case (Some(false), _)                       => Some(routes.AddConveyancerReferenceNumberController.onPageLoad(ua.id, NormalMode))
+      case (Some(false), _)                       => Some(routes.AddConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case _                                      => None
     }
 
@@ -103,19 +102,19 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     (ua.get(AddCommercialReferenceNumberAllItemsPage), ua.get(ModeAtBorderPage)) match {
       case (Some(true), _)                        => Some(routes.CommercialReferenceNumberAllItemsController.onPageLoad(ua.id, NormalMode))
       case (Some(false), Some("4") | Some("40"))  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
-      case (Some(false), _)                       => Some(routes.AddConveyancerReferenceNumberController.onPageLoad(ua.id, NormalMode))
+      case (Some(false), _)                       => Some(routes.AddConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case _                                      => None
     }
 
   def commercialReferenceNumberAllItems(ua: UserAnswers): Option[Call] =
     ua.get(ModeAtBorderPage) match {
       case Some("4") | Some("40") => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
-      case Some(_)                => Some(routes.AddConveyancerReferenceNumberController.onPageLoad(ua.id, NormalMode))
+      case Some(_)                => Some(routes.AddConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case _                      => None
     }
 
   def addConveyancerReferenceNumber(ua: UserAnswers): Option[Call] =
-    (ua.get(AddConveyancerReferenceNumberPage), ua.get(CircumstanceIndicatorPage)) match {
+    (ua.get(AddConveyanceReferenceNumberPage), ua.get(CircumstanceIndicatorPage)) match {
       case (Some(true), _)            => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case (Some(false) , Some("E"))  => Some(routes.AddPlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
       case (Some(false) , _)          => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode ))
@@ -145,9 +144,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
 
   def addAnotherCountryOfRouting(ua: UserAnswers): Option[Call] = {
     val totalNumberOfCountriesOfRouting = ua.get(DeriveNumberOfCountryOfRouting)
-
-    println(s"\n\n\n\n $totalNumberOfCountriesOfRouting \n\n\n")
-
+    
     ua.get(AddAnotherCountryOfRoutingPage).map {
       case true   => routes.CountryOfRoutingController.onPageLoad(ua.id, Index(totalNumberOfCountriesOfRouting.getOrElse(0)), NormalMode)
       case false  => routes.AddSafetyAndSecurityConsignorController.onPageLoad(ua.id, NormalMode)
