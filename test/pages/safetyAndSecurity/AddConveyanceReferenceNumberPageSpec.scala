@@ -18,14 +18,14 @@ package pages.safetyAndSecurity
 
 import pages.behaviours.PageBehaviours
 
-class AddConveyancerReferenceNumberPageSpec extends PageBehaviours {
+class AddConveyanceReferenceNumberPageSpec extends PageBehaviours {
 
-  "AddConveyancerReferenceNumberPage" - {
+  "AddConveyanceReferenceNumberPage" - {
 
-    beRetrievable[Boolean](AddConveyancerReferenceNumberPage)
+    beRetrievable[Boolean](AddConveyanceReferenceNumberPage)
 
-    beSettable[Boolean](AddConveyancerReferenceNumberPage)
+    beSettable[Boolean](AddConveyanceReferenceNumberPage)
 
-    beRemovable[Boolean](AddConveyancerReferenceNumberPage)
+    beRemovable[Boolean](AddConveyanceReferenceNumberPage)
   }
 }
