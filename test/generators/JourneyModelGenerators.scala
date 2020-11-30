@@ -51,7 +51,7 @@ import models.journeyDomain.{
   TraderDetails,
   TransportDetails
 }
-import models.reference.{CountryCode, DocumentType, PackageType}
+import models.reference.{CircumstanceIndicator, CountryCode, DocumentType, PackageType}
 import models.{
   ConsigneeAddress,
   ConsignorAddress,
@@ -86,10 +86,12 @@ trait JourneyModelGenerators {
         } else {
           Arbitrary(genTransitInformationWithoutArrivalTime)
         }
-        routeDetails     <- arbitraryRouteDetails(transitInformation).arbitrary
-        transportDetails <- arbitrary[TransportDetails]
-        traderDetails    <- arbitrary[TraderDetails]
-        itemDetails      <- nonEmptyListOf(3)(Arbitrary(genItemSection(movementDetails.containersUsed)))
+        routeDetails          <- arbitraryRouteDetails(transitInformation).arbitrary
+        transportDetails      <- arbitrary[TransportDetails]
+        traderDetails         <- arbitrary[TraderDetails]
+        addDocument           <- arbitrary[Boolean]
+        circumstanceIndicator <- if (isSecurityDetailsRequired) { Gen.oneOf(CircumstanceIndicator.conditionalIndicators).map(Some(_)) } else Gen.const(None) //// TODO until we have journey model for safety and security
+        itemDetails           <- nonEmptyListOf(3)(Arbitrary(genItemSection(movementDetails.containersUsed, addDocument, circumstanceIndicator)))
         goodsummarydetaislType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
         } else {
@@ -254,24 +256,31 @@ trait JourneyModelGenerators {
   implicit def arbitraryItemSection: Arbitrary[ItemSection] =
     Arbitrary {
       for {
-        containersUsed    <- arbitrary[Boolean]
-        itemSection       <- genItemSection(containersUsed, safetyAndSecurity)
+        containersUsed            <- arbitrary[Boolean]
+        isSecurityDetailsRequired <- arbitrary[Boolean]
+        addDocument               <- arbitrary[Boolean]
+        otherIndicator            <- nonEmptyString
+        circumstanceIndicator <- if (isSecurityDetailsRequired) { Gen.oneOf(CircumstanceIndicator.conditionalIndicators :+ otherIndicator).map(Some(_)) } else
+          Gen.const(None)
+        itemSection <- genItemSection(containersUsed, addDocument, circumstanceIndicator)
       } yield itemSection
     }
 
-  def genItemSection(containersUsed: Boolean = false): Gen[ItemSection] = {
+  def genItemSection(containersUsed: Boolean = false, addDocument: Boolean = false, circumstanceIndicator: Option[String] = None): Gen[ItemSection] = {
 
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
+
+    val documentTypeIsMandatory = circumstanceIndicator.fold(addDocument)(CircumstanceIndicator.conditionalIndicators.contains(_))
 
     for {
       itemDetail        <- arbitrary[ItemDetails]
       itemConsignor     <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
       itemConsignee     <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
       packages          <- nonEmptyListOf[Packages](10)
-      containers        <- if (containersUsed) { nonEmptyListOf[Container](10).map(Some(_)) } else { Gen.const(None) }
+      containers        <- if (containersUsed) { nonEmptyListOf[Container](10).map(Some(_)) } else Gen.const(None)
       specialMentions   <- Gen.option(nonEmptyListOf[SpecialMention](10))
-      producedDocuments <- Gen.option(nonEmptyListOf[ProducedDocument](10))
+      producedDocuments <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](10).map(Some(_)) } else Gen.const(None)
     } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments)
   }
 
