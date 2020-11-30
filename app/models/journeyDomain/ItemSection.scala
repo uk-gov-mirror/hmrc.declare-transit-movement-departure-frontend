@@ -18,10 +18,11 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import derivable.{DeriveNumberOfContainers, DeriveNumberOfItems, DeriveNumberOfPackages, DeriveNumberOfSpecialMentions}
+import derivable._
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.{Index, UserAnswers}
 import pages.ContainersUsedPage
+import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
 
 case class ItemSection(
@@ -30,7 +31,8 @@ case class ItemSection(
   consignee: Option[RequiredDetails],
   packages: NonEmptyList[Packages],
   containers: Option[NonEmptyList[Container]],
-  specialMentions: Option[NonEmptyList[SpecialMention]]
+  specialMentions: Option[NonEmptyList[SpecialMention]],
+  producedDocuments: Option[NonEmptyList[ProducedDocument]]
 )
 
 object ItemSection {
@@ -83,6 +85,24 @@ object ItemSection {
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
 
+  private def deriveProducedDocuments(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] =
+    AddDocumentsPage(itemIndex).reader //TODO need to add few more conditions based on safety and security section - Karens handy spread sheet
+      .flatMap {
+        isTrue =>
+          if (isTrue) {
+            DeriveNumberOfDocuments(itemIndex).reader
+              .filter(_.nonEmpty)
+              .flatMap {
+                _.zipWithIndex
+                  .traverse[UserAnswersReader, ProducedDocument]({
+                    case (_, index) =>
+                      ProducedDocument.producedDocumentReader(itemIndex, Index(index))
+                  })
+                  .map(NonEmptyList.fromList)
+              }
+          } else none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]
+      }
+
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
       ItemDetails.itemDetailsReader(index),
@@ -90,7 +110,8 @@ object ItemSection {
       ItemTraderDetails.consigneeDetails(index),
       derivePackage(index),
       deriveContainers(index),
-      deriveSpecialMentions(index)
+      deriveSpecialMentions(index),
+      deriveProducedDocuments(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =

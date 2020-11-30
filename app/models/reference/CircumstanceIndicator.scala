@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package models.reference
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.{items, previousReferences}
+import play.api.libs.json.{Json, Reads}
 
-//TODO Please remove this page once we get actual add another document page. its only for testing temporarily.
-case class DummyPage(itemIndex: Index, referenceIndex: Index) extends QuestionPage[Boolean] {
+case class CircumstanceIndicator(code: String, description: String)
 
-  override def path: JsPath = JsPath \ items \ itemIndex.position \ previousReferences \ referenceIndex.position \ toString
-
-  override def toString: String = "dummyValue"
+object CircumstanceIndicator {
+  implicit def reads: Reads[CircumstanceIndicator] = Json.reads[CircumstanceIndicator]
 }

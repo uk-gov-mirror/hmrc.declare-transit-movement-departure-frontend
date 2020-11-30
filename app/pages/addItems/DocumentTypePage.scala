@@ -26,4 +26,5 @@ case class DocumentTypePage(itemIndex: Index, documentIndex: Index) extends Ques
   override def path: JsPath = JsPath \ items \ itemIndex.position \ documents \ documentIndex.position \ toString
 
   override def toString: String = "documentType"
+
 }

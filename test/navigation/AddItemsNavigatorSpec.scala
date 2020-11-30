@@ -20,12 +20,12 @@ import base.SpecBase
 import controllers.addItems.containers.{routes => containerRoutes}
 import controllers.addItems.previousReferences.{routes => previousReferenceRoutes}
 import controllers.addItems.routes
-import controllers.addItems.traderDetails.{routes => traderRoutes}
 import controllers.addItems.specialMentions.{routes => specialMentionsRoutes}
+import controllers.addItems.traderDetails.{routes => traderRoutes}
 import controllers.{routes => mainRoutes}
 import generators.Generators
-import models.reference.{CountryCode, PackageType}
-import models.{CheckMode, ConsigneeAddress, ConsignorAddress, DeclarationType, Index, NormalMode, UserAnswers}
+import models.reference.PackageType
+import models.{CheckMode, ConsigneeAddress, ConsignorAddress, Index, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -853,37 +853,6 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
 
       "previous references journey" - {
-        "must go from add another document page to add administrative reference page" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers
-                .set(DeclarationTypePage, DeclarationType.Option1).success.value
-                .set(CountryOfDispatchPage, CountryCode("UK")).success.value
-
-              navigator
-                .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
-                .mustBe(previousReferenceRoutes.AddAdministrativeReferenceController.onPageLoad(answers.id, index, NormalMode))
-          }
-        }
-
-        "must go from add another document page to reference type page" - {
-          "when declaration type is T2 and dispatch country is non-EU" in {
-            val dispatchCountries =
-              Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
-            for (countryCode <- dispatchCountries) {
-              forAll(arbitrary[UserAnswers]) {
-                answers =>
-                  val updatedAnswers = answers
-                    .set(DeclarationTypePage, DeclarationType.Option2).success.value
-                    .set(CountryOfDispatchPage, countryCode).success.value
-
-                  navigator
-                    .nextPage(DummyPage(index, referenceIndex), NormalMode, updatedAnswers)
-                    .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, NormalMode))
-              }
-            }
-          }
-        }
 
         "must go from 'add administrative reference' page to 'reference type' page when selected 'Yes'" in {
           forAll(arbitrary[UserAnswers]) {

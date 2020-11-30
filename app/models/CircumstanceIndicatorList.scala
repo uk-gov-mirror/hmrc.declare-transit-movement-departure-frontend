@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package pages.addItems
+package models
 
-import generators.UserAnswersGenerator
-import models.Index
-import pages.behaviours.PageBehaviours
+import models.reference.CircumstanceIndicator
 
-class DocumentTypePageSpec extends PageBehaviours with UserAnswersGenerator {
+case class CircumstanceIndicatorList(circumstanceIndicators: Seq[CircumstanceIndicator]) {
 
-  private val index         = Index(0)
-  private val documentIndex = Index(0)
+  def getCircumstanceIndicator(code: String): Option[CircumstanceIndicator] =
+    circumstanceIndicators.find(_.code == code)
 
-  "DocumentTypePage" - {
-
-    beRetrievable[String](DocumentTypePage(index, documentIndex))
-
-    beSettable[String](DocumentTypePage(index, documentIndex))
-
-    beRemovable[String](DocumentTypePage(index, documentIndex))
-
-  }
 }
