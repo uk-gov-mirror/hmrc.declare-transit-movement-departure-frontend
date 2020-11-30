@@ -1,38 +1,34 @@
 # microservice specific routes
 
-GET        /assets/*file                                            controllers.Assets.versioned(path="/public", file: Asset)
+GET        /:lrn/security/add-circumstance-indicator                   controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/security/add-circumstance-indicator                   controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/security/change-add-circumstance-indicator            controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/security/change-add-circumstance-indicator            controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /language/:lang                                          controllers.LanguageSwitchController.switchToLanguage(lang: String)
-
-GET        /:lrn/addCircumstanceIndicator                           controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/addCircumstanceIndicator                           controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeAddCircumstanceIndicator                     controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeAddCircumstanceIndicator                     controllers.safetyAndSecurity.AddCircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-
-GET        /:lrn/addTransportChargesPaymentMethod                   controllers.safetyAndSecurity.AddTransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/addTransportChargesPaymentMethod                   controllers.safetyAndSecurity.AddTransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeAddTransportChargesPaymentMethod             controllers.safetyAndSecurity.AddTransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeAddTransportChargesPaymentMethod             controllers.safetyAndSecurity.AddTransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/security/add-payment-method                   controllers.safetyAndSecurity.AddTransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/security/add-payment-method                   controllers.safetyAndSecurity.AddTransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/security/change-add-payment-method             controllers.safetyAndSecurity.AddTransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/security/change-add-payment-method             controllers.safetyAndSecurity.AddTransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/addCommercialReferenceNumber                       controllers.safetyAndSecurity.AddCommercialReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/addCommercialReferenceNumber                       controllers.safetyAndSecurity.AddCommercialReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeAddCommercialReferenceNumber                 controllers.safetyAndSecurity.AddCommercialReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddCommercialReferenceNumber                 controllers.safetyAndSecurity.AddCommercialReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/circumstanceIndicator                              controllers.safetyAndSecurity.CircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/circumstanceIndicator                              controllers.safetyAndSecurity.CircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeCircumstanceIndicator                        controllers.safetyAndSecurity.CircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeCircumstanceIndicator                        controllers.safetyAndSecurity.CircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/security/circumstance-indicator                    controllers.safetyAndSecurity.CircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/security/circumstance-indicator                    controllers.safetyAndSecurity.CircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/security/change-circumstance-indicator             controllers.safetyAndSecurity.CircumstanceIndicatorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/security/change-circumstance-indicator             controllers.safetyAndSecurity.CircumstanceIndicatorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/transportChargesPaymentMethod                      controllers.safetyAndSecurity.TransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/transportChargesPaymentMethod                      controllers.safetyAndSecurity.TransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeTransportChargesPaymentMethod                controllers.safetyAndSecurity.TransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeTransportChargesPaymentMethod                controllers.safetyAndSecurity.TransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/security/transport-charges                          controllers.safetyAndSecurity.TransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/security/transport-charges                          controllers.safetyAndSecurity.TransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/security/change-transport-charges                   controllers.safetyAndSecurity.TransportChargesPaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/security/change-transport-charges                   controllers.safetyAndSecurity.TransportChargesPaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/addCommercialReferenceNumberAllItems               controllers.safetyAndSecurity.AddCommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/addCommercialReferenceNumberAllItems               controllers.safetyAndSecurity.AddCommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeAddCommercialReferenceNumberAllItems         controllers.safetyAndSecurity.AddCommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeAddCommercialReferenceNumberAllItems         controllers.safetyAndSecurity.AddCommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/security/add-commercial-reference-number            controllers.safetyAndSecurity.AddCommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/security/add-commercial-reference-number            controllers.safetyAndSecurity.AddCommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/security/change-add-commercial-reference-number     controllers.safetyAndSecurity.AddCommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/security/change-add-commercial-reference-number     controllers.safetyAndSecurity.AddCommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/commercialReferenceNumberAllItems                  controllers.safetyAndSecurity.CommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/commercialReferenceNumberAllItems                  controllers.safetyAndSecurity.CommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

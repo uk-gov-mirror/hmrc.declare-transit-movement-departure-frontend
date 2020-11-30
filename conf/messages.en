@@ -1199,43 +1199,50 @@ declarationRejection.errorType =  Error type
 declarationRejection.pointer =  Error pointer
 declarationRejection.reason =  Reason
 
-addCircumstanceIndicator.title = addCircumstanceIndicator
-addCircumstanceIndicator.heading = addCircumstanceIndicator
-addCircumstanceIndicator.checkYourAnswersLabel = addCircumstanceIndicator
-addCircumstanceIndicator.error.required = Select yes if addCircumstanceIndicator
+addCircumstanceIndicator.title = Do you need to add a specific circumstance indicator?
+addCircumstanceIndicator.heading = Do you need to add a specific circumstance indicator?
+addCircumstanceIndicator.checkYourAnswersLabel = Add specific circumstance indicator?
+addCircumstanceIndicator.checkYourAnswersLabel.visuallyHidden = change if you need to add a specific circumstance indicator
+addCircumstanceIndicator.error.required = Select yes if you need to add a specific circumstance indicator
 
-addTransportChargesPaymentMethod.title = addTransportChargesPaymentMethod
-addTransportChargesPaymentMethod.heading = addTransportChargesPaymentMethod
-addTransportChargesPaymentMethod.checkYourAnswersLabel = addTransportChargesPaymentMethod
-addTransportChargesPaymentMethod.error.required = Select yes if addTransportChargesPaymentMethod
+addTransportChargesPaymentMethod.title = Do you need to add a payment method for the transport charges?
+addTransportChargesPaymentMethod.heading = Do you need to add a payment method for the transport charges?
+addTransportChargesPaymentMethod.checkYourAnswersLabel = Add payment method for transport charges?
+addTransportChargesPaymentMethod.checkYourAnswersLabel.visuallyHidden =  change if you are adding a payment method for the transport charges
+addTransportChargesPaymentMethod.error.required = Select yes if you need to add a payment method for the transport charges
 
-addCommercialReferenceNumber.title = addCommercialReferenceNumber
-addCommercialReferenceNumber.heading = addCommercialReferenceNumber
-addCommercialReferenceNumber.checkYourAnswersLabel = addCommercialReferenceNumber
-addCommercialReferenceNumber.error.required = Select yes if addCommercialReferenceNumber
+addCommercialReferenceNumber.title = Do you need to add a commercial reference number?
+addCommercialReferenceNumber.heading = Do you need to add a commercial reference number?
+addCommercialReferenceNumber.checkYourAnswersLabel = Add commercial reference number?
+addCommercialReferenceNumber.checkYourAnswersLabel.visuallyHidden = change if you need to add a commercial reference number
+addCommercialReferenceNumber.error.required = Select yes if you need to add a commercial reference number
 
-circumstanceIndicator.title = circumstanceIndicator
-circumstanceIndicator.heading = circumstanceIndicator
-circumstanceIndicator.checkYourAnswersLabel = circumstanceIndicator
-circumstanceIndicator.error.required = Enter circumstanceIndicator
+circumstanceIndicator.title = What specific circumstances indicator do you want to add?
+circumstanceIndicator.heading = What specific circumstances indicator do you want to add?
+circumstanceIndicator.checkYourAnswersLabel = Specific circumstances indicator
+circumstanceIndicator.checkYourAnswersLabel.visuallyHidden =  change [specific circumstances indicator]
+circumstanceIndicator.error.required = Enter the specific circumstances indicator you want to add
 circumstanceIndicator.error.length = CircumstanceIndicator must be 2 characters or less
 
-transportChargesPaymentMethod.title = transportChargesPaymentMethod
-transportChargesPaymentMethod.heading = transportChargesPaymentMethod
-transportChargesPaymentMethod.checkYourAnswersLabel = transportChargesPaymentMethod
-transportChargesPaymentMethod.error.required = Enter transportChargesPaymentMethod
+transportChargesPaymentMethod.title = What payment method are you using for the transport charges?
+transportChargesPaymentMethod.heading = What payment method are you using for the transport charges?
+transportChargesPaymentMethod.checkYourAnswersLabel = Payment method for transport charges
+transportChargesPaymentMethod.checkYourAnswersLabel.visuallyHidden =  change the payment method you are using for the transport charges
+transportChargesPaymentMethod.error.required = Enter the payment method you are using for the transport charges
 transportChargesPaymentMethod.error.length = TransportChargesPaymentMethod must be 2 characters or less
 
-addCommercialReferenceNumberAllItems.title = addCommercialReferenceNumberAllItems
-addCommercialReferenceNumberAllItems.heading = addCommercialReferenceNumberAllItems
-addCommercialReferenceNumberAllItems.checkYourAnswersLabel = addCommercialReferenceNumberAllItems
-addCommercialReferenceNumberAllItems.error.required = Select yes if addCommercialReferenceNumberAllItems
+addCommercialReferenceNumberAllItems.title = Are you using the same commercial reference number for all the items?
+addCommercialReferenceNumberAllItems.heading = Are you using the same commercial reference number for all the items?
+addCommercialReferenceNumberAllItems.checkYourAnswersLabel = Same commercial reference number for all items?
+addCommercialReferenceNumberAllItems.checkYourAnswersLabel.visuallyHidden = change if you are using the same commercial reference for all the items
+addCommercialReferenceNumberAllItems.error.required = Select yes if you are using the same commercial reference number for all the items
 
-commercialReferenceNumberAllItems.title = commercialReferenceNumberAllItems
-commercialReferenceNumberAllItems.heading = commercialReferenceNumberAllItems
-commercialReferenceNumberAllItems.checkYourAnswersLabel = commercialReferenceNumberAllItems
-commercialReferenceNumberAllItems.error.required = Enter commercialReferenceNumberAllItems
-commercialReferenceNumberAllItems.error.length = CommercialReferenceNumberAllItems must be 10 characters or less
+commercialReferenceNumberAllItems.title =  What is the commercial reference number for all the items?
+commercialReferenceNumberAllItems.heading =  What is the commercial reference number for all the items?
+commercialReferenceNumberAllItems.checkYourAnswersLabel = Same commercial reference number for all items?
+commercialReferenceNumberAllItems.error.required = Enter the commercial reference number for all the items
+commercialReferenceNumberAllItems.error.invalid =  The commercial reference number must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+commercialReferenceNumberAllItems.error.length =  The commercial reference number must be 70 characters or less
 
 addConveyancerReferenceNumber.title = addConveyancerReferenceNumber
 addConveyancerReferenceNumber.heading = addConveyancerReferenceNumber
