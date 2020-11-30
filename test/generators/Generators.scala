@@ -158,6 +158,20 @@ trait Generators extends UserAnswersGenerator with ModelGenerators {
       }
     } yield chars.mkString
 
+  def stringsLesserThan(minLength: Int, withOnlyPrintableAscii: Boolean = false): Gen[String] =
+    for {
+      length        <- Gen.chooseNum(0, minLength - 1)
+      extendedAscii <- extendedAsciiChar
+      chars <- {
+        if (withOnlyPrintableAscii) {
+          listOfN(length, Gen.alphaChar)
+        } else {
+          val listOfChar = listOfN(length, arbitrary[Char])
+          listOfChar.map(_ ++ List(extendedAscii))
+        }
+      }
+    } yield chars.mkString
+
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))
 

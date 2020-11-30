@@ -1240,20 +1240,25 @@ addCommercialReferenceNumberAllItems.error.required = Select yes if you are usin
 commercialReferenceNumberAllItems.title =  What is the commercial reference number for all the items?
 commercialReferenceNumberAllItems.heading =  What is the commercial reference number for all the items?
 commercialReferenceNumberAllItems.checkYourAnswersLabel = Same commercial reference number for all items?
+commercialReferenceNumberAllItems.checkYourAnswersLabel.visuallyHidden = change commercial reference number for all items
 commercialReferenceNumberAllItems.error.required = Enter the commercial reference number for all the items
 commercialReferenceNumberAllItems.error.invalid =  The commercial reference number must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 commercialReferenceNumberAllItems.error.length =  The commercial reference number must be 70 characters or less
 
-addConveyancerReferenceNumber.title = addConveyancerReferenceNumber
-addConveyancerReferenceNumber.heading = addConveyancerReferenceNumber
-addConveyancerReferenceNumber.checkYourAnswersLabel = addConveyancerReferenceNumber
-addConveyancerReferenceNumber.error.required = Select yes if addConveyancerReferenceNumber
+addConveyancerReferenceNumber.title = Do you need to add a Conveyance Reference Number (CRN)?
+addConveyancerReferenceNumber.heading = Do you need to add a Conveyance Reference Number (CRN)?
+addConveyancerReferenceNumber.checkYourAnswersLabel = Add Conveyance Reference Number?
+addConveyancerReferenceNumber.checkYourAnswersLabel.visuallyHidden =  change if you need to add a conveyance reference number
+addConveyancerReferenceNumber.error.required = Select yes if you need to add a Conveyance Reference Number
 
-conveyanceReferenceNumber.title = conveyanceReferenceNumber
-conveyanceReferenceNumber.heading = conveyanceReferenceNumber
-conveyanceReferenceNumber.checkYourAnswersLabel = conveyanceReferenceNumber
-conveyanceReferenceNumber.error.required = Enter conveyanceReferenceNumber
-conveyanceReferenceNumber.error.length = ConveyanceReferenceNumber must be 10 characters or less
+conveyanceReferenceNumber.title = What is the Conveyance Reference Number (CRN)?
+conveyanceReferenceNumber.heading = What is the Conveyance Reference Number (CRN)?
+conveyanceReferenceNumber.checkYourAnswersLabel = Conveyance Reference Number
+conveyanceReferenceNumber.checkYourAnswersLabel.visuallyHidden = change conveyance reference number
+conveyanceReferenceNumber.error.required = Enter the Conveyance Reference Number
+conveyanceReferenceNumber.error.invalid = The Conveyance Reference Number must only include letters a to z and numbers 0 to 9
+conveyanceReferenceNumber.error.minlength =  The Conveyance Reference Number must be 7 characters or more
+conveyanceReferenceNumber.error.maxlength = The Conveyance Reference Number must be 8 characters or less
 
 addPlaceOfUnloadingCode.title = addPlaceOfUnloadingCode
 addPlaceOfUnloadingCode.heading = addPlaceOfUnloadingCode

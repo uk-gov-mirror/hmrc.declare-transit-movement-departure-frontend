@@ -19,12 +19,22 @@ package forms.safetyAndSecurity
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ConveyanceReferenceNumberFormProvider @Inject() extends Mappings {
+  val maxLength      = 8
+  val minLength      = 7
+  val refNumberRegex = ""
 
   def apply(): Form[String] =
     Form(
       "value" -> text("conveyanceReferenceNumber.error.required")
-        .verifying(maxLength(10, "conveyanceReferenceNumber.error.length"))
+        .verifying(
+          StopOnFirstFail[String](
+            minLength(minLength, "conveyanceReferenceNumber.error.minLength", minLength),
+            maxLength(maxLength, "conveyanceReferenceNumber.error.maxLength", maxLength),
+            regexp(refNumberRegex, "conveyanceReferenceNumber.error.invalid")
+          )
+        )
     )
 }

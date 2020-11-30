@@ -21,9 +21,11 @@ import play.api.data.FormError
 
 class ConveyanceReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "conveyanceReferenceNumber.error.required"
-  val lengthKey   = "conveyanceReferenceNumber.error.length"
-  val maxLength   = 10
+  val requiredKey  = "conveyanceReferenceNumber.error.required"
+  val maxLengthKey = "conveyanceReferenceNumber.error.maxLength"
+  val minLengthKey = "conveyanceReferenceNumber.error.minLength"
+  val maxLength    = 8
+  val minLength    = 7
 
   val form = new ConveyanceReferenceNumberFormProvider()()
 
@@ -41,7 +43,14 @@ class ConveyanceReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, maxLengthKey, Seq(maxLength))
+    )
+
+    behave like fieldWithMinLength(
+      form,
+      fieldName,
+      minLength   = minLength,
+      lengthError = FormError(fieldName, minLengthKey, Seq(minLength))
     )
 
     behave like mandatoryField(
