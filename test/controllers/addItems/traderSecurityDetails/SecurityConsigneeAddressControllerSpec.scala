@@ -23,7 +23,7 @@ import forms.addItems.traderSecurityDetails.SecurityConsigneeAddressFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
 import models.{ConsigneeAddress, CountryList, NormalMode}
-import navigation.annotations.AddItems
+import navigation.annotations.{AddItems, TradersSecurityDetails}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -58,7 +58,7 @@ class SecurityConsigneeAddressControllerSpec extends SpecBase with MockNunjucksR
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
+        bind(classOf[Navigator]).qualifiedWith(classOf[TradersSecurityDetails]).toInstance(new FakeNavigator(onwardRoute)),
         bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
 
