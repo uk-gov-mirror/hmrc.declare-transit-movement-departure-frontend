@@ -25,6 +25,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.SafetyAndSecurityCheckYourAnswerHelper
 import viewModels.sections.Section
 
@@ -50,15 +51,51 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
         "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
       )
 
-      renderer.render("safetyAndSecurityCheckYourAnswers.njk", json).map(Ok(_))
+      renderer.render("safetyAndSecurity/CheckYourAnswers.njk", json).map(Ok(_))
   }
 
+  //TODO Move to ViewModel
+
   private def createSections(userAnswers: UserAnswers): Seq[Section] = {
-    val checkYourAnswersHelper = new SafetyAndSecurityCheckYourAnswerHelper(userAnswers)
+    val cyah = new SafetyAndSecurityCheckYourAnswerHelper(userAnswers)
 
     Seq(
       Section(
-        Seq.empty.flatten // ADD section
-      ))
+        Seq(
+          cyah.addCircumstanceIndicator,
+          cyah.circumstanceIndicator,
+          cyah.addTransportChargesPaymentMethod,
+          cyah.transportChargesPaymentMethod,
+          cyah.addCommercialReferenceNumber,
+          cyah.addCommercialReferenceNumberAllItems,
+          cyah.commercialReferenceNumberAllItems,
+          cyah.addConveyanceReferenceNumber,
+          cyah.conveyanceReferenceNumber,
+          cyah.addPlaceOfUnloadingCode,
+          cyah.placeOfUnloadingCode
+        ).flatten
+      ),
+      Section(
+        msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting",
+        Seq.empty
+      ),
+      Section(
+        msg"safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails",
+        Seq(
+          //TODO Consignor subheading
+          cyah.addSafetyAndSecurityConsignor,
+          cyah.addSafetyAndSecurityConsignorEori,
+          cyah.safetyAndSecurityConsignorEori,
+          cyah.safetyAndSecurityConsignorName,
+          cyah.safetyAndSecurityConsignorAddress,
+          //TODO Consignee subheading
+          cyah.addSafetyAndSecurityConsignee,
+          cyah.addSafetyAndSecurityConsigneeEori,
+          cyah.safetyAndSecurityConsigneeEori,
+          cyah.safetyAndSecurityConsigneeName,
+          cyah.safetyAndSecurityConsigneeAddress,
+        ).flatten
+      )
+    )
   }
 }

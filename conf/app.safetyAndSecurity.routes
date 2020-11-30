@@ -143,3 +143,5 @@ GET        /:lrn/carrierName                                       controllers.s
 POST       /:lrn/carrierName                                       controllers.safetyAndSecurity.CarrierNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/changeCarrierName                                 controllers.safetyAndSecurity.CarrierNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeCarrierName                                 controllers.safetyAndSecurity.CarrierNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/security/check-answers                            controllers.safetyAndSecurity.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
