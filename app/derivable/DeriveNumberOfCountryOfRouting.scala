@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages.safetyAndSecurity
+package derivable
 
-import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.countriesOfRouting
 
-case object AddConveyancerReferenceNumberPage extends QuestionPage[Boolean] {
+case object DeriveNumberOfCountryOfRouting extends Derivable[List[String], Int] {
 
-  override def path: JsPath = JsPath \ toString
+  override val derive: List[String] => Int = _.size
 
-  override def toString: String = "addConveyancerReferenceNumber"
+  override def path: JsPath = JsPath \ countriesOfRouting
 }

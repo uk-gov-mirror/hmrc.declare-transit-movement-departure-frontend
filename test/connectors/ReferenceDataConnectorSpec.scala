@@ -29,7 +29,7 @@ import models.{
   MethodOfPaymentList,
   OfficeOfTransitList,
   PackageTypeList,
-  PreviousDocumentTypeList,
+  PreviousReferencesDocumentTypeList,
   SpecialMentionList,
   TransportModeList
 }
@@ -438,19 +438,19 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
             .willReturn(okJson(previousDocumentJson))
         )
 
-        val expectResult = PreviousDocumentTypeList(
+        val expectResult = PreviousReferencesDocumentTypeList(
           Seq(
-            PreviousDocumentType("T1", "Description T1"),
-            PreviousDocumentType("T2F", "Description T2F")
+            PreviousReferencesDocumentType("T1", "Description T1"),
+            PreviousReferencesDocumentType("T2F", "Description T2F")
           )
         )
 
-        connector.getPreviousDocumentTypes().futureValue mustEqual expectResult
+        connector.getPreviousReferencesDocumentTypes().futureValue mustEqual expectResult
       }
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$startUrl/previous-document-type", connector.getPreviousDocumentTypes())
+        checkErrorResponse(s"/$startUrl/previous-document-type", connector.getPreviousReferencesDocumentTypes())
       }
 
     }

@@ -35,10 +35,10 @@ POST       /:lrn/commercialReferenceNumberAllItems                  controllers.
 GET        /:lrn/changeCommercialReferenceNumberAllItems            controllers.safetyAndSecurity.CommercialReferenceNumberAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeCommercialReferenceNumberAllItems            controllers.safetyAndSecurity.CommercialReferenceNumberAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/addConveyancerReferenceNumber                      controllers.safetyAndSecurity.AddConveyancerReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/addConveyancerReferenceNumber                      controllers.safetyAndSecurity.AddConveyancerReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeAddConveyancerReferenceNumber                controllers.safetyAndSecurity.AddConveyancerReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeAddConveyancerReferenceNumber                controllers.safetyAndSecurity.AddConveyancerReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/addConveyancerReferenceNumber                      controllers.safetyAndSecurity.AddConveyanceReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/addConveyancerReferenceNumber                      controllers.safetyAndSecurity.AddConveyanceReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/changeAddConveyancerReferenceNumber                controllers.safetyAndSecurity.AddConveyanceReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/changeAddConveyancerReferenceNumber                controllers.safetyAndSecurity.AddConveyanceReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/conveyanceReferenceNumber                          controllers.safetyAndSecurity.ConveyanceReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/conveyanceReferenceNumber                          controllers.safetyAndSecurity.ConveyanceReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
@@ -55,10 +55,10 @@ POST       /:lrn/placeOfUnloadingCode                               controllers.
 GET        /:lrn/changePlaceOfUnloadingCode                         controllers.safetyAndSecurity.PlaceOfUnloadingCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changePlaceOfUnloadingCode                         controllers.safetyAndSecurity.PlaceOfUnloadingCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/countryOfRouting                                   controllers.safetyAndSecurity.CountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/countryOfRouting                                   controllers.safetyAndSecurity.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeCountryOfRouting                             controllers.safetyAndSecurity.CountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeCountryOfRouting                             controllers.safetyAndSecurity.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/countryOfRouting/:index                           controllers.safetyAndSecurity.CountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber,  index: Index, mode: Mode = NormalMode)
+POST       /:lrn/countryOfRouting/:index                           controllers.safetyAndSecurity.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber,  index: Index, mode: Mode = NormalMode)
+GET        /:lrn/changeCountryOfRouting/:index                     controllers.safetyAndSecurity.CountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+POST       /:lrn/changeCountryOfRouting/:index                     controllers.safetyAndSecurity.CountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 
 GET        /:lrn/addAnotherCountryOfRouting                        controllers.safetyAndSecurity.AddAnotherCountryOfRoutingController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/addAnotherCountryOfRouting                        controllers.safetyAndSecurity.AddAnotherCountryOfRoutingController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

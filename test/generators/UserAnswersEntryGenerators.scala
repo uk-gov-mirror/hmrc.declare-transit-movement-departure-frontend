@@ -45,7 +45,7 @@ import pages.safetyAndSecurity.{
   AddCircumstanceIndicatorPage,
   AddCommercialReferenceNumberAllItemsPage,
   AddCommercialReferenceNumberPage,
-  AddConveyancerReferenceNumberPage,
+  AddConveyanceReferenceNumberPage,
   AddPlaceOfUnloadingCodePage,
   AddSafetyAndSecurityConsigneeEoriPage,
   AddSafetyAndSecurityConsigneePage,
@@ -186,11 +186,11 @@ trait UserAnswersEntryGenerators {
       } yield (AddAnotherCountryOfRoutingPage, value)
     }
 
-  implicit lazy val arbitraryCountryOfRoutingUserAnswersEntry: Arbitrary[(CountryOfRoutingPage.type, JsValue)] =
+  implicit lazy val arbitraryCountryOfRoutingUserAnswersEntry: Arbitrary[(CountryOfRoutingPage, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[CountryOfRoutingPage.type#Data].map(Json.toJson(_))
-      } yield (CountryOfRoutingPage, value)
+        value <- nonEmptyString.map(Json.toJson(_))
+      } yield (CountryOfRoutingPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryPlaceOfUnloadingCodeUserAnswersEntry: Arbitrary[(PlaceOfUnloadingCodePage.type, JsValue)] =
@@ -214,11 +214,11 @@ trait UserAnswersEntryGenerators {
       } yield (ConveyanceReferenceNumberPage, value)
     }
 
-  implicit lazy val arbitraryAddConveyancerReferenceNumberUserAnswersEntry: Arbitrary[(AddConveyancerReferenceNumberPage.type, JsValue)] =
+  implicit lazy val arbitraryAddConveyancerReferenceNumberUserAnswersEntry: Arbitrary[(AddConveyanceReferenceNumberPage.type, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[AddConveyancerReferenceNumberPage.type#Data].map(Json.toJson(_))
-      } yield (AddConveyancerReferenceNumberPage, value)
+        value <- arbitrary[AddConveyanceReferenceNumberPage.type#Data].map(Json.toJson(_))
+      } yield (AddConveyanceReferenceNumberPage, value)
     }
 
   implicit lazy val arbitraryCommercialReferenceNumberAllItemsUserAnswersEntry: Arbitrary[(CommercialReferenceNumberAllItemsPage.type, JsValue)] =

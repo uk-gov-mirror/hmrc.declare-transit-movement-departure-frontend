@@ -20,7 +20,7 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.ReferenceTypeFormProvider
 import javax.inject.Inject
-import models.reference.PreviousDocumentType
+import models.reference.PreviousReferencesDocumentType
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
@@ -58,13 +58,13 @@ class ReferenceTypeController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        referenceDataConnector.getPreviousDocumentTypes() flatMap {
+        referenceDataConnector.getPreviousReferencesDocumentTypes() flatMap {
           previousDocuments =>
-            val form: Form[PreviousDocumentType] = formProvider(previousDocuments)
+            val form: Form[PreviousReferencesDocumentType] = formProvider(previousDocuments)
 
             val preparedForm = request.userAnswers
               .get(ReferenceTypePage(itemIndex, referenceIndex))
-              .flatMap(previousDocuments.getPreviousDocumentType)
+              .flatMap(previousDocuments.getPreviousReferencesDocumentType)
               .map(form.fill)
               .getOrElse(form)
 
@@ -72,7 +72,7 @@ class ReferenceTypeController @Inject()(
               "form"              -> preparedForm,
               "index"             -> itemIndex.display,
               "referenceIndex"    -> referenceIndex.display,
-              "previousDocuments" -> getPreviousDocumentsAsJson(preparedForm.value, previousDocuments.previousDocumentTypes),
+              "previousDocuments" -> getPreviousDocumentsAsJson(preparedForm.value, previousDocuments.previousReferencesDocumentTypes),
               "lrn"               -> lrn,
               "mode"              -> mode
             )
@@ -84,7 +84,7 @@ class ReferenceTypeController @Inject()(
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        referenceDataConnector.getPreviousDocumentTypes() flatMap {
+        referenceDataConnector.getPreviousReferencesDocumentTypes() flatMap {
           previousDocuments =>
             val form = formProvider(previousDocuments)
             form
@@ -96,7 +96,7 @@ class ReferenceTypeController @Inject()(
                     "form"              -> formWithErrors,
                     "index"             -> itemIndex.display,
                     "referenceIndex"    -> referenceIndex.display,
-                    "previousDocuments" -> getPreviousDocumentsAsJson(form.value, previousDocuments.previousDocumentTypes),
+                    "previousDocuments" -> getPreviousDocumentsAsJson(form.value, previousDocuments.previousReferencesDocumentTypes),
                     "lrn"               -> lrn,
                     "mode"              -> mode
                   )

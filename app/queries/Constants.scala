@@ -27,4 +27,5 @@ object Constants {
   val traderDetails                = "traderDetails"
   val documents                    = "documents"
   val containers                   = "containers"
+  val countriesOfRouting           = "countriesOfRouting"
 }

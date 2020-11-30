@@ -27,5 +27,6 @@ object Constants {
   lazy val vehicleIdMaxLength                   = 27
   lazy val consignorNameRegex                   = s"^[a-zA-Z0-9&'@\\/.\\-%?<> ]{1,35}"
   lazy val consigneeNameMaxLength: Int          = 35
+  lazy val addressMaxLength: Int                = 35
 
 }

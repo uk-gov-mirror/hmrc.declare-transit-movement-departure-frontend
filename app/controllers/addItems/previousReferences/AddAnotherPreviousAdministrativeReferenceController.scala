@@ -84,7 +84,7 @@ class AddAnotherPreviousAdministrativeReferenceController @Inject()(
     val numberOfReferences    = request.userAnswers.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
     val indexList: Seq[Index] = List.range(0, numberOfReferences).map(Index(_))
 
-    referenceDataConnector.getPreviousDocumentTypes() flatMap {
+    referenceDataConnector.getPreviousReferencesDocumentTypes() flatMap {
       previousDocuments =>
         val referenceRows = indexList.map {
           referenceIndex =>

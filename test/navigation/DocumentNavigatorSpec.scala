@@ -17,11 +17,14 @@
 package navigation
 
 import base.SpecBase
+import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
 import controllers.addItems.routes
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.reference.CountryCode
+import models.{CheckMode, DeclarationType, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.addItems._
+import pages.{CountryOfDispatchPage, DeclarationTypePage}
 import queries.DocumentQuery
 
 class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -30,20 +33,39 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
   "Document navigator" - {
     "in Normal Mode" - {
-      "AddDocumentPage must go to CYA when user selects 'no'" in {
-        val updatedAnswers = emptyUserAnswers
-          .set(AddDocumentsPage(index), false).success.value
-        navigator
-          .nextPage(AddDocumentsPage(index), NormalMode, updatedAnswers)
-          .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-      }
+      "AddDocumentsPage must go to" - {
+        "Add Administrative Reference page when user selects 'No' and is in EU" in {
+          val updatedAnswers = emptyUserAnswers
+            .set(AddDocumentsPage(index), false).success.value
+            .set(DeclarationTypePage, DeclarationType.Option1).success.value
+            .set(CountryOfDispatchPage, CountryCode("UK")).success.value
 
-      "AddDocumentPage must go to DocumentTypePage when user selects 'yes'" in {
-        val updatedAnswers = emptyUserAnswers
-          .set(AddDocumentsPage(index), true).success.value
-        navigator
-          .nextPage(AddDocumentsPage(index), NormalMode, updatedAnswers)
-          .mustBe(routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, index, NormalMode))
+          navigator
+            .nextPage(AddDocumentsPage(index), NormalMode, updatedAnswers)
+            .mustBe(previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(updatedAnswers.id, index, NormalMode))
+        }
+
+        "Reference Type page when user selects 'No', and declaration type is T2 and dispatch country is non-EU" in {
+          val dispatchCountries =
+            Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
+          for (countryCode <- dispatchCountries) {
+            val updatedAnswers = emptyUserAnswers
+              .set(AddDocumentsPage(index), false).success.value
+              .set(DeclarationTypePage, DeclarationType.Option2).success.value
+              .set(CountryOfDispatchPage, countryCode).success.value
+
+            navigator
+              .nextPage(AddDocumentsPage(index), NormalMode, updatedAnswers)
+              .mustBe(previousReferencesRoutes.ReferenceTypeController.onPageLoad(updatedAnswers.id, index, referenceIndex, NormalMode))
+          }
+        }
+        "DocumentTypePage when user selects 'Yes'" in {
+          val updatedAnswers = emptyUserAnswers
+            .set(AddDocumentsPage(index), true).success.value
+          navigator
+            .nextPage(AddDocumentsPage(index), NormalMode, updatedAnswers)
+            .mustBe(routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, index, NormalMode))
+        }
       }
 
       "DocumentTypePage must go to DocumentReferencePage" in {
@@ -95,31 +117,54 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             .nextPage(AddAnotherDocumentPage(index), NormalMode, updatedAnswers)
             .mustBe(routes.DocumentTypeController.onPageLoad(updatedAnswers.id, index, documentIndex, NormalMode))
         }
-      }
-      "ItemsCheckYourANswersPage when user selects 'No'" in {
-        val updatedAnswers = emptyUserAnswers
-          .set(AddAnotherDocumentPage(index), false).success.value
-        navigator
-          .nextPage(AddAnotherDocumentPage(index), NormalMode, updatedAnswers)
-          .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
-      }
-    }
-    "Confirm remove Document page must go to AddDocument page when user selects NO" in {
-      val updatedAnswers = emptyUserAnswers
-        .set(ConfirmRemoveDocumentPage(index, documentIndex), false).success.value
-      navigator
-        .nextPage(ConfirmRemoveDocumentPage(index, documentIndex), NormalMode, updatedAnswers)
-        .mustBe(routes.AddDocumentsController.onPageLoad(updatedAnswers.id, index, NormalMode))
 
-    }
-    "Confirm remove Document page must go to AddDocument page when user selects yes" in {
-      val updatedAnswers = emptyUserAnswers
-        .set(ConfirmRemoveDocumentPage(index, documentIndex), true).success.value
-      navigator
-        .nextPage(ConfirmRemoveDocumentPage(index, documentIndex), NormalMode, updatedAnswers)
-        .mustBe(routes.AddDocumentsController.onPageLoad(updatedAnswers.id, index, NormalMode))
+        "Add Administrative Reference page when user selects 'No' and is in EU" in {
+          val updatedAnswers = emptyUserAnswers
+            .set(AddAnotherDocumentPage(index), false).success.value
+            .set(DeclarationTypePage, DeclarationType.Option1).success.value
+            .set(CountryOfDispatchPage, CountryCode("UK")).success.value
 
+          navigator
+            .nextPage(AddAnotherDocumentPage(index), NormalMode, updatedAnswers)
+            .mustBe(previousReferencesRoutes.AddAdministrativeReferenceController.onPageLoad(updatedAnswers.id, index, NormalMode))
+        }
+
+        "Reference Type page when user selects 'No', and declaration type is T2 and dispatch country is non-EU" in {
+          val dispatchCountries =
+            Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
+          for (countryCode <- dispatchCountries) {
+            val updatedAnswers = emptyUserAnswers
+              .set(AddAnotherDocumentPage(index), false).success.value
+              .set(DeclarationTypePage, DeclarationType.Option2).success.value
+              .set(CountryOfDispatchPage, countryCode).success.value
+
+            navigator
+              .nextPage(AddAnotherDocumentPage(index), NormalMode, updatedAnswers)
+              .mustBe(previousReferencesRoutes.ReferenceTypeController.onPageLoad(updatedAnswers.id, index, referenceIndex, NormalMode))
+          }
+        }
+      }
+
+      "Confirm remove Document page must go to" - {
+        "AddDocument page when user selects 'No'" in {
+          val updatedAnswers = emptyUserAnswers
+            .set(ConfirmRemoveDocumentPage(index, documentIndex), false).success.value
+          navigator
+            .nextPage(ConfirmRemoveDocumentPage(index, documentIndex), NormalMode, updatedAnswers)
+            .mustBe(routes.AddDocumentsController.onPageLoad(updatedAnswers.id, index, NormalMode))
+
+        }
+        "AddDocument page when user selects 'Yes'" in {
+          val updatedAnswers = emptyUserAnswers
+            .set(ConfirmRemoveDocumentPage(index, documentIndex), true).success.value
+          navigator
+            .nextPage(ConfirmRemoveDocumentPage(index, documentIndex), NormalMode, updatedAnswers)
+            .mustBe(routes.AddDocumentsController.onPageLoad(updatedAnswers.id, index, NormalMode))
+
+        }
+      }
     }
+
   }
     "In CheckMode" - {
       "AddDocumentPage must go to" - {
