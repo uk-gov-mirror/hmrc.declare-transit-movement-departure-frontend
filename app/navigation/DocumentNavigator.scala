@@ -87,7 +87,7 @@ class DocumentNavigator @Inject()() extends Navigator {
       case Some(false) => Some(routes.AddAnotherDocumentController.onPageLoad(ua.id, index, mode))
     }
 
-  private def addDocumentRoute(ua:UserAnswers, index: Index,  mode:Mode) = 
+  private def addDocumentRoute(ua:UserAnswers, index: Index,  mode:Mode) =
 
     (ua.get(AddDocumentsPage(index)), mode) match {
       case (Some(true), NormalMode)  => Some(routes.DocumentTypeController.onPageLoad(ua.id, index, Index(count(index)(ua)), NormalMode))

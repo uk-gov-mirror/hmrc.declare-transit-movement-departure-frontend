@@ -16,10 +16,14 @@
 
 package pages.addItems
 
-import base.SpecBase
+import generators.UserAnswersGenerator
+import models.Index
 import pages.behaviours.PageBehaviours
 
-class DocumentTypePageSpec extends PageBehaviours with SpecBase {
+class DocumentTypePageSpec extends PageBehaviours with UserAnswersGenerator {
+
+  private val index         = Index(0)
+  private val documentIndex = Index(0)
 
   "DocumentTypePage" - {
 
@@ -28,5 +32,6 @@ class DocumentTypePageSpec extends PageBehaviours with SpecBase {
     beSettable[String](DocumentTypePage(index, documentIndex))
 
     beRemovable[String](DocumentTypePage(index, documentIndex))
+
   }
 }
