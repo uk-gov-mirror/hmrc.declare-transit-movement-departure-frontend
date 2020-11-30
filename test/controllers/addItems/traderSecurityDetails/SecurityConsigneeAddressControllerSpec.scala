@@ -49,7 +49,7 @@ class SecurityConsigneeAddressControllerSpec extends SpecBase with MockNunjucksR
   private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   private val formProvider = new SecurityConsigneeAddressFormProvider()
-  private val form         = formProvider(countries, "frank")
+  private val form         = formProvider(countries, "GB")
 
   lazy val securityConsigneeAddressRoute = routes.SecurityConsigneeAddressController.onPageLoad(lrn, index, NormalMode).url
   private val template                   = "addItems/traderSecurityDetails/securityConsigneeAddress.njk"
@@ -57,9 +57,10 @@ class SecurityConsigneeAddressControllerSpec extends SpecBase with MockNunjucksR
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
-
-  bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      .overrides(
+        bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      )
 
   "SecurityConsigneeAddress Controller" - {
 
@@ -67,8 +68,10 @@ class SecurityConsigneeAddressControllerSpec extends SpecBase with MockNunjucksR
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
       when(mockReferenceDataConnector.getCountryList()(any(), any()))
         .thenReturn(Future.successful(countries))
+
       val userAnswers = emptyUserAnswers.set(SecurityConsigneeNamePage(index), "foo").success.value
 
       dataRetrievalWithData(userAnswers)

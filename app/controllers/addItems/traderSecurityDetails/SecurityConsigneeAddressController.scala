@@ -16,13 +16,16 @@
 
 package controllers.addItems.traderSecurityDetails
 
-import akka.util.Helpers.Requiring
+import connectors.ReferenceDataConnector
 import controllers.actions._
+import controllers.{routes => mainRoutes}
 import forms.addItems.traderSecurityDetails.SecurityConsigneeAddressFormProvider
 import javax.inject.Inject
+import models.reference.{Country, CountryCode}
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
+import pages.addItems.traderSecurityDetails.{SecurityConsigneeAddressPage, SecurityConsigneeNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,11 +33,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import pages.addItems.traderSecurityDetails.{SecurityConsigneeAddressPage, SecurityConsigneeNamePage}
 import utils.countryJsonList
-import controllers.{routes => mainRoutes}
-import connectors.ReferenceDataConnector
-import models.reference.{Country, CountryCode}
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -29,8 +29,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.addItems.traderDetails.TraderDetailsConsignorNamePage
-import pages.addItems.traderSecurityDetails.{SecurityConsignorAddressPage, SecurityConsignorNamePage}
+import pages.addItems.traderDetails.{TraderDetailsConsignorAddressPage, TraderDetailsConsignorNamePage}
+import pages.addItems.traderSecurityDetails.SecurityConsignorNamePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -107,10 +107,10 @@ class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockNunj
       val tradersDetailsConsignorAddress: ConsignorAddress = ConsignorAddress("Address line 1", "Address line 2", "Address line 3", country)
 
       val userAnswers = emptyUserAnswers
-        .set(SecurityConsignorNamePage(index), "ConsignorName")
+        .set(TraderDetailsConsignorNamePage(index), "ConsignorName")
         .success
         .value
-        .set(SecurityConsignorAddressPage(index), tradersDetailsConsignorAddress)
+        .set(TraderDetailsConsignorAddressPage(index), tradersDetailsConsignorAddress)
         .success
         .value
       dataRetrievalWithData(userAnswers)
@@ -152,7 +152,7 @@ class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockNunj
         .thenReturn(Future.successful(countries))
 
       val userAnswers = emptyUserAnswers
-        .set(SecurityConsignorNamePage(index), "ConsignorName")
+        .set(TraderDetailsConsignorNamePage(index), "ConsignorName")
         .success
         .value
       dataRetrievalWithData(userAnswers)
@@ -176,7 +176,7 @@ class TraderDetailsConsignorAddressControllerSpec extends SpecBase with MockNunj
       when(mockReferenceDataConnector.getCountryList()(any(), any()))
         .thenReturn(Future.successful(countries))
 
-      val userAnswers = emptyUserAnswers.set(SecurityConsignorNamePage(index), "ConsignorName").success.value
+      val userAnswers = emptyUserAnswers.set(TraderDetailsConsignorNamePage(index), "ConsignorName").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(POST, traderDetailsConsignorAddressRoute).withFormUrlEncodedBody(("value", "invalid value"))

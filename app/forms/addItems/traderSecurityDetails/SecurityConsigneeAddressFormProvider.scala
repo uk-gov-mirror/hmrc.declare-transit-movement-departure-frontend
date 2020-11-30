@@ -17,7 +17,7 @@
 package forms.addItems.traderSecurityDetails
 
 import forms.mappings.Mappings
-import forms.Constants.addressRegex
+import forms.Constants.{addressMaxLength, addressRegex, consigneeNameMaxLength}
 import javax.inject.Inject
 import models.reference.Country
 import models.{ConsigneeAddress, CountryList, Index}
@@ -30,23 +30,20 @@ class SecurityConsigneeAddressFormProvider @Inject() extends Mappings {
   def apply(countryList: CountryList, consigneeName: String): Form[ConsigneeAddress] = Form(
     mapping(
       "AddressLine1" -> text("securityConsigneeAddress.error.AddressLine1.required", Seq(consigneeName))
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(35, "securityConsigneeAddress.error.AddressLine1.length"),
-            regexp(addressRegex, "securityConsigneeAddress.error.line1.invalid", consigneeName)
-          )),
+        .verifying(StopOnFirstFail[String](
+          maxLength(addressMaxLength, "securityConsigneeAddress.error.AddressLine1.length", consigneeNameMaxLength),
+          regexp(addressRegex, "securityConsigneeAddress.error.line1.invalid", consigneeName)
+        )),
       "AddressLine2" -> text("securityConsigneeAddress.error.AddressLine2.required", Seq(consigneeName))
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(35, "securityConsigneeAddress.error.AddressLine2.length"),
-            regexp(addressRegex, "securityConsigneeAddress.error.line2.invalid", consigneeName)
-          )),
+        .verifying(StopOnFirstFail[String](
+          maxLength(addressMaxLength, "securityConsigneeAddress.error.AddressLine2.length", consigneeNameMaxLength),
+          regexp(addressRegex, "securityConsigneeAddress.error.line2.invalid", consigneeName)
+        )),
       "AddressLine3" -> text("securityConsigneeAddress.error.AddressLine3.required", Seq(consigneeName))
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(35, "securityConsigneeAddress.error.AddressLine3.length"),
-            regexp(addressRegex, "securityConsigneeAddress.error.line3.invalid", consigneeName)
-          )),
+        .verifying(StopOnFirstFail[String](
+          maxLength(addressMaxLength, "securityConsigneeAddress.error.AddressLine3.length", consigneeNameMaxLength),
+          regexp(addressRegex, "securityConsigneeAddress.error.line3.invalid", consigneeName)
+        )),
       "country" -> text("securityConsigneeAddress.error.country.required", Seq(consigneeName))
         .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))
         .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)

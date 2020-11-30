@@ -38,6 +38,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.countryJsonList
 
 import scala.concurrent.Future
 
@@ -47,9 +48,9 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
   private val country                                            = Country(CountryCode("GB"), "United Kingdom")
   private val countries                                          = CountryList(Seq(country))
   private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-
-  private val formProvider = new SecurityConsignorAddressFormProvider()
-  private val form         = formProvider(countries, "frank")
+  private val formProvider                                       = new SecurityConsignorAddressFormProvider()
+  private val form                                               = formProvider(countries, "Test")
+  private val consignorName                                      = "TestName"
 
   lazy val securityConsignorAddressRoute = routes.SecurityConsignorAddressController.onPageLoad(lrn, index, NormalMode).url
   private val template                   = "addItems/traderSecurityDetails/securityConsignorAddress.njk"
@@ -57,9 +58,10 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)))
-
-  bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      .overrides(
+        bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      )
 
   "SecurityConsignorAddress Controller" - {
 
@@ -126,19 +128,24 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
           "AddressLine1" -> "Address line 1",
           "AddressLine2" -> "Address line 2",
           "AddressLine3" -> "Address line 3",
-          "country"      -> "GB"
+          "country"      -> "United Kingdom"
         )
       )
-
       val expectedJson = Json.obj(
-        "form"  -> filledForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form"          -> filledForm,
+        "lrn"           -> lrn,
+        "mode"          -> NormalMode,
+        "index"         -> index.display,
+        "consignorName" -> consignorName,
+        "countries"     -> countryJsonList(countries.getCountry(CountryCode(country.toString)), countries.fullList)
       )
 
+//      templateCaptor.getValue mustEqual template
+//      jsonCaptor.getValue must containJson(expectedJson)
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey - "selected"
+
       templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonWithoutConfig mustBe expectedJson
 
     }
 

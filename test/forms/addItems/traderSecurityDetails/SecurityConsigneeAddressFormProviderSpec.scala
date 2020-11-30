@@ -16,7 +16,7 @@
 
 package forms.addItems.traderSecurityDetails
 
-import forms.Constants.addressRegex
+import forms.Constants.{addressMaxLength, addressRegex}
 import forms.behaviours.StringFieldBehaviours
 import models.CountryList
 import models.reference.{Country, CountryCode}
@@ -29,7 +29,7 @@ class SecurityConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
   val lengthKey     = "securityConsigneeAddress.error.length"
   val country       = Country(CountryCode("GB"), "United Kingdom")
   val countries     = CountryList(Seq(country))
-  val consigneeName = "Frank"
+  val consigneeName = "Test"
   val form          = new SecurityConsigneeAddressFormProvider()(countries, consigneeName)
 
   ".AddressLine1" - {
@@ -37,7 +37,7 @@ class SecurityConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName   = "AddressLine1"
     val requiredKey = "securityConsigneeAddress.error.AddressLine1.required"
     val lengthKey   = "securityConsigneeAddress.error.AddressLine1.length"
-    val maxLength   = 35
+    val maxLength   = addressMaxLength
 
     behave like fieldThatBindsValidData(
       form,
@@ -81,7 +81,7 @@ class SecurityConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName   = "AddressLine2"
     val requiredKey = "securityConsigneeAddress.error.AddressLine2.required"
     val lengthKey   = "securityConsigneeAddress.error.AddressLine2.length"
-    val maxLength   = 35
+    val maxLength   = addressMaxLength
 
     behave like fieldThatBindsValidData(
       form,
@@ -125,7 +125,7 @@ class SecurityConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName   = "AddressLine3"
     val requiredKey = "securityConsigneeAddress.error.AddressLine3.required"
     val lengthKey   = "securityConsigneeAddress.error.AddressLine3.length"
-    val maxLength   = 35
+    val maxLength   = addressMaxLength
 
     behave like fieldThatBindsValidData(
       form,
