@@ -125,10 +125,10 @@ POST       /:lrn/addCarrier                                        controllers.s
 GET        /:lrn/changeAddCarrier                                  controllers.safetyAndSecurity.AddCarrierController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/changeAddCarrier                                  controllers.safetyAndSecurity.AddCarrierController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/carrierAddress                                    controllers.safetyAndSecurity.CarrierAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/carrierAddress                                    controllers.safetyAndSecurity.CarrierAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeCarrierAddress                              controllers.safetyAndSecurity.CarrierAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeCarrierAddress                              controllers.safetyAndSecurity.CarrierAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/security/trader-security/carrier-address                                   controllers.safetyAndSecurity.CarrierAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/security/trader-security/carrier-address                                    controllers.safetyAndSecurity.CarrierAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/security/trader-security/change-carrier-address                              controllers.safetyAndSecurity.CarrierAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/security/trader-security/change-carrier-address                              controllers.safetyAndSecurity.CarrierAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/carrierEori                                       controllers.safetyAndSecurity.CarrierEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/carrierEori                                       controllers.safetyAndSecurity.CarrierEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
