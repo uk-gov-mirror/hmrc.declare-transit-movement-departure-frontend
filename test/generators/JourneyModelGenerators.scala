@@ -254,8 +254,8 @@ trait JourneyModelGenerators {
   implicit def arbitraryItemSection: Arbitrary[ItemSection] =
     Arbitrary {
       for {
-        containersUsed    <- arbitrary[Boolean]
-        itemSection       <- genItemSection(containersUsed, safetyAndSecurity)
+        containersUsed <- arbitrary[Boolean]
+        itemSection    <- genItemSection(containersUsed)
       } yield itemSection
     }
 
