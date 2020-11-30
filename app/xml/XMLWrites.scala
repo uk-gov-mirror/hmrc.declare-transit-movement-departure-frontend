@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models
+package xml
 
 import scala.xml.NodeSeq
 
@@ -24,9 +24,7 @@ trait XMLWrites[A] {
 
 object XMLWrites {
 
-  def apply[A](writerFn: A => NodeSeq): XMLWrites[A] = new XMLWrites[A] {
-    override def writes(a: A): NodeSeq = writerFn(a)
-  }
+  def apply[A](writerFn: A => NodeSeq): XMLWrites[A] = a => writerFn(a)
 
   implicit class XMLWritesOps[A](val a: A) extends AnyVal {
 

@@ -19,7 +19,8 @@ package models.messages.trader
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.messages.escapeXml
-import models.{LanguageCodeEnglish, XMLWrites}
+import models.LanguageCodeEnglish
+import xml.XMLWrites
 
 import scala.xml._
 
@@ -75,7 +76,7 @@ object TraderPrincipalWithEori {
             countryCode =>
               <CouPC125>{countryCode}</CouPC125>
           }
-        }
+      }
         <NADLNGPC>{LanguageCodeEnglish.code}</NADLNGPC>
         <TINPC159>{trader.eori}</TINPC159>
       </TRAPRIPC1>

@@ -18,7 +18,7 @@ package models.messages.header
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites._
+import xml.XMLWrites._
 import models.messages.escapeXml
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
@@ -88,8 +88,10 @@ class HeaderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks
             value => <ConRefNumHEA>{value.toString}</ConRefNumHEA>
           )
 
-          val codPlUnHEA357 = header.codPlUnHEA357.map(value => <CodPlUnHEA357>{value.toString}</CodPlUnHEA357>
-              <CodPlUnHEA357LNG>EN</CodPlUnHEA357LNG>)
+          val codPlUnHEA357 = header.codPlUnHEA357.map(
+            value => <CodPlUnHEA357>{value.toString}</CodPlUnHEA357>
+              <CodPlUnHEA357LNG>EN</CodPlUnHEA357LNG>
+          )
 
           val expectedResult: NodeSeq =
             <HEAHEA>

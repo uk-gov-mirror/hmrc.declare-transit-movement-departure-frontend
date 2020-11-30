@@ -17,7 +17,7 @@
 package models.messages.customsoffice
 
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.XMLWrites
+import xml.XMLWrites
 
 case class CustomsOfficeDestination(referenceNumber: String)
 

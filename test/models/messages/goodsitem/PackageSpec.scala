@@ -26,7 +26,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsSuccess, Json}
-import models.XMLWrites._
+import xml.XMLWrites._
 
 import scala.xml.NodeSeq
 
@@ -141,16 +141,16 @@ class PackageSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
         forAll(arbitrary[BulkPackage]) {
           bulkPackage =>
-            val expectedResult = {
+            val expectedResult =
               <PACGS2>
                 {
-                  bulkPackage.marksAndNumbers.fold(NodeSeq.Empty) { markAndNumbers =>
+                bulkPackage.marksAndNumbers.fold(NodeSeq.Empty) {
+                  markAndNumbers =>
                     <MarNumOfPacGS21>{markAndNumbers}</MarNumOfPacGS21>
-                  }
                 }
+              }
                 <KinOfPacGS23>{bulkPackage.kindOfPackage}</KinOfPacGS23>
               </PACGS2>
-            }
 
             bulkPackage.toXml mustEqual expectedResult
         }
@@ -163,10 +163,11 @@ class PackageSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
             val xml =
               <PACGS2>
                 {
-                  bulkPackage.marksAndNumbers.fold(NodeSeq.Empty) { markAndNumbers =>
+                bulkPackage.marksAndNumbers.fold(NodeSeq.Empty) {
+                  markAndNumbers =>
                     <MarNumOfPacGS21>{markAndNumbers}</MarNumOfPacGS21>
-                  }
                 }
+              }
                 <KinOfPacGS23>{bulkPackage.kindOfPackage}</KinOfPacGS23>
               </PACGS2>
 
@@ -181,17 +182,17 @@ class PackageSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
         forAll(arbitrary[UnpackedPackage]) {
           unpackedPackage =>
-            val expectedResult = {
+            val expectedResult =
               <PACGS2>
                 {
-                  unpackedPackage.marksAndNumbers.fold(NodeSeq.Empty) { markAndNumbers =>
+                unpackedPackage.marksAndNumbers.fold(NodeSeq.Empty) {
+                  markAndNumbers =>
                     <MarNumOfPacGS21>{markAndNumbers}</MarNumOfPacGS21>
-                  }
                 }
+              }
                 <KinOfPacGS23>{unpackedPackage.kindOfPackage}</KinOfPacGS23>
                 <NumOfPieGS25>{unpackedPackage.numberOfPieces}</NumOfPieGS25>
               </PACGS2>
-            }
 
             unpackedPackage.toXml mustEqual expectedResult
         }
@@ -204,10 +205,11 @@ class PackageSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
             val xml =
               <PACGS2>
                 {
-                unpackedPackage.marksAndNumbers.fold(NodeSeq.Empty) { markAndNumbers =>
-                  <MarNumOfPacGS21>{markAndNumbers}</MarNumOfPacGS21>
+                unpackedPackage.marksAndNumbers.fold(NodeSeq.Empty) {
+                  markAndNumbers =>
+                    <MarNumOfPacGS21>{markAndNumbers}</MarNumOfPacGS21>
                 }
-                }
+              }
                 <KinOfPacGS23>{unpackedPackage.kindOfPackage}</KinOfPacGS23>
                 <NumOfPieGS25>{unpackedPackage.numberOfPieces}</NumOfPieGS25>
               </PACGS2>
@@ -222,13 +224,12 @@ class PackageSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
         forAll(arbitrary[RegularPackage]) {
           regularPackage =>
-            val expectedResult = {
+            val expectedResult =
               <PACGS2>
                 <MarNumOfPacGS21>{regularPackage.marksAndNumbers}</MarNumOfPacGS21>
                 <KinOfPacGS23>{regularPackage.kindOfPackage}</KinOfPacGS23>
                 <NumOfPacGS24>{regularPackage.numberOfPackages}</NumOfPacGS24>
               </PACGS2>
-            }
 
             regularPackage.toXml mustEqual expectedResult
         }

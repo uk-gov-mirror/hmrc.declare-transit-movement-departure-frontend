@@ -18,7 +18,7 @@ package models.messages
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites._
+import xml.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -40,7 +40,9 @@ class RepresentativeSpec
     "must serialize Representative to xml" in {
       forAll(arbitrary[Representative]) {
         representative =>
-          val representativeCapacity = representative.repCapREP18.map(value => <RepCapREP18>{value}</RepCapREP18>)
+          val representativeCapacity = representative.repCapREP18.map(
+            value => <RepCapREP18>{value}</RepCapREP18>
+          )
 
           val expectedResult =
             <REPREP>
