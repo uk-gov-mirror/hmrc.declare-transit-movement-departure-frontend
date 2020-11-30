@@ -38,21 +38,22 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.countryJsonList
 
 import scala.concurrent.Future
 
 class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute                                                = Call("GET", "/foo")
+  private def onwardRoute                                        = Call("GET", "/foo")
   private val country                                            = Country(CountryCode("GB"), "United Kingdom")
   private val countries                                          = CountryList(Seq(country))
   private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-
-  private val formProvider = new SecurityConsignorAddressFormProvider()
-  private val form         = formProvider(countries, "Frank")
-  private val template     = "addItems/traderSecurityDetails/securityConsignorAddress.njk"
+  private val formProvider                                       = new SecurityConsignorAddressFormProvider()
+  private val form                                               = formProvider(countries, "Test")
+  private val consignorName                                      = "TestName"
 
   lazy val securityConsignorAddressRoute = routes.SecurityConsignorAddressController.onPageLoad(lrn, index, NormalMode).url
+  private val template                   = "addItems/traderSecurityDetails/securityConsignorAddress.njk"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -61,6 +62,7 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
         bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
         bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
+
   "SecurityConsignorAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -69,9 +71,9 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
         .thenReturn(Future.successful(Html("")))
       when(mockReferenceDataConnector.getCountryList()(any(), any()))
         .thenReturn(Future.successful(countries))
+
       val userAnswers = emptyUserAnswers.set(SecurityConsignorNamePage(index), "foo").success.value
       dataRetrievalWithData(userAnswers)
-
       val request        = FakeRequest(GET, securityConsignorAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -91,24 +93,22 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
 
       templateCaptor.getValue mustEqual template
       jsonCaptor.getValue must containJson(expectedJson)
-
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-
       when(mockReferenceDataConnector.getCountryList()(any(), any()))
         .thenReturn(Future.successful(countries))
 
-      val consignorAddress: ConsignorAddress = ConsignorAddress("Address line 1", "Address line 2", "Address line 3", country)
+      val tradersDetailsConsignorAddress: ConsignorAddress = ConsignorAddress("Address line 1", "Address line 2", "Address line 3", country)
 
       val userAnswers = emptyUserAnswers
         .set(SecurityConsignorNamePage(index), "ConsignorName")
         .success
         .value
-        .set(SecurityConsignorAddressPage(index), consignorAddress)
+        .set(SecurityConsignorAddressPage(index), tradersDetailsConsignorAddress)
         .success
         .value
       dataRetrievalWithData(userAnswers)
@@ -128,24 +128,26 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
           "AddressLine1" -> "Address line 1",
           "AddressLine2" -> "Address line 2",
           "AddressLine3" -> "Address line 3",
-          "country"      -> "GB"
+          "country"      -> "United Kingdom"
         )
       )
-
       val expectedJson = Json.obj(
-        "form"  -> filledForm,
-        "lrn"   -> lrn,
-        "mode"  -> NormalMode,
-        "index" -> index.display
+        "form"          -> filledForm,
+        "lrn"           -> lrn,
+        "mode"          -> NormalMode,
+        "index"         -> index.display,
+        "consignorName" -> consignorName,
+        "countries"     -> countryJsonList(countries.getCountry(CountryCode(country.toString)), countries.fullList)
       )
-
       templateCaptor.getValue mustEqual template
       jsonCaptor.getValue must containJson(expectedJson)
+
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
       when(mockReferenceDataConnector.getCountryList()(any(), any()))
         .thenReturn(Future.successful(countries))
 
@@ -153,9 +155,7 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
         .set(SecurityConsignorNamePage(index), "ConsignorName")
         .success
         .value
-
       dataRetrievalWithData(userAnswers)
-
       val request =
         FakeRequest(POST, securityConsignorAddressRoute)
           .withFormUrlEncodedBody(("AddressLine1", "value 1"), ("AddressLine2", "value 2"), ("AddressLine3", "value 3"), ("country", "GB"))
@@ -175,14 +175,12 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
       when(mockReferenceDataConnector.getCountryList()(any(), any()))
         .thenReturn(Future.successful(countries))
 
-      val userAnswers = emptyUserAnswers
-        .set(SecurityConsignorNamePage(index), "ConsignorName")
-        .success
-        .value
+      val userAnswers = emptyUserAnswers.set(SecurityConsignorNamePage(index), "ConsignorName").success.value
+
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(POST, securityConsignorAddressRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
+      val boundForm      = form.bind(Map("value" -> "invalid value"))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
