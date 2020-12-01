@@ -17,19 +17,24 @@
 package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
+import models.CountryList
+import models.reference.{Country, CountryCode}
 import play.api.data.FormError
 
 class CarrierAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "carrierAddress.error.required"
-  val lengthKey   = "carrierAddress.error.length"
-  val maxLength   = 10
+  val country   = Country(CountryCode("GB"), "United Kingdom")
+  val countries = CountryList(Seq(country))
 
-  val form = new CarrierAddressFormProvider()()
+  val formProvider = new CarrierAddressFormProvider()
+  val form         = formProvider(countries)
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
+    val requiredKey = "carrierAddress.error.required"
+    val lengthKey   = "carrierAddress.error.length"
+    val maxLength   = 35
 
     behave like fieldThatBindsValidData(
       form,

@@ -21,6 +21,7 @@ import controllers.actions._
 import forms.safetyAndSecurity.CarrierAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
+import controllers.{routes => mainRoutes}
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
@@ -75,7 +76,7 @@ class CarrierAddressController @Inject() (
               )
 
               renderer.render(template, json).map(Ok(_))
-            case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageload()))
+            case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
 
           }
       }
