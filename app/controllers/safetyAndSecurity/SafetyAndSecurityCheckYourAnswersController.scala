@@ -19,14 +19,13 @@ package controllers.safetyAndSecurity
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, UserAnswers}
+import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import utils.SafetyAndSecurityCheckYourAnswerHelper
+import viewModels.SafetyAndSecurityViewModel
 import viewModels.sections.Section
 
 import scala.concurrent.ExecutionContext
@@ -44,7 +43,8 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = createSections(request.userAnswers)
+      val sections: Seq[Section] = SafetyAndSecurityViewModel(request.userAnswers)
+
       val json = Json.obj(
         "lrn"         -> lrn,
         "sections"    -> Json.toJson(sections),
@@ -52,59 +52,6 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
       )
 
       renderer.render("safetyAndSecurity/SafetyAndSecurityCheckYourAnswers.njk", json).map(Ok(_))
-  }
-
-  //TODO Move to ViewModel
-
-  private def createSections(userAnswers: UserAnswers): Seq[Section] = {
-    val cyah = new SafetyAndSecurityCheckYourAnswerHelper(userAnswers)
-
-    Seq(
-      Section(
-        Seq(
-          cyah.addCircumstanceIndicator,
-          cyah.circumstanceIndicator,
-          cyah.addTransportChargesPaymentMethod,
-          cyah.transportChargesPaymentMethod,
-          cyah.addCommercialReferenceNumber,
-          cyah.addCommercialReferenceNumberAllItems,
-          cyah.commercialReferenceNumberAllItems,
-          cyah.addConveyanceReferenceNumber,
-          cyah.conveyanceReferenceNumber,
-          cyah.addPlaceOfUnloadingCode,
-          cyah.placeOfUnloadingCode
-        ).flatten
-      ),
-      Section(
-        msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting",
-        Seq(
-          cyah.countriesOfRouting
-        ).flatten
-      ),
-      Section(
-        msg"safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails",
-        Seq(
-          //TODO Consignor subheading
-          cyah.addSafetyAndSecurityConsignor,
-          cyah.addSafetyAndSecurityConsignorEori,
-          cyah.safetyAndSecurityConsignorEori,
-          cyah.safetyAndSecurityConsignorName,
-          cyah.safetyAndSecurityConsignorAddress,
-          //TODO Consignee subheading
-          cyah.addSafetyAndSecurityConsignee,
-          cyah.addSafetyAndSecurityConsigneeEori,
-          cyah.safetyAndSecurityConsigneeEori,
-          cyah.safetyAndSecurityConsigneeName,
-          cyah.safetyAndSecurityConsigneeAddress,
-          //TODO Carrier subheading
-          cyah.addCarrier,
-          cyah.addCarrierEori,
-          cyah.carrierEori,
-          cyah.carrierName,
-          cyah.carrierAddress
-        ).flatten
-      )
-    )
   }
 
 }
