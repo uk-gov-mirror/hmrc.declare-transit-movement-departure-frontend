@@ -19,7 +19,7 @@ package controllers.addItems
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import matchers.JsonMatchers
-import models.{DocumentTypeList, SpecialMentionList}
+import models.{DocumentTypeList, PreviousReferencesDocumentTypeList, SpecialMentionList}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -58,6 +58,7 @@ class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRend
         .thenReturn(Future.successful(Html("")))
       when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(DocumentTypeList(Nil)))
       when(mockRefDataConnector.getSpecialMention()(any(), any())).thenReturn(Future.successful(SpecialMentionList(Nil)))
+      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(PreviousReferencesDocumentTypeList(Nil)))
 
       dataRetrievalWithData(emptyUserAnswers)
 

@@ -1743,6 +1743,32 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
         }
 
+        "must go to Reference Type page when user selects 'Yes'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers
+                .remove(PreviousReferencesQuery(index)).success.value
+                .set(AddAnotherPreviousAdministrativeReferencePage(index), true).success.value
+
+              navigator
+                .nextPage(AddAnotherPreviousAdministrativeReferencePage(index), CheckMode, updatedAnswer)
+                .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, index, CheckMode))
+          }
+        }
+
+        "must go to CYA page when user selects 'No'" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswer = answers
+                .remove(PreviousReferencesQuery(index)).success.value
+                .set(AddAnotherPreviousAdministrativeReferencePage(index), false).success.value
+
+              navigator
+                .nextPage(AddAnotherPreviousAdministrativeReferencePage(index), CheckMode, updatedAnswer)
+                .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+          }
+        }
+
         "RemovePackage" - {
 
           "must go to AddAnotherPackage page when 'No' is selected and there are more than one package" in {

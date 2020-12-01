@@ -45,12 +45,13 @@ import models.journeyDomain.{
   MovementDetails,
   Packages,
   PreTaskListDetails,
+  ProducedDocument,
   RouteDetails,
   SpecialMention,
   TraderDetails,
   TransportDetails
 }
-import models.reference.{CountryCode, PackageType}
+import models.reference.{CircumstanceIndicator, CountryCode, DocumentType, PackageType}
 import models.{
   ConsigneeAddress,
   ConsignorAddress,
@@ -85,10 +86,12 @@ trait JourneyModelGenerators {
         } else {
           Arbitrary(genTransitInformationWithoutArrivalTime)
         }
-        routeDetails     <- arbitraryRouteDetails(transitInformation).arbitrary
-        transportDetails <- arbitrary[TransportDetails]
-        traderDetails    <- arbitrary[TraderDetails]
-        itemDetails      <- nonEmptyListOf(3)(Arbitrary(genItemSection(movementDetails.containersUsed)))
+        routeDetails          <- arbitraryRouteDetails(transitInformation).arbitrary
+        transportDetails      <- arbitrary[TransportDetails]
+        traderDetails         <- arbitrary[TraderDetails]
+        addDocument           <- arbitrary[Boolean]
+        circumstanceIndicator <- if (isSecurityDetailsRequired) { Gen.oneOf(CircumstanceIndicator.conditionalIndicators).map(Some(_)) } else Gen.const(None) //// TODO until we have journey model for safety and security
+        itemDetails           <- nonEmptyListOf(3)(Arbitrary(genItemSection(movementDetails.containersUsed, addDocument, circumstanceIndicator)))
         goodsummarydetaislType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
         } else {
@@ -235,7 +238,8 @@ trait JourneyModelGenerators {
     Arbitrary(Arbitrary.arbitrary[EoriNumber].map(models.journeyDomain.ItemTraderDetails.TraderEori))
 
   implicit def arbitraryItemPersonalInformation(
-    implicit arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation] =
+    implicit
+    arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation] =
     Arbitrary {
       for {
         name    <- stringsWithMaxLength(stringMaxLength)
@@ -248,29 +252,38 @@ trait JourneyModelGenerators {
       Gen.oneOf(
         Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation],
         Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori]
-      ))
+      )
+    )
 
   implicit def arbitraryItemSection: Arbitrary[ItemSection] =
     Arbitrary {
       for {
-        bool        <- arbitrary[Boolean]
-        itemSection <- genItemSection(bool)
+        containersUsed            <- arbitrary[Boolean]
+        isSecurityDetailsRequired <- arbitrary[Boolean]
+        addDocument               <- arbitrary[Boolean]
+        otherIndicator            <- nonEmptyString
+        circumstanceIndicator <- if (isSecurityDetailsRequired) { Gen.oneOf(CircumstanceIndicator.conditionalIndicators :+ otherIndicator).map(Some(_)) } else
+          Gen.const(None)
+        itemSection <- genItemSection(containersUsed, addDocument, circumstanceIndicator)
       } yield itemSection
     }
 
-  def genItemSection(containersUsed: Boolean = false): Gen[ItemSection] = {
+  def genItemSection(containersUsed: Boolean = false, addDocument: Boolean = false, circumstanceIndicator: Option[String] = None): Gen[ItemSection] = {
 
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
+    val documentTypeIsMandatory = circumstanceIndicator.fold(addDocument)(CircumstanceIndicator.conditionalIndicators.contains(_))
+
     for {
-      itemDetail      <- arbitrary[ItemDetails]
-      itemConsignor   <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-      itemConsignee   <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages        <- nonEmptyListOf[Packages](10)
-      containers      <- if (containersUsed) { nonEmptyListOf[Container](10).map(Some(_)) } else { Gen.const(None) }
-      specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](10))
-    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions)
+      itemDetail        <- arbitrary[ItemDetails]
+      itemConsignor     <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee     <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      packages          <- nonEmptyListOf[Packages](10)
+      containers        <- if (containersUsed) { nonEmptyListOf[Container](10).map(Some(_)) } else Gen.const(None)
+      specialMentions   <- Gen.option(nonEmptyListOf[SpecialMention](10))
+      producedDocuments <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](10).map(Some(_)) } else Gen.const(None)
+    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments)
   }
 
   implicit lazy val arbitraryPreTaskListDetails: Arbitrary[PreTaskListDetails] =
@@ -354,6 +367,15 @@ trait JourneyModelGenerators {
       } yield SpecialMention(specialMentionType, additionalInfo)
     }
 
+  implicit lazy val arbitraryProducedDocument: Arbitrary[ProducedDocument] =
+    Arbitrary {
+      for {
+        documentType      <- nonEmptyString
+        documentReference <- nonEmptyString
+        extraInformation  <- Gen.option(nonEmptyString)
+      } yield ProducedDocument(documentType, documentReference, extraInformation)
+    }
+
   implicit lazy val arbitraryContainer: Arbitrary[Container] =
     Arbitrary {
       for {
@@ -434,6 +456,7 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryTransitInformation: Arbitrary[TransitInformation] =
     Arbitrary(Gen.oneOf(genTransitInformationWithoutArrivalTime, genTransitInformationWithArrivalTime))
 
+  // TODO: refactor this. Remove parameter, make all transit informations consistent with security flag and create generator.
   implicit def arbitraryRouteDetails(implicit arbTransitInformation: Arbitrary[TransitInformation]): Arbitrary[RouteDetails] =
     Arbitrary {
       for {

@@ -21,8 +21,8 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.ReferenceTypeFormProvider
 import matchers.JsonMatchers
-import models.reference.PreviousDocumentType
-import models.{NormalMode, PreviousDocumentTypeList}
+import models.reference.PreviousReferencesDocumentType
+import models.{NormalMode, PreviousReferencesDocumentTypeList}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
@@ -46,10 +46,10 @@ class ReferenceTypeControllerSpec extends SpecBase with MockNunjucksRendererApp 
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new ReferenceTypeFormProvider()
-  private val documentTypeList = PreviousDocumentTypeList(
+  private val documentTypeList = PreviousReferencesDocumentTypeList(
     Seq(
-      PreviousDocumentType("T1", "Description T1"),
-      PreviousDocumentType("T2F", "Description T2F")
+      PreviousReferencesDocumentType("T1", "Description T1"),
+      PreviousReferencesDocumentType("T2F", "Description T2F")
     )
   )
 
@@ -77,7 +77,7 @@ class ReferenceTypeControllerSpec extends SpecBase with MockNunjucksRendererApp 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val request        = FakeRequest(GET, referenceTypeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -115,7 +115,7 @@ class ReferenceTypeControllerSpec extends SpecBase with MockNunjucksRendererApp 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val userAnswers = emptyUserAnswers.set(ReferenceTypePage(index, referenceIndex), "T1").success.value
       dataRetrievalWithData(userAnswers)
@@ -157,7 +157,7 @@ class ReferenceTypeControllerSpec extends SpecBase with MockNunjucksRendererApp 
     "must redirect to the next page when valid data is submitted" in {
       dataRetrievalWithData(emptyUserAnswers)
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val request =
         FakeRequest(POST, referenceTypeRoute)
@@ -174,7 +174,7 @@ class ReferenceTypeControllerSpec extends SpecBase with MockNunjucksRendererApp 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val request        = FakeRequest(POST, referenceTypeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))

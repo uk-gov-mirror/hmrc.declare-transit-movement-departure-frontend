@@ -19,10 +19,13 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
+import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
-import org.scalacheck.Arbitrary
-import pages.ContainersUsedPage
+import org.scalacheck.{Arbitrary, Gen}
+import pages.{AddSecurityDetailsPage, ContainersUsedPage}
+import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
@@ -95,13 +98,28 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
     })
   }
 
+  private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
+    val indicator = Gen.oneOf(CircumstanceIndicator.conditionalIndicators).sample.getOrElse("test")
+    val smUserAnswers = startUserAnswers
+      .unsafeSetVal(AddSecurityDetailsPage)(producedDocument.isDefined)
+      .unsafeSetVal(AddCircumstanceIndicatorPage)(producedDocument.isDefined)
+      .unsafeSetVal(AddDocumentsPage(itemIndex))(producedDocument.isDefined)
+      .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
+
+    producedDocument.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
+      case (userAnswers, (producedDocument, index)) =>
+        ProducedDocumentSpec.setProducedDocumentsUserAnswers(producedDocument, itemIndex, Index(index))(userAnswers)
+    })
+  }
+
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     (
       ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, itemIndex) _ andThen
         ItemTraderDetailsSpec.setItemTraderDetails(ItemTraderDetails(itemSection.consignor, itemSection.consignee), itemIndex) andThen
         setPackages(itemSection.packages, itemIndex) andThen
         setContainers(itemSection.containers, itemIndex) andThen
-        setSpecialMentions(itemSection.specialMentions, itemIndex)
+        setSpecialMentions(itemSection.specialMentions, itemIndex) andThen
+        setProducedDocuments(itemSection.producedDocuments, itemIndex)
     )(startUserAnswers)
 
 }

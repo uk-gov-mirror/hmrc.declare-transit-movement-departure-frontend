@@ -25,7 +25,6 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
 import play.api.libs.json.Json
-import utils.SectionsHelper
 
 class DeclarationSummaryViewModelSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with BeforeAndAfterEach {
 
@@ -45,7 +44,7 @@ class DeclarationSummaryViewModelSpec extends SpecBase with GeneratorSpec with J
       val expectedJson =
         Json.obj(
           "lrn"                    -> lrn,
-          "sections"               -> new SectionsHelper(userAnswers).getSections,
+          "sections"               -> TaskListViewModel(userAnswers),
           "backToTransitMovements" -> service.fullServiceUrl,
           "isDeclarationComplete"  -> false
         )
@@ -65,7 +64,7 @@ class DeclarationSummaryViewModelSpec extends SpecBase with GeneratorSpec with J
           val expectedJson =
             Json.obj(
               "lrn"                    -> journeyDomain.preTaskList.lrn,
-              "sections"               -> new SectionsHelper(userAnswers).getSections,
+              "sections"               -> TaskListViewModel(userAnswers),
               "backToTransitMovements" -> service.fullServiceUrl,
               "isDeclarationComplete"  -> true,
               "onSubmitUrl"            -> DeclarationSummaryViewModel.nextPage(journeyDomain.preTaskList.lrn).url

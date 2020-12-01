@@ -18,11 +18,14 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import derivable.{DeriveNumberOfContainers, DeriveNumberOfItems, DeriveNumberOfPackages, DeriveNumberOfSpecialMentions}
+import derivable._
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
+import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
-import pages.ContainersUsedPage
+import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
+import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 
 case class ItemSection(
   itemDetails: ItemDetails,
@@ -30,7 +33,8 @@ case class ItemSection(
   consignee: Option[RequiredDetails],
   packages: NonEmptyList[Packages],
   containers: Option[NonEmptyList[Container]],
-  specialMentions: Option[NonEmptyList[SpecialMention]]
+  specialMentions: Option[NonEmptyList[SpecialMention]],
+  producedDocuments: Option[NonEmptyList[ProducedDocument]]
 )
 
 object ItemSection {
@@ -83,6 +87,36 @@ object ItemSection {
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
 
+  private def readDocumentType(itemIndex: Index): ReaderT[Option, UserAnswers, Boolean] =
+    AddSecurityDetailsPage.reader
+      .flatMap {
+        case true =>
+          AddCircumstanceIndicatorPage.reader.flatMap {
+            case true =>
+              CircumstanceIndicatorPage.reader.map(x => CircumstanceIndicator.conditionalIndicators.contains(x))
+            case false => true.pure[UserAnswersReader]
+          }
+        case false => AddDocumentsPage(itemIndex).reader
+      }
+
+  private def deriveProducedDocuments(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] =
+    readDocumentType(itemIndex)
+      .flatMap {
+        isTrue =>
+          if (isTrue) {
+            DeriveNumberOfDocuments(itemIndex).reader
+              .filter(_.nonEmpty)
+              .flatMap {
+                _.zipWithIndex
+                  .traverse[UserAnswersReader, ProducedDocument]({
+                    case (_, index) =>
+                      ProducedDocument.producedDocumentReader(itemIndex, Index(index))
+                  })
+                  .map(NonEmptyList.fromList)
+              }
+          } else none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]
+      }
+
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
       ItemDetails.itemDetailsReader(index),
@@ -90,7 +124,8 @@ object ItemSection {
       ItemTraderDetails.consigneeDetails(index),
       derivePackage(index),
       deriveContainers(index),
-      deriveSpecialMentions(index)
+      deriveSpecialMentions(index),
+      deriveProducedDocuments(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages.safetyAndSecurity
+import models.Status
+import play.api.libs.json.{JsArray, JsObject, Json, Reads}
 
-import pages.behaviours.PageBehaviours
+package object viewModels {
 
-class AddConveyancerReferenceNumberPageSpec extends PageBehaviours {
-
-  "AddConveyancerReferenceNumberPage" - {
-
-    beRetrievable[Boolean](AddConveyancerReferenceNumberPage)
-
-    beSettable[Boolean](AddConveyancerReferenceNumberPage)
-
-    beRemovable[Boolean](AddConveyancerReferenceNumberPage)
+  implicit val readsStatus: Reads[Status] = implicitly[Reads[String]].map {
+    case "notStarted" => Status.NotStarted
+    case "inProgress" => Status.InProgress
+    case "completed"  => Status.Completed
+    case _            => throw new Exception(s"Invalid string value for ${Status.getClass}")
   }
 }

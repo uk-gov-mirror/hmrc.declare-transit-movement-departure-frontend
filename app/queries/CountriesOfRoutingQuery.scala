@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages.safetyAndSecurity
+package queries
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.countriesOfRouting
 
-case object AddConveyancerReferenceNumberPage extends QuestionPage[Boolean] {
+case object CountriesOfRoutingQuery extends QuestionPage[Seq[String]] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ countriesOfRouting
 
-  override def toString: String = "addConveyancerReferenceNumber"
 }
