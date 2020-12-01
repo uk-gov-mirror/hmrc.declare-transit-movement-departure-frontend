@@ -21,7 +21,8 @@ import java.time.{LocalDate, LocalDateTime, LocalTime, OffsetDateTime}
 
 object Format {
 
-  val dateFormatter: DateTimeFormatter               = DateTimeFormatter.ofPattern("yyyyMMdd")
+  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+  // TODO: Deprecate and replace with XmlValueWriter
   def dateFormatted(date: LocalDate): String         = date.format(dateFormatter)
   def dateFormatted(dateTime: LocalDateTime): String = dateTime.format(dateFormatter)
 

@@ -16,30 +16,25 @@
 
 package xml
 
+import java.time.LocalDate
+
 import base.SpecBase
 import xml.XMLValueWriter._
 
 class XMLValueWriterSpec extends SpecBase {
 
-  "inserts string as a value of an xml node" in {
+  "formats a string" in {
 
     val sut = "testString"
 
-    val result = <testNode>{sut.asXmlText}</testNode>
-
-    result mustEqual <testNode>testString</testNode>
+    sut.asXmlText mustEqual sut
   }
 
-  "inserts an Int as a value of an xml node" in {
-
-    val sut = 1
-
-    val result = <testNode>{sut.asXmlText}</testNode>
-
-    result mustEqual <testNode>1</testNode>
+  "formats an Int as a string" in {
+    1.asXmlText mustEqual "1"
   }
 
-  "inserts uses the XMLValueWriter for an object to turn it into a string value" in {
+  "formats an object using the XMLValueWriter and turns it into it's string representation" in {
 
     case class IntWord(a: String)
     case class IntWordMapper(x: Int, y: IntWord)
@@ -52,9 +47,13 @@ class XMLValueWriterSpec extends SpecBase {
 
     val sut = IntWordMapper(1, IntWord("one"))
 
-    val result = <testNode>{sut.asXmlText}</testNode>
+    sut.asXmlText mustEqual "1 in words is one"
+  }
 
-    result mustEqual <testNode>1 in words is one</testNode>
+  "formats a LocalDate as a string in format yyyyMMdd" in {
+    val sut = LocalDate.of(2020, 12, 31)
+
+    sut.asXmlText mustEqual "20201231"
   }
 
 }

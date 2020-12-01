@@ -16,10 +16,13 @@
 
 package xml
 
+import java.time.LocalDate
+
 import play.twirl.api.utils.StringEscapeUtils
+import utils.Format.dateFormatter
 
 trait XMLValueWriter[A] {
-  def writeValue(a: A): String
+  def asXmlText(a: A): String
 }
 
 object XMLValueWriter {
@@ -28,12 +31,18 @@ object XMLValueWriter {
 
   implicit class XMLValueWriterOps[A](val a: A) extends AnyVal {
 
+    /*
+        This uses the XMLValueWriter of the object to be serialized and that string representation
+        as per the XML spec
+     */
     def asXmlText(implicit ev: XMLValueWriter[A]): String =
-      ev.writeValue(a)
+      XMLValueWriter[String].asXmlText(ev.asXmlText(a))
   }
 
   implicit val stringXmlValueWriter: XMLValueWriter[String] = string => StringEscapeUtils.escapeXml11(string)
 
-  implicit val intXmlValueWriter: XMLValueWriter[Int] = int => int.toString.asXmlText
+  implicit val intXmlValueWriter: XMLValueWriter[Int] = int => int.toString
+
+  implicit val dateFormattedXmlValueWriter: XMLValueWriter[LocalDate] = date => date.format(dateFormatter)
 
 }
