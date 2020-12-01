@@ -20,7 +20,7 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import forms.safetyAndSecurity.SafetyAndSecurityConsignorNameFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
-import navigation.annotations.SafetyAndSecurity
+import navigation.annotations.{SafetyAndSecurity, SafetyAndSecurityTraderDetails}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -52,7 +52,7 @@ class SafetyAndSecurityConsignorNameControllerSpec extends SpecBase with MockNun
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SafetyAndSecurity]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SafetyAndSecurityTraderDetails]).toInstance(new FakeNavigator(onwardRoute)))
 
   "SafetyAndSecurityConsignorName Controller" - {
 
