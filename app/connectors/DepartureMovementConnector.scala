@@ -44,9 +44,6 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
     val serviceUrl: String = s"${appConfig.departureHost}/movements/departures/${departureId.value}/messages/summary"
     http.GET[HttpResponse](serviceUrl) map {
       case responseMessage if is2xx(responseMessage.status) =>
-        println(responseMessage.json)
-        println("\n\n\n")
-        println(responseMessage.json.as[MessagesSummary])
         Some(responseMessage.json.as[MessagesSummary])
       case _ =>
         Logger.error(s"Get Summary failed to return data")
