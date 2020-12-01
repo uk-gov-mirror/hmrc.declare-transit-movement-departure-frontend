@@ -32,4 +32,9 @@ object XMLWrites {
       writer.writes(a)
   }
 
+  implicit def optionalXMLWrites[A: XMLWrites]: XMLWrites[Option[A]] = {
+    case Some(a) => a.toXml
+    case None    => NodeSeq.Empty
+  }
+
 }
