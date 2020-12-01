@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package models.reference
+import models.Status
+import play.api.libs.json.{JsArray, JsObject, Json, Reads}
 
-import play.api.libs.json.{Json, Reads}
+package object viewModels {
 
-case class CircumstanceIndicator(code: String, description: String)
-
-object CircumstanceIndicator {
-  implicit def reads: Reads[CircumstanceIndicator] = Json.reads[CircumstanceIndicator]
-
-  val conditionalIndicators = Seq("E", "D", "C", "B")
+  implicit val readsStatus: Reads[Status] = implicitly[Reads[String]].map {
+    case "notStarted" => Status.NotStarted
+    case "inProgress" => Status.InProgress
+    case "completed"  => Status.Completed
+    case _            => throw new Exception(s"Invalid string value for ${Status.getClass}")
+  }
 }

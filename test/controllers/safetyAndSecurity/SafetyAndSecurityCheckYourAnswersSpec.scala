@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.addItems
+package controllers.safetyAndSecurity
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import connectors.ReferenceDataConnector
 import matchers.JsonMatchers
-import models.{CountryList, DocumentTypeList, PreviousReferencesDocumentTypeList, SpecialMentionList}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -33,37 +31,31 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import controllers.{routes => mainRoutes}
 
 import scala.concurrent.Future
 
-class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class SafetyAndSecurityCheckYourAnswersSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val itemRoute = routes.ItemsCheckYourAnswersController.onPageLoad(lrn, index).url
-
-  private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  lazy val safetyAndSecurityRoute = routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).toInstance(new FakeNavigator(onwardRoute)))
-      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockRefDataConnector))
 
-  "ItemsCheckYourAnswersController" - {
+  "SafetyAndSecurityCheckYourAnswersController" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getDocumentTypes()(any(), any())).thenReturn(Future.successful(DocumentTypeList(Nil)))
-      when(mockRefDataConnector.getSpecialMention()(any(), any())).thenReturn(Future.successful(SpecialMentionList(Nil)))
-      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(PreviousReferencesDocumentTypeList(Nil)))
-      when(mockRefDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(CountryList(Nil)))
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, itemRoute)
+      val request        = FakeRequest(GET, safetyAndSecurityRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -75,12 +67,12 @@ class ItemsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRend
 
       val expectedJson = Json.obj(
         "lrn"         -> lrn,
-        "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
+        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey - "sections"
 
-      templateCaptor.getValue mustEqual "addItems/itemsCheckYourAnswers.njk"
+      templateCaptor.getValue mustEqual "safetyAndSecurity/SafetyAndSecurityCheckYourAnswers.njk"
       jsonWithoutConfig mustBe expectedJson
     }
   }

@@ -139,3 +139,5 @@ GET        /:lrn/security/trader-security/carrier-name                          
 POST       /:lrn/security/trader-security/carrier-name                                     controllers.safetyAndSecurity.CarrierNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/security/trader-security/change-carrier-name                                 controllers.safetyAndSecurity.CarrierNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/security/trader-security/change-carrier-name                                 controllers.safetyAndSecurity.CarrierNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/security/check-answers                            controllers.safetyAndSecurity.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
