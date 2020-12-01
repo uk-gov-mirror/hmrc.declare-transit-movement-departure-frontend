@@ -21,7 +21,7 @@ import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.SafetyAndSecurityCheckYourAnswerHelper
 import viewModels.sections.Section
 
-object SafetyAndSecurityViewModel {
+object SafetyAndSecurityCheckYourAnswersViewModel {
 
   def apply(userAnswers: UserAnswers): Seq[Section] = {
     val cyah = new SafetyAndSecurityCheckYourAnswerHelper(userAnswers)

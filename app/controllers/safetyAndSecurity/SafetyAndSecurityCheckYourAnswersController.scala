@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import viewModels.SafetyAndSecurityViewModel
+import viewModels.SafetyAndSecurityCheckYourAnswersViewModel
 import viewModels.sections.Section
 
 import scala.concurrent.ExecutionContext
@@ -43,7 +43,7 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = SafetyAndSecurityViewModel(request.userAnswers)
+      val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers)
 
       val json = Json.obj(
         "lrn"         -> lrn,

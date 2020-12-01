@@ -17,16 +17,11 @@
 package utils
 
 import controllers.safetyAndSecurity.routes
-import derivable.DeriveNumberOfCountryOfRouting
-import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages.safetyAndSecurity._
+import queries.CountriesOfRoutingQuery
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
-import cats.data._
-import cats.implicits._
-import queries.CountriesOfRoutingQuery
-
-import scala.collection.immutable
 
 class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
 
