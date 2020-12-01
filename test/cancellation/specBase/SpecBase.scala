@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package cancellation.specBase
 
-import play.api.libs.json.{__, JsString, Reads, Writes}
-import xml.XMLValueWriter
+import org.scalatest.{OptionValues, StreamlinedXmlEquality}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-case class EoriNumber(value: String)
-
-object EoriNumber {
-
-  implicit val reads: Reads[EoriNumber] = __.read[String].map(EoriNumber.apply)
-
-  implicit val writes: Writes[EoriNumber] = Writes(
-    eori => JsString(eori.value)
-  )
-
-  implicit val xMLValueWriter: XMLValueWriter[EoriNumber] = _.value
-}
+trait SpecBase extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues

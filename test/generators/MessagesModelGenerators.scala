@@ -34,24 +34,22 @@ import utils.Format.dateFormatted
 
 trait MessagesModelGenerators extends ModelGenerators with Generators {
 
-  implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] = {
+  implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] =
     Arbitrary {
       for {
         country <- arbitrary[CountryCode]
       } yield Itinerary(country.code)
     }
-  }
 
-  implicit lazy val arbitraryInterchangeControlReference: Arbitrary[InterchangeControlReference] = {
+  implicit lazy val arbitraryInterchangeControlReference: Arbitrary[InterchangeControlReference] =
     Arbitrary {
       for {
         date  <- localDateGen
         index <- Gen.posNum[Int]
       } yield InterchangeControlReference(dateFormatted(date), index)
     }
-  }
 
-  implicit lazy val arbitraryMeta: Arbitrary[Meta] = {
+  implicit lazy val arbitraryMeta: Arbitrary[Meta] =
     Arbitrary {
       for {
         interchangeControlReference <- arbitrary[InterchangeControlReference]
@@ -72,7 +70,6 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
           None
         )
     }
-  }
 
   implicit lazy val arbitraryCustomsOfficeTransit: Arbitrary[CustomsOfficeTransit] =
     Arbitrary {
@@ -82,7 +79,7 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
       } yield CustomsOfficeTransit(customsOffice.mkString, arrivalDateTime)
     }
 
-  implicit lazy val arbitraryDeclarationRequest: Arbitrary[DeclarationRequest] = {
+  implicit lazy val arbitraryDeclarationRequest: Arbitrary[DeclarationRequest] =
     Arbitrary {
       for {
         meta                      <- arbitrary[Meta]
@@ -119,9 +116,8 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
           itinerary
         )
     }
-  }
 
-  implicit lazy val arbitraryTransport: Arbitrary[Transport] = {
+  implicit lazy val arbitraryTransport: Arbitrary[Transport] =
     Arbitrary {
       for {
         inlTraModHEA75        <- Gen.option(choose(min = 1: Int, 99: Int))
@@ -142,9 +138,8 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
           typOfMeaOfTraCroHEA88
         )
     }
-  }
 
-  implicit lazy val arbitraryHeader: Arbitrary[Header] = {
+  implicit lazy val arbitraryHeader: Arbitrary[Header] =
     Arbitrary {
       for {
         refNumHEA4          <- arbitrary[LocalReferenceNumber].map(_.toString())
@@ -195,7 +190,6 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
           codPlUnHEA357
         )
     }
-  }
 
   implicit lazy val arbitraryTraderPrincipalWithEori: Arbitrary[TraderPrincipalWithEori] =
     Arbitrary {
@@ -390,7 +384,7 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
         PreviousAdministrativeReference(
           preDocTypAR21,
           preDocRefAR26,
-          comOfInfAR29,
+          comOfInfAR29
         )
     }
 
@@ -404,7 +398,7 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
         ProducedDocument(
           documentType,
           reference,
-          complementOfInformation,
+          complementOfInformation
         )
     }
 
@@ -455,7 +449,9 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
   implicit lazy val arbitraryRegularPackage: Arbitrary[RegularPackage] =
     Arbitrary {
       for {
-        kindOfPackage    <- stringsWithMaxLength(3, alphaNumChar).suchThat(x => !BulkPackage.validCodes.contains(x) && !UnpackedPackage.validCodes.contains(x))
+        kindOfPackage <- stringsWithMaxLength(3, alphaNumChar).suchThat(
+          x => !BulkPackage.validCodes.contains(x) && !UnpackedPackage.validCodes.contains(x)
+        )
         numberOfPackages <- Gen.choose(0, 99999)
         marksAndNumbers  <- stringsWithMaxLength(42, alphaNumChar)
       } yield RegularPackage(kindOfPackage, numberOfPackages, marksAndNumbers)
@@ -488,3 +484,5 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
     }
 
 }
+
+object MessagesModelGenerators extends MessagesModelGenerators

@@ -18,6 +18,7 @@ package models
 
 import play.api.libs.json._
 import play.api.mvc.PathBindable
+import xml.XMLValueWriter
 
 final case class LocalReferenceNumber(value: String) {
   override def toString: String = value
@@ -62,5 +63,7 @@ object LocalReferenceNumber {
     override def unbind(key: String, value: LocalReferenceNumber): String =
       value.toString
   }
+
+  implicit val xmlValueWriter: XMLValueWriter[LocalReferenceNumber] = lrn => lrn.value
 
 }

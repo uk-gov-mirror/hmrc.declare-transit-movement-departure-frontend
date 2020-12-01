@@ -236,7 +236,8 @@ trait JourneyModelGenerators {
     Arbitrary(Arbitrary.arbitrary[EoriNumber].map(models.journeyDomain.ItemTraderDetails.TraderEori))
 
   implicit def arbitraryItemPersonalInformation(
-    implicit arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation] =
+    implicit
+    arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation] =
     Arbitrary {
       for {
         name    <- stringsWithMaxLength(stringMaxLength)
@@ -249,13 +250,14 @@ trait JourneyModelGenerators {
       Gen.oneOf(
         Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation],
         Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori]
-      ))
+      )
+    )
 
   implicit def arbitraryItemSection: Arbitrary[ItemSection] =
     Arbitrary {
       for {
-        containersUsed    <- arbitrary[Boolean]
-        itemSection       <- genItemSection(containersUsed, safetyAndSecurity)
+        containersUsed <- arbitrary[Boolean]
+        itemSection    <- genItemSection(containersUsed)
       } yield itemSection
     }
 

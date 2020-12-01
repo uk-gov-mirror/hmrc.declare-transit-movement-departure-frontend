@@ -39,7 +39,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
     */
   val maxNumberOfGeneratedPageAnswers: Int = 1
 
-  final val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+  final val userAnswersGeneratorPairs: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitraryCarrierNameUserAnswersEntry.arbitrary ::
       arbitraryCarrierEoriUserAnswersEntry.arbitrary ::
       arbitraryCarrierAddressUserAnswersEntry.arbitrary ::
@@ -257,9 +257,9 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
       for {
         id         <- arbitrary[LocalReferenceNumber]
         eoriNumber <- arbitrary[EoriNumber]
-        data <- generators match {
+        data <- userAnswersGeneratorPairs match {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
-          case _   => Gen.mapOf(oneOf(generators))
+          case _   => Gen.mapOf(oneOf(userAnswersGeneratorPairs))
         }
       } yield
         UserAnswers(

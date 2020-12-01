@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package models
+package cancellation.cancellationModels
 
-import play.api.libs.json.{__, JsString, Reads, Writes}
-import xml.XMLValueWriter
+import com.lucidchart.open.xtract.{__, XmlReader}
+import xml.XMLWrites
+import xml.XMLValueWriter._
 
-case class EoriNumber(value: String)
+case class CustomsOfficeDeparture(referenceNumber: String)
 
-object EoriNumber {
+object CustomsOfficeDeparture {
 
-  implicit val reads: Reads[EoriNumber] = __.read[String].map(EoriNumber.apply)
+  implicit val xmlReader: XmlReader[CustomsOfficeDeparture] = (
+    (__ \ "RefNumEPT1").read[String]
+  ).map(apply)
 
-  implicit val writes: Writes[EoriNumber] = Writes(
-    eori => JsString(eori.value)
-  )
-
-  implicit val xMLValueWriter: XMLValueWriter[EoriNumber] = _.value
+  implicit def writes: XMLWrites[CustomsOfficeDeparture] = XMLWrites[CustomsOfficeDeparture] {
+    case CustomsOfficeDeparture(referenceNumber) =>
+      <CUSOFFDEPEPT>
+        <RefNumEPT1>{referenceNumber.asXmlText}</RefNumEPT1>
+      </CUSOFFDEPEPT>
+  }
 }
