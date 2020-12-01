@@ -22,4 +22,6 @@ case class CircumstanceIndicator(code: String, description: String)
 
 object CircumstanceIndicator {
   implicit def reads: Reads[CircumstanceIndicator] = Json.reads[CircumstanceIndicator]
+
+  val conditionalIndicators = Seq("E", "D", "C", "B")
 }
