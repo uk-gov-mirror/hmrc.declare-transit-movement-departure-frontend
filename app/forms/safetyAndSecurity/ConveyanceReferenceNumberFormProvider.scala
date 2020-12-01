@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class ConveyanceReferenceNumberFormProvider @Inject() extends Mappings {
   val maxLength      = 8
   val minLength      = 7
-  val refNumberRegex = ""
+  val refNumberRegex = s"^[a-zA-Z0-9]{$minLength,$maxLength}$$"
 
   def apply(): Form[String] =
     Form(
