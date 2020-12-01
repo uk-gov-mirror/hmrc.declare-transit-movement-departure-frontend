@@ -64,6 +64,7 @@ transportDetails.preHeading = Transport details
 goodsSummary.preHeading = Goods summary
 guaranteeDetails.preHeading = Guarantee details
 items.preHeading = Items
+safetyAndSecurity.preHeading = Safety and Security
 
 routeDetailsCheckYourAnswers.heading = Check your answers
 routeDetailsCheckYourAnswers.title = Check your answers
@@ -1351,6 +1352,11 @@ carrierName.heading = carrierName
 carrierName.checkYourAnswersLabel = carrierName
 carrierName.error.required = Enter carrierName
 carrierName.error.length = CarrierName must be 10 characters or less
+
+safetyAndSecurityCheckYourAnswers.title = Check your answers
+safetyAndSecurityCheckYourAnswers.heading = Check your answers
+safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting = Countries of routing
+safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails = Security trader
 
 securityConsignorName.title = What is the security consignor’s name?
 securityConsignorName.heading = What is the security consignor’s name?

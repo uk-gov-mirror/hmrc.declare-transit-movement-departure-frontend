@@ -41,7 +41,7 @@ object JourneyDomain {
   }
 
   implicit def userAnswersReader: UserAnswersReader[JourneyDomain] = {
-    // TOOD: This is a workaround till we remove UserAnswersParser
+    // TODO: This is a workaround till we remove UserAnswersParser
     implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
       ReaderT[Option, UserAnswers, A](parser.run _)
 
