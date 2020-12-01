@@ -18,8 +18,9 @@ package xml
 
 import java.time.LocalDate
 
-import play.twirl.api.utils.StringEscapeUtils
 import utils.Format.dateFormatter
+
+import scala.xml.Utility
 
 trait XMLValueWriter[A] {
   def asXmlText(a: A): String
@@ -39,7 +40,7 @@ object XMLValueWriter {
       XMLValueWriter[String].asXmlText(ev.asXmlText(a))
   }
 
-  implicit val stringXmlValueWriter: XMLValueWriter[String] = string => StringEscapeUtils.escapeXml11(string)
+  implicit val stringXmlValueWriter: XMLValueWriter[String] = string => Utility.escape(string)
 
   implicit val intXmlValueWriter: XMLValueWriter[Int] = int => int.toString
 
