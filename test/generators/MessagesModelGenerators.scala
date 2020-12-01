@@ -24,6 +24,7 @@ import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, Cus
 import models.messages.goodsitem._
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
+import models.messages.safetyAndSecurity.{SafetyAndSecurityCarrier, SafetyAndSecurityConsignee, SafetyAndSecurityConsignor}
 import models.messages.trader._
 import models.reference.CountryCode
 import org.scalacheck.Arbitrary.arbitrary
@@ -33,6 +34,65 @@ import org.scalacheck.{Arbitrary, Gen}
 import utils.Format.dateFormatted
 
 trait MessagesModelGenerators extends ModelGenerators with Generators {
+
+  implicit lazy val arbitrarySafetyAndSecurityCarrier = Arbitrary {
+    Gen.oneOf(securityCarrierNoEori.arbitrary, securityCarrierEori.arbitrary)
+  }
+
+  private val securityCarrierEori: Arbitrary[SafetyAndSecurityCarrier] = Arbitrary {
+    for {
+      eori <- arbitrary[String]
+    } yield SafetyAndSecurityCarrier(None, None, None, None, None, Some(eori))
+  }
+
+  private val securityCarrierNoEori: Arbitrary[SafetyAndSecurityCarrier] = Arbitrary {
+    for {
+      name            <- arbitrary[String]
+      streetAndNumber <- arbitrary[String]
+      postcode        <- arbitrary[String]
+      city            <- arbitrary[String]
+      countryCode     <- arbitrary[String]
+    } yield SafetyAndSecurityCarrier(Some(name), Some(streetAndNumber), Some(postcode), Some(city), Some(countryCode), None)
+  }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsignee: Arbitrary[SafetyAndSecurityConsignee] = Arbitrary {
+    Gen.oneOf(securityConsigneeEori.arbitrary, securityConsigneeNoEori.arbitrary)
+  }
+
+  private val securityConsigneeEori: Arbitrary[SafetyAndSecurityConsignee] = Arbitrary {
+    for {
+      eori <- arbitrary[String]
+    } yield SafetyAndSecurityConsignee(None, None, None, None, None, Some(eori))
+  }
+  private val securityConsigneeNoEori: Arbitrary[SafetyAndSecurityConsignee] = Arbitrary {
+    for {
+      name            <- arbitrary[String]
+      streetAndNumber <- arbitrary[String]
+      postcode        <- arbitrary[String]
+      city            <- arbitrary[String]
+      countryCode     <- arbitrary[String]
+    } yield SafetyAndSecurityConsignee(Some(name), Some(streetAndNumber), Some(postcode), Some(city), Some(countryCode), None)
+  }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsignor: Arbitrary[SafetyAndSecurityConsignor] = Arbitrary {
+    Gen.oneOf(securityConsignorEori.arbitrary, securityConsignorNoEori.arbitrary)
+  }
+
+  private val securityConsignorEori: Arbitrary[SafetyAndSecurityConsignor] = Arbitrary {
+    for {
+      eori <- arbitrary[String]
+    } yield SafetyAndSecurityConsignor(None, None, None, None, None, Some(eori))
+  }
+
+  private val securityConsignorNoEori: Arbitrary[SafetyAndSecurityConsignor] = Arbitrary {
+    for {
+      name            <- arbitrary[String]
+      streetAndNumber <- arbitrary[String]
+      postcode        <- arbitrary[String]
+      city            <- arbitrary[String]
+      countryCode     <- arbitrary[String]
+    } yield SafetyAndSecurityConsignor(Some(name), Some(streetAndNumber), Some(postcode), Some(city), Some(countryCode), None)
+  }
 
   implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] = {
     Arbitrary {

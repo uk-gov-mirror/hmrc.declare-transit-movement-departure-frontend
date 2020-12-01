@@ -271,12 +271,12 @@ class DeclarationRequestService @Inject()(
         totGroMasHEA307    = goodsSummary.totalMass,
         decDatHEA383       = dateTimeOfPrep.toLocalDate,
         decPlaHEA394       = movementDetails.declarationPlacePage,
-        speCirIndHEA1      = None, // safety and security
-        traChaMetOfPayHEA1 = None,
-        comRefNumHEA       = None, // safety and security
+        speCirIndHEA1      = None, // safety and security - special cerc indicator
+        traChaMetOfPayHEA1 = None, // safety and security - payment method
+        comRefNumHEA       = None, // safety and security - commercial red
         secHEA358          = Some(safetyAndSecurityFlag(preTaskList.addSecurityDetails)), // local ref number & security
-        conRefNumHEA       = None, // safety and security
-        codPlUnHEA357      = None // safety and security
+        conRefNumHEA       = None, // safety and security - conveyance ref
+        codPlUnHEA357      = None // safety and security - place of unloading
       ),
       principalTrader(traderDetails),
       headerConsignor(traderDetails),
