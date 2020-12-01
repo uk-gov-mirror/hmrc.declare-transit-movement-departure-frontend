@@ -46,10 +46,6 @@ object AddItemsCheckYourAnswersViewModel {
         referencesSection(checkYourAnswersHelper, index, previousDocumentTypes)(userAnswers),
         securitySection(checkYourAnswersHelper, index),
         traderSecuritySection(checkYourAnswersHelper, countryList, index)
-
-        /*
-        referencesSection(checkYourAnswersHelper, index)(userAnswers),
-       */
       )
     )
   }
