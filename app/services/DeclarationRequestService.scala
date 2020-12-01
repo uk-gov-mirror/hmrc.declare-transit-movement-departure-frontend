@@ -294,7 +294,10 @@ class DeclarationRequestService @Inject()(
       headerSeals(goodsSummary.sealNumbers),
       guaranteeDetails(guarantee),
       goodsItems(journeyDomain.itemDetails),
-      Seq.empty[Itinerary]
+      Seq.empty[Itinerary], //TODO need reader model for this
+      None, //TODO need reader model for this
+      None, //TODO need reader model for this
+      None //TODO need reader model for this
     )
   }
 }

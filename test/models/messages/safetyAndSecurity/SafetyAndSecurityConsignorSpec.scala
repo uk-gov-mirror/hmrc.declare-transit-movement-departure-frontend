@@ -35,13 +35,23 @@ class SafetyAndSecurityConsignorSpec
 
   "SafetyAndSecurityConsignor" - {
 
-    "must serialise and deserialise" in {
+    "must serialise and deserialise SafetyAndSecurityConsignorWithEori" in {
 
-      forAll(arbitrary[SafetyAndSecurityConsignor]) {
-        safetyAndSecurityConsignor =>
-          val result = XmlReader.of[SafetyAndSecurityConsignor].read(safetyAndSecurityConsignor.toXml).toOption.value
+      forAll(arbitrary[SafetyAndSecurityCarrierWithEori]) {
+        safetyAndSecurityCarrierWithEori =>
+          val result = XmlReader.of[SafetyAndSecurityCarrier].read(safetyAndSecurityCarrierWithEori.toXml).toOption.value
 
-          result mustBe safetyAndSecurityConsignor
+          result mustBe safetyAndSecurityCarrierWithEori
+      }
+    }
+
+    "must serialise and deserialise SafetyAndSecurityConsignorWithoutEori" in {
+
+      forAll(arbitrary[SafetyAndSecurityCarrierWithoutEori]) {
+        safetyAndSecurityCarrierWithoutEori =>
+          val result = XmlReader.of[SafetyAndSecurityCarrier].read(safetyAndSecurityCarrierWithoutEori.toXml).toOption.value
+
+          result mustBe safetyAndSecurityCarrierWithoutEori
       }
     }
   }

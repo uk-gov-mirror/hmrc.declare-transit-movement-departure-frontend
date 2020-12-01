@@ -20,60 +20,58 @@ import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.{LanguageCodeEnglish, XMLWrites}
 
-import scala.xml.NodeSeq
-
-final case class SafetyAndSecurityConsignee(
-  name: Option[String],
-  streetAndNumber: Option[String],
-  postCode: Option[String],
-  city: Option[String],
-  countryCode: Option[String],
-  eori: Option[String]
-)
+trait SafetyAndSecurityConsignee
 
 object SafetyAndSecurityConsignee {
 
-  implicit val xmlReader: XmlReader[SafetyAndSecurityConsignee] = (
-    (__ \ "NameTRACONSEC033").read[String].optional,
-    (__ \ "StrNumTRACONSEC035").read[String].optional,
-    (__ \ "PosCodTRACONSEC034").read[String].optional,
-    (__ \ "CitTRACONSEC030").read[String].optional,
-    (__ \ "CouCodTRACONSEC031").read[String].optional,
-    (__ \ "TINTRACONSEC036").read[String].optional
-  ).mapN(apply)
+  implicit val xmlReader: XmlReader[SafetyAndSecurityConsignee] =
+    SafetyAndSecurityConsigneeWithEori.xmlReader
+      .or(SafetyAndSecurityConsigneeWithoutEori.xmlReader)
+}
 
-  implicit def writes: XMLWrites[SafetyAndSecurityConsignee] = XMLWrites[SafetyAndSecurityConsignee] {
+final case class SafetyAndSecurityConsigneeWithEori(eori: String) extends SafetyAndSecurityConsignee
+
+object SafetyAndSecurityConsigneeWithEori {
+
+  implicit val xmlReader: XmlReader[SafetyAndSecurityConsigneeWithEori] = (
+    (__ \ "TINTRACONSEC036").read[String]
+  ).map(apply)
+
+  implicit def writes: XMLWrites[SafetyAndSecurityConsigneeWithEori] = XMLWrites[SafetyAndSecurityConsigneeWithEori] {
     consignee =>
       <TRACONSEC029>
-        {
-        consignee.name.fold(NodeSeq.Empty) {
-          name =>
-            <NameTRACONSEC033>{name}</NameTRACONSEC033>
-        } ++
-          consignee.streetAndNumber.fold(NodeSeq.Empty) {
-            streetAndNumber =>
-              <StrNumTRACONSEC035>{streetAndNumber}</StrNumTRACONSEC035>
-          } ++
-          consignee.postCode.fold(NodeSeq.Empty) {
-            postcode =>
-              <PosCodTRACONSEC034>{postcode}</PosCodTRACONSEC034>
-          } ++
-          consignee.city.map {
-            city =>
-              <CitTRACONSEC030>{city}</CitTRACONSEC030>
-          } ++
-          consignee.countryCode.fold(NodeSeq.Empty) {
-            countryCode =>
-              <CouCodTRACONSEC031>{countryCode}</CouCodTRACONSEC031>
-          }
-        }
+        <TINTRACONSEC036>{consignee.eori}</TINTRACONSEC036>
+      </TRACONSEC029>
+  }
+}
+
+final case class SafetyAndSecurityConsigneeWithoutEori(
+  name: String,
+  streetAndNumber: String,
+  postCode: String,
+  city: String,
+  countryCode: String
+) extends SafetyAndSecurityConsignee
+
+object SafetyAndSecurityConsigneeWithoutEori {
+
+  implicit val xmlReader: XmlReader[SafetyAndSecurityConsigneeWithoutEori] = (
+    (__ \ "NameTRACONSEC033").read[String],
+    (__ \ "StrNumTRACONSEC035").read[String],
+    (__ \ "PosCodTRACONSEC034").read[String],
+    (__ \ "CitTRACONSEC030").read[String],
+    (__ \ "CouCodTRACONSEC031").read[String],
+  ).mapN(apply)
+
+  implicit def writes: XMLWrites[SafetyAndSecurityConsigneeWithoutEori] = XMLWrites[SafetyAndSecurityConsigneeWithoutEori] {
+    consignee =>
+      <TRACONSEC029>
+        <NameTRACONSEC033>{consignee.name}</NameTRACONSEC033>
+        <StrNumTRACONSEC035>{consignee.streetAndNumber}</StrNumTRACONSEC035>
+        <PosCodTRACONSEC034>{consignee.postCode}</PosCodTRACONSEC034>
+        <CitTRACONSEC030>{consignee.city}</CitTRACONSEC030>
+        <CouCodTRACONSEC031>{consignee.countryCode}</CouCodTRACONSEC031>
         <TRACONSEC029LNG>{LanguageCodeEnglish.code}</TRACONSEC029LNG>
-        {
-          consignee.eori.fold(NodeSeq.Empty) {
-            eori =>
-              <TINTRACONSEC036>{eori}</TINTRACONSEC036>
-          }
-        }
       </TRACONSEC029>
   }
 }

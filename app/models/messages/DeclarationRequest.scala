@@ -26,6 +26,17 @@ import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDesti
 import models.messages.goodsitem.GoodsItem
 import models.messages.guarantee.Guarantee
 import models.messages.header.Header
+import models.messages.safetyAndSecurity.{
+  SafetyAndSecurityCarrier,
+  SafetyAndSecurityCarrierWithEori,
+  SafetyAndSecurityCarrierWithoutEori,
+  SafetyAndSecurityConsignee,
+  SafetyAndSecurityConsigneeWithEori,
+  SafetyAndSecurityConsigneeWithoutEori,
+  SafetyAndSecurityConsignor,
+  SafetyAndSecurityConsignorWithEori,
+  SafetyAndSecurityConsignorWithoutEori
+}
 import models.messages.trader._
 import utils.NonEmptyListXMLReader._
 
@@ -45,7 +56,10 @@ case class DeclarationRequest(meta: Meta,
                               seals: Option[Seals],
                               guarantee: Guarantee,
                               goodsItems: NonEmptyList[GoodsItem],
-                              itinerary: Seq[Itinerary])
+                              itinerary: Seq[Itinerary],
+                              safetyAndSecurityCarrier: Option[SafetyAndSecurityCarrier],
+                              safetyAndSecurityConsignor: Option[SafetyAndSecurityConsignor],
+                              safetyAndSecurityConsignee: Option[SafetyAndSecurityConsignee])
 
 object DeclarationRequest {
 
@@ -53,7 +67,7 @@ object DeclarationRequest {
     declarationRequest =>
       val parentNode: Node = <CC015B></CC015B>
 
-      val childNodes: NodeSeq = {
+      val childNodes: NodeSeq =
         declarationRequest.meta.toXml ++
           declarationRequest.header.toXml ++
           traderPrinciple(declarationRequest.traderPrincipal) ++
@@ -68,8 +82,10 @@ object DeclarationRequest {
           declarationRequest.seals.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.guarantee.toXml ++
           declarationRequest.goodsItems.toList.flatMap(_.toXml) ++
-          declarationRequest.itinerary.flatMap(_.toXml)
-      }
+          declarationRequest.itinerary.flatMap(_.toXml) ++
+          safetyAndSecurityCarrier(declarationRequest.safetyAndSecurityCarrier) ++
+          safetyAndSecurityConsignor(declarationRequest.safetyAndSecurityConsignor) ++
+          safetyAndSecurityConsignee(declarationRequest.safetyAndSecurityConsignee)
 
       Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
   }
@@ -78,6 +94,24 @@ object DeclarationRequest {
     case traderPrincipalWithEori: TraderPrincipalWithEori       => traderPrincipalWithEori.toXml
     case traderPrincipalWithoutEori: TraderPrincipalWithoutEori => traderPrincipalWithoutEori.toXml
     case _                                                      => NodeSeq.Empty
+  }
+
+  private def safetyAndSecurityCarrier(safetyAndSecurityCarrier: Option[SafetyAndSecurityCarrier]): NodeSeq = safetyAndSecurityCarrier match {
+    case Some(safetyAndSecurityCarrierWithEori: SafetyAndSecurityCarrierWithEori)       => safetyAndSecurityCarrierWithEori.toXml
+    case Some(safetyAndSecurityCarrierWithoutEori: SafetyAndSecurityCarrierWithoutEori) => safetyAndSecurityCarrierWithoutEori.toXml
+    case _                                                                              => NodeSeq.Empty
+  }
+
+  private def safetyAndSecurityConsignee(safetyAndSecurityConsignee: Option[SafetyAndSecurityConsignee]): NodeSeq = safetyAndSecurityConsignee match {
+    case Some(safetyAndSecurityConsigneeWithEori: SafetyAndSecurityConsigneeWithEori)       => safetyAndSecurityConsigneeWithEori.toXml
+    case Some(safetyAndSecurityConsigneeWithoutEori: SafetyAndSecurityConsigneeWithoutEori) => safetyAndSecurityConsigneeWithoutEori.toXml
+    case _                                                                                  => NodeSeq.Empty
+  }
+
+  private def safetyAndSecurityConsignor(safetyAndSecurityConsignor: Option[SafetyAndSecurityConsignor]): NodeSeq = safetyAndSecurityConsignor match {
+    case Some(safetyAndSecurityConsigorWithEori: SafetyAndSecurityConsignorWithEori)       => safetyAndSecurityConsigorWithEori.toXml
+    case Some(safetyAndSecurityConsigorWithoutEori: SafetyAndSecurityConsignorWithoutEori) => safetyAndSecurityConsigorWithoutEori.toXml
+    case _                                                                                 => NodeSeq.Empty
   }
 
   implicit val reads: XmlReader[DeclarationRequest] =
@@ -95,6 +129,8 @@ object DeclarationRequest {
      (__ \ "SEAINFSLI").read[Seals].optional,
      (__ \ "GUAGUA").read[Guarantee],
      (__ \ "GOOITEGDS").read(xmlNonEmptyListReads[GoodsItem]),
-     (__ \ "ITI").read(strictReadSeq[Itinerary])) mapN apply
-
+     (__ \ "ITI").read(strictReadSeq[Itinerary]),
+     (__ \ "CARTRA100").read[SafetyAndSecurityCarrier].optional,
+     (__ \ "TRACORSEC037").read[SafetyAndSecurityConsignor].optional,
+     (__ \ "TRACONSEC029").read[SafetyAndSecurityConsignee].optional) mapN apply
 }

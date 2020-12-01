@@ -26,6 +26,17 @@ import com.lucidchart.open.xtract.XmlReader
 
 import scala.xml.{Node, NodeSeq}
 import models.XMLWrites._
+import models.messages.safetyAndSecurity.{
+  SafetyAndSecurityCarrier,
+  SafetyAndSecurityCarrierWithEori,
+  SafetyAndSecurityCarrierWithoutEori,
+  SafetyAndSecurityConsignee,
+  SafetyAndSecurityConsigneeWithEori,
+  SafetyAndSecurityConsigneeWithoutEori,
+  SafetyAndSecurityConsignor,
+  SafetyAndSecurityConsignorWithEori,
+  SafetyAndSecurityConsignorWithoutEori
+}
 import models.messages.trader.{TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
 
 import scala.xml.Utility.trim
@@ -63,6 +74,9 @@ class DeclarationRequestSpec
               {declarationRequest.guarantee.toXml}
               {declarationRequest.goodsItems.toList.flatMap(_.toXml)}
               {declarationRequest.itinerary.flatMap(_.toXml)}
+              {safetyAndSecurityCarrier(declarationRequest.safetyAndSecurityCarrier)}
+              {safetyAndSecurityConsignor(declarationRequest.safetyAndSecurityConsignor)}
+              {safetyAndSecurityConsignee(declarationRequest.safetyAndSecurityConsignee)}
             </CC015B>
 
           declarationRequest.toXml.map(trim) mustBe expectedResult.map(trim)
@@ -90,5 +104,23 @@ object DeclarationRequestSpec {
     case traderPrincipalWithEori: TraderPrincipalWithEori       => traderPrincipalWithEori.toXml
     case traderPrincipalWithoutEori: TraderPrincipalWithoutEori => traderPrincipalWithoutEori.toXml
     case _                                                      => NodeSeq.Empty
+  }
+
+  private def safetyAndSecurityCarrier(safetyAndSecurityCarrier: Option[SafetyAndSecurityCarrier]): NodeSeq = safetyAndSecurityCarrier match {
+    case Some(safetyAndSecurityCarrierWithEori: SafetyAndSecurityCarrierWithEori)       => safetyAndSecurityCarrierWithEori.toXml
+    case Some(safetyAndSecurityCarrierWithoutEori: SafetyAndSecurityCarrierWithoutEori) => safetyAndSecurityCarrierWithoutEori.toXml
+    case _                                                                              => NodeSeq.Empty
+  }
+
+  private def safetyAndSecurityConsignee(safetyAndSecurityConsignee: Option[SafetyAndSecurityConsignee]): NodeSeq = safetyAndSecurityConsignee match {
+    case Some(safetyAndSecurityConsigneeWithEori: SafetyAndSecurityConsigneeWithEori)       => safetyAndSecurityConsigneeWithEori.toXml
+    case Some(safetyAndSecurityConsigneeWithoutEori: SafetyAndSecurityConsigneeWithoutEori) => safetyAndSecurityConsigneeWithoutEori.toXml
+    case _                                                                                  => NodeSeq.Empty
+  }
+
+  private def safetyAndSecurityConsignor(safetyAndSecurityConsignor: Option[SafetyAndSecurityConsignor]): NodeSeq = safetyAndSecurityConsignor match {
+    case Some(safetyAndSecurityConsignorWithEori: SafetyAndSecurityConsignorWithEori)       => safetyAndSecurityConsignorWithEori.toXml
+    case Some(safetyAndSecurityConsignorWithoutEori: SafetyAndSecurityConsignorWithoutEori) => safetyAndSecurityConsignorWithoutEori.toXml
+    case _                                                                                  => NodeSeq.Empty
   }
 }

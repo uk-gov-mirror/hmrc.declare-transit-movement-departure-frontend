@@ -20,60 +20,58 @@ import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.{LanguageCodeEnglish, XMLWrites}
 
-import scala.xml.NodeSeq
-
-final case class SafetyAndSecurityCarrier(
-  name: Option[String],
-  streetAndNumber: Option[String],
-  postCode: Option[String],
-  city: Option[String],
-  countryCode: Option[String],
-  eori: Option[String]
-)
+trait SafetyAndSecurityCarrier
 
 object SafetyAndSecurityCarrier {
 
-  implicit val xmlReader: XmlReader[SafetyAndSecurityCarrier] = (
-    (__ \ "NamCARTRA121").read[String].optional,
-    (__ \ "StrAndNumCARTRA254").read[String].optional,
-    (__ \ "PosCodCARTRA121").read[String].optional,
-    (__ \ "CitCARTRA789").read[String].optional,
-    (__ \ "CouCodCARTRA587").read[String].optional,
-    (__ \ "TINCARTRA254").read[String].optional
-  ).mapN(apply)
+  implicit val xmlReader: XmlReader[SafetyAndSecurityCarrier] =
+    SafetyAndSecurityCarrierWithEori.xmlReader
+      .or(SafetyAndSecurityCarrierWithoutEori.xmlReader)
+}
 
-  implicit def writes: XMLWrites[SafetyAndSecurityCarrier] = XMLWrites[SafetyAndSecurityCarrier] {
+final case class SafetyAndSecurityCarrierWithEori(eori: String) extends SafetyAndSecurityCarrier
+
+object SafetyAndSecurityCarrierWithEori {
+
+  implicit val xmlReader: XmlReader[SafetyAndSecurityCarrierWithEori] = (
+    (__ \ "TINCARTRA254").read[String]
+  ).map(apply)
+
+  implicit def writes: XMLWrites[SafetyAndSecurityCarrierWithEori] = XMLWrites[SafetyAndSecurityCarrierWithEori] {
     carrier =>
       <CARTRA100>
-        {
-        carrier.name.fold(NodeSeq.Empty) {
-          name =>
-            <NamCARTRA121>{name}</NamCARTRA121>
-        } ++
-          carrier.streetAndNumber.fold(NodeSeq.Empty) {
-            streetAndNumber =>
-              <StrAndNumCARTRA254>{streetAndNumber}</StrAndNumCARTRA254>
-          } ++
-          carrier.postCode.fold(NodeSeq.Empty) {
-            postcode =>
-              <PosCodCARTRA121>{postcode}</PosCodCARTRA121>
-          } ++
-          carrier.city.map {
-            city =>
-              <CitCARTRA789>{city}</CitCARTRA789>
-          } ++
-          carrier.countryCode.fold(NodeSeq.Empty) {
-            countryCode =>
-              <CouCodCARTRA587>{countryCode}</CouCodCARTRA587>
-          }
-        }
+        <TINCARTRA254>{carrier.eori}</TINCARTRA254>
+      </CARTRA100>
+  }
+}
+
+final case class SafetyAndSecurityCarrierWithoutEori(
+  name: String,
+  streetAndNumber: String,
+  postCode: String,
+  city: String,
+  countryCode: String
+) extends SafetyAndSecurityCarrier
+
+object SafetyAndSecurityCarrierWithoutEori {
+
+  implicit val xmlReader: XmlReader[SafetyAndSecurityCarrierWithoutEori] = (
+    (__ \ "NamCARTRA121").read[String],
+    (__ \ "StrAndNumCARTRA254").read[String],
+    (__ \ "PosCodCARTRA121").read[String],
+    (__ \ "CitCARTRA789").read[String],
+    (__ \ "CouCodCARTRA587").read[String],
+  ).mapN(apply)
+
+  implicit def writes: XMLWrites[SafetyAndSecurityCarrierWithoutEori] = XMLWrites[SafetyAndSecurityCarrierWithoutEori] {
+    carrier =>
+      <CARTRA100>
+        <NamCARTRA121>{carrier.name}</NamCARTRA121>
+        <StrAndNumCARTRA254>{carrier.streetAndNumber}</StrAndNumCARTRA254>
+        <PosCodCARTRA121>{carrier.postCode}</PosCodCARTRA121>
+        <CitCARTRA789>{carrier.city}</CitCARTRA789>
+        <CouCodCARTRA587>{carrier.countryCode}</CouCodCARTRA587>
         <NADCARTRA121>{LanguageCodeEnglish.code}</NADCARTRA121>
-        {
-          carrier.eori.fold(NodeSeq.Empty) {
-            eori =>
-              <TINCARTRA254>{eori}</TINCARTRA254>
-          }
-        }
       </CARTRA100>
   }
 }

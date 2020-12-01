@@ -35,13 +35,23 @@ class SafetyAndSecurityCarrierSpec
 
   "SafetyAndSecurityCarrier" - {
 
-    "must serialise and deserialise" in {
+    "must serialise and deserialise SafetyAndSecurityCarrierWithEori" in {
 
-      forAll(arbitrary[SafetyAndSecurityCarrier]) {
-        safetyAndSecurityCarrier =>
-          val result = XmlReader.of[SafetyAndSecurityCarrier].read(safetyAndSecurityCarrier.toXml).toOption.value
+      forAll(arbitrary[SafetyAndSecurityCarrierWithEori]) {
+        safetyAndSecurityCarrierWithEori =>
+          val result = XmlReader.of[SafetyAndSecurityCarrier].read(safetyAndSecurityCarrierWithEori.toXml).toOption.value
 
-          result mustBe safetyAndSecurityCarrier
+          result mustBe safetyAndSecurityCarrierWithEori
+      }
+    }
+
+    "must serialise and deserialise SafetyAndSecurityCarrierWithoutEori" in {
+
+      forAll(arbitrary[SafetyAndSecurityCarrierWithoutEori]) {
+        safetyAndSecurityCarrierWithoutEori =>
+          val result = XmlReader.of[SafetyAndSecurityCarrier].read(safetyAndSecurityCarrierWithoutEori.toXml).toOption.value
+
+          result mustBe safetyAndSecurityCarrierWithoutEori
       }
     }
   }
