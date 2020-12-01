@@ -64,6 +64,7 @@ transportDetails.preHeading = Transport details
 goodsSummary.preHeading = Goods summary
 guaranteeDetails.preHeading = Guarantee details
 items.preHeading = Items
+safetyAndSecurity.preHeading = Safety and Security
 
 routeDetailsCheckYourAnswers.heading = Check your answers
 routeDetailsCheckYourAnswers.title = Check your answers
@@ -1166,32 +1167,30 @@ securityConsignorAddress.error.AddressLine1.required = Enter the first line of {
 securityConsignorAddress.error.AddressLine2.required = Enter the second line of {0}’s address
 securityConsignorAddress.error.AddressLine3.required = Enter the third line of {0}’s address
 securityConsignorAddress.error.country.required = Enter the country of {0}’s address
-securityConsignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
-securityConsignorAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
-securityConsignorAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
+securityConsignorAddress.error.AddressLine1.length = Address line 1 must be {0} characters or less
+securityConsignorAddress.error.AddressLine2.length = Address line 2 must be {0} characters or less
+securityConsignorAddress.error.AddressLine3.length = Address line 3 must be {0} characters or less
 securityConsignorAddress.error.line1.invalid= The first line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 securityConsignorAddress.error.line2.invalid= The second line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 securityConsignorAddress.error.line3.invalid= The third line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
-securityConsigneeAddress.title = securityConsigneeAddress
-securityConsigneeAddress.heading = securityConsigneeAddress
-securityConsigneeAddress.checkYourAnswersLabel = securityConsigneeAddress
-securityConsigneeAddress.error.required = Enter securityConsigneeAddress
-securityConsigneeAddress.error.length = SecurityConsigneeAddress must be 100 characters or less
-
-securityConsignorName.title = What is the security consignor’s name?
-securityConsignorName.heading = What is the security consignor’s name?
-securityConsignorName.checkYourAnswersLabel = Security consignor’s name
-securityConsignorName.error.required = Enter the security consignor’s name
-securityConsignorName.error.length = The security consignor's name must be 35 characters or less
-securityConsignorName.error.invalid = The security consignor’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
-
-securityConsigneeName.title = What is the security consignee’s name?
-securityConsigneeName.heading = What is the security consignee’s name?
-securityConsigneeName.checkYourAnswersLabel =  Security consignee’s name
-securityConsigneeName.error.required = Enter the security consignee’s name
-securityConsigneeName.error.length =  The security consignee’s name must be 35 characters or less
-securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+securityConsigneeAddress.title = What is the security consignee’s address
+securityConsigneeAddress.heading = What is {0}’s address?
+securityConsigneeAddress.AddressLine1 = Address line 1
+securityConsigneeAddress.AddressLine2 = Address line 2
+securityConsigneeAddress.AddressLine3 = Address line 3
+securityConsigneeAddress.AddressLine4 = Country
+securityConsigneeAddress.checkYourAnswersLabel = Consignee address
+securityConsigneeAddress.error.AddressLine1.required = Enter the first line of {0}’s address
+securityConsigneeAddress.error.AddressLine2.required = Enter the second line of {0}’s address
+securityConsigneeAddress.error.AddressLine3.required = Enter the third line of {0}’s address
+securityConsigneeAddress.error.country.required = Enter the country of {0}’s address
+securityConsigneeAddress.error.AddressLine1.length = Address line 1 must be {0} characters or less
+securityConsigneeAddress.error.AddressLine2.length = Address line 2 must be {0} characters or less
+securityConsigneeAddress.error.AddressLine3.length = Address line 3 must be {0} characters or less
+securityConsigneeAddress.error.line1.invalid= The first line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsigneeAddress.error.line2.invalid= The second line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsigneeAddress.error.line3.invalid= The third line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 declarationRejection.title = There is a problem with this departure declaration
 declarationRejection.heading = There is a problem with this departure declaration
@@ -1354,6 +1353,7 @@ carrierName.checkYourAnswersLabel = carrierName
 carrierName.error.required = Enter carrierName
 carrierName.error.length = CarrierName must be 10 characters or less
 
+
 cancellationDecisionUpdate.title = Cancellation Decision
 cancellationDecisionUpdate.heading = Cancellation Decision
 cancellationDecisionUpdate.mrn = MRN
@@ -1362,4 +1362,9 @@ cancellationDecisionUpdate.initiatedByCustoms = Cancellation initiated by custom
 cancellationDecisionUpdate.cancellationDecision = Cancellation decision
 cancellationDecisionUpdate.cancellationDecisionDate = Date of cancellation decision
 cancellationDecisionUpdate.cancellationJustification = Reason for cancellation
+
+safetyAndSecurityCheckYourAnswers.title = Check your answers
+safetyAndSecurityCheckYourAnswers.heading = Check your answers
+safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting = Countries of routing
+safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails = Security trader
 

@@ -16,12 +16,14 @@
 
 package pages.safetyAndSecurity
 
+import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.countriesOfRouting
 
-case object CountryOfRoutingPage extends QuestionPage[String] {
+case class CountryOfRoutingPage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ countriesOfRouting \ index.position
 
   override def toString: String = "countryOfRouting"
 }

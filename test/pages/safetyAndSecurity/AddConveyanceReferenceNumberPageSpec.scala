@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.safetyAndSecurity
 
-import play.api.libs.json.{Format, Json}
+import pages.behaviours.PageBehaviours
 
-case class PreviousDocumentType(code: String, description: String)
+class AddConveyanceReferenceNumberPageSpec extends PageBehaviours {
 
-object PreviousDocumentType {
+  "AddConveyanceReferenceNumberPage" - {
 
-  implicit lazy val format: Format[PreviousDocumentType] =
-    Json.format[PreviousDocumentType]
+    beRetrievable[Boolean](AddConveyanceReferenceNumberPage)
+
+    beSettable[Boolean](AddConveyanceReferenceNumberPage)
+
+    beRemovable[Boolean](AddConveyanceReferenceNumberPage)
+  }
 }

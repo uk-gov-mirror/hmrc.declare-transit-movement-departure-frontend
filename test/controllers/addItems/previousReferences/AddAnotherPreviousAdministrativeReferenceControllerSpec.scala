@@ -21,8 +21,8 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.addItems.AddAnotherPreviousAdministrativeReferenceFormProvider
 import matchers.JsonMatchers
-import models.reference.PreviousDocumentType
-import models.{NormalMode, PreviousDocumentTypeList, UserAnswers}
+import models.reference.PreviousReferencesDocumentType
+import models.{NormalMode, PreviousReferencesDocumentTypeList, UserAnswers}
 import navigation.annotations.AddItems
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -54,10 +54,10 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
   private val form                 = formProvider()
   private val template             = "addItems/addAnotherPreviousAdministrativeReference.njk"
   private val mockRefDataConnector = mock[ReferenceDataConnector]
-  private val documentTypeList = PreviousDocumentTypeList(
+  private val documentTypeList = PreviousReferencesDocumentTypeList(
     Seq(
-      PreviousDocumentType("T1", "Description T1"),
-      PreviousDocumentType("T2F", "Description T2F")
+      PreviousReferencesDocumentType("T1", "Description T1"),
+      PreviousReferencesDocumentType("T2F", "Description T2F")
     ))
 
   lazy val addAnotherPreviousAdministrativeReferenceRoute =
@@ -81,7 +81,7 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       val request        = FakeRequest(GET, addAnotherPreviousAdministrativeReferenceRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -108,7 +108,7 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -140,7 +140,7 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
 
     "must redirect to the next page when valid data is submitted" in {
       dataRetrievalWithData(emptyUserAnswers)
-      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -157,7 +157,7 @@ class AddAnotherPreviousAdministrativeReferenceControllerSpec
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       dataRetrievalWithData(emptyUserAnswers)
-      when(mockRefDataConnector.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
+      when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any())).thenReturn(Future.successful(documentTypeList))
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))

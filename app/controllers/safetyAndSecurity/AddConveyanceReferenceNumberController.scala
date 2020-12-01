@@ -21,8 +21,8 @@ import forms.safetyAndSecurity.AddConveyancerReferenceNumberFormProvider
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.PreTaskListDetails
-import pages.safetyAndSecurity.AddConveyancerReferenceNumberPage
+import navigation.annotations.SafetyAndSecurity
+import pages.safetyAndSecurity.AddConveyanceReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,10 +33,10 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddConveyancerReferenceNumberController @Inject()(
+class AddConveyanceReferenceNumberController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  @PreTaskListDetails navigator: Navigator,
+  @SafetyAndSecurity navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
@@ -49,11 +49,11 @@ class AddConveyancerReferenceNumberController @Inject()(
     with NunjucksSupport {
 
   private val form     = formProvider()
-  private val template = "safetyAndSecurity/addConveyancerReferenceNumber.njk"
+  private val template = "safetyAndSecurity/addConveyanceReferenceNumber.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddConveyancerReferenceNumberPage) match {
+      val preparedForm = request.userAnswers.get(AddConveyanceReferenceNumberPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -86,9 +86,9 @@ class AddConveyancerReferenceNumberController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConveyancerReferenceNumberPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConveyanceReferenceNumberPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddConveyancerReferenceNumberPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddConveyanceReferenceNumberPage, mode, updatedAnswers))
         )
   }
 }

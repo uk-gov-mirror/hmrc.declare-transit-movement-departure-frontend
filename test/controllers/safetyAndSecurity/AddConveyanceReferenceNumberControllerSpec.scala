@@ -21,13 +21,13 @@ import controllers.{routes => mainRoute}
 import forms.safetyAndSecurity.AddConveyancerReferenceNumberFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.annotations.PreTaskListDetails
+import navigation.annotations.{PreTaskListDetails, SafetyAndSecurity}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.safetyAndSecurity.AddConveyancerReferenceNumberPage
+import pages.safetyAndSecurity.AddConveyanceReferenceNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -39,22 +39,22 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future
 
-class AddConveyancerReferenceNumberControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class AddConveyanceReferenceNumberControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new AddConveyancerReferenceNumberFormProvider()
   private val form         = formProvider()
-  private val template     = "safetyAndSecurity/addConveyancerReferenceNumber.njk"
+  private val template     = "safetyAndSecurity/addConveyanceReferenceNumber.njk"
 
-  lazy val addConveyancerReferenceNumberRoute = routes.AddConveyancerReferenceNumberController.onPageLoad(lrn, NormalMode).url
+  lazy val addConveyanceReferenceNumberRoute = routes.AddConveyanceReferenceNumberController.onPageLoad(lrn, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[PreTaskListDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SafetyAndSecurity]).toInstance(new FakeNavigator(onwardRoute)))
 
-  "AddConveyancerReferenceNumber Controller" - {
+  "AddConveyanceReferenceNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -63,7 +63,7 @@ class AddConveyancerReferenceNumberControllerSpec extends SpecBase with MockNunj
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, addConveyancerReferenceNumberRoute)
+      val request        = FakeRequest(GET, addConveyanceReferenceNumberRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -92,10 +92,10 @@ class AddConveyancerReferenceNumberControllerSpec extends SpecBase with MockNunj
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddConveyancerReferenceNumberPage, true).success.value
+      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddConveyanceReferenceNumberPage, true).success.value
       dataRetrievalWithData(userAnswers)
 
-      val request        = FakeRequest(GET, addConveyancerReferenceNumberRoute)
+      val request        = FakeRequest(GET, addConveyanceReferenceNumberRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -128,7 +128,7 @@ class AddConveyancerReferenceNumberControllerSpec extends SpecBase with MockNunj
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, addConveyancerReferenceNumberRoute)
+        FakeRequest(POST, addConveyanceReferenceNumberRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -146,7 +146,7 @@ class AddConveyancerReferenceNumberControllerSpec extends SpecBase with MockNunj
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, addConveyancerReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, addConveyanceReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -175,7 +175,7 @@ class AddConveyancerReferenceNumberControllerSpec extends SpecBase with MockNunj
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, addConveyancerReferenceNumberRoute)
+      val request = FakeRequest(GET, addConveyanceReferenceNumberRoute)
 
       val result = route(app, request).value
 
@@ -190,7 +190,7 @@ class AddConveyancerReferenceNumberControllerSpec extends SpecBase with MockNunj
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, addConveyancerReferenceNumberRoute)
+        FakeRequest(POST, addConveyanceReferenceNumberRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
