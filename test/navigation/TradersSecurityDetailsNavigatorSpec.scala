@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.addItems.traderSecurityDetails.routes
 import generators.Generators
 import models.reference.{Country, CountryCode}
-import models.{CheckMode, ConsignorAddress, NormalMode, UserAnswers}
+import models.{CheckMode, ConsigneeAddress, ConsignorAddress, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.addItems.traderSecurityDetails._
@@ -253,8 +253,7 @@ class TradersSecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckProper
     "From SecurityConsignorNamePage to AddItemsCheckYourAnswer when an answer already exists for SecurityConsignorAddress page" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>
-          val country                            = Country(CountryCode("GB"), "United Kingdom")
-          val consignorAddress: ConsignorAddress = ConsignorAddress("Address line 1", "Address line 2", "Address line 3", country)
+          val consignorAddress = arbitrary[ConsignorAddress].sample.value
           val updatedAnswers = answers
             .set(SecurityConsignorAddressPage(index), consignorAddress)
             .success
