@@ -1353,3 +1353,13 @@ carrierName.heading = carrierName
 carrierName.checkYourAnswersLabel = carrierName
 carrierName.error.required = Enter carrierName
 carrierName.error.length = CarrierName must be 10 characters or less
+
+cancellationDecisionUpdate.title = Cancellation Decision
+cancellationDecisionUpdate.heading = Cancellation Decision
+cancellationDecisionUpdate.mrn = MRN
+cancellationDecisionUpdate.cancellationRequestDate = Date of cancellation request
+cancellationDecisionUpdate.initiatedByCustoms = Cancellation initiated by customs
+cancellationDecisionUpdate.cancellationDecision = Cancellation decision
+cancellationDecisionUpdate.cancellationDecisionDate = Date of cancellation decision
+cancellationDecisionUpdate.cancellationJustification = Reason for cancellation
+

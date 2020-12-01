@@ -18,7 +18,7 @@ package services
 
 import connectors.DepartureMovementConnector
 import javax.inject.Inject
-import models.{DeclarationRejectionMessage, DepartureId, GuaranteeNotValidMessage}
+import models.{CancellationDecisionUpdateMessage, DeclarationRejectionMessage, DepartureId, GuaranteeNotValidMessage}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -54,6 +54,24 @@ class DepartureMessageService @Inject()(connectors: DepartureMovementConnector) 
         }
       case _ =>
         Logger.error(s"Get Summary failed to return declaration rejection data")
+        Future.successful(None)
+    }
+
+  def cancellationDecisionUpdateMessage(departureId: DepartureId)(implicit hc: HeaderCarrier,
+                                                                  ec: ExecutionContext): Future[Option[CancellationDecisionUpdateMessage]] =
+    connectors.getSummary(departureId) flatMap {
+      case Some(summary) =>
+        summary.messagesLocation.cancellationDecisionUpdate match {
+          case Some(location) => {
+            println("\n\n\n HERE!!!!")
+            connectors.getCancellationDecisionUpdateMessage(location)
+          }
+          case _ =>
+            Logger.error(s"Get Summary failed to get cancellation decision update location")
+            Future.successful(None)
+        }
+      case _ =>
+        Logger.error(s"Get Summary failed to return cancellation decision update data")
         Future.successful(None)
     }
 }

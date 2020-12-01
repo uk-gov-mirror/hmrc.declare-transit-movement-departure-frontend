@@ -156,4 +156,11 @@ package object utils {
       msg"site.no"
     }
 
+  def yesOrNo(answer: Int): Content =
+    if (answer == 1) {
+      msg"site.yes"
+    } else {
+      msg"site.no"
+    }
+
 }

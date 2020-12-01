@@ -21,9 +21,8 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.XMLWrites._
 import models.messages.DeclarationRequest
-import models.{DepartureId, GuaranteeNotValidMessage, MessagesSummary, ResponseMessage}
+import models.{CancellationDecisionUpdateMessage, DeclarationRejectionMessage, DepartureId, GuaranteeNotValidMessage, MessagesSummary, ResponseMessage}
 import play.api.Logger
-import models.{DeclarationRejectionMessage, DepartureId, GuaranteeNotValidMessage, MessagesSummary, ResponseMessage}
 import uk.gov.hmrc.http.RawReads.is2xx
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -44,7 +43,11 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
 
     val serviceUrl: String = s"${appConfig.departureHost}/movements/departures/${departureId.value}/messages/summary"
     http.GET[HttpResponse](serviceUrl) map {
-      case responseMessage if is2xx(responseMessage.status) => Some(responseMessage.json.as[MessagesSummary])
+      case responseMessage if is2xx(responseMessage.status) =>
+        println(responseMessage.json)
+        println("\n\n\n")
+        println(responseMessage.json.as[MessagesSummary])
+        Some(responseMessage.json.as[MessagesSummary])
       case _ =>
         Logger.error(s"Get Summary failed to return data")
         None
@@ -71,6 +74,18 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
         XmlReader.of[DeclarationRejectionMessage].read(message).toOption
       case _ =>
         Logger.error("getDeclarationRejectionMessage failed to return data")
+        None
+    }
+  }
+
+  def getCancellationDecisionUpdateMessage(location: String)(implicit hc: HeaderCarrier): Future[Option[CancellationDecisionUpdateMessage]] = {
+    val serviceUrl = s"${appConfig.departureBaseUrl}$location"
+    http.GET[HttpResponse](serviceUrl) map {
+      case responseMessage if is2xx(responseMessage.status) =>
+        val message: NodeSeq = responseMessage.json.as[ResponseMessage].message
+        XmlReader.of[CancellationDecisionUpdateMessage].read(message).toOption
+      case _ =>
+        Logger.error("getCancellationDecisionUpdateMessage failed to return data")
         None
     }
   }
