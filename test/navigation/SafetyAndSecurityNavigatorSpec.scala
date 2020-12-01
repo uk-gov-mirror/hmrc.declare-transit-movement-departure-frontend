@@ -18,7 +18,6 @@ package navigation
 
 import base.SpecBase
 import controllers.safetyAndSecurity.routes
-import derivable.DeriveNumberOfCountryOfRouting
 import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -579,7 +578,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
-      "must go from AddCarrier to CheckYourAnswers if 'false'" ignore {
+      "must go from AddCarrier to CheckYourAnswers if 'false'" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -589,7 +588,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
             navigator
               .nextPage(AddCarrierPage, NormalMode, updatedAnswers)
-              .mustBe(???)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
 
@@ -632,14 +631,14 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
-      "must go from CarrierEori to CheckYourAnswers" ignore {
+      "must go from CarrierEori to CheckYourAnswers" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
 
             navigator
               .nextPage(CarrierEoriPage, NormalMode, answers)
-              .mustBe(???)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
     }
