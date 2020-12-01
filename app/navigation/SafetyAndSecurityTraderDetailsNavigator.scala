@@ -43,7 +43,6 @@ import play.api.mvc.Call
 class SafetyAndSecurityTraderDetailsNavigator @Inject()() extends Navigator {
 
   // format: off
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddSafetyAndSecurityConsignorPage => ua => addSafetyAndSecurityConsignor(ua)
@@ -62,11 +61,23 @@ class SafetyAndSecurityTraderDetailsNavigator @Inject()() extends Navigator {
     case CarrierNamePage => ua => Some(routes.CarrierAddressController.onPageLoad(ua.id, NormalMode))
     case CarrierAddressPage => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
   }
-def addSafetyAndSecurityConsignor(ua: UserAnswers): Option[Call] =
-ua.get(AddSafetyAndSecurityConsignorPage).map {
-  case true   => routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(ua.id, NormalMode)
-  case false  => routes.AddSafetyAndSecurityConsigneeController.onPageLoad(ua.id, NormalMode)
-}
+
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case AddSafetyAndSecurityConsignorPage => ua => Some(addSafetyAndSecurityConsignorRoute(ua))
+  }
+
+  def addSafetyAndSecurityConsignorRoute(ua: UserAnswers): Call = 
+    (ua.get(AddSafetyAndSecurityConsignorPage), ua.get(AddSafetyAndSecurityConsignorEoriPage)) match {
+      case (Some(false), _) => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(true), Some(_)) => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
+      case (Some(true), None) => routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(ua.id, CheckMode)
+    }
+  
+  def addSafetyAndSecurityConsignor(ua: UserAnswers): Option[Call] =
+    ua.get(AddSafetyAndSecurityConsignorPage).map {
+      case true   => routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.AddSafetyAndSecurityConsigneeController.onPageLoad(ua.id, NormalMode)
+  }
 
   def addSafetyAndSecurityConsignorEori(ua: UserAnswers): Option[Call] =
     ua.get(AddSafetyAndSecurityConsignorEoriPage).map {

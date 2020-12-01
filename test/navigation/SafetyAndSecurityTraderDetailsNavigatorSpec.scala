@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.safetyAndSecurity.routes
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.safetyAndSecurity._
@@ -267,6 +267,61 @@ class SafetyAndSecurityTraderDetailsNavigatorSpec extends SpecBase with ScalaChe
           navigator
             .nextPage(AddSafetyAndSecurityConsignorPage, NormalMode, updatedAnswers)
             .mustBe(routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(answers.id, NormalMode))
+      }
+    }
+  }
+
+  "in Check Mode" - {
+    "must go from AddSecurityConsignorPage" - {
+      "to CheckYourAnswers when user selects 'No' " in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsignorPage, false)
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsignorPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "to CheckYourAnswers when user selects 'Yes' and answers already exist for consignor" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsignorPage, true)
+              .success
+              .value
+              .set(AddSafetyAndSecurityConsignorEoriPage, true)
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsignorPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "to AddSafetyAndSecurityConsignorEoriPage when user selects 'Yes' and answers do not exist for consignor" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsignorPage, true)
+              .success
+              .value
+              .remove(AddSafetyAndSecurityConsignorEoriPage)
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsignorPage, CheckMode, updatedAnswers)
+              .mustBe(routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(answers.id, CheckMode))
+        }
       }
     }
   }
