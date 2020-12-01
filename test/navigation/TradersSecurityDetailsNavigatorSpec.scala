@@ -19,7 +19,8 @@ package navigation
 import base.SpecBase
 import controllers.addItems.traderSecurityDetails.routes
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.reference.{Country, CountryCode}
+import models.{CheckMode, ConsignorAddress, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.addItems.traderSecurityDetails._
@@ -172,4 +173,201 @@ class TradersSecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckProper
     }
 
   }
+
+  "In CheckMode" - {
+
+    "Must go from AddSecurityConsignorsEori page" - {
+
+      "To CheckYourAnswers page when selects Yes and an answer already exists for SecurityConsignorEori" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(SecurityConsignorEoriPage(index), "GB123456")
+              .success
+              .value
+              .set(AddSecurityConsignorsEoriPage(index), true)
+              .success
+              .value
+            navigator
+              .nextPage(AddSecurityConsignorsEoriPage(index), CheckMode, updatedAnswers)
+              .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+        }
+      }
+      "To SecurityConsignorEoriPage when selects Yes and no answer already exists for SecurityConsignorEori" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSecurityConsignorsEoriPage(index), true)
+              .success
+              .value
+              .remove(SecurityConsignorEoriPage(index))
+              .success
+              .value
+            navigator
+              .nextPage(AddSecurityConsignorsEoriPage(index), CheckMode, updatedAnswers)
+              .mustBe(routes.SecurityConsignorEoriController.onPageLoad(updatedAnswers.id, index, CheckMode))
+        }
+      }
+
+      "To CheckYourAnswers page when selects No and an answer already exists for SecurityConsignorName" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSecurityConsignorsEoriPage(index), false)
+              .success
+              .value
+              .set(SecurityConsignorNamePage(index), "TestName")
+              .success
+              .value
+            navigator
+              .nextPage(AddSecurityConsignorsEoriPage(index), CheckMode, updatedAnswers)
+              .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+        }
+      }
+      "To SecurityConsignorNamePage when selects No and no answer already exists for SecurityConsignorName" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSecurityConsignorsEoriPage(index), false)
+              .success
+              .value
+              .remove(SecurityConsignorNamePage(index))
+              .success
+              .value
+            navigator
+              .nextPage(AddSecurityConsignorsEoriPage(index), CheckMode, updatedAnswers)
+              .mustBe(routes.SecurityConsignorNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
+        }
+      }
+    }
+
+    "From SecurityConsignorEoriPage to AddItemsCheckYourAnswer page" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          navigator
+            .nextPage(SecurityConsignorEoriPage(index), CheckMode, answers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+      }
+    }
+
+    "From SecurityConsignorNamePage to AddItemsCheckYourAnswer when an answer already exists for SecurityConsignorAddress page" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val country                            = Country(CountryCode("GB"), "United Kingdom")
+          val consignorAddress: ConsignorAddress = ConsignorAddress("Address line 1", "Address line 2", "Address line 3", country)
+          val updatedAnswers = answers
+            .set(SecurityConsignorAddressPage(index), consignorAddress)
+            .success
+            .value
+          navigator
+            .nextPage(SecurityConsignorNamePage(index), CheckMode, updatedAnswers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+      }
+    }
+
+    "From SecurityConsignorNamePage to SecurityConsignorAddressPage when no answer already exists for SecurityConsignorAddressPage" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .remove(SecurityConsignorAddressPage(index))
+            .success
+            .value
+          navigator
+            .nextPage(SecurityConsignorNamePage(index), CheckMode, updatedAnswers)
+            .mustBe(routes.SecurityConsignorAddressController.onPageLoad(updatedAnswers.id, index, CheckMode))
+      }
+    }
+  }
+
+  "From SecurityConsignorAddressPage to AddItemsCheckYourAnswer page" in {
+    forAll(arbitrary[UserAnswers]) {
+      answers =>
+        navigator
+          .nextPage(SecurityConsignorAddressPage(index), CheckMode, answers)
+          .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+    }
+  }
+
+  "From AddSecurityConsigneesEoriPage" - {
+    "To AddItemsCheckYours answers page if answer is Yes and an answer already exists for SecurityConsigneesEori" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(SecurityConsigneeEoriPage(index), "GB123456")
+            .success
+            .value
+            .set(AddSecurityConsigneesEoriPage(index), true)
+            .success
+            .value
+          navigator
+            .nextPage(AddSecurityConsigneesEoriPage(index), CheckMode, updatedAnswers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+      }
+    }
+
+    "To SecurityConsigneesEoriPage answers page if answer is Yes and no answer already exists for SecurityConsigneesEori" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(AddSecurityConsigneesEoriPage(index), true)
+            .success
+            .value
+            .remove(SecurityConsigneeEoriPage(index))
+            .success
+            .value
+          navigator
+            .nextPage(AddSecurityConsigneesEoriPage(index), CheckMode, updatedAnswers)
+            .mustBe(routes.SecurityConsigneeEoriController.onPageLoad(updatedAnswers.id, index, CheckMode))
+      }
+    }
+    "To AddItemsCheckYours answers page if answer is No and an answer already exists for SecurityConsigneesName" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(AddSecurityConsigneesEoriPage(index), false)
+            .success
+            .value
+            .set(SecurityConsigneeNamePage(index), "TestName")
+            .success
+            .value
+          navigator
+            .nextPage(AddSecurityConsigneesEoriPage(index), CheckMode, updatedAnswers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+      }
+    }
+    "To SecurityConsigneesNamePage  page if answer is No and no answer already exists for SecurityConsigneesName" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(AddSecurityConsigneesEoriPage(index), false)
+            .success
+            .value
+            .remove(SecurityConsigneeNamePage(index))
+            .success
+            .value
+          navigator
+            .nextPage(AddSecurityConsigneesEoriPage(index), CheckMode, updatedAnswers)
+            .mustBe(routes.SecurityConsigneeNameController.onPageLoad(updatedAnswers.id, index, CheckMode))
+      }
+    }
+  }
+
+  "From SecurityConsigneeEoriPage to AddItemsCheckYourAnswersPage" in {
+    forAll(arbitrary[UserAnswers]) {
+      answers =>
+        navigator
+          .nextPage(SecurityConsigneeEoriPage(index), CheckMode, answers)
+          .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+    }
+  }
+
+  "From SecurityConsigneeAddressPage to AddItemsCheckYourAnswersPage" in {
+    forAll(arbitrary[UserAnswers]) {
+      answers =>
+        navigator
+          .nextPage(SecurityConsigneeAddressPage(index), CheckMode, answers)
+          .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
+    }
+  }
+
 }
