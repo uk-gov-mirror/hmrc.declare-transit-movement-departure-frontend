@@ -34,10 +34,19 @@ object LocalReferenceNumber {
       case _                => None
     }
 
+  def unsafeApply(input: String): LocalReferenceNumber =
+    new LocalReferenceNumber(input)
+
   implicit def reads: Reads[LocalReferenceNumber] =
     __.read[String].map(LocalReferenceNumber.apply).flatMap {
-      case Some(lrn) => Reads(_ => JsSuccess(lrn))
-      case None      => Reads(_ => JsError("Invalid Local Reference Number"))
+      case Some(lrn) =>
+        Reads(
+          _ => JsSuccess(lrn)
+        )
+      case None =>
+        Reads(
+          _ => JsError("Invalid Local Reference Number")
+        )
     }
 
   implicit def writes: Writes[LocalReferenceNumber] = Writes {
