@@ -238,7 +238,8 @@ trait JourneyModelGenerators {
     Arbitrary(Arbitrary.arbitrary[EoriNumber].map(models.journeyDomain.ItemTraderDetails.TraderEori))
 
   implicit def arbitraryItemPersonalInformation(
-    implicit arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation] =
+    implicit
+    arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation] =
     Arbitrary {
       for {
         name    <- stringsWithMaxLength(stringMaxLength)
@@ -251,7 +252,8 @@ trait JourneyModelGenerators {
       Gen.oneOf(
         Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation],
         Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori]
-      ))
+      )
+    )
 
   implicit def arbitraryItemSection: Arbitrary[ItemSection] =
     Arbitrary {
@@ -454,6 +456,7 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryTransitInformation: Arbitrary[TransitInformation] =
     Arbitrary(Gen.oneOf(genTransitInformationWithoutArrivalTime, genTransitInformationWithArrivalTime))
 
+  // TODO: refactor this. Remove parameter, make all transit informations consistent with security flag and create generator.
   implicit def arbitraryRouteDetails(implicit arbTransitInformation: Arbitrary[TransitInformation]): Arbitrary[RouteDetails] =
     Arbitrary {
       for {
