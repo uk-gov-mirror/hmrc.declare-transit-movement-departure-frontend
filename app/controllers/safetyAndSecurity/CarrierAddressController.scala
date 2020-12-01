@@ -37,7 +37,7 @@ import utils.countryJsonList
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CarrierAddressController @Inject() (
+class CarrierAddressController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @SafetyAndSecurity navigator: Navigator,
@@ -98,7 +98,7 @@ class CarrierAddressController @Inject() (
                         countries.getCountry(CountryCode(country))
                     }
                     val json = Json.obj(
-                      "form" -> formWithErrors,
+                      "form"        -> formWithErrors,
                       "lrn"         -> lrn,
                       "mode"        -> mode,
                       "carrierName" -> carrierName,

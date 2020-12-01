@@ -1355,11 +1355,12 @@ carrierAddress.error.line2.invalid= The second line of the carrier’s address m
 carrierAddress.error.line3.invalid= The third line of the carrier’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 carrierAddress.error.length = Carrier address must be 35 characters or less
 
-carrierEori.title = carrierEori
-carrierEori.heading = carrierEori
-carrierEori.checkYourAnswersLabel = carrierEori
-carrierEori.error.required = Enter carrierEori
-carrierEori.error.length = CarrierEori must be 10 characters or less
+carrierEori.title = What is the carrier’s EORI number?
+carrierEori.heading = What is the carrier’s EORI number?
+carrierEori.checkYourAnswersLabel = carrier's EORI number
+carrierEori.error.required = Enter the carrier’s EORI number
+carrierEori.error.length =  The carrier’s EORI number must be 17 characters or less
+carrierEori.error.invalidCharacters = The carrier's EORI number must only include letters a to z and numbers 0 to 9
 
 carrierName.title =  What is the carrier’s name?
 carrierName.heading = What is the carrier’s name?
