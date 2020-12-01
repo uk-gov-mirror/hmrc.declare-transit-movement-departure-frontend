@@ -27,6 +27,15 @@ package object journeyDomain {
 
   object UserAnswersReader {
     def apply[A: UserAnswersReader]: UserAnswersReader[A] = implicitly[UserAnswersReader[A]]
+
+    def apply[A](fn: UserAnswers => Option[A]): UserAnswersReader[A] = ReaderT[Option, UserAnswers, A](fn)
+
+    def empty[A: UserAnswersReader]: UserAnswersReader[A] = unsafeEmpty[A]
+
+    def unsafeEmpty[A]: UserAnswersReader[A] =
+      UserAnswersReader[A](
+        (_: UserAnswers) => Option.empty[A]
+      )
   }
 
   implicit class GettableAsOptionalReaderOps[A](a: Gettable[A]) {

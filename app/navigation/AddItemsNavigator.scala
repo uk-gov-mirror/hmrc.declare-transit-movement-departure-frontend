@@ -126,6 +126,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case ContainerNumberPage(itemIndex, containerIndex)       => ua => Some(containerRoutes.AddAnotherContainerController.onPageLoad(ua.id, itemIndex, CheckMode))
     case AddAnotherContainerPage(itemIndex)                   => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case ConfirmRemoveContainerPage(index, _)                 => ua => Some(confirmRemoveContainerRoute(ua, index, CheckMode))
+    case AddAnotherPreviousAdministrativeReferencePage(itemIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, ua, CheckMode)
   }
 
   private def consigneeAddress(ua: UserAnswers, index: Index, mode: Mode) =

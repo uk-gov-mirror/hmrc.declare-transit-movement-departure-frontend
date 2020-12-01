@@ -17,11 +17,15 @@
 package navigation
 
 import controllers.addItems.specialMentions.routes
-import derivable.DeriveNumberOfSpecialMentions
+import controllers.addItems.{routes => addItemRoutes}
+import controllers.{routes => mainRoutes}
+import derivable.{DeriveNumberOfDocuments, DeriveNumberOfSpecialMentions}
 import javax.inject.{Inject, Singleton}
-import models.{CheckMode, Index, NormalMode, UserAnswers}
-import pages.Page
+import models.reference.CircumstanceIndicator
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.addItems.specialMentions._
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
+import pages.{AddSecurityDetailsPage, Page}
 import play.api.mvc.Call
 
 @Singleton
@@ -92,7 +96,8 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
       userAnswers =>
         userAnswers.get(AddAnotherSpecialMentionPage(itemIndex)) match {
           case Some(true) => Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), NormalMode))
-          case _          => Some(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+          case _ =>
+            documentsJourney(userAnswers, itemIndex, NormalMode) //Some(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
         }
     case RemoveSpecialMentionPage(itemIndex, _) =>
       userAnswers =>
@@ -102,6 +107,23 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
           Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
         }
   }
+
+  private def showDocumentTypePage(userAnswers: UserAnswers, itemIndex: Index): Option[Boolean] =
+    (userAnswers.get(AddSecurityDetailsPage), userAnswers.get(AddCircumstanceIndicatorPage)) match {
+      case (Some(true), Some(false)) => Some(true)
+      case (Some(true), Some(true))  => userAnswers.get(CircumstanceIndicatorPage) map (CircumstanceIndicator.conditionalIndicators.contains(_))
+      case (Some(false), _)          => Some(false)
+      case _                         => None
+    }
+
+  private def documentsJourney(userAnswers: UserAnswers, itemIndex: Index, mode: Mode): Option[Call] =
+    showDocumentTypePage(userAnswers, itemIndex) match {
+      case Some(true) =>
+        val index = userAnswers.get(DeriveNumberOfDocuments(itemIndex)).getOrElse(0)
+        Some(addItemRoutes.DocumentTypeController.onPageLoad(userAnswers.id, itemIndex, Index(index), mode))
+      case Some(false) => Some(addItemRoutes.AddDocumentsController.onPageLoad(userAnswers.id, itemIndex, mode))
+      case None        => Some(mainRoutes.SessionExpiredController.onPageLoad())
+    }
 
   private def removeSpecialMentionPage: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case RemoveSpecialMentionPage(itemIndex, _) =>

@@ -16,22 +16,6 @@
 
 package navigation
 
-/*
- * Copyright 2020 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import controllers.safetyAndSecurity.routes
 import derivable.DeriveNumberOfCountryOfRouting
 import javax.inject.{Inject, Singleton}
@@ -71,9 +55,9 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     case SafetyAndSecurityConsigneeAddressPage    => ua => Some(routes.AddCarrierController.onPageLoad(ua.id, NormalMode))
     case AddCarrierPage                           => ua => addCarrierPage(ua)
     case AddCarrierEoriPage                       => ua => addCarrierEori(ua)
-    case CarrierEoriPage                          => ua => ??? // CYA not implemented
+    case CarrierEoriPage                          => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)) // CYA not implemented
     case CarrierNamePage                          => ua => Some(routes.CarrierAddressController.onPageLoad(ua.id, NormalMode))
-    case CarrierAddressPage                       => ua => ??? // CYA not implemented
+    case CarrierAddressPage                       => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
@@ -178,7 +162,7 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
   def addCarrierPage(ua: UserAnswers): Option[Call] =
     ua.get(AddCarrierPage).map {
       case true   => routes.AddCarrierEoriController.onPageLoad(ua.id, NormalMode)
-      case false  => ??? // CYA not implemented
+      case false  => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
     }
 
   def addCarrierEori(ua: UserAnswers): Option[Call] =
