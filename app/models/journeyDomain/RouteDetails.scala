@@ -21,12 +21,10 @@ import java.time.LocalDateTime
 import cats.data._
 import cats.implicits._
 import derivable.DeriveNumberOfOfficeOfTransits
+import models.Index
+import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.CountryCode
 import pages._
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
-import RouteDetails.TransitInformation
-import models.{Index, UserAnswers}
 
 final case class RouteDetails(
   countryOfDispatch: CountryCode,

@@ -17,10 +17,16 @@
 package utils
 
 import controllers.safetyAndSecurity.routes
+import derivable.DeriveNumberOfCountryOfRouting
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages.safetyAndSecurity._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
+import cats.data._
+import cats.implicits._
+import queries.CountriesOfRoutingQuery
+
+import scala.collection.immutable
 
 class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
 
@@ -415,5 +421,22 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
         )
       )
   }
-  // TODO Country of routing
+
+  def countriesOfRouting: Option[Row] = userAnswers.get(CountriesOfRoutingQuery).map {
+    countriesOfRouting =>
+      val format = Html(countriesOfRouting.mkString("<br>"))
+
+      Row(
+        key   = Key(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting", classes = Seq("govuk-!-width-one-half")),
+        value = Value(format),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting.visuallyHidden")
+          )
+        )
+      )
+  }
+
 }

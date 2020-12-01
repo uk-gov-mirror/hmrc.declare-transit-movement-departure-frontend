@@ -19,7 +19,7 @@ package controllers.safetyAndSecurity
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.{LocalReferenceNumber, UserAnswers}
+import models.{Index, LocalReferenceNumber, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -51,7 +51,7 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
         "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
       )
 
-      renderer.render("safetyAndSecurity/CheckYourAnswers.njk", json).map(Ok(_))
+      renderer.render("safetyAndSecurity/SafetyAndSecurityCheckYourAnswers.njk", json).map(Ok(_))
   }
 
   //TODO Move to ViewModel
@@ -77,7 +77,9 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
       ),
       Section(
         msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting",
-        Seq.empty
+        Seq(
+          cyah.countriesOfRouting
+        ).flatten
       ),
       Section(
         msg"safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails",
@@ -94,8 +96,15 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
           cyah.safetyAndSecurityConsigneeEori,
           cyah.safetyAndSecurityConsigneeName,
           cyah.safetyAndSecurityConsigneeAddress,
+          //TODO Carrier subheading
+          cyah.addCarrier,
+          cyah.addCarrierEori,
+          cyah.carrierEori,
+          cyah.carrierName,
+          cyah.carrierAddress
         ).flatten
       )
     )
   }
+
 }

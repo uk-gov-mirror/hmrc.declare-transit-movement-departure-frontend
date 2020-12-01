@@ -64,6 +64,7 @@ transportDetails.preHeading = Transport details
 goodsSummary.preHeading = Goods summary
 guaranteeDetails.preHeading = Guarantee details
 items.preHeading = Items
+safetyAndSecurity.preHeading = Safety and Security
 
 routeDetailsCheckYourAnswers.heading = Check your answers
 routeDetailsCheckYourAnswers.title = Check your answers
@@ -1258,7 +1259,7 @@ placeOfUnloadingCode.error.required = Enter placeOfUnloadingCode
 placeOfUnloadingCode.error.length = PlaceOfUnloadingCode must be 10 characters or less
 
 countryOfRouting.title = countryOfRouting
-countryOfRouting.heading = countryOfRouting
+.heading = countryOfRouting
 countryOfRouting.checkYourAnswersLabel = countryOfRouting
 countryOfRouting.error.required = Enter countryOfRouting
 countryOfRouting.error.length = CountryOfRouting must be 2 characters or less
@@ -1351,3 +1352,8 @@ carrierName.heading = carrierName
 carrierName.checkYourAnswersLabel = carrierName
 carrierName.error.required = Enter carrierName
 carrierName.error.length = CarrierName must be 10 characters or less
+
+safetyAndSecurityCheckYourAnswers.title = Check your answers
+safetyAndSecurityCheckYourAnswers.heading = Check your answers
+safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting = Countries of routing
+safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails = Security trader
