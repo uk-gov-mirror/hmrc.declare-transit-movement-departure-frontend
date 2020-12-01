@@ -21,7 +21,7 @@ import controllers.{routes => mainRoutes}
 import forms.addItems.traderSecurityDetails.SecurityConsignorEoriFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
-import navigation.annotations.{AddItems, TradersSecurityDetails}
+import navigation.annotations.TradersSecurityDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

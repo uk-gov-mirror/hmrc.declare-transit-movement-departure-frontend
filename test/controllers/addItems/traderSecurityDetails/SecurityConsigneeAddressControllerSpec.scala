@@ -23,7 +23,7 @@ import forms.addItems.traderSecurityDetails.SecurityConsigneeAddressFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
 import models.{ConsigneeAddress, CountryList, NormalMode}
-import navigation.annotations.{AddItems, TradersSecurityDetails}
+import navigation.annotations.TradersSecurityDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
