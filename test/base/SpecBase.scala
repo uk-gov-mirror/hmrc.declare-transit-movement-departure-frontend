@@ -49,6 +49,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with OptionValues with TryValue
 
   val principalName: String = "principalName"
 
+  val carrierName: String = "carrierName"
+
   val principalAddress: PrincipalAddress = PrincipalAddress("numberAndStreet", "town", "SW1A 1AA")
 
   val configKey = "config"

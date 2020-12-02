@@ -23,7 +23,7 @@ import forms.addItems.traderSecurityDetails.SecurityConsignorAddressFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}
 import models.{ConsignorAddress, CountryList, NormalMode}
-import navigation.annotations.AddItems
+import navigation.annotations.TradersSecurityDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -38,7 +38,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.countryJsonList
 
 import scala.concurrent.Future
 
@@ -59,7 +58,7 @@ class SecurityConsignorAddressControllerSpec extends SpecBase with MockNunjucksR
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[Navigator]).qualifiedWith(classOf[AddItems]).toInstance(new FakeNavigator(onwardRoute)),
+        bind(classOf[Navigator]).qualifiedWith(classOf[TradersSecurityDetails]).toInstance(new FakeNavigator(onwardRoute)),
         bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
 

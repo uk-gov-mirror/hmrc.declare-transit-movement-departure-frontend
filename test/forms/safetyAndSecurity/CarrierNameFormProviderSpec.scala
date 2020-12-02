@@ -17,13 +17,16 @@
 package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class CarrierNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "carrierName.error.required"
-  val lengthKey   = "carrierName.error.length"
-  val maxLength   = 10
+  val requiredKey              = "carrierName.error.required"
+  val lengthKey                = "carrierName.error.length"
+  val maxLength                = 35
+  val invalidCharacters        = "carrierName.error.invalidCharacters"
+  val carrierNameRegex: String = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
 
   val form = new CarrierNameFormProvider()()
 
@@ -49,5 +52,21 @@ class CarrierNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the carrier name eori name regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidCharacters, Seq(carrierNameRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(carrierNameRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }

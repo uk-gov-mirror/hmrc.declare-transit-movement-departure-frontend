@@ -17,13 +17,19 @@
 package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class ConveyanceReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "conveyanceReferenceNumber.error.required"
-  val lengthKey   = "conveyanceReferenceNumber.error.length"
-  val maxLength   = 10
+  val requiredKey          = "conveyanceReferenceNumber.error.required"
+  val maxLengthKey         = "conveyanceReferenceNumber.error.maxLength"
+  val minLengthKey         = "conveyanceReferenceNumber.error.minLength"
+  val maxLength            = 8
+  val minLength            = 7
+  val RefRegex             = "^[a-zA-Z0-9]{7,8}$"
+  val invalidCharactersKey = "conveyanceReferenceNumber.error.invalid"
 
   val form = new ConveyanceReferenceNumberFormProvider()()
 
@@ -41,7 +47,14 @@ class ConveyanceReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, maxLengthKey, Seq(maxLength))
+    )
+
+    behave like fieldWithMinLength(
+      form,
+      fieldName,
+      minLength   = minLength,
+      lengthError = FormError(fieldName, minLengthKey, Seq(minLength))
     )
 
     behave like mandatoryField(
@@ -49,5 +62,20 @@ class ConveyanceReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match the invalid characters regex" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidCharactersKey, Seq(RefRegex)))
+      val genInvalidString: Gen[String] = {
+        stringsWithLength(minLength) suchThat (!_.matches(RefRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }

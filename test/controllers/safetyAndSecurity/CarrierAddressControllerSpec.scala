@@ -17,16 +17,19 @@
 package controllers.safetyAndSecurity
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
+import controllers.{routes => mainRoute}
 import forms.safetyAndSecurity.CarrierAddressFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.reference.{Country, CountryCode}
+import models.{CarrierAddress, CountryList, NormalMode}
 import navigation.annotations.SafetyAndSecurity
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.safetyAndSecurity.CarrierAddressPage
+import pages.safetyAndSecurity.{CarrierAddressPage, CarrierNamePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -35,24 +38,29 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import controllers.{routes => mainRoute}
+import utils.countryJsonList
 
 import scala.concurrent.Future
 
 class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute                                                = Call("GET", "/foo")
+  lazy val carrierAddressRoute                                   = routes.CarrierAddressController.onPageLoad(lrn, NormalMode).url
+  private val country                                            = Country(CountryCode("GB"), "United Kingdom")
+  private val countries                                          = CountryList(Seq(country))
+  private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   private val formProvider = new CarrierAddressFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(countries)
   private val template     = "safetyAndSecurity/carrierAddress.njk"
-
-  lazy val carrierAddressRoute = routes.CarrierAddressController.onPageLoad(lrn, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SafetyAndSecurity]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(
+        bind(classOf[Navigator]).qualifiedWith(classOf[SafetyAndSecurity]).toInstance(new FakeNavigator(onwardRoute)),
+        bind(classOf[ReferenceDataConnector]).toInstance(mockReferenceDataConnector)
+      )
 
   "CarrierAddress Controller" - {
 
@@ -61,7 +69,12 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      dataRetrievalWithData(emptyUserAnswers)
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
+      val userAnswers = emptyUserAnswers.set(CarrierNamePage, "carrierName").success.value
+
+      dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, carrierAddressRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -74,9 +87,11 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "mode"        -> NormalMode,
+        "form"        -> form,
+        "carrierName" -> carrierName,
+        "lrn"         -> lrn,
+        "countries"   -> countryJsonList(form.value.map(_.country), countries.fullList)
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -91,7 +106,19 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(CarrierAddressPage, "answer").success.value
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
+      val carrierAddress: CarrierAddress = CarrierAddress("Address line 1", "Address line 2", "Address line 3", country)
+
+      val userAnswers = emptyUserAnswers
+        .set(CarrierNamePage, "carrierName")
+        .success
+        .value
+        .set(CarrierAddressPage, carrierAddress)
+        .success
+        .value
+
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, carrierAddressRoute)
@@ -104,12 +131,21 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(
+        Map(
+          "AddressLine1" -> "Address line 1",
+          "AddressLine2" -> "Address line 2",
+          "AddressLine3" -> "Address line 3",
+          "country"      -> "GB"
+        )
+      )
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "mode"        -> NormalMode,
+        "form"        -> filledForm,
+        "carrierName" -> carrierName,
+        "lrn"         -> lrn,
+        "countries"   -> countryJsonList(filledForm.value.map(_.country), countries.fullList)
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -122,12 +158,18 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      dataRetrievalWithData(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .set(CarrierNamePage, "carrierName")
+        .success
+        .value
+
+      dataRetrievalWithData(userAnswers)
 
       val request =
         FakeRequest(POST, carrierAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("AddressLine1", "value 1"), ("AddressLine2", "value 2"), ("AddressLine3", "value 3"), ("country", "GB"))
 
       val result = route(app, request).value
 
@@ -141,7 +183,15 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      dataRetrievalWithData(emptyUserAnswers)
+      when(mockReferenceDataConnector.getCountryList()(any(), any()))
+        .thenReturn(Future.successful(countries))
+
+      val userAnswers = emptyUserAnswers
+        .set(CarrierNamePage, "carrierName")
+        .success
+        .value
+
+      dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(POST, carrierAddressRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
@@ -185,7 +235,7 @@ class CarrierAddressControllerSpec extends SpecBase with MockNunjucksRendererApp
 
       val request =
         FakeRequest(POST, carrierAddressRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("Address line 1", "value 1"), ("Address line 2", "value 2"))
 
       val result = route(app, request).value
 
