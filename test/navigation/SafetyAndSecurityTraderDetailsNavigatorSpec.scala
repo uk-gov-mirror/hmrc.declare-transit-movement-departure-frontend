@@ -550,6 +550,46 @@ class SafetyAndSecurityTraderDetailsNavigatorSpec extends SpecBase with ScalaChe
         }
       }
     }
+    "Must go from SafetyAndSecurityConsigneeEoriPage to Check Your Answers page" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          navigator
+            .nextPage(SafetyAndSecurityConsigneeEoriPage, CheckMode, answers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+      }
+    }
+    "Must go from SafetyAndSecurityConsigneeAddressPage to Check Your Answers page" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          navigator
+            .nextPage(SafetyAndSecurityConsigneeAddressPage, CheckMode, answers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+      }
+    }
+    "Must go from SafetyAndSecurityConsigneeNamePage to Check Your Answers page if answer exists for SafetyAndSecurityConsigneeAddressPage" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(SafetyAndSecurityConsigneeAddressPage, "TestAddress") //TODO update this when address page updated
+            .success
+            .value
+          navigator
+            .nextPage(SafetyAndSecurityConsigneeNamePage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+      }
+    }
+    "Must go from SafetyAndSecurityConsigneeNamePage to SafetyAndSecurityConsigneeAddressPage if no answer exists for  SafetyAndSecurityConsigneeAddressPage" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .remove(SafetyAndSecurityConsigneeAddressPage)
+            .success
+            .value
+          navigator
+            .nextPage(SafetyAndSecurityConsigneeNamePage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityConsigneeAddressController.onPageLoad(updatedAnswers.id, CheckMode))
+      }
+    }
 
   }
 }
