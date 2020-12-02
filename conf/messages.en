@@ -1330,10 +1330,10 @@ addCarrierEori.heading = Do you know the carrier’s EORI number?
 addCarrierEori.checkYourAnswersLabel =  Know the carrier’s EORI number?
 addCarrierEori.error.required =  Enter the carrier’s EORI number
 
-addCarrier.title = addCarrier
-addCarrier.heading = addCarrier
+addCarrier.title =  Do you need to add a carrier?
+addCarrier.heading =  Do you need to add a carrier?
 addCarrier.checkYourAnswersLabel = addCarrier
-addCarrier.error.required = Select yes if addCarrier
+addCarrier.error.required = Select yes if you know the carrier’s EORI number
 
 carrierAddress.title = What is {0}’s address?
 carrierAddress.heading = What is {0}’s address?

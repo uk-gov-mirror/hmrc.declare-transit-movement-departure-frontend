@@ -120,10 +120,10 @@ POST       /:lrn/security/trader-security/is-carrier-eori-known                 
 GET        /:lrn/security/trader-security/change-is-carrier-eori-known                              controllers.safetyAndSecurity.AddCarrierEoriController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/security/trader-security/change-is-carrier-eori-known                              controllers.safetyAndSecurity.AddCarrierEoriController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/addCarrier                                        controllers.safetyAndSecurity.AddCarrierController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/addCarrier                                        controllers.safetyAndSecurity.AddCarrierController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/changeAddCarrier                                  controllers.safetyAndSecurity.AddCarrierController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/changeAddCarrier                                  controllers.safetyAndSecurity.AddCarrierController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/security/trader-security/add-a-carrier                                   controllers.safetyAndSecurity.AddCarrierController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/security/trader-security/add-a-carrier                                     controllers.safetyAndSecurity.AddCarrierController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/security/trader-security/change-add-a-carrier                                controllers.safetyAndSecurity.AddCarrierController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/security/trader-security/change-add-a-carrier                                 controllers.safetyAndSecurity.AddCarrierController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /:lrn/security/trader-security/carrier-address                                   controllers.safetyAndSecurity.CarrierAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/security/trader-security/carrier-address                                    controllers.safetyAndSecurity.CarrierAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
