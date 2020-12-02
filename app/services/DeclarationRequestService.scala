@@ -70,7 +70,8 @@ class DeclarationRequestService @Inject()(
       traderDetails,
       itemDetails,
       goodsSummary,
-      guarantee
+      guarantee,
+      safetyAndSecurity
     ) = journeyDomain
 
     def guaranteeDetails(guaranteeDetails: GuaranteeDetails): Guarantee =
@@ -271,12 +272,12 @@ class DeclarationRequestService @Inject()(
         totGroMasHEA307    = goodsSummary.totalMass,
         decDatHEA383       = dateTimeOfPrep.toLocalDate,
         decPlaHEA394       = movementDetails.declarationPlacePage,
-        speCirIndHEA1      = None, // safety and security - special cerc indicator
-        traChaMetOfPayHEA1 = None, // safety and security - payment method
-        comRefNumHEA       = None, // safety and security - commercial red
-        secHEA358          = Some(safetyAndSecurityFlag(preTaskList.addSecurityDetails)), // local ref number & security
-        conRefNumHEA       = None, // safety and security - conveyance ref
-        codPlUnHEA357      = None // safety and security - place of unloading
+        speCirIndHEA1      = safetyAndSecurity.flatMap(_.circumstanceIndicator),
+        traChaMetOfPayHEA1 = safetyAndSecurity.flatMap(_.paymentMethod),
+        comRefNumHEA       = safetyAndSecurity.flatMap(_.commercialReferenceNumber),
+        secHEA358          = Some(safetyAndSecurityFlag(preTaskList.addSecurityDetails)),
+        conRefNumHEA       = safetyAndSecurity.flatMap(_.conveyanceReferenceNumber),
+        codPlUnHEA357      = safetyAndSecurity.flatMap(_.placeOfUnloading)
       ),
       principalTrader(traderDetails),
       headerConsignor(traderDetails),
