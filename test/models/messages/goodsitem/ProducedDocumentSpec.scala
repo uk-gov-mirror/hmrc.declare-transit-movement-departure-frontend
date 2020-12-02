@@ -18,7 +18,7 @@ package models.messages.goodsitem
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites._
+import xml.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -41,10 +41,14 @@ class ProducedDocumentSpec
 
       forAll(arbitrary[ProducedDocument]) {
         producedDocument =>
-          val reference = producedDocument.reference.fold(NodeSeq.Empty)(value => <DocRefDC23>{value}</DocRefDC23>)
+          val reference = producedDocument.reference.fold(NodeSeq.Empty)(
+            value => <DocRefDC23>{value}</DocRefDC23>
+          )
 
-          val complementOfInformation = producedDocument.complementOfInformation.fold(NodeSeq.Empty)(value => <ComOfInfDC25>{value}</ComOfInfDC25>
-            <ComOfInfDC25LNG>EN</ComOfInfDC25LNG>)
+          val complementOfInformation = producedDocument.complementOfInformation.fold(NodeSeq.Empty)(
+            value => <ComOfInfDC25>{value}</ComOfInfDC25>
+            <ComOfInfDC25LNG>EN</ComOfInfDC25LNG>
+          )
 
           val expectedResult = <PRODOCDC2>
             <DocTypDC21>{producedDocument.documentType}</DocTypDC21>

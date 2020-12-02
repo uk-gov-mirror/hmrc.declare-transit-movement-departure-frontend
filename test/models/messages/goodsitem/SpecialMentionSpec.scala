@@ -24,7 +24,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import models.XMLWrites._
+import xml.XMLWrites._
 
 class SpecialMentionSpec
     extends AnyFreeSpec
@@ -288,12 +288,11 @@ class SpecialMentionSpec
 
         forAll(arbitrary[SpecialMentionEc]) {
           specialMentionEc =>
-            val expectedResult = {
+            val expectedResult =
               <SPEMENMT2>
                 <AddInfCodMT23>{specialMentionEc.additionalInformationCoded}</AddInfCodMT23>
                 <ExpFroECMT24>1</ExpFroECMT24>
               </SPEMENMT2>
-            }
 
             specialMentionEc.toXml mustEqual expectedResult
         }
@@ -303,12 +302,11 @@ class SpecialMentionSpec
 
         forAll(arbitrary[SpecialMentionEc]) {
           specialMentionEc =>
-            val xml = {
+            val xml =
               <SPEMENMT2>
                 <AddInfCodMT23>{specialMentionEc.additionalInformationCoded}</AddInfCodMT23>
                 <ExpFroECMT24>1</ExpFroECMT24>
               </SPEMENMT2>
-            }
 
             val result = XmlReader.of[SpecialMention].read(xml).toOption.value
 
@@ -319,12 +317,11 @@ class SpecialMentionSpec
       "must fail to deserialise when 'export from EC` is false" in {
         forAll(arbitrary[SpecialMentionEc]) {
           specialMentionEc =>
-            val xml = {
+            val xml =
               <SPEMENMT2>
                 <AddInfCodMT23>{specialMentionEc.additionalInformationCoded}</AddInfCodMT23>
                 <ExpFroECMT24>0</ExpFroECMT24>
               </SPEMENMT2>
-            }
 
             val result = XmlReader.of[SpecialMentionEc].read(xml).toOption
 
@@ -334,12 +331,11 @@ class SpecialMentionSpec
 
       "must fail to deserialise when code is not country specific" in {
 
-        val xml = {
+        val xml =
           <SPEMENMT2>
             <AddInfCodMT23>Invalid code</AddInfCodMT23>
             <ExpFroECMT24>1</ExpFroECMT24>
           </SPEMENMT2>
-        }
 
         val result = XmlReader.of[SpecialMentionEc].read(xml).toOption
 
@@ -353,13 +349,12 @@ class SpecialMentionSpec
 
         forAll(arbitrary[SpecialMentionNonEc]) {
           specialMentionNonEc =>
-            val expectedResult = {
+            val expectedResult =
               <SPEMENMT2>
                 <AddInfCodMT23>{specialMentionNonEc.additionalInformationCoded}</AddInfCodMT23>
                 <ExpFroECMT24>0</ExpFroECMT24>
                 <ExpFroCouMT25>{specialMentionNonEc.exportFromCountry}</ExpFroCouMT25>
               </SPEMENMT2>
-            }
 
             specialMentionNonEc.toXml mustEqual expectedResult
         }
@@ -369,13 +364,12 @@ class SpecialMentionSpec
 
         forAll(arbitrary[SpecialMentionNonEc]) {
           specialMentionNonEc =>
-            val xml = {
+            val xml =
               <SPEMENMT2>
                 <AddInfCodMT23>{specialMentionNonEc.additionalInformationCoded}</AddInfCodMT23>
                 <ExpFroECMT24>0</ExpFroECMT24>
                 <ExpFroCouMT25>{specialMentionNonEc.exportFromCountry}</ExpFroCouMT25>
               </SPEMENMT2>
-            }
 
             val result = XmlReader.of[SpecialMention].read(xml).toOption.value
 
@@ -386,13 +380,12 @@ class SpecialMentionSpec
       "must fail to deserialise when 'export from EC` is true" in {
         forAll(arbitrary[SpecialMentionNonEc]) {
           specialMentionNonEc =>
-            val xml = {
+            val xml =
               <SPEMENMT2>
                 <AddInfCodMT23>{specialMentionNonEc.additionalInformationCoded}</AddInfCodMT23>
                 <ExpFroECMT24>1</ExpFroECMT24>
                 <ExpFroCouMT25>{specialMentionNonEc.exportFromCountry}</ExpFroCouMT25>
               </SPEMENMT2>
-            }
 
             val result = XmlReader.of[SpecialMentionNonEc].read(xml).toOption
 
@@ -403,11 +396,10 @@ class SpecialMentionSpec
       "must fail to deserialise when 'exportFromCountry` is not defined" in {
         forAll(arbitrary[SpecialMentionNoCountry]) {
           specialMentionNonEc =>
-            val xml = {
+            val xml =
               <SPEMENMT2>
                 <AddInfCodMT23>{specialMentionNonEc.additionalInformationCoded}</AddInfCodMT23>
               </SPEMENMT2>
-            }
 
             val result = XmlReader.of[SpecialMentionNonEc].read(xml).toOption
 
@@ -417,13 +409,12 @@ class SpecialMentionSpec
 
       "must fail to deserialise when code is not country specific" in {
 
-        val xml = {
+        val xml =
           <SPEMENMT2>
             <AddInfCodMT23>Invalid code</AddInfCodMT23>
             <ExpFroECMT24>0</ExpFroECMT24>
             <ExpFroCouMT25>GB</ExpFroCouMT25>
           </SPEMENMT2>
-        }
 
         val result = XmlReader.of[SpecialMentionNonEc].read(xml).toOption
 
@@ -438,11 +429,10 @@ class SpecialMentionSpec
 
         forAll(arbitrary[SpecialMentionNoCountry]) {
           specialMentionNoCountry =>
-            val expectedResult = {
+            val expectedResult =
               <SPEMENMT2>
                 <AddInfCodMT23>{specialMentionNoCountry.additionalInformationCoded}</AddInfCodMT23>
               </SPEMENMT2>
-            }
 
             specialMentionNoCountry.toXml mustEqual expectedResult
         }
@@ -451,11 +441,10 @@ class SpecialMentionSpec
       "must deserialise when the code is not country specific" in {
         forAll(arbitrary[SpecialMentionNoCountry]) {
           specialMentionNoCountry =>
-            val xml = {
+            val xml =
               <SPEMENMT2>
                 <AddInfCodMT23>{specialMentionNoCountry.additionalInformationCoded}</AddInfCodMT23>
               </SPEMENMT2>
-            }
 
             val result = XmlReader.of[SpecialMention].read(xml).toOption.value
 
@@ -467,11 +456,10 @@ class SpecialMentionSpec
 
         forAll(countrySpecificCodeGen) {
           additionalInformation =>
-            val xml = {
+            val xml =
               <SPEMENMT2>
                 <AddInfCodMT23>{additionalInformation}</AddInfCodMT23>
               </SPEMENMT2>
-            }
 
             val result = XmlReader.of[SpecialMentionNoCountry].read(xml).toOption
 

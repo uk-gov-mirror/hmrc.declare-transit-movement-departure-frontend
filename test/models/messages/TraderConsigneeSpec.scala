@@ -18,7 +18,7 @@ package models.messages
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites._
+import xml.XMLWrites._
 import models.messages.trader.TraderConsignee
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
@@ -41,7 +41,9 @@ class TraderConsigneeSpec
     "must serialize TraderConsignee to xml" in {
       forAll(arbitrary[TraderConsignee]) {
         trader =>
-          val eori = trader.eori.map(value => <TINCE159>{value}</TINCE159>)
+          val eori = trader.eori.map(
+            value => <TINCE159>{value}</TINCE159>
+          )
 
           val expectedResult =
             <TRACONCE1>

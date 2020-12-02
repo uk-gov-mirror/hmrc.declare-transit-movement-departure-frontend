@@ -20,8 +20,6 @@ import cats.data.NonEmptyList
 import cats.syntax.all._
 import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.XMLWrites
-import models.XMLWrites._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.GoodsItem
 import models.messages.guarantee.Guarantee
@@ -39,6 +37,8 @@ import models.messages.safetyAndSecurity.{
 }
 import models.messages.trader._
 import utils.NonEmptyListXMLReader._
+import xml.XMLWrites
+import xml.XMLWrites._
 
 import scala.xml.{Elem, Node, NodeSeq}
 

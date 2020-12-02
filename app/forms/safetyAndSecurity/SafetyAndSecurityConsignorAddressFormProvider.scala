@@ -16,15 +16,33 @@
 
 package forms.safetyAndSecurity
 
+import forms.Constants.addressRegex
 import forms.mappings.Mappings
 import javax.inject.Inject
+import models.reference.Country
+import models.{ConsignorAddress, CountryList}
 import play.api.data.Form
+import play.api.data.Forms.mapping
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class SafetyAndSecurityConsignorAddressFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("safetyAndSecurityConsignorAddress.error.required")
-        .verifying(maxLength(10, "safetyAndSecurityConsignorAddress.error.length"))
-    )
+  val maxLength = 35
+
+  def apply(countryList: CountryList): Form[ConsignorAddress] = Form(
+    mapping(
+      "AddressLine1" -> text("safetyAndSecurityConsignorAddress.error.required", "1")
+        .verifying(StopOnFirstFail[String](maxLength(maxLength, "safetyAndSecurityConsignorAddress.error.length", "1"),
+                                           regexp(addressRegex, "safetyAndSecurityConsignorAddress.error.invalid", "1"))),
+      "AddressLine2" -> text("safetyAndSecurityConsignorAddress.error.required", "2")
+        .verifying(StopOnFirstFail[String](maxLength(maxLength, "safetyAndSecurityConsignorAddress.error.length", "2"),
+                                           regexp(addressRegex, "safetyAndSecurityConsignorAddress.error.invalid", "2"))),
+      "AddressLine3" -> text("safetyAndSecurityConsignorAddress.error.required", "3")
+        .verifying(StopOnFirstFail[String](maxLength(maxLength, "safetyAndSecurityConsignorAddress.error.length", "3"),
+                                           regexp(addressRegex, "safetyAndSecurityConsignorAddress.error.invalid", "3"))),
+      "country" -> text("safetyAndSecurityConsignorEori.error.country.required")
+        .verifying("safetyAndSecurityConsignorEori.error.country.required", value => countryList.fullList.exists(_.code.code == value))
+        .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)
+    )(ConsignorAddress.apply)(ConsignorAddress.unapply)
+  )
 }

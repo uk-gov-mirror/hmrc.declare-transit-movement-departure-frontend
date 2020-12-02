@@ -17,10 +17,11 @@
 package models.messages.goodsitem
 
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.{LanguageCodeEnglish, XMLWrites}
+import models.LanguageCodeEnglish
 
 import scala.xml.NodeSeq
 import cats.syntax.all._
+import xml.XMLWrites
 
 final case class PreviousAdministrativeReference(
   preDocTypAR21: String, //an6 CL014 ref data: Previous document type (Common)
@@ -42,8 +43,10 @@ object PreviousAdministrativeReference {
 
   implicit def writes: XMLWrites[PreviousAdministrativeReference] = XMLWrites[PreviousAdministrativeReference] {
     references =>
-      val comOfInfAR29 = references.comOfInfAR29.fold(NodeSeq.Empty)(value => <ComOfInfAR29>{value}</ComOfInfAR29>
-        <ComOfInfAR29LNG>{LanguageCodeEnglish.code}</ComOfInfAR29LNG>)
+      val comOfInfAR29 = references.comOfInfAR29.fold(NodeSeq.Empty)(
+        value => <ComOfInfAR29>{value}</ComOfInfAR29>
+        <ComOfInfAR29LNG>{LanguageCodeEnglish.code}</ComOfInfAR29LNG>
+      )
 
       <PREADMREFAR2>
         <PreDocTypAR21>{references.preDocTypAR21}</PreDocTypAR21>

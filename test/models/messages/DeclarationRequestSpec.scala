@@ -37,6 +37,7 @@ import models.messages.safetyAndSecurity.{
   SafetyAndSecurityConsignorWithEori,
   SafetyAndSecurityConsignorWithoutEori
 }
+import xml.XMLWrites._
 import models.messages.trader.{TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori}
 
 import scala.xml.Utility.trim
