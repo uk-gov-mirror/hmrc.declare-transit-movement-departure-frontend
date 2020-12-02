@@ -591,5 +591,163 @@ class SafetyAndSecurityTraderDetailsNavigatorSpec extends SpecBase with ScalaChe
       }
     }
 
+    "AddCarrierPage must go to" - {
+      "CheckYourAnswersPage when user selects No" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddCarrierPage, false)
+              .success
+              .value
+            navigator
+              .nextPage(AddCarrierPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "CheckYourAnswersPage when user selects Yes and an answer exists for CarriersEoriDetails" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddCarrierPage, true)
+              .success
+              .value
+              .set(AddCarrierEoriPage, true)
+              .success
+              .value
+            navigator
+              .nextPage(AddCarrierPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "AddCarrierEoriPage when user selects Yes and no answer exists for CarriersEoriDetails" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddCarrierPage, true)
+              .success
+              .value
+              .remove(AddCarrierEoriPage)
+              .success
+              .value
+            navigator
+              .nextPage(AddCarrierPage, CheckMode, updatedAnswers)
+              .mustBe(routes.AddCarrierEoriController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+    }
+
+    "Must go from AddCarrierEoriPage" - {
+      "to CheckYourAnswersPage if user selects Yes and an answer already exists for CarrierEoriNumberPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddCarrierEoriPage, true)
+              .success
+              .value
+              .set(CarrierEoriPage, "GB123456")
+              .success
+              .value
+            navigator
+              .nextPage(AddCarrierEoriPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "to CarrierEoriPage if user selects Yes and no answer already exists for CarrierEoriNumberPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddCarrierEoriPage, true)
+              .success
+              .value
+              .remove(CarrierEoriPage)
+              .success
+              .value
+            navigator
+              .nextPage(AddCarrierEoriPage, CheckMode, updatedAnswers)
+              .mustBe(routes.CarrierEoriController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "to CarrierNamePage if user selects No and no answer exists for CarrierNamePage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddCarrierEoriPage, false)
+              .success
+              .value
+              .remove(CarrierNamePage)
+              .success
+              .value
+            navigator
+              .nextPage(AddCarrierEoriPage, CheckMode, updatedAnswers)
+              .mustBe(routes.CarrierNameController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "to CheckYourAnswersPage if user selects No and an answer already exists for CarrierNamePage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddCarrierEoriPage, false)
+              .success
+              .value
+              .set(CarrierNamePage, "test name")
+              .success
+              .value
+            navigator
+              .nextPage(AddCarrierEoriPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+    }
+
+    "Must go from CarrierNamePage" - {
+      "to CarrierAddressPage when no answer exists for CarrierAddressPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .remove(CarrierAddressPage)
+              .success
+              .value
+            navigator
+              .nextPage(CarrierNamePage, CheckMode, updatedAnswers)
+              .mustBe(routes.CarrierAddressController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+
+      "to CheckYourAnswersPage when an answer exists for CarrierAddressPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(CarrierAddressPage, "test address")
+              .success
+              .value
+            navigator
+              .nextPage(CarrierNamePage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+    }
+
+    "Must go from CarrierEoriPage to CheckYourAnswersPage" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          navigator
+            .nextPage(CarrierEoriPage, CheckMode, answers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+      }
+    }
+
+    "Must go from CarrierAddressPage to CheckYourAnswersPage" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          navigator
+            .nextPage(CarrierAddressPage, CheckMode, answers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+      }
+    }
   }
 }

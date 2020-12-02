@@ -16,6 +16,8 @@
 
 package pages.safetyAndSecurity
 
+import models.UserAnswers
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddCarrierEoriPageSpec extends PageBehaviours {
@@ -27,5 +29,44 @@ class AddCarrierEoriPageSpec extends PageBehaviours {
     beSettable[Boolean](AddCarrierEoriPage)
 
     beRemovable[Boolean](AddCarrierEoriPage)
+
+    "cleanup" - { //TODO when address page updated this test must match for the setting of address
+
+      "must remove Carrier name and address details when they exist in userAnswers and AddCarrierEori is set to true" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result = userAnswers
+              .set(CarrierNamePage, "test name")
+              .success
+              .value
+              .set(CarrierAddressPage, "test address")
+              .success
+              .value
+              .set(AddCarrierEoriPage, true)
+              .success
+              .value
+
+            result.get(CarrierNamePage) must not be defined
+            result.get(CarrierAddressPage) must not be defined
+        }
+      }
+
+      "must remove Carrier eori details when they exist in userAnswers and AddCarrierEori is set to false" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result = userAnswers
+              .set(CarrierEoriPage, "GB123456")
+              .success
+              .value
+              .set(AddCarrierEoriPage, false)
+              .success
+              .value
+
+            result.get(CarrierEoriPage) must not be defined
+        }
+      }
+    }
   }
 }
