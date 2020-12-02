@@ -1343,6 +1343,10 @@ addSafetyAndSecurityConsigneeEori.error.required = Select yes if you know the se
 
 safetyAndSecurityConsigneeAddress.title = What is the security consignee’s address?
 safetyAndSecurityConsigneeAddress.heading = What is {0}’s address?
+safetyAndSecurityConsigneeAddress.AddressLine1 = Address line 1
+safetyAndSecurityConsigneeAddress.AddressLine2 = Address line 2
+safetyAndSecurityConsigneeAddress.AddressLine3 = Address line 3
+safetyAndSecurityConsigneeAddress.AddressLine4 = Country
 safetyAndSecurityConsigneeAddress.checkYourAnswersLabel = Security consignee’s address
 safetyAndSecurityConsigneeAddress.checkYourAnswersLabel.visuallyHidden = change security consignee’s address
 safetyAndSecurityConsigneeAddress.error.required = Enter address line {0} of the security consignee’s address
