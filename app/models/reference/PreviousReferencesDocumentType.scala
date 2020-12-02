@@ -18,10 +18,10 @@ package models.reference
 
 import play.api.libs.json.{Format, Json}
 
-case class PreviousDocumentType(code: String, description: String)
+case class PreviousReferencesDocumentType(code: String, description: String)
 
-object PreviousDocumentType {
+object PreviousReferencesDocumentType {
 
-  implicit lazy val format: Format[PreviousDocumentType] =
-    Json.format[PreviousDocumentType]
+  implicit lazy val format: Format[PreviousReferencesDocumentType] =
+    Json.format[PreviousReferencesDocumentType]
 }
