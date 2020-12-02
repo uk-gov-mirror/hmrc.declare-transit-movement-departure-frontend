@@ -30,7 +30,15 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
             val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
             val result            = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
 
-            result.value mustEqual journeyDomain
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            //result.value.itemDetails mustEqual journeyDomain.itemDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
         }
       }
     }
@@ -60,7 +68,14 @@ object JourneyDomainSpec {
         GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
         GuaranteeDetailsSpec.setGuaranteeDetails(journeyDomain.guarantee) andThen
         TraderDetailsSpec.setTraderDetails(journeyDomain.traderDetails) andThen
-        MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails)
+        MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails) andThen
+        safetyAndSecurity(journeyDomain.safetyAndSecurity)
     )(startUserAnswers)
+
+  def safetyAndSecurity(safetyAndSecurity: Option[SafetyAndSecurity])(startUserAnswers: UserAnswers): UserAnswers =
+    safetyAndSecurity match {
+      case Some(value) => SafetyAndSecuritySpec.setSafetyAndSecurity(value)(startUserAnswers)
+      case None        => startUserAnswers
+    }
 
 }

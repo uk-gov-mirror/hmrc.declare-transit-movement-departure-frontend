@@ -26,6 +26,7 @@ import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalD
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
 import models.journeyDomain.RouteDetails.TransitInformation
+import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode}
 import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
@@ -34,8 +35,9 @@ import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDesti
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
 import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
+import models.messages.safetyAndSecurity._
 import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
-import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
+import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
 import repositories.InterchangeControlReferenceIdRepository
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -241,6 +243,45 @@ class DeclarationRequestService @Inject()(
 
     def safetyAndSecurityFlag(boolFlag: Boolean): Int = if (boolFlag) 1 else 0
 
+    def safetyAndSecurityConsignee(securityTraderDetails: Option[SecurityTraderDetails]): Option[SafetyAndSecurityConsignee] =
+      securityTraderDetails
+        .flatMap {
+          case SafetyAndSecurity.PersonalInformation(name, address) =>
+            Address.prismAddressToConsigneeAddress.getOption(address).map {
+              case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
+                SafetyAndSecurityConsigneeWithoutEori(name, addressLine1, addressLine3, addressLine2, country.code.code)
+            }
+
+          case SafetyAndSecurity.TraderEori(EoriNumber(eori)) =>
+            Some(SafetyAndSecurityConsigneeWithEori(eori))
+        }
+
+    def safetyAndSecurityConsignor(securityTraderDetails: Option[SecurityTraderDetails]): Option[SafetyAndSecurityConsignor] =
+      securityTraderDetails
+        .flatMap {
+          case SafetyAndSecurity.PersonalInformation(name, address) =>
+            Address.prismAddressToConsignorAddress.getOption(address).map {
+              case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
+                SafetyAndSecurityConsignorWithoutEori(name, addressLine1, addressLine3, addressLine2, country.code.code)
+            }
+
+          case SafetyAndSecurity.TraderEori(EoriNumber(eori)) =>
+            Some(SafetyAndSecurityConsignorWithEori(eori))
+        }
+
+    def carrier(securityTraderDetails: Option[SecurityTraderDetails]): Option[SafetyAndSecurityCarrier] =
+      securityTraderDetails
+        .flatMap {
+          case SafetyAndSecurity.PersonalInformation(name, address) =>
+            Address.prismAddressToCarrierAddress.getOption(address).map {
+              case CarrierAddress(addressLine1, addressLine2, addressLine3, country) =>
+                SafetyAndSecurityCarrierWithoutEori(name, addressLine1, addressLine3, addressLine2, country.code.code)
+            }
+
+          case SafetyAndSecurity.TraderEori(EoriNumber(eori)) =>
+            Some(SafetyAndSecurityCarrierWithEori(eori))
+        }
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
@@ -296,9 +337,9 @@ class DeclarationRequestService @Inject()(
       guaranteeDetails(guarantee),
       goodsItems(journeyDomain.itemDetails),
       Seq.empty[Itinerary], //TODO need reader model for this
-      None, //TODO need reader model for this
-      None, //TODO need reader model for this
-      None //TODO need reader model for this
+      safetyAndSecurity.flatMap(sas => carrier(sas.carrier)),
+      safetyAndSecurity.flatMap(sas => safetyAndSecurityConsignor(sas.consignor)),
+      safetyAndSecurity.flatMap(sas => safetyAndSecurityConsignee(sas.consignee))
     )
   }
 }

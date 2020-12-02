@@ -18,19 +18,15 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
-import models.{EoriNumber, UserAnswers}
+import models.UserAnswers
 import models.domain.Address
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.journeyDomain.SafetyAndSecurity.{PersonalInformation, TraderEori}
 import models.journeyDomain.SafetyAndSecuritySpec.{setSafetyAndSecurity, setSafetyAndSecurityMinimal}
-import models.journeyDomain.TransportDetails.InlandMode
-import models.journeyDomain.TransportDetails.InlandMode.NonSpecialMode
-import models.reference.TransportMode
 import org.scalacheck.Gen
 import org.scalatest.TryValues
 import pages.ModeAtBorderPage
 import pages.safetyAndSecurity._
-import play.api.libs.json.Json
 
 class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators {
 
@@ -51,19 +47,14 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
 
       val genModeAtBorder = Gen.oneOf(Seq(4, 40))
 
-      val genTransportDetails: Gen[TransportDetails] = for {
-        transportDetails <- arb[TransportDetails]
-        code             <- genModeAtBorder
-        nonSpecialMode   <- arb[NonSpecialMode]
-      } yield transportDetails.copy(inlandMode = nonSpecialMode.copy(code = code))
-
-      forAll(genTransportDetails) {
-        transportDetails =>
-          forAll(arb[UserAnswers], genSecurityDetails(transportDetails.inlandMode.code.toString)) {
+      forAll(genModeAtBorder) {
+        mode =>
+          forAll(arb[UserAnswers], genSecurityDetails(genModeAtBorder.map(_.toString))) {
             (baseUserAnswers, safetyAndSecurity) =>
-              val userAnswers: UserAnswers =
-                (TransportDetailsSpec.setTransportDetail(transportDetails) _
-                  andThen setSafetyAndSecurity(safetyAndSecurity))(baseUserAnswers)
+
+              val updatedUserAnswers = baseUserAnswers.unsafeSetVal(ModeAtBorderPage)(mode.toString)
+
+              val userAnswers: UserAnswers = setSafetyAndSecurity(safetyAndSecurity)(updatedUserAnswers)
 
               val result = UserAnswersParser[Option, SafetyAndSecurity].run(userAnswers).value
 
