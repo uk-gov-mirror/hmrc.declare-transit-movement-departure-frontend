@@ -93,9 +93,9 @@ trait ModelGenerators {
   implicit lazy val arbitraryPrincipalAddress: Arbitrary[PrincipalAddress] =
     Arbitrary {
       for {
-        numberAndStreet <- stringsWithMaxLength(PrincipalAddress.Constants.numberAndStreetLength)
-        town            <- stringsWithMaxLength(PrincipalAddress.Constants.townLength)
-        postcode        <- stringsWithMaxLength(PrincipalAddress.Constants.postcodeLength)
+        numberAndStreet <- alphaNumericWithMaxLength(PrincipalAddress.Constants.numberAndStreetLength)
+        town            <- alphaNumericWithMaxLength(PrincipalAddress.Constants.townLength)
+        postcode        <- alphaNumericWithMaxLength(PrincipalAddress.Constants.postcodeLength)
       } yield PrincipalAddress(numberAndStreet, town, postcode)
     }
 
@@ -151,7 +151,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
     Arbitrary {
       for {
-        number <- stringsWithMaxLength(17)
+        number <- alphaNumericWithMaxLength(17)
       } yield EoriNumber(number)
     }
 
