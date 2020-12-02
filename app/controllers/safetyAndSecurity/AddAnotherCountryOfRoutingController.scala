@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
-import pages.safetyAndSecurity.AddAnotherCountryOfRoutingPage
+import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, CountryOfRoutingPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,6 +31,8 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import derivable.DeriveNumberOfCountryOfRouting
+import utils.countryJsonList
+import views.html.helper.form
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,15 +51,18 @@ class AddAnotherCountryOfRoutingController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
+//  private val form     = formProvider()
   private val template = "safetyAndSecurity/addAnotherCountryOfRouting.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddAnotherCountryOfRoutingPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+        val form = formProvider(countries)
+          val preparedForm = request.userAnswers
+            .get(AddAnotherCountryOfRoutingPage(index))
+            .flatMap(countries.getCountry)
+
 
       val json = Json.obj(
         "form"   -> preparedForm,
@@ -66,7 +71,10 @@ class AddAnotherCountryOfRoutingController @Inject()(
         "radios" -> Radios.yesNo(preparedForm("value"))
       )
 
-      renderer.render(template, json).map(Ok(_))
+              renderer.render(template, json).map(Ok(_))
+
+      }
+
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
