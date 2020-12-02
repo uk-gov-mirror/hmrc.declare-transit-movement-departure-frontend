@@ -433,6 +433,123 @@ class SafetyAndSecurityTraderDetailsNavigatorSpec extends SpecBase with ScalaChe
             .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
       }
     }
+    "Must go from AddSafetyAndSecurityConsigneePage to" - {
+      "CheckYourAnswersPage when No is selected" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsigneePage, false)
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsigneePage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+      "to CheckYourAnswers when user selects 'Yes' and answers already exist for consignee" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsigneePage, true)
+              .success
+              .value
+              .set(AddSafetyAndSecurityConsigneeEoriPage, true)
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsigneePage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "to AddSafetyAndSecurityConsigneeEoriPage when user selects 'Yes' and answers do not exist for consignee" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsigneePage, true)
+              .success
+              .value
+              .remove(AddSafetyAndSecurityConsigneeEoriPage)
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsigneePage, CheckMode, updatedAnswers)
+              .mustBe(routes.AddSafetyAndSecurityConsigneeEoriController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+    }
+
+    "AddSafetyAndSecurityConsigneeEoriPage must" - {
+      "go to Check Your Answers page when Yes is selected and answer already exists for SafetyAndSecurityConsigneeEoriPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsigneeEoriPage, true)
+              .success
+              .value
+              .set(SafetyAndSecurityConsigneeEoriPage, "GB000000")
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsigneeEoriPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+      "go to SafetyAndSecurityConsigneeEoriPage when Yes is selected and no answer already exists for SafetyAndSecurityConsigneeEoriPage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsigneeEoriPage, true)
+              .success
+              .value
+              .remove(SafetyAndSecurityConsigneeEoriPage)
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsigneeEoriPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityConsigneeEoriController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+      "go to Check Your Answers page when No is selected and answer already exists for SafetyAndSecurityConsigneeNamePage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsigneeEoriPage, false)
+              .success
+              .value
+              .set(SafetyAndSecurityConsigneeNamePage, "TestName")
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsigneeEoriPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+      "go to SafetyAndSecurityConsigneeNamePage when No is selected and no answer already exists for SafetyAndSecurityConsigneeNamePage" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsigneeEoriPage, false)
+              .success
+              .value
+              .remove(SafetyAndSecurityConsigneeNamePage)
+              .success
+              .value
+
+            navigator
+              .nextPage(AddSafetyAndSecurityConsigneeEoriPage, CheckMode, updatedAnswers)
+              .mustBe(routes.SafetyAndSecurityConsigneeNameController.onPageLoad(answers.id, CheckMode))
+        }
+      }
+    }
 
   }
 }
