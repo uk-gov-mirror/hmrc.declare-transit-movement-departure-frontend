@@ -30,14 +30,27 @@ object XMLValueWriter {
 
   def apply[A](implicit ev: XMLValueWriter[A]): XMLValueWriter[A] = ev
 
+  /** This implcit class allows for simple syntax to covert and object to a string representation
+    * using the [[XMLValueWriter]] of the object. The string returned from the XMLValueWriter is
+    * then escaped as per the XML spec. The escaping is implemented using [[scala.xml.Utility.escape]]
+    *
+    * @param a object to be serialized
+    * @note This escapes the string automatically. If the string is escaped in the XMLValueWriter
+    *       DO NOT USE THIS since this will result in double escaping, which this does not detect.
+    */
   implicit class XMLValueWriterOps[A](val a: A) extends AnyVal {
 
-    /*
-        This uses the XMLValueWriter of the object to be serialized and that string representation
-        as per the XML spec
-     */
+    /** The extension method to convert the object to xml
+      * @param ev the specific [[XMLValueWriter]] that will be used
+      * @note This escapes the string automatically, if the string is escaped in the XMLValueWriter
+      *       DO NOT USE THIS since this will result in double escaping, which this does not detect.
+      */
     def asXmlText(implicit ev: XMLValueWriter[A]): String =
-      XMLValueWriter[String].asXmlText(ev.asXmlText(a))
+      a match {
+        case _: String => ev.asXmlText(a)
+        case _         => XMLValueWriter[String].asXmlText(ev.asXmlText(a))
+      }
+
   }
 
   implicit val stringXmlValueWriter: XMLValueWriter[String] = string => Utility.escape(string)
