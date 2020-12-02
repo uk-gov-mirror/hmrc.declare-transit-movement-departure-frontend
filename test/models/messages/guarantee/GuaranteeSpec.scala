@@ -22,7 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalacheck.Arbitrary.arbitrary
-import models.XMLWrites._
+import xml.XMLWrites._
 import com.lucidchart.open.xtract.XmlReader
 
 import scala.xml.NodeSeq
@@ -39,7 +39,11 @@ class GuaranteeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChe
               <GuaTypGUA1>
                 {guarantee.guaranteeType}
               </GuaTypGUA1>
-              {guarantee.guaranteeReference.flatMap(x => guaranteeReference(x))}
+              {
+              guarantee.guaranteeReference.flatMap(
+                x => guaranteeReference(x)
+              )
+            }
             </GUAGUA>
 
           guarantee.toXml mustEqual expectedResult

@@ -19,7 +19,7 @@ package connectors
 import com.lucidchart.open.xtract.XmlReader
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.XMLWrites._
+import xml.XMLWrites._
 import models.messages.DeclarationRequest
 import models.{DepartureId, GuaranteeNotValidMessage, MessagesSummary, ResponseMessage}
 import play.api.Logger

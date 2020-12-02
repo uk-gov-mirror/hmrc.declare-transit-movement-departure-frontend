@@ -17,8 +17,9 @@
 package models.messages
 
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.{LanguageCodeEnglish, XMLWrites}
+import models.LanguageCodeEnglish
 import cats.syntax.all._
+import xml.XMLWrites
 
 import scala.xml.NodeSeq
 
@@ -39,10 +40,10 @@ object Representative {
       <REPREP>
         <NamREP5>{representative.namREP5}</NamREP5>
         {
-          representative.repCapREP18.fold(NodeSeq.Empty) {
-            value => <RepCapREP18>{value}</RepCapREP18>
-          }
+        representative.repCapREP18.fold(NodeSeq.Empty) {
+          value => <RepCapREP18>{value}</RepCapREP18>
         }
+      }
         <RepCapREP18LNG>{LanguageCodeEnglish.code}</RepCapREP18LNG>
       </REPREP>
   }

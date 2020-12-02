@@ -20,10 +20,10 @@ import java.time.{LocalDate, LocalTime}
 
 import com.lucidchart.open.xtract.{__, XmlReader}
 import cats.syntax.all._
-import models.XMLWrites
-import models.XMLWrites._
 import models.XMLReads._
 import utils.Format
+import xml.XMLWrites
+import xml.XMLWrites._
 
 import scala.xml.NodeSeq
 
@@ -42,7 +42,7 @@ case class Meta(interchangeControlReference: InterchangeControlReference,
 object Meta {
 
   implicit def writes: XMLWrites[Meta] =
-    XMLWrites(
+    xml.XMLWrites(
       a =>
         <SynIdeMES1>UNOC</SynIdeMES1>
           <SynVerNumMES2>3</SynVerNumMES2> ++ {
@@ -99,7 +99,8 @@ object Meta {
             commonAccessReference =>
               <ComAccRefMES21>{escapeXml(commonAccessReference)}</ComAccRefMES21>
           }
-      })
+      }
+    )
 
   implicit val reads: XmlReader[Meta] = (
     (__ \ "IntConRefMES11").read[InterchangeControlReference],

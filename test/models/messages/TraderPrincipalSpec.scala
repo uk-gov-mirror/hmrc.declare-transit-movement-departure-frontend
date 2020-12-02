@@ -18,7 +18,7 @@ package models.messages
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites._
+import xml.XMLWrites._
 import models.messages.trader.{TraderPrincipalWithEori, TraderPrincipalWithoutEori}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
@@ -44,19 +44,31 @@ class TraderPrincipalSpec
 
         forAll(arbitrary[TraderPrincipalWithEori]) {
           trader =>
-            val nameNode        = trader.name.map(value => <NamPC17>{escapeXml(value)}</NamPC17>)
-            val streetNameNode  = trader.streetAndNumber.map(value => <StrAndNumPC122>{escapeXml(value)}</StrAndNumPC122>)
-            val postCodeNode    = trader.postCode.map(value => <PosCodPC123>{value}</PosCodPC123>)
-            val cityNode        = trader.city.map(value => <CitPC124>{escapeXml(value)}</CitPC124>)
-            val countryCodeNode = trader.countryCode.map(value => <CouPC125>{value}</CouPC125>)
+            val nameNode = trader.name.map(
+              value => <NamPC17>{escapeXml(value)}</NamPC17>
+            )
+            val streetNameNode = trader.streetAndNumber.map(
+              value => <StrAndNumPC122>{escapeXml(value)}</StrAndNumPC122>
+            )
+            val postCodeNode = trader.postCode.map(
+              value => <PosCodPC123>{value}</PosCodPC123>
+            )
+            val cityNode = trader.city.map(
+              value => <CitPC124>{escapeXml(value)}</CitPC124>
+            )
+            val countryCodeNode = trader.countryCode.map(
+              value => <CouPC125>{value}</CouPC125>
+            )
 
             val expectedResult =
               <TRAPRIPC1>
-                {nameNode.getOrElse(NodeSeq.Empty) ++
-                streetNameNode.getOrElse(NodeSeq.Empty) ++
-                postCodeNode.getOrElse(NodeSeq.Empty) ++
-                cityNode.getOrElse(NodeSeq.Empty) ++
-                countryCodeNode.getOrElse(NodeSeq.Empty)}
+                {
+                nameNode.getOrElse(NodeSeq.Empty) ++
+                  streetNameNode.getOrElse(NodeSeq.Empty) ++
+                  postCodeNode.getOrElse(NodeSeq.Empty) ++
+                  cityNode.getOrElse(NodeSeq.Empty) ++
+                  countryCodeNode.getOrElse(NodeSeq.Empty)
+              }
                 <NADLNGPC>EN</NADLNGPC>
                 <TINPC159>{trader.eori}</TINPC159>
               </TRAPRIPC1>

@@ -1361,33 +1361,50 @@ safetyAndSecurityConsigneeName.error.required = Enter the security consignee’s
 safetyAndSecurityConsigneeName.error.length = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 safetyAndSecurityConsigneeName.error.invalid = The security consignee’s name must be 35 characters or less
 
-addCarrierEori.title = addCarrierEori
-addCarrierEori.heading = addCarrierEori
-addCarrierEori.checkYourAnswersLabel = addCarrierEori
-addCarrierEori.error.required = Select yes if addCarrierEori
+addCarrierEori.title =  Do you know the carrier’s EORI number?
+addCarrierEori.heading = Do you know the carrier’s EORI number?
+addCarrierEori.checkYourAnswersLabel =  Know the carrier’s EORI number?
+addCarrierEori.error.required =  Enter the carrier’s EORI number
 
-addCarrier.title = addCarrier
-addCarrier.heading = addCarrier
-addCarrier.checkYourAnswersLabel = addCarrier
-addCarrier.error.required = Select yes if addCarrier
+addCarrier.title =  Do you need to add a carrier?
+addCarrier.heading =  Do you need to add a carrier?
+addCarrier.checkYourAnswersLabel = Add a Carrier?
+addCarrier.error.required = Select yes if you know the carrier’s EORI number
 
-carrierAddress.title = carrierAddress
-carrierAddress.heading = carrierAddress
-carrierAddress.checkYourAnswersLabel = carrierAddress
+carrierAddress.title = What is {0}’s address?
+carrierAddress.heading = What is {0}’s address?
+carrierAddress.checkYourAnswersLabel = {0}’s Address
+carrierAddress.AddressLine1 = Address line 1
+carrierAddress.AddressLine2 = Address line 2
+carrierAddress.AddressLine3 = Address line 3
+carrierAddress.AddressLine4 = Country
 carrierAddress.error.required = Enter carrierAddress
-carrierAddress.error.length = CarrierAddress must be 10 characters or less
+carrierAddress.error.AddressLine1.required = Enter the first line of the carrier’s address
+carrierAddress.error.AddressLine2.required = Enter the second line of the carrier’s address
+carrierAddress.error.AddressLine3.required = Enter the third line of the carrier’s address
+carrierAddress.error.country.required = Enter the country of the carrier’s address
+carrierAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
+carrierAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
+carrierAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
+carrierAddress.error.line1.invalid= The first line of the carrier’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+carrierAddress.error.line2.invalid= The second line of the carrier’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+carrierAddress.error.line3.invalid= The third line of the carrier’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+carrierAddress.error.length = Carrier address must be 35 characters or less
 
-carrierEori.title = carrierEori
-carrierEori.heading = carrierEori
-carrierEori.checkYourAnswersLabel = carrierEori
-carrierEori.error.required = Enter carrierEori
-carrierEori.error.length = CarrierEori must be 10 characters or less
+carrierEori.title = What is the carrier’s EORI number?
+carrierEori.heading = What is the carrier’s EORI number?
+carrierEori.checkYourAnswersLabel = carrier's EORI number
+carrierEori.error.required = Enter the carrier’s EORI number
+carrierEori.error.length =  The carrier’s EORI number must be 17 characters or less
+carrierEori.error.invalidCharacters = The carrier's EORI number must only include letters a to z and numbers 0 to 9
 
-carrierName.title = carrierName
-carrierName.heading = carrierName
-carrierName.checkYourAnswersLabel = carrierName
-carrierName.error.required = Enter carrierName
-carrierName.error.length = CarrierName must be 10 characters or less
+carrierName.title =  What is the carrier’s name?
+carrierName.heading = What is the carrier’s name?
+carrierName.checkYourAnswersLabel =  Carrier’s name
+carrierName.error.required =  Enter the carrier’s name
+carrierName.error.length = carrier’s name must be 35 characters or less
+carrierName.error.invalidCharacters = The carrier's name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
 
 safetyAndSecurityCheckYourAnswers.title = Check your answers
 safetyAndSecurityCheckYourAnswers.heading = Check your answers

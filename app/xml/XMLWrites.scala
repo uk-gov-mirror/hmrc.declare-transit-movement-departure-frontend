@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package models.messages.trader
+package xml
 
-import com.lucidchart.open.xtract.{__, XmlReader}
-import xml.XMLWrites
+import scala.xml.NodeSeq
 
-case class TraderAuthorisedConsignee(eori: String)
+trait XMLWrites[A] {
+  def writes(a: A): NodeSeq
+}
 
-object TraderAuthorisedConsignee {
+object XMLWrites {
 
-  implicit val xmlReader: XmlReader[TraderAuthorisedConsignee] = (
-    (__ \ "TINTRA59").read[String]
-  ).map(apply)
+  def apply[A](writerFn: A => NodeSeq): XMLWrites[A] = a => writerFn(a)
 
-  implicit def writes: XMLWrites[TraderAuthorisedConsignee] = XMLWrites[TraderAuthorisedConsignee] {
-    trader =>
-      <TRAAUTCONTRA>
-        <TINTRA59>{trader.eori}</TINTRA59>
-      </TRAAUTCONTRA>
+  implicit class XMLWritesOps[A](val a: A) extends AnyVal {
+
+    def toXml(implicit writer: XMLWrites[A]): NodeSeq =
+      writer.writes(a)
   }
+
 }

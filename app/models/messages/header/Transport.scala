@@ -19,7 +19,8 @@ package models.messages.header
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.messages.escapeXml
-import models.{LanguageCodeEnglish, XMLWrites}
+import models.LanguageCodeEnglish
+import xml.XMLWrites
 
 import scala.xml.NodeSeq
 
@@ -42,17 +43,29 @@ object Transport {
   // scalastyle:off
   implicit def writes: XMLWrites[Transport] = XMLWrites[Transport] {
     transport =>
-      {
-        transport.inlTraModHEA75.fold(NodeSeq.Empty)(value => <InlTraModHEA75>{value.toString}</InlTraModHEA75>) ++
-          transport.traModAtBorHEA76.fold(NodeSeq.Empty)(value => <TraModAtBorHEA76>{value.toString}</TraModAtBorHEA76>) ++
-          transport.ideOfMeaOfTraAtDHEA78.fold(NodeSeq.Empty)(value => <IdeOfMeaOfTraAtDHEA78>{escapeXml(value)}</IdeOfMeaOfTraAtDHEA78>
-          <IdeOfMeaOfTraAtDHEA78LNG>{LanguageCodeEnglish.code}</IdeOfMeaOfTraAtDHEA78LNG>) ++
-          transport.natOfMeaOfTraAtDHEA80.fold(NodeSeq.Empty)(value => <NatOfMeaOfTraAtDHEA80>{escapeXml(value)}</NatOfMeaOfTraAtDHEA80>) ++
-          transport.ideOfMeaOfTraCroHEA85.fold(NodeSeq.Empty)(value => <IdeOfMeaOfTraCroHEA85>{escapeXml(value)}</IdeOfMeaOfTraCroHEA85>
-          <IdeOfMeaOfTraCroHEA85LNG>{LanguageCodeEnglish.code}</IdeOfMeaOfTraCroHEA85LNG>) ++
-          transport.natOfMeaOfTraCroHEA87.fold(NodeSeq.Empty)(value => <NatOfMeaOfTraCroHEA87>{escapeXml(value)}</NatOfMeaOfTraCroHEA87>) ++
-          transport.typOfMeaOfTraCroHEA88.fold(NodeSeq.Empty)(value => <TypOfMeaOfTraCroHEA88>{value.toString}</TypOfMeaOfTraCroHEA88>)
-      }
+      transport.inlTraModHEA75.fold(NodeSeq.Empty)(
+        value => <InlTraModHEA75>{value.toString}</InlTraModHEA75>
+      ) ++
+        transport.traModAtBorHEA76.fold(NodeSeq.Empty)(
+          value => <TraModAtBorHEA76>{value.toString}</TraModAtBorHEA76>
+        ) ++
+        transport.ideOfMeaOfTraAtDHEA78.fold(NodeSeq.Empty)(
+          value => <IdeOfMeaOfTraAtDHEA78>{escapeXml(value)}</IdeOfMeaOfTraAtDHEA78>
+          <IdeOfMeaOfTraAtDHEA78LNG>{LanguageCodeEnglish.code}</IdeOfMeaOfTraAtDHEA78LNG>
+        ) ++
+        transport.natOfMeaOfTraAtDHEA80.fold(NodeSeq.Empty)(
+          value => <NatOfMeaOfTraAtDHEA80>{escapeXml(value)}</NatOfMeaOfTraAtDHEA80>
+        ) ++
+        transport.ideOfMeaOfTraCroHEA85.fold(NodeSeq.Empty)(
+          value => <IdeOfMeaOfTraCroHEA85>{escapeXml(value)}</IdeOfMeaOfTraCroHEA85>
+          <IdeOfMeaOfTraCroHEA85LNG>{LanguageCodeEnglish.code}</IdeOfMeaOfTraCroHEA85LNG>
+        ) ++
+        transport.natOfMeaOfTraCroHEA87.fold(NodeSeq.Empty)(
+          value => <NatOfMeaOfTraCroHEA87>{escapeXml(value)}</NatOfMeaOfTraCroHEA87>
+        ) ++
+        transport.typOfMeaOfTraCroHEA88.fold(NodeSeq.Empty)(
+          value => <TypOfMeaOfTraCroHEA88>{value.toString}</TypOfMeaOfTraCroHEA88>
+        )
   }
   // scalastyle:on
 

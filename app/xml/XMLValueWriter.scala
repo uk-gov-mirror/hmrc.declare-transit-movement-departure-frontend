@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package models.messages.trader
+package xml
 
-import com.lucidchart.open.xtract.{__, XmlReader}
-import xml.XMLWrites
+import play.twirl.api.utils.StringEscapeUtils
 
-case class TraderAuthorisedConsignee(eori: String)
+trait XMLValueWriter[A] {
+  def writeValue(a: A): String
+}
 
-object TraderAuthorisedConsignee {
+object XMLValueWriter {
 
-  implicit val xmlReader: XmlReader[TraderAuthorisedConsignee] = (
-    (__ \ "TINTRA59").read[String]
-  ).map(apply)
+  def apply[A](implicit ev: XMLValueWriter[A]): XMLValueWriter[A] = ev
 
-  implicit def writes: XMLWrites[TraderAuthorisedConsignee] = XMLWrites[TraderAuthorisedConsignee] {
-    trader =>
-      <TRAAUTCONTRA>
-        <TINTRA59>{trader.eori}</TINTRA59>
-      </TRAAUTCONTRA>
+  implicit class XMLValueWriterOps[A](val a: A) extends AnyVal {
+
+    def asXmlText(implicit ev: XMLValueWriter[A]): String =
+      ev.writeValue(a)
   }
+
+  implicit val stringXmlValueWriter: XMLValueWriter[String] = string => StringEscapeUtils.escapeXml11(string)
+
+  implicit val intXmlValueWriter: XMLValueWriter[Int] = int => int.toString.asXmlText
+
 }
