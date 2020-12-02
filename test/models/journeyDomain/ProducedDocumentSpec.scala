@@ -26,32 +26,38 @@ import pages.addItems._
 class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
   "ProducedDocument" - {
+    "single ProducedDocument" - {
+      "can be parsed from UserAnswers" - {
+        "when all details for section have been answered" in {
+          forAll(arbitrary[ProducedDocument], arbitrary[UserAnswers]) {
+            case (producedDocument, userAnswers) =>
+              val updatedUserAnswers = setProducedDocumentsUserAnswers(producedDocument, index, referenceIndex)(userAnswers)
+              val result             = UserAnswersReader[ProducedDocument](ProducedDocument.producedDocumentReader(index, referenceIndex)).run(updatedUserAnswers)
 
-    "can be parsed from UserAnswers" - {
-      "when all details for section have been answered" in {
-        forAll(arbitrary[ProducedDocument], arbitrary[UserAnswers]) {
-          case (producedDocument, userAnswers) =>
-            val updatedUserAnswers = setProducedDocumentsUserAnswers(producedDocument, index, referenceIndex)(userAnswers)
-            val result             = UserAnswersReader[ProducedDocument](ProducedDocument.producedDocumentReader(index, referenceIndex)).run(updatedUserAnswers)
-
-            result.value mustEqual producedDocument
+              result.value mustEqual producedDocument
+          }
         }
       }
-    }
 
-    "cannot be parsed from UserAnswers" - {
-      "when a mandatory answer is missing" in {
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            val updatedUserAnswers = userAnswers.remove(DocumentTypePage(index, referenceIndex)).success.value
-            val result: Option[ProducedDocument] =
-              UserAnswersReader[ProducedDocument](ProducedDocument.producedDocumentReader(index, referenceIndex)).run(updatedUserAnswers)
+      "cannot be parsed from UserAnswers" - {
+        "when a mandatory answer is missing" in {
+          forAll(arbitrary[UserAnswers]) {
+            userAnswers =>
+              val updatedUserAnswers = userAnswers.remove(DocumentTypePage(index, referenceIndex)).success.value
+              val result: Option[ProducedDocument] =
+                UserAnswersReader[ProducedDocument](ProducedDocument.producedDocumentReader(index, referenceIndex)).run(updatedUserAnswers)
 
-            result mustBe None
+              result mustBe None
+          }
         }
       }
     }
   }
+
+  "reading multiple ProducedDocument" - {
+    ???
+  }
+
 }
 
 object ProducedDocumentSpec extends UserAnswersSpecHelper {

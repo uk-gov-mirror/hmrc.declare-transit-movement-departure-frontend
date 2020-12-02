@@ -99,7 +99,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
   }
 
   private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
-    val indicator = Gen.oneOf(CircumstanceIndicator.conditionalIndicators).sample.getOrElse("test")
+    val indicator = CircumstanceIndicator.conditionalIndicators.head
     val smUserAnswers = startUserAnswers
       .unsafeSetVal(AddSecurityDetailsPage)(producedDocument.isDefined)
       .unsafeSetVal(AddCircumstanceIndicatorPage)(producedDocument.isDefined)
