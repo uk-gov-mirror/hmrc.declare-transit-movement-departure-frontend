@@ -76,7 +76,7 @@ class TransportChargesPaymentMethodControllerSpec extends SpecBase with MockNunj
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getMethodOfPayments()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
+      when(mockRefDataConnector.getMethodOfPaymentList()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -108,7 +108,7 @@ class TransportChargesPaymentMethodControllerSpec extends SpecBase with MockNunj
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getMethodOfPayments()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
+      when(mockRefDataConnector.getMethodOfPaymentList()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
 
       val userAnswers = emptyUserAnswers.set(TransportChargesPaymentMethodPage, "A").success.value
       dataRetrievalWithData(userAnswers)
@@ -142,7 +142,7 @@ class TransportChargesPaymentMethodControllerSpec extends SpecBase with MockNunj
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockRefDataConnector.getMethodOfPayments()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
+      when(mockRefDataConnector.getMethodOfPaymentList()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -161,7 +161,7 @@ class TransportChargesPaymentMethodControllerSpec extends SpecBase with MockNunj
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getMethodOfPayments()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
+      when(mockRefDataConnector.getMethodOfPaymentList()(any(), any())).thenReturn(Future.successful(methodOfPaymentList))
 
       dataRetrievalWithData(emptyUserAnswers)
 
