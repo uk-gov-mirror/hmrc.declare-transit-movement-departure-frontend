@@ -107,9 +107,7 @@ object SafetyAndSecurity {
       ).tupled
         .map {
           case (name, consignorAddress) =>
-            val setTempAddress = ConsignorAddress(consignorAddress, "", "", Country(CountryCode("GB"), "")) // TODO remove when AddressPage is type of address
-
-            val address = Address.prismAddressToConsignorAddress(setTempAddress)
+            val address = Address.prismAddressToConsignorAddress(consignorAddress)
 
             SecurityTraderDetails(name, address)
         }
@@ -141,9 +139,7 @@ object SafetyAndSecurity {
       ).tupled
         .map {
           case (name, consigneeAddress) =>
-            val setTempAddress = ConsigneeAddress(consigneeAddress, "", "", Country(CountryCode("GB"), "")) // TODO remove when AddressPage is type of address
-
-            val address = Address.prismAddressToConsigneeAddress(setTempAddress)
+            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
 
             SecurityTraderDetails(name, address)
         }
@@ -175,9 +171,7 @@ object SafetyAndSecurity {
       ).tupled
         .map {
           case (name, carrierAddress) =>
-            val setTempAddress = CarrierAddress(carrierAddress, "", "", Country(CountryCode("GB"), "")) // TODO remove when AddressPage is type of address
-
-            val address = Address.prismAddressToCarrierAddress(setTempAddress)
+            val address = Address.prismAddressToCarrierAddress(carrierAddress)
 
             SecurityTraderDetails(name, address)
         }

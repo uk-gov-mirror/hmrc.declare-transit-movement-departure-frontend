@@ -51,7 +51,6 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
         mode =>
           forAll(arb[UserAnswers], genSecurityDetails(genModeAtBorder.map(_.toString))) {
             (baseUserAnswers, safetyAndSecurity) =>
-
               val updatedUserAnswers = baseUserAnswers.unsafeSetVal(ModeAtBorderPage)(mode.toString)
 
               val userAnswers: UserAnswers = setSafetyAndSecurity(safetyAndSecurity)(updatedUserAnswers)
@@ -109,7 +108,7 @@ object SafetyAndSecuritySpec extends UserAnswersSpecHelper {
       })
       .unsafeSetPFn(SafetyAndSecurityConsignorAddressPage)(safetyAndSecurity.consignor)({
         case Some(PersonalInformation(_, address)) =>
-          Address.prismAddressToConsignorAddress.getOption(address).get.AddressLine1 // TODO remove this when its address
+          Address.prismAddressToConsignorAddress.getOption(address).get
       })
       // Set Consignee
       .unsafeSetVal(AddSafetyAndSecurityConsigneePage)(safetyAndSecurity.consignee.isDefined)
@@ -125,7 +124,7 @@ object SafetyAndSecuritySpec extends UserAnswersSpecHelper {
       })
       .unsafeSetPFn(SafetyAndSecurityConsigneeAddressPage)(safetyAndSecurity.consignee)({
         case Some(PersonalInformation(_, address)) =>
-          Address.prismAddressToConsigneeAddress.getOption(address).get.AddressLine1 // TODO remove this when its address
+          Address.prismAddressToConsigneeAddress.getOption(address).get
       })
       // Set Carrier
       .unsafeSetVal(AddCarrierPage)(safetyAndSecurity.carrier.isDefined)
@@ -141,7 +140,7 @@ object SafetyAndSecuritySpec extends UserAnswersSpecHelper {
       })
       .unsafeSetPFn(CarrierAddressPage)(safetyAndSecurity.carrier)({
         case Some(PersonalInformation(_, address)) =>
-          Address.prismAddressToCarrierAddress.getOption(address).get.AddressLine1 // TODO remove this when its address
+          Address.prismAddressToCarrierAddress.getOption(address).get
       })
 
     val updatedUserAnswers = ua.get(ModeAtBorderPage) match {

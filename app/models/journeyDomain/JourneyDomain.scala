@@ -63,7 +63,6 @@ object JourneyDomain {
       goodsSummary      <- UserAnswersReader[GoodsSummary]
       guarantee         <- UserAnswersReader[GuaranteeDetails]
       safetyAndSecurity <- safetyAndSecurityReader
-
     } yield
       JourneyDomain(
         preTaskList,

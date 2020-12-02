@@ -25,7 +25,7 @@ import org.scalacheck.Arbitrary._
 import com.lucidchart.open.xtract.XmlReader
 
 import scala.xml.{Node, NodeSeq}
-import models.XMLWrites._
+import xml.XMLWrites._
 import models.messages.safetyAndSecurity.{
   SafetyAndSecurityCarrier,
   SafetyAndSecurityCarrierWithEori,

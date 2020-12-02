@@ -18,7 +18,7 @@ package models.messages.safetyAndSecurity
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites.XMLWritesOps
+import xml.XMLWrites.XMLWritesOps
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
