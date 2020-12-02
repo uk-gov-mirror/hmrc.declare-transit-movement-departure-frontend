@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package pages.safetyAndSecurity
+package models
 
-import models.CarrierAddress
-import pages.behaviours.PageBehaviours
+import models.reference.Country
+import play.api.libs.json.Json
 
-class CarrierAddressPageSpec extends PageBehaviours {
+case class CarrierAddress(AddressLine1: String, AddressLine2: String, AddressLine3: String, country: Country)
 
-  "CarrierAddressPage" - {
-
-    beRetrievable[CarrierAddress](CarrierAddressPage)
-
-    beSettable[CarrierAddress](CarrierAddressPage)
-
-    beRemovable[CarrierAddress](CarrierAddressPage)
-  }
+object CarrierAddress {
+  implicit val format = Json.format[CarrierAddress]
 }
