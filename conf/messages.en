@@ -1368,7 +1368,7 @@ addCarrierEori.error.required =  Enter the carrier’s EORI number
 
 addCarrier.title =  Do you need to add a carrier?
 addCarrier.heading =  Do you need to add a carrier?
-addCarrier.checkYourAnswersLabel = addCarrier
+addCarrier.checkYourAnswersLabel = Add a Carrier?
 addCarrier.error.required = Select yes if you know the carrier’s EORI number
 
 carrierAddress.title = What is {0}’s address?
