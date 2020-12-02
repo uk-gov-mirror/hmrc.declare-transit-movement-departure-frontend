@@ -31,7 +31,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
   "ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(genItemSection(), arb[UserAnswers]) {
+        forAll(genItemSectionOld(), arb[UserAnswers]) {
           case (itemSection, userAnswers) =>
             val updatedUserAnswer           = ItemSectionSpec.setItemSection(itemSection, index)(userAnswers)
             val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
@@ -57,7 +57,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
   "Seq of ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(nonEmptyListOf[ItemSection](3)(Arbitrary(genItemSection())), arb[UserAnswers]) {
+        forAll(nonEmptyListOf[ItemSection](3)(Arbitrary(genItemSectionOld())), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
             val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
             val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
