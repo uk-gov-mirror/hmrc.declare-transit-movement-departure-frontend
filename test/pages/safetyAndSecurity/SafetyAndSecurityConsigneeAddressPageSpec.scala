@@ -16,6 +16,8 @@
 
 package pages.safetyAndSecurity
 
+import models.UserAnswers
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class SafetyAndSecurityConsigneeAddressPageSpec extends PageBehaviours {
@@ -27,5 +29,34 @@ class SafetyAndSecurityConsigneeAddressPageSpec extends PageBehaviours {
     beSettable[String](SafetyAndSecurityConsigneeAddressPage)
 
     beRemovable[String](SafetyAndSecurityConsigneeAddressPage)
+
+    "cleanup" - { //TODO Update the set address when address page is updated
+      "must clean up the consignor details on selecting option 'No' " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSafetyAndSecurityConsigneeEoriPage, false)
+              .success
+              .value
+              .set(SafetyAndSecurityConsigneeEoriPage, "GB000000")
+              .success
+              .value
+              .set(SafetyAndSecurityConsigneeNamePage, "test name")
+              .success
+              .value
+              .set(SafetyAndSecurityConsigneeAddressPage, "test")
+              .success
+              .value
+              .set(AddSafetyAndSecurityConsigneePage, false)
+              .success
+              .value
+
+            updatedAnswers.get(AddSafetyAndSecurityConsigneeEoriPage) must not be defined
+            updatedAnswers.get(SafetyAndSecurityConsigneeEoriPage) must not be defined
+            updatedAnswers.get(SafetyAndSecurityConsigneeNamePage) must not be defined
+            updatedAnswers.get(SafetyAndSecurityConsigneeAddressPage) must not be defined
+        }
+      }
+    }
   }
 }

@@ -72,7 +72,7 @@ class SafetyAndSecurityTraderDetailsNavigator @Inject()() extends Navigator {
 
   }
 
-  private def safetyAndSecurityConsignorNameRoute(ua:UserAnswers) = 
+    private def safetyAndSecurityConsignorNameRoute(ua:UserAnswers) =
     ua.get(SafetyAndSecurityConsignorAddressPage) match {
       case Some(_) =>  routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
       case None => routes.SafetyAndSecurityConsignorAddressController.onPageLoad(ua.id, CheckMode)
@@ -83,8 +83,8 @@ class SafetyAndSecurityTraderDetailsNavigator @Inject()() extends Navigator {
       case (Some(true), _,NormalMode)   => routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(ua.id, NormalMode)
       case (Some(false),_, NormalMode)  => routes.AddSafetyAndSecurityConsigneeController.onPageLoad(ua.id, NormalMode)
       case (Some(false), _, CheckMode) => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
-      case (Some(true), Some(_), CheckMode) => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
       case (Some(true), None, CheckMode) => routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(ua.id, CheckMode)
+      case (Some(true), Some(_), CheckMode) => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
     }
 
   private def addSafetyAndSecurityConsignorEoriRoute(ua: UserAnswers, mode:Mode): Call =
