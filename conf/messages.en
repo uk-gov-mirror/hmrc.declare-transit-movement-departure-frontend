@@ -1256,8 +1256,8 @@ conveyanceReferenceNumber.checkYourAnswersLabel = Conveyance Reference Number
 conveyanceReferenceNumber.checkYourAnswersLabel.visuallyHidden = change conveyance reference number
 conveyanceReferenceNumber.error.required = Enter the Conveyance Reference Number
 conveyanceReferenceNumber.error.invalid = The Conveyance Reference Number must only include letters a to z and numbers 0 to 9
-conveyanceReferenceNumber.error.minlength =  The Conveyance Reference Number must be 7 characters or more
-conveyanceReferenceNumber.error.maxlength = The Conveyance Reference Number must be 8 characters or less
+conveyanceReferenceNumber.error.minLength =  The Conveyance Reference Number must be 7 characters or more
+conveyanceReferenceNumber.error.maxLength = The Conveyance Reference Number must be 8 characters or less
 
 addPlaceOfUnloadingCode.title = Do you need to add a place of unloading code?
 addPlaceOfUnloadingCode.heading = Do you need to add a place of unloading code?

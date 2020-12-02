@@ -19,6 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.safetyAndSecurity.routes
 import generators.Generators
+import models.reference.CountryCode
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -360,7 +361,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
             val updatedAnswers = answers
               .set(PlaceOfUnloadingCodePage, "answer").success.value
-              .set(CountryOfRoutingPage(index), "GB").success.value
+              .set(CountryOfRoutingPage(index), CountryCode("GB")).success.value
 
             navigator
               .nextPage(PlaceOfUnloadingCodePage, NormalMode, updatedAnswers)

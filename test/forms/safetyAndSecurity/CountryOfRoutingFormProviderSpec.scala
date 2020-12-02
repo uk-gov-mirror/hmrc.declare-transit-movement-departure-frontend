@@ -17,15 +17,18 @@
 package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
+import models.CountryList
+import models.reference.{Country, CountryCode}
 import play.api.data.FormError
 
 class CountryOfRoutingFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "countryOfRouting.error.required"
-  val lengthKey   = "countryOfRouting.error.length"
-  val maxLength   = 2
+  val requiredKey            = "countryOfRouting.error.required"
+  val lengthKey              = "countryOfRouting.error.length"
+  val maxLength              = 2
+  val countries: CountryList = CountryList(Seq(Country(CountryCode("AD"), "Andorra")))
 
-  val form = new CountryOfRoutingFormProvider()()
+  val form = new CountryOfRoutingFormProvider()(countries)
 
   ".value" - {
 

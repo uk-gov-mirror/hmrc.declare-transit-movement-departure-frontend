@@ -17,16 +17,17 @@
 package pages.safetyAndSecurity
 
 import models.Index
+import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
 class CountryOfRoutingPageSpec extends PageBehaviours {
 
   "CountryOfRoutingPage" - {
 
-    beRetrievable[String](CountryOfRoutingPage(Index(0)))
+    beRetrievable[CountryCode](CountryOfRoutingPage(Index(0)))
 
-    beSettable[String](CountryOfRoutingPage(Index(0)))
+    beSettable[CountryCode](CountryOfRoutingPage(Index(0)))
 
-    beRemovable[String](CountryOfRoutingPage(Index(0)))
+    beRemovable[CountryCode](CountryOfRoutingPage(Index(0)))
   }
 }
