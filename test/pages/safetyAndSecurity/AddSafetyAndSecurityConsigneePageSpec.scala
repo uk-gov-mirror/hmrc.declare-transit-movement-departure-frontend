@@ -16,7 +16,7 @@
 
 package pages.safetyAndSecurity
 
-import models.UserAnswers
+import models.{ConsigneeAddress, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -30,8 +30,10 @@ class AddSafetyAndSecurityConsigneePageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddSafetyAndSecurityConsigneePage)
 
-    "cleanup" - { //TODO Update the set address when address page is updated
+    "cleanup" - {
       "must clean up the consignee details on selecting option 'No' " in {
+        val consigneeAddress = arbitrary[ConsigneeAddress].sample.value
+
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
@@ -44,7 +46,7 @@ class AddSafetyAndSecurityConsigneePageSpec extends PageBehaviours {
               .set(SafetyAndSecurityConsigneeNamePage, "test name")
               .success
               .value
-              .set(SafetyAndSecurityConsigneeAddressPage, "test")
+              .set(SafetyAndSecurityConsigneeAddressPage, consigneeAddress)
               .success
               .value
               .set(AddSafetyAndSecurityConsigneePage, false)

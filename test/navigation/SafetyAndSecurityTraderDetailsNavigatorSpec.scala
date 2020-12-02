@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.safetyAndSecurity.routes
 import generators.Generators
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CarrierAddress, CheckMode, ConsigneeAddress, ConsignorAddress, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.safetyAndSecurity._
@@ -401,10 +401,11 @@ class SafetyAndSecurityTraderDetailsNavigatorSpec extends SpecBase with ScalaChe
     }
 
     "Must go from SafetyAndSecurityConsignorNamePage to Check Your Answers page if answer exists for SafetyAndSecurityConsignorAddressPage" in {
+      val consignorAddress = arbitrary[ConsignorAddress].sample.value
       forAll(arbitrary[UserAnswers]) {
         answers =>
           val updatedAnswers = answers
-            .set(SafetyAndSecurityConsignorAddressPage, "TestAddress") //TODO update this when address page updated
+            .set(SafetyAndSecurityConsignorAddressPage, consignorAddress)
             .success
             .value
           navigator
@@ -567,10 +568,12 @@ class SafetyAndSecurityTraderDetailsNavigatorSpec extends SpecBase with ScalaChe
       }
     }
     "Must go from SafetyAndSecurityConsigneeNamePage to Check Your Answers page if answer exists for SafetyAndSecurityConsigneeAddressPage" in {
+
+      val consigneeAddress = arbitrary[ConsigneeAddress].sample.value
       forAll(arbitrary[UserAnswers]) {
         answers =>
           val updatedAnswers = answers
-            .set(SafetyAndSecurityConsigneeAddressPage, "TestAddress") //TODO update this when address page updated
+            .set(SafetyAndSecurityConsigneeAddressPage, consigneeAddress)
             .success
             .value
           navigator
@@ -719,10 +722,12 @@ class SafetyAndSecurityTraderDetailsNavigatorSpec extends SpecBase with ScalaChe
       }
 
       "to CheckYourAnswersPage when an answer exists for CarrierAddressPage" in {
+        val carrierAddress = arbitrary[CarrierAddress].sample.value
+
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers
-              .set(CarrierAddressPage, "test address")
+              .set(CarrierAddressPage, carrierAddress)
               .success
               .value
             navigator
