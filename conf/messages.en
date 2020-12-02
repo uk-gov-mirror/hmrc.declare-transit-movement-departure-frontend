@@ -1301,7 +1301,7 @@ addSafetyAndSecurityConsignorEori.checkYourAnswersLabel.visuallyHidden = change 
 addSafetyAndSecurityConsignorEori.error.required = Select yes if you know the security consignor’s EORI number
 
 safetyAndSecurityConsignorAddress.title = What is the security consignor’s address?
-safetyAndSecurityConsignorAddress.heading = What is the security consignor’s address?
+safetyAndSecurityConsignorAddress.heading = What is {0}’s address?
 safetyAndSecurityConsignorAddress.checkYourAnswersLabel = Security consignor’s address
 safetyAndSecurityConsignorAddress.checkYourAnswersLabel.visuallyHidden = change security consignor’s address
 safetyAndSecurityConsignorAddress.error.required = Enter address line {0} of the security consignor’s address
@@ -1338,7 +1338,7 @@ addSafetyAndSecurityConsigneeEori.checkYourAnswersLabel.visuallyHidden = change 
 addSafetyAndSecurityConsigneeEori.error.required = Select yes if you know the security consignee’s EORI number
 
 safetyAndSecurityConsigneeAddress.title = What is the security consignee’s address?
-safetyAndSecurityConsigneeAddress.heading = What is the security consignee’s address?
+safetyAndSecurityConsigneeAddress.heading = What is {0}’s address?
 safetyAndSecurityConsigneeAddress.checkYourAnswersLabel = Security consignee’s address
 safetyAndSecurityConsigneeAddress.checkYourAnswersLabel.visuallyHidden = change security consignee’s address
 safetyAndSecurityConsigneeAddress.error.required = Enter address line {0} of the security consignee’s address
