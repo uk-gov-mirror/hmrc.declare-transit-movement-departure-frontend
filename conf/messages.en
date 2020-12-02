@@ -1325,10 +1325,10 @@ safetyAndSecurityConsigneeName.checkYourAnswersLabel = safetyAndSecurityConsigne
 safetyAndSecurityConsigneeName.error.required = Enter safetyAndSecurityConsigneeName
 safetyAndSecurityConsigneeName.error.length = SafetyAndSecurityConsigneeName must be 10 characters or less
 
-addCarrierEori.title = addCarrierEori
-addCarrierEori.heading = addCarrierEori
-addCarrierEori.checkYourAnswersLabel = addCarrierEori
-addCarrierEori.error.required = Select yes if addCarrierEori
+addCarrierEori.title =  Do you know the carrier’s EORI number?
+addCarrierEori.heading = Do you know the carrier’s EORI number?
+addCarrierEori.checkYourAnswersLabel =  Know the carrier’s EORI number?
+addCarrierEori.error.required =  Enter the carrier’s EORI number
 
 addCarrier.title = addCarrier
 addCarrier.heading = addCarrier
