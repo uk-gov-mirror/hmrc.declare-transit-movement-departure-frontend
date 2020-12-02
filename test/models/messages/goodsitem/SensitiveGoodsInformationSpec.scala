@@ -23,7 +23,7 @@ import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import models.XMLWrites._
+import xml.XMLWrites._
 
 import scala.xml.NodeSeq
 
@@ -41,7 +41,9 @@ class SensitiveGoodsInformationSpec
 
       forAll(arbitrary[SensitiveGoodsInformation]) {
         information =>
-          val goodsCode = information.goodsCode.fold(NodeSeq.Empty)(value => <SenGooCodSD22>{value}</SenGooCodSD22>)
+          val goodsCode = information.goodsCode.fold(NodeSeq.Empty)(
+            value => <SenGooCodSD22>{value}</SenGooCodSD22>
+          )
 
           val expectedResult = <SGICODSD2>
             {goodsCode}

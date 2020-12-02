@@ -19,7 +19,7 @@ package models.messages.goodsitem
 import com.lucidchart.open.xtract.XmlReader
 import play.api.libs.json._
 import cats.syntax.all._
-import models.XMLWrites
+import xml.XMLWrites
 
 import scala.xml.NodeSeq
 
@@ -72,7 +72,7 @@ object BulkPackage {
 
     (
       (__ \ "KinOfPacGS23").read[String],
-      (__ \ "MarNumOfPacGS21").read[String].optional,
+      (__ \ "MarNumOfPacGS21").read[String].optional
     ).mapN(apply)
   }
 
@@ -87,9 +87,13 @@ object BulkPackage {
       .flatMap[String] {
         kind =>
           if (validCodes.contains(kind)) {
-            Reads(_ => JsSuccess(kind))
+            Reads(
+              _ => JsSuccess(kind)
+            )
           } else {
-            Reads(_ => JsError("kindOfPackage must indicate BULK"))
+            Reads(
+              _ => JsError("kindOfPackage must indicate BULK")
+            )
           }
       }
       .andKeep(
@@ -105,7 +109,9 @@ object BulkPackage {
 
   implicit def writesXml: XMLWrites[BulkPackage] = XMLWrites[BulkPackage] {
     packageType =>
-      val marksAndNumbers = packageType.marksAndNumbers.fold(NodeSeq.Empty)(value => <MarNumOfPacGS21>{value}</MarNumOfPacGS21>)
+      val marksAndNumbers = packageType.marksAndNumbers.fold(NodeSeq.Empty)(
+        value => <MarNumOfPacGS21>{value}</MarNumOfPacGS21>
+      )
 
       <PACGS2>
         {marksAndNumbers}
@@ -129,7 +135,7 @@ object UnpackedPackage {
     (
       (__ \ "KinOfPacGS23").read[String],
       (__ \ "NumOfPieGS25").read[Int],
-      (__ \ "MarNumOfPacGS21").read[String].optional,
+      (__ \ "MarNumOfPacGS21").read[String].optional
     ).mapN(apply)
   }
 
@@ -144,9 +150,13 @@ object UnpackedPackage {
       .flatMap[String] {
         kind =>
           if (validCodes.contains(kind)) {
-            Reads(_ => JsSuccess(kind))
+            Reads(
+              _ => JsSuccess(kind)
+            )
           } else {
-            Reads(_ => JsError("kindOfPackage must indicate UNPACKED"))
+            Reads(
+              _ => JsError("kindOfPackage must indicate UNPACKED")
+            )
           }
       }
       .andKeep(
@@ -163,7 +173,9 @@ object UnpackedPackage {
 
   implicit def writesXml: XMLWrites[UnpackedPackage] = XMLWrites[UnpackedPackage] {
     packageType =>
-      val marksAndNumbers = packageType.marksAndNumbers.fold(NodeSeq.Empty)(value => <MarNumOfPacGS21>{value}</MarNumOfPacGS21>)
+      val marksAndNumbers = packageType.marksAndNumbers.fold(NodeSeq.Empty)(
+        value => <MarNumOfPacGS21>{value}</MarNumOfPacGS21>
+      )
 
       <PACGS2>
         {marksAndNumbers}
@@ -188,7 +200,7 @@ object RegularPackage {
     (
       (__ \ "KinOfPacGS23").read[String],
       (__ \ "NumOfPacGS24").read[Int],
-      (__ \ "MarNumOfPacGS21").read[String],
+      (__ \ "MarNumOfPacGS21").read[String]
     ).mapN(apply)
   }
 
@@ -201,9 +213,13 @@ object RegularPackage {
       .flatMap[String] {
         kind =>
           if (BulkPackage.validCodes.contains(kind) || UnpackedPackage.validCodes.contains(kind)) {
-            Reads(_ => JsError("kindOfPackage must not indicate BULK or UNPACKED"))
+            Reads(
+              _ => JsError("kindOfPackage must not indicate BULK or UNPACKED")
+            )
           } else {
-            Reads(_ => JsSuccess(kind))
+            Reads(
+              _ => JsSuccess(kind)
+            )
           }
       }
       .andKeep(

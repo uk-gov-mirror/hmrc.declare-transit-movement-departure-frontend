@@ -17,13 +17,16 @@
 package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class SafetyAndSecurityConsignorNameFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "safetyAndSecurityConsignorName.error.required"
   val lengthKey   = "safetyAndSecurityConsignorName.error.length"
-  val maxLength   = 10
+  val invalidKey  = "safetyAndSecurityConsignorName.error.invalid"
+  val maxLength   = 35
+  val nameRegex   = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
 
   val form = new SafetyAndSecurityConsignorNameFormProvider()()
 
@@ -49,5 +52,21 @@ class SafetyAndSecurityConsignorNameFormProviderSpec extends StringFieldBehaviou
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind invalid string" in {
+
+      val expectedError =
+        List(FormError(fieldName, invalidKey, Seq(nameRegex)))
+
+      val genInvalidString: Gen[String] = {
+        stringsWithMaxLength(maxLength) suchThat (!_.matches(nameRegex))
+      }
+
+      forAll(genInvalidString) {
+        invalidString =>
+          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe expectedError
+      }
+    }
   }
 }

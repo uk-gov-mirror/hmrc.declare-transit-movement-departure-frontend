@@ -18,7 +18,7 @@ package models.messages
 
 import generators.MessagesModelGenerators
 import models.LanguageCodeEnglish
-import models.XMLWrites._
+import xml.XMLWrites._
 import com.lucidchart.open.xtract.XmlReader
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
@@ -39,14 +39,14 @@ class SealsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks 
             <SEAINFSLI>
               <SeaNumSLI2>{seals.numberOfSeals}</SeaNumSLI2>
               {
-                seals.SealId.map {
-                  id =>
-                    <SEAIDSID>
+              seals.SealId.map {
+                id =>
+                  <SEAIDSID>
                       <SeaIdeSID1>{id}</SeaIdeSID1>
                       <SeaIdeSID1LNG>{LanguageCodeEnglish.code}</SeaIdeSID1LNG>
                     </SEAIDSID>
-                }
               }
+            }
             </SEAINFSLI>
 
           seals.toXml mustEqual expectedResult
