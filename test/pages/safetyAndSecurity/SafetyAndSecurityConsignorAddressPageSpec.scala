@@ -16,16 +16,17 @@
 
 package pages.safetyAndSecurity
 
+import models.ConsignorAddress
 import pages.behaviours.PageBehaviours
 
 class SafetyAndSecurityConsignorAddressPageSpec extends PageBehaviours {
 
   "SafetyAndSecurityConsignorAddressPage" - {
 
-    beRetrievable[String](SafetyAndSecurityConsignorAddressPage)
+    beRetrievable[ConsignorAddress](SafetyAndSecurityConsignorAddressPage)
 
-    beSettable[String](SafetyAndSecurityConsignorAddressPage)
+    beSettable[ConsignorAddress](SafetyAndSecurityConsignorAddressPage)
 
-    beRemovable[String](SafetyAndSecurityConsignorAddressPage)
+    beRemovable[ConsignorAddress](SafetyAndSecurityConsignorAddressPage)
   }
 }

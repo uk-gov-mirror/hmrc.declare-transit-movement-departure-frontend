@@ -19,12 +19,19 @@ package forms.safetyAndSecurity
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class SafetyAndSecurityConsignorNameFormProvider @Inject() extends Mappings {
+
+  val maxLength = 35
+  val nameRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("safetyAndSecurityConsignorName.error.required")
-        .verifying(maxLength(10, "safetyAndSecurityConsignorName.error.length"))
+        .verifying(
+          StopOnFirstFail(maxLength(maxLength, "safetyAndSecurityConsignorName.error.length"),
+                          regexp(nameRegex, "safetyAndSecurityConsignorName.error.invalid"))
+        )
     )
 }

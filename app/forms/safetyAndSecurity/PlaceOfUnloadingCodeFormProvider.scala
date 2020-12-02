@@ -19,12 +19,20 @@ package forms.safetyAndSecurity
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class PlaceOfUnloadingCodeFormProvider @Inject() extends Mappings {
+
+  private val maxLength  = 35
+  private val placeRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("placeOfUnloadingCode.error.required")
-        .verifying(maxLength(10, "placeOfUnloadingCode.error.length"))
-    )
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "placeOfUnloadingCode.error.length"),
+            regexp(placeRegex, "placeOfUnloadingCode.error.invalid")
+          )
+        ))
 }
