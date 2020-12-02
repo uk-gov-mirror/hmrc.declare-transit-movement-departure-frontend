@@ -18,7 +18,7 @@ package models.messages
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites._
+import xml.XMLWrites._
 import models.messages.trader.TraderAuthorisedConsignee
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec

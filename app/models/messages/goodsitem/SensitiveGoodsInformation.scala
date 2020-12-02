@@ -18,7 +18,7 @@ package models.messages.goodsitem
 
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.XMLWrites
+import xml.XMLWrites
 
 import scala.xml.NodeSeq
 
@@ -34,16 +34,17 @@ object SensitiveGoodsInformation {
     val sensitiveGoodsInformationCount = 9
   }
 
-  implicit val xmlReader: XmlReader[SensitiveGoodsInformation] = {
+  implicit val xmlReader: XmlReader[SensitiveGoodsInformation] =
     (
       (__ \ "SenGooCodSD22").read[Int].optional,
       (__ \ "SenQuaSD23").read[Int]
     ).mapN(apply)
-  }
 
   implicit def writes: XMLWrites[SensitiveGoodsInformation] = XMLWrites[SensitiveGoodsInformation] {
     information =>
-      val goodsCode = information.goodsCode.fold(NodeSeq.Empty)(value => <SenGooCodSD22>{value}</SenGooCodSD22>)
+      val goodsCode = information.goodsCode.fold(NodeSeq.Empty)(
+        value => <SenGooCodSD22>{value}</SenGooCodSD22>
+      )
 
       <SGICODSD2>
         {goodsCode}

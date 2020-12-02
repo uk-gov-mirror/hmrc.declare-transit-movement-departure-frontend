@@ -19,8 +19,8 @@ package models.messages.guarantee
 import cats.syntax.all._
 import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.XMLWrites
-import models.XMLWrites._
+import xml.XMLWrites
+import xml.XMLWrites._
 
 import scala.xml.NodeSeq
 
@@ -44,14 +44,18 @@ object Guarantee {
 
   implicit val xmlReader: XmlReader[Guarantee] = (
     (__ \ "GuaTypGUA1").read[String],
-    (__ \ "GUAREFREF").read(strictReadSeq[GuaranteeReference]),
+    (__ \ "GUAREFREF").read(strictReadSeq[GuaranteeReference])
   ).mapN(apply)
 
   implicit def writes: XMLWrites[Guarantee] = XMLWrites[Guarantee] {
     guarantee =>
       <GUAGUA>
         <GuaTypGUA1>{guarantee.guaranteeType}</GuaTypGUA1>
-        {guarantee.guaranteeReference.flatMap(x => guaranteeReference(x))}
+        {
+        guarantee.guaranteeReference.flatMap(
+          x => guaranteeReference(x)
+        )
+      }
       </GUAGUA>
   }
 

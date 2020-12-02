@@ -24,7 +24,7 @@ import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import models.XMLWrites._
+import xml.XMLWrites._
 
 import scala.xml.NodeSeq
 
@@ -42,8 +42,10 @@ class PreviousAdministrativeReferenceSpec
 
       forAll(arbitrary[PreviousAdministrativeReference]) {
         reference =>
-          val comOfInfAR29 = reference.comOfInfAR29.fold(NodeSeq.Empty)(value => <ComOfInfAR29>{value}</ComOfInfAR29>
-              <ComOfInfAR29LNG>EN</ComOfInfAR29LNG>)
+          val comOfInfAR29 = reference.comOfInfAR29.fold(NodeSeq.Empty)(
+            value => <ComOfInfAR29>{value}</ComOfInfAR29>
+              <ComOfInfAR29LNG>EN</ComOfInfAR29LNG>
+          )
 
           val expectedResult =
             <PREADMREFAR2>

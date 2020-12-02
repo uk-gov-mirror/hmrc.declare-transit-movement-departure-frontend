@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package models
+package xml
 
-import scala.xml.NodeSeq
+import play.twirl.api.utils.StringEscapeUtils
 
-trait XMLWrites[A] {
-  def writes(a: A): NodeSeq
+trait XMLValueWriter[A] {
+  def writeValue(a: A): String
 }
 
-object XMLWrites {
+object XMLValueWriter {
 
-  def apply[A](writerFn: A => NodeSeq): XMLWrites[A] = new XMLWrites[A] {
-    override def writes(a: A): NodeSeq = writerFn(a)
+  def apply[A](implicit ev: XMLValueWriter[A]): XMLValueWriter[A] = ev
+
+  implicit class XMLValueWriterOps[A](val a: A) extends AnyVal {
+
+    def asXmlText(implicit ev: XMLValueWriter[A]): String =
+      ev.writeValue(a)
   }
 
-  implicit class XMLWritesOps[A](val a: A) extends AnyVal {
+  implicit val stringXmlValueWriter: XMLValueWriter[String] = string => StringEscapeUtils.escapeXml11(string)
 
-    def toXml(implicit writer: XMLWrites[A]): NodeSeq =
-      writer.writes(a)
-  }
+  implicit val intXmlValueWriter: XMLValueWriter[Int] = int => int.toString.asXmlText
 
 }

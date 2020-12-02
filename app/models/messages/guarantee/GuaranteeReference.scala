@@ -17,8 +17,9 @@
 package models.messages.guarantee
 
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.XMLWrites
 import cats.syntax.all._
+import xml.XMLWrites
+
 import scala.xml.NodeSeq
 
 sealed trait GuaranteeReference
@@ -67,11 +68,11 @@ object GuaranteeReferenceWithOther {
       <GUAREFREF>
         <OthGuaRefREF4>{guarantee.otherReferenceNumber}</OthGuaRefREF4>
         {
-          guarantee.accessCode.fold(NodeSeq.Empty) {
-            accessCode =>
-              <AccCodREF6>{accessCode}</AccCodREF6>
-          }
+        guarantee.accessCode.fold(NodeSeq.Empty) {
+          accessCode =>
+            <AccCodREF6>{accessCode}</AccCodREF6>
         }
+      }
       </GUAREFREF>
   }
 }
