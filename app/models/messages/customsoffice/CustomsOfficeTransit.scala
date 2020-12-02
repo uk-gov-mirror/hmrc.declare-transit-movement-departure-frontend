@@ -21,8 +21,8 @@ import java.time.LocalDateTime
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLReads._
-import models.XMLWrites
 import utils.Format
+import xml.XMLWrites
 
 import scala.xml.NodeSeq
 

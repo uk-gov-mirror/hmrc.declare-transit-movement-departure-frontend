@@ -19,12 +19,21 @@ package forms.safetyAndSecurity
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class CommercialReferenceNumberAllItemsFormProvider @Inject() extends Mappings {
+
+  val maxLength = 70
+  val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,70}$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("commercialReferenceNumberAllItems.error.required")
-        .verifying(maxLength(10, "commercialReferenceNumberAllItems.error.length"))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "commercialReferenceNumberAllItems.error.length"),
+            regexp(regex, "commercialReferenceNumberAllItems.error.invalid")
+          )
+        )
     )
 }

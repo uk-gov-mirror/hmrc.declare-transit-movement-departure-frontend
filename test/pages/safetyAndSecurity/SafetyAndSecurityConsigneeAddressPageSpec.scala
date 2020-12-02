@@ -16,6 +16,7 @@
 
 package pages.safetyAndSecurity
 
+import models.ConsigneeAddress
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
@@ -24,10 +25,11 @@ class SafetyAndSecurityConsigneeAddressPageSpec extends PageBehaviours {
 
   "SafetyAndSecurityConsigneeAddressPage" - {
 
-    beRetrievable[String](SafetyAndSecurityConsigneeAddressPage)
+    beRetrievable[ConsigneeAddress](SafetyAndSecurityConsigneeAddressPage)
 
-    beSettable[String](SafetyAndSecurityConsigneeAddressPage)
+    beSettable[ConsigneeAddress](SafetyAndSecurityConsigneeAddressPage)
 
+    beRemovable[ConsigneeAddress](SafetyAndSecurityConsigneeAddressPage)
     beRemovable[String](SafetyAndSecurityConsigneeAddressPage)
 
     "cleanup" - { //TODO Update the set address when address page is updated

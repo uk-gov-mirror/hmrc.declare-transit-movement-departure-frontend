@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-package pages.safetyAndSecurity
+package xml
 
-import models.ConsigneeAddress
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import play.twirl.api.utils.StringEscapeUtils
 
-case object SafetyAndSecurityConsigneeAddressPage extends QuestionPage[ConsigneeAddress] {
+trait XMLValueWriter[A] {
+  def writeValue(a: A): String
+}
 
-  override def path: JsPath = JsPath \ toString
+object XMLValueWriter {
 
-  override def toString: String = "safetyAndSecurityConsigneeAddress"
+  def apply[A](implicit ev: XMLValueWriter[A]): XMLValueWriter[A] = ev
+
+  implicit class XMLValueWriterOps[A](val a: A) extends AnyVal {
+
+    def asXmlText(implicit ev: XMLValueWriter[A]): String =
+      ev.writeValue(a)
+  }
+
+  implicit val stringXmlValueWriter: XMLValueWriter[String] = string => StringEscapeUtils.escapeXml11(string)
+
+  implicit val intXmlValueWriter: XMLValueWriter[Int] = int => int.toString.asXmlText
+
 }

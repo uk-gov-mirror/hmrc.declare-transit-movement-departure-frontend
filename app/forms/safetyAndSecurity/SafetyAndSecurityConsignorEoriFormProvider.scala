@@ -19,12 +19,21 @@ package forms.safetyAndSecurity
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class SafetyAndSecurityConsignorEoriFormProvider @Inject() extends Mappings {
+
+  val maxLength      = 17
+  val refNumberRegex = s"^[a-zA-Z0-9]{1,$maxLength}$$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("safetyAndSecurityConsignorEori.error.required")
-        .verifying(maxLength(10, "safetyAndSecurityConsignorEori.error.length"))
+        .verifying(
+          StopOnFirstFail(
+            maxLength(maxLength, "safetyAndSecurityConsignorEori.error.length"),
+            regexp(refNumberRegex, "safetyAndSecurityConsignorEori.error.invalid")
+          )
+        )
     )
 }

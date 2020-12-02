@@ -91,7 +91,7 @@ trait UserAnswersEntryGenerators {
   implicit lazy val arbitraryCarrierAddressUserAnswersEntry: Arbitrary[(CarrierAddressPage.type, JsValue)] =
     Arbitrary {
       for {
-        value <- arbitrary[CarrierAddressPage.type#Data].map(Json.toJson(_))
+        value <- arbitrary[CarrierAddress].map(Json.toJson(_))
       } yield (CarrierAddressPage, value)
     }
 

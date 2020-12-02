@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package pages.safetyAndSecurity
+package xml
 
-import models.ConsigneeAddress
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import scala.xml.NodeSeq
 
-case object SafetyAndSecurityConsigneeAddressPage extends QuestionPage[ConsigneeAddress] {
+trait XMLWrites[A] {
+  def writes(a: A): NodeSeq
+}
 
-  override def path: JsPath = JsPath \ toString
+object XMLWrites {
 
-  override def toString: String = "safetyAndSecurityConsigneeAddress"
+  def apply[A](writerFn: A => NodeSeq): XMLWrites[A] = a => writerFn(a)
+
+  implicit class XMLWritesOps[A](val a: A) extends AnyVal {
+
+    def toXml(implicit writer: XMLWrites[A]): NodeSeq =
+      writer.writes(a)
+  }
+
 }

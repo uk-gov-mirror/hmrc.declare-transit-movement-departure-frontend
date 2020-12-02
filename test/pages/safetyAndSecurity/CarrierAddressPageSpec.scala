@@ -16,16 +16,17 @@
 
 package pages.safetyAndSecurity
 
+import models.CarrierAddress
 import pages.behaviours.PageBehaviours
 
 class CarrierAddressPageSpec extends PageBehaviours {
 
   "CarrierAddressPage" - {
 
-    beRetrievable[String](CarrierAddressPage)
+    beRetrievable[CarrierAddress](CarrierAddressPage)
 
-    beSettable[String](CarrierAddressPage)
+    beSettable[CarrierAddress](CarrierAddressPage)
 
-    beRemovable[String](CarrierAddressPage)
+    beRemovable[CarrierAddress](CarrierAddressPage)
   }
 }
