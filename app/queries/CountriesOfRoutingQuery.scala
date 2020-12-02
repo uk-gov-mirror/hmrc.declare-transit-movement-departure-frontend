@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package models.reference
+package queries
 
-import play.api.libs.json.{Json, Reads}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import queries.Constants.countriesOfRouting
 
-case class CircumstanceIndicator(code: String, description: String)
+case object CountriesOfRoutingQuery extends QuestionPage[Seq[String]] {
 
-object CircumstanceIndicator {
-  implicit def reads: Reads[CircumstanceIndicator] = Json.reads[CircumstanceIndicator]
+  override def path: JsPath = JsPath \ countriesOfRouting
 
-  val conditionalIndicators = Seq("E", "D", "C", "B")
 }
