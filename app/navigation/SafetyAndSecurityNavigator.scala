@@ -30,19 +30,19 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
   // format: off
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddCircumstanceIndicatorPage             => ua => addCircumstanceIndicator(ua)
+    case AddCircumstanceIndicatorPage             => ua => addCircumstanceIndicator(ua, NormalMode)
     case CircumstanceIndicatorPage                => ua => Some(routes.AddTransportChargesPaymentMethodController.onPageLoad(ua.id, NormalMode))
-    case AddTransportChargesPaymentMethodPage     => ua => addTransportChargesPaymentMethod(ua)
+    case AddTransportChargesPaymentMethodPage     => ua => addTransportChargesPaymentMethod(ua, NormalMode)
     case TransportChargesPaymentMethodPage        => ua => Some(routes.AddCommercialReferenceNumberController.onPageLoad(ua.id, NormalMode))
-    case AddCommercialReferenceNumberPage         => ua => addCommercialReferenceNumber(ua)
-    case AddCommercialReferenceNumberAllItemsPage => ua => addCommercialReferenceNumberAllItems(ua)
+    case AddCommercialReferenceNumberPage         => ua => addCommercialReferenceNumber(ua, NormalMode)
+    case AddCommercialReferenceNumberAllItemsPage => ua => addCommercialReferenceNumberAllItems(ua, NormalMode)
     case CommercialReferenceNumberAllItemsPage    => ua => commercialReferenceNumberAllItems(ua)
-    case AddConveyanceReferenceNumberPage        => ua => addConveyancerReferenceNumber(ua)
+    case AddConveyanceReferenceNumberPage         => ua => addConveyancerReferenceNumber(ua, NormalMode)
     case ConveyanceReferenceNumberPage            => ua => conveyanceReferenceNumber(ua)
-    case AddPlaceOfUnloadingCodePage              => ua => addPlaceOfUnloadingCodePage(ua)
+    case AddPlaceOfUnloadingCodePage              => ua => addPlaceOfUnloadingCodePage(ua, NormalMode)
     case PlaceOfUnloadingCodePage                 => ua => placeOfUnloadingCode(ua)
     case CountryOfRoutingPage(_)                  => ua => Some(routes.AddAnotherCountryOfRoutingController.onPageLoad(ua.id, NormalMode))
-    case AddAnotherCountryOfRoutingPage           => ua => addAnotherCountryOfRouting(ua)
+    case AddAnotherCountryOfRoutingPage           => ua => addAnotherCountryOfRouting(ua, NormalMode)
     case AddSafetyAndSecurityConsignorPage        => ua => addSafetyAndSecurityConsignor(ua)
     case AddSafetyAndSecurityConsignorEoriPage    => ua => addSafetyAndSecurityConsignorEori(ua)
     case SafetyAndSecurityConsignorEoriPage       => ua => Some(routes.AddSafetyAndSecurityConsigneeController.onPageLoad(ua.id, NormalMode))
@@ -60,31 +60,49 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     case CarrierAddressPage                       => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
   }
 
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case AddCircumstanceIndicatorPage             => ua => addCircumstanceIndicator(ua, CheckMode)
+    case CircumstanceIndicatorPage                => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+    case AddTransportChargesPaymentMethodPage     => ua => addTransportChargesPaymentMethod(ua, CheckMode)
+    case TransportChargesPaymentMethodPage        => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+    case AddCommercialReferenceNumberPage         => ua => addCommercialReferenceNumber(ua, CheckMode)
+    case AddCommercialReferenceNumberAllItemsPage => ua => addCommercialReferenceNumberAllItems(ua, CheckMode)
+    case CommercialReferenceNumberAllItemsPage    => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+    case AddConveyanceReferenceNumberPage         => ua => addConveyancerReferenceNumber(ua, CheckMode)
+    case ConveyanceReferenceNumberPage            => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+    case AddPlaceOfUnloadingCodePage              => ua => addPlaceOfUnloadingCodePage(ua, CheckMode)
+    case PlaceOfUnloadingCodePage                 => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+    case CountryOfRoutingPage(_)                  => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+    case AddAnotherCountryOfRoutingPage           => ua => addAnotherCountryOfRouting(ua, CheckMode)
+  }
 
-  def addCircumstanceIndicator(ua: UserAnswers): Option[Call] =
+  def addCircumstanceIndicator(ua: UserAnswers, mode: Mode): Option[Call] =
     ua.get(AddCircumstanceIndicatorPage).map {
-      case true   => routes.CircumstanceIndicatorController.onPageLoad(ua.id, NormalMode)
-      case false  => routes.AddTransportChargesPaymentMethodController.onPageLoad(ua.id, NormalMode)
+      case true   => routes.CircumstanceIndicatorController.onPageLoad(ua.id, mode)
+      case false if mode == NormalMode => routes.AddTransportChargesPaymentMethodController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
     }
 
-  def addTransportChargesPaymentMethod(ua: UserAnswers): Option[Call] =
+  def addTransportChargesPaymentMethod(ua: UserAnswers, mode: Mode): Option[Call] =
     ua.get(AddTransportChargesPaymentMethodPage).map {
-      case true   => routes.TransportChargesPaymentMethodController.onPageLoad(ua.id, NormalMode)
-      case false  => routes.AddCommercialReferenceNumberController.onPageLoad(ua.id, NormalMode)
+      case true   => routes.TransportChargesPaymentMethodController.onPageLoad(ua.id, mode)
+      case false if mode == NormalMode => routes.AddCommercialReferenceNumberController.onPageLoad(ua.id, NormalMode)
+      case false  => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
     }
 
-  def addCommercialReferenceNumber(ua: UserAnswers): Option[Call] =
+  def addCommercialReferenceNumber(ua: UserAnswers, mode: Mode): Option[Call] =
     (ua.get(AddCommercialReferenceNumberPage), ua.get(ModeAtBorderPage)) match {
-      case (Some(true), _)                        => Some(routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(ua.id, NormalMode))
+      case (Some(true), _)                        => Some(routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(ua.id, mode))
+      case (Some(false), _) if mode == CheckMode  => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
       case (Some(false), Some("4") | Some("40"))  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case (Some(false), _)                       => Some(routes.AddConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case _                                      => None
     }
 
-  def addCommercialReferenceNumberAllItems(ua: UserAnswers): Option[Call] =
+  def addCommercialReferenceNumberAllItems(ua: UserAnswers, mode: Mode): Option[Call] =
     (ua.get(AddCommercialReferenceNumberAllItemsPage), ua.get(ModeAtBorderPage)) match {
-      case (Some(true), _)                        => Some(routes.CommercialReferenceNumberAllItemsController.onPageLoad(ua.id, NormalMode))
+      case (Some(true), _)                        => Some(routes.CommercialReferenceNumberAllItemsController.onPageLoad(ua.id, mode))
+      case (Some(false), _) if mode == CheckMode  => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
       case (Some(false), Some("4") | Some("40"))  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case (Some(false), _)                       => Some(routes.AddConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case _                                      => None
@@ -97,9 +115,10 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
       case _                      => None
     }
 
-  def addConveyancerReferenceNumber(ua: UserAnswers): Option[Call] =
+  def addConveyancerReferenceNumber(ua: UserAnswers, mode: Mode): Option[Call] =
     (ua.get(AddConveyanceReferenceNumberPage), ua.get(CircumstanceIndicatorPage)) match {
-      case (Some(true), _)            => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
+      case (Some(true), _)            => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, mode))
+      case (Some(false), _) if mode == CheckMode  => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
       case (Some(false) , Some("E"))  => Some(routes.AddPlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
       case (Some(false) , _)          => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode ))
       case _                          => None
@@ -112,11 +131,12 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
       case _                    => None
     }
 
-  def addPlaceOfUnloadingCodePage(ua: UserAnswers): Option[Call] = {
+  def addPlaceOfUnloadingCodePage(ua: UserAnswers, mode: Mode): Option[Call] = {
     val totalNumberOfCountriesOfRouting = ua.get(DeriveNumberOfCountryOfRouting).getOrElse(0)
 
     ua.get(AddPlaceOfUnloadingCodePage).map {
-      case true => routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode)
+      case true => routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, mode)
+      case false if mode == CheckMode => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
       case false =>
         if (totalNumberOfCountriesOfRouting == 0) {
           routes.CountryOfRoutingController.onPageLoad(ua.id, Index(0), NormalMode)
@@ -126,11 +146,12 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     }
   }
 
-  def addAnotherCountryOfRouting(ua: UserAnswers): Option[Call] = {
+  def addAnotherCountryOfRouting(ua: UserAnswers, mode: Mode): Option[Call] = {
     val totalNumberOfCountriesOfRouting = ua.get(DeriveNumberOfCountryOfRouting)
     
     ua.get(AddAnotherCountryOfRoutingPage).map {
-      case true   => routes.CountryOfRoutingController.onPageLoad(ua.id, Index(totalNumberOfCountriesOfRouting.getOrElse(0)), NormalMode)
+      case true   => routes.CountryOfRoutingController.onPageLoad(ua.id, Index(totalNumberOfCountriesOfRouting.getOrElse(0)), mode)
+      case false if mode == CheckMode => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
       case false  => routes.AddSafetyAndSecurityConsignorController.onPageLoad(ua.id, NormalMode)
     }
   }

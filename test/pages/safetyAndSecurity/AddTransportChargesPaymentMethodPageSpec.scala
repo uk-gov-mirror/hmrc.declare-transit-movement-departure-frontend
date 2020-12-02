@@ -16,6 +16,8 @@
 
 package pages.safetyAndSecurity
 
+import models.UserAnswers
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddTransportChargesPaymentMethodPageSpec extends PageBehaviours {
@@ -27,5 +29,21 @@ class AddTransportChargesPaymentMethodPageSpec extends PageBehaviours {
     beSettable[Boolean](AddTransportChargesPaymentMethodPage)
 
     beRemovable[Boolean](AddTransportChargesPaymentMethodPage)
+  }
+
+  "cleanup" - {
+
+    "must remove TransportChargesPaymentMethodPage when AddTransportChargesPaymentMethodPage is false" in {
+
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          val result = userAnswers
+            .set(AddTransportChargesPaymentMethodPage, false)
+            .success
+            .value
+
+          result.get(TransportChargesPaymentMethodPage) must not be defined
+      }
+    }
   }
 }
