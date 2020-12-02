@@ -16,6 +16,8 @@
 
 package pages.safetyAndSecurity
 
+import models.UserAnswers
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddSafetyAndSecurityConsignorEoriPageSpec extends PageBehaviours {
@@ -27,5 +29,42 @@ class AddSafetyAndSecurityConsignorEoriPageSpec extends PageBehaviours {
     beSettable[Boolean](AddSafetyAndSecurityConsignorEoriPage)
 
     beRemovable[Boolean](AddSafetyAndSecurityConsignorEoriPage)
+  }
+
+  "cleanup" - {
+    "must clean up the consignor eori details on selecting option 'No' " in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(SafetyAndSecurityConsignorEoriPage, "GB000000")
+            .success
+            .value
+            .set(AddSafetyAndSecurityConsignorEoriPage, false)
+            .success
+            .value
+
+          updatedAnswers.get(SafetyAndSecurityConsignorEoriPage) must not be defined
+      }
+    }
+  }
+  "cleanup" - { //TODO when address page updated this test must match for the setting of address
+    "must clean up the consignor name and address details on selecting option 'No' " in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(SafetyAndSecurityConsignorNamePage, "TestName")
+            .success
+            .value
+            .set(SafetyAndSecurityConsignorAddressPage, "test")
+            .success
+            .value
+            .set(AddSafetyAndSecurityConsignorEoriPage, true)
+            .success
+            .value
+
+          updatedAnswers.get(SafetyAndSecurityConsignorNamePage) must not be defined
+          updatedAnswers.get(SafetyAndSecurityConsignorAddressPage) must not be defined
+      }
+    }
   }
 }

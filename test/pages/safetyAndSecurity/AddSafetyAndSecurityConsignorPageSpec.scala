@@ -33,7 +33,7 @@ class AddSafetyAndSecurityConsignorPageSpec extends SpecBase with PageBehaviours
 
     beRemovable[Boolean](AddSafetyAndSecurityConsignorPage)
 
-    "cleanup" - {
+    "cleanup" - { //TODO Update the set address when address page is updated
       "must clean up the consignor details on selecting option 'No' " in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -47,6 +47,9 @@ class AddSafetyAndSecurityConsignorPageSpec extends SpecBase with PageBehaviours
               .set(SafetyAndSecurityConsignorNamePage, "test name")
               .success
               .value
+              .set(SafetyAndSecurityConsignorAddressPage, "test")
+              .success
+              .value
               .set(AddSafetyAndSecurityConsignorPage, false)
               .success
               .value
@@ -54,6 +57,7 @@ class AddSafetyAndSecurityConsignorPageSpec extends SpecBase with PageBehaviours
             updatedAnswers.get(AddSafetyAndSecurityConsignorEoriPage) must not be defined
             updatedAnswers.get(SafetyAndSecurityConsignorEoriPage) must not be defined
             updatedAnswers.get(SafetyAndSecurityConsignorNamePage) must not be defined
+            updatedAnswers.get(SafetyAndSecurityConsignorAddressPage) must not be defined
         }
       }
     }
