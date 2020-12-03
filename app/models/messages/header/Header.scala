@@ -21,10 +21,11 @@ import java.time.LocalDate
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLReads._
-import models.XMLWrites._
+import xml.XMLWrites._
 import models.messages.escapeXml
-import models.{LanguageCodeEnglish, XMLWrites}
+import models.LanguageCodeEnglish
 import utils.Format
+import xml.XMLWrites
 
 import scala.xml.NodeSeq
 
@@ -80,63 +81,63 @@ object Header {
         <RefNumHEA4>{escapeXml(header.refNumHEA4)}</RefNumHEA4>
         <TypOfDecHEA24>{header.typOfDecHEA24}</TypOfDecHEA24>
         {
-          header.couOfDesCodHEA30.fold(NodeSeq.Empty) ( value =>
-            <CouOfDesCodHEA30>{escapeXml(value)}</CouOfDesCodHEA30>
+        header.couOfDesCodHEA30.fold(NodeSeq.Empty)(
+          value => <CouOfDesCodHEA30>{escapeXml(value)}</CouOfDesCodHEA30>
+        ) ++
+          header.agrLocOfGooCodHEA38.fold(NodeSeq.Empty)(
+            value => <AgrLocOfGooCodHEA38>{escapeXml(value)}</AgrLocOfGooCodHEA38>
           ) ++
-          header.agrLocOfGooCodHEA38.fold(NodeSeq.Empty) ( value =>
-            <AgrLocOfGooCodHEA38>{escapeXml(value)}</AgrLocOfGooCodHEA38>
-          ) ++
-          header.agrLocOfGooHEA39.fold(NodeSeq.Empty) ( value =>
-            <AgrLocOfGooHEA39>{escapeXml(value)}</AgrLocOfGooHEA39>
+          header.agrLocOfGooHEA39.fold(NodeSeq.Empty)(
+            value => <AgrLocOfGooHEA39>{escapeXml(value)}</AgrLocOfGooHEA39>
             <AgrLocOfGooHEA39LNG>{LanguageCodeEnglish.code}</AgrLocOfGooHEA39LNG>
           ) ++
-          header.autLocOfGooCodHEA41.fold(NodeSeq.Empty) ( value =>
-            <AutLocOfGooCodHEA41>{escapeXml(value)}</AutLocOfGooCodHEA41>
+          header.autLocOfGooCodHEA41.fold(NodeSeq.Empty)(
+            value => <AutLocOfGooCodHEA41>{escapeXml(value)}</AutLocOfGooCodHEA41>
           ) ++
-          header.plaOfLoaCodHEA46.fold(NodeSeq.Empty) ( value =>
-            <PlaOfLoaCodHEA46>{escapeXml(value)}</PlaOfLoaCodHEA46>
+          header.plaOfLoaCodHEA46.fold(NodeSeq.Empty)(
+            value => <PlaOfLoaCodHEA46>{escapeXml(value)}</PlaOfLoaCodHEA46>
           ) ++
-          header.couOfDisCodHEA55.fold(NodeSeq.Empty) ( value =>
-            <CouOfDisCodHEA55>{escapeXml(value)}</CouOfDisCodHEA55>
+          header.couOfDisCodHEA55.fold(NodeSeq.Empty)(
+            value => <CouOfDisCodHEA55>{escapeXml(value)}</CouOfDisCodHEA55>
           ) ++
-          header.cusSubPlaHEA66.fold(NodeSeq.Empty) ( value =>
-            <CusSubPlaHEA66>{escapeXml(value)}</CusSubPlaHEA66>
+          header.cusSubPlaHEA66.fold(NodeSeq.Empty)(
+            value => <CusSubPlaHEA66>{escapeXml(value)}</CusSubPlaHEA66>
           ) ++ header.transportDetails.toXml
-        }
+      }
         <ConIndHEA96>{header.conIndHEA96.toString}</ConIndHEA96>
         <DiaLanIndAtDepHEA254>{LanguageCodeEnglish.code}</DiaLanIndAtDepHEA254>
         <NCTSAccDocHEA601LNG>{LanguageCodeEnglish.code}</NCTSAccDocHEA601LNG>
         <TotNumOfIteHEA305>{header.totNumOfIteHEA305.toString}</TotNumOfIteHEA305>
         {
-          header.totNumOfPacHEA306.fold(NodeSeq.Empty) (value =>
-            <TotNumOfPacHEA306>{value.toString}</TotNumOfPacHEA306>
-          )
-        }
+        header.totNumOfPacHEA306.fold(NodeSeq.Empty)(
+          value => <TotNumOfPacHEA306>{value.toString}</TotNumOfPacHEA306>
+        )
+      }
         <TotGroMasHEA307>{header.totGroMasHEA307.toString}</TotGroMasHEA307>
         <DecDatHEA383>{Format.dateFormatted(header.decDatHEA383)}</DecDatHEA383>
         <DecPlaHEA394>{escapeXml(header.decPlaHEA394)}</DecPlaHEA394>
         <DecPlaHEA394LNG>{LanguageCodeEnglish.code}</DecPlaHEA394LNG>
         {
-          header.speCirIndHEA1.fold(NodeSeq.Empty) (value =>
-            <SpeCirIndHEA1>{value.toString}</SpeCirIndHEA1>
+        header.speCirIndHEA1.fold(NodeSeq.Empty)(
+          value => <SpeCirIndHEA1>{value.toString}</SpeCirIndHEA1>
+        ) ++
+          header.traChaMetOfPayHEA1.fold(NodeSeq.Empty)(
+            value => <TraChaMetOfPayHEA1>{value}</TraChaMetOfPayHEA1>
           ) ++
-          header.traChaMetOfPayHEA1.fold(NodeSeq.Empty) (value =>
-            <TraChaMetOfPayHEA1>{value}</TraChaMetOfPayHEA1>
+          header.comRefNumHEA.fold(NodeSeq.Empty)(
+            value => <ComRefNumHEA>{value}</ComRefNumHEA>
           ) ++
-          header.comRefNumHEA.fold(NodeSeq.Empty) (value =>
-            <ComRefNumHEA>{value}</ComRefNumHEA>
+          header.secHEA358.fold(NodeSeq.Empty)(
+            value => <SecHEA358>{value.toString}</SecHEA358>
           ) ++
-          header.secHEA358.fold(NodeSeq.Empty) (value =>
-            <SecHEA358>{value.toString}</SecHEA358>
+          header.conRefNumHEA.fold(NodeSeq.Empty)(
+            value => <ConRefNumHEA>{value}</ConRefNumHEA>
           ) ++
-            header.conRefNumHEA.fold(NodeSeq.Empty) (value =>
-            <ConRefNumHEA>{value}</ConRefNumHEA>
-          ) ++
-          header.codPlUnHEA357.fold(NodeSeq.Empty) (value =>
-            <CodPlUnHEA357>{value}</CodPlUnHEA357>
+          header.codPlUnHEA357.fold(NodeSeq.Empty)(
+            value => <CodPlUnHEA357>{value}</CodPlUnHEA357>
             <CodPlUnHEA357LNG>{LanguageCodeEnglish.code}</CodPlUnHEA357LNG>
           )
-        }
+      }
       </HEAHEA>
   }
   // scalastyle:on
@@ -160,7 +161,7 @@ object Header {
     (__ \ "PlaOfLoaCodHEA46").read[String].optional,
     (__ \ "CouOfDisCodHEA55").read[String].optional,
     (__ \ "CusSubPlaHEA66").read[String].optional,
-    (__).read[Transport],
+    __.read[Transport],
     (__ \ "ConIndHEA96").read[Int],
     (__ \ "TotNumOfIteHEA305").read[Int],
     (__ \ "TotNumOfPacHEA306").read[Int].optional,

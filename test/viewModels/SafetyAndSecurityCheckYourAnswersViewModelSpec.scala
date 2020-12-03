@@ -17,11 +17,15 @@
 package viewModels
 
 import base.SpecBase
+import generators.Generators
+import models.ConsignorAddress
+import models.reference.CountryCode
+import org.scalacheck.Arbitrary.arbitrary
 import pages.safetyAndSecurity._
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import viewModels.sections.Section
 
-class SafetyAndSecurityCheckYourAnswersViewModelSpec extends SpecBase {
+class SafetyAndSecurityCheckYourAnswersViewModelSpec extends SpecBase with Generators {
 
   // scalastyle:off
   private val setSafetyAndSecuritySummary = emptyUserAnswers
@@ -60,23 +64,26 @@ class SafetyAndSecurityCheckYourAnswersViewModelSpec extends SpecBase {
     .value
 
   private val setSafetyAndSecurityCountriesOfRouting = setSafetyAndSecuritySummary
-    .set(CountryOfRoutingPage(index), "GB")
+    .set(CountryOfRoutingPage(index), CountryCode("GB"))
     .success
     .value
 
-  private val setSafetyAndSecurityConsignor = setSafetyAndSecurityCountriesOfRouting
-    .set(AddSafetyAndSecurityConsignorPage, true)
-    .success
-    .value
-    .set(AddSafetyAndSecurityConsignorEoriPage, false)
-    .success
-    .value
-    .set(SafetyAndSecurityConsignorNamePage, "answer")
-    .success
-    .value
-    .set(SafetyAndSecurityConsignorAddressPage, "answer")
-    .success
-    .value
+  private val setSafetyAndSecurityConsignor = {
+    val address = arbitrary[ConsignorAddress].sample.value
+    setSafetyAndSecurityCountriesOfRouting
+      .set(AddSafetyAndSecurityConsignorPage, true)
+      .success
+      .value
+      .set(AddSafetyAndSecurityConsignorEoriPage, false)
+      .success
+      .value
+      .set(SafetyAndSecurityConsignorNamePage, "answer")
+      .success
+      .value
+      .set(SafetyAndSecurityConsignorAddressPage, address)
+      .success
+      .value
+  }
 
   private val setSafetyAndSecurityConsignee = setSafetyAndSecurityConsignor
     .set(AddSafetyAndSecurityConsigneePage, true)

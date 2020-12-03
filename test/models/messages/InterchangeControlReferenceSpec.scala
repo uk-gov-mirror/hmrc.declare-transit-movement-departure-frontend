@@ -18,7 +18,7 @@ package models.messages
 
 import com.lucidchart.open.xtract.{ParseFailure, XmlReader}
 import org.scalacheck.Arbitrary.arbitrary
-import models.XMLWrites._
+import xml.XMLWrites._
 import generators.MessagesModelGenerators
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers

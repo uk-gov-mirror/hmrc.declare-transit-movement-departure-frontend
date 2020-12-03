@@ -5,9 +5,17 @@
 {% from "govuk/components/button/macro.njk"        import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
+{% from "govuk/components/select/macro.njk"        import govukSelect %}
+
 
 {% block pageTitle %}
   {{ title(messages("carrierAddress.title"), form.errors) }}
+{% endblock %}
+
+{% block pageHead %}
+  <!--[if gt IE 8]><!-->
+  <link href="{{ routes.controllers.Assets.versioned("stylesheets/accessible-autocomplete.min.css").url }}" media="screen" rel="stylesheet" type="text/css" />
+  <!--<![endif]-->
 {% endblock %}
 
 {% block mainContent %}
@@ -32,17 +40,55 @@
 
           {{ csrf() | safe }}
 
-          {{ govukInput({
+            <h1 class="govuk-heading-xl">
+                    {{ messages("carrierAddress.heading", carrierName) }}
+                  </h1>
+
+          {{ govukInput ({
+            classes: "govuk-!-width-two-thirds",
             label: {
-              text: messages('carrierAddress.heading'),
-              isPageHeading: true,
-              classes: "govuk-label--xl"
+              text: messages('carrierAddress.AddressLine1')
             },
-            id: "value",
-            name: "value",
-            value: form.value.value,
-            errorMessage: form.value.error
+            id: "AddressLine1",
+            name: "AddressLine1",
+            value: form.AddressLine1.value,
+            errorMessage: form.AddressLine1.error
           }) }}
+
+          {{ govukInput({
+            classes: "govuk-!-width-two-thirds",
+            label: {
+              text: messages('carrierAddress.AddressLine2')
+              },
+              id: "AddressLine2",
+              name: "AddressLine2",
+              value: form.AddressLine2.value,
+              errorMessage: form.AddressLine2.error
+            }) }}
+
+            {{ govukInput({
+                        classes: "govuk-!-width-two-thirds",
+                        label: {
+                          text: messages('carrierAddress.AddressLine3')
+                        },
+                        id: "AddressLine3",
+                        name: "AddressLine3",
+                        value: form.AddressLine3.value,
+                        errorMessage: form.AddressLine3.error
+                      }) }}
+
+                      {{ govukSelect({
+                        classes: "govuk-input--width-20 autocomplete",
+                        label: {
+                           text: messages('carrierAddress.AddressLine4')
+                        },
+                        id: "country",
+                        name: "country",
+                        errorMessage: form.value.error,
+                        items: countries,
+                        value: form.country.value,
+                        errorMessage: form.country.error
+                      }) }}
 
           {{ govukButton({
             text: messages("site.continue"),
@@ -55,4 +101,8 @@
     </div>
   </div>
 
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="{{ routes.controllers.Assets.versioned("javascripts/accessible-autocomplete.js").url }}"></script>
 {% endblock %}

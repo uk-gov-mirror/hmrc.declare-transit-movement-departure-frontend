@@ -126,6 +126,16 @@ trait ModelGenerators {
       } yield ConsignorAddress(addressLine1, addressLine2, addressLine3, addressLine4)
     }
 
+  implicit lazy val arbitraryCarrierAddress: Arbitrary[CarrierAddress] =
+    Arbitrary {
+      for {
+        addressLine1 <- stringsWithMaxLength(stringMaxLength)
+        addressLine2 <- stringsWithMaxLength(stringMaxLength)
+        addressLine3 <- stringsWithMaxLength(stringMaxLength)
+        addressLine4 <- arbitrary[Country]
+      } yield CarrierAddress(addressLine1, addressLine2, addressLine3, addressLine4)
+    }
+
   implicit lazy val arbitraryRepresentativeCapacity: Arbitrary[RepresentativeCapacity] =
     Arbitrary {
       Gen.oneOf(RepresentativeCapacity.values)

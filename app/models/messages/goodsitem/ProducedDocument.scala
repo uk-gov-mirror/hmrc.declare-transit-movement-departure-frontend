@@ -18,7 +18,8 @@ package models.messages.goodsitem
 
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.{LanguageCodeEnglish, XMLWrites}
+import models.LanguageCodeEnglish
+import xml.XMLWrites
 
 import scala.xml.NodeSeq
 
@@ -45,10 +46,14 @@ object ProducedDocument {
 
   implicit def writes: XMLWrites[ProducedDocument] = XMLWrites[ProducedDocument] {
     references =>
-      val reference = references.reference.fold(NodeSeq.Empty)(value => <DocRefDC23>{value}</DocRefDC23>)
+      val reference = references.reference.fold(NodeSeq.Empty)(
+        value => <DocRefDC23>{value}</DocRefDC23>
+      )
 
-      val complementOfInformation = references.complementOfInformation.fold(NodeSeq.Empty)(value => <ComOfInfDC25>{value}</ComOfInfDC25>
-        <ComOfInfDC25LNG>{LanguageCodeEnglish.code}</ComOfInfDC25LNG>)
+      val complementOfInformation = references.complementOfInformation.fold(NodeSeq.Empty)(
+        value => <ComOfInfDC25>{value}</ComOfInfDC25>
+        <ComOfInfDC25LNG>{LanguageCodeEnglish.code}</ComOfInfDC25LNG>
+      )
 
       <PRODOCDC2>
         <DocTypDC21>{references.documentType}</DocTypDC21>

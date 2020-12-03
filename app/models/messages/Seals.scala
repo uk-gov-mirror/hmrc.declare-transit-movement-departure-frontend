@@ -18,8 +18,9 @@ package models.messages
 
 import com.lucidchart.open.xtract.XmlReader.seq
 import com.lucidchart.open.xtract.{__, XmlReader}
-import models.{LanguageCodeEnglish, XMLWrites}
+import models.LanguageCodeEnglish
 import cats.syntax.all._
+import xml.XMLWrites
 
 case class Seals(numberOfSeals: Int, SealId: Seq[String])
 
@@ -40,14 +41,14 @@ object Seals {
       <SEAINFSLI>
         <SeaNumSLI2>{seals.numberOfSeals}</SeaNumSLI2>
         {
-          seals.SealId.map {
-            id =>
-              <SEAIDSID>
+        seals.SealId.map {
+          id =>
+            <SEAIDSID>
                 <SeaIdeSID1>{id}</SeaIdeSID1>
                 <SeaIdeSID1LNG>{LanguageCodeEnglish.code}</SeaIdeSID1LNG>
               </SEAIDSID>
-          }
         }
+      }
       </SEAINFSLI>
   }
 

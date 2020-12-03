@@ -16,22 +16,11 @@
 
 package models
 
-import scala.xml.NodeSeq
+import models.reference.Country
+import play.api.libs.json.Json
 
-trait XMLWrites[A] {
-  def writes(a: A): NodeSeq
-}
+case class CarrierAddress(AddressLine1: String, AddressLine2: String, AddressLine3: String, country: Country)
 
-object XMLWrites {
-
-  def apply[A](writerFn: A => NodeSeq): XMLWrites[A] = new XMLWrites[A] {
-    override def writes(a: A): NodeSeq = writerFn(a)
-  }
-
-  implicit class XMLWritesOps[A](val a: A) extends AnyVal {
-
-    def toXml(implicit writer: XMLWrites[A]): NodeSeq =
-      writer.writes(a)
-  }
-
+object CarrierAddress {
+  implicit val format = Json.format[CarrierAddress]
 }
