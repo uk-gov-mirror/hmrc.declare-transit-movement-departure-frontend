@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-import models.Status
-import play.api.libs.json.Reads
+package navigation.annotations;
 
-package object viewModels {
+import com.google.inject.BindingAnnotation;
 
-  implicit val readsStatus: Reads[Status] = implicitly[Reads[String]].map {
-    case "notStarted" => Status.NotStarted
-    case "inProgress" => Status.InProgress
-    case "completed"  => Status.Completed
-    case _            => throw new Exception(s"Invalid string value for ${Status.getClass}")
-  }
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface SafetyAndSecurityTraderDetails {
 }
