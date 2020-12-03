@@ -48,8 +48,7 @@ class SecurityDetailsNavigator @Inject()() extends Navigator {
       case (Some(true), _, NormalMode) => Some(routes.DangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
       case (Some(false), _, NormalMode) => Some(dangerousGoodsCodeRoute(ua, index))
       case (Some(true), None, CheckMode)    => Some(routes.DangerousGoodsCodeController.onPageLoad(ua.id, index, CheckMode))
-      case (Some(true), Some(_), CheckMode) => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-      case (Some(false), _, CheckMode)      => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (Some(_), _, CheckMode) => Some(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
 
   private def transportChargesRoute(ua: UserAnswers, index: Index, mode: Mode) =

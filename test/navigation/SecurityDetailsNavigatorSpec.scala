@@ -121,10 +121,9 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
     "Must go from TransportChargesPage to AddItemsCheckYourAnswersPage" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>
-          val updatedAnswers = answers
           navigator
-            .nextPage(TransportChargesPage(index), CheckMode, updatedAnswers)
-            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+            .nextPage(TransportChargesPage(index), CheckMode, answers)
+            .mustBe(controllers.addItems.routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
       }
     }
   }
