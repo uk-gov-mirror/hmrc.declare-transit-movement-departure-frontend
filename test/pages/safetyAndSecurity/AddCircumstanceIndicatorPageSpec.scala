@@ -38,6 +38,9 @@ class AddCircumstanceIndicatorPageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers
+            .set(PlaceOfUnloadingCodePage, "value")
+            .success
+            .value
             .set(AddCircumstanceIndicatorPage, false)
             .success
             .value

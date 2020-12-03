@@ -38,6 +38,9 @@ class AddTransportChargesPaymentMethodPageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers
+            .set(TransportChargesPaymentMethodPage, "value")
+            .success
+            .value
             .set(AddTransportChargesPaymentMethodPage, false)
             .success
             .value

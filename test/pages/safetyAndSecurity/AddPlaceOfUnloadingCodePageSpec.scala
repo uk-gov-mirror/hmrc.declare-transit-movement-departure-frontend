@@ -38,6 +38,9 @@ class AddPlaceOfUnloadingCodePageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers
+            .set(PlaceOfUnloadingCodePage, "value")
+            .success
+            .value
             .set(AddPlaceOfUnloadingCodePage, false)
             .success
             .value

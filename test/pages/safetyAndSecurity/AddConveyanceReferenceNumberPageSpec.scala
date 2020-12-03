@@ -38,6 +38,9 @@ class AddConveyanceReferenceNumberPageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers
+            .set(ConveyanceReferenceNumberPage, "value")
+            .success
+            .value
             .set(AddConveyanceReferenceNumberPage, false)
             .success
             .value

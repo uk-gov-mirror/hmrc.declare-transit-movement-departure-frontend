@@ -38,6 +38,12 @@ class AddCommercialReferenceNumberPageSpec extends PageBehaviours {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val result = userAnswers
+            .set(AddCommercialReferenceNumberAllItemsPage, true)
+            .success
+            .value
+            .set(CommercialReferenceNumberAllItemsPage, "value")
+            .success
+            .value
             .set(AddCommercialReferenceNumberPage, false)
             .success
             .value
