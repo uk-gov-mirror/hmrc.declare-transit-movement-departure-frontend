@@ -31,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.NodeSeq
 
 class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, http: HttpClient)(implicit ec: ExecutionContext) {
+  val logger: Logger = Logger(getClass)
 
   def submitDepartureMovement(departureMovement: DeclarationRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val serviceUrl = s"${appConfig.departureHost}/movements/departures/"
@@ -46,7 +47,7 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
       case responseMessage if is2xx(responseMessage.status) =>
         Some(responseMessage.json.as[MessagesSummary])
       case _ =>
-        Logger.error(s"Get Summary failed to return data")
+        logger.error(s"Get Summary failed to return data")
         None
     }
   }
@@ -58,7 +59,7 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
         val message: NodeSeq = responseMessage.json.as[ResponseMessage].message
         XmlReader.of[GuaranteeNotValidMessage].read(message).toOption
       case _ =>
-        Logger.error(s"GetGuaranteeNotValidMessage failed to return data")
+        logger.error(s"GetGuaranteeNotValidMessage failed to return data")
         None
     }
   }
@@ -70,7 +71,7 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
         val message: NodeSeq = responseMessage.json.as[ResponseMessage].message
         XmlReader.of[DeclarationRejectionMessage].read(message).toOption
       case _ =>
-        Logger.error("getDeclarationRejectionMessage failed to return data")
+        logger.error("getDeclarationRejectionMessage failed to return data")
         None
     }
   }
@@ -82,7 +83,7 @@ class DepartureMovementConnector @Inject()(val appConfig: FrontendAppConfig, htt
         val message: NodeSeq = responseMessage.json.as[ResponseMessage].message
         XmlReader.of[CancellationDecisionUpdateMessage].read(message).toOption
       case _ =>
-        Logger.error("getCancellationDecisionUpdateMessage failed to return data")
+        logger.error("getCancellationDecisionUpdateMessage failed to return data")
         None
     }
   }
