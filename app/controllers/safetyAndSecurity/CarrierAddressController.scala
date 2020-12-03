@@ -18,16 +18,14 @@ package controllers.safetyAndSecurity
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
+import controllers.{routes => mainRoutes}
 import forms.safetyAndSecurity.CarrierAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
-import controllers.{routes => mainRoutes}
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.SafetyAndSecurity
-import pages.safetyAndSecurity.{CarrierAddressPage, CarrierNamePage}
 import navigation.annotations.SafetyAndSecurityTraderDetails
-import pages.safetyAndSecurity.CarrierAddressPage
+import pages.safetyAndSecurity.{CarrierAddressPage, CarrierNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

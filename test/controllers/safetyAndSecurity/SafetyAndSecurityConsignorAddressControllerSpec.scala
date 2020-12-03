@@ -19,7 +19,6 @@ package controllers.safetyAndSecurity
 import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
-import controllers.{routes => mainRoute}
 import forms.safetyAndSecurity.SafetyAndSecurityConsignorAddressFormProvider
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode}

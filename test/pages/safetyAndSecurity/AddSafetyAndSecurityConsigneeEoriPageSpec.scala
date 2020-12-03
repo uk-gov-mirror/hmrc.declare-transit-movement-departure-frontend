@@ -47,7 +47,7 @@ class AddSafetyAndSecurityConsigneeEoriPageSpec extends PageBehaviours {
       }
     }
     "cleanup" - {
-      "must clean up the consignor name and address details on selecting option 'No' " in {
+      "must clean up the consignee name and address details on selecting option 'No' " in {
         val consigneeAddress = arbitrary[ConsigneeAddress].sample.value
 
         forAll(arbitrary[UserAnswers]) {

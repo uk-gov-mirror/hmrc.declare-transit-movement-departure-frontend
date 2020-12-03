@@ -24,10 +24,8 @@ import javax.inject.Inject
 import models.reference.{Country, CountryCode}
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
-import navigation.annotations.SafetyAndSecurity
-import pages.safetyAndSecurity.{SafetyAndSecurityConsignorAddressPage, SafetyAndSecurityConsignorNamePage}
 import navigation.annotations.SafetyAndSecurityTraderDetails
-import pages.safetyAndSecurity.SafetyAndSecurityConsignorAddressPage
+import pages.safetyAndSecurity.{SafetyAndSecurityConsignorAddressPage, SafetyAndSecurityConsignorNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
