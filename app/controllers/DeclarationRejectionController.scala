@@ -18,18 +18,20 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.Inject
-import models.{DeclarationRejectionMessage, DepartureId, LocalReferenceNumber, RejectionError}
+import models.{DeclarationRejectionMessage, DepartureId}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DepartureMessageService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
-import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
+import utils.Format.dateFormatterMonthName
 import viewModels.sections.Section
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationRejectionController @Inject()(
@@ -60,9 +62,12 @@ class DeclarationRejectionController @Inject()(
   }
 
   def detailsSection(message: DeclarationRejectionMessage): Seq[Section] = {
+    val rejectionDate                    = LocalDate.parse(message.rejectionDate.toString)
+    val displayDate                      = dateFormatterMonthName.format(rejectionDate)
+
     val rows = Seq(
       Row(Key(msg"declarationRejection.localReferenceNumber"), Value(lit"${message.reference}"), Seq.empty),
-      Row(Key(msg"declarationRejection.date"), Value(lit"${message.rejectionDate}"), Seq.empty)
+      Row(Key(msg"declarationRejection.date"), Value(lit"$displayDate"), Seq.empty)
     )
 
     val completedRows = if (message.reason.nonEmpty) {
