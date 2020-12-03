@@ -16,7 +16,6 @@
 
 package generators
 
-import java.io
 import java.time.{LocalDate, LocalDateTime}
 
 import models._
@@ -68,14 +67,10 @@ trait JourneyModelGenerators {
         routeDetails      <- arbitraryRouteDetails(transitInformation).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitrary[TraderDetails]
-        safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-
-        isDocumentTypeMandatory = isSecurityDetailsRequired &&
-          safetyAndSecurity.commercialReferenceNumber.isDefined &&
-          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
-
-        itemDetails <- nonEmptyListOf(3)(Arbitrary(genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)))
-
+        safetyAndSecurity <- if (isSecurityDetailsRequired) { arbitrary[SafetyAndSecurity].map(Some(_)) } else Gen.const(None)
+        addDocument       <- arbitrary[Boolean]
+        itemDetails <- nonEmptyListOf(3)(
+          Arbitrary(genItemSection(movementDetails.containersUsed, addDocument, safetyAndSecurity.fold[Option[String]](None)(_.circumstanceIndicator))))
         goodsummarydetaislType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
         } else {
@@ -93,7 +88,7 @@ trait JourneyModelGenerators {
           itemDetails,
           goodsSummary,
           guarantee,
-          None
+          safetyAndSecurity
         )
     }
 
@@ -105,7 +100,7 @@ trait JourneyModelGenerators {
 
     Arbitrary {
       for {
-        addCircumstanceIndicator   <- Gen.option(arbitrary[String])
+        circumstanceIndicator      <- Gen.option(Gen.oneOf(CircumstanceIndicator.conditionalIndicators))
         paymentMethod              <- Gen.option(arbitrary[String])
         commercialReference        <- Gen.option(arbitrary[String])
         convenyanceReferenceNumber <- Gen.option(arbitrary[String])
@@ -115,7 +110,7 @@ trait JourneyModelGenerators {
         carrierAddress             <- Gen.option(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
       } yield
         SafetyAndSecurity(
-          addCircumstanceIndicator,
+          circumstanceIndicator,
           paymentMethod,
           commercialReference,
           convenyanceReferenceNumber,
@@ -139,7 +134,7 @@ trait JourneyModelGenerators {
     }
 
     for {
-      addCircumstanceIndicator   <- Gen.option(arbitrary[String])
+      circumstanceIndicator      <- Gen.option(Gen.oneOf(CircumstanceIndicator.conditionalIndicators))
       paymentMethod              <- Gen.option(arbitrary[String])
       commercialReference        <- Gen.option(arbitrary[String])
       convenyanceReferenceNumber <- genConvenyanceReferenceNumber
@@ -149,7 +144,7 @@ trait JourneyModelGenerators {
       carrierAddress             <- Gen.option(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
     } yield
       SafetyAndSecurity(
-        addCircumstanceIndicator,
+        circumstanceIndicator,
         paymentMethod,
         commercialReference,
         convenyanceReferenceNumber,
@@ -213,7 +208,7 @@ trait JourneyModelGenerators {
         modeCrossingBorder <- arbitrary[ModeCrossingBorder]
       } yield
         NewDetailsAtBorder(
-          mode,
+          "1",
           idCrossing,
           modeCrossingBorder
         )
@@ -327,29 +322,11 @@ trait JourneyModelGenerators {
         otherIndicator            <- nonEmptyString
         circumstanceIndicator <- if (isSecurityDetailsRequired) { Gen.oneOf(CircumstanceIndicator.conditionalIndicators :+ otherIndicator).map(Some(_)) } else
           Gen.const(None)
-        itemSection <- genItemSectionOld(containersUsed, addDocument, circumstanceIndicator)
+        itemSection <- genItemSection(containersUsed, addDocument, circumstanceIndicator)
       } yield itemSection
     }
 
-  def genItemSection(isDocumentTypeMandatory: Boolean, containersUsed: Boolean): Gen[ItemSection] = {
-    val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
-    val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
-
-    for {
-      itemDetail    <- arbitrary[ItemDetails]
-      itemConsignor <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-      itemConsignee <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages      <- nonEmptyListOf[Packages](maxNumberOfItemsLength)
-
-      containers <- if (containersUsed) { nonEmptyListOf[Container](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
-
-      specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](maxNumberOfItemsLength))
-
-      producedDocuments <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
-    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments)
-  }
-
-  def genItemSectionOld(containersUsed: Boolean = false, addDocument: Boolean = false, circumstanceIndicator: Option[String] = None): Gen[ItemSection] = {
+  def genItemSection(containersUsed: Boolean = false, addDocument: Boolean = false, circumstanceIndicator: Option[String] = None): Gen[ItemSection] = {
 
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
@@ -360,10 +337,10 @@ trait JourneyModelGenerators {
       itemDetail        <- arbitrary[ItemDetails]
       itemConsignor     <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
       itemConsignee     <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages          <- nonEmptyListOf[Packages](maxNumberOfItemsLength)
-      containers        <- if (containersUsed) { nonEmptyListOf[Container](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
-      specialMentions   <- Gen.option(nonEmptyListOf[SpecialMention](maxNumberOfItemsLength))
-      producedDocuments <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
+      packages          <- nonEmptyListOf[Packages](10)
+      containers        <- if (containersUsed) { nonEmptyListOf[Container](10).map(Some(_)) } else Gen.const(None)
+      specialMentions   <- Gen.option(nonEmptyListOf[SpecialMention](10))
+      producedDocuments <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](10).map(Some(_)) } else Gen.const(None)
     } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments)
   }
 

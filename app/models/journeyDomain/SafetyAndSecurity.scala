@@ -17,11 +17,10 @@
 package models.journeyDomain
 
 import cats.data._
-import cats.implicits._
+import cats.implicits.{none, _}
 import models.domain.Address
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
-import models.reference.{Country, CountryCode}
-import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
+import models.{EoriNumber, UserAnswers}
 import pages.ModeAtBorderPage
 import pages.safetyAndSecurity._
 

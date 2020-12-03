@@ -32,7 +32,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
   "ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(genItemSectionOld(), arb[UserAnswers]) {
+        forAll(genItemSection(), arb[UserAnswers]) {
           case (itemSection, userAnswers) =>
             val updatedUserAnswer           = ItemSectionSpec.setItemSection(itemSection, index)(userAnswers)
             val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
@@ -52,36 +52,13 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
             result mustBe None
         }
       }
-
-      "this value fails" in {
-
-        val woa = NonEmptyList(
-          ItemSection(
-            ItemDetails("asdf", "-2147483648", Some("2147483647"), Some("㢨諹")),
-            Some(ItemTraderDetails.RequiredDetails(EoriNumber("asdfa"))),
-            Some(ItemTraderDetails.RequiredDetails(EoriNumber("asefas"))),
-            NonEmptyList(UnpackedPackages(PackageType("asdf", "aasd"), None, 5, Some("")),
-                         List(UnpackedPackages(PackageType("asdf", "aasd"), Some(3), 2, Some("إ쫯ㄯ栢린놱೗꓎")))),
-            Some(NonEmptyList(Container("⚉獍욀妙伥㷀墲捺純ꢖ퀢껸玄楧簲삮鄯ᛰㇽฝ፤"), List.empty)),
-            Some(NonEmptyList(SpecialMention("asdf", "asdf"), List(SpecialMention("asdf", "asdfasd")))),
-            None
-          ),
-          List.empty
-        )
-
-        val updatedUserAnswer = ItemSectionSpec.setItemSections(woa.toList)(emptyUserAnswers)
-
-        val result = ItemSection.readerItemSections.run(updatedUserAnswer)
-
-        result.value mustEqual woa
-      }
     }
   }
 
   "Seq of ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(nonEmptyListOf[ItemSection](3)(Arbitrary(genItemSectionOld())), arb[UserAnswers]) {
+        forAll(nonEmptyListOf[ItemSection](3)(Arbitrary(genItemSection())), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
             val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
             val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
@@ -128,13 +105,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
       .unsafeSetVal(AddCircumstanceIndicatorPage)(producedDocument.isDefined)
       .unsafeSetVal(AddDocumentsPage(itemIndex))(producedDocument.isDefined)
 
-    val ua = if (producedDocument.isDefined) {
-      smUserAnswers.unsafeSetVal(CircumstanceIndicatorPage)(CircumstanceIndicator.conditionalIndicators.head)
-    } else {
-      smUserAnswers
-    }
-
-    producedDocument.fold(ua)(_.zipWithIndex.foldLeft(ua) {
+    producedDocument.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
       case (ua, (producedDocument, index)) =>
         ProducedDocumentSpec.setProducedDocumentsUserAnswers(producedDocument, itemIndex, Index(index))(ua)
     })

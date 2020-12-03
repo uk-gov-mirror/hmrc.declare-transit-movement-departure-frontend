@@ -82,6 +82,9 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
 
 object SafetyAndSecuritySpec extends UserAnswersSpecHelper {
 
+  def setSafetyAndSecurity(safetyAndSecurity: Option[SafetyAndSecurity])(startUserAnswers: UserAnswers): UserAnswers =
+    safetyAndSecurity.map(x => setSafetyAndSecurity(x)(startUserAnswers)).getOrElse(setSafetyAndSecurityMinimal(startUserAnswers))
+
   def setSafetyAndSecurity(safetyAndSecurity: SafetyAndSecurity)(startUserAnswers: UserAnswers): UserAnswers = {
     val ua = startUserAnswers
     // Set summary details
@@ -150,7 +153,7 @@ object SafetyAndSecuritySpec extends UserAnswersSpecHelper {
         ua.unsafeSetVal(AddConveyanceReferenceNumberPage)(safetyAndSecurity.conveyanceReferenceNumber.isDefined)
           .unsafeSetOpt(ConveyanceReferenceNumberPage)(safetyAndSecurity.conveyanceReferenceNumber)
     }
-
+    println("--------updatedUserAnswers-----------------" + updatedUserAnswers)
     updatedUserAnswers
   }
 
