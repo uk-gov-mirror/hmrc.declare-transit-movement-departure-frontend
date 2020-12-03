@@ -40,13 +40,6 @@ class CancellationDecisionUpdateMessageSpec extends AnyFreeSpec with Generators 
                                           Some("ok thats fine"))
       XmlReader.of[CancellationDecisionUpdateMessage].read(validXml).toOption.value mustBe expected
     }
-
-    "must create valid object when passed valid xml with nullable values" in {
-      val expected =
-        CancellationDecisionUpdateMessage("19GB00006010021477", None, 0, None, LocalDate.parse("2019-09-12"), None)
-      XmlReader.of[CancellationDecisionUpdateMessage].read(validXml).toOption.value mustBe expected
-    }
-
   }
 
   private val validXml: Elem = <CC009A>

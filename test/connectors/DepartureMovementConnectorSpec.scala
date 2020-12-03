@@ -94,7 +94,8 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
             "IE015" -> s"/movements/departures/${departureId.value}/messages/3",
             "IE055" -> s"/movements/departures/${departureId.value}/messages/5",
             "IE016" -> s"/movements/departures/${departureId.value}/messages/7",
-            "IE009" -> s"/movements/departures/${departureId.value}/messages/9"
+            "IE009" -> s"/movements/departures/${departureId.value}/messages/9",
+            "IE014" -> s"/movements/departures/${departureId.value}/messages/11"
           )
         )
 
