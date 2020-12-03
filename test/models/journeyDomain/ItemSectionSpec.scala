@@ -70,7 +70,8 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         )
 
         val updatedUserAnswer = ItemSectionSpec.setItemSections(woa.toList)(emptyUserAnswers)
-        val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
+
+        val result = ItemSection.readerItemSections.run(updatedUserAnswer)
 
         result.value mustEqual woa
       }
@@ -108,7 +109,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
   private def setContainers(containers: Option[NonEmptyList[Container]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val ua = startUserAnswers.unsafeSetVal(ContainersUsedPage)(containers.isDefined)
     containers match {
-      case Some(containers) => ContainerSpec.setContainers(containers.toList, itemIndex)(startUserAnswers)
+      case Some(containers) => ContainerSpec.setContainers(containers.toList, itemIndex)(ua)
       case None             => ua
     }
   }
@@ -122,16 +123,20 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
   }
 
   private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
-    val indicator = CircumstanceIndicator.conditionalIndicators.head
     val smUserAnswers = startUserAnswers
       .unsafeSetVal(AddSecurityDetailsPage)(producedDocument.isDefined)
       .unsafeSetVal(AddCircumstanceIndicatorPage)(producedDocument.isDefined)
       .unsafeSetVal(AddDocumentsPage(itemIndex))(producedDocument.isDefined)
-      .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
 
-    producedDocument.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
-      case (userAnswers, (producedDocument, index)) =>
-        ProducedDocumentSpec.setProducedDocumentsUserAnswers(producedDocument, itemIndex, Index(index))(userAnswers)
+    val ua = if (producedDocument.isDefined) {
+      smUserAnswers.unsafeSetVal(CircumstanceIndicatorPage)(CircumstanceIndicator.conditionalIndicators.head)
+    } else {
+      smUserAnswers
+    }
+
+    producedDocument.fold(ua)(_.zipWithIndex.foldLeft(ua) {
+      case (ua, (producedDocument, index)) =>
+        ProducedDocumentSpec.setProducedDocumentsUserAnswers(producedDocument, itemIndex, Index(index))(ua)
     })
   }
 
