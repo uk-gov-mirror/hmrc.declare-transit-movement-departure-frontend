@@ -17,7 +17,7 @@
 package utils
 
 import controllers.safetyAndSecurity.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages.safetyAndSecurity._
 import queries.CountriesOfRoutingQuery
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -417,19 +417,25 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def countriesOfRouting: Option[Row] = userAnswers.get(CountriesOfRoutingQuery).map {
-    countriesOfRouting =>
-      val format = Html(countriesOfRouting.mkString("<br>"))
-
+  def countriesOfRouting(index: Index): Option[Row] = userAnswers.get(CountryOfRoutingPage(index)).map {
+    answer =>
       Row(
-        key   = Key(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting", classes = Seq("govuk-!-width-one-half")),
-        value = Value(format),
+        key   = Key(lit"$answer"),
+        value = Value(lit""),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting.visuallyHidden")
-          )
+            visuallyHiddenText = Some(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting.change.visuallyHidden"),
+            attributes         = Map("id" -> s"""change-country-${index.display}""")
+          ),
+//          Action(
+//            content            = msg"site.delete",
+//            href               = routes.ConfirmRemoveCountryController.onPageLoad(lrn, CheckMode).url,
+//            visuallyHiddenText = Some(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting.delete.visuallyHidden"),
+//            attributes         = Map("id" -> s"""remove-country-${index.display}""")
+//          ),
+
         )
       )
   }

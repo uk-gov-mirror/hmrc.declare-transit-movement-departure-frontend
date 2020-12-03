@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
-import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, CountryOfRoutingPage}
+import pages.safetyAndSecurity.AddAnotherCountryOfRoutingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,8 +31,10 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import derivable.DeriveNumberOfCountryOfRouting
-import utils.countryJsonList
-import views.html.helper.form
+import models.requests.DataRequest
+import play.api.data.Form
+import play.twirl.api.Html
+import utils.SafetyAndSecurityCheckYourAnswerHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,30 +53,12 @@ class AddAnotherCountryOfRoutingController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-//  private val form     = formProvider()
+  private val form     = formProvider()
   private val template = "safetyAndSecurity/addAnotherCountryOfRouting.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getCountryList() flatMap {
-        countries =>
-        val form = formProvider(countries)
-          val preparedForm = request.userAnswers
-            .get(AddAnotherCountryOfRoutingPage(index))
-            .flatMap(countries.getCountry)
-
-
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-              renderer.render(template, json).map(Ok(_))
-
-      }
-
+      renderPage(lrn, form).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -82,17 +66,7 @@ class AddAnotherCountryOfRoutingController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
+          formWithErrors => renderPage(lrn, formWithErrors).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherCountryOfRoutingPage, value))
@@ -100,4 +74,30 @@ class AddAnotherCountryOfRoutingController @Inject()(
             } yield Redirect(navigator.nextPage(AddAnotherCountryOfRoutingPage, mode, updatedAnswers))
         )
   }
+
+  private def renderPage(lrn: LocalReferenceNumber, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
+
+    val cyaHelper                = new SafetyAndSecurityCheckYourAnswerHelper(request.userAnswers)
+    val numberOfRoutingCountries = request.userAnswers.get(DeriveNumberOfCountryOfRouting).getOrElse(0)
+    val indexList: Seq[Index]    = List.range(0, numberOfRoutingCountries).map(Index(_))
+
+    val countriesOfRouting = indexList.map {
+      index =>
+        cyaHelper.countriesOfRouting(index)
+    }
+
+    val singularOrPlural = if (numberOfRoutingCountries == 1) "singular" else "plural"
+    val json = Json.obj(
+      "form"                 -> form,
+      "pageTitle"            -> msg"addAnotherCountryOfRouting.title.$singularOrPlural".withArgs(numberOfRoutingCountries),
+      "heading"              -> msg"aaddAnotherCountryOfRouting.heading.$singularOrPlural".withArgs(numberOfRoutingCountries),
+      "countryOfRoutingRows" -> countriesOfRouting,
+      "lrn"                  -> lrn,
+      "radios"               -> Radios.yesNo(form("value"))
+    )
+
+    renderer.render(template, json)
+
+  }
+
 }

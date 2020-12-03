@@ -16,14 +16,14 @@
 
 package viewModels
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import utils.SafetyAndSecurityCheckYourAnswerHelper
 import viewModels.sections.Section
 
 object SafetyAndSecurityCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers): Seq[Section] = {
+  def apply(userAnswers: UserAnswers, index: Index): Seq[Section] = {
     val cyah = new SafetyAndSecurityCheckYourAnswerHelper(userAnswers)
 
     Seq(
@@ -45,7 +45,7 @@ object SafetyAndSecurityCheckYourAnswersViewModel {
       Section(
         msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting",
         Seq(
-          cyah.countriesOfRouting
+          cyah.countriesOfRouting(index)
         ).flatten
       ),
       Section(

@@ -19,7 +19,7 @@ package controllers.safetyAndSecurity
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.LocalReferenceNumber
+import models.{Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,9 +41,9 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers)
+      val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers, index)
 
       val json = Json.obj(
         "lrn"         -> lrn,

@@ -27,7 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.safetyAndSecurity.AddAnotherCountryOfRoutingPage
+import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, CountryOfRoutingPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -57,11 +57,12 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
   "AddAnotherCountryOfRouting Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      val userAnswers = emptyUserAnswers.set(CountryOfRoutingPage(index), "GB").success.value
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      dataRetrievalWithData(emptyUserAnswers)
+      dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, addAnotherCountryOfRoutingRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -74,10 +75,11 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> form,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
+        "form"                 -> form,
+        "pageTitle"            -> msg"addAnotherCountryOfRouting.title.singular".withArgs(1),
+        "heading"              -> msg"aaddAnotherCountryOfRouting.heading.singular".withArgs(1),
+        "lrn"                  -> lrn,
+        "radios"               -> Radios.yesNo(form("value"))
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
