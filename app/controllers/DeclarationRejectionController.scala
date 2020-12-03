@@ -29,7 +29,6 @@ import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
 import utils.Format.dateFormatterMonthName
 import viewModels.sections.Section
-
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,7 +44,7 @@ class DeclarationRejectionController @Inject()(
     extends FrontendBaseController
     with I18nSupport {
 
-  def errorSections(message: DeclarationRejectionMessage): Seq[Section] = message.errors map {
+  private def errorSections(message: DeclarationRejectionMessage): Seq[Section] = message.errors map {
     error =>
       val rows = Seq(
         Row(Key(msg"declarationRejection.errorType"), Value(lit"${error.errorType}"), Seq.empty),
@@ -61,9 +60,9 @@ class DeclarationRejectionController @Inject()(
       Section(completed)
   }
 
-  def detailsSection(message: DeclarationRejectionMessage): Seq[Section] = {
-    val rejectionDate                    = LocalDate.parse(message.rejectionDate.toString)
-    val displayDate                      = dateFormatterMonthName.format(rejectionDate)
+  private def detailsSection(message: DeclarationRejectionMessage): Seq[Section] = {
+    val rejectionDate = LocalDate.parse(message.rejectionDate.toString)
+    val displayDate   = dateFormatterMonthName.format(rejectionDate)
 
     val rows = Seq(
       Row(Key(msg"declarationRejection.localReferenceNumber"), Value(lit"${message.reference}"), Seq.empty),
