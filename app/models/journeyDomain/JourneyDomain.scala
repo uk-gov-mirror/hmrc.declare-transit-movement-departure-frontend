@@ -73,7 +73,7 @@ object JourneyDomain {
         itemDetails,
         goodsSummary,
         guarantee,
-        safetyAndSecurity
+        None
       )
   }
 }

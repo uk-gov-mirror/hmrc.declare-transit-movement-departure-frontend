@@ -19,24 +19,24 @@ package models.journeyDomain
 import java.time.LocalDateTime
 
 import base.{GeneratorSpec, SpecBase}
-import cats.data.NonEmptyList
+import cats.data.{NonEmptyList, ReaderT}
 import generators.JourneyModelGenerators
-import models.DeclarationType.{Option1, Option4}
+import models.DeclarationType.Option1
 import models.GuaranteeType.ComprehensiveGuarantee
-import models.ProcedureType.{Normal, Simplified}
-import models.domain.{Address, SealDomain}
+import models.ProcedureType.Normal
+import models.domain.SealDomain
 import models.journeyDomain.GoodsSummary.GoodSummaryNormalDetails
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
-import models.journeyDomain.MovementDetails._
+import models.journeyDomain.MovementDetails.{DeclarationForSelf, NormalMovementDetails}
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori}
-import models.journeyDomain.TransportDetails.{DetailsAtBorder, ModeCrossingBorder}
+import models.journeyDomain.TraderDetails.TraderEori
 import models.journeyDomain.TransportDetails.DetailsAtBorder.NewDetailsAtBorder
-import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, Rail}
-import models.journeyDomain._
+import models.journeyDomain.TransportDetails.InlandMode.Mode5or7
+import models.journeyDomain.TransportDetails.ModeCrossingBorder
+import models.messages.guarantee.Guarantee
 import models.reference.{CountryCode, PackageType}
-import models.{EoriNumber, GuaranteeType, LocalReferenceNumber, ProcedureType, RepresentativeCapacity, UserAnswers}
+import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 
 class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
@@ -74,18 +74,30 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
 
       "when using this specific JourneyDomain" in {
 
-        val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(woa)(emptyUserAnswers)
-        val result            = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+        implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
+          ReaderT[Option, UserAnswers, A](parser.run _)
 
-        result.value.preTaskList mustEqual woa.preTaskList
-        result.value.movementDetails mustEqual woa.movementDetails
-        result.value.routeDetails mustEqual woa.routeDetails
-        result.value.transportDetails mustEqual woa.transportDetails
-        result.value.traderDetails mustEqual woa.traderDetails
-        result.value.itemDetails mustEqual woa.itemDetails
-        result.value.goodsSummary mustEqual woa.goodsSummary
-        result.value.guarantee mustEqual woa.guarantee
-        result.value.safetyAndSecurity mustEqual woa.safetyAndSecurity
+        val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(woa)(emptyUserAnswers)
+
+        val result1 = UserAnswersReader[PreTaskListDetails].run(updatedUserAnswer)
+        val result2 = UserAnswersReader[MovementDetails].run(updatedUserAnswer)
+        val result3 = UserAnswersReader[RouteDetails].run(updatedUserAnswer)
+        val result4 = UserAnswersReader[TransportDetails].run(updatedUserAnswer)
+        val result5 = UserAnswersReader[TraderDetails].run(updatedUserAnswer)
+        val result6 = UserAnswersReader[NonEmptyList[ItemSection]].run(updatedUserAnswer)
+        val result7 = UserAnswersReader[GoodsSummary].run(updatedUserAnswer)
+        val result8 = UserAnswersReader[GuaranteeDetails].run(updatedUserAnswer)
+        val result9 = UserAnswersReader[SafetyAndSecurity].run(updatedUserAnswer)
+
+        result1.value mustEqual woa.preTaskList
+        result2.value mustEqual woa.movementDetails
+        result3.value mustEqual woa.routeDetails
+        result4.value mustEqual woa.transportDetails
+        result5.value mustEqual woa.traderDetails
+        result6.value mustEqual woa.itemDetails
+        result7.value mustEqual woa.goodsSummary
+        result8.value mustEqual woa.guarantee
+        result9 mustEqual woa.safetyAndSecurity
       }
     }
   }
@@ -116,17 +128,7 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
         Some(NonEmptyList(SpecialMention("asdf", "asdf"), List(SpecialMention("asdf", "asdfasd")))),
         None
       ),
-      List(
-        ItemSection(
-          ItemDetails("asd", "-528298836", Some("1"), Some("ῇ袋⚿彖Ұ圝")),
-          Some(ItemTraderDetails.RequiredDetails(EoriNumber("ⰹ࿎"))),
-          Some(ItemTraderDetails.RequiredDetails(EoriNumber("쓷쯖↬꘼㒛"))),
-          NonEmptyList(BulkPackages(PackageType("asdf", "aasd"), None, Some("넟⍆Ṝ")), List(OtherPackages(PackageType("asdf", "asdf"), 4, "asdf"))),
-          Some(NonEmptyList(Container("asdf"), List(Container("asdfas")))),
-          Some(NonEmptyList(SpecialMention("asdfg", "asrdf"), List.empty)),
-          None
-        )
-      )
+      List.empty
     ),
     GoodsSummary(Some(53),
                  "59",
@@ -161,8 +163,7 @@ object JourneyDomainSpec {
         GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
         GuaranteeDetailsSpec.setGuaranteeDetails(journeyDomain.guarantee) andThen
         TraderDetailsSpec.setTraderDetails(journeyDomain.traderDetails) andThen
-        MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails) andThen
-        safetyAndSecurity(journeyDomain.safetyAndSecurity)
+        MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails)
     )(startUserAnswers)
 
   def safetyAndSecurity(safetyAndSecurity: Option[SafetyAndSecurity])(startUserAnswers: UserAnswers): UserAnswers =

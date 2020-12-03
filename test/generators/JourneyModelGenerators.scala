@@ -70,10 +70,9 @@ trait JourneyModelGenerators {
         traderDetails     <- arbitrary[TraderDetails]
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
 
-        isDocumentTypeMandatory = safetyAndSecurity.circumstanceIndicator
-          .map(CircumstanceIndicator.conditionalIndicators.contains(_))
-          .map(_ && safetyAndSecurity.commercialReferenceNumber.isDefined)
-          .getOrElse(false)
+        isDocumentTypeMandatory = isSecurityDetailsRequired &&
+          safetyAndSecurity.commercialReferenceNumber.isDefined &&
+          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
 
         itemDetails <- nonEmptyListOf(3)(Arbitrary(genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)))
 
@@ -94,7 +93,7 @@ trait JourneyModelGenerators {
           itemDetails,
           goodsSummary,
           guarantee,
-          if (isSecurityDetailsRequired) Some(safetyAndSecurity) else None
+          None
         )
     }
 
