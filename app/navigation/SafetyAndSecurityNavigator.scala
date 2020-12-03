@@ -62,34 +62,38 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
   }
 
   def addCircumstanceIndicator(ua: UserAnswers, mode: Mode): Option[Call] =
-    ua.get(AddCircumstanceIndicatorPage).map {
-      case true   => routes.CircumstanceIndicatorController.onPageLoad(ua.id, mode)
-      case false if mode == NormalMode => routes.AddTransportChargesPaymentMethodController.onPageLoad(ua.id, NormalMode)
-      case false  => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
+    (ua.get(AddCircumstanceIndicatorPage), mode) match {
+      case (Some(true), CheckMode) if ua.get(CircumstanceIndicatorPage).isDefined => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(true), _)   => Some(routes.CircumstanceIndicatorController.onPageLoad(ua.id, mode))
+      case (Some(false), NormalMode) => Some(routes.AddTransportChargesPaymentMethodController.onPageLoad(ua.id, NormalMode))
+      case (Some(false), CheckMode)  => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
     }
 
   def addTransportChargesPaymentMethod(ua: UserAnswers, mode: Mode): Option[Call] =
-    ua.get(AddTransportChargesPaymentMethodPage).map {
-      case true   => routes.TransportChargesPaymentMethodController.onPageLoad(ua.id, mode)
-      case false if mode == NormalMode => routes.AddCommercialReferenceNumberController.onPageLoad(ua.id, NormalMode)
-      case false  => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
+    (ua.get(AddTransportChargesPaymentMethodPage), mode) match {
+      case (Some(true), CheckMode) if ua.get(TransportChargesPaymentMethodPage).isDefined => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(true),_)   => Some(routes.TransportChargesPaymentMethodController.onPageLoad(ua.id, mode))
+      case (Some(false), NormalMode) => Some(routes.AddCommercialReferenceNumberController.onPageLoad(ua.id, NormalMode))
+      case (Some(false), CheckMode)  => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
     }
 
   def addCommercialReferenceNumber(ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(AddCommercialReferenceNumberPage), ua.get(ModeAtBorderPage)) match {
-      case (Some(true), _)                        => Some(routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(ua.id, mode))
-      case (Some(false), _) if mode == CheckMode  => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
-      case (Some(false), Some("4") | Some("40"))  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
-      case (Some(false), _)                       => Some(routes.AddConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
+    (ua.get(AddCommercialReferenceNumberPage), ua.get(ModeAtBorderPage), mode) match {
+      case (Some(true), _, CheckMode) if ua.get(AddCommercialReferenceNumberAllItemsPage).isDefined => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(true), _, _)                        => Some(routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(ua.id, mode))
+      case (Some(false), _, CheckMode)  => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(false), Some("4") | Some("40"), NormalMode)  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
+      case (Some(false), _, NormalMode)                       => Some(routes.AddConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case _                                      => None
     }
 
   def addCommercialReferenceNumberAllItems(ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(AddCommercialReferenceNumberAllItemsPage), ua.get(ModeAtBorderPage)) match {
-      case (Some(true), _)                        => Some(routes.CommercialReferenceNumberAllItemsController.onPageLoad(ua.id, mode))
-      case (Some(false), _) if mode == CheckMode  => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
-      case (Some(false), Some("4") | Some("40"))  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
-      case (Some(false), _)                       => Some(routes.AddConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
+    (ua.get(AddCommercialReferenceNumberAllItemsPage), ua.get(ModeAtBorderPage), mode) match {
+      case (Some(true), _, CheckMode) if ua.get(CommercialReferenceNumberAllItemsPage).isDefined => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(true), _, _)                        => Some(routes.CommercialReferenceNumberAllItemsController.onPageLoad(ua.id, mode))
+      case (Some(false), _, CheckMode) => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(false), Some("4") | Some("40"), NormalMode)  => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
+      case (Some(false), _, NormalMode)                       => Some(routes.AddConveyanceReferenceNumberController.onPageLoad(ua.id, NormalMode))
       case _                                      => None
     }
 
@@ -101,11 +105,12 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     }
 
   def addConveyancerReferenceNumber(ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(AddConveyanceReferenceNumberPage), ua.get(CircumstanceIndicatorPage)) match {
-      case (Some(true), _)            => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, mode))
-      case (Some(false), _) if mode == CheckMode  => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
-      case (Some(false) , Some("E"))  => Some(routes.AddPlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
-      case (Some(false) , _)          => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode ))
+    (ua.get(AddConveyanceReferenceNumberPage), ua.get(CircumstanceIndicatorPage), mode) match {
+      case (Some(true), _, CheckMode) if ua.get(ConveyanceReferenceNumberPage).isDefined => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(true), _, _)            => Some(routes.ConveyanceReferenceNumberController.onPageLoad(ua.id, mode))
+      case (Some(false), _, CheckMode) => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(false) , Some("E"), NormalMode)  => Some(routes.AddPlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode))
+      case (Some(false) , _, NormalMode)          => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, NormalMode ))
       case _                          => None
     }
 
@@ -119,14 +124,15 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
   def addPlaceOfUnloadingCodePage(ua: UserAnswers, mode: Mode): Option[Call] = {
     val totalNumberOfCountriesOfRouting = ua.get(DeriveNumberOfCountryOfRouting).getOrElse(0)
 
-    ua.get(AddPlaceOfUnloadingCodePage).map {
-      case true => routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, mode)
-      case false if mode == CheckMode => routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id)
-      case false =>
+    (ua.get(AddPlaceOfUnloadingCodePage), mode) match {
+      case (Some(true), CheckMode) if ua.get(PlaceOfUnloadingCodePage).isDefined => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(true), _) => Some(routes.PlaceOfUnloadingCodeController.onPageLoad(ua.id, mode))
+      case (Some(false), CheckMode) => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(false), NormalMode) =>
         if (totalNumberOfCountriesOfRouting == 0) {
-          routes.CountryOfRoutingController.onPageLoad(ua.id, Index(0), NormalMode)
+          Some(routes.CountryOfRoutingController.onPageLoad(ua.id, Index(0), NormalMode))
         } else {
-          routes.AddAnotherCountryOfRoutingController.onPageLoad(ua.id, NormalMode)
+          Some(routes.AddAnotherCountryOfRoutingController.onPageLoad(ua.id, NormalMode))
         }
     }
   }

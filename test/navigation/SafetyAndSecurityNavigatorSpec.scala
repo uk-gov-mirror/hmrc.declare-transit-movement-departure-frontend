@@ -422,6 +422,17 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
             .mustBe(routes.CircumstanceIndicatorController.onPageLoad(updatedAnswers.id, CheckMode))
         }
 
+        "CheckYourAnswers page if 'true' and CircumstanceIndicator answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(CircumstanceIndicatorPage, "value").success.value
+            .set(AddCircumstanceIndicatorPage, true).success.value
+
+          navigator
+            .nextPage(AddCircumstanceIndicatorPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
         "CheckYourAnswers if 'false'" in {
 
           val updatedAnswers = emptyUserAnswers
@@ -449,6 +460,17 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           navigator
             .nextPage(AddTransportChargesPaymentMethodPage, CheckMode, updatedAnswers)
             .mustBe(routes.TransportChargesPaymentMethodController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+
+        "CheckYourAnswers page if 'true' and TransportChargesPaymentMethod answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(TransportChargesPaymentMethodPage, "value").success.value
+            .set(AddTransportChargesPaymentMethodPage, true).success.value
+
+          navigator
+            .nextPage(AddTransportChargesPaymentMethodPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
 
         "CheckYourAnswers if 'false'" in {
@@ -480,6 +502,28 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
             .mustBe(routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(updatedAnswers.id, CheckMode))
         }
 
+        "CheckYourAnswers page if 'true' and AddCommercialReferenceNumberAllItems answer is 'true'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
+            .set(AddCommercialReferenceNumberPage, true).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
+        "CheckYourAnswers page if 'true' and AddCommercialReferenceNumberAllItems answer is 'false'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCommercialReferenceNumberAllItemsPage, false).success.value
+            .set(AddCommercialReferenceNumberPage, true).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
         "CheckYourAnswers if 'false'" in {
 
           val updatedAnswers = emptyUserAnswers
@@ -500,6 +544,17 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           navigator
             .nextPage(AddCommercialReferenceNumberAllItemsPage, CheckMode, updatedAnswers)
             .mustBe(routes.CommercialReferenceNumberAllItemsController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+
+        "CheckYourAnswers page if 'true' and CommercialReferenceNumberAllItems answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(CommercialReferenceNumberAllItemsPage, "value").success.value
+            .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberAllItemsPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
 
         "CheckYourAnswers if 'false'" in {
@@ -531,6 +586,17 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
             .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(updatedAnswers.id, CheckMode))
         }
 
+        "CheckYourAnswers page if 'true' and ConveyanceReferenceNumber answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(ConveyanceReferenceNumberPage, "value").success.value
+            .set(AddConveyanceReferenceNumberPage, true).success.value
+
+          navigator
+            .nextPage(AddConveyanceReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
         "CheckYourAnswers if 'false'" in {
 
           val updatedAnswers = emptyUserAnswers
@@ -558,6 +624,17 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           navigator
             .nextPage(AddPlaceOfUnloadingCodePage, CheckMode, updatedAnswers)
             .mustBe(routes.PlaceOfUnloadingCodeController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+
+        "CheckYourAnswers page if 'true' and PlaceOfUnloadingCode answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(PlaceOfUnloadingCodePage, "value").success.value
+            .set(AddPlaceOfUnloadingCodePage, true).success.value
+
+          navigator
+            .nextPage(AddPlaceOfUnloadingCodePage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
 
         "CheckYourAnswers if 'false'" in {
