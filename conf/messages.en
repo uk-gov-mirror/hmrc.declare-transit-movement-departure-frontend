@@ -1356,12 +1356,12 @@ carrierName.error.required = Enter carrierName
 carrierName.error.length = CarrierName must be 10 characters or less
 
 
-cancellationDecisionUpdate.title = Cancellation Decision
-cancellationDecisionUpdate.heading = Cancellation Decision
-cancellationDecisionUpdate.mrn = MRN
+cancellationDecisionUpdate.title = Cancellation decision
+cancellationDecisionUpdate.heading = Cancellation decision
+cancellationDecisionUpdate.mrn = Movement reference number
 cancellationDecisionUpdate.cancellationRequestDate = Date of cancellation request
 cancellationDecisionUpdate.initiatedByCustoms = Cancellation initiated by customs
-cancellationDecisionUpdate.cancellationDecision = Cancellation decision
+cancellationDecisionUpdate.cancellationDecision = Cancellation status
 cancellationDecisionUpdate.cancellationDecisionDate = Date of cancellation decision
 cancellationDecisionUpdate.cancellationJustification = Reason for cancellation
 

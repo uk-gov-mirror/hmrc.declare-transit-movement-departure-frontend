@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
+
 import javax.inject.Inject
 import models.{CancellationDecisionUpdateMessage, DepartureId, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,17 +31,19 @@ import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
 import utils.acceptedOrRejected
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 class CancellationDecisionUpdateController @Inject()(
-  override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
-  appConfig: FrontendAppConfig,
-  departureMessageService: DepartureMessageService
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+                                                      override val messagesApi: MessagesApi,
+                                                      identify: IdentifierAction,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      renderer: Renderer,
+                                                      appConfig: FrontendAppConfig,
+                                                      departureMessageService: DepartureMessageService
+                                                    )(implicit ec: ExecutionContext)
+  extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: DepartureId): Action[AnyContent] = (identify).async {
@@ -54,14 +57,31 @@ class CancellationDecisionUpdateController @Inject()(
       }
   }
 
-  def cancellationDecisionUpdateContent(message: CancellationDecisionUpdateMessage): Seq[Row] =
-    Seq(
+  def cancellationDecisionUpdateContent(message: CancellationDecisionUpdateMessage): Seq[Row] = {
+    var rows = Seq(
       Row(Key(msg"cancellationDecisionUpdate.mrn"), Value(lit"${message.mrn}"), Seq.empty),
-      Row(Key(msg"cancellationDecisionUpdate.cancellationRequestDate"), Value(lit"${message.cancellationRequestDate}"), Seq.empty),
-      Row(Key(msg"cancellationDecisionUpdate.initiatedByCustoms"), Value(acceptedOrRejected(message.cancellationInitiatedBy)), Seq.empty),
-      Row(Key(msg"cancellationDecisionUpdate.cancellationDecision"), Value(acceptedOrRejected(message.cancellationDecision.get)), Seq.empty),
-      Row(Key(msg"cancellationDecisionUpdate.cancellationDecisionDate"), Value(lit"${message.cancellationDecisionDate}"), Seq.empty),
-      Row(Key(msg"cancellationDecisionUpdate.cancellationJustification"), Value(lit"${message.cancellationJustification}"), Seq.empty)
+      Row(Key(msg"cancellationDecisionUpdate.initiatedByCustoms"), Value(acceptedOrRejected(message.cancellationInitiatedBy)), Seq.empty)
     )
-
+    rows = if (message.cancellationDecision.nonEmpty) {
+      rows :+ Row(Key(msg"cancellationDecisionUpdate.cancellationDecision"), Value(acceptedOrRejected(message.cancellationDecision.get)), Seq.empty)
+    } else {
+      rows
+    }
+    rows = if (message.cancellationRequestDate.nonEmpty) {
+      val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+      rows :+ Row(
+        Key(msg"cancellationDecisionUpdate.cancellationDecisionDate"),
+        Value(lit"${dateFormatter.format(LocalDate.parse(message.cancellationRequestDate.get.toString))}"),
+        Seq.empty
+      )
+    } else {
+      rows
+    }
+    rows = if (message.cancellationJustification.nonEmpty) {
+      rows :+ Row(Key(msg"cancellationDecisionUpdate.cancellationJustification"), Value(lit"${message.cancellationJustification.get}"), Seq.empty)
+    } else {
+      rows
+    }
+    rows
+  }
 }
