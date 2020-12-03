@@ -1194,9 +1194,14 @@ securityConsigneeAddress.error.line3.invalid= The third line of {0}’s address 
 
 declarationRejection.title = There is a problem with this departure declaration
 declarationRejection.heading = There is a problem with this departure declaration
+declarationRejection.date = Rejection date
+declarationRejection.localReferenceNumber = Local reference number
+declarationRejection.rejectionReason = Rejection reason
 declarationRejection.errorType =  Error type
 declarationRejection.pointer =  Error pointer
 declarationRejection.reason =  Reason
+declarationRejection.declarationDetails = Departure details
+declarationRejection.rejectionDetails = Rejection details
 
 addCircumstanceIndicator.title = Do you need to add a specific circumstance indicator?
 addCircumstanceIndicator.heading = Do you need to add a specific circumstance indicator?
