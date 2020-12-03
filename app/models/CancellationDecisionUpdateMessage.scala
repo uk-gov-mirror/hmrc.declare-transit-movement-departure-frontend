@@ -24,11 +24,11 @@ import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import models.XMLReads._
 
 case class CancellationDecisionUpdateMessage(mrn: String,
-                                             cancellationRequestDate: LocalDate,
+                                             cancellationRequestDate: Option[LocalDate],
                                              cancellationInitiatedBy: Int,
-                                             cancellationDecision: Int,
+                                             cancellationDecision: Option[Int],
                                              cancellationDecisionDate: LocalDate,
-                                             cancellationJustification: String)
+                                             cancellationJustification: Option[String])
 
 object CancellationDecisionUpdateMessage {
 
@@ -36,10 +36,10 @@ object CancellationDecisionUpdateMessage {
 
   implicit val xmlReader: XmlReader[CancellationDecisionUpdateMessage] = (
     (__ \ "HEAHEA" \ "DocNumHEA5").read[String],
-    (__ \ "HEAHEA" \ "DatOfCanReqHEA147").read[LocalDate],
+    (__ \ "HEAHEA" \ "DatOfCanReqHEA147").read[LocalDate].optional,
     (__ \ "HEAHEA" \ "CanIniByCusHEA94").read[Int],
-    (__ \ "HEAHEA" \ "CanDecHEA93").read[Int],
+    (__ \ "HEAHEA" \ "CanDecHEA93").read[Int].optional,
     (__ \ "HEAHEA" \ "DatOfCanDecHEA146").read[LocalDate],
-    (__ \ "HEAHEA" \ "CanJusHEA248").read[String]
+    (__ \ "HEAHEA" \ "CanJusHEA248").read[String].optional
   ).mapN(apply)
 }

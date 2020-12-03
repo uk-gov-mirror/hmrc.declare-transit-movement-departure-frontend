@@ -28,7 +28,7 @@ import services.DepartureMessageService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
-import utils.yesOrNo
+import utils.acceptedOrRejected
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -58,8 +58,8 @@ class CancellationDecisionUpdateController @Inject()(
     Seq(
       Row(Key(msg"cancellationDecisionUpdate.mrn"), Value(lit"${message.mrn}"), Seq.empty),
       Row(Key(msg"cancellationDecisionUpdate.cancellationRequestDate"), Value(lit"${message.cancellationRequestDate}"), Seq.empty),
-      Row(Key(msg"cancellationDecisionUpdate.initiatedByCustoms"), Value(yesOrNo(message.cancellationInitiatedBy)), Seq.empty),
-      Row(Key(msg"cancellationDecisionUpdate.cancellationDecision"), Value(yesOrNo(message.cancellationDecision)), Seq.empty),
+      Row(Key(msg"cancellationDecisionUpdate.initiatedByCustoms"), Value(acceptedOrRejected(message.cancellationInitiatedBy)), Seq.empty),
+      Row(Key(msg"cancellationDecisionUpdate.cancellationDecision"), Value(acceptedOrRejected(message.cancellationDecision.get)), Seq.empty),
       Row(Key(msg"cancellationDecisionUpdate.cancellationDecisionDate"), Value(lit"${message.cancellationDecisionDate}"), Seq.empty),
       Row(Key(msg"cancellationDecisionUpdate.cancellationJustification"), Value(lit"${message.cancellationJustification}"), Seq.empty)
     )

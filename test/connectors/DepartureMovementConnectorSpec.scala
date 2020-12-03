@@ -105,7 +105,8 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
               s"/movements/departures/${departureId.value}/messages/3",
               Some(s"/movements/departures/${departureId.value}/messages/5"),
               Some(s"/movements/departures/${departureId.value}/messages/7"),
-              Some(s"/movements/departures/${departureId.value}/messages/9")
+              Some(s"/movements/departures/${departureId.value}/messages/9"),
+              Some(s"/movements/departures/${departureId.value}/messages/11")
             )
           )
 
@@ -290,7 +291,12 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
         )
         val expectedResult =
           Some(
-            CancellationDecisionUpdateMessage("19GB00006010021477", LocalDate.parse("2019-09-12"), 0, 1, LocalDate.parse("2019-09-12"), "ok thats fine")
+            CancellationDecisionUpdateMessage("19GB00006010021477",
+                                              Some(LocalDate.parse("2019-09-12")),
+                                              0,
+                                              Some(1),
+                                              LocalDate.parse("2019-09-12"),
+                                              Some("ok thats fine"))
           )
 
         connector.getCancellationDecisionUpdateMessage(location).futureValue mustBe expectedResult

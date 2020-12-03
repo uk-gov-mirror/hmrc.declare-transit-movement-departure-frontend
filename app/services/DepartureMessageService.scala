@@ -63,7 +63,6 @@ class DepartureMessageService @Inject()(connectors: DepartureMovementConnector) 
       case Some(summary) =>
         summary.messagesLocation.cancellationDecisionUpdate match {
           case Some(location) => {
-            println("\n\n\n HERE!!!!")
             connectors.getCancellationDecisionUpdateMessage(location)
           }
           case _ =>

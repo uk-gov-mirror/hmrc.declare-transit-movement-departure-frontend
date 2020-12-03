@@ -53,7 +53,7 @@ class CancellationDecisionUpdateControllerSpec extends SpecBase with MockNunjuck
   "CancellationDecsionUpdate Controller" - {
 
     "return OK and the correct view for a GET" in {
-      val message = CancellationDecisionUpdateMessage("", LocalDate.parse("2019-09-12"), 0, 1, LocalDate.parse("2019-09-12"), "")
+      val message = CancellationDecisionUpdateMessage("", Some(LocalDate.parse("2019-09-12")), 0, Some(1), LocalDate.parse("2019-09-12"), Some(""))
 
       when(mockDepartureMessageService.cancellationDecisionUpdateMessage(any())(any(), any()))
         .thenReturn(Future.successful(Some(message)))

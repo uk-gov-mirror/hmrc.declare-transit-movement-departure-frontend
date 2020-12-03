@@ -30,7 +30,8 @@ class MessagesSummarySpec extends AnyFreeSpec with Matchers {
           "/movements/arrivals/1/messages/1",
           Some("/movements/arrivals/1/messages/2"),
           Some("/movements/arrivals/1/messages/3"),
-          Some("/movements/arrivals/1/messages/4")
+          Some("/movements/arrivals/1/messages/4"),
+          Some("/movements/arrivals/1/messages/5")
         )
       )
 
