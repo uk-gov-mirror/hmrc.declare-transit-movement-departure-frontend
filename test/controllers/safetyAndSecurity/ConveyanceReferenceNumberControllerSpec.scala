@@ -91,7 +91,7 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with MockNunjucks
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(ConveyanceReferenceNumberPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(ConveyanceReferenceNumberPage, "answers").success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, conveyanceReferenceNumberRoute)
@@ -104,7 +104,7 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with MockNunjucks
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "answers"))
 
       val expectedJson = Json.obj(
         "form" -> filledForm,
@@ -127,7 +127,7 @@ class ConveyanceReferenceNumberControllerSpec extends SpecBase with MockNunjucks
 
       val request =
         FakeRequest(POST, conveyanceReferenceNumberRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "answers"))
 
       val result = route(app, request).value
 

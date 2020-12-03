@@ -16,15 +16,20 @@
 
 package forms.safetyAndSecurity
 
+import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber, validEoriCharactersRegex}
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class CarrierEoriFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
       "value" -> text("carrierEori.error.required")
-        .verifying(maxLength(10, "carrierEori.error.length"))
-    )
+        .verifying(StopOnFirstFail[String](
+          maxLength(maxLengthEoriNumber, "carrierEori.error.length"),
+          regexp(validEoriCharactersRegex, "carrierEori.error.invalidCharacters"),
+          regexp(eoriNumberRegex, "carrierEori.error.invalidFormat")
+        )))
 }

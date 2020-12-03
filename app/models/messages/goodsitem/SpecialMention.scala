@@ -17,9 +17,9 @@
 package models.messages.goodsitem
 
 import com.lucidchart.open.xtract.{ParseError, ParseFailure, ParseSuccess, XmlReader}
-import models.XMLWrites
 import play.api.libs.json._
 import utils.BinaryToBooleanXMLReader._
+import xml.XMLWrites
 
 trait SpecialMention {
 
@@ -34,13 +34,10 @@ object SpecialMention {
 
   val countrySpecificCodes = Seq("DG0", "DG1")
 
-  implicit val xmlReader: XmlReader[SpecialMention] = {
-
+  implicit val xmlReader: XmlReader[SpecialMention] =
     SpecialMentionEc.xmlReader
       .or(SpecialMentionNonEc.xmlReader)
       .or(SpecialMentionNoCountry.xmlReader)
-
-  }
 
   implicit lazy val reads: Reads[SpecialMention] = {
 
@@ -79,17 +76,27 @@ object SpecialMentionEc {
     (__ \ "ExpFroECMT24")
       .read[Boolean]
       .flatMap {
-        case true  => XmlReader(_ => ParseSuccess(true))
-        case false => XmlReader(_ => ParseFailure(SpecialMentionEcParseFailure("Failed to parse to SpecialMentionEc: ExpFroECMT24 was false")))
+        case true =>
+          XmlReader(
+            _ => ParseSuccess(true)
+          )
+        case false =>
+          XmlReader(
+            _ => ParseFailure(SpecialMentionEcParseFailure("Failed to parse to SpecialMentionEc: ExpFroECMT24 was false"))
+          )
       }
       .flatMap {
         _ =>
           (__ \ "AddInfCodMT23").read[String].flatMap {
             code =>
               if (SpecialMention.countrySpecificCodes.contains(code)) {
-                XmlReader(_ => ParseSuccess(SpecialMentionEc(code)))
+                XmlReader(
+                  _ => ParseSuccess(SpecialMentionEc(code))
+                )
               } else {
-                XmlReader(_ => ParseFailure(SpecialMentionEcParseFailure(s"Failed to parse to SpecialMentionEc: $code was not country specific")))
+                XmlReader(
+                  _ => ParseFailure(SpecialMentionEcParseFailure(s"Failed to parse to SpecialMentionEc: $code was not country specific"))
+                )
               }
           }
       }
@@ -104,9 +111,13 @@ object SpecialMentionEc {
       .flatMap[Boolean] {
         fromEc =>
           if (fromEc) {
-            Reads(_ => JsSuccess(fromEc))
+            Reads(
+              _ => JsSuccess(fromEc)
+            )
           } else {
-            Reads(_ => JsError("exportFromEc must be true"))
+            Reads(
+              _ => JsError("exportFromEc must be true")
+            )
           }
       }
       .andKeep(
@@ -115,15 +126,21 @@ object SpecialMentionEc {
           .flatMap[String] {
             code =>
               if (SpecialMention.countrySpecificCodes.contains(code)) {
-                Reads(_ => JsSuccess(code))
+                Reads(
+                  _ => JsSuccess(code)
+                )
               } else {
-                Reads(_ => JsError(s"additionalInformationCoded must be in ${SpecialMention.countrySpecificCodes}"))
+                Reads(
+                  _ => JsError(s"additionalInformationCoded must be in ${SpecialMention.countrySpecificCodes}")
+                )
               }
           }
       )
-      .andKeep((__ \ "additionalInformationCoded")
-        .read[String]
-        .map(SpecialMentionEc(_)))
+      .andKeep(
+        (__ \ "additionalInformationCoded")
+          .read[String]
+          .map(SpecialMentionEc(_))
+      )
   }
 
   implicit lazy val writes: OWrites[SpecialMentionEc] = {
@@ -133,7 +150,9 @@ object SpecialMentionEc {
     (
       (__ \ "exportFromEc").write[Boolean] and
         (__ \ "additionalInformationCoded").write[String]
-    )(s => (true, s.additionalInformationCoded))
+    )(
+      s => (true, s.additionalInformationCoded)
+    )
   }
 
   implicit def writesXml: XMLWrites[SpecialMentionEc] = XMLWrites[SpecialMentionEc] {
@@ -161,17 +180,27 @@ object SpecialMentionNonEc {
     (__ \ "ExpFroECMT24")
       .read[Boolean]
       .flatMap {
-        case true  => XmlReader(_ => ParseFailure(SpecialMentionNonEcParseFailure("Failed to parse to SpecialMentionNonEc: ExpFroECMT24 was true")))
-        case false => XmlReader(_ => ParseSuccess(false))
+        case true =>
+          XmlReader(
+            _ => ParseFailure(SpecialMentionNonEcParseFailure("Failed to parse to SpecialMentionNonEc: ExpFroECMT24 was true"))
+          )
+        case false =>
+          XmlReader(
+            _ => ParseSuccess(false)
+          )
       }
       .flatMap {
         _ =>
           (__ \ "AddInfCodMT23").read[String].flatMap {
             code =>
               if (SpecialMention.countrySpecificCodes.contains(code)) {
-                XmlReader(_ => ParseSuccess(code))
+                XmlReader(
+                  _ => ParseSuccess(code)
+                )
               } else {
-                XmlReader(_ => ParseFailure(SpecialMentionNonEcParseFailure(s"Failed to parse to SpecialMentionNonEc: $code was not country specific")))
+                XmlReader(
+                  _ => ParseFailure(SpecialMentionNonEcParseFailure(s"Failed to parse to SpecialMentionNonEc: $code was not country specific"))
+                )
               }
           }
       }
@@ -179,7 +208,9 @@ object SpecialMentionNonEc {
         code =>
           (__ \ "ExpFroCouMT25").read[String].flatMap {
             exportFromCountry =>
-              XmlReader(_ => ParseSuccess(SpecialMentionNonEc(code, exportFromCountry)))
+              XmlReader(
+                _ => ParseSuccess(SpecialMentionNonEc(code, exportFromCountry))
+              )
           }
       }
   }
@@ -193,9 +224,13 @@ object SpecialMentionNonEc {
       .flatMap[Boolean] {
         fromEc =>
           if (fromEc) {
-            Reads(_ => JsError("exportFromEc must be false"))
+            Reads(
+              _ => JsError("exportFromEc must be false")
+            )
           } else {
-            Reads(_ => JsSuccess(fromEc))
+            Reads(
+              _ => JsSuccess(fromEc)
+            )
           }
       }
       .andKeep(
@@ -204,9 +239,13 @@ object SpecialMentionNonEc {
           .flatMap[String] {
             code =>
               if (SpecialMention.countrySpecificCodes.contains(code)) {
-                Reads(_ => JsSuccess(code))
+                Reads(
+                  _ => JsSuccess(code)
+                )
               } else {
-                Reads(_ => JsError(s"additionalInformationCoded must be in ${SpecialMention.countrySpecificCodes}"))
+                Reads(
+                  _ => JsError(s"additionalInformationCoded must be in ${SpecialMention.countrySpecificCodes}")
+                )
               }
           }
       )
@@ -226,7 +265,9 @@ object SpecialMentionNonEc {
       (__ \ "exportFromEc").write[Boolean] and
         (__ \ "additionalInformationCoded").write[String] and
         (__ \ "exportFromCountry").write[String]
-    )(s => (false, s.additionalInformationCoded, s.exportFromCountry))
+    )(
+      s => (false, s.additionalInformationCoded, s.exportFromCountry)
+    )
   }
 
   implicit def writesXml: XMLWrites[SpecialMentionNonEc] = XMLWrites[SpecialMentionNonEc] {
@@ -252,9 +293,13 @@ object SpecialMentionNoCountry {
     (__ \ "AddInfCodMT23").read[String].flatMap {
       code =>
         if (SpecialMention.countrySpecificCodes.contains(code)) {
-          XmlReader(_ => ParseFailure(SpecialMentionNoCountryParseFailure(s"Failed to parse to SpecialMentionNoCountry: $code was country specific")))
+          XmlReader(
+            _ => ParseFailure(SpecialMentionNoCountryParseFailure(s"Failed to parse to SpecialMentionNoCountry: $code was country specific"))
+          )
         } else {
-          XmlReader(_ => ParseSuccess(SpecialMentionNoCountry(code)))
+          XmlReader(
+            _ => ParseSuccess(SpecialMentionNoCountry(code))
+          )
         }
     }
   }
@@ -268,14 +313,20 @@ object SpecialMentionNoCountry {
       .flatMap[String] {
         code =>
           if (SpecialMention.countrySpecificCodes.contains(code)) {
-            Reads(_ => JsError(s"additionalInformationCoded must not be in ${SpecialMention.countrySpecificCodes}"))
+            Reads(
+              _ => JsError(s"additionalInformationCoded must not be in ${SpecialMention.countrySpecificCodes}")
+            )
           } else {
-            Reads(_ => JsSuccess(code))
+            Reads(
+              _ => JsSuccess(code)
+            )
           }
       }
-      .andKeep((__ \ "additionalInformationCoded")
-        .read[String]
-        .map(SpecialMentionNoCountry(_)))
+      .andKeep(
+        (__ \ "additionalInformationCoded")
+          .read[String]
+          .map(SpecialMentionNoCountry(_))
+      )
   }
 
   implicit lazy val writes: OWrites[SpecialMentionNoCountry] = Json.writes[SpecialMentionNoCountry]

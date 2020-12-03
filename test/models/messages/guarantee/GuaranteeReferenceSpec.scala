@@ -18,7 +18,7 @@ package models.messages.guarantee
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import models.XMLWrites._
+import xml.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -53,7 +53,9 @@ class GuaranteeReferenceSpec
     "GuaranteeReferenceWithOther to xml" in {
       forAll(arbitrary[GuaranteeReferenceWithOther]) {
         reference =>
-          val accessCode = reference.accessCode.map(value => <AccCodREF6>{value}</AccCodREF6>)
+          val accessCode = reference.accessCode.map(
+            value => <AccCodREF6>{value}</AccCodREF6>
+          )
 
           val expectedResult =
             <GUAREFREF>

@@ -19,7 +19,8 @@ package models.messages.trader
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.messages.escapeXml
-import models.{LanguageCodeEnglish, XMLWrites}
+import models.LanguageCodeEnglish
+import xml.XMLWrites
 
 import scala.xml._
 
@@ -53,11 +54,11 @@ object TraderConsignee {
         <CouCE125>{trader.countryCode}</CouCE125>
         <NADLNGCE>{LanguageCodeEnglish.code}</NADLNGCE>
         {
-          trader.eori.fold(NodeSeq.Empty) {
-            eori =>
-              <TINCE159>{eori}</TINCE159>
-          }
+        trader.eori.fold(NodeSeq.Empty) {
+          eori =>
+            <TINCE159>{eori}</TINCE159>
         }
+      }
       </TRACONCE1>
   }
 }

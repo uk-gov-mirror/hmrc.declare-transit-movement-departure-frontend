@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package models
+import models.Status
+import play.api.libs.json.Reads
 
-import scala.xml.NodeSeq
+package object viewModels {
 
-trait XMLWrites[A] {
-  def writes(a: A): NodeSeq
-}
-
-object XMLWrites {
-
-  def apply[A](writerFn: A => NodeSeq): XMLWrites[A] = new XMLWrites[A] {
-    override def writes(a: A): NodeSeq = writerFn(a)
+  implicit val readsStatus: Reads[Status] = implicitly[Reads[String]].map {
+    case "notStarted" => Status.NotStarted
+    case "inProgress" => Status.InProgress
+    case "completed"  => Status.Completed
+    case _            => throw new Exception(s"Invalid string value for ${Status.getClass}")
   }
-
-  implicit class XMLWritesOps[A](val a: A) extends AnyVal {
-
-    def toXml(implicit writer: XMLWrites[A]): NodeSeq =
-      writer.writes(a)
-  }
-
 }

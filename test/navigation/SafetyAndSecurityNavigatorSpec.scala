@@ -18,8 +18,8 @@ package navigation
 
 import base.SpecBase
 import controllers.safetyAndSecurity.routes
-import derivable.DeriveNumberOfCountryOfRouting
 import generators.Generators
+import models.reference.CountryCode
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -329,8 +329,8 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           answers =>
 
             val updatedAnswers = answers
-            .remove(CountryOfRoutingPage(index)).success.value
-            .set(AddPlaceOfUnloadingCodePage, false).success.value
+              .remove(CountryOfRoutingPage(index)).success.value
+              .set(AddPlaceOfUnloadingCodePage, false).success.value
 
             navigator
               .nextPage(AddPlaceOfUnloadingCodePage, NormalMode, updatedAnswers)
@@ -361,7 +361,7 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
             val updatedAnswers = answers
               .set(PlaceOfUnloadingCodePage, "answer").success.value
-              .set(CountryOfRoutingPage(index), "GB").success.value
+              .set(CountryOfRoutingPage(index), CountryCode("GB")).success.value
 
             navigator
               .nextPage(PlaceOfUnloadingCodePage, NormalMode, updatedAnswers)
@@ -409,247 +409,12 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
-      "must go from AddSafetyAndSecurityConsignor to AddSafetyAndSecurityConsignorEori if 'true'" in {
+      "in CheckMode" - {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
 
-            val updatedAnswers = answers
-              .set(AddSafetyAndSecurityConsignorPage, true).success.value
-
-            navigator
-              .nextPage(AddSafetyAndSecurityConsignorPage, NormalMode, updatedAnswers)
-              .mustBe(routes.AddSafetyAndSecurityConsignorEoriController.onPageLoad(answers.id, NormalMode))
-        }
       }
-
-      "must go from AddSafetyAndSecurityConsignor to AddSafetyAndSecurityConsignee if 'false'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddSafetyAndSecurityConsignorPage, false).success.value
-
-            navigator
-              .nextPage(AddSafetyAndSecurityConsignorPage, NormalMode, updatedAnswers)
-              .mustBe(routes.AddSafetyAndSecurityConsigneeController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from AddSafetyAndSecurityConsignorEori to SafetyAndSecurityConsignorEori if 'true'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddSafetyAndSecurityConsignorEoriPage, true).success.value
-
-            navigator
-              .nextPage(AddSafetyAndSecurityConsignorEoriPage, NormalMode, updatedAnswers)
-              .mustBe(routes.SafetyAndSecurityConsignorEoriController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from AddSafetyAndSecurityConsignorEori to SafetyAndSecurityConsignorName if 'false'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddSafetyAndSecurityConsignorEoriPage, false).success.value
-
-            navigator
-              .nextPage(AddSafetyAndSecurityConsignorEoriPage, NormalMode, updatedAnswers)
-              .mustBe(routes.SafetyAndSecurityConsignorNameController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from SafetyAndSecurityConsignorName to SafetyAndSecurityConsignorAddress" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            navigator
-              .nextPage(SafetyAndSecurityConsignorNamePage, NormalMode, answers)
-              .mustBe(routes.SafetyAndSecurityConsignorAddressController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from SafetyAndSecurityConsignorEori to AddSafetyAndSecurityConsignee" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            navigator
-              .nextPage(SafetyAndSecurityConsignorEoriPage, NormalMode, answers)
-              .mustBe(routes.AddSafetyAndSecurityConsigneeController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from AddSafetyAndSecurityConsignee to AddSafetyAndSecurityConsigneeEori if 'true'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddSafetyAndSecurityConsigneePage, true).success.value
-
-            navigator
-              .nextPage(AddSafetyAndSecurityConsigneePage, NormalMode, updatedAnswers)
-              .mustBe(routes.AddSafetyAndSecurityConsigneeEoriController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from AddSafetyAndSecurityConsignee to AddCarrier if 'false'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddSafetyAndSecurityConsigneePage, false).success.value
-
-            navigator
-              .nextPage(AddSafetyAndSecurityConsigneePage, NormalMode, updatedAnswers)
-              .mustBe(routes.AddCarrierController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from AddSafetyAndSecurityConsigneeEori to SafetyAndSecurityConsigneeEori if 'true'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddSafetyAndSecurityConsigneeEoriPage, true).success.value
-
-            navigator
-              .nextPage(AddSafetyAndSecurityConsigneeEoriPage, NormalMode, updatedAnswers)
-              .mustBe(routes.SafetyAndSecurityConsigneeEoriController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from AddSafetyAndSecurityConsigneeEori to SafetyAndSecurityConsigneeName if 'false'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddSafetyAndSecurityConsigneeEoriPage, false).success.value
-
-            navigator
-              .nextPage(AddSafetyAndSecurityConsigneeEoriPage, NormalMode, updatedAnswers)
-              .mustBe(routes.SafetyAndSecurityConsigneeNameController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from SafetyAndSecurityConsigneeName to SafetyAndSecurityConsigneeAddress" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            navigator
-              .nextPage(SafetyAndSecurityConsigneeNamePage, NormalMode, answers)
-              .mustBe(routes.SafetyAndSecurityConsigneeAddressController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from SafetyAndSecurityConsigneeEori to AddCarrier" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            navigator
-              .nextPage(SafetyAndSecurityConsigneeEoriPage, NormalMode, answers)
-              .mustBe(routes.AddCarrierController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from AddCarrier to AddCarrierEori if 'true'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddCarrierPage, true).success.value
-
-            navigator
-              .nextPage(AddCarrierPage, NormalMode, updatedAnswers)
-              .mustBe(routes.AddCarrierEoriController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from AddCarrier to CheckYourAnswers if 'false'" ignore {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddCarrierPage, false).success.value
-
-            navigator
-              .nextPage(AddCarrierPage, NormalMode, updatedAnswers)
-              .mustBe(???)
-        }
-      }
-
-      "must go from AddCarrierEori to CarrierEori if 'true'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddCarrierEoriPage, true).success.value
-
-            navigator
-              .nextPage(AddCarrierEoriPage, NormalMode, updatedAnswers)
-              .mustBe(routes.CarrierEoriController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from AddCarrierEori to CarrierName if 'false'" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            val updatedAnswers = answers
-              .set(AddCarrierEoriPage, false).success.value
-
-            navigator
-              .nextPage(AddCarrierEoriPage, NormalMode, updatedAnswers)
-              .mustBe(routes.CarrierNameController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from CarrierName to CarrierAddress" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            navigator
-              .nextPage(CarrierNamePage, NormalMode, answers)
-              .mustBe(routes.CarrierAddressController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from CarrierEori to CheckYourAnswers" ignore {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-
-            navigator
-              .nextPage(CarrierEoriPage, NormalMode, answers)
-              .mustBe(???)
-        }
-      }
-    }
-
-    "in CheckMode" - {
-
-
 
     }
-
+    // format: on
   }
-  // format: on
 }
