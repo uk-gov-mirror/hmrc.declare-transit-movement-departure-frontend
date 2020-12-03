@@ -29,21 +29,21 @@ import services.DepartureMessageService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
-import utils.acceptedOrRejected
+import utils.{acceptedOrRejected, yesOrNo}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 class CancellationDecisionUpdateController @Inject()(
-                                                      override val messagesApi: MessagesApi,
-                                                      identify: IdentifierAction,
-                                                      val controllerComponents: MessagesControllerComponents,
-                                                      renderer: Renderer,
-                                                      appConfig: FrontendAppConfig,
-                                                      departureMessageService: DepartureMessageService
-                                                    )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer,
+  appConfig: FrontendAppConfig,
+  departureMessageService: DepartureMessageService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(departureId: DepartureId): Action[AnyContent] = (identify).async {
@@ -58,30 +58,43 @@ class CancellationDecisionUpdateController @Inject()(
   }
 
   def cancellationDecisionUpdateContent(message: CancellationDecisionUpdateMessage): Seq[Row] = {
-    var rows = Seq(
+
+    val rows = Seq(
       Row(Key(msg"cancellationDecisionUpdate.mrn"), Value(lit"${message.mrn}"), Seq.empty),
-      Row(Key(msg"cancellationDecisionUpdate.initiatedByCustoms"), Value(acceptedOrRejected(message.cancellationInitiatedBy)), Seq.empty)
+      Row(Key(msg"cancellationDecisionUpdate.initiatedByCustoms"), Value(yesOrNo(message.cancellationInitiatedBy)), Seq.empty)
     )
-    rows = if (message.cancellationDecision.nonEmpty) {
-      rows :+ Row(Key(msg"cancellationDecisionUpdate.cancellationDecision"), Value(acceptedOrRejected(message.cancellationDecision.get)), Seq.empty)
-    } else {
-      rows
+
+    val rowsWithCancellationDecision: Seq[Row] = {
+      if (message.cancellationDecision.nonEmpty) {
+        rows :+ Row(Key(msg"cancellationDecisionUpdate.cancellationDecision"), Value(acceptedOrRejected(message.cancellationDecision.get)), Seq.empty)
+      } else {
+        rows
+      }
     }
-    rows = if (message.cancellationRequestDate.nonEmpty) {
-      val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-      rows :+ Row(
-        Key(msg"cancellationDecisionUpdate.cancellationDecisionDate"),
-        Value(lit"${dateFormatter.format(LocalDate.parse(message.cancellationRequestDate.get.toString))}"),
-        Seq.empty
-      )
-    } else {
-      rows
+
+    val rowsWithDecisionDate: Seq[Row] = {
+      if (message.cancellationRequestDate.nonEmpty) {
+        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+        rowsWithCancellationDecision :+ Row(
+          Key(msg"cancellationDecisionUpdate.cancellationDecisionDate"),
+          Value(lit"${dateFormatter.format(LocalDate.parse(message.cancellationRequestDate.get.toString))}"),
+          Seq.empty
+        )
+      } else {
+        rowsWithCancellationDecision
+      }
     }
-    rows = if (message.cancellationJustification.nonEmpty) {
-      rows :+ Row(Key(msg"cancellationDecisionUpdate.cancellationJustification"), Value(lit"${message.cancellationJustification.get}"), Seq.empty)
-    } else {
-      rows
+
+    val rowsWithJustification: Seq[Row] = {
+      if (message.cancellationJustification.nonEmpty) {
+        rowsWithDecisionDate :+ Row(Key(msg"cancellationDecisionUpdate.cancellationJustification"),
+                                    Value(lit"${message.cancellationJustification.get}"),
+                                    Seq.empty)
+      } else {
+        rowsWithDecisionDate
+      }
     }
-    rows
+
+    rowsWithJustification
   }
 }
