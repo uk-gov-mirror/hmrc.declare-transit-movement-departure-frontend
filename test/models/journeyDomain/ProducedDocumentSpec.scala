@@ -54,10 +54,6 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
     }
   }
 
-  "reading multiple ProducedDocument" - {
-    ???
-  }
-
 }
 
 object ProducedDocumentSpec extends UserAnswersSpecHelper {
