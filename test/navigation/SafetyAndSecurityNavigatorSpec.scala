@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.safetyAndSecurity.routes
 import generators.Generators
 import models.reference.CountryCode
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck._
@@ -338,7 +338,6 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
-
       "must go from PlaceOfUnloadingCode to CountryOfRouting if there is no specified CountryOfRouting already" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -408,12 +407,283 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
               .mustBe(routes.AddSafetyAndSecurityConsignorController.onPageLoad(answers.id, NormalMode))
         }
       }
+    }
 
-      "in CheckMode" - {
+    "in CheckMode" - {
 
+      "must go from AddCircumstanceIndicator page to" - {
+        "CircumstanceIndicator page if 'true'" in {
 
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCircumstanceIndicatorPage, true).success.value
+
+          navigator
+            .nextPage(AddCircumstanceIndicatorPage, CheckMode, updatedAnswers)
+            .mustBe(routes.CircumstanceIndicatorController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+
+        "CheckYourAnswers page if 'true' and CircumstanceIndicator answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(CircumstanceIndicatorPage, "value").success.value
+            .set(AddCircumstanceIndicatorPage, true).success.value
+
+          navigator
+            .nextPage(AddCircumstanceIndicatorPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
+        "CheckYourAnswers if 'false'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCircumstanceIndicatorPage, false).success.value
+
+          navigator
+            .nextPage(AddCircumstanceIndicatorPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
       }
 
+      "must go from CircumstanceIndicator page to CheckYourAnswers" in {
+
+        navigator
+          .nextPage(CircumstanceIndicatorPage, CheckMode, emptyUserAnswers)
+          .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(emptyUserAnswers.id))
+      }
+
+      "must go from AddTransportChargesPaymentMethod page to" - {
+        "TransportChargesPaymentMethod page if 'true'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddTransportChargesPaymentMethodPage, true).success.value
+
+          navigator
+            .nextPage(AddTransportChargesPaymentMethodPage, CheckMode, updatedAnswers)
+            .mustBe(routes.TransportChargesPaymentMethodController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+
+        "CheckYourAnswers page if 'true' and TransportChargesPaymentMethod answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(TransportChargesPaymentMethodPage, "value").success.value
+            .set(AddTransportChargesPaymentMethodPage, true).success.value
+
+          navigator
+            .nextPage(AddTransportChargesPaymentMethodPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
+        "CheckYourAnswers if 'false'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddTransportChargesPaymentMethodPage, false).success.value
+
+          navigator
+            .nextPage(AddTransportChargesPaymentMethodPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+
+      "must go from TransportChargesPaymentMethod page to CheckYourAnswers" in {
+
+        navigator
+          .nextPage(TransportChargesPaymentMethodPage, CheckMode, emptyUserAnswers)
+          .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(emptyUserAnswers.id))
+      }
+
+      "must go from AddCommercialReferenceNumber page to" - {
+        "AddCommercialReferenceNumberAllItems page if 'true'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCommercialReferenceNumberPage, true).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.AddCommercialReferenceNumberAllItemsController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+
+        "CheckYourAnswers page if 'true' and AddCommercialReferenceNumberAllItems answer is 'true'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
+            .set(AddCommercialReferenceNumberPage, true).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
+        "CheckYourAnswers page if 'true' and AddCommercialReferenceNumberAllItems answer is 'false'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCommercialReferenceNumberAllItemsPage, false).success.value
+            .set(AddCommercialReferenceNumberPage, true).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
+        "CheckYourAnswers if 'false'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCommercialReferenceNumberPage, false).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+
+      "must go from AddCommercialReferenceNumberAllItems page to" - {
+        "CommercialReferenceNumberAllItems page if 'true'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberAllItemsPage, CheckMode, updatedAnswers)
+            .mustBe(routes.CommercialReferenceNumberAllItemsController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+
+        "CheckYourAnswers page if 'true' and CommercialReferenceNumberAllItems answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(CommercialReferenceNumberAllItemsPage, "value").success.value
+            .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberAllItemsPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
+        "CheckYourAnswers if 'false'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddCommercialReferenceNumberAllItemsPage, false).success.value
+
+          navigator
+            .nextPage(AddCommercialReferenceNumberAllItemsPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+
+      "must go from CommercialReferenceNumberAllItems page to CheckYourAnswers" in {
+
+        navigator
+          .nextPage(CommercialReferenceNumberAllItemsPage, CheckMode, emptyUserAnswers)
+          .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(emptyUserAnswers.id))
+      }
+
+      "must go from AddConveyanceReferenceNumber page to" - {
+        "ConveyanceReferenceNumber page if 'true'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddConveyanceReferenceNumberPage, true).success.value
+
+          navigator
+            .nextPage(AddConveyanceReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.ConveyanceReferenceNumberController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+
+        "CheckYourAnswers page if 'true' and ConveyanceReferenceNumber answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(ConveyanceReferenceNumberPage, "value").success.value
+            .set(AddConveyanceReferenceNumberPage, true).success.value
+
+          navigator
+            .nextPage(AddConveyanceReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
+        "CheckYourAnswers if 'false'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddConveyanceReferenceNumberPage, false).success.value
+
+          navigator
+            .nextPage(AddConveyanceReferenceNumberPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+
+      "must go from ConveyanceReferenceNumber page to CheckYourAnswers" in {
+
+        navigator
+          .nextPage(ConveyanceReferenceNumberPage, CheckMode, emptyUserAnswers)
+          .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(emptyUserAnswers.id))
+      }
+
+      "must go from AddPlaceOfUnloadingCode page to" - {
+        "PlaceOfUnloadingCode page if 'true'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddPlaceOfUnloadingCodePage, true).success.value
+
+          navigator
+            .nextPage(AddPlaceOfUnloadingCodePage, CheckMode, updatedAnswers)
+            .mustBe(routes.PlaceOfUnloadingCodeController.onPageLoad(updatedAnswers.id, CheckMode))
+        }
+
+        "CheckYourAnswers page if 'true' and PlaceOfUnloadingCode answer exists" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(PlaceOfUnloadingCodePage, "value").success.value
+            .set(AddPlaceOfUnloadingCodePage, true).success.value
+
+          navigator
+            .nextPage(AddPlaceOfUnloadingCodePage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+
+        "CheckYourAnswers if 'false'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddPlaceOfUnloadingCodePage, false).success.value
+
+          navigator
+            .nextPage(AddPlaceOfUnloadingCodePage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+
+      "must go from PlaceOfUnloadingCode page to CheckYourAnswers" in {
+
+        navigator
+          .nextPage(PlaceOfUnloadingCodePage, CheckMode, emptyUserAnswers)
+          .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(emptyUserAnswers.id))
+      }
+
+      "must go from CountryOfRouting page to CheckYourAnswers" in {
+
+        navigator
+          .nextPage(CountryOfRoutingPage(index), CheckMode, emptyUserAnswers)
+          .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(emptyUserAnswers.id)) //TODO: Possibly change to do below instead
+        //          .mustBe(routes.AddAnotherCountryOfRoutingController.onPageLoad(emptyUserAnswers.id, CheckMode))
+      }
+
+      "must go from AddAnotherCountryOfRouting page to" - {
+        "CountryOfRouting page if 'true'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddAnotherCountryOfRoutingPage, true).success.value
+
+          navigator
+            .nextPage(AddAnotherCountryOfRoutingPage, CheckMode, updatedAnswers)
+            .mustBe(routes.CountryOfRoutingController.onPageLoad(updatedAnswers.id, index, CheckMode))
+        }
+
+        "CheckYourAnswers if 'false'" in {
+
+          val updatedAnswers = emptyUserAnswers
+            .set(AddAnotherCountryOfRoutingPage, false).success.value
+
+          navigator
+            .nextPage(AddAnotherCountryOfRoutingPage, CheckMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
     }
     // format: on
   }

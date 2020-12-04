@@ -168,4 +168,18 @@ package object utils {
       msg"site.no"
     }
 
+  def yesOrNo(answer: Int): Content =
+    if (answer == 1) {
+      msg"site.yes"
+    } else {
+      msg"site.no"
+    }
+
+  def acceptedOrRejected(answer: Int): Content =
+    if (answer == 1) {
+      msg"site.accepted"
+    } else {
+      msg"site.rejected"
+    }
+
 }

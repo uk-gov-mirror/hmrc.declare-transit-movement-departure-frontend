@@ -13,6 +13,8 @@ site.delete.hidden = Change {0}
 site.edit.hidden = Change {0}
 site.no = No
 site.yes = Yes
+site.accepted = Accepted
+site.rejected = Rejected
 site.taskList.add = Add
 site.taskList.edit = Edit
 site.edit = Change
@@ -1410,6 +1412,14 @@ carrierName.error.required =  Enter the carrier’s name
 carrierName.error.length = carrier’s name must be 35 characters or less
 carrierName.error.invalidCharacters = The carrier's name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
+cancellationDecisionUpdate.title = Cancellation decision
+cancellationDecisionUpdate.heading = Cancellation decision
+cancellationDecisionUpdate.mrn = Movement reference number
+cancellationDecisionUpdate.cancellationRequestDate = Date of cancellation request
+cancellationDecisionUpdate.initiatedByCustoms = Cancellation initiated by customs
+cancellationDecisionUpdate.cancellationDecision = Cancellation status
+cancellationDecisionUpdate.cancellationDecisionDate = Date of cancellation decision
+cancellationDecisionUpdate.cancellationJustification = Reason for cancellation
 
 safetyAndSecurityCheckYourAnswers.title = Check your answers
 safetyAndSecurityCheckYourAnswers.heading = Check your answers
@@ -1429,3 +1439,4 @@ securityConsigneeName.checkYourAnswersLabel =  Security consignee’s name
 securityConsigneeName.error.required = Enter the security consignee’s name
 securityConsigneeName.error.length =  The security consignee’s name must be 35 characters or less
 securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+
