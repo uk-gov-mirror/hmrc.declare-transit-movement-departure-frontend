@@ -19,6 +19,7 @@ package models.journeyDomain
 import cats.data._
 import cats.implicits._
 import models.domain.Address
+import models.journeyDomain.Itinerary.readItineraries
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.reference.{Country, CountryCode}
 import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
@@ -33,7 +34,8 @@ case class SafetyAndSecurity(
   placeOfUnloading: Option[String],
   consignor: Option[SecurityTraderDetails],
   consignee: Option[SecurityTraderDetails],
-  carrier: Option[SecurityTraderDetails]
+  carrier: Option[SecurityTraderDetails],
+  itineraryList: NonEmptyList[Itinerary]
 )
 
 object SafetyAndSecurity {
@@ -48,7 +50,8 @@ object SafetyAndSecurity {
         placeOfUnloading,
         consignorDetails,
         consigneeDetails,
-        carrierDetails
+        carrierDetails,
+        readItineraries
       ).tupled
     )((SafetyAndSecurity.apply _).tupled)
 

@@ -74,7 +74,7 @@ class DeclarationRequestSpec
               {declarationRequest.seals.map(_.toXml).getOrElse(NodeSeq.Empty)}
               {declarationRequest.guarantee.toXml}
               {declarationRequest.goodsItems.toList.flatMap(_.toXml)}
-              {declarationRequest.itinerary.flatMap(_.toXml)}
+              {declarationRequest.itinerary.map(_.toXml)}
               {safetyAndSecurityCarrier(declarationRequest.safetyAndSecurityCarrier)}
               {safetyAndSecurityConsignor(declarationRequest.safetyAndSecurityConsignor)}
               {safetyAndSecurityConsignee(declarationRequest.safetyAndSecurityConsignee)}

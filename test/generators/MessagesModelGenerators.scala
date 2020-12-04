@@ -159,7 +159,7 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
         seals                     <- Gen.option(arbitrary[Seals])
         guarantee                 <- arbitrary[Guarantee]
         goodsItems                <- nonEmptyListWithMaxSize(10, arbitrary[GoodsItem])
-        itinerary                 <- listWithMaxLength[Itinerary](Itinerary.Constants.maxCount)
+        itinerary                 <- listWithMaxLength[Itinerary](10)
       } yield
         DeclarationRequest(
           meta,

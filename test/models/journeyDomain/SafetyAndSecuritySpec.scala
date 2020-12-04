@@ -17,12 +17,13 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
+import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
-import models.UserAnswers
 import models.domain.Address
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.journeyDomain.SafetyAndSecurity.{PersonalInformation, TraderEori}
 import models.journeyDomain.SafetyAndSecuritySpec.{setSafetyAndSecurity, setSafetyAndSecurityMinimal}
+import models.{Index, UserAnswers}
 import org.scalacheck.Gen
 import org.scalatest.TryValues
 import pages.ModeAtBorderPage
@@ -39,7 +40,7 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
 
           val result = UserAnswersParser[Option, SafetyAndSecurity].run(userAnswers).value
 
-          result mustEqual SafetyAndSecurity(None, None, None, None, None, None, None, None)
+          result mustEqual SafetyAndSecurity(None, None, None, None, None, None, None, None, NonEmptyList.fromListUnsafe(List(Itinerary("GB"))))
       }
     }
 
@@ -151,7 +152,8 @@ object SafetyAndSecuritySpec extends UserAnswersSpecHelper {
           .unsafeSetOpt(ConveyanceReferenceNumberPage)(safetyAndSecurity.conveyanceReferenceNumber)
     }
 
-    updatedUserAnswers
+    ItinerarySpec.setItineraries(safetyAndSecurity.itineraryList.toList)(updatedUserAnswers)
+
   }
 
   def setSafetyAndSecurityMinimal(startUserAnswers: UserAnswers): UserAnswers =
@@ -166,5 +168,6 @@ object SafetyAndSecuritySpec extends UserAnswersSpecHelper {
       .unsafeSetVal(AddSafetyAndSecurityConsignorPage)(false)
       .unsafeSetVal(AddSafetyAndSecurityConsigneePage)(false)
       .unsafeSetVal(AddCarrierPage)(false)
+      .unsafeSetVal(CountryOfRoutingPage(Index(0)))("GB")
 
 }

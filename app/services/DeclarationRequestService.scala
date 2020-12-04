@@ -29,7 +29,7 @@ import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode}
-import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
+import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Itinerary, Packages, TraderDetails, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
@@ -282,6 +282,9 @@ class DeclarationRequestService @Inject()(
             Some(SafetyAndSecurityCarrierWithEori(eori))
         }
 
+    def itineraries(itineraries: NonEmptyList[Itinerary]): Seq[models.messages.Itinerary] =
+      itineraries.toList.map(countryCode => models.messages.Itinerary(countryCode.countryCode))
+
     DeclarationRequest(
       Meta(
         interchangeControlReference = icr,
@@ -336,7 +339,7 @@ class DeclarationRequestService @Inject()(
       headerSeals(goodsSummary.sealNumbers),
       guaranteeDetails(guarantee),
       goodsItems(journeyDomain.itemDetails),
-      Seq.empty[Itinerary], //TODO need reader model for this
+      safetyAndSecurity.map(sas => itineraries(sas.itineraryList)).getOrElse(Seq.empty),
       safetyAndSecurity.flatMap(sas => carrier(sas.carrier)),
       safetyAndSecurity.flatMap(sas => safetyAndSecurityConsignor(sas.consignor)),
       safetyAndSecurity.flatMap(sas => safetyAndSecurityConsignee(sas.consignee))

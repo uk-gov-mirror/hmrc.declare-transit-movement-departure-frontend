@@ -70,10 +70,13 @@ trait JourneyModelGenerators {
         traderDetails     <- arbitrary[TraderDetails]
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
 
-        isDocumentTypeMandatory = safetyAndSecurity.circumstanceIndicator
+        /*     isDocumentTypeMandatory = safetyAndSecurity.circumstanceIndicator
           .map(CircumstanceIndicator.conditionalIndicators.contains(_))
           .map(_ && safetyAndSecurity.commercialReferenceNumber.isDefined)
-          .getOrElse(false)
+          .getOrElse(false)*/
+        isDocumentTypeMandatory = isSecurityDetailsRequired &&
+          safetyAndSecurity.commercialReferenceNumber.isDefined &&
+          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
 
         itemDetails <- nonEmptyListOf(3)(Arbitrary(genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)))
 
@@ -114,6 +117,7 @@ trait JourneyModelGenerators {
         consignorAddress           <- Gen.option(arbitrarySecurityTraderDetails(consignorAddress).arbitrary)
         consigneeAddress           <- Gen.option(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
         carrierAddress             <- Gen.option(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
+        itineraries                <- nonEmptyListOf[Itinerary](5)
       } yield
         SafetyAndSecurity(
           addCircumstanceIndicator,
@@ -123,10 +127,18 @@ trait JourneyModelGenerators {
           placeOfUnloading,
           consignorAddress,
           consigneeAddress,
-          carrierAddress
+          carrierAddress,
+          itineraries
         )
     }
   }
+
+  implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] =
+    Arbitrary {
+      for {
+        countryCode <- stringsWithMaxLength(2)
+      } yield Itinerary(countryCode)
+    }
 
   def genSecurityDetails(modeAtBorder: Gen[String]): Gen[SafetyAndSecurity] = {
 
@@ -148,6 +160,7 @@ trait JourneyModelGenerators {
       consignorAddress           <- Gen.option(arbitrarySecurityTraderDetails(consignorAddress).arbitrary)
       consigneeAddress           <- Gen.option(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
       carrierAddress             <- Gen.option(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
+      itineraries                <- nonEmptyListOf[Itinerary](5)
     } yield
       SafetyAndSecurity(
         addCircumstanceIndicator,
@@ -157,7 +170,8 @@ trait JourneyModelGenerators {
         placeOfUnloading,
         consignorAddress,
         consigneeAddress,
-        carrierAddress
+        carrierAddress,
+        itineraries
       )
   }
 
