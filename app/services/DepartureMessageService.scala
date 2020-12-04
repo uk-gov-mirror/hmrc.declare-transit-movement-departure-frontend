@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureMessageService @Inject()(connectors: DepartureMovementConnector) {
-val logger:Logger = Logger(getClass)
+  val logger: Logger = Logger(getClass)
 
   def guaranteeNotValidMessage(departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[GuaranteeNotValidMessage]] =
     connectors.getSummary(departureId) flatMap {
