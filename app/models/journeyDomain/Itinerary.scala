@@ -19,9 +19,11 @@ package models.journeyDomain
 import cats.data.{NonEmptyList, ReaderT}
 import cats.implicits.{catsStdInstancesForOption, _}
 import derivable.DeriveNumberOfCountryOfRouting
+import models.reference.CountryCode
 import models.{Index, UserAnswers}
 import pages.safetyAndSecurity.CountryOfRoutingPage
-case class Itinerary(countryCode: String)
+
+case class Itinerary(countryCode: CountryCode)
 
 object Itinerary {
 

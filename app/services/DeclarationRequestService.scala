@@ -283,7 +283,7 @@ class DeclarationRequestService @Inject()(
         }
 
     def itineraries(itineraries: NonEmptyList[Itinerary]): Seq[models.messages.Itinerary] =
-      itineraries.toList.map(countryCode => models.messages.Itinerary(countryCode.countryCode))
+      itineraries.toList.map(countryCode => models.messages.Itinerary(countryCode.countryCode.code))
 
     DeclarationRequest(
       Meta(

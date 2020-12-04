@@ -70,10 +70,6 @@ trait JourneyModelGenerators {
         traderDetails     <- arbitrary[TraderDetails]
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
 
-        /*     isDocumentTypeMandatory = safetyAndSecurity.circumstanceIndicator
-          .map(CircumstanceIndicator.conditionalIndicators.contains(_))
-          .map(_ && safetyAndSecurity.commercialReferenceNumber.isDefined)
-          .getOrElse(false)*/
         isDocumentTypeMandatory = isSecurityDetailsRequired &&
           safetyAndSecurity.commercialReferenceNumber.isDefined &&
           safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
@@ -136,7 +132,7 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] =
     Arbitrary {
       for {
-        countryCode <- stringsWithMaxLength(2)
+        countryCode <- arbitrary[CountryCode]
       } yield Itinerary(countryCode)
     }
 

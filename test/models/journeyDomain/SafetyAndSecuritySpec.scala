@@ -23,6 +23,7 @@ import models.domain.Address
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.journeyDomain.SafetyAndSecurity.{PersonalInformation, TraderEori}
 import models.journeyDomain.SafetyAndSecuritySpec.{setSafetyAndSecurity, setSafetyAndSecurityMinimal}
+import models.reference.CountryCode
 import models.{Index, UserAnswers}
 import org.scalacheck.Gen
 import org.scalatest.TryValues
@@ -40,7 +41,7 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
 
           val result = UserAnswersParser[Option, SafetyAndSecurity].run(userAnswers).value
 
-          result mustEqual SafetyAndSecurity(None, None, None, None, None, None, None, None, NonEmptyList.fromListUnsafe(List(Itinerary("GB"))))
+          result mustEqual SafetyAndSecurity(None, None, None, None, None, None, None, None, NonEmptyList.fromListUnsafe(List(Itinerary(CountryCode("GB")))))
       }
     }
 
@@ -168,6 +169,6 @@ object SafetyAndSecuritySpec extends UserAnswersSpecHelper {
       .unsafeSetVal(AddSafetyAndSecurityConsignorPage)(false)
       .unsafeSetVal(AddSafetyAndSecurityConsigneePage)(false)
       .unsafeSetVal(AddCarrierPage)(false)
-      .unsafeSetVal(CountryOfRoutingPage(Index(0)))("GB")
+      .unsafeSetVal(CountryOfRoutingPage(Index(0)))(CountryCode("GB"))
 
 }
