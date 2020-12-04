@@ -1416,11 +1416,11 @@ carrierName.error.invalidCharacters = The carrier's name must only include lette
 cancellationDecisionUpdate.title = Cancellation decision
 cancellationDecisionUpdate.heading = Cancellation decision
 cancellationDecisionUpdate.mrn = Movement reference number
-cancellationDecisionUpdate.cancellationRequestDate = Date of cancellation request
-cancellationDecisionUpdate.initiatedByCustoms = Cancellation initiated by customs
-cancellationDecisionUpdate.cancellationDecision = Cancellation status
-cancellationDecisionUpdate.cancellationDecisionDate = Date of cancellation decision
-cancellationDecisionUpdate.cancellationJustification = Reason for cancellation
+cancellationDecisionUpdate.cancellationRequestDate = Date of request
+cancellationDecisionUpdate.initiatedByCustoms = Initiated by customs?
+cancellationDecisionUpdate.cancellationDecision = Status
+cancellationDecisionUpdate.cancellationDecisionDate = Date of decision
+cancellationDecisionUpdate.cancellationJustification = Reason
 
 safetyAndSecurityCheckYourAnswers.title = Check your answers
 safetyAndSecurityCheckYourAnswers.heading = Check your answers

@@ -50,7 +50,11 @@ class CancellationDecisionUpdateController @Inject()(
     implicit request =>
       departureMessageService.cancellationDecisionUpdateMessage(departureId).flatMap {
         case Some(message) =>
-          val json = Json.obj("cancellationDecisionUpdateMessage" -> cancellationDecisionUpdateContent(message), "contactUrl" -> appConfig.nctsEnquiriesUrl)
+          val json = Json.obj(
+            "cancellationDecisionUpdateMessage" -> cancellationDecisionUpdateContent(message),
+            "contactUrl"                        -> appConfig.nctsEnquiriesUrl,
+            "decision"                          -> cancellationDecision(message)
+          )
           renderer.render("cancellationDecisionUpdate.njk", json).map(Ok(_))
         case _ =>
           Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
@@ -97,4 +101,11 @@ class CancellationDecisionUpdateController @Inject()(
 
     rowsWithJustification
   }
+
+  def cancellationDecision(message: CancellationDecisionUpdateMessage): Int =
+    if (message.cancellationDecision.nonEmpty) {
+      message.cancellationDecision.get
+    } else {
+      2
+    }
 }
