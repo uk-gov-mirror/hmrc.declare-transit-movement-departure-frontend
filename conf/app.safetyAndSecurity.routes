@@ -140,4 +140,4 @@ POST       /:lrn/security/trader-security/carrier-name                          
 GET        /:lrn/security/trader-security/change-carrier-name                                 controllers.safetyAndSecurity.CarrierNameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/security/trader-security/change-carrier-name                                 controllers.safetyAndSecurity.CarrierNameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/security/check-answers                            controllers.safetyAndSecurity.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, index:Index)
+GET        /:lrn/security/check-answers                            controllers.safetyAndSecurity.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)

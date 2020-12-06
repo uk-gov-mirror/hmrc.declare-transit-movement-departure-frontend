@@ -35,6 +35,7 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.twirl.api.Html
 import utils.SafetyAndSecurityCheckYourAnswerHelper
+import viewModels.SafetyAndSecurityCheckYourAnswersViewModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -81,23 +82,22 @@ class AddAnotherCountryOfRoutingController @Inject()(
     val numberOfRoutingCountries = request.userAnswers.get(DeriveNumberOfCountryOfRouting).getOrElse(0)
     val indexList: Seq[Index]    = List.range(0, numberOfRoutingCountries).map(Index(_))
 
-    val countriesOfRouting = indexList.map {
+    val countryRows = indexList.map {
       index =>
-        cyaHelper.countriesOfRouting(index)
+        cyaHelper.countryRows(index)
     }
 
     val singularOrPlural = if (numberOfRoutingCountries == 1) "singular" else "plural"
     val json = Json.obj(
-      "form"                 -> form,
-      "pageTitle"            -> msg"addAnotherCountryOfRouting.title.$singularOrPlural".withArgs(numberOfRoutingCountries),
-      "heading"              -> msg"aaddAnotherCountryOfRouting.heading.$singularOrPlural".withArgs(numberOfRoutingCountries),
-      "countryOfRoutingRows" -> countriesOfRouting,
-      "lrn"                  -> lrn,
-      "radios"               -> Radios.yesNo(form("value"))
+      "form"        -> form,
+      "pageTitle"   -> msg"addAnotherCountryOfRouting.title.$singularOrPlural".withArgs(numberOfRoutingCountries),
+      "heading"     -> msg"addAnotherCountryOfRouting.heading.$singularOrPlural".withArgs(numberOfRoutingCountries),
+      "countryRows" -> countryRows,
+      "lrn"         -> lrn,
+      "radios"      -> Radios.yesNo(form("value"))
     )
 
     renderer.render(template, json)
 
   }
-
 }

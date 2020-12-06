@@ -41,9 +41,9 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers, index)
+      val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers)
 
       val json = Json.obj(
         "lrn"         -> lrn,

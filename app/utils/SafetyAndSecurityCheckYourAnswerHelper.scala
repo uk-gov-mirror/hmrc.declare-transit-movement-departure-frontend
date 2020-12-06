@@ -417,27 +417,27 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def countriesOfRouting(index: Index): Option[Row] = userAnswers.get(CountryOfRoutingPage(index)).map {
-    answer =>
-      Row(
-        key   = Key(lit"$answer"),
-        value = Value(lit""),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting.change.visuallyHidden"),
-            attributes         = Map("id" -> s"""change-country-${index.display}""")
-          ),
+  def countryRows(index: Index): Option[Row] =
+    userAnswers.get(CountryOfRoutingPage(index)).map {
+      answer =>
+        Row(
+          key   = Key(lit"$answer"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
+              visuallyHiddenText = Some(msg"addAnotherCountryOfRouting.checkYourAnswersLabel.change.visuallyHidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-country-${index.display}""")
+            )
 //          Action(
 //            content            = msg"site.delete",
 //            href               = routes.ConfirmRemoveCountryController.onPageLoad(lrn, CheckMode).url,
-//            visuallyHiddenText = Some(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting.delete.visuallyHidden"),
+//            visuallyHiddenText = Some(msg"addAnotherCountryOfRouting.checkYourAnswersLabel.remove.visuallyHidden".withArgs(answer)),
 //            attributes         = Map("id" -> s"""remove-country-${index.display}""")
-//          ),
-
+//          )
+          )
         )
-      )
-  }
+    }
 
 }

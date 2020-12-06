@@ -3,11 +3,12 @@
 {% from "govuk/components/back-link/macro.njk"     import govukBackLink %}
 {% from "govuk/components/radios/macro.njk"        import govukRadios %}
 {% from "govuk/components/button/macro.njk"        import govukButton %}
+{% from "govuk/components/summary-list/macro.njk"  import govukSummaryList %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "macros/title.njk"                         import title %}
 
 {% block pageTitle %}
-  {{ title(messages("addAnotherCountryOfRouting.title"), form.errors) }}
+  {{ title(pageTitle, form.errors) }}
 {% endblock %}
 
 {% block mainContent %}
@@ -27,17 +28,31 @@
           }) }}
         {% endif %}
 
-        <form action="{{ routes.controllers.safetyAndSecurity.AddAnotherCountryOfRoutingController.onSubmit(lrn, mode).url }}" method="post">
+
         <span class="govuk-caption-xl">{{messages('safetyAndSecurity.preHeading')}}</span>
+        <h1 class="govuk-heading-xl">
+        {{ messages(heading) }}
+        </h1>
+
+         {{ govukSummaryList({
+               classes: 'govuk-!-margin-bottom-9 ctc-add-to-a-list',
+               rows: countryRows
+            }) }}
+
+       <form action="{{ routes.controllers.safetyAndSecurity.AddAnotherCountryOfRoutingController.onSubmit(lrn, mode).url }}" method="post">
+
           {{ csrf() | safe }}
 
           {{ govukRadios({
+            classes: "govuk-radios--inline",
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('addAnotherCountryOfRouting.heading'),
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--xl"
+
+
+                text: messages('addAnotherCountryOfRouting.h2'),
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
               }
             },
             items: radios,
