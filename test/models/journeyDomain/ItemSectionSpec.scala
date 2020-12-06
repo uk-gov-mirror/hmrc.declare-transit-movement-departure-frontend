@@ -25,7 +25,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
@@ -103,6 +103,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
     val smUserAnswers = startUserAnswers
       .unsafeSetVal(AddSecurityDetailsPage)(producedDocument.isDefined)
       .unsafeSetVal(AddCircumstanceIndicatorPage)(producedDocument.isDefined)
+      .unsafeSetVal(AddCommercialReferenceNumberPage)(producedDocument.isDefined)
       .unsafeSetVal(AddDocumentsPage(itemIndex))(producedDocument.isDefined)
       .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
 
