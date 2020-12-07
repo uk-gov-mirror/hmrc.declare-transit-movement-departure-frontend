@@ -71,7 +71,7 @@ trait JourneyModelGenerators {
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
 
         isDocumentTypeMandatory = isSecurityDetailsRequired &&
-          safetyAndSecurity.commercialReferenceNumber.isDefined &&
+          safetyAndSecurity.commercialReferenceNumber.isEmpty &&
           safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
 
         itemDetails <- nonEmptyListOf(3)(Arbitrary(genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)))

@@ -23,25 +23,24 @@ import models.{Index, UserAnswers}
 import models.reference.CircumstanceIndicator
 import pages.AddSecurityDetailsPage
 import pages.addItems._
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
 
 final case class ProducedDocument(documentType: String, documentReference: String, extraInformation: Option[String])
 
 object ProducedDocument {
 
   private def readDocumentType(itemIndex: Index): ReaderT[Option, UserAnswers, Boolean] =
-    AddSecurityDetailsPage.reader
-      .flatMap {
-        case true =>
-          AddCircumstanceIndicatorPage.reader.flatMap {
-            case true =>
-              CircumstanceIndicatorPage.reader.map(
-                x => CircumstanceIndicator.conditionalIndicators.contains(x)
-              )
-            case false => true.pure[UserAnswersReader]
-          }
-        case false => AddDocumentsPage(itemIndex).reader
+    (for {
+      addSecurity     <- AddSecurityDetailsPage.reader
+      addRef          <- AddCommercialReferenceNumberPage.reader
+      addCircumstance <- AddCircumstanceIndicatorPage.reader
+    } yield {
+      (addSecurity, addRef, addCircumstance, itemIndex.position == 0) match {
+        case (true, false, false, true) => true.pure[UserAnswersReader]
+        case (true, false, true, true)  => CircumstanceIndicatorPage.reader.map(x => CircumstanceIndicator.conditionalIndicators.contains(x))
+        case _                          => AddDocumentsPage(itemIndex).reader
       }
+    }).flatMap(x => x)
 
   def deriveProducedDocuments(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] =
     readDocumentType(itemIndex)
