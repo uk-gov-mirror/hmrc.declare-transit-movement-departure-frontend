@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 import models.reference.CircumstanceIndicator
 import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.addItems.specialMentions._
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
 import pages.{AddSecurityDetailsPage, Page}
 import play.api.mvc.Call
 
@@ -109,11 +109,15 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
   }
 
   private def showDocumentTypePage(userAnswers: UserAnswers, itemIndex: Index): Option[Boolean] =
-    (userAnswers.get(AddSecurityDetailsPage), userAnswers.get(AddCircumstanceIndicatorPage)) match {
-      case (Some(true), Some(false)) => Some(true)
-      case (Some(true), Some(true))  => userAnswers.get(CircumstanceIndicatorPage) map (CircumstanceIndicator.conditionalIndicators.contains(_))
-      case (Some(false), _)          => Some(false)
-      case _                         => None
+    (userAnswers.get(AddSecurityDetailsPage),
+     userAnswers.get(AddCircumstanceIndicatorPage),
+     userAnswers.get(AddCommercialReferenceNumberPage),
+     itemIndex.position == 0) match {
+      case (Some(true), Some(false), Some(false), true) => Some(true)
+      case (Some(true), Some(true), Some(false), true) =>
+        userAnswers.get(CircumstanceIndicatorPage) map (CircumstanceIndicator.conditionalIndicators.contains(_))
+      case (Some(false), _, _, _) => Some(false)
+      case _                      => None
     }
 
   private def documentsJourney(userAnswers: UserAnswers, itemIndex: Index, mode: Mode): Option[Call] =
@@ -125,7 +129,7 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
       case None        => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  private def removeSpecialMentionPage: PartialFunction[Page, UserAnswers => Option[Call]] = {
+  private def removeSpecialMentionPage(): PartialFunction[Page, UserAnswers => Option[Call]] = {
     case RemoveSpecialMentionPage(itemIndex, _) =>
       userAnswers =>
         if (count(itemIndex)(userAnswers) == 0) {

@@ -25,7 +25,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.AddSecurityDetailsPage
 import pages.addItems.specialMentions._
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
 
 class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -219,7 +219,7 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, index, NormalMode))
         }
 
-        "to DocumentType when set to false and AddSecurityDetailsPage is 'Yes' and  AddCircumstanceIndicatorPage is 'No'" in {
+        "to DocumentType when set to false and AddSecurityDetailsPage is 'Yes' and  AddCircumstanceIndicatorPage is 'No' and it is the first Item and AddCommercialReferenceNumberPage is false" in {
 
           val userAnswers = emptyUserAnswers
             .set(AddCircumstanceIndicatorPage, false)
@@ -231,13 +231,16 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .set(AddAnotherSpecialMentionPage(index), false)
             .success
             .value
+            .set(AddCommercialReferenceNumberPage, false)
+            .success
+            .value
 
           navigator
             .nextPage(AddAnotherSpecialMentionPage(index), NormalMode, userAnswers)
             .mustBe(controllers.addItems.routes.DocumentTypeController.onPageLoad(userAnswers.id, index, itemIndex, NormalMode))
         }
 
-        "to DocumentType when set to false and AddSecurityDetailsPage is 'Yes' and  AddCircumstanceIndicatorPage is 'Yes' and CircumstanceIndicator is either E, D, C and B" in {
+        "to DocumentType when set to false and AddSecurityDetailsPage is 'Yes' and  AddCircumstanceIndicatorPage is 'Yes' and CircumstanceIndicator is either E, D, C and B && AddCommercialReferenceNumberPage is false" in {
 
           val circumstanceIndicator = Gen.oneOf(CircumstanceIndicator.conditionalIndicators).sample.value
 
@@ -252,6 +255,9 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .success
             .value
             .set(AddAnotherSpecialMentionPage(index), false)
+            .success
+            .value
+            .set(AddCommercialReferenceNumberPage, false)
             .success
             .value
 
@@ -273,6 +279,9 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .success
             .value
             .set(AddAnotherSpecialMentionPage(index), false)
+            .success
+            .value
+            .set(AddCommercialReferenceNumberPage, false)
             .success
             .value
 

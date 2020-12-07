@@ -37,7 +37,7 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(arb[JourneyDomain]) {
-          case journeyDomain =>
+          journeyDomain =>
             val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
             val result            = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
 

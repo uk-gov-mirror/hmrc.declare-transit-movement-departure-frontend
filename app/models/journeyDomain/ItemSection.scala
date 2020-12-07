@@ -24,7 +24,7 @@ import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
 import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 
 case class ItemSection(
@@ -87,7 +87,38 @@ object ItemSection {
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
 
-  def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
+  private def readDocumentType(itemIndex: Index): ReaderT[Option, UserAnswers, Boolean] =
+    (for {
+      addSecurity     <- AddSecurityDetailsPage.reader
+      addRef          <- AddCommercialReferenceNumberPage.reader
+      addCircumstance <- AddCircumstanceIndicatorPage.reader
+    } yield {
+      (addSecurity, addRef, addCircumstance, itemIndex.position == 0) match {
+        case (true, false, false, true) => true.pure[UserAnswersReader]
+        case (true, false, true, true)  => CircumstanceIndicatorPage.reader.map(x => CircumstanceIndicator.conditionalIndicators.contains(x))
+        case _                          => AddDocumentsPage(itemIndex).reader
+      }
+    }).flatMap(x => x)
+
+  private def deriveProducedDocuments(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] =
+    readDocumentType(itemIndex)
+      .flatMap {
+        isTrue =>
+          if (isTrue) {
+            DeriveNumberOfDocuments(itemIndex).reader
+              .filter(_.nonEmpty)
+              .flatMap {
+                _.zipWithIndex
+                  .traverse[UserAnswersReader, ProducedDocument]({
+                    case (_, index) =>
+                      ProducedDocument.producedDocumentReader(itemIndex, Index(index))
+                  })
+                  .map(NonEmptyList.fromList)
+              }
+          } else none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]
+      }
+
+  implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
       ItemDetails.itemDetailsReader(index),
       ItemTraderDetails.consignorDetails(index),
