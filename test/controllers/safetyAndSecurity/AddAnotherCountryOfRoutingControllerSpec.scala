@@ -17,17 +17,19 @@
 package controllers.safetyAndSecurity
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
+import derivable.DeriveNumberOfCountryOfRouting
 import forms.safetyAndSecurity.AddAnotherCountryOfRoutingFormProvider
 import matchers.JsonMatchers
-import models.{NormalMode, UserAnswers}
+import models.reference.{Country, CountryCode}
+import models.{CountryList, Index, NormalMode}
 import navigation.annotations.SafetyAndSecurity
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, CountryOfRoutingPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -36,6 +38,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import utils.countryJsonList
+import viewModels.SafetyAndSecurityCheckYourAnswersViewModel
 
 import scala.concurrent.Future
 
@@ -44,8 +48,11 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new AddAnotherCountryOfRoutingFormProvider()
-  private val form         = formProvider()
-  private val template     = "safetyAndSecurity/addAnotherCountryOfRouting.njk"
+
+  private val mockReferenceDataConnector = mock[ReferenceDataConnector]
+  val countries                          = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
+  private val form                       = formProvider()
+  private val template                   = "safetyAndSecurity/addAnotherCountryOfRouting.njk"
 
   lazy val addAnotherCountryOfRoutingRoute = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, NormalMode).url
 
@@ -53,6 +60,7 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SafetyAndSecurity]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockReferenceDataConnector))
 
   "AddAnotherCountryOfRouting Controller" - {
 
@@ -60,6 +68,8 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -88,6 +98,7 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -107,6 +118,8 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       dataRetrievalWithData(emptyUserAnswers)
 

@@ -16,10 +16,11 @@
 
 package controllers.safetyAndSecurity
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.safetyAndSecurity.AddAnotherCountryOfRoutingFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{CountryList, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.AddAnotherCountryOfRoutingPage
@@ -31,11 +32,11 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import derivable.DeriveNumberOfCountryOfRouting
+import models.reference.Country
 import models.requests.DataRequest
 import play.api.data.Form
 import play.twirl.api.Html
-import utils.SafetyAndSecurityCheckYourAnswerHelper
-import viewModels.SafetyAndSecurityCheckYourAnswersViewModel
+import utils.{countryJsonList, SafetyAndSecurityCheckYourAnswerHelper}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,6 +47,7 @@ class AddAnotherCountryOfRoutingController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
   formProvider: AddAnotherCountryOfRoutingFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -60,7 +62,7 @@ class AddAnotherCountryOfRoutingController @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        renderPage(lrn, form).map(Ok(_))
+        renderPage(lrn, form, mode).map(Ok(_))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -68,7 +70,7 @@ class AddAnotherCountryOfRoutingController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => renderPage(lrn, formWithErrors).map(BadRequest(_)),
+          formWithErrors => renderPage(lrn, formWithErrors, mode).map(BadRequest(_)),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherCountryOfRoutingPage, value))
@@ -77,28 +79,30 @@ class AddAnotherCountryOfRoutingController @Inject()(
         )
   }
 
-  private def renderPage(lrn: LocalReferenceNumber, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
+  private def renderPage(lrn: LocalReferenceNumber, form: Form[Boolean], mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Html] = {
 
     val cyaHelper                = new SafetyAndSecurityCheckYourAnswerHelper(request.userAnswers)
     val numberOfRoutingCountries = request.userAnswers.get(DeriveNumberOfCountryOfRouting).getOrElse(0)
     val indexList: Seq[Index]    = List.range(0, numberOfRoutingCountries).map(Index(_))
+    referenceDataConnector.getCountryList() flatMap {
+      countries =>
+        val countryRows = indexList.map {
+          index =>
+            cyaHelper.countryRows(index, countries, mode)
+        }
 
-    val countryRows = indexList.map {
-      index =>
-        cyaHelper.countryRows(index)
+        val singularOrPlural = if (numberOfRoutingCountries > 1) "plural" else "singular"
+        val json = Json.obj(
+          "form"        -> form,
+          "pageTitle"   -> msg"addAnotherCountryOfRouting.title.$singularOrPlural".withArgs(numberOfRoutingCountries),
+          "heading"     -> msg"addAnotherCountryOfRouting.heading.$singularOrPlural".withArgs(numberOfRoutingCountries),
+          "countryRows" -> countryRows,
+          "lrn"         -> lrn,
+          "radios"      -> Radios.yesNo(form("value")),
+        )
+
+        renderer.render(template, json)
+
     }
-
-    val singularOrPlural = if (numberOfRoutingCountries > 1) "plural" else "singular"
-    val json = Json.obj(
-      "form"        -> form,
-      "pageTitle"   -> msg"addAnotherCountryOfRouting.title.$singularOrPlural".withArgs(numberOfRoutingCountries),
-      "heading"     -> msg"addAnotherCountryOfRouting.heading.$singularOrPlural".withArgs(numberOfRoutingCountries),
-      "countryRows" -> countryRows,
-      "lrn"         -> lrn,
-      "radios"      -> Radios.yesNo(form("value"))
-    )
-
-    renderer.render(template, json)
-
   }
 }

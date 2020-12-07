@@ -17,20 +17,25 @@
 package viewModels
 
 import derivable.DeriveNumberOfCountryOfRouting
-import models.{Index, UserAnswers}
+import models.{CheckMode, CountryList, Index, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.SafetyAndSecurityCheckYourAnswerHelper
 import viewModels.sections.Section
 
 object SafetyAndSecurityCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers): Seq[Section] = {
+  def apply(userAnswers: UserAnswers, countries: CountryList): Seq[Section] = {
+
     val cyah = new SafetyAndSecurityCheckYourAnswerHelper(userAnswers)
 
-    val countriesOfRoutingRows: Seq[SummaryList.Row] = List.range(0, userAnswers.get(DeriveNumberOfCountryOfRouting).getOrElse(0)).flatMap {
-      countryOfRoutingPosition =>
-        cyah.countryRows(Index(countryOfRoutingPosition))
-    }
+      val countriesOfRoutingRows: Seq[SummaryList.Row] = List.range(0, userAnswers.get(DeriveNumberOfCountryOfRouting).getOrElse(0)).flatMap {
+        countryOfRoutingPosition =>
+          cyah.countryOfRoutingRows(Index(countryOfRoutingPosition), countries)
+      }
+    val countriesOfRoutingUrl(index: Index) = cyah.countryOfRoutingRows(index, msg"addItems.checkYourAnswersLabel.containers.addRemove")
+
+
+
 
     Seq(
       Section(
@@ -48,9 +53,11 @@ object SafetyAndSecurityCheckYourAnswersViewModel {
           cyah.placeOfUnloadingCode
         ).flatten
       ),
+
       Section(
         msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting",
-        countriesOfRoutingRows
+        countriesOfRoutingRows,
+        countriesOfRoutingUrl
       ),
       Section(
         msg"safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails",

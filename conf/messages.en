@@ -1287,6 +1287,9 @@ countryOfRouting.checkYourAnswersLabel = Country of routing
 countryOfRouting.checkYourAnswersLabel.visuallyHidden = change country of routing
 countryOfRouting.error.required = Enter the country of routing
 
+addOrRemoveCountryOfRouting.checkYourAnswersLabel = Add or remove countries of routing
+
+
 addAnotherCountryOfRouting.title.singular = You have added {0} country of routing
 addAnotherCountryOfRouting.title.plural = You have added {0} countries of routing
 addAnotherCountryOfRouting.heading.singular = You have added {0} country of routing
@@ -1450,7 +1453,7 @@ securityConsigneeName.error.length =  The security consignee’s name must be 35
 securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
 
-confirmRemoveCountry.title = confirmRemoveCountry
-confirmRemoveCountry.heading = confirmRemoveCountry
+confirmRemoveCountry.title = Are you sure you want to remove the country?
+confirmRemoveCountry.heading = Are you sure you want to remove the country?
 confirmRemoveCountry.checkYourAnswersLabel = confirmRemoveCountry
-confirmRemoveCountry.error.required = Select yes if confirmRemoveCountry
+confirmRemoveCountry.error.required = Select yes if you want to remove the country
