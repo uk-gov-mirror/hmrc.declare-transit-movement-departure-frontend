@@ -26,48 +26,10 @@ import pages.addItems._
 import pages.addItems.specialMentions._
 import pages.addItems.containers.{AddAnotherContainerPage, ConfirmRemoveContainerPage, ContainerNumberPage}
 import pages.addItems.securityDetails._
-import pages.addItems.traderSecurityDetails.{
-  AddSecurityConsigneesEoriPage,
-  AddSecurityConsignorsEoriPage,
-  SecurityConsigneeAddressPage,
-  SecurityConsigneeEoriPage,
-  SecurityConsigneeNamePage,
-  SecurityConsignorAddressPage,
-  SecurityConsignorEoriPage,
-  SecurityConsignorNamePage
-}
+import pages.addItems.traderSecurityDetails.{AddSecurityConsigneesEoriPage, AddSecurityConsignorsEoriPage, SecurityConsigneeAddressPage, SecurityConsigneeEoriPage, SecurityConsigneeNamePage, SecurityConsignorAddressPage, SecurityConsignorEoriPage, SecurityConsignorNamePage}
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.movementDetails.PreLodgeDeclarationPage
-import pages.safetyAndSecurity.{
-  AddAnotherCountryOfRoutingPage,
-  AddCarrierEoriPage,
-  AddCarrierPage,
-  AddCircumstanceIndicatorPage,
-  AddCommercialReferenceNumberAllItemsPage,
-  AddCommercialReferenceNumberPage,
-  AddConveyanceReferenceNumberPage,
-  AddPlaceOfUnloadingCodePage,
-  AddSafetyAndSecurityConsigneeEoriPage,
-  AddSafetyAndSecurityConsigneePage,
-  AddSafetyAndSecurityConsignorEoriPage,
-  AddSafetyAndSecurityConsignorPage,
-  AddTransportChargesPaymentMethodPage,
-  CarrierAddressPage,
-  CarrierEoriPage,
-  CarrierNamePage,
-  CircumstanceIndicatorPage,
-  CommercialReferenceNumberAllItemsPage,
-  ConveyanceReferenceNumberPage,
-  CountryOfRoutingPage,
-  PlaceOfUnloadingCodePage,
-  SafetyAndSecurityConsigneeAddressPage,
-  SafetyAndSecurityConsigneeEoriPage,
-  SafetyAndSecurityConsigneeNamePage,
-  SafetyAndSecurityConsignorAddressPage,
-  SafetyAndSecurityConsignorEoriPage,
-  SafetyAndSecurityConsignorNamePage,
-  TransportChargesPaymentMethodPage
-}
+import pages.safetyAndSecurity.{AddAnotherCountryOfRoutingPage, AddCarrierEoriPage, AddCarrierPage, AddCircumstanceIndicatorPage, AddCommercialReferenceNumberAllItemsPage, AddCommercialReferenceNumberPage, AddConveyanceReferenceNumberPage, AddPlaceOfUnloadingCodePage, AddSafetyAndSecurityConsigneeEoriPage, AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorEoriPage, AddSafetyAndSecurityConsignorPage, AddTransportChargesPaymentMethodPage, CarrierAddressPage, CarrierEoriPage, CarrierNamePage, CircumstanceIndicatorPage, CommercialReferenceNumberAllItemsPage, ConfirmRemoveCountryPage, ConveyanceReferenceNumberPage, CountryOfRoutingPage, PlaceOfUnloadingCodePage, SafetyAndSecurityConsigneeAddressPage, SafetyAndSecurityConsigneeEoriPage, SafetyAndSecurityConsigneeNamePage, SafetyAndSecurityConsignorAddressPage, SafetyAndSecurityConsignorEoriPage, SafetyAndSecurityConsignorNamePage, TransportChargesPaymentMethodPage}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators {

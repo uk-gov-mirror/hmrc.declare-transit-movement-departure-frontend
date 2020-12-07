@@ -1,4 +1,4 @@
-package forms
+package forms.safetyAndSecurity
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError

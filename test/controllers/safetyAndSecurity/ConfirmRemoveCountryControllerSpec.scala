@@ -1,17 +1,16 @@
-package controllers
+package controllers.safetyAndSecurity
 
-import base.SpecBase
-import base.MockNunjucksRendererApp
-import forms.ConfirmRemoveCountryFormProvider
+import base.{MockNunjucksRendererApp, SpecBase}
+import forms.safetyAndSecurity.ConfirmRemoveCountryFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import navigation.annotations.SafetyAndSecurity
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ConfirmRemoveCountryPage
+import pages.safetyAndSecurity.ConfirmRemoveCountryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -19,7 +18,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import repositories.SessionRepository
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.Future

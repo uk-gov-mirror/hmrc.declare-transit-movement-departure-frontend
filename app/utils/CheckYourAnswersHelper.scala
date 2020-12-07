@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter
 import controllers.routes
 import models.{CheckMode, LocalReferenceNumber, UserAnswers}
 import pages._
+import pages.safetyAndSecurity.ConfirmRemoveCountryPage
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
@@ -29,8 +30,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
   def confirmRemoveCountry: Option[Row] = userAnswers.get(ConfirmRemoveCountryPage) map {
     answer =>
       Row(
-        key     = Key(msg"confirmRemoveCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value   = Value(yesOrNo(answer)),
+        key   = Key(msg"confirmRemoveCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
