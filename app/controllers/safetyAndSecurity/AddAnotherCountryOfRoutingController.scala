@@ -57,10 +57,11 @@ class AddAnotherCountryOfRoutingController @Inject()(
   private val form     = formProvider()
   private val template = "safetyAndSecurity/addAnotherCountryOfRouting.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      renderPage(lrn, form).map(Ok(_))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        renderPage(lrn, form).map(Ok(_))
+    }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

@@ -27,11 +27,10 @@ object SafetyAndSecurityCheckYourAnswersViewModel {
   def apply(userAnswers: UserAnswers): Seq[Section] = {
     val cyah = new SafetyAndSecurityCheckYourAnswerHelper(userAnswers)
 
-    val countriesOfRoutingRows: Seq[SummaryList.Row] =
-      List.range(0, userAnswers.get(DeriveNumberOfCountryOfRouting).getOrElse(0)).flatMap {
-        countryOfRoutingPosition =>
-          cyah.countryRows(Index(countryOfRoutingPosition))
-      }
+    val countriesOfRoutingRows: Seq[SummaryList.Row] = List.range(0, userAnswers.get(DeriveNumberOfCountryOfRouting).getOrElse(0)).flatMap {
+      countryOfRoutingPosition =>
+        cyah.countryRows(Index(countryOfRoutingPosition))
+    }
 
     Seq(
       Section(
