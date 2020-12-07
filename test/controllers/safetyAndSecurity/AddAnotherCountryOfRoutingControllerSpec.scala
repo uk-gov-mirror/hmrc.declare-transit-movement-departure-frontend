@@ -57,7 +57,6 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
   "AddAnotherCountryOfRouting Controller" - {
 
     "must return OK and the correct view for a GET" in {
-//      val userAnswers = emptyUserAnswers.set(CountryOfRoutingPage(index), "GB").success.value
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -84,40 +83,6 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
 
       templateCaptor.getValue mustEqual template
       jsonCaptor.getValue must containJson(expectedJson)
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(AddAnotherCountryOfRoutingPage, true).success.value
-      dataRetrievalWithData(userAnswers)
-
-      val request        = FakeRequest(GET, addAnotherCountryOfRoutingRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(filledForm("value"))
-      )
-
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
-
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -157,16 +122,15 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"   -> boundForm,
-        "mode"   -> NormalMode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(boundForm("value"))
+        "form"      -> boundForm,
+        "pageTitle" -> msg"addAnotherCountryOfRouting.title.singular".withArgs(1),
+        "heading"   -> msg"addAnotherCountryOfRouting.heading.singular".withArgs(1),
+        "lrn"       -> lrn,
+        "radios"    -> Radios.yesNo(form("value"))
       )
 
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
       templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
+      jsonCaptor.getValue must containJson(expectedJson)
 
     }
 

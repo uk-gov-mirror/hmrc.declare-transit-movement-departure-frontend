@@ -428,13 +428,13 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
               href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
               visuallyHiddenText = Some(msg"addAnotherCountryOfRouting.checkYourAnswersLabel.change.visuallyHidden".withArgs(answer)),
               attributes         = Map("id" -> s"""change-country-${index.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = routes.ConfirmRemoveCountryController.onPageLoad(lrn, index, CheckMode).url,
+              visuallyHiddenText = Some(msg"addAnotherCountryOfRouting.checkYourAnswersLabel.remove.visuallyHidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-country-${index.display}""")
             )
-//          Action(
-//            content            = msg"site.delete",
-//            href               = routes.ConfirmRemoveCountryController.onPageLoad(lrn, CheckMode).url,
-//            visuallyHiddenText = Some(msg"addAnotherCountryOfRouting.checkYourAnswersLabel.remove.visuallyHidden".withArgs(answer)),
-//            attributes         = Map("id" -> s"""remove-country-${index.display}""")
-//          )
           )
         )
     }
