@@ -58,7 +58,7 @@ class ConfirmRemoveCountryController @Inject()(
       val json = Json.obj(
         "form"   -> form,
         "mode"   -> mode,
-        "index" -> index.display,
+        "index"  -> index.display,
         "lrn"    -> lrn,
         "radios" -> Radios.yesNo(form("value"))
       )
@@ -85,13 +85,13 @@ class ConfirmRemoveCountryController @Inject()(
             renderer.render(template, json).map(BadRequest(_))
           },
           value =>
-          if(value){
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.remove(CountriesOfRoutingQuery(index)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ConfirmRemoveCountryPage, mode, updatedAnswers))
-          } else {
-            Future.successful(Redirect(navigator.nextPage(ConfirmRemoveCountryPage, mode, request.userAnswers)))
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(CountriesOfRoutingQuery(index)))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(ConfirmRemoveCountryPage, mode, updatedAnswers))
+            } else {
+              Future.successful(Redirect(navigator.nextPage(ConfirmRemoveCountryPage, mode, request.userAnswers)))
           }
         )
   }

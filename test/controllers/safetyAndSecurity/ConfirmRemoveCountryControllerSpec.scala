@@ -1,8 +1,25 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.safetyAndSecurity
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import forms.safetyAndSecurity.ConfirmRemoveCountryFormProvider
 import matchers.JsonMatchers
+import controllers.{routes => mainRoute}
 import models.{NormalMode, UserAnswers}
 import navigation.annotations.SafetyAndSecurity
 import navigation.{FakeNavigator, Navigator}
@@ -27,10 +44,10 @@ class ConfirmRemoveCountryControllerSpec extends SpecBase with MockNunjucksRende
   def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new ConfirmRemoveCountryFormProvider()
-  private val form = formProvider()
-  private val template = "confirmRemoveCountry.njk"
+  private val form         = formProvider()
+  private val template     = "confirmRemoveCountry.njk"
 
-  lazy val confirmRemoveCountryRoute = routes.ConfirmRemoveCountryController.onPageLoad(lrn, NormalMode).url
+  lazy val confirmRemoveCountryRoute = routes.ConfirmRemoveCountryController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -46,9 +63,9 @@ class ConfirmRemoveCountryControllerSpec extends SpecBase with MockNunjucksRende
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(GET, confirmRemoveCountryRoute)
+      val request        = FakeRequest(GET, confirmRemoveCountryRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -78,9 +95,9 @@ class ConfirmRemoveCountryControllerSpec extends SpecBase with MockNunjucksRende
       val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemoveCountryPage, true).success.value
       dataRetrievalWithData(userAnswers)
 
-      val request = FakeRequest(GET, confirmRemoveCountryRoute)
+      val request        = FakeRequest(GET, confirmRemoveCountryRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -129,10 +146,10 @@ class ConfirmRemoveCountryControllerSpec extends SpecBase with MockNunjucksRende
 
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request = FakeRequest(POST, confirmRemoveCountryRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request        = FakeRequest(POST, confirmRemoveCountryRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
@@ -164,7 +181,7 @@ class ConfirmRemoveCountryControllerSpec extends SpecBase with MockNunjucksRende
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
     }
 
@@ -180,7 +197,7 @@ class ConfirmRemoveCountryControllerSpec extends SpecBase with MockNunjucksRende
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual mainRoute.SessionExpiredController.onPageLoad().url
 
     }
   }

@@ -19,7 +19,6 @@ package utils
 import controllers.safetyAndSecurity.routes
 import models.{CheckMode, Index, LocalReferenceNumber, UserAnswers}
 import pages.safetyAndSecurity._
-import queries.CountriesOfRoutingQuery
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
 
@@ -439,5 +438,20 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
           )
         )
     }
+
+  def confirmRemoveCountry(index: Index): Option[Row] = userAnswers.get(ConfirmRemoveCountryPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"confirmRemoveCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.ConfirmRemoveCountryController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveCountry.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 
 }

@@ -27,21 +27,6 @@ import uk.gov.hmrc.viewmodels._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def confirmRemoveCountry: Option[Row] = userAnswers.get(ConfirmRemoveCountryPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"confirmRemoveCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.ConfirmRemoveCountryController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveCountry.checkYourAnswersLabel"))
-          )
-        )
-      )
-  }
-
   def addSecurityDetails: Option[Row] = userAnswers.get(AddSecurityDetailsPage) map {
     answer =>
       Row(

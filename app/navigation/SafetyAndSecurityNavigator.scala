@@ -43,6 +43,8 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     case PlaceOfUnloadingCodePage                 => ua => placeOfUnloadingCode(ua)
     case CountryOfRoutingPage(_)                  => ua => Some(routes.AddAnotherCountryOfRoutingController.onPageLoad(ua.id, NormalMode))
     case AddAnotherCountryOfRoutingPage           => ua => addAnotherCountryOfRouting(ua, NormalMode)
+    case ConfirmRemoveCountryPage                 => ua => Some(removeCountry(NormalMode)(ua))
+
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -146,6 +148,12 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
       case false  => routes.AddSafetyAndSecurityConsignorController.onPageLoad(ua.id, NormalMode)
     }
   }
+
+  private def removeCountry(mode: Mode)(ua: UserAnswers) =
+    ua.get(DeriveNumberOfCountryOfRouting) match {
+      case None | Some(0) => routes.CountryOfRoutingController.onPageLoad(ua.id, Index(0), mode)
+      case _              => routes.AddAnotherCountryOfRoutingController.onPageLoad(ua.id, mode)
+    }
 
   private def placeOfUnloadingCode(ua: UserAnswers): Option[Call] = {
     val totalNumberOfCountriesOfRouting = ua.get(DeriveNumberOfCountryOfRouting).getOrElse(0)

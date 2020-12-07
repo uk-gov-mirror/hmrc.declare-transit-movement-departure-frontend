@@ -88,7 +88,7 @@ class AddAnotherCountryOfRoutingController @Inject()(
         cyaHelper.countryRows(index)
     }
 
-    val singularOrPlural = if (numberOfRoutingCountries == 1) "singular" else "plural"
+    val singularOrPlural = if (numberOfRoutingCountries > 1) "plural" else "singular"
     val json = Json.obj(
       "form"        -> form,
       "pageTitle"   -> msg"addAnotherCountryOfRouting.title.$singularOrPlural".withArgs(numberOfRoutingCountries),
