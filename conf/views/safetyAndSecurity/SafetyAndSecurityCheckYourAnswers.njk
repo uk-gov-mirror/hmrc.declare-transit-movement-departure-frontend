@@ -29,6 +29,9 @@
              {{ sectionMacro(section.sectionTitle, section.rows, section.addAnother) }}
         {% endfor %}
 
+         <p class="govuk-body"><a id="add-or-remove-country-of-routing" href="{{ addAnotherCountryOfRoutingUrl }}">{{ messages("addOrRemoveCountryOfRouting.checkYourAnswersLabel") }}</a><p>
+
+
          {{ csrf() | safe }}
 
          {{ govukButton({

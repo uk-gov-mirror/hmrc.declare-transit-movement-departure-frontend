@@ -61,6 +61,8 @@ class SafetyAndSecurityNavigator @Inject()() extends Navigator {
     case PlaceOfUnloadingCodePage                 => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
     case CountryOfRoutingPage(_)                  => ua => Some(routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(ua.id))
     case AddAnotherCountryOfRoutingPage           => ua => addAnotherCountryOfRouting(ua, CheckMode)
+    case ConfirmRemoveCountryPage                 => ua => Some(removeCountry(CheckMode)(ua))
+
   }
 
   private def addCircumstanceIndicator(ua: UserAnswers, mode: Mode): Option[Call] =
