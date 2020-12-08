@@ -1426,6 +1426,9 @@ safetyAndSecurityCheckYourAnswers.title = Check your answers
 safetyAndSecurityCheckYourAnswers.heading = Check your answers
 safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting = Countries of routing
 safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails = Security trader
+safetyAndSecurity.checkYourAnswersLabel.subTitle.securityConsignor = Security consignor
+safetyAndSecurity.checkYourAnswersLabel.subTitle.securityConsignee = Security consignee
+safetyAndSecurity.checkYourAnswersLabel.subTitle.carrier = Carrier
 
 securityConsignorName.title = What is the security consignor’s name?
 securityConsignorName.heading = What is the security consignor’s name?
