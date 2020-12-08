@@ -50,28 +50,39 @@ object SafetyAndSecurityCheckYourAnswersViewModel {
       ),
       Section(
         msg"safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails",
+        msg"safetyAndSecurity.checkYourAnswersLabel.subTitle.securityConsignor",
         Seq(
-          //TODO Consignor subheading
           cyah.addSafetyAndSecurityConsignor,
           cyah.addSafetyAndSecurityConsignorEori,
           cyah.safetyAndSecurityConsignorEori,
           cyah.safetyAndSecurityConsignorName,
-          cyah.safetyAndSecurityConsignorAddress,
-          //TODO Consignee subheading
+          cyah.safetyAndSecurityConsignorAddress
+        ).flatten
+      ),
+      Section(
+        None,
+        Some(msg"safetyAndSecurity.checkYourAnswersLabel.subTitle.securityConsignee"),
+        Seq(
           cyah.addSafetyAndSecurityConsignee,
           cyah.addSafetyAndSecurityConsigneeEori,
           cyah.safetyAndSecurityConsigneeEori,
           cyah.safetyAndSecurityConsigneeName,
-          cyah.safetyAndSecurityConsigneeAddress,
-          //TODO Carrier subheading
+          cyah.safetyAndSecurityConsigneeAddress
+        ).flatten,
+        None
+      ),
+      Section(
+        None,
+        Some(msg"safetyAndSecurity.checkYourAnswersLabel.subTitle.carrier"),
+        Seq(
           cyah.addCarrier,
           cyah.addCarrierEori,
           cyah.carrierEori,
           cyah.carrierName,
           cyah.carrierAddress
-        ).flatten
-      )
+        ).flatten,
+        None
+      ),
     )
   }
-
 }
