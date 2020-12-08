@@ -21,6 +21,7 @@ import models.{CheckMode, CountryList, Index, LocalReferenceNumber, Mode, UserAn
 import pages.safetyAndSecurity._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
+import viewModels.AddAnotherViewModel
 
 class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
 
@@ -440,7 +441,7 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
         )
     }
 
-  def countryOfRoutingRows(index: Index, countries: CountryList, text: Text): Option[Row] =
+  def countryOfRoutingRows(index: Index, countries: CountryList): Option[Row] =
     userAnswers.get(CountryOfRoutingPage(index)).map {
       answer =>
         val countryName = countries.getCountry(answer).map(_.description).getOrElse(answer.code)
@@ -457,6 +458,13 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
           )
         )
     }
+
+  def addAnotherCountryOfRouting(index: Index, content: Text): AddAnotherViewModel = {
+
+    val addAnotherCountryOfRoutingHref = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url
+
+    AddAnotherViewModel(addAnotherCountryOfRoutingHref, content)
+  }
 
   def confirmRemoveCountry(index: Index): Option[Row] = userAnswers.get(ConfirmRemoveCountryPage) map {
     answer =>

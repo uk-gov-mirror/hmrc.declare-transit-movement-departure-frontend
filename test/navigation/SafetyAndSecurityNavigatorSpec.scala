@@ -410,7 +410,6 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
-
       "must go from ConfirmRemoveCountry page to " - {
 
         "AddAnotherCountryOfRouting page when 'No' is selected and there are more than one country" in {
@@ -430,19 +429,13 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         "AddAnotherCountryOfRouting page when 'Yes' is selected and there are more than one country" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
-            val updatedAnswers = answers
-              .set(CountryOfRoutingPage(index), CountryCode("GB")).success.value
-              .set(CountryOfRoutingPage(Index(1)), CountryCode("IT")).success.value
-              .set(ConfirmRemoveCountryPage, true).success.value
+              val updatedAnswers = answers
+                .set(CountryOfRoutingPage(index), CountryCode("GB")).success.value
+                .set(CountryOfRoutingPage(Index(1)), CountryCode("IT")).success.value
+                .set(ConfirmRemoveCountryPage, true).success.value
               navigator
                 .nextPage(ConfirmRemoveCountryPage, NormalMode, updatedAnswers)
                 .mustBe(routes.AddAnotherCountryOfRoutingController.onPageLoad(updatedAnswers.id, NormalMode))
-
-
-
-              navigator
-                .nextPage(ConfirmRemoveCountryPage, NormalMode, updatedAnswers)
-                .mustBe(routes.CountryOfRoutingController.onPageLoad(updatedAnswers.id, index, NormalMode))
           }
         }
 
