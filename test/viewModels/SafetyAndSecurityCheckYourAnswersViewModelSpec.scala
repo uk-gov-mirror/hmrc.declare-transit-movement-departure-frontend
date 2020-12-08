@@ -115,7 +115,7 @@ class SafetyAndSecurityCheckYourAnswersViewModelSpec extends SpecBase with Gener
   "SafetyAndSecurityCheckYourAnswersViewModel" - {
 
     "must display the correct total number of sections" in {
-      data.length mustEqual 3
+      data.length mustEqual 5
     }
 
     "must display the correct total number of rows for summary section" in {
@@ -127,9 +127,20 @@ class SafetyAndSecurityCheckYourAnswersViewModelSpec extends SpecBase with Gener
       data(1).rows.length mustEqual 1
     }
 
-    "must display the correct total number of rows for Security Trader Details section" in {
+    "must display the correct total number of rows for Security Trader Consignor" in {
       data(2).sectionTitle.get mustBe msg"safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails"
-      data(2).rows.length mustEqual 10
+      data(2).sectionSubTitle.get mustBe msg"safetyAndSecurity.checkYourAnswersLabel.subTitle.securityConsignor"
+      data(2).rows.length mustEqual 4
+    }
+
+    "must display the correct total number of rows for Security Trader Consignee" in {
+      data(3).sectionSubTitle.get mustBe msg"safetyAndSecurity.checkYourAnswersLabel.subTitle.securityConsignee"
+      data(3).rows.length mustEqual 3
+    }
+
+    "must display the correct total number of rows for Security Trader Carrier" in {
+      data(4).sectionSubTitle.get mustBe msg"safetyAndSecurity.checkYourAnswersLabel.subTitle.carrier"
+      data(4).rows.length mustEqual 3
     }
   }
 
