@@ -20,6 +20,7 @@ import cats.data._
 import cats.implicits._
 import models.UserAnswers
 import models.reference.CountryCode
+import pages.AddSecurityDetailsPage
 
 case class JourneyDomain(
   preTaskList: PreTaskListDetails,
@@ -29,7 +30,8 @@ case class JourneyDomain(
   traderDetails: TraderDetails,
   itemDetails: NonEmptyList[ItemSection],
   goodsSummary: GoodsSummary,
-  guarantee: GuaranteeDetails
+  guarantee: GuaranteeDetails,
+  safetyAndSecurity: Option[SafetyAndSecurity]
 )
 
 object JourneyDomain {
@@ -45,15 +47,22 @@ object JourneyDomain {
     implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
       ReaderT[Option, UserAnswers, A](parser.run _)
 
+    val safetyAndSecurityReader: ReaderT[Option, UserAnswers, Option[SafetyAndSecurity]] = {
+      AddSecurityDetailsPage.reader.flatMap(
+        bool => if (bool) UserAnswersReader[SafetyAndSecurity].map(_.some) else none[SafetyAndSecurity].pure[UserAnswersReader]
+      )
+    }
+
     for {
-      preTaskList      <- UserAnswersReader[PreTaskListDetails]
-      movementDetails  <- UserAnswersReader[MovementDetails]
-      routeDetails     <- UserAnswersReader[RouteDetails]
-      transportDetails <- UserAnswersReader[TransportDetails]
-      traderDetails    <- UserAnswersReader[TraderDetails]
-      itemDetails      <- UserAnswersReader[NonEmptyList[ItemSection]]
-      goodsSummary     <- UserAnswersReader[GoodsSummary]
-      guarantee        <- UserAnswersReader[GuaranteeDetails]
+      preTaskList       <- UserAnswersReader[PreTaskListDetails]
+      movementDetails   <- UserAnswersReader[MovementDetails]
+      routeDetails      <- UserAnswersReader[RouteDetails]
+      transportDetails  <- UserAnswersReader[TransportDetails]
+      traderDetails     <- UserAnswersReader[TraderDetails]
+      itemDetails       <- UserAnswersReader[NonEmptyList[ItemSection]]
+      goodsSummary      <- UserAnswersReader[GoodsSummary]
+      guarantee         <- UserAnswersReader[GuaranteeDetails]
+      safetyAndSecurity <- safetyAndSecurityReader
     } yield
       JourneyDomain(
         preTaskList,
@@ -63,7 +72,8 @@ object JourneyDomain {
         traderDetails,
         itemDetails,
         goodsSummary,
-        guarantee
+        guarantee,
+        safetyAndSecurity
       )
   }
 }

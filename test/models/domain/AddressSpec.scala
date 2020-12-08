@@ -18,7 +18,7 @@ package models.domain
 
 import base.MonocleSpec
 import generators.{Generators, ModelGenerators}
-import models.{ConsigneeAddress, ConsignorAddress, PrincipalAddress}
+import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, PrincipalAddress}
 import models.reference.{Country, CountryCode}
 import monocle.law.discipline.PrismTests
 import org.scalacheck.{Arbitrary, Cogen, Gen}
@@ -73,6 +73,13 @@ class AddressSpec extends MonocleSpec with Generators with ModelGenerators {
         case ConsignorAddress(numberAndStreet, town, postcode, country) => (numberAndStreet, town, postcode, country)
       }
 
+  implicit val cogenCarrierAddress: Cogen[CarrierAddress] =
+    Cogen
+      .tuple4[String, String, String, Country]
+      .contramap[models.CarrierAddress] {
+        case CarrierAddress(numberAndStreet, town, postcode, country) => (numberAndStreet, town, postcode, country)
+      }
+
   describe("Address") {
 
     checkAll("Prism from Address to PrincipalAddress", PrismTests(Address.prismAddressToPrincipalAddress))
@@ -80,6 +87,8 @@ class AddressSpec extends MonocleSpec with Generators with ModelGenerators {
     checkAll("Prism from Address to ConsigneeAddress", PrismTests(Address.prismAddressToConsigneeAddress))
 
     checkAll("Prism from Address to ConsignorAddress", PrismTests(Address.prismAddressToConsignorAddress))
+
+    checkAll("Prism from Address to CarrierAddress", PrismTests(Address.prismAddressToCarrierAddress))
 
   }
 

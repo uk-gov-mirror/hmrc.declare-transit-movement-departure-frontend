@@ -16,7 +16,7 @@
 
 package models.domain
 
-import models.{ConsigneeAddress, ConsignorAddress, PrincipalAddress}
+import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, PrincipalAddress}
 import models.reference.Country
 import monocle.Prism
 
@@ -53,6 +53,15 @@ object Address {
         ConsignorAddress(numberAndStreet, town, postcode, country)
     })({
       case ConsignorAddress(numberAndStreet, town, postcode, country) =>
+        Address(numberAndStreet, town, postcode, Some(country))
+    })
+
+  val prismAddressToCarrierAddress: Prism[Address, CarrierAddress] =
+    Prism.partial[Address, CarrierAddress]({
+      case Address(numberAndStreet, town, postcode, Some(country)) =>
+        CarrierAddress(numberAndStreet, town, postcode, country)
+    })({
+      case CarrierAddress(numberAndStreet, town, postcode, country) =>
         Address(numberAndStreet, town, postcode, Some(country))
     })
 

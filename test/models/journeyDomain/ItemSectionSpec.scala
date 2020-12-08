@@ -25,13 +25,13 @@ import org.scalacheck.{Arbitrary, Gen}
 import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, CircumstanceIndicatorPage}
+import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(genItemSection(), arb[UserAnswers]) {
+        forAll(genItemSectionOld(), arb[UserAnswers]) {
           case (itemSection, userAnswers) =>
             val updatedUserAnswer           = ItemSectionSpec.setItemSection(itemSection, index)(userAnswers)
             val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
@@ -57,7 +57,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
   "Seq of ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(nonEmptyListOf[ItemSection](3)(Arbitrary(genItemSection())), arb[UserAnswers]) {
+        forAll(nonEmptyListOf[ItemSection](3)(Arbitrary(genItemSectionOld())), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
             val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
             val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
@@ -99,10 +99,11 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
   }
 
   private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
-    val indicator = Gen.oneOf(CircumstanceIndicator.conditionalIndicators).sample.getOrElse("test")
+    val indicator = CircumstanceIndicator.conditionalIndicators.head
     val smUserAnswers = startUserAnswers
       .unsafeSetVal(AddSecurityDetailsPage)(producedDocument.isDefined)
       .unsafeSetVal(AddCircumstanceIndicatorPage)(producedDocument.isDefined)
+      .unsafeSetVal(AddCommercialReferenceNumberPage)(producedDocument.isDefined)
       .unsafeSetVal(AddDocumentsPage(itemIndex))(producedDocument.isDefined)
       .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
 

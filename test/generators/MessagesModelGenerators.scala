@@ -18,21 +18,81 @@ package generators
 
 import java.time.{LocalDate, LocalTime}
 
-import models.{InvalidGuaranteeCode, InvalidGuaranteeReasonCode, LocalReferenceNumber}
 import models.messages._
 import models.messages.customsoffice.{CustomsOffice, CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem._
 import models.messages.guarantee.{Guarantee, GuaranteeReference, GuaranteeReferenceWithGrn, GuaranteeReferenceWithOther}
 import models.messages.header.{Header, Transport}
+import models.messages.safetyAndSecurity._
 import models.messages.trader._
 import models.reference.CountryCode
+import models.{InvalidGuaranteeCode, InvalidGuaranteeReasonCode, LocalReferenceNumber}
 import org.scalacheck.Arbitrary.arbitrary
-import models.messages.trader._
 import org.scalacheck.Gen.{alphaNumChar, choose}
 import org.scalacheck.{Arbitrary, Gen}
 import utils.Format.dateFormatted
 
 trait MessagesModelGenerators extends ModelGenerators with Generators {
+
+  implicit lazy val arbitrarySafetyAndSecurityCarrier: Arbitrary[SafetyAndSecurityCarrier] = Arbitrary {
+    Gen.oneOf[SafetyAndSecurityCarrier](arbitrary[SafetyAndSecurityCarrierWithEori], arbitrary[SafetyAndSecurityCarrierWithoutEori])
+  }
+
+  implicit lazy val securityCarrierEori: Arbitrary[SafetyAndSecurityCarrierWithEori] = Arbitrary {
+    for {
+      eori <- arbitrary[String]
+    } yield SafetyAndSecurityCarrierWithEori(eori)
+  }
+
+  implicit lazy val securityCarrierNoEori: Arbitrary[SafetyAndSecurityCarrierWithoutEori] = Arbitrary {
+    for {
+      name            <- arbitrary[String]
+      streetAndNumber <- arbitrary[String]
+      postcode        <- arbitrary[String]
+      city            <- arbitrary[String]
+      countryCode     <- arbitrary[String]
+    } yield SafetyAndSecurityCarrierWithoutEori(name, streetAndNumber, postcode, city, countryCode)
+  }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsignee: Arbitrary[SafetyAndSecurityConsignee] = Arbitrary {
+    Gen.oneOf[SafetyAndSecurityConsignee](arbitrary[SafetyAndSecurityConsigneeWithEori], arbitrary[SafetyAndSecurityConsigneeWithoutEori])
+  }
+
+  implicit lazy val securityConsigneeEori: Arbitrary[SafetyAndSecurityConsigneeWithEori] = Arbitrary {
+    for {
+      eori <- arbitrary[String]
+    } yield SafetyAndSecurityConsigneeWithEori(eori)
+  }
+
+  implicit lazy val securityConsigneeNoEori: Arbitrary[SafetyAndSecurityConsigneeWithoutEori] = Arbitrary {
+    for {
+      name            <- arbitrary[String]
+      streetAndNumber <- arbitrary[String]
+      postcode        <- arbitrary[String]
+      city            <- arbitrary[String]
+      countryCode     <- arbitrary[String]
+    } yield SafetyAndSecurityConsigneeWithoutEori(name, streetAndNumber, postcode, city, countryCode)
+  }
+
+  implicit lazy val arbitrarySafetyAndSecurityConsignor: Arbitrary[SafetyAndSecurityConsignor] = Arbitrary {
+    Gen.oneOf[SafetyAndSecurityConsignor](arbitrary[SafetyAndSecurityConsignorWithEori], arbitrary[SafetyAndSecurityConsignorWithoutEori])
+  }
+
+  implicit lazy val securityConsignorEori: Arbitrary[SafetyAndSecurityConsignorWithEori] = Arbitrary {
+    for {
+      eori <- arbitrary[String]
+    } yield SafetyAndSecurityConsignorWithEori(eori)
+  }
+
+  implicit lazy val securityConsignorNoEori: Arbitrary[SafetyAndSecurityConsignorWithoutEori] = Arbitrary {
+    for {
+      name            <- arbitrary[String]
+      streetAndNumber <- arbitrary[String]
+      postcode        <- arbitrary[String]
+      city            <- arbitrary[String]
+      countryCode     <- arbitrary[String]
+    } yield SafetyAndSecurityConsignorWithoutEori(name, streetAndNumber, postcode, city, countryCode)
+  }
 
   implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] = {
     Arbitrary {
@@ -99,7 +159,7 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
         seals                     <- Gen.option(arbitrary[Seals])
         guarantee                 <- arbitrary[Guarantee]
         goodsItems                <- nonEmptyListWithMaxSize(10, arbitrary[GoodsItem])
-        itinerary                 <- listWithMaxLength[Itinerary](Itinerary.Constants.maxCount)
+        itinerary                 <- listWithMaxLength[Itinerary](10)
       } yield
         DeclarationRequest(
           meta,
@@ -116,7 +176,10 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
           seals,
           guarantee,
           goodsItems,
-          itinerary
+          itinerary,
+          None,
+          None,
+          None
         )
     }
   }

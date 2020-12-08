@@ -147,8 +147,8 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
             taskListDsl
               .sectionName("declarationSummary.section.safetyAndSecurity")
               .ifCompleted(
-                UserAnswersReader.unsafeEmpty[Unit],
-                ""
+                UserAnswersReader[SafetyAndSecurity],
+                controllers.safetyAndSecurity.routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn).url
               )
               .ifInProgress(
                 AddCircumstanceIndicatorPage.reader,
