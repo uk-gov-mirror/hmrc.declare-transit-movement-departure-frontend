@@ -19,7 +19,23 @@ package viewModels
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.{JourneyModelGenerators, ModelGenerators, UserAnswersGenerator}
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.journeyDomain.{GoodsSummary, GoodsSummarySpec, GuaranteeDetails, GuaranteeDetailsSpec, ItemSection, ItemSectionSpec, MovementDetails, MovementDetailsSpec, RouteDetailsSpec, SafetyAndSecurity, SafetyAndSecuritySpec, TraderDetails, TraderDetailsSpec, TransportDetails, TransportDetailsSpec}
+import models.journeyDomain.{
+  GoodsSummary,
+  GoodsSummarySpec,
+  GuaranteeDetails,
+  GuaranteeDetailsSpec,
+  ItemSection,
+  ItemSectionSpec,
+  MovementDetails,
+  MovementDetailsSpec,
+  RouteDetailsSpec,
+  SafetyAndSecurity,
+  SafetyAndSecuritySpec,
+  TraderDetails,
+  TraderDetailsSpec,
+  TransportDetails,
+  TransportDetailsSpec
+}
 import models.reference.CountryCode
 import models.{DeclarationType, GuaranteeType, Index, NormalMode, ProcedureType, Status}
 import org.scalacheck.{Arbitrary, Gen}
@@ -405,8 +421,6 @@ class TaskListViewModelSpec
               val updatedUserAnswers = SafetyAndSecuritySpec.setSafetyAndSecurity(sectionDetails)(userAnswers)
 
               val viewModel = TaskListViewModel(updatedUserAnswers)
-
-              val expectedHref: String = controllers.safetyAndSecurity.routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn).url
 
               viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.Completed
           }
