@@ -18,7 +18,18 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
-import models.UserAnswers
+import models.DeclarationType.Option4
+import models.ProcedureType.Simplified
+import models.domain.Address
+import models.journeyDomain.MovementDetails._
+import models.journeyDomain.RouteDetails.TransitInformation
+import models.journeyDomain.TraderDetails.{PersonalInformation, TraderEori}
+import models.journeyDomain.TransportDetails.DetailsAtBorder
+import models.journeyDomain.TransportDetails.DetailsAtBorder.NewDetailsAtBorder
+import models.journeyDomain.TransportDetails.InlandMode.Rail
+import models.journeyDomain._
+import models.reference.CountryCode
+import models.{EoriNumber, LocalReferenceNumber, RepresentativeCapacity, UserAnswers}
 
 class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
@@ -26,11 +37,19 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(arb[JourneyDomain]) {
-          case journeyDomain =>
+          journeyDomain =>
             val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
             val result            = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
 
-            result.value mustEqual journeyDomain
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.value.itemDetails mustEqual journeyDomain.itemDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
         }
       }
     }
@@ -60,7 +79,14 @@ object JourneyDomainSpec {
         GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
         GuaranteeDetailsSpec.setGuaranteeDetails(journeyDomain.guarantee) andThen
         TraderDetailsSpec.setTraderDetails(journeyDomain.traderDetails) andThen
-        MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails)
+        MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails) andThen
+        safetyAndSecurity(journeyDomain.safetyAndSecurity)
     )(startUserAnswers)
+
+  def safetyAndSecurity(safetyAndSecurity: Option[SafetyAndSecurity])(startUserAnswers: UserAnswers): UserAnswers =
+    safetyAndSecurity match {
+      case Some(value) => SafetyAndSecuritySpec.setSafetyAndSecurity(value)(startUserAnswers)
+      case None        => startUserAnswers
+    }
 
 }
