@@ -17,7 +17,7 @@
 package utils
 
 import controllers.safetyAndSecurity.routes
-import models.{CheckMode, CountryList, Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{CheckMode, CountryList, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
 import pages.safetyAndSecurity._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
@@ -427,7 +427,7 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
           actions = List(
             Action(
               content            = msg"site.change",
-              href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, mode).url,
+              href               = routes.CountryOfRoutingController.onPageLoad(lrn, index, mode).url,
               visuallyHiddenText = Some(msg"addAnotherCountryOfRouting.checkYourAnswersLabel.change.visuallyHidden".withArgs(answer)),
               attributes         = Map("id" -> s"""change-country-${index.display}""")
             ),
@@ -459,7 +459,7 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
         )
     }
 
-  def addAnotherCountryOfRouting(index: Index, content: Text): AddAnotherViewModel = {
+  def addAnotherCountryOfRouting(content: Text): AddAnotherViewModel = {
 
     val addAnotherCountryOfRoutingHref = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url
 

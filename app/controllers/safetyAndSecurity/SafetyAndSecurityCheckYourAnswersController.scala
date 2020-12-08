@@ -50,8 +50,10 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
           val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers, countries)
 
           val json = Json.obj(
-            "lrn"         -> lrn,
-            "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+            "lrn"                           -> lrn,
+            "sections"                      -> Json.toJson(sections),
+            "addAnotherCountryOfRoutingUrl" -> routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, NormalMode).url,
+            "nextPageUrl"                   -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
           )
 
           renderer.render("safetyAndSecurity/SafetyAndSecurityCheckYourAnswers.njk", json).map(Ok(_))

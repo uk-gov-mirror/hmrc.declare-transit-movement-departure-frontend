@@ -75,8 +75,9 @@ class SafetyAndSecurityCheckYourAnswersControllerSpec extends SpecBase with Mock
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "lrn"         -> lrn,
-        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+        "lrn"                           -> lrn,
+        "addAnotherCountryOfRoutingUrl" -> routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, NormalMode).url,
+        "nextPageUrl"                   -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey - "sections"
