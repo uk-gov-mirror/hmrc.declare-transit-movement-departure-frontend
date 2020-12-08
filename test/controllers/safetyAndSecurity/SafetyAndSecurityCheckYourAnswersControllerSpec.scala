@@ -17,6 +17,7 @@
 package controllers.safetyAndSecurity
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import matchers.JsonMatchers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -32,12 +33,17 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import models.{CountryList, NormalMode}
+import models.reference.{Country, CountryCode}
 
 import scala.concurrent.Future
 
-class SafetyAndSecurityCheckYourAnswersSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class SafetyAndSecurityCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
+
+  private val mockReferenceDataConnector = mock[ReferenceDataConnector]
+  val countries                          = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
 
   lazy val safetyAndSecurityRoute = routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn).url
 
@@ -45,6 +51,7 @@ class SafetyAndSecurityCheckYourAnswersSpec extends SpecBase with MockNunjucksRe
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockReferenceDataConnector))
 
   "SafetyAndSecurityCheckYourAnswersController" - {
 
@@ -52,6 +59,8 @@ class SafetyAndSecurityCheckYourAnswersSpec extends SpecBase with MockNunjucksRe
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -66,8 +75,9 @@ class SafetyAndSecurityCheckYourAnswersSpec extends SpecBase with MockNunjucksRe
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "lrn"         -> lrn,
-        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+        "lrn"                           -> lrn,
+        "addAnotherCountryOfRoutingUrl" -> routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, NormalMode).url,
+        "nextPageUrl"                   -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey - "sections"

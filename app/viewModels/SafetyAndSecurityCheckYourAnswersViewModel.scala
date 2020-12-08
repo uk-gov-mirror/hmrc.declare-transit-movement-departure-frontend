@@ -16,15 +16,21 @@
 
 package viewModels
 
-import models.UserAnswers
-import uk.gov.hmrc.viewmodels.MessageInterpolators
+import derivable.DeriveNumberOfCountryOfRouting
+import models.{CheckMode, CountryList, Index, UserAnswers}
+import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.SafetyAndSecurityCheckYourAnswerHelper
 import viewModels.sections.Section
 
 object SafetyAndSecurityCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers): Seq[Section] = {
+  def apply(userAnswers: UserAnswers, countries: CountryList): Seq[Section] = {
     val cyah = new SafetyAndSecurityCheckYourAnswerHelper(userAnswers)
+
+    val countriesOfRoutingRows: Seq[SummaryList.Row] = List.range(0, userAnswers.get(DeriveNumberOfCountryOfRouting).getOrElse(0)).flatMap {
+      countryOfRoutingPosition =>
+        cyah.countryOfRoutingRows(Index(countryOfRoutingPosition), countries)
+    }
 
     Seq(
       Section(
@@ -44,9 +50,8 @@ object SafetyAndSecurityCheckYourAnswersViewModel {
       ),
       Section(
         msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting",
-        Seq(
-          cyah.countriesOfRouting
-        ).flatten
+        countriesOfRoutingRows,
+        cyah.addAnotherCountryOfRouting(msg"addOrRemoveCountryOfRouting.checkYourAnswersLabel")
       ),
       Section(
         msg"safetyAndSecurity.checkYourAnswersLabel.securityTraderDetails",
@@ -84,5 +89,6 @@ object SafetyAndSecurityCheckYourAnswersViewModel {
         None
       ),
     )
+
   }
 }

@@ -17,11 +17,11 @@
 package utils
 
 import controllers.safetyAndSecurity.routes
-import models.{CheckMode, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, CountryList, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
 import pages.safetyAndSecurity._
-import queries.CountriesOfRoutingQuery
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
+import viewModels.AddAnotherViewModel
 
 class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
 
@@ -417,18 +417,65 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def countriesOfRouting: Option[Row] = userAnswers.get(CountriesOfRoutingQuery).map {
-    countriesOfRouting =>
-      val format = Html(countriesOfRouting.mkString("<br>"))
+  def countryRows(index: Index, countries: CountryList, mode: Mode): Option[Row] =
+    userAnswers.get(CountryOfRoutingPage(index)).map {
+      answer =>
+        val countryName = countries.getCountry(answer).map(_.description).getOrElse(answer.code)
+        Row(
+          key   = Key(lit"$countryName"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.CountryOfRoutingController.onPageLoad(lrn, index, mode).url,
+              visuallyHiddenText = Some(msg"addAnotherCountryOfRouting.checkYourAnswersLabel.change.visuallyHidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-country-${index.display}""")
+            ),
+            Action(
+              content            = msg"site.delete",
+              href               = routes.ConfirmRemoveCountryController.onPageLoad(lrn, index, mode).url,
+              visuallyHiddenText = Some(msg"addAnotherCountryOfRouting.checkYourAnswersLabel.remove.visuallyHidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""remove-country-${index.display}""")
+            )
+          )
+        )
+    }
 
+  def countryOfRoutingRows(index: Index, countries: CountryList): Option[Row] =
+    userAnswers.get(CountryOfRoutingPage(index)).map {
+      answer =>
+        val countryName = countries.getCountry(answer).map(_.description).getOrElse(answer.code)
+        Row(
+          key   = Key(lit"$countryName"),
+          value = Value(lit""),
+          actions = List(
+            Action(
+              content            = msg"site.change",
+              href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
+              visuallyHiddenText = Some(msg"addAnotherCountryOfRouting.checkYourAnswersLabel.change.visuallyHidden".withArgs(answer)),
+              attributes         = Map("id" -> s"""change-country-${index.display}""")
+            )
+          )
+        )
+    }
+
+  def addAnotherCountryOfRouting(content: Text): AddAnotherViewModel = {
+
+    val addAnotherCountryOfRoutingHref = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url
+
+    AddAnotherViewModel(addAnotherCountryOfRoutingHref, content)
+  }
+
+  def confirmRemoveCountry(index: Index): Option[Row] = userAnswers.get(ConfirmRemoveCountryPage) map {
+    answer =>
       Row(
-        key   = Key(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting", classes = Seq("govuk-!-width-one-half")),
-        value = Value(format),
+        key   = Key(msg"confirmRemoveCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting.visuallyHidden")
+            href               = routes.ConfirmRemoveCountryController.onPageLoad(lrn, index, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"confirmRemoveCountry.checkYourAnswersLabel"))
           )
         )
       )

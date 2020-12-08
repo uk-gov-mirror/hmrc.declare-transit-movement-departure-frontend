@@ -17,19 +17,17 @@
 package controllers.safetyAndSecurity
 
 import base.{MockNunjucksRendererApp, SpecBase}
-import connectors.ReferenceDataConnector
-import controllers.{routes => mainRoute}
-import derivable.DeriveNumberOfCountryOfRouting
-import forms.safetyAndSecurity.AddAnotherCountryOfRoutingFormProvider
+import forms.safetyAndSecurity.ConfirmRemoveCountryFormProvider
 import matchers.JsonMatchers
-import models.reference.{Country, CountryCode}
-import models.{CountryList, Index, NormalMode}
+import controllers.{routes => mainRoute}
+import models.{NormalMode, UserAnswers}
 import navigation.annotations.SafetyAndSecurity
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.safetyAndSecurity.ConfirmRemoveCountryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -38,42 +36,34 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import utils.countryJsonList
-import viewModels.SafetyAndSecurityCheckYourAnswersViewModel
 
 import scala.concurrent.Future
 
-class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
+class ConfirmRemoveCountryControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
   def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new AddAnotherCountryOfRoutingFormProvider()
+  private val formProvider = new ConfirmRemoveCountryFormProvider()
+  private val form         = formProvider()
+  private val template     = "confirmRemoveCountry.njk"
 
-  private val mockReferenceDataConnector = mock[ReferenceDataConnector]
-  val countries                          = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
-  private val form                       = formProvider()
-  private val template                   = "safetyAndSecurity/addAnotherCountryOfRouting.njk"
-
-  lazy val addAnotherCountryOfRoutingRoute = routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, NormalMode).url
+  lazy val confirmRemoveCountryRoute = routes.ConfirmRemoveCountryController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[SafetyAndSecurity]).toInstance(new FakeNavigator(onwardRoute)))
-      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockReferenceDataConnector))
 
-  "AddAnotherCountryOfRouting Controller" - {
+  "ConfirmRemoveCountry Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
-
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, addAnotherCountryOfRoutingRoute)
+      val request        = FakeRequest(GET, confirmRemoveCountryRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -84,26 +74,28 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"      -> form,
-        "pageTitle" -> msg"addAnotherCountryOfRouting.title.singular".withArgs(1),
-        "heading"   -> msg"addAnotherCountryOfRouting.heading.singular".withArgs(1),
-        "lrn"       -> lrn,
-        "radios"    -> Radios.yesNo(form("value"))
+        "form"   -> form,
+        "mode"   -> NormalMode,
+        "index"  -> index.display,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(form("value"))
       )
 
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
       templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonWithoutConfig mustBe expectedJson
+
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, addAnotherCountryOfRoutingRoute)
+        FakeRequest(POST, confirmRemoveCountryRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -119,11 +111,9 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
-
       dataRetrievalWithData(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, addAnotherCountryOfRoutingRoute).withFormUrlEncodedBody(("value", ""))
+      val request        = FakeRequest(POST, confirmRemoveCountryRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -135,15 +125,17 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form"      -> boundForm,
-        "pageTitle" -> msg"addAnotherCountryOfRouting.title.singular".withArgs(1),
-        "heading"   -> msg"addAnotherCountryOfRouting.heading.singular".withArgs(1),
-        "lrn"       -> lrn,
-        "radios"    -> Radios.yesNo(form("value"))
+        "form"   -> boundForm,
+        "mode"   -> NormalMode,
+        "index"  -> index.display,
+        "lrn"    -> lrn,
+        "radios" -> Radios.yesNo(boundForm("value"))
       )
 
+      val jsonWithoutConfig = jsonCaptor.getValue - configKey
+
       templateCaptor.getValue mustEqual template
-      jsonCaptor.getValue must containJson(expectedJson)
+      jsonWithoutConfig mustBe expectedJson
 
     }
 
@@ -151,7 +143,7 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
 
       dataRetrievalNoData()
 
-      val request = FakeRequest(GET, addAnotherCountryOfRoutingRoute)
+      val request = FakeRequest(GET, confirmRemoveCountryRoute)
 
       val result = route(app, request).value
 
@@ -166,7 +158,7 @@ class AddAnotherCountryOfRoutingControllerSpec extends SpecBase with MockNunjuck
       dataRetrievalNoData()
 
       val request =
-        FakeRequest(POST, addAnotherCountryOfRoutingRoute)
+        FakeRequest(POST, confirmRemoveCountryRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value

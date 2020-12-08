@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package queries
+package pages.safetyAndSecurity
 
-import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import queries.Constants.countriesOfRouting
 
-final case class CountriesOfRoutingQuery(index: Index) extends QuestionPage[Seq[String]] {
+case object ConfirmRemoveCountryPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ countriesOfRouting \ index.position
+  override def path: JsPath = JsPath \ toString
 
+  override def toString: String = "confirmRemoveCountry"
 }

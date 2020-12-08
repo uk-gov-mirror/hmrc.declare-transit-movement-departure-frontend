@@ -18,8 +18,8 @@ package viewModels
 
 import base.SpecBase
 import generators.Generators
-import models.ConsignorAddress
-import models.reference.CountryCode
+import models.{ConsignorAddress, CountryList}
+import models.reference.{Country, CountryCode}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.safetyAndSecurity._
 import uk.gov.hmrc.viewmodels.MessageInterpolators
@@ -107,9 +107,10 @@ class SafetyAndSecurityCheckYourAnswersViewModelSpec extends SpecBase with Gener
     .success
     .value
 
+  val countryList = new CountryList(Seq(Country(CountryCode("FR"), "France")))
   // scalastyle:on
 
-  private val data: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(setSafetyAndSecurityCarrier)
+  private val data: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(setSafetyAndSecurityCarrier, countryList)
 
   "SafetyAndSecurityCheckYourAnswersViewModel" - {
 

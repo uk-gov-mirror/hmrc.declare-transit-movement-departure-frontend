@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package queries
+package pages.safetyAndSecurity
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.countriesOfRouting
+import pages.behaviours.PageBehaviours
 
-final case class CountriesOfRoutingQuery(index: Index) extends QuestionPage[Seq[String]] {
+class ConfirmRemoveCountryPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ countriesOfRouting \ index.position
+  "ConfirmRemoveCountryPage" - {
 
+    beRetrievable[Boolean](ConfirmRemoveCountryPage)
+
+    beSettable[Boolean](ConfirmRemoveCountryPage)
+
+    beRemovable[Boolean](ConfirmRemoveCountryPage)
+  }
 }

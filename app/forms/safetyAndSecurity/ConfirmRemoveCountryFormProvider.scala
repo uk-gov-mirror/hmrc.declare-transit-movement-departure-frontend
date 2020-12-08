@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package queries
+package forms.safetyAndSecurity
 
-import models.Index
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import queries.Constants.countriesOfRouting
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-final case class CountriesOfRoutingQuery(index: Index) extends QuestionPage[Seq[String]] {
+class ConfirmRemoveCountryFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ countriesOfRouting \ index.position
-
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmRemoveCountry.error.required")
+    )
 }

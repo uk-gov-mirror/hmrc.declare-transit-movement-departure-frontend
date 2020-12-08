@@ -1288,12 +1288,15 @@ countryOfRouting.checkYourAnswersLabel = Country of routing
 countryOfRouting.checkYourAnswersLabel.visuallyHidden = change country of routing
 countryOfRouting.error.required = Enter the country of routing
 
+addOrRemoveCountryOfRouting.checkYourAnswersLabel = Add or remove countries of routing
+
+
 addAnotherCountryOfRouting.title.singular = You have added {0} country of routing
-addAnotherCountryOfRouting.title.plural = You have added {0} country of routing
+addAnotherCountryOfRouting.title.plural = You have added {0} countries of routing
 addAnotherCountryOfRouting.heading.singular = You have added {0} country of routing
-addAnotherCountryOfRouting.heading.plural = You have added {0} country of routing
+addAnotherCountryOfRouting.heading.plural = You have added {0} countries of routing
 addAnotherCountryOfRouting.h2 = Do you need to add another country of routing?
-addAnotherCountryOfRouting.checkYourAnswersLabel.visuallyHidden = Change {0} country of routing
+addAnotherCountryOfRouting.checkYourAnswersLabel.change.visuallyHidden = Change {0} country of routing
 addAnotherCountryOfRouting.checkYourAnswersLabel.remove.visuallyHidden = Remove {0} country of routing
 addAnotherCountryOfRouting.error.required = Select yes if you need to add another country of routing
 
@@ -1312,6 +1315,10 @@ addSafetyAndSecurityConsignorEori.error.required = Select yes if you know the se
 safetyAndSecurityConsignorAddress.title = What is the security consignor’s address?
 safetyAndSecurityConsignorAddress.heading = What is {0}’s address?
 safetyAndSecurityConsignorAddress.checkYourAnswersLabel = Security consignor’s address
+safetyAndSecurityConsignorAddress.AddressLine1 = Address line 1
+safetyAndSecurityConsignorAddress.AddressLine2 = Address line 2
+safetyAndSecurityConsignorAddress.AddressLine3 = Address line 3
+safetyAndSecurityConsignorAddress.AddressLine4 = Country
 safetyAndSecurityConsignorAddress.checkYourAnswersLabel.visuallyHidden = change security consignor’s address
 safetyAndSecurityConsignorAddress.error.required = Enter address line {0} of the security consignor’s address
 safetyAndSecurityConsignorAddress.error.length =  Address line {0} of of the security consignor’s address must be 35 characters or less
@@ -1348,6 +1355,10 @@ addSafetyAndSecurityConsigneeEori.error.required = Select yes if you know the se
 
 safetyAndSecurityConsigneeAddress.title = What is the security consignee’s address?
 safetyAndSecurityConsigneeAddress.heading = What is {0}’s address?
+safetyAndSecurityConsigneeAddress.AddressLine1 = Address line 1
+safetyAndSecurityConsigneeAddress.AddressLine2 = Address line 2
+safetyAndSecurityConsigneeAddress.AddressLine3 = Address line 3
+safetyAndSecurityConsigneeAddress.AddressLine4 = Country
 safetyAndSecurityConsigneeAddress.checkYourAnswersLabel = Security consignee’s address
 safetyAndSecurityConsigneeAddress.checkYourAnswersLabel.visuallyHidden = change security consignee’s address
 safetyAndSecurityConsigneeAddress.error.required = Enter address line {0} of the security consignee’s address
@@ -1445,3 +1456,8 @@ securityConsigneeName.error.required = Enter the security consignee’s name
 securityConsigneeName.error.length =  The security consignee’s name must be 35 characters or less
 securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
+
+confirmRemoveCountry.title = Are you sure you want to remove the country?
+confirmRemoveCountry.heading = Are you sure you want to remove the country?
+confirmRemoveCountry.checkYourAnswersLabel = confirmRemoveCountry
+confirmRemoveCountry.error.required = Select yes if you want to remove the country

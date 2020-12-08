@@ -19,13 +19,15 @@ package navigation
 import base.SpecBase
 import controllers.safetyAndSecurity.routes
 import generators.Generators
-import models.reference.CountryCode
+import models.reference.{Country, CountryCode}
+import models.Index
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck._
 import pages.ModeAtBorderPage
 import pages.safetyAndSecurity._
+import queries.CountriesOfRoutingQuery
 
 class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   // format: off
@@ -405,6 +407,47 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
             navigator
               .nextPage(AddAnotherCountryOfRoutingPage, NormalMode, updatedAnswers)
               .mustBe(routes.AddSafetyAndSecurityConsignorController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from ConfirmRemoveCountry page to " - {
+
+        "AddAnotherCountryOfRouting page when 'No' is selected and there are more than one country" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+            val updatedAnswers = answers
+              .set(CountryOfRoutingPage(index), CountryCode("GB")).success.value
+              .set(CountryOfRoutingPage(Index(1)), CountryCode("IT")).success.value
+              .set(AddAnotherCountryOfRoutingPage, true).success.value
+              .set(ConfirmRemoveCountryPage, false).success.value
+              navigator
+                .nextPage(ConfirmRemoveCountryPage, NormalMode, updatedAnswers)
+                .mustBe(routes.AddAnotherCountryOfRoutingController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+
+        "AddAnotherCountryOfRouting page when 'Yes' is selected and there are more than one country" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(CountryOfRoutingPage(index), CountryCode("GB")).success.value
+                .set(CountryOfRoutingPage(Index(1)), CountryCode("IT")).success.value
+                .set(ConfirmRemoveCountryPage, true).success.value
+              navigator
+                .nextPage(ConfirmRemoveCountryPage, NormalMode, updatedAnswers)
+                .mustBe(routes.AddAnotherCountryOfRoutingController.onPageLoad(updatedAnswers.id, NormalMode))
+          }
+        }
+
+        "CountryOfRouting page when 'Yes' is selected and and when all the countries are removed" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .remove(CountriesOfRoutingQuery(index)).success.value
+              navigator
+                .nextPage(ConfirmRemoveCountryPage, NormalMode, updatedAnswers)
+                .mustBe(routes.CountryOfRoutingController.onPageLoad(updatedAnswers.id, index, NormalMode))
+          }
         }
       }
     }

@@ -16,10 +16,11 @@
 
 package controllers.safetyAndSecurity
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.LocalReferenceNumber
+import models.{Index, LocalReferenceNumber, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,6 +35,7 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
+  referenceDataConnector: ReferenceDataConnector,
   requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -43,15 +45,19 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers)
+      referenceDataConnector.getCountryList() flatMap {
+        countries =>
+          val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers, countries)
 
-      val json = Json.obj(
-        "lrn"         -> lrn,
-        "sections"    -> Json.toJson(sections),
-        "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
-      )
+          val json = Json.obj(
+            "lrn"                           -> lrn,
+            "sections"                      -> Json.toJson(sections),
+            "addAnotherCountryOfRoutingUrl" -> routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, NormalMode).url,
+            "nextPageUrl"                   -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+          )
 
-      renderer.render("safetyAndSecurity/SafetyAndSecurityCheckYourAnswers.njk", json).map(Ok(_))
+          renderer.render("safetyAndSecurity/SafetyAndSecurityCheckYourAnswers.njk", json).map(Ok(_))
+      }
+
   }
-
 }

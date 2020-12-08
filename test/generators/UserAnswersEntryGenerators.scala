@@ -57,6 +57,7 @@ import pages.safetyAndSecurity.{
   CarrierNamePage,
   CircumstanceIndicatorPage,
   CommercialReferenceNumberAllItemsPage,
+  ConfirmRemoveCountryPage,
   ConveyanceReferenceNumberPage,
   CountryOfRoutingPage,
   PlaceOfUnloadingCodePage,
@@ -73,6 +74,13 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersEntryGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryConfirmRemoveCountryUserAnswersEntry: Arbitrary[(ConfirmRemoveCountryPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[ConfirmRemoveCountryPage.type#Data].map(Json.toJson(_))
+      } yield (ConfirmRemoveCountryPage, value)
+    }
 
   implicit lazy val arbitraryCarrierNameUserAnswersEntry: Arbitrary[(CarrierNamePage.type, JsValue)] =
     Arbitrary {
