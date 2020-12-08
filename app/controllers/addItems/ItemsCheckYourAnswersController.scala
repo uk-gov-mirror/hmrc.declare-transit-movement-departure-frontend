@@ -21,14 +21,15 @@ import controllers.actions._
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.twirl.api.Html
 import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewModels.AddItemsCheckYourAnswersViewModel
 import viewModels.sections.Section
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ItemsCheckYourAnswersController @Inject()(
   override val messagesApi: MessagesApi,
@@ -46,30 +47,31 @@ class ItemsCheckYourAnswersController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getPreviousReferencesDocumentTypes() flatMap {
-        previousReferencesDocumentTypes =>
-          referenceDataConnector.getDocumentTypes() flatMap {
-            documentTypes =>
-              referenceDataConnector.getSpecialMention() flatMap {
-                specialMentions =>
-                  referenceDataConnector.getCountryList() flatMap {
-                    countries =>
-                      val sections: Seq[Section] =
-                        AddItemsCheckYourAnswersViewModel(request.userAnswers,
-                                                          index,
-                                                          documentTypes,
-                                                          previousReferencesDocumentTypes,
-                                                          specialMentions,
-                                                          countries).sections
-                      val json = Json.obj(
-                        "lrn"         -> lrn,
-                        "sections"    -> Json.toJson(sections),
-                        "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
-                      )
-                      renderer.render(template, json).map(Ok(_))
-                  }
-              }
-          }
-      }
+      val buildJson: Future[JsObject] =
+        for {
+          previousReferencesDocumentTypes <- referenceDataConnector.getPreviousReferencesDocumentTypes()
+          documentTypes                   <- referenceDataConnector.getDocumentTypes()
+          specialMentions                 <- referenceDataConnector.getSpecialMention()
+          countries                       <- referenceDataConnector.getCountryList()
+        } yield {
+
+          val sections: Seq[Section] =
+            AddItemsCheckYourAnswersViewModel(
+              request.userAnswers,
+              index,
+              documentTypes,
+              previousReferencesDocumentTypes,
+              specialMentions,
+              countries
+            ).sections
+
+          Json.obj(
+            "lrn"         -> lrn,
+            "sections"    -> Json.toJson(sections),
+            "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
+          )
+        }
+
+      buildJson.flatMap(renderer.render(template, _).map(Ok(_)))
   }
 }
