@@ -29,27 +29,20 @@ import models.journeyDomain.{
   MovementDetails,
   MovementDetailsSpec,
   RouteDetailsSpec,
+  SafetyAndSecurity,
+  SafetyAndSecuritySpec,
   TraderDetails,
   TraderDetailsSpec,
   TransportDetails,
   TransportDetailsSpec
 }
 import models.reference.CountryCode
-import models.{DeclarationType, GuaranteeType, Index, NormalMode, ProcedureType, Status, UserAnswers}
+import models.{DeclarationType, GuaranteeType, Index, NormalMode, ProcedureType, Status}
 import org.scalacheck.{Arbitrary, Gen}
+import pages._
 import pages.guaranteeDetails.GuaranteeTypePage
-import pages.DeclarationTypePage
 import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
-import pages.{
-  AddSecurityDetailsPage,
-  CountryOfDispatchPage,
-  DeclarePackagesPage,
-  InlandModePage,
-  IsPrincipalEoriKnownPage,
-  ItemDescriptionPage,
-  ProcedureTypePage
-}
-import play.api.libs.json.{JsArray, JsObject, Json}
+import play.api.libs.json.{JsObject, Json}
 
 class TaskListViewModelSpec
     extends SpecBase
@@ -420,7 +413,18 @@ class TaskListViewModelSpec
           }
         }
 
-        "is Completed when all the answers are completed" ignore {}
+        "is Completed when all the answers are completed" in {
+          forAll(arb[SafetyAndSecurity]) {
+            sectionDetails =>
+              val userAnswers = emptyUserAnswers
+                .unsafeSetVal(AddSecurityDetailsPage)(true)
+              val updatedUserAnswers = SafetyAndSecuritySpec.setSafetyAndSecurity(sectionDetails)(userAnswers)
+
+              val viewModel = TaskListViewModel(updatedUserAnswers)
+
+              viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.Completed
+          }
+        }
       }
 
       "navigation when section is required" - {
@@ -450,7 +454,20 @@ class TaskListViewModelSpec
           }
         }
 
-        "when the status is Completed, links to the Check your answers page for the section" ignore {}
+        "when the status is Completed, links to the Check your answers page for the section" in {
+          forAll(arb[SafetyAndSecurity]) {
+            sectionDetails =>
+              val userAnswers = emptyUserAnswers
+                .unsafeSetVal(AddSecurityDetailsPage)(true)
+              val updatedUserAnswers = SafetyAndSecuritySpec.setSafetyAndSecurity(sectionDetails)(userAnswers)
+
+              val viewModel = TaskListViewModel(updatedUserAnswers)
+
+              val expectedHref: String = controllers.safetyAndSecurity.routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn).url
+
+              viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
+          }
+        }
       }
     }
 

@@ -55,7 +55,7 @@ class TraderDetailsConsigneeEoriNumberFormProviderSpec extends StringFieldBehavi
       requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
 
-    "must not bind strings that do not match the EORI number regex" ignore {//Need to address this random failure case
+    "must not bind strings that do not match the EORI number regex" ignore { //Need to address this random failure case
 
       val expectedError =
         List(FormError(fieldName, invalidCharsKey, Seq(index.display)))

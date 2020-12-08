@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.addItems.specialMentions.routes
 import generators.Generators
 import models.reference.CircumstanceIndicator
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.AddSecurityDetailsPage
@@ -238,6 +238,30 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
           navigator
             .nextPage(AddAnotherSpecialMentionPage(index), NormalMode, userAnswers)
             .mustBe(controllers.addItems.routes.DocumentTypeController.onPageLoad(userAnswers.id, index, itemIndex, NormalMode))
+        }
+
+        "to AddDocumentType when set to false and AddSecurityDetailsPage is 'Yes' and  AddCircumstanceIndicatorPage is 'No' and it is the not the first Item and AddCommercialReferenceNumberPage is false" in {
+          val nextIndex = Index(1)
+          val userAnswers = emptyUserAnswers
+            .set(AddCircumstanceIndicatorPage, false)
+            .success
+            .value
+            .set(AddSecurityDetailsPage, true)
+            .success
+            .value
+            .set(AddAnotherSpecialMentionPage(index), false)
+            .success
+            .value
+            .set(AddAnotherSpecialMentionPage(nextIndex), false)
+            .success
+            .value
+            .set(AddCommercialReferenceNumberPage, false)
+            .success
+            .value
+
+          navigator
+            .nextPage(AddAnotherSpecialMentionPage(nextIndex), NormalMode, userAnswers)
+            .mustBe(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, nextIndex, NormalMode))
         }
 
         "to DocumentType when set to false and AddSecurityDetailsPage is 'Yes' and  AddCircumstanceIndicatorPage is 'Yes' and CircumstanceIndicator is either E, D, C and B && AddCommercialReferenceNumberPage is false" in {
