@@ -116,8 +116,8 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
       case (Some(true), Some(false), Some(false), true) => Some(true)
       case (Some(true), Some(true), Some(false), true) =>
         userAnswers.get(CircumstanceIndicatorPage) map (CircumstanceIndicator.conditionalIndicators.contains(_))
-      case (Some(false), _, _, _) => Some(false)
-      case _                      => None
+      case (Some(_), _, _, _) => Some(false)
+      case _                  => None
     }
 
   private def documentsJourney(userAnswers: UserAnswers, itemIndex: Index, mode: Mode): Option[Call] =
