@@ -49,7 +49,7 @@ object SafetyAndSecurityCheckYourAnswersViewModel {
         ).flatten
       ),
       Section(
-        msg"addItems.checkYourAnswersLabel.documents",
+        msg"safetyAndSecurity.checkYourAnswersLabel.countriesOfRouting",
         countriesOfRoutingRows,
         cyah.addAnotherCountryOfRouting(Index(0), msg"addOrRemoveCountryOfRouting.checkYourAnswersLabel")
       ),

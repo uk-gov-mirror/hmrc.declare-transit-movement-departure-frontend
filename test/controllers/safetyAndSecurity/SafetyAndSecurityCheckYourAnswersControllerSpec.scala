@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
-import models.CountryList
+import models.{CountryList, NormalMode}
 import models.reference.{Country, CountryCode}
 
 import scala.concurrent.Future
