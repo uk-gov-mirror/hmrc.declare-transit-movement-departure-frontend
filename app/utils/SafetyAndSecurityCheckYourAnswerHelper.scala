@@ -156,7 +156,7 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
           Action(
             content            = msg"site.edit",
             href               = routes.AddSafetyAndSecurityConsigneeController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"addSafetyAndSecurityConsignee.checkYourAnswersLabel.visuallyHidden")
+            visuallyHiddenText = Some(msg"addSafetyAndSecurityConsignor.checkYourAnswersLabel.visuallyHidden ")
           )
         )
       )
@@ -180,7 +180,7 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
   def addSafetyAndSecurityConsignor: Option[Row] = userAnswers.get(AddSafetyAndSecurityConsignorPage) map {
     answer =>
       Row(
-        key   = Key(msg"addSafetyAndSecurityConsignorEori.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"addSafetyAndSecurityConsignor.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(yesOrNo(answer)),
         actions = List(
           Action(

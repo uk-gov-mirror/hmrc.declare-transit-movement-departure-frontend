@@ -1342,7 +1342,7 @@ safetyAndSecurityConsignorName.error.invalid = The security consignor’s name m
 
 addSafetyAndSecurityConsignee.title =  Is this the security consignee for all items?
 addSafetyAndSecurityConsignee.heading = Is this the security consignee for all items?
-addSafetyAndSecurityConsignee.checkYourAnswersLabel = Security consignee for all items
+addSafetyAndSecurityConsignee.checkYourAnswersLabel = Security consignee for all items?
 addSafetyAndSecurityConsignee.checkYourAnswersLabel.visuallyHidden = change security consignee for all items
 addSafetyAndSecurityConsignee.error.required = Select yes if this is the security consignee for all items
 
@@ -1361,6 +1361,7 @@ safetyAndSecurityConsigneeAddress.AddressLine4 = Country
 safetyAndSecurityConsigneeAddress.checkYourAnswersLabel = Security consignee’s address
 safetyAndSecurityConsigneeAddress.checkYourAnswersLabel.visuallyHidden = change security consignee’s address
 safetyAndSecurityConsigneeAddress.error.required = Enter address line {0} of the security consignee’s address
+safetyAndSecurityConsigneeAddress.AddressLine4.required = Enter the country of the security consignee’s address
 safetyAndSecurityConsigneeAddress.error.length = Address line {0} of of the security consignee’s address must be 35 characters or less
 safetyAndSecurityConsigneeAddress.error.invalid = Address line {0} of of the security consignee’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
@@ -1387,12 +1388,12 @@ addCarrierEori.error.required =  Enter the carrier’s EORI number
 
 addCarrier.title =  Do you need to add a carrier?
 addCarrier.heading =  Do you need to add a carrier?
-addCarrier.checkYourAnswersLabel = Add a Carrier?
-addCarrier.error.required = Select yes if you know the carrier’s EORI number
+addCarrier.checkYourAnswersLabel = Add a carrier?
+addCarrier.error.required = Select yes if you need to add a carrier
 
 carrierAddress.title = What is {0}’s address?
 carrierAddress.heading = What is {0}’s address?
-carrierAddress.checkYourAnswersLabel = {0}’s Address
+carrierAddress.checkYourAnswersLabel = Carrier’s address
 carrierAddress.AddressLine1 = Address line 1
 carrierAddress.AddressLine2 = Address line 2
 carrierAddress.AddressLine3 = Address line 3
@@ -1457,7 +1458,7 @@ securityConsigneeName.error.length =  The security consignee’s name must be 35
 securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
 
-confirmRemoveCountry.title = Are you sure you want to remove the country?
-confirmRemoveCountry.heading = Are you sure you want to remove the country?
+confirmRemoveCountry.title = Are you sure you want to remove this country?
+confirmRemoveCountry.heading = Are you sure you want to remove this country?
 confirmRemoveCountry.checkYourAnswersLabel = confirmRemoveCountry
 confirmRemoveCountry.error.required = Select yes if you want to remove the country
