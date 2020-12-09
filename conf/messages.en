@@ -1300,7 +1300,7 @@ addSafetyAndSecurityConsignorEori.checkYourAnswersLabel = Know the security cons
 addSafetyAndSecurityConsignorEori.checkYourAnswersLabel.visuallyHidden = change if you know the security consignor’s EORI number
 addSafetyAndSecurityConsignorEori.error.required = Select yes if you know the security consignor’s EORI number
 
-safetyAndSecurityConsignorAddress.title = What is the security consignor’s address?
+safetyAndSecurityConsignorAddress.title = What is {0}’s address?
 safetyAndSecurityConsignorAddress.heading = What is {0}’s address?
 safetyAndSecurityConsignorAddress.checkYourAnswersLabel = Security consignor’s address
 safetyAndSecurityConsignorAddress.AddressLine1 = Address line 1
@@ -1341,7 +1341,7 @@ addSafetyAndSecurityConsigneeEori.checkYourAnswersLabel = Know the security cons
 addSafetyAndSecurityConsigneeEori.checkYourAnswersLabel.visuallyHidden = change if you know the security consignee’s EORI number
 addSafetyAndSecurityConsigneeEori.error.required = Select yes if you know the security consignee’s EORI number
 
-safetyAndSecurityConsigneeAddress.title = What is the security consignee’s address?
+safetyAndSecurityConsigneeAddress.title = What is {0}’s address?
 safetyAndSecurityConsigneeAddress.heading = What is {0}’s address?
 safetyAndSecurityConsigneeAddress.AddressLine1 = Address line 1
 safetyAndSecurityConsigneeAddress.AddressLine2 = Address line 2
