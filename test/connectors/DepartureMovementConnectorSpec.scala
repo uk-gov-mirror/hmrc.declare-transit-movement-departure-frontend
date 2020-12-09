@@ -113,6 +113,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(s"/transits-movements-trader-at-departure/movements/departures/${departureId.value}/messages/summary"))
+            .withHeader("Channel", containing("web"))
             .willReturn(
               okJson(json.toString)
             )
@@ -152,6 +153,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
             server.stubFor(
               get(urlEqualTo(location))
+                .withHeader("Channel", containing("web"))
                 .willReturn(
                   okJson(json.toString)
                 )
@@ -177,6 +179,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(location))
+            .withHeader("Channel", containing("web"))
             .willReturn(
               okJson(json.toString)
             )
@@ -217,6 +220,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(location))
+            .withHeader("Channel", containing("web"))
             .willReturn(
               okJson(json.toString)
             )
@@ -250,6 +254,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(location))
+            .withHeader("Channel", containing("web"))
             .willReturn(
               okJson(json.toString)
             )
@@ -286,6 +291,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(location))
+            .withHeader("Channel", containing("web"))
             .willReturn(
               okJson(json.toString)
             )
@@ -317,6 +323,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
 
         server.stubFor(
           get(urlEqualTo(location))
+            .withHeader("Channel", containing("web"))
             .willReturn(
               okJson(json.toString)
             )
@@ -339,6 +346,7 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
   private def stubGetResponse(errorResponseCode: Int, serviceUrl: String) =
     server.stubFor(
       get(urlEqualTo(serviceUrl))
+        .withHeader("Channel", containing("web"))
         .willReturn(
           aResponse()
             .withStatus(errorResponseCode)
@@ -347,6 +355,8 @@ class DepartureMovementConnectorSpec extends SpecBase with WireMockServerHandler
   private def stubResponse(expectedStatus: Int): StubMapping =
     server.stubFor(
       post(urlEqualTo(stubUrl))
+        .withHeader("Channel", containing("web"))
+        .withHeader("Content-Type", containing("application/xml"))
         .willReturn(
           aResponse()
             .withStatus(expectedStatus)
