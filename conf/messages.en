@@ -67,7 +67,7 @@ transportDetails.preHeading = Transport details
 goodsSummary.preHeading = Goods summary
 guaranteeDetails.preHeading = Guarantee details
 items.preHeading = Items
-safetyAndSecurity.preHeading = Safety and Security
+safetyAndSecurity.preHeading = safety and security
 
 routeDetailsCheckYourAnswers.heading = Check your answers
 routeDetailsCheckYourAnswers.title = Check your answers
@@ -383,12 +383,6 @@ officeOfDeparture.checkYourAnswersLabel = Office of departure
 officeOfDeparture.error.required = Select the office of departure
 officeOfDeparture.hintText = Give the office location or code. Like, Dover or GB000060.
 officeOfDeparture.label = This is the Customs office where the transit movement starts.
-
-destinationCountry.title = What is the destination country?
-destinationCountry.heading = What is the destination country?
-destinationCountry.checkYourAnswersLabel = Destination country
-destinationCountry.label = This is the country where the transit movement is ending.
-destinationCountry.error.required = Select the destination country
 
 consigneeAddress.title = What is the address of the consignee
 consigneeAddress.heading = What is {0}’s address?
@@ -1082,11 +1076,6 @@ confirmRemoveContainer.title = Are you sure you want to remove this shipping con
 confirmRemoveContainer.heading = Are you sure you want to remove this shipping container?
 confirmRemoveContainer.error.required = Select yes if you want to remove this shipping container
 
-transportCharges.title = What payment method are you using for the transport charges?
-transportCharges.heading = What payment method are you using for the transport charges?
-transportCharges.checkYourAnswersLabel = Payment method for transport charges
-transportCharges.error.required = Enter the payment method you are using for the transport charges
-
 usingSameCommercialReference.title = Are you using the same commercial reference number across all items?
 usingSameCommercialReference.heading = Are you using the same commercial reference number across all items?
 usingSameCommercialReference.checkYourAnswersLabel = Using same commercial reference number?
@@ -1207,20 +1196,20 @@ declarationRejection.reason =  Reason
 declarationRejection.declarationDetails = Departure details
 declarationRejection.rejectionDetails = Rejection details
 
-addCircumstanceIndicator.title = Do you need to add a specific circumstance indicator?
+addCircumstanceIndicator.title =  Do you need to add a specific circumstance indicator?
 addCircumstanceIndicator.heading = Do you need to add a specific circumstance indicator?
 addCircumstanceIndicator.checkYourAnswersLabel = Add specific circumstance indicator?
 addCircumstanceIndicator.checkYourAnswersLabel.visuallyHidden = change if you need to add a specific circumstance indicator
 addCircumstanceIndicator.error.required = Select yes if you need to add a specific circumstance indicator
 
-addTransportChargesPaymentMethod.title = Do you need to add a payment method for the transport charges?
-addTransportChargesPaymentMethod.heading = Do you need to add a payment method for the transport charges?
+addTransportChargesPaymentMethod.title =  Do you need to add a payment method for the transport charges for all items?
+addTransportChargesPaymentMethod.heading =  Do you need to add a payment method for the transport charges for all items?
 addTransportChargesPaymentMethod.checkYourAnswersLabel = Add payment method for transport charges?
 addTransportChargesPaymentMethod.checkYourAnswersLabel.visuallyHidden =  change if you are adding a payment method for the transport charges
 addTransportChargesPaymentMethod.error.required = Select yes if you need to add a payment method for the transport charges
 
-addCommercialReferenceNumber.title = Do you need to add a commercial reference number?
-addCommercialReferenceNumber.heading = Do you need to add a commercial reference number?
+addCommercialReferenceNumber.title =  Does this movement have a commercial reference number?
+addCommercialReferenceNumber.heading = Does this movement have a commercial reference number?
 addCommercialReferenceNumber.checkYourAnswersLabel = Add commercial reference number?
 addCommercialReferenceNumber.checkYourAnswersLabel.visuallyHidden = change if you need to add a commercial reference number
 addCommercialReferenceNumber.error.required = Select yes if you need to add a commercial reference number
@@ -1232,8 +1221,8 @@ circumstanceIndicator.checkYourAnswersLabel.visuallyHidden =  change [specific c
 circumstanceIndicator.error.required = Enter the specific circumstances indicator you want to add
 circumstanceIndicator.error.length = CircumstanceIndicator must be 2 characters or less
 
-transportChargesPaymentMethod.title = What payment method are you using for the transport charges?
-transportChargesPaymentMethod.heading = What payment method are you using for the transport charges?
+transportChargesPaymentMethod.title = What payment method are you using for the transport charges for all items?
+transportChargesPaymentMethod.heading = What payment method are you using for the transport charges for all items?
 transportChargesPaymentMethod.checkYourAnswersLabel = Payment method for transport charges
 transportChargesPaymentMethod.checkYourAnswersLabel.visuallyHidden =  change the payment method you are using for the transport charges
 transportChargesPaymentMethod.error.required = Enter the payment method you are using for the transport charges
@@ -1254,7 +1243,7 @@ commercialReferenceNumberAllItems.error.invalid =  The commercial reference numb
 commercialReferenceNumberAllItems.error.length =  The commercial reference number must be 70 characters or less
 
 addConveyancerReferenceNumber.title = Do you need to add a Conveyance Reference Number (CRN)?
-addConveyancerReferenceNumber.heading = Do you need to add a Conveyance Reference Number (CRN)?
+addConveyancerrReferenceNumber.heading = Do you need to add a Conveyance Reference Number (CRN)?
 addConveyancerReferenceNumber.checkYourAnswersLabel = Add Conveyance Reference Number?
 addConveyancerReferenceNumber.checkYourAnswersLabel.visuallyHidden =  change if you need to add a conveyance reference number
 addConveyancerReferenceNumber.error.required = Select yes if you need to add a Conveyance Reference Number
@@ -1287,7 +1276,6 @@ countryOfRouting.heading =  What is the country of routing?
 countryOfRouting.checkYourAnswersLabel = Country of routing
 countryOfRouting.checkYourAnswersLabel.visuallyHidden = change country of routing
 countryOfRouting.error.required = Enter the country of routing
-
 addOrRemoveCountryOfRouting.checkYourAnswersLabel = Add or remove countries of routing
 
 
@@ -1326,7 +1314,7 @@ safetyAndSecurityConsignorAddress.error.invalid =  Address line {0} of of the se
 
 safetyAndSecurityConsignorEori.title = What is the security consignor’s EORI number?
 safetyAndSecurityConsignorEori.heading = What is the security consignor’s EORI number?
-safetyAndSecurityConsignorEori.checkYourAnswersLabel = safetyAndSecurityConsignorEori
+safetyAndSecurityConsignorEori.checkYourAnswersLabel = Security consignor’s EORI number
 safetyAndSecurityConsignorEori.checkYourAnswersLabel.visuallyHidden = change security consignor’s EORI number
 safetyAndSecurityConsignorEori.error.required = Enter the security consignor’s EORI number
 safetyAndSecurityConsignorEori.error.length = The security consignor’s EORI number must only include letters a to z and numbers 0 to 9
@@ -1413,10 +1401,11 @@ carrierAddress.error.length = Carrier address must be 35 characters or less
 
 carrierEori.title = What is the carrier’s EORI number?
 carrierEori.heading = What is the carrier’s EORI number?
-carrierEori.checkYourAnswersLabel = carrier's EORI number
+carrierEori.checkYourAnswersLabel = Carrier's EORI number
 carrierEori.error.required = Enter the carrier’s EORI number
 carrierEori.error.length =  The carrier’s EORI number must be 17 characters or less
 carrierEori.error.invalidCharacters = The carrier's EORI number must only include letters a to z and numbers 0 to 9
+carrierEori.error.invalidFormat = Enter the carrier’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 carrierName.title =  What is the carrier’s name?
 carrierName.heading = What is the carrier’s name?

@@ -105,13 +105,13 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
   def addConveyanceReferenceNumber: Option[Row] = userAnswers.get(AddConveyanceReferenceNumberPage) map {
     answer =>
       Row(
-        key   = Key(msg"addConveyanceReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        key   = Key(msg"addConveyancerReferenceNumber.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(yesOrNo(answer)),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.AddConveyanceReferenceNumberController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"addConveyanceReferenceNumber.checkYourAnswersLabel.visuallyHidden")
+            visuallyHiddenText = Some(msg"addConveyancerReferenceNumber.checkYourAnswersLabel.visuallyHidden")
           )
         )
       )
@@ -209,9 +209,12 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
 
   def carrierAddress: Option[Row] = userAnswers.get(CarrierAddressPage) map {
     answer =>
+      val carrierAddress = Html(
+        Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+          .mkString("<br>"))
       Row(
         key   = Key(msg"carrierAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(carrierAddress),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -314,9 +317,12 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
 
   def safetyAndSecurityConsigneeAddress: Option[Row] = userAnswers.get(SafetyAndSecurityConsigneeAddressPage) map {
     answer =>
+      val consigneeAddress = Html(
+        Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+          .mkString("<br>"))
       Row(
         key   = Key(msg"safetyAndSecurityConsigneeAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(consigneeAddress),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -359,9 +365,12 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
 
   def safetyAndSecurityConsignorAddress: Option[Row] = userAnswers.get(SafetyAndSecurityConsignorAddressPage) map {
     answer =>
+      val consignorAddress = Html(
+        Seq(answer.AddressLine1, answer.AddressLine2, answer.AddressLine3, answer.country.description)
+          .mkString("<br>"))
       Row(
         key   = Key(msg"safetyAndSecurityConsignorAddress.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(consignorAddress),
         actions = List(
           Action(
             content            = msg"site.edit",
