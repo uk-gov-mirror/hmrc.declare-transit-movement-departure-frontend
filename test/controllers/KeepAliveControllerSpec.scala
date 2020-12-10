@@ -31,7 +31,7 @@ class KeepAliveControllerSpec extends SpecBase with MockNunjucksRendererApp {
       when(mockSessionRepository.get(any(), any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      lazy val keepAliveRoute: String = routes.KeepAliveController.keepAlive(Some(lrn.toString)).url
+      lazy val keepAliveRoute: String = routes.KeepAliveController.keepAlive(Some(lrn)).url
       val result                      = route(app, FakeRequest(GET, keepAliveRoute)).value
 
       status(result) mustBe NO_CONTENT
@@ -48,13 +48,5 @@ class KeepAliveControllerSpec extends SpecBase with MockNunjucksRendererApp {
       verify(mockSessionRepository, never()).get(any(), any())
     }
 
-    "not touch mongo cache when lrn is not valid" in {
-      lazy val keepAliveRoute: String = routes.KeepAliveController.keepAlive(Some("lrn" * 10)).url
-      val result                      = route(app, FakeRequest(GET, keepAliveRoute)).value
-
-      status(result) mustBe NO_CONTENT
-      verify(mockSessionRepository, never()).set(any())
-      verify(mockSessionRepository, never()).get(any(), any())
-    }
   }
 }

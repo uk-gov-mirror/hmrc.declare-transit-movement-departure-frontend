@@ -34,11 +34,11 @@ class KeepAliveController @Inject()(
     extends FrontendBaseController
     with I18nSupport {
 
-  def keepAlive(lrn: Option[String]): Action[AnyContent] = identify.async {
+  def keepAlive(lrn: Option[LocalReferenceNumber]): Action[AnyContent] = identify.async {
     implicit request =>
       lrn match {
-        case Some(refNumber) if LocalReferenceNumber(refNumber).isDefined =>
-          sessionRepository.get(LocalReferenceNumber(refNumber).get, request.eoriNumber) flatMap {
+        case Some(refNumber) =>
+          sessionRepository.get(refNumber, request.eoriNumber) flatMap {
             case Some(ua) =>
               sessionRepository.set(ua).map(_ => NoContent)
             case _ =>
