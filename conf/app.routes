@@ -8,6 +8,9 @@ GET        /language/:lang                                controllers.LanguageSw
 
 GET        /this-service-has-been-reset                   controllers.SessionExpiredController.onPageLoad
 
+GET         /keep-alive                                   controllers.KeepAliveController.keepAlive(lrn: Option[String] = None)
+GET         /:lrn/keep-alive                              controllers.KeepAliveController.keepAlive(lrn: Option[String])
+
 GET        /:lrn/check-your-answers                       controllers.CheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 
 GET        /unauthorised                                  controllers.UnauthorisedController.onPageLoad
