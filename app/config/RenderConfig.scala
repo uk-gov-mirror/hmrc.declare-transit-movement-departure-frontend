@@ -36,6 +36,9 @@ class RenderConfigImpl @Inject()(configuration: Configuration) extends RenderCon
 
   override val signOutUrl: String = configuration.get[String]("urls.logout")
 
+  override def timeoutSeconds: String = configuration.get[String]("session.timeoutSeconds")
+
+  override def countdownSeconds: String = configuration.get[String]("session.countdownSeconds")
 }
 
 trait RenderConfig {
@@ -43,4 +46,6 @@ trait RenderConfig {
   def reportAProblemPartialUrl: String
   def betaFeedbackUnauthenticatedUrl: String
   def signOutUrl: String
+  def timeoutSeconds: String
+  def countdownSeconds: String
 }

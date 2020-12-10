@@ -43,6 +43,8 @@ class Renderer @Inject()(appConfig: RenderConfig, renderer: NunjucksRenderer) {
     "betaFeedbackUnauthenticatedUrl" -> appConfig.betaFeedbackUnauthenticatedUrl,
     "reportAProblemPartialUrl"       -> appConfig.reportAProblemPartialUrl,
     "reportAProblemNonJSUrl"         -> appConfig.reportAProblemNonJSUrl,
-    "signOutUrl"                     -> appConfig.signOutUrl
+    "signOutUrl"                     -> appConfig.signOutUrl,
+    "timeout"                        -> appConfig.timeoutSeconds,
+    "countdown"                      -> appConfig.countdownSeconds
   )
 }
