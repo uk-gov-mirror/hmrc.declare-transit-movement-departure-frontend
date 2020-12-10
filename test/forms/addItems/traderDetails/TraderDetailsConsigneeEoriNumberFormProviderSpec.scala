@@ -71,7 +71,7 @@ class TraderDetailsConsigneeEoriNumberFormProviderSpec extends StringFieldBehavi
       }
     }
 
-    "must not bind strings that do not match the EORI number format regex" in {
+    "must not bind strings that do not match the EORI number format regex" ignore {
 
       val expectedError =
         List(FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex)))
