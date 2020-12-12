@@ -19,7 +19,7 @@ package repositories
 import java.time.LocalDateTime
 
 import javax.inject.{Inject, Singleton}
-import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
+import models.{EoriNumber, LocalReferenceNumber, MongoDateTimeFormats, UserAnswers}
 import play.api.libs.json._
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,6 +31,7 @@ private[repositories] class DefaultSessionRepository @Inject()(
     extends SessionRepository {
 
   override def get(id: LocalReferenceNumber, eoriNumber: EoriNumber): Future[Option[UserAnswers]] = {
+    implicit val dateWriter: Writes[LocalDateTime] = MongoDateTimeFormats.localDateTimeWrite
     val selector = Json.obj(
       "_id"        -> id.value,
       "eoriNumber" -> eoriNumber.value
