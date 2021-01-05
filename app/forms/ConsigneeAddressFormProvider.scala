@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-class ConsigneeAddressFormProvider @Inject() extends Mappings {
+class ConsigneeAddressFormProviderz @Inject() extends Mappings {
 
   def apply(countryList: CountryList): Form[ConsigneeAddress] = Form(
     mapping(
