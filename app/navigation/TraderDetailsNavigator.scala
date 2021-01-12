@@ -49,7 +49,7 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
         Some(isConsignorEoriKnownRoute(ua, NormalMode))
     case ConsignorEoriPage =>
       ua =>
-        Some(routes.ConsigneeForAllItemsController.onPageLoad(ua.id, NormalMode))
+        Some(routes.ConsignorNameController.onPageLoad(ua.id, NormalMode))
     case ConsigneeForAllItemsPage =>
       ua =>
         Some(consigneeForAllRoute(ua, NormalMode))
@@ -73,7 +73,7 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
         Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case WhatIsConsigneeEoriPage =>
       ua =>
-        Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
+        Some(routes.ConsigneeNameController.onPageLoad(ua.id, NormalMode))
   }
 
   override val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -100,10 +100,10 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
         Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case ConsignorEoriPage =>
       ua =>
-        Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
+        Some(consignorEoriRoute(ua, CheckMode))
     case WhatIsConsigneeEoriPage =>
       ua =>
-        Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
+        Some(consigneeEoriRoute(ua, CheckMode))
     case page if isTraderDetailsSectionPage(page) =>
       ua =>
         Some(routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id))
@@ -127,10 +127,22 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
       case _       => routes.PrincipalAddressController.onPageLoad(ua.id, mode)
     }
 
+  private def consignorEoriRoute(ua: UserAnswers, mode: Mode): Call =
+    ua.get(ConsignorNamePage) match {
+      case Some(_) => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _       => routes.ConsignorNameController.onPageLoad(ua.id, mode)
+    }
+
   private def consignorNamePageRoute(ua: UserAnswers, mode: Mode): Call =
     ua.get(ConsignorAddressPage) match {
       case Some(_) => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
       case _       => routes.ConsignorAddressController.onPageLoad(ua.id, mode)
+    }
+
+  private def consigneeEoriRoute(ua: UserAnswers, mode: Mode): Call =
+    ua.get(ConsigneeNamePage) match {
+      case Some(_) => routes.TraderDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _       => routes.ConsigneeNameController.onPageLoad(ua.id, mode)
     }
 
   private def consigneeNamePageRoute(ua: UserAnswers, mode: Mode) =
