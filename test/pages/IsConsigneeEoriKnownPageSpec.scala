@@ -16,7 +16,7 @@
 
 package pages
 
-import models.{ConsigneeAddress, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -32,27 +32,6 @@ class IsConsigneeEoriKnownPageSpec extends PageBehaviours {
   }
 
   "cleanup" - {
-
-    "must remove ConsigneeAddressPage and ConsigneeNamePage when there is a change of the answer to 'Yes'" in {
-
-      val consigneeAddress = arbitrary[ConsigneeAddress].sample.value
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          val result = userAnswers
-            .set(ConsigneeNamePage, "answer")
-            .success
-            .value
-            .set(ConsigneeAddressPage, consigneeAddress)
-            .success
-            .value
-            .set(IsConsigneeEoriKnownPage, true)
-            .success
-            .value
-
-          result.get(ConsigneeNamePage) must not be defined
-          result.get(ConsigneeAddressPage) must not be defined
-      }
-    }
 
     "must remove ConsigneeEoriPage when there is a change of the answer to 'No'" in {
 

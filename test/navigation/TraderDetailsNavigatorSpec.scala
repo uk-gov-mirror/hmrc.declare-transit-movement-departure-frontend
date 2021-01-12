@@ -146,6 +146,16 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
       }
 
+      "must go from EORI Number page to Consignor Name page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(ConsignorEoriPage, NormalMode, answers)
+              .mustBe(traderDetailsRoute.ConsignorNameController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
       "must go from Consignor name page to Consignor address page" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -218,6 +228,16 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
               .value
             navigator
               .nextPage(IsConsigneeEoriKnownPage, NormalMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from EORI Number page to Consignee Name page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(WhatIsConsigneeEoriPage, NormalMode, answers)
               .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, NormalMode))
         }
       }
@@ -373,6 +393,34 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
       }
 
+      "must go from Consignor Eori Number page to" - {
+        "Consignor Name page when Consignor Name does not exist" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .remove(ConsignorNamePage)
+                .success
+                .value
+              navigator
+                .nextPage(ConsignorEoriPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsignorNameController.onPageLoad(answers.id, CheckMode))
+          }
+        }
+
+        "Check Your Answers page when Consignor Name exists" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ConsignorNamePage, "Davey Jones")
+                .success
+                .value
+              navigator
+                .nextPage(ConsignorEoriPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+      }
+
       "must go from Add consignor page to Is consignor eori known page when 'YES' is selected" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -440,6 +488,34 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
             navigator
               .nextPage(ConsigneeForAllItemsPage, CheckMode, updatedAnswers)
               .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from Consignee Eori Number page to" - {
+        "Consignee Name page when Consignee Name does not exist" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .remove(ConsigneeNamePage)
+                .success
+                .value
+              navigator
+                .nextPage(WhatIsConsigneeEoriPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, CheckMode))
+          }
+        }
+
+        "Check Your Answers page when Consignee Name exists" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .set(ConsigneeNamePage, "Davey Jones")
+                .success
+                .value
+              navigator
+                .nextPage(WhatIsConsigneeEoriPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
         }
       }
     }
