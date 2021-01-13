@@ -41,7 +41,7 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
     case GuaranteeTypePage => ua => guaranteeTypeRoute(ua, CheckMode)
     case LiabilityAmountPage => ua => liabilityAmountRoute(ua, CheckMode)
     case OtherReferencePage => ua => otherReferenceRoute(ua)
-    case GuaranteeReferencePage => ua => guaranteeReferenceRoutes(ua, CheckMode)
+    case GuaranteeReferencePage => ua => guaranteeReferenceRoutes(ua)
     case DefaultAmountPage => ua => defaultAmountRoute(ua, CheckMode)
     case AccessCodePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case OtherReferenceLiabilityAmountPage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
@@ -64,11 +64,10 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
       case _ =>  Some(routes.OtherReferenceLiabilityAmountController.onPageLoad(ua.id, NormalMode))
     }
   
-  def guaranteeReferenceRoutes(ua: UserAnswers, mode: Mode) = 
-    (ua.get(LiabilityAmountPage), ua.get(AccessCodePage), mode) match {
-            case (_, _, NormalMode) => Some(routes.OtherReferenceLiabilityAmountController.onPageLoad(ua.id, NormalMode))
-      case (Some(_), None, CheckMode) => Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
-      case (None, _, CheckMode) => Some(routes.LiabilityAmountController.onPageLoad(ua.id, CheckMode))
+  def guaranteeReferenceRoutes(ua: UserAnswers) =
+    (ua.get(LiabilityAmountPage), ua.get(AccessCodePage)) match {
+      case (Some(_), None) => Some(routes.AccessCodeController.onPageLoad(ua.id, CheckMode))
+      case (None, _) => Some(routes.LiabilityAmountController.onPageLoad(ua.id, CheckMode))
       case _ => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
 
     }
