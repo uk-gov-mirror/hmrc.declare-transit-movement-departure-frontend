@@ -157,7 +157,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "From GuaranteeReferencePage to LiabilityAmountPage when both office of destination and Office of departure are in GB" in {
+      "From GuaranteeReferencePage to LiabilityAmountPage when both 'OfficeOfDeparture' and 'OfficeOfDeparture' are in GB" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -170,7 +170,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
               .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
-      "From GuaranteeReferencePage to OtherReferenceLiabilityAmountPage when either office of destination or Office of departure are not in GB"   in {
+      "From GuaranteeReferencePage to OtherReferenceLiabilityAmountPage when either 'OfficeOfDeparture' or 'OfficeOfDeparture' are not in GB"   in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
