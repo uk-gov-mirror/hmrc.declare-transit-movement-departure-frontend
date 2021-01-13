@@ -157,27 +157,27 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "From GuaranteeReferencePage to LiabilityAmountPage when both 'OfficeOfDeparture' and 'OfficeOfDeparture' are in GB" in {
+      "From GuaranteeReferencePage to LiabilityAmountPage when both 'OfficeOfDeparture' and 'DestinationOffice' are in GB" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers: UserAnswers = answers
               .set(GuaranteeReferencePage, "test").success.value
-              .set(OfficeOfDeparturePage, "GB1000000, Dover").success.value
-              .set(DestinationOfficePage, "GB123456, Hull").success.value
+              .set(OfficeOfDeparturePage, "GB, Dover").success.value
+              .set(DestinationOfficePage, "GB, Hull").success.value
             navigator
               .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
-      "From GuaranteeReferencePage to OtherReferenceLiabilityAmountPage when either 'OfficeOfDeparture' or 'OfficeOfDeparture' are not in GB"   in {
+      "From GuaranteeReferencePage to OtherReferenceLiabilityAmountPage when either 'OfficeOfDeparture' or 'DestinationOffice' are not in GB"   in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers: UserAnswers = answers
               .set(GuaranteeReferencePage, "test").success.value
-              .set(OfficeOfDeparturePage, "AD123456, timbuctoo").success.value
-              .set(DestinationOfficePage, "GB123456, Dover").success.value
+              .set(OfficeOfDeparturePage, "G123456, timbuctoo").success.value
+              .set(DestinationOfficePage, "AD123456, Dover").success.value
             navigator
               .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.OtherReferenceLiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
