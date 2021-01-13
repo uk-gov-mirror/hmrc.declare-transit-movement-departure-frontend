@@ -157,14 +157,30 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "From GuaranteeReferencePage to LiabilityAmountPage" in {
+      "From GuaranteeReferencePage to LiabilityAmountPage when both office of destination and Office of departure are in GB" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers: UserAnswers = answers.set(GuaranteeReferencePage, "test").success.value
+            val updatedAnswers: UserAnswers = answers
+              .set(GuaranteeReferencePage, "test").success.value
+              .set(OfficeOfDeparturePage, "GB1000000, Dover").success.value
+              .set(DestinationOfficePage, "GB123456, Hull").success.value
             navigator
               .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+      "From GuaranteeReferencePage to OtherReferenceLiabilityAmountPage when either office of destination or Office of departure are not in GB"   in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers = answers
+              .set(GuaranteeReferencePage, "test").success.value
+              .set(OfficeOfDeparturePage, "AD123456, timbuctoo").success.value
+              .set(DestinationOfficePage, "GB123456, Dover").success.value
+            navigator
+              .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.OtherReferenceLiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
 
@@ -279,14 +295,14 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
       }
     }
 
-    "From OtherReference to OtherReferenceLiabilityAmount" in {
+    "From OtherReference to CheckYourAnswers" in {
 
       forAll(arbitrary[UserAnswers]) {
         answers =>
           val updatedAnswers: UserAnswers = answers.set(OtherReferencePage, "1234").success.value
           navigator
             .nextPage(OtherReferencePage, NormalMode, updatedAnswers)
-            .mustBe(guaranteeDetailsRoute.OtherReferenceLiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
+            .mustBe(guaranteeDetailsRoute.GuaranteeDetailsCheckYourAnswersController.onPageLoad(updatedAnswers.id))
       }
     }
   }

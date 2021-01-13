@@ -29,7 +29,7 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
   // format: off
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case GuaranteeTypePage => ua => guaranteeTypeRoute(ua, NormalMode)
-    case OtherReferencePage => ua => Some(routes.OtherReferenceLiabilityAmountController.onPageLoad(ua.id, NormalMode))
+    case OtherReferencePage => ua => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id))
     case GuaranteeReferencePage => ua => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
     case LiabilityAmountPage => ua => liabilityAmountRoute(ua, NormalMode)
     case DefaultAmountPage => ua => defaultAmountRoute(ua, NormalMode)
