@@ -332,7 +332,7 @@ class DeclarationRequestService @Inject()(
       ),
       customsOfficeTransit(routeDetails.transitInformation),
       CustomsOfficeDestination(
-        referenceNumber = routeDetails.destinationOffice
+        referenceNumber = routeDetails.destinationOffice.id
       ),
       None,
       representative(movementDetails),

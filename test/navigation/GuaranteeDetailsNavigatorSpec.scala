@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.guaranteeDetails.{routes => guaranteeDetailsRoute}
 import generators.Generators
 import models.GuaranteeType._
+import models.reference.{CountryCode, CustomsOffice}
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -29,6 +30,7 @@ import pages.guaranteeDetails._
 //TODO update to CYA when CYA merged in
 class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   // format: off
+  val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)
 
   val navigator = new GuaranteeDetailsNavigator
   "GuaranteeDetailsNavigator" - {
@@ -164,7 +166,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
             val updatedAnswers: UserAnswers = answers
               .set(GuaranteeReferencePage, "test").success.value
               .set(OfficeOfDeparturePage, "GB, Dover").success.value
-              .set(DestinationOfficePage, "GB, Hull").success.value
+              .set(DestinationOfficePage, customsOffice1).success.value
             navigator
               .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -177,7 +179,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
             val updatedAnswers: UserAnswers = answers
               .set(GuaranteeReferencePage, "test").success.value
               .set(OfficeOfDeparturePage, "GB123456, timbuctoo").success.value
-              .set(DestinationOfficePage, "AD123456, Dover").success.value
+              .set(DestinationOfficePage,  customsOffice1 ).success.value
             navigator
               .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.OtherReferenceLiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -190,7 +192,7 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
             val updatedAnswers: UserAnswers = answers
               .set(GuaranteeReferencePage, "test").success.value
               .set(OfficeOfDeparturePage, "AD123456, timbuctoo").success.value
-              .set(DestinationOfficePage, "GB123456, Dover").success.value
+              .set(DestinationOfficePage, customsOffice1).success.value
             navigator
               .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.OtherReferenceLiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))

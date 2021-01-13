@@ -21,7 +21,7 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
 import forms.OfficeOfDepartureFormProvider
 import matchers.JsonMatchers
-import models.reference.CustomsOffice
+import models.reference.{CountryCode, CustomsOffice}
 import models.{CustomsOfficeList, NormalMode}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
@@ -45,8 +45,8 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockNunjucksRenderer
 
   def onwardRoute = Call("GET", "/foo")
 
-  val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", Seq.empty, None)
-  val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", Seq.empty, None)
+  val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)
+  val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
   val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
   val form                              = new OfficeOfDepartureFormProvider()(customsOffices)
 

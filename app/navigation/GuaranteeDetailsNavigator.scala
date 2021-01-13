@@ -60,7 +60,9 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
   def guaranteeReferenceNormalRoutes(ua:UserAnswers) =
     (ua.get(OfficeOfDeparturePage), ua.get(DestinationOfficePage)) match {
       case (Some(departureOffice), Some(destinationOffice)) if
-      (departureOffice.take(2).equals("GB") && destinationOffice.take(2).equals("GB")) => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
+      (departureOffice.take(2).equals("GB") && (destinationOffice.id.equals("GB")))
+
+      => Some(routes.LiabilityAmountController.onPageLoad(ua.id, NormalMode))
       case _ =>  Some(routes.OtherReferenceLiabilityAmountController.onPageLoad(ua.id, NormalMode))
     }
   
