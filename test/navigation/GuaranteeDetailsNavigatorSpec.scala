@@ -170,14 +170,27 @@ class GuaranteeDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
               .mustBe(guaranteeDetailsRoute.LiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
-      "From GuaranteeReferencePage to OtherReferenceLiabilityAmountPage when either 'OfficeOfDeparture' or 'DestinationOffice' are not in GB"   in {
+      "From GuaranteeReferencePage to OtherReferenceLiabilityAmountPage when 'DestinationOffice' is not in GB"   in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers: UserAnswers = answers
               .set(GuaranteeReferencePage, "test").success.value
-              .set(OfficeOfDeparturePage, "G123456, timbuctoo").success.value
+              .set(OfficeOfDeparturePage, "GB123456, timbuctoo").success.value
               .set(DestinationOfficePage, "AD123456, Dover").success.value
+            navigator
+              .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
+              .mustBe(guaranteeDetailsRoute.OtherReferenceLiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+      "From GuaranteeReferencePage to OtherReferenceLiabilityAmountPage when 'OfficeOfDeparture' is not in GB"   in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers: UserAnswers = answers
+              .set(GuaranteeReferencePage, "test").success.value
+              .set(OfficeOfDeparturePage, "AD123456, timbuctoo").success.value
+              .set(DestinationOfficePage, "GB123456, Dover").success.value
             navigator
               .nextPage(GuaranteeReferencePage, NormalMode, updatedAnswers)
               .mustBe(guaranteeDetailsRoute.OtherReferenceLiabilityAmountController.onPageLoad(updatedAnswers.id, NormalMode))
