@@ -34,8 +34,11 @@ object SpecialMention {
 
   val countrySpecificCodes = Seq("DG0", "DG1")
 
+  val guaranteeLiabilityAmount = ""
+
   implicit val xmlReader: XmlReader[SpecialMention] =
     SpecialMentionEc.xmlReader
+      .or(SpecialMentionGuaranteeLiabilityAmount.xmlReader)
       .or(SpecialMentionNonEc.xmlReader)
       .or(SpecialMentionNoCountry.xmlReader)
 
@@ -49,7 +52,7 @@ object SpecialMention {
 
     implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =
       a.map(identity)
-
+    SpecialMentionGuaranteeLiabilityAmount.reads or
     SpecialMentionEc.reads or
       SpecialMentionNonEc.reads or
       SpecialMentionNoCountry.reads
@@ -338,3 +341,85 @@ object SpecialMentionNoCountry {
       </SPEMENMT2>
   }
 }
+
+  final case class SpecialMentionGuaranteeLiabilityAmount(
+   additionalInformationCoded: String,
+   additionalInformationOfLiabilityAmount: String
+   ) extends SpecialMention
+
+  object SpecialMentionGuaranteeLiabilityAmount {
+
+    implicit val xmlReader: XmlReader[SpecialMentionGuaranteeLiabilityAmount] = {
+
+      import com.lucidchart.open.xtract.__
+
+      case class SpecialMentionGuaranteeLiabilityAmountParseFailure(message: String) extends ParseError
+
+      (__ \ "AddInfCodMT21").read[String].flatMap {
+        code =>
+          if (SpecialMention.guaranteeLiabilityAmount.contains(code)) {
+            XmlReader(
+              _ => ParseSuccess(SpecialMentionGuaranteeLiabilityAmount(code))
+            )
+          } else {
+            XmlReader(
+              _ => ParseFailure(SpecialMentionGuaranteeLiabilityAmountParseFailure(s"Failed to parse to SpecialMentionGuaranteeLiabilityAmount: $code was not described"))
+            )
+          }
+      }
+        .flatMap {
+          _ =>
+            (__ \ "AddInfCodMT23").read[String].flatMap {
+              code =>
+                if (SpecialMention.guaranteeLiabilityAmount.contains(code)) {
+                  XmlReader(
+                    _ => ParseSuccess(code)
+                  )
+                } else {
+                  XmlReader(
+                    _ => ParseFailure(SpecialMentionGuaranteeLiabilityAmountParseFailure(s"Failed to parse to SpecialMentionNonEc: $code was not country specific"))
+                  )
+                }
+            }
+        }
+    }
+
+    implicit lazy val reads: Reads[SpecialMentionGuaranteeLiabilityAmount] = {
+
+      import play.api.libs.functional.syntax._
+
+      (__ \ "additionalInformationCoded")
+        .read[String]
+        .flatMap[String] {
+          code =>
+            if (SpecialMention.guaranteeLiabilityAmount.contains(code)) {
+              Reads(
+                _ => JsSuccess(code)
+              )
+            } else {
+              Reads(
+                _ => JsError(s"additionalInformationCoded must not be in ${SpecialMention.guaranteeLiabilityAmount}")
+
+              )
+            }
+        }
+        .andKeep(
+          (__ \ "additionalInformationCoded")
+            .read[String]
+            .map(SpecialMentionGuaranteeLiabilityAmount(_))
+        )
+
+    }
+
+    implicit lazy val writes: OWrites[SpecialMentionGuaranteeLiabilityAmount] = Json.writes[SpecialMentionGuaranteeLiabilityAmount]
+
+    implicit def writesXml: XMLWrites[SpecialMentionGuaranteeLiabilityAmount] = XMLWrites[SpecialMentionGuaranteeLiabilityAmount] {
+      specialMention =>
+        <SPEMENMT2>
+          <AddInfMT21>{specialMention.additionalInformationCoded}</AddInfMT21>
+        </SPEMENMT2>
+    }
+
+  }
+
+
