@@ -343,7 +343,7 @@ object SpecialMentionNoCountry {
 }
 
   final case class SpecialMentionGuaranteeLiabilityAmount(
-   additionalInformationCoded: String,
+   additionalInformationCoded: String = "CAL",
    additionalInformationOfLiabilityAmount: String
    ) extends SpecialMention
 
@@ -355,70 +355,58 @@ object SpecialMentionNoCountry {
 
       case class SpecialMentionGuaranteeLiabilityAmountParseFailure(message: String) extends ParseError
 
-      (__ \ "AddInfCodMT21").read[String].flatMap {
-        code =>
-          if (SpecialMention.guaranteeLiabilityAmount.contains(code)) {
-            XmlReader(
-              _ => ParseSuccess(SpecialMentionGuaranteeLiabilityAmount(code))
-            )
-          } else {
-            XmlReader(
-              _ => ParseFailure(SpecialMentionGuaranteeLiabilityAmountParseFailure(s"Failed to parse to SpecialMentionGuaranteeLiabilityAmount: $code was not described"))
-            )
+
+      (__ \ "AddInfCodMT23").read[String].flatMap {
+        case "CAL" => {
+          (__ \ "AddInfCodMT21").read[String].flatMap {
+            liabilityCode =>
+              XmlReader(
+                _ => ParseSuccess(SpecialMentionGuaranteeLiabilityAmount("CAL", liabilityCode))
+              )
           }
-      }
-        .flatMap {
-          _ =>
-            (__ \ "AddInfCodMT23").read[String].flatMap {
-              code =>
-                if (SpecialMention.guaranteeLiabilityAmount.contains(code)) {
-                  XmlReader(
-                    _ => ParseSuccess(code)
-                  )
-                } else {
-                  XmlReader(
-                    _ => ParseFailure(SpecialMentionGuaranteeLiabilityAmountParseFailure(s"Failed to parse to SpecialMentionNonEc: $code was not country specific"))
-                  )
-                }
-            }
         }
-    }
-
-    implicit lazy val reads: Reads[SpecialMentionGuaranteeLiabilityAmount] = {
-
-      import play.api.libs.functional.syntax._
-
-      (__ \ "additionalInformationCoded")
-        .read[String]
-        .flatMap[String] {
-          code =>
-            if (SpecialMention.guaranteeLiabilityAmount.contains(code)) {
-              Reads(
-                _ => JsSuccess(code)
-              )
-            } else {
-              Reads(
-                _ => JsError(s"additionalInformationCoded must not be in ${SpecialMention.guaranteeLiabilityAmount}")
-
-              )
-            }
-        }
-        .andKeep(
-          (__ \ "additionalInformationCoded")
-            .read[String]
-            .map(SpecialMentionGuaranteeLiabilityAmount(_))
+        case otherCode => XmlReader(
+          _ => ParseFailure(SpecialMentionGuaranteeLiabilityAmountParseFailure(s"???"))
         )
-
+      }
     }
-
-    implicit lazy val writes: OWrites[SpecialMentionGuaranteeLiabilityAmount] = Json.writes[SpecialMentionGuaranteeLiabilityAmount]
 
     implicit def writesXml: XMLWrites[SpecialMentionGuaranteeLiabilityAmount] = XMLWrites[SpecialMentionGuaranteeLiabilityAmount] {
       specialMention =>
         <SPEMENMT2>
-          <AddInfMT21>{specialMention.additionalInformationCoded}</AddInfMT21>
+          <AddInfMT23>CAL</AddInfMT23>
+          <AddInfMT21>{specialMention.additionalInformationOfLiabilityAmount}</AddInfMT21>
         </SPEMENMT2>
     }
+
+//    implicit lazy val reads: Reads[SpecialMentionGuaranteeLiabilityAmount] = {
+//
+//      import play.api.libs.functional.syntax._
+//
+//      (__ \ "additionalInformationCoded")
+//        .read[String]
+//        .flatMap[String] {
+//          code =>
+//            if (SpecialMention.guaranteeLiabilityAmount.contains(code)) {
+//              Reads(
+//                _ => JsSuccess(code)
+//              )
+//            } else {
+//              Reads(
+//                _ => JsError(s"additionalInformationCoded must not be in ${SpecialMention.guaranteeLiabilityAmount}")
+//
+//              )
+//            }
+//        }
+//        .andKeep(
+//          (__ \ "additionalInformationCoded")
+//            .read[String]
+//            .map(SpecialMentionGuaranteeLiabilityAmount(_))
+//        )
+//
+//    }
+//
+//    implicit lazy val writes: OWrites[SpecialMentionGuaranteeLiabilityAmount] = Json.writes[SpecialMentionGuaranteeLiabilityAmount]
 
   }
 

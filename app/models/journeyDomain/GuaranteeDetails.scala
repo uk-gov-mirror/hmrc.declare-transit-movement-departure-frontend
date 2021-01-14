@@ -37,7 +37,7 @@ object GuaranteeDetails {
 
   object GuaranteeReference {
 
-    private val defaultLiability = "10000"
+    val defaultLiability = "10000"
 
     private val liabilityAmount: UserAnswersReader[String] = DefaultAmountPage.optionalReader.flatMap {
       case Some(defaultAmountPage) =>

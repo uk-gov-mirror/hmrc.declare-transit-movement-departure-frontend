@@ -23,13 +23,14 @@ import cats.implicits._
 import javax.inject.Inject
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails}
+import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode}
-import models.journeyDomain.{GuaranteeDetails, ItemSection, JourneyDomain, Itinerary, Packages, TraderDetails, UserAnswersReader, _}
+import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
@@ -97,7 +98,7 @@ class DeclarationRequestService @Inject()(
       }
 
     // TODO finish this off
-    def goodsItems(goodsItems: NonEmptyList[ItemSection]): NonEmptyList[GoodsItem] =
+    def goodsItems(goodsItems: NonEmptyList[ItemSection], guaranteeReference: GuaranteeReference): NonEmptyList[GoodsItem] =
       goodsItems.zipWithIndex.map {
         case (itemSection, index) =>
           GoodsItem(
@@ -122,6 +123,19 @@ class DeclarationRequestService @Inject()(
             sensitiveGoodsInformation        = Seq.empty //TODO look up this
           )
       }
+
+
+    def specialMentionLiability(guaranteeReference: GuaranteeReference): SpecialMentionGuaranteeLiabilityAmount = {
+      guaranteeReference.liabilityAmount match {
+        case GuaranteeReference.defaultLiability => {
+          val code = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReference.guaranteeReferenceNumber}"
+          SpecialMentionGuaranteeLiabilityAmount("CAL", code)
+        }
+        case liabilityAmount =>
+          val code = s"${liabilityAmount}GBP${guaranteeReference.guaranteeReferenceNumber}"
+          SpecialMentionGuaranteeLiabilityAmount("CAL", code)
+      }
+    }
 
     def principalTrader(traderDetails: TraderDetails): TraderPrincipal =
       traderDetails.principalTraderDetails match {
