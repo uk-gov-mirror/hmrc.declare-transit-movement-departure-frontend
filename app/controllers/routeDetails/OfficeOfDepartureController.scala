@@ -20,6 +20,7 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.OfficeOfDepartureFormProvider
 import javax.inject.Inject
+import models.reference.CustomsOffice
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.OfficeOfDeparturePage
@@ -58,7 +59,7 @@ class OfficeOfDepartureController @Inject()(
           val form = formProvider(customsOffices)
           val preparedForm = request.userAnswers
             .get(OfficeOfDeparturePage)
-            .flatMap(customsOffices.getCustomsOffice)
+            .flatMap(x => customsOffices.getCustomsOffice(x.id))
             .map(form.fill)
             .getOrElse(form)
 
@@ -93,7 +94,7 @@ class OfficeOfDepartureController @Inject()(
               },
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfDeparturePage, value.id))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfDeparturePage, value))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(OfficeOfDeparturePage, mode, updatedAnswers))
             )

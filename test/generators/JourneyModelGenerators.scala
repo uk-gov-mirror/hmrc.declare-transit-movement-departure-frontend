@@ -553,7 +553,7 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         countryOfDispatch  <- arbitrary[CountryCode]
-        officeOfDeparture  <- stringsWithMaxLength(stringMaxLength)
+        officeOfDeparture  <- arbitrary[CustomsOffice]
         destinationCountry <- arbitrary[CountryCode]
         destinationOffice  <- arbitrary[CustomsOffice]
         transitInformation <- nonEmptyListOf[TransitInformation](2)(arbTransitInformation)

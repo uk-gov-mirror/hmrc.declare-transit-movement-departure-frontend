@@ -16,16 +16,17 @@
 
 package pages
 
+import models.reference.CustomsOffice
 import pages.behaviours.PageBehaviours
 
 class OfficeOfDeparturePageSpec extends PageBehaviours {
 
   "OfficeOfDeparturePage" - {
 
-    beRetrievable[String](OfficeOfDeparturePage)
+    beRetrievable[CustomsOffice](OfficeOfDeparturePage)
 
-    beSettable[String](OfficeOfDeparturePage)
+    beSettable[CustomsOffice](OfficeOfDeparturePage)
 
-    beRemovable[String](OfficeOfDeparturePage)
+    beRemovable[CustomsOffice](OfficeOfDeparturePage)
   }
 }

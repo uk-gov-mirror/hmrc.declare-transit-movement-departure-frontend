@@ -28,7 +28,7 @@ import pages._
 
 final case class RouteDetails(
   countryOfDispatch: CountryCode,
-  officeOfDeparture: String,
+  officeOfDeparture: CustomsOffice,
   destinationCountry: CountryCode,
   destinationOffice: CustomsOffice,
   transitInformation: NonEmptyList[TransitInformation]

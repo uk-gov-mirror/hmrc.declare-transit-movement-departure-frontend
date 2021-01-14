@@ -96,7 +96,7 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockNunjucksRenderer
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, customsOffice1.id).success.value
+      val userAnswers = emptyUserAnswers.set(OfficeOfDeparturePage, customsOffice1).success.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
