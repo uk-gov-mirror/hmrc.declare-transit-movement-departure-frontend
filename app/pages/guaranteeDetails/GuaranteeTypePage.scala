@@ -30,7 +30,7 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
   override def toString: String = "guaranteeType"
 
   override def cleanup(value: Option[GuaranteeType], userAnswers: UserAnswers): Try[UserAnswers] =
-    (value, userAnswers.get(AccessCodePage), userAnswers.get(GuaranteeReferencePage)) match {
+    (value, userAnswers.get(OtherReferencePage), userAnswers.get(GuaranteeReferencePage)) match {
 
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple), _, Some(grnNumber))
           if grnNumber.length > 17 =>
@@ -41,28 +41,16 @@ case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
             _) =>
         userAnswers.remove(OtherReferencePage)
 
-      case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
-            None,
-            _) =>
-        userAnswers
-          .remove(OtherReferencePage)
-          .flatMap(_.remove(OtherReferenceLiabilityAmountPage))
-
       case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
               GuaranteeWaiverSecured),
-            Some(_),
+            None,
             _) =>
         userAnswers
           .remove(GuaranteeReferencePage)
           .flatMap(_.remove(LiabilityAmountPage))
           .flatMap(_.remove(AccessCodePage))
+          .flatMap(_.remove(OtherReferenceLiabilityAmountPage))
           .flatMap(_.remove(DefaultAmountPage))
-
-      case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
-              GuaranteeWaiverSecured),
-            None,
-            _) =>
-        userAnswers.remove(GuaranteeReferencePage)
 
       case _ => super.cleanup(value, userAnswers)
 
