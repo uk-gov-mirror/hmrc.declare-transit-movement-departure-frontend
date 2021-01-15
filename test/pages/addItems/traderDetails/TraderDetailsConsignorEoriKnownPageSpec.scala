@@ -34,30 +34,6 @@ class TraderDetailsConsignorEoriKnownPageSpec extends PageBehaviours with SpecBa
 
   "cleanup" - {
 
-    "must remove TraderDetailsConsignorEoriNamePage and TraderDetailsConsignorAddressPage when EORI known in userAnswers" in {
-
-      val consignorAddress = arbitrary[ConsignorAddress].sample.value
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          val result = userAnswers
-            .set(TraderDetailsConsignorEoriNumberPage(index), "GB0010")
-            .success
-            .value
-            .set(TraderDetailsConsignorNamePage(index), "answer")
-            .success
-            .value
-            .set(TraderDetailsConsignorAddressPage(index), consignorAddress)
-            .success
-            .value
-            .set(TraderDetailsConsignorEoriKnownPage(index), true)
-            .success
-            .value
-
-          result.get(TraderDetailsConsignorNamePage(index)) must not be defined
-          result.get(TraderDetailsConsignorAddressPage(index)) must not be defined
-      }
-    }
-
     "must remove TraderDetailsConsignorEoriNumberPage when EORI not known in in userAnswers" in {
 
       val consignorAddress = arbitrary[ConsignorAddress].sample.value

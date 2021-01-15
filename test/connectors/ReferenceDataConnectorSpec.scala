@@ -486,7 +486,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return list of document types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/special-mention"))
+          get(urlEqualTo(s"/$startUrl/additional-information"))
             .willReturn(okJson(specialMentionJson))
         )
 
@@ -502,7 +502,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$startUrl/special-mention", connector.getSpecialMention())
+        checkErrorResponse(s"/$startUrl/additional-information", connector.getSpecialMention())
       }
 
     }

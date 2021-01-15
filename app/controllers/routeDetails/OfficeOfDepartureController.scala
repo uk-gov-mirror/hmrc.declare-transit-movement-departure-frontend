@@ -20,6 +20,7 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.OfficeOfDepartureFormProvider
 import javax.inject.Inject
+import models.reference.CountryCode
 import models.reference.CustomsOffice
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
@@ -36,7 +37,7 @@ import navigation.annotations.RouteDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class OfficeOfDepartureController @Inject()(
+class OfficeOfDepartureController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @RouteDetails navigator: Navigator,
@@ -54,12 +55,14 @@ class OfficeOfDepartureController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getCustomsOffices flatMap {
+      referenceDataConnector.getCustomsOfficesOfTheCountry(CountryCode("GB")) flatMap {
         customsOffices =>
           val form = formProvider(customsOffices)
           val preparedForm = request.userAnswers
             .get(OfficeOfDeparturePage)
-            .flatMap(x => customsOffices.getCustomsOffice(x.id))
+            .flatMap(
+              x => customsOffices.getCustomsOffice(x.id)
+            )
             .map(form.fill)
             .getOrElse(form)
 
@@ -76,7 +79,7 @@ class OfficeOfDepartureController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getCustomsOffices flatMap {
+      referenceDataConnector.getCustomsOfficesOfTheCountry(CountryCode("GB")) flatMap {
         customsOffices =>
           val form = formProvider(customsOffices)
           form
