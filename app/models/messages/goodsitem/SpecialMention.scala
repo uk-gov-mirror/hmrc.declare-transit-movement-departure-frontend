@@ -34,11 +34,8 @@ object SpecialMention {
 
   val countrySpecificCodes = Seq("DG0", "DG1")
 
-  val guaranteeLiabilityAmount = ""
-
   implicit val xmlReader: XmlReader[SpecialMention] =
     SpecialMentionEc.xmlReader
-      .or(SpecialMentionGuaranteeLiabilityAmount.xmlReader)
       .or(SpecialMentionNonEc.xmlReader)
       .or(SpecialMentionNoCountry.xmlReader)
 
@@ -52,16 +49,18 @@ object SpecialMention {
 
     implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =
       a.map(identity)
-    SpecialMentionGuaranteeLiabilityAmount.reads or
-    SpecialMentionEc.reads or
+
+      SpecialMentionEc.reads or
       SpecialMentionNonEc.reads or
-      SpecialMentionNoCountry.reads
+      SpecialMentionNoCountry.reads or
+      SpecialMentionGuaranteeLiabilityAmount.reads
   }
 
   implicit lazy val writes: OWrites[SpecialMention] = OWrites {
-    case sm: SpecialMentionEc        => Json.toJsObject(sm)(SpecialMentionEc.writes)
-    case sm: SpecialMentionNonEc     => Json.toJsObject(sm)(SpecialMentionNonEc.writes)
-    case sm: SpecialMentionNoCountry => Json.toJsObject(sm)(SpecialMentionNoCountry.writes)
+    case sm: SpecialMentionEc                       => Json.toJsObject(sm)(SpecialMentionEc.writes)
+    case sm: SpecialMentionNonEc                    => Json.toJsObject(sm)(SpecialMentionNonEc.writes)
+    case sm: SpecialMentionNoCountry                => Json.toJsObject(sm)(SpecialMentionNoCountry.writes)
+    case sm: SpecialMentionGuaranteeLiabilityAmount => Json.toJsObject(sm)(SpecialMentionGuaranteeLiabilityAmount.writes)
   }
 
 }
@@ -342,72 +341,71 @@ object SpecialMentionNoCountry {
   }
 }
 
-  final case class SpecialMentionGuaranteeLiabilityAmount(
-   additionalInformationCoded: String = "CAL",
-   additionalInformationOfLiabilityAmount: String
-   ) extends SpecialMention
+final case class SpecialMentionGuaranteeLiabilityAmount(
+                                                         additionalInformationCoded: String,
+                                                         additionalInformationOfLiabilityAmount: String
+                                                       ) extends SpecialMention
 
-  object SpecialMentionGuaranteeLiabilityAmount {
+object SpecialMentionGuaranteeLiabilityAmount {
 
-    implicit val xmlReader: XmlReader[SpecialMentionGuaranteeLiabilityAmount] = {
+  implicit val xmlReader: XmlReader[SpecialMentionGuaranteeLiabilityAmount] = {
 
-      import com.lucidchart.open.xtract.__
+    import com.lucidchart.open.xtract.__
 
-      case class SpecialMentionGuaranteeLiabilityAmountParseFailure(message: String) extends ParseError
+    case class SpecialMentionGuaranteeLiabilityAmountParseFailure(message: String) extends ParseError
 
 
-      (__ \ "AddInfCodMT23").read[String].flatMap {
-        case "CAL" => {
-          (__ \ "AddInfCodMT21").read[String].flatMap {
-            liabilityCode =>
-              XmlReader(
-                _ => ParseSuccess(SpecialMentionGuaranteeLiabilityAmount("CAL", liabilityCode))
-              )
-          }
+    (__ \ "AddInfCodMT23").read[String].flatMap {
+      case "CAL" => {
+        (__ \ "AddInfCodMT21").read[String].flatMap {
+          liabilityAmount =>
+            XmlReader(
+              _ => ParseSuccess(SpecialMentionGuaranteeLiabilityAmount("CAL", liabilityAmount))
+            )
         }
-        case otherCode => XmlReader(
-          _ => ParseFailure(SpecialMentionGuaranteeLiabilityAmountParseFailure(s"???"))
-        )
       }
+      case _ => XmlReader(
+        _ => ParseFailure(SpecialMentionGuaranteeLiabilityAmountParseFailure(s"Failed to parse to SpecialMentionGuaranteeLiabilityAmount does not exist"))
+      )
     }
-
-    implicit def writesXml: XMLWrites[SpecialMentionGuaranteeLiabilityAmount] = XMLWrites[SpecialMentionGuaranteeLiabilityAmount] {
-      specialMention =>
-        <SPEMENMT2>
-          <AddInfMT23>CAL</AddInfMT23>
-          <AddInfMT21>{specialMention.additionalInformationOfLiabilityAmount}</AddInfMT21>
-        </SPEMENMT2>
-    }
-
-//    implicit lazy val reads: Reads[SpecialMentionGuaranteeLiabilityAmount] = {
-//
-//      import play.api.libs.functional.syntax._
-//
-//      (__ \ "additionalInformationCoded")
-//        .read[String]
-//        .flatMap[String] {
-//          code =>
-//            if (SpecialMention.guaranteeLiabilityAmount.contains(code)) {
-//              Reads(
-//                _ => JsSuccess(code)
-//              )
-//            } else {
-//              Reads(
-//                _ => JsError(s"additionalInformationCoded must not be in ${SpecialMention.guaranteeLiabilityAmount}")
-//
-//              )
-//            }
-//        }
-//        .andKeep(
-//          (__ \ "additionalInformationCoded")
-//            .read[String]
-//            .map(SpecialMentionGuaranteeLiabilityAmount(_))
-//        )
-//
-//    }
-//
-//    implicit lazy val writes: OWrites[SpecialMentionGuaranteeLiabilityAmount] = Json.writes[SpecialMentionGuaranteeLiabilityAmount]
-
   }
 
+  implicit lazy val reads: Reads[SpecialMentionGuaranteeLiabilityAmount] = {
+
+    import play.api.libs.functional.syntax._
+
+    (__ \ "additionalInformationCoded")
+      .read[String]
+      .flatMap[String] {
+        case "CAL" => {
+          (__ \ "additionalInformation").read[String].flatMap[String] {
+            liabilityAmount =>
+            Reads(
+              _ => JsSuccess(liabilityAmount)
+            )
+          }
+        }
+        case _ => {
+            Reads(
+              _ => JsError(s"Failed to parse to SpecialMentionGuaranteeLiabilityAmount does not exist")
+            )
+          }
+      }
+      .andKeep(
+        (
+          (__ \ "additionalInformation").read[String] and
+            (__ \ "additionalInformation").read[String]
+          )(SpecialMentionGuaranteeLiabilityAmount(_, _))
+      )
+  }
+
+  implicit def writesXml: XMLWrites[SpecialMentionGuaranteeLiabilityAmount] = XMLWrites[SpecialMentionGuaranteeLiabilityAmount] {
+    specialMention =>
+      <SPEMENMT2>
+        <AddInfMT23>CAL</AddInfMT23>
+        <AddInfMT21>{specialMention.additionalInformationOfLiabilityAmount}</AddInfMT21>
+      </SPEMENMT2>
+  }
+
+}
 

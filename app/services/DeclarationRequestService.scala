@@ -61,9 +61,7 @@ class DeclarationRequestService @Inject()(
           .run(userAnswers)
     }
 
-  private def journeyModelToSubmissionModel(journeyDomain: JourneyDomain,
-                                            icr: InterchangeControlReference,
-                                            dateTimeOfPrep: LocalDateTime): DeclarationRequest = {
+  private def journeyModelToSubmissionModel(journeyDomain: JourneyDomain, icr: InterchangeControlReference, dateTimeOfPrep: LocalDateTime): DeclarationRequest = {
 
     val JourneyDomain(
       preTaskList,
@@ -115,7 +113,7 @@ class DeclarationRequestService @Inject()(
             dangerousGoodsCode               = None, // Add items security details
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
-            specialMention                   = Seq.empty,
+            specialMention                   = specialMentionLiability(itemSection.specialMentions).toList,
             traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,
@@ -125,12 +123,12 @@ class DeclarationRequestService @Inject()(
       }
 
 
-    def specialMentionLiability(guaranteeReference: GuaranteeReference): SpecialMentionGuaranteeLiabilityAmount = {
+    def specialMentionLiability(guaranteeReference: GuaranteeReference): NonEmptyList[models.messages.goodsitem.SpecialMention] = {
       guaranteeReference.liabilityAmount match {
-        case GuaranteeReference.defaultLiability => {
-          val code = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReference.guaranteeReferenceNumber}"
-          SpecialMentionGuaranteeLiabilityAmount("CAL", code)
-        }
+        case GuaranteeReference.defaultLiability =>
+          val additionalInformationOfDefaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReference.guaranteeReferenceNumber}"
+          SpecialMentionGuaranteeLiabilityAmount("CAL", additionalInformationOfDefaultLiabilityAmount)
+
         case liabilityAmount =>
           val code = s"${liabilityAmount}GBP${guaranteeReference.guaranteeReferenceNumber}"
           SpecialMentionGuaranteeLiabilityAmount("CAL", code)
