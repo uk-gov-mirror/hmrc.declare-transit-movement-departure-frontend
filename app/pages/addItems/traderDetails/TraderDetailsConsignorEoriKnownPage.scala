@@ -31,10 +31,6 @@ case class TraderDetailsConsignorEoriKnownPage(index: Index) extends QuestionPag
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(true) =>
-        userAnswers
-          .remove(TraderDetailsConsignorNamePage(index))
-          .flatMap(_.remove(TraderDetailsConsignorAddressPage(index)))
       case Some(false) =>
         userAnswers
           .remove(TraderDetailsConsignorEoriNumberPage(index))

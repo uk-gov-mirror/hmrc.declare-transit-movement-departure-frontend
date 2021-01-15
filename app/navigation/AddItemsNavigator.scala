@@ -57,14 +57,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case CommodityCodePage(index)                             => ua => Some(addItemsRoutes.AddItemsSameConsignorForAllItemsController.onPageLoad(ua.id,index, NormalMode))
     case AddItemsSameConsignorForAllItemsPage(index)          => ua => addItemsSameConsignorForAllItems(ua, index, NormalMode)
     case TraderDetailsConsignorEoriKnownPage(index)           => ua => consignorEoriKnown(ua, index, NormalMode)
-    case TraderDetailsConsignorEoriNumberPage(index)          => ua => consignorEoriNumber(ua, index, NormalMode)
+    case TraderDetailsConsignorEoriNumberPage(index)          => ua => Some(traderDetailsRoutes.TraderDetailsConsignorNameController.onPageLoad(ua.id, index, NormalMode))
     case TraderDetailsConsignorNamePage(index)                => ua => consignorName(ua, index, NormalMode)
     case TraderDetailsConsignorAddressPage(index)             => ua => consignorAddress(ua, index, NormalMode)
     case AddItemsSameConsigneeForAllItemsPage(index)          => ua => addItemsSameConsigneeForAllItems(ua, index, NormalMode)
     case TraderDetailsConsigneeEoriKnownPage(index)           => ua => consigneeEoriKnown(ua, index, NormalMode)
-    case TraderDetailsConsigneeEoriNumberPage(index)          => ua => consigneeEoriNumber(ua, index, NormalMode)
+    case TraderDetailsConsigneeEoriNumberPage(index)          => ua => Some(traderDetailsRoutes.TraderDetailsConsigneeNameController.onPageLoad(ua.id, index, NormalMode))
     case TraderDetailsConsigneeNamePage(index)                => ua => consigneeName(ua, index, NormalMode)
-    case TraderDetailsConsigneeAddressPage(index)             => ua => consigneeAddress(ua, index, NormalMode)
+    case TraderDetailsConsigneeAddressPage(index)             => ua => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), NormalMode))
     case DeclareMarkPage(itemIndex, _)                        => ua => Some(addItemsRoutes.AddAnotherPackageController.onPageLoad(ua.id, itemIndex, NormalMode))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, NormalMode)
     case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, NormalMode)(ua))
@@ -105,14 +105,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case TotalNetMassPage(index)                              => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
     case AddItemsSameConsignorForAllItemsPage(index)          => ua => addItemsSameConsignorForAllItems(ua, index, CheckMode)
     case TraderDetailsConsignorEoriKnownPage(index)           => ua => consignorEoriKnown(ua, index, CheckMode)
-    case TraderDetailsConsignorEoriNumberPage(index)          => ua => consignorEoriNumber(ua, index, CheckMode)
+    case TraderDetailsConsignorEoriNumberPage(index)          => ua => consignorEoriNumberCheckMode(ua, index)
     case TraderDetailsConsignorNamePage(index)                => ua => consignorName(ua, index, CheckMode)
-    case TraderDetailsConsignorAddressPage(index)             => ua => consignorAddress(ua, index, CheckMode)
+    case TraderDetailsConsignorAddressPage(index)             => ua => consignorAddressCheckMode(ua, index)
     case AddItemsSameConsigneeForAllItemsPage(index)          => ua => addItemsSameConsigneeForAllItems(ua, index, CheckMode)
     case TraderDetailsConsigneeEoriKnownPage(index)           => ua => consigneeEoriKnown(ua, index, CheckMode)
-    case TraderDetailsConsigneeEoriNumberPage(index)          => ua => consigneeEoriNumber(ua, index, CheckMode)
+    case TraderDetailsConsigneeEoriNumberPage(index)          => ua => consigneeEoriNumberCheckMode(ua, index)
     case TraderDetailsConsigneeNamePage(index)                => ua => consigneeName(ua, index, CheckMode)
-    case TraderDetailsConsigneeAddressPage(index)             => ua => consigneeAddress(ua, index, CheckMode)
+    case TraderDetailsConsigneeAddressPage(index)             => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     case DeclareMarkPage(itemIndex, packageIndex)             => ua => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex))
     case AddAnotherPackagePage(itemIndex)                     => ua => addAnotherPackage(itemIndex, ua, CheckMode)
     case RemovePackagePage(itemIndex)                         => ua => Some(removePackage(itemIndex, CheckMode)(ua))
@@ -129,23 +129,16 @@ class AddItemsNavigator @Inject()() extends Navigator {
     case AddAnotherPreviousAdministrativeReferencePage(itemIndex)   => ua => addAnotherPreviousAdministrativeReferenceRoute(itemIndex, ua, CheckMode)
   }
 
-  private def consigneeAddress(ua: UserAnswers, index: Index, mode: Mode) =
-    mode match {
-      case NormalMode => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
-      case CheckMode => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
-    }
-
   private def consigneeName(ua: UserAnswers, index: Index, mode: Mode) =
     (ua.get(TraderDetailsConsigneeAddressPage(index)), mode) match {
       case (Some(_), CheckMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
       case (_, _) => Some(traderDetailsRoutes.TraderDetailsConsigneeAddressController.onPageLoad(ua.id, index, mode))
     }
 
-
-  private def consigneeEoriNumber(ua: UserAnswers, index: Index, mode: Mode) =
-    mode match {
-      case NormalMode => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
-      case CheckMode => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
+  private def consigneeEoriNumberCheckMode(ua: UserAnswers, index: Index) =
+    (ua.get(TraderDetailsConsigneeNamePage(index))) match {
+      case Some(value) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case _ => Some(traderDetailsRoutes.TraderDetailsConsigneeNameController.onPageLoad(ua.id, index, CheckMode))
     }
 
   private def consigneeEoriKnown(ua: UserAnswers, index: Index, mode: Mode) =
@@ -153,9 +146,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (Some(true),_,_,NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(ua.id, index, mode))
       case (Some(true),None,_,CheckMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(ua.id, index, mode))
       case (Some(true),_,_,CheckMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
-
       case (Some(false),_,None,_) => Some(traderDetailsRoutes.TraderDetailsConsigneeNameController.onPageLoad(ua.id, index, mode))
-
       case (Some(false),_,Some(value),CheckMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
       case _ => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
@@ -174,7 +165,13 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (None, None, NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, mode))
       case (Some(false), Some(true), NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
       case (Some(true), None, NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
-      case (_, _, CheckMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+    }
+
+  private def consignorAddressCheckMode(ua: UserAnswers, index: Index) =
+    (ua.get(ConsigneeForAllItemsPage), ua.get(AddConsigneePage), ua.get(TraderDetailsConsigneeEoriKnownPage(index))) match {
+      case (Some(false), Some(false), None) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, CheckMode))
+      case (Some(false), Some(false), Some(true)) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case _ => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
 
   private def consignorName(ua: UserAnswers, index: Index, mode: Mode) =
@@ -183,15 +180,10 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case (Some(value), CheckMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
 
-  private def consignorEoriNumber(ua: UserAnswers, index: Index, mode: Mode) =
-    (ua.get(ConsigneeForAllItemsPage), ua.get(AddConsigneePage), ua.get(TraderDetailsConsigneeEoriKnownPage(index)), mode) match {
-      case (Some(false), Some(false),_, NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, mode))
-      case (None, None,_, NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, mode))
-      case (Some(false), Some(true),_, NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
-      case (Some(true), None,_, NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
-      case (Some(false), Some(false), None, CheckMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, mode))
-      case (Some(false), Some(false), Some(true),CheckMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
-      case (_,_,_,CheckMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+  private def consignorEoriNumberCheckMode(ua: UserAnswers, index: Index) =
+    (ua.get(TraderDetailsConsignorNamePage(index))) match {
+      case Some(value) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case _ => Some(traderDetailsRoutes.TraderDetailsConsignorNameController.onPageLoad(ua.id, index, CheckMode))
     }
 
   private def consignorEoriKnown(ua: UserAnswers, index: Index, mode: Mode) =
