@@ -32,10 +32,12 @@ object SpecialMention {
     val specialMentionCount = 99
   }
 
+
   val countrySpecificCodes = Seq("DG0", "DG1")
 
   implicit val xmlReader: XmlReader[SpecialMention] =
-    SpecialMentionEc.xmlReader
+    SpecialMentionGuaranteeLiabilityAmount.xmlReader
+    .or(SpecialMentionEc.xmlReader)
       .or(SpecialMentionNonEc.xmlReader)
       .or(SpecialMentionNoCountry.xmlReader)
 
@@ -49,18 +51,18 @@ object SpecialMention {
 
     implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =
       a.map(identity)
-
-    SpecialMentionEc.reads or
+    SpecialMentionGuaranteeLiabilityAmount.reads or
+      SpecialMentionEc.reads or
       SpecialMentionNonEc.reads or
-      SpecialMentionNoCountry.reads or
-      SpecialMentionGuaranteeLiabilityAmount.reads
+      SpecialMentionNoCountry.reads
+
   }
 
   implicit lazy val writes: OWrites[SpecialMention] = OWrites {
+    case sm: SpecialMentionGuaranteeLiabilityAmount => Json.toJsObject(sm)(SpecialMentionGuaranteeLiabilityAmount.writes)
     case sm: SpecialMentionEc                       => Json.toJsObject(sm)(SpecialMentionEc.writes)
     case sm: SpecialMentionNonEc                    => Json.toJsObject(sm)(SpecialMentionNonEc.writes)
     case sm: SpecialMentionNoCountry                => Json.toJsObject(sm)(SpecialMentionNoCountry.writes)
-    case sm: SpecialMentionGuaranteeLiabilityAmount => Json.toJsObject(sm)(SpecialMentionGuaranteeLiabilityAmount.writes)
   }
 
 }

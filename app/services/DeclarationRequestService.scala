@@ -86,6 +86,26 @@ class DeclarationRequestService @Inject()(
           val guaranteeReferenceOther = GuaranteeReferenceWithOther(otherReference, None)
           Guarantee(guaranteeType.toString, Seq(guaranteeReferenceOther))
       }
+    def xyz(guaranteeDetails: GuaranteeDetails) =
+      guaranteeDetails match {
+        case GuaranteeDetails.GuaranteeReference(_, guaranteeReferenceNumber, liabilityAmount, _) =>
+          specialMentionLiability(liabilityAmount, guaranteeReferenceNumber)
+
+        case GuaranteeDetails.GuaranteeOther(_, otherReference, liabilityAmount) =>
+          specialMentionLiability(liabilityAmount, otherReference)
+      }
+
+    def specialMentionLiability(liabilityAmount: String, guaranteeReferenceNumber: String): SpecialMentionGuaranteeLiabilityAmount =
+      liabilityAmount match {
+        case GuaranteeReference.defaultLiability =>
+          val defaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReferenceNumber}"
+          SpecialMentionGuaranteeLiabilityAmount("CAL", defaultLiabilityAmount)
+
+        case otherAmount =>
+          val notDefaultAmount = s"${otherAmount}GBP${guaranteeReferenceNumber}"
+          SpecialMentionGuaranteeLiabilityAmount("CAL", notDefaultAmount)
+      }
+
 
     def packages(packages: NonEmptyList[Packages]): NonEmptyList[models.messages.goodsitem.Package] =
       packages.map {
@@ -98,7 +118,7 @@ class DeclarationRequestService @Inject()(
       }
 
     // TODO finish this off
-    def goodsItems(goodsItems: NonEmptyList[ItemSection], guaranteeReference: GuaranteeReference): NonEmptyList[GoodsItem] =
+    def goodsItems(goodsItems: NonEmptyList[ItemSection], guaranteeDetails: GuaranteeDetails): NonEmptyList[GoodsItem] =
       goodsItems.zipWithIndex.map {
         case (itemSection, index) =>
           GoodsItem(
@@ -115,7 +135,7 @@ class DeclarationRequestService @Inject()(
             dangerousGoodsCode               = None, // Add items security details
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
-            specialMention                   = Seq(specialMentionLiability(guaranteeReference)),
+            specialMention                   = Seq(xyz(guaranteeDetails)),
             traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,
@@ -124,16 +144,7 @@ class DeclarationRequestService @Inject()(
           )
       }
 
-    def specialMentionLiability(guaranteeReference: GuaranteeReference): SpecialMentionGuaranteeLiabilityAmount =
-      guaranteeReference.liabilityAmount match {
-        case GuaranteeReference.defaultLiability =>
-          val defaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReference.guaranteeReferenceNumber}"
-          SpecialMentionGuaranteeLiabilityAmount("CAL", defaultLiabilityAmount)
 
-        case liabilityAmount =>
-          val notDefaultAmount = s"${liabilityAmount}GBP${guaranteeReference.guaranteeReferenceNumber}"
-          SpecialMentionGuaranteeLiabilityAmount("CAL", notDefaultAmount)
-      }
 
     def principalTrader(traderDetails: TraderDetails): TraderPrincipal =
       traderDetails.principalTraderDetails match {
@@ -350,7 +361,7 @@ class DeclarationRequestService @Inject()(
       representative(movementDetails),
       headerSeals(goodsSummary.sealNumbers),
       guaranteeDetails(guarantee),
-      goodsItems(journeyDomain.itemDetails,  ),
+      goodsItems(journeyDomain.itemDetails, guarantee),
       safetyAndSecurity.map(sas => itineraries(sas.itineraryList)).getOrElse(Seq.empty),
       safetyAndSecurity.flatMap(sas => carrier(sas.carrier)),
       safetyAndSecurity.flatMap(sas => safetyAndSecurityConsignor(sas.consignor)),
