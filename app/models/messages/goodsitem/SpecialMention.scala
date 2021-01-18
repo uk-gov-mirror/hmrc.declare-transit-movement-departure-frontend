@@ -50,7 +50,7 @@ object SpecialMention {
     implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =
       a.map(identity)
 
-      SpecialMentionEc.reads or
+    SpecialMentionEc.reads or
       SpecialMentionNonEc.reads or
       SpecialMentionNoCountry.reads or
       SpecialMentionGuaranteeLiabilityAmount.reads
@@ -342,9 +342,9 @@ object SpecialMentionNoCountry {
 }
 
 final case class SpecialMentionGuaranteeLiabilityAmount(
-                                                         additionalInformationCoded: String,
-                                                         additionalInformationOfLiabilityAmount: String
-                                                       ) extends SpecialMention
+  additionalInformationCoded: String,
+  additionalInformationOfLiabilityAmount: String
+) extends SpecialMention
 
 object SpecialMentionGuaranteeLiabilityAmount {
 
@@ -353,7 +353,6 @@ object SpecialMentionGuaranteeLiabilityAmount {
     import com.lucidchart.open.xtract.__
 
     case class SpecialMentionGuaranteeLiabilityAmountParseFailure(message: String) extends ParseError
-
 
     (__ \ "AddInfCodMT23").read[String].flatMap {
       case "CAL" => {
@@ -364,9 +363,10 @@ object SpecialMentionGuaranteeLiabilityAmount {
             )
         }
       }
-      case _ => XmlReader(
-        _ => ParseFailure(SpecialMentionGuaranteeLiabilityAmountParseFailure(s"Failed to parse to SpecialMentionGuaranteeLiabilityAmount does not exist"))
-      )
+      case _ =>
+        XmlReader(
+          _ => ParseFailure(SpecialMentionGuaranteeLiabilityAmountParseFailure(s"Failed to parse to SpecialMentionGuaranteeLiabilityAmount does not exist"))
+        )
     }
   }
 
@@ -380,23 +380,35 @@ object SpecialMentionGuaranteeLiabilityAmount {
         case "CAL" => {
           (__ \ "additionalInformation").read[String].flatMap[String] {
             liabilityAmount =>
-            Reads(
-              _ => JsSuccess(liabilityAmount)
-            )
+              Reads(
+                _ => JsSuccess(liabilityAmount)
+              )
           }
         }
         case _ => {
-            Reads(
-              _ => JsError(s"Failed to parse to SpecialMentionGuaranteeLiabilityAmount does not exist")
-            )
-          }
+          Reads(
+            _ => JsError(s"Failed to parse to SpecialMentionGuaranteeLiabilityAmount does not exist")
+          )
+        }
       }
       .andKeep(
         (
-          (__ \ "additionalInformation").read[String] and
+          (__ \ "additionalInformationCoded").read[String] and
             (__ \ "additionalInformation").read[String]
-          )(SpecialMentionGuaranteeLiabilityAmount(_, _))
+        )(SpecialMentionGuaranteeLiabilityAmount(_, _))
       )
+  }
+
+  implicit lazy val writes: OWrites[SpecialMentionGuaranteeLiabilityAmount] = {
+
+    import play.api.libs.functional.syntax._
+
+    (
+      (__ \ "additionalInformation").write[String] and
+        (__ \ "additionalInformationCoded").write[String]
+    )(
+      s => (s.additionalInformationOfLiabilityAmount, s.additionalInformationCoded)
+    )
   }
 
   implicit def writesXml: XMLWrites[SpecialMentionGuaranteeLiabilityAmount] = XMLWrites[SpecialMentionGuaranteeLiabilityAmount] {
@@ -408,4 +420,3 @@ object SpecialMentionGuaranteeLiabilityAmount {
   }
 
 }
-

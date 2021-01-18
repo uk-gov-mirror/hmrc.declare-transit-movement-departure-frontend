@@ -61,7 +61,9 @@ class DeclarationRequestService @Inject()(
           .run(userAnswers)
     }
 
-  private def journeyModelToSubmissionModel(journeyDomain: JourneyDomain, icr: InterchangeControlReference, dateTimeOfPrep: LocalDateTime): DeclarationRequest = {
+  private def journeyModelToSubmissionModel(journeyDomain: JourneyDomain,
+                                            icr: InterchangeControlReference,
+                                            dateTimeOfPrep: LocalDateTime): DeclarationRequest = {
 
     val JourneyDomain(
       preTaskList,
@@ -113,7 +115,7 @@ class DeclarationRequestService @Inject()(
             dangerousGoodsCode               = None, // Add items security details
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
-            specialMention                   = specialMentionLiability(itemSection.specialMentions).toList,
+            specialMention                   = Seq(specialMentionLiability(guaranteeReference)),
             traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,
@@ -122,18 +124,16 @@ class DeclarationRequestService @Inject()(
           )
       }
 
-
-    def specialMentionLiability(guaranteeReference: GuaranteeReference): NonEmptyList[models.messages.goodsitem.SpecialMention] = {
+    def specialMentionLiability(guaranteeReference: GuaranteeReference): SpecialMentionGuaranteeLiabilityAmount =
       guaranteeReference.liabilityAmount match {
         case GuaranteeReference.defaultLiability =>
-          val additionalInformationOfDefaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReference.guaranteeReferenceNumber}"
-          SpecialMentionGuaranteeLiabilityAmount("CAL", additionalInformationOfDefaultLiabilityAmount)
+          val defaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReference.guaranteeReferenceNumber}"
+          SpecialMentionGuaranteeLiabilityAmount("CAL", defaultLiabilityAmount)
 
         case liabilityAmount =>
-          val code = s"${liabilityAmount}GBP${guaranteeReference.guaranteeReferenceNumber}"
-          SpecialMentionGuaranteeLiabilityAmount("CAL", code)
+          val notDefaultAmount = s"${liabilityAmount}GBP${guaranteeReference.guaranteeReferenceNumber}"
+          SpecialMentionGuaranteeLiabilityAmount("CAL", notDefaultAmount)
       }
-    }
 
     def principalTrader(traderDetails: TraderDetails): TraderPrincipal =
       traderDetails.principalTraderDetails match {
@@ -350,7 +350,7 @@ class DeclarationRequestService @Inject()(
       representative(movementDetails),
       headerSeals(goodsSummary.sealNumbers),
       guaranteeDetails(guarantee),
-      goodsItems(journeyDomain.itemDetails),
+      goodsItems(journeyDomain.itemDetails,  ),
       safetyAndSecurity.map(sas => itineraries(sas.itineraryList)).getOrElse(Seq.empty),
       safetyAndSecurity.flatMap(sas => carrier(sas.carrier)),
       safetyAndSecurity.flatMap(sas => safetyAndSecurityConsignor(sas.consignor)),
