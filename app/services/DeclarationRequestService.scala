@@ -98,14 +98,13 @@ class DeclarationRequestService @Inject()(
     def specialMentionLiability(liabilityAmount: String, guaranteeReferenceNumber: String): SpecialMentionGuaranteeLiabilityAmount =
       liabilityAmount match {
         case GuaranteeReference.defaultLiability =>
-          val defaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReferenceNumber}"
+          val defaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR$guaranteeReferenceNumber"
           SpecialMentionGuaranteeLiabilityAmount("CAL", defaultLiabilityAmount)
 
         case otherAmount =>
-          val notDefaultAmount = s"${otherAmount}GBP${guaranteeReferenceNumber}"
+          val notDefaultAmount = s"${otherAmount}GBP$guaranteeReferenceNumber"
           SpecialMentionGuaranteeLiabilityAmount("CAL", notDefaultAmount)
       }
-
 
     def packages(packages: NonEmptyList[Packages]): NonEmptyList[models.messages.goodsitem.Package] =
       packages.map {
@@ -143,8 +142,6 @@ class DeclarationRequestService @Inject()(
             sensitiveGoodsInformation        = Seq.empty //TODO look up this
           )
       }
-
-
 
     def principalTrader(traderDetails: TraderDetails): TraderPrincipal =
       traderDetails.principalTraderDetails match {

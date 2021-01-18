@@ -32,12 +32,11 @@ object SpecialMention {
     val specialMentionCount = 99
   }
 
-
   val countrySpecificCodes = Seq("DG0", "DG1")
 
   implicit val xmlReader: XmlReader[SpecialMention] =
     SpecialMentionGuaranteeLiabilityAmount.xmlReader
-    .or(SpecialMentionEc.xmlReader)
+      .or(SpecialMentionEc.xmlReader)
       .or(SpecialMentionNonEc.xmlReader)
       .or(SpecialMentionNoCountry.xmlReader)
 
