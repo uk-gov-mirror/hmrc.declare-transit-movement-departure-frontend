@@ -20,6 +20,7 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.OfficeOfDepartureFormProvider
 import javax.inject.Inject
+import models.reference.CountryCode
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.OfficeOfDeparturePage
@@ -53,7 +54,7 @@ class OfficeOfDepartureController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getCustomsOffices flatMap {
+      referenceDataConnector.getCustomsOfficesOfTheCountry(CountryCode("GB")) flatMap {
         customsOffices =>
           val form = formProvider(customsOffices)
           val preparedForm = request.userAnswers
@@ -75,7 +76,7 @@ class OfficeOfDepartureController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getCustomsOffices flatMap {
+      referenceDataConnector.getCustomsOfficesOfTheCountry(CountryCode("GB")) flatMap {
         customsOffices =>
           val form = formProvider(customsOffices)
           form
