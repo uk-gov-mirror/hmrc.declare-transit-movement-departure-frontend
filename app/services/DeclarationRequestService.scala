@@ -86,7 +86,7 @@ class DeclarationRequestService @Inject()(
           val guaranteeReferenceOther = GuaranteeReferenceWithOther(otherReference, None)
           Guarantee(guaranteeType.toString, Seq(guaranteeReferenceOther))
       }
-    def xyz(guaranteeDetails: GuaranteeDetails) =
+    def additionalInformationLiabilityAmount(guaranteeDetails: GuaranteeDetails) =
       guaranteeDetails match {
         case GuaranteeDetails.GuaranteeReference(_, guaranteeReferenceNumber, liabilityAmount, _) =>
           specialMentionLiability(liabilityAmount, guaranteeReferenceNumber)
@@ -134,7 +134,7 @@ class DeclarationRequestService @Inject()(
             dangerousGoodsCode               = None, // Add items security details
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
-            specialMention                   = Seq(xyz(guaranteeDetails)),
+            specialMention                   = Seq(additionalInformationLiabilityAmount(guaranteeDetails)),
             traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,
