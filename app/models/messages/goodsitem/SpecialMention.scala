@@ -357,7 +357,7 @@ object SpecialMentionGuaranteeLiabilityAmount {
 
     (__ \ "AddInfCodMT23").read[String].flatMap {
       case "CAL" => {
-        (__ \ "AddInfCodMT21").read[String].flatMap {
+        (__ \ "AddInfMT21").read[String].flatMap {
           liabilityAmount =>
             XmlReader(
               _ => ParseSuccess(SpecialMentionGuaranteeLiabilityAmount("CAL", liabilityAmount))
@@ -415,7 +415,7 @@ object SpecialMentionGuaranteeLiabilityAmount {
   implicit def writesXml: XMLWrites[SpecialMentionGuaranteeLiabilityAmount] = XMLWrites[SpecialMentionGuaranteeLiabilityAmount] {
     specialMention =>
       <SPEMENMT2>
-        <AddInfMT23>CAL</AddInfMT23>
+        <AddInfCodMT23>CAL</AddInfCodMT23>
         <AddInfMT21>{specialMention.additionalInformationOfLiabilityAmount}</AddInfMT21>
       </SPEMENMT2>
   }

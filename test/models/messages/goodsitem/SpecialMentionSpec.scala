@@ -326,6 +326,59 @@ class SpecialMentionSpec
 
   "XML" - {
 
+    "SpecialMentionLiabilityAmount" - {
+
+      "must serialise SpecialMentionLiabilityAmount to xml" in {
+
+        forAll(arbitrary[SpecialMentionGuaranteeLiabilityAmount]) {
+          specialMentionGuaranteeLiabilityAmount =>
+            val expectedResult =
+              <SPEMENMT2>
+                <AddInfCodMT23>CAL</AddInfCodMT23>
+                <AddInfMT21>{specialMentionGuaranteeLiabilityAmount.additionalInformationOfLiabilityAmount}</AddInfMT21>
+              </SPEMENMT2>
+
+            specialMentionGuaranteeLiabilityAmount.toXml mustEqual expectedResult
+        }
+      }
+
+      "must deserialise when 'liability amount' exists and code is 'CAL'" in {
+
+        forAll(arbitrary[SpecialMentionGuaranteeLiabilityAmount]) {
+          specialMentionGuaranteeLiabilityAmount =>
+            val xml =
+              <SPEMENMT2>
+                <AddInfCodMT23>CAL</AddInfCodMT23>
+                <AddInfMT21>{specialMentionGuaranteeLiabilityAmount.additionalInformationOfLiabilityAmount}</AddInfMT21>
+              </SPEMENMT2>
+
+            val result = XmlReader.of[SpecialMention].read(xml).toOption.value
+
+            result mustBe specialMentionGuaranteeLiabilityAmount
+
+        }
+
+      }
+
+      "must fail to deserialise when code is not 'CAL'" in {
+
+        forAll(arbitrary[SpecialMentionGuaranteeLiabilityAmount]) {
+          specialMentionGuaranteeLiabilityAmount =>
+            val xml =
+              <SPEMENMT2>
+                <AddInfCodMT23>XYZ</AddInfCodMT23>
+                <AddInfMT21>{specialMentionGuaranteeLiabilityAmount.additionalInformationOfLiabilityAmount}</AddInfMT21>
+              </SPEMENMT2>
+
+            val result = XmlReader.of[SpecialMentionGuaranteeLiabilityAmount].read(xml).toOption
+
+            result mustBe None
+
+        }
+
+      }
+    }
+
     "SpecialMentionEc" - {
 
       "must serialise SpecialMentionEc to xml" in {
