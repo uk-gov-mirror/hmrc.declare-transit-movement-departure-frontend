@@ -16,12 +16,34 @@
 
 package models
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, LocalTime}
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, _}
+import utils.Format.timeFormatterFromAMPM
 
 case class LocalDateTimeWithAMPM(dateTime: LocalDateTime, amOrPm: String)
 
 object LocalDateTimeWithAMPM {
-  implicit val format: OFormat[LocalDateTimeWithAMPM] = Json.format[LocalDateTimeWithAMPM]
+
+  implicit lazy val writes: OWrites[LocalDateTimeWithAMPM] = {
+    x =>
+      val formatTimeWithAmPm = x.dateTime.toLocalTime + x.amOrPm.toUpperCase
+      val parseToTime        = LocalTime.parse(formatTimeWithAmPm, timeFormatterFromAMPM)
+      val parseToDateTime    = x.dateTime.toLocalDate.atTime(parseToTime)
+
+      Json.obj(
+        "dateTime" -> parseToDateTime,
+        "amOrPm"   -> x.amOrPm
+      )
+  }
+
+  implicit val reads: Reads[LocalDateTimeWithAMPM] = {
+
+    import play.api.libs.functional.syntax._
+
+    import java.time.format.DateTimeFormatter
+
+    ((__ \ "dateTime").read[LocalDateTime] and
+      (__ \ "amOrPm").read[String])(LocalDateTimeWithAMPM.apply _)
+  }
 }
