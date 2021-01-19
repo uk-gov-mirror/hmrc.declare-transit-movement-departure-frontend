@@ -32,6 +32,7 @@ import pages._
 import pages.addItems._
 import pages.addItems.containers._
 import pages.addItems.traderDetails._
+import pages.safetyAndSecurity.{AddCommercialReferenceNumberAllItemsPage, AddTransportChargesPaymentMethodPage, TransportChargesPaymentMethodPage}
 import queries.{ContainersQuery, _}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -1081,6 +1082,73 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .mustBe(specialMentionsRoutes.AddSpecialMentionController.onPageLoad(answers.id, index, NormalMode))
             }
           }
+
+          "must go from add administrative reference page to reference type page when selected 'Yes'" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .remove(PreviousReferencesQuery(index)).success.value
+                  .set(AddAdministrativeReferencePage(index), true).success.value
+                navigator
+                  .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
+                  .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(updatedAnswers.id, index, referenceIndex, NormalMode))
+            }
+          }
+
+          "must go from add administrative reference page to transport charges page when selected 'No' and using same method of payment across all items" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(AddAdministrativeReferencePage(index), false).success.value
+                  .set(AddSecurityDetailsPage, true).success.value
+                  .set(AddTransportChargesPaymentMethodPage, true).success.value
+                navigator
+                  .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
+                  .mustBe(controllers.safetyAndSecurity.routes.TransportChargesPaymentMethodController.onPageLoad(updatedAnswers.id, NormalMode))
+            }
+          }
+
+          "must go from add administrative reference page to CYA page when selected 'No' and also selected 'No' for add safety and security" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(AddAdministrativeReferencePage(index), false).success.value
+                  .set(AddSecurityDetailsPage, false).success.value
+                navigator
+                  .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
+                  .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
+            }
+          }
+
+          "must go from add administrative reference page to Commercial Reference page when selected 'No' and also selected 'Yes' for add safety and security" +
+            " and selected 'No' for add transport charges method of payment and 'Yes' for add commercial reference number across all items" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(AddAdministrativeReferencePage(index), false).success.value
+                  .set(AddSecurityDetailsPage, true).success.value
+                  .set(AddTransportChargesPaymentMethodPage, false).success.value
+                  .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
+                navigator
+                  .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
+                  .mustBe(controllers.addItems.securityDetails.routes.CommercialReferenceNumberController.onPageLoad(updatedAnswers.id, itemIndex, NormalMode))
+            }
+          }
+
+          "must go from add administrative reference page to Add Dangerous Goods page when selected 'No' and also selected 'Yes' for add safety and security" +
+            " and selected 'No' for add transport charges method of payment and 'No' for add commercial reference number across all items" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .set(AddAdministrativeReferencePage(index), false).success.value
+                  .set(AddSecurityDetailsPage, true).success.value
+                  .set(AddTransportChargesPaymentMethodPage, false).success.value
+                  .set(AddCommercialReferenceNumberAllItemsPage, false).success.value
+                navigator
+                  .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
+                  .mustBe(controllers.addItems.securityDetails.routes.AddDangerousGoodsCodeController.onPageLoad(updatedAnswers.id, itemIndex, NormalMode))
+            }
+          }
         }
       }
     }
@@ -1684,35 +1752,15 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
 
       "previous references journey" - {
-        "must go from add administrative reference page to CYA page when selected 'No'" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers.set(AddAdministrativeReferencePage(index), false).success.value
-              navigator
-                .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
-                .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(answers.id, index))
-          }
-        }
-
-        "must go from add administrative reference page to reference type page when selected 'Yes'" in {
+        "must go from add administrative reference page to CYA page when selected 'No' and also selected 'No' for add safety and security" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .remove(PreviousReferencesQuery(index)).success.value
-                .set(AddAdministrativeReferencePage(index), true).success.value
+                .set(AddAdministrativeReferencePage(index), false).success.value
+                .set(AddSecurityDetailsPage, false).success.value
               navigator
                 .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
-                .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, CheckMode))
-          }
-        }
-
-        "must go from add administrative reference page to safety and security page when selected 'No' and mode is NormalMode" ignore {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedAnswers = answers.set(AddAdministrativeReferencePage(index), true).success.value
-              navigator
-                .nextPage(AddAdministrativeReferencePage(index), CheckMode, updatedAnswers)
-                .mustBe(previousReferenceRoutes.ReferenceTypeController.onPageLoad(answers.id, index, referenceIndex, CheckMode)) //TODO must got to first page of safety n security
+                .mustBe(routes.ItemsCheckYourAnswersController.onPageLoad(updatedAnswers.id, index))
           }
         }
 

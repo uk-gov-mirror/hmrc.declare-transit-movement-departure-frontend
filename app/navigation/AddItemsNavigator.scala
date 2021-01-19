@@ -32,6 +32,7 @@ import pages._
 import pages.addItems.containers._
 import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
+import pages.safetyAndSecurity.{AddCommercialReferenceNumberAllItemsPage, AddTransportChargesPaymentMethodPage, CommercialReferenceNumberAllItemsPage}
 import play.api.mvc.Call
 
 @Singleton
@@ -378,7 +379,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
     ua.get(AddAdministrativeReferencePage(itemIndex)) map {
       case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, itemIndex, Index(referenceIndex), mode)
       case _ if mode == CheckMode => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
-      case _ => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex) //TODO must go to 'Has the user selected yes for safety and security?'
+      case _ => (ua.get(AddSecurityDetailsPage), ua.get(AddTransportChargesPaymentMethodPage)) match {
+        case (Some(true), Some(true)) => controllers.safetyAndSecurity.routes.TransportChargesPaymentMethodController.onPageLoad(ua.id, NormalMode)
+        case (Some(true), Some(false)) => ua.get(AddCommercialReferenceNumberAllItemsPage) match {
+          case Some(false) => controllers.addItems.securityDetails.routes.AddDangerousGoodsCodeController.onPageLoad (ua.id, itemIndex, NormalMode)
+          case Some(true) => controllers.addItems.securityDetails.routes.CommercialReferenceNumberController.onPageLoad(ua.id, itemIndex, NormalMode)
+        }
+        case (Some(false), _) => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
+      }
     }
   }
 
