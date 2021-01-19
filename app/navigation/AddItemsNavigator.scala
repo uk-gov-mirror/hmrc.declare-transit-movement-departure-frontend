@@ -380,10 +380,10 @@ class AddItemsNavigator @Inject()() extends Navigator {
       case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, itemIndex, Index(referenceIndex), mode)
       case _ if mode == CheckMode => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
       case _ => (ua.get(AddSecurityDetailsPage), ua.get(AddTransportChargesPaymentMethodPage)) match {
-        case (Some(true), Some(true)) => controllers.safetyAndSecurity.routes.TransportChargesPaymentMethodController.onPageLoad(ua.id, NormalMode)
-        case (Some(true), Some(false)) => ua.get(AddCommercialReferenceNumberAllItemsPage) match {
-          case Some(false) => controllers.addItems.securityDetails.routes.AddDangerousGoodsCodeController.onPageLoad (ua.id, itemIndex, NormalMode)
-          case Some(true) => controllers.addItems.securityDetails.routes.CommercialReferenceNumberController.onPageLoad(ua.id, itemIndex, NormalMode)
+        case (Some(true), Some(false)) => controllers.safetyAndSecurity.routes.TransportChargesPaymentMethodController.onPageLoad(ua.id, NormalMode)
+        case (Some(true), Some(true)) => ua.get(AddCommercialReferenceNumberAllItemsPage) match {
+          case Some(true) => controllers.addItems.securityDetails.routes.AddDangerousGoodsCodeController.onPageLoad (ua.id, itemIndex, NormalMode)
+          case Some(false) => controllers.addItems.securityDetails.routes.CommercialReferenceNumberController.onPageLoad(ua.id, itemIndex, NormalMode)
         }
         case (Some(false), _) => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
       }

@@ -1095,13 +1095,13 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
 
-          "must go from add administrative reference page to transport charges page when selected 'No' and using same method of payment across all items" in {
+          "must go from add administrative reference page to transport charges page when selected 'No' and not using same method of payment across all items" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
                   .set(AddAdministrativeReferencePage(index), false).success.value
                   .set(AddSecurityDetailsPage, true).success.value
-                  .set(AddTransportChargesPaymentMethodPage, true).success.value
+                  .set(AddTransportChargesPaymentMethodPage, false).success.value
                 navigator
                   .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
                   .mustBe(controllers.safetyAndSecurity.routes.TransportChargesPaymentMethodController.onPageLoad(updatedAnswers.id, NormalMode))
@@ -1121,14 +1121,14 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
 
           "must go from add administrative reference page to Commercial Reference page when selected 'No' and also selected 'Yes' for add safety and security" +
-            " and selected 'No' for add transport charges method of payment and 'Yes' for add commercial reference number across all items" in {
+            " and selected 'Yes' for add transport charges method of payment and 'No' for add commercial reference number across all items" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
                   .set(AddAdministrativeReferencePage(index), false).success.value
                   .set(AddSecurityDetailsPage, true).success.value
-                  .set(AddTransportChargesPaymentMethodPage, false).success.value
-                  .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
+                  .set(AddTransportChargesPaymentMethodPage, true).success.value
+                  .set(AddCommercialReferenceNumberAllItemsPage, false).success.value
                 navigator
                   .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
                   .mustBe(controllers.addItems.securityDetails.routes.CommercialReferenceNumberController.onPageLoad(updatedAnswers.id, itemIndex, NormalMode))
@@ -1136,14 +1136,14 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
 
           "must go from add administrative reference page to Add Dangerous Goods page when selected 'No' and also selected 'Yes' for add safety and security" +
-            " and selected 'No' for add transport charges method of payment and 'No' for add commercial reference number across all items" in {
+            " and selected 'Yes' for add transport charges method of payment and 'No' for add commercial reference number across all items" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
                   .set(AddAdministrativeReferencePage(index), false).success.value
                   .set(AddSecurityDetailsPage, true).success.value
-                  .set(AddTransportChargesPaymentMethodPage, false).success.value
-                  .set(AddCommercialReferenceNumberAllItemsPage, false).success.value
+                  .set(AddTransportChargesPaymentMethodPage, true).success.value
+                  .set(AddCommercialReferenceNumberAllItemsPage, true).success.value
                 navigator
                   .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
                   .mustBe(controllers.addItems.securityDetails.routes.AddDangerousGoodsCodeController.onPageLoad(updatedAnswers.id, itemIndex, NormalMode))
