@@ -475,6 +475,14 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
   protected val countrySpecificCodeGen    = Gen.oneOf(countrySpecificCodes)
   protected val nonCountrySpecificCodeGen = stringsWithMaxLength(5, alphaNumChar).suchThat(!countrySpecificCodes.contains(_))
 
+  protected val liabilityAmount    = Seq("5000", "10000")
+  protected val liabilityAmountGen = Gen.oneOf(liabilityAmount)
+
+  implicit lazy val arbitrarySpecialMentionGuaranteeLiabilityAmount: Arbitrary[SpecialMentionGuaranteeLiabilityAmount] =
+    Arbitrary {
+      liabilityAmountGen.map(SpecialMentionGuaranteeLiabilityAmount("CAL", _))
+    }
+
   implicit lazy val arbitrarySpecialMentionEc: Arbitrary[SpecialMentionEc] =
     Arbitrary {
       countrySpecificCodeGen.map(SpecialMentionEc(_))
@@ -495,7 +503,10 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
 
   implicit lazy val arbitrarySpecialMention: Arbitrary[SpecialMention] =
     Arbitrary {
-      Gen.oneOf(arbitrary[SpecialMentionEc], arbitrary[SpecialMentionNonEc], arbitrary[SpecialMentionNoCountry])
+      Gen.oneOf(arbitrary[SpecialMentionGuaranteeLiabilityAmount],
+                arbitrary[SpecialMentionEc],
+                arbitrary[SpecialMentionNonEc],
+                arbitrary[SpecialMentionNoCountry])
     }
 
   implicit lazy val arbitraryBulkPackage: Arbitrary[BulkPackage] =

@@ -34,6 +34,50 @@ class SpecialMentionSpec
     with StreamlinedXmlEquality
     with OptionValues {
 
+  "SpecialMentionLiabilityAmount" - {
+
+    "must deserialise when 'liability Amount' exists and code is 'CAL'" in {
+
+      forAll(liabilityAmountGen) {
+        liabilityAmount =>
+          val json = Json.obj(
+            "additionalInformationCoded" -> "CAL",
+            "additionalInformation"      -> liabilityAmount
+          )
+
+          val expectedSpecialMention = SpecialMentionGuaranteeLiabilityAmount("CAL", liabilityAmount)
+
+          json.validate[SpecialMentionGuaranteeLiabilityAmount] mustEqual JsSuccess(expectedSpecialMention)
+      }
+    }
+
+    "must fail to deserialise when code is not 'CAL'" in {
+
+      forAll(liabilityAmountGen) {
+        liabilityAmount =>
+          val json = Json.obj(
+            "additionalInformationCoded" -> "XYZ",
+            "additionalInformation"      -> liabilityAmount
+          )
+
+          json.validate[SpecialMentionGuaranteeLiabilityAmount] mustEqual JsError("Failed to parse to SpecialMentionGuaranteeLiabilityAmount does not exist")
+      }
+    }
+
+    "must serialise" in {
+      forAll(liabilityAmountGen) {
+        liabilityAmount =>
+          val json = Json.obj(
+            "additionalInformationCoded" -> "CAL",
+            "additionalInformation"      -> liabilityAmount
+          )
+
+          Json.toJson(SpecialMentionGuaranteeLiabilityAmount("CAL", liabilityAmount))(SpecialMentionGuaranteeLiabilityAmount.writes) mustEqual json
+
+      }
+    }
+  }
+
   "SpecialMentionEc" - {
 
     "must deserialise when `export from EC` is true and code is country specific" in {
