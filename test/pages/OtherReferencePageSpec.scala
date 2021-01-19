@@ -16,16 +16,17 @@
 
 package pages
 
+import models.Index
 import pages.behaviours.PageBehaviours
 
 class OtherReferencePageSpec extends PageBehaviours {
 
   "OtherReferencePage" - {
 
-    beRetrievable[String](OtherReferencePage)
+    beRetrievable[String](OtherReferencePage(Index(0)))
 
-    beSettable[String](OtherReferencePage)
+    beSettable[String](OtherReferencePage(Index(0)))
 
-    beRemovable[String](OtherReferencePage)
+    beRemovable[String](OtherReferencePage(Index(0)))
   }
 }

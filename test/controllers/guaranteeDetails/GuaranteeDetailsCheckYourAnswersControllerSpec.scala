@@ -18,7 +18,6 @@ package controllers.guaranteeDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
 import matchers.JsonMatchers
-import controllers.{routes => mainRoutes}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -39,7 +38,7 @@ class GuaranteeDetailsCheckYourAnswersControllerSpec extends SpecBase with MockN
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val request        = FakeRequest(GET, routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn).url)
+      val request        = FakeRequest(GET, routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn, index).url)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -51,7 +50,7 @@ class GuaranteeDetailsCheckYourAnswersControllerSpec extends SpecBase with MockN
 
       val expectedJson = Json.obj(
         "lrn"      -> lrn,
-        "nextPage" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+        "nextPage" -> routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
       )
 
       val jsonCaptorWithoutConfig: JsObject = jsonCaptor.getValue - configKey - "sections"

@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import javax.inject.Inject
 
-class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  "OtherReferenceliabilityAmountPage" - {
+class ConfirmRemoveGuaranteeFormProvider @Inject() extends Mappings {
 
-    beRetrievable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmRemoveGuarantee.error.required")
+    )
 }

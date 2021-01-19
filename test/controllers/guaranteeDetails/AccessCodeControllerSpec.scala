@@ -46,7 +46,7 @@ class AccessCodeControllerSpec extends SpecBase with MockNunjucksRendererApp wit
   val formProvider = new AccessCodeFormProvider()
   val form         = formProvider()
 
-  lazy val accessCodeRoute = routes.AccessCodeController.onPageLoad(lrn, NormalMode).url
+  lazy val accessCodeRoute = routes.AccessCodeController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -81,7 +81,7 @@ class AccessCodeControllerSpec extends SpecBase with MockNunjucksRendererApp wit
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(AccessCodePage, "1234").success.value
+      val userAnswers = emptyUserAnswers.set(AccessCodePage(index), "1234").success.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))

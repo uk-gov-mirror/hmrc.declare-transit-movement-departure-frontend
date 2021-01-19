@@ -17,40 +17,41 @@
 package pages.guaranteeDetails
 
 import models.GuaranteeType._
-import models.{GuaranteeType, UserAnswers}
+import models.{GuaranteeType, Index, UserAnswers}
 import pages._
 import play.api.libs.json.JsPath
+import queries.Constants
 
 import scala.util.Try
 
-case object GuaranteeTypePage extends QuestionPage[GuaranteeType] {
+case class GuaranteeTypePage(index: Index) extends QuestionPage[GuaranteeType] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ Constants.guarantees \ index.position \ toString
 
   override def toString: String = "guaranteeType"
 
   override def cleanup(value: Option[GuaranteeType], userAnswers: UserAnswers): Try[UserAnswers] =
-    (value, userAnswers.get(OtherReferencePage), userAnswers.get(GuaranteeReferencePage)) match {
+    (value, userAnswers.get(OtherReferencePage(index)), userAnswers.get(GuaranteeReferencePage(index))) match {
 
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(IndividualGuaranteeMultiple), _, Some(grnNumber))
           if grnNumber.length > 17 =>
-        userAnswers.remove(GuaranteeReferencePage)
+        userAnswers.remove(GuaranteeReferencePage(index))
 
       case (Some(GuaranteeWaiver) | Some(ComprehensiveGuarantee) | Some(IndividualGuarantee) | Some(FlatRateVoucher) | Some(IndividualGuaranteeMultiple),
             Some(_),
             _) =>
-        userAnswers.remove(OtherReferencePage)
+        userAnswers.remove(OtherReferencePage(index))
 
       case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
               GuaranteeWaiverSecured),
-            None,
+            Some(_),
             _) =>
         userAnswers
-          .remove(GuaranteeReferencePage)
-          .flatMap(_.remove(LiabilityAmountPage))
-          .flatMap(_.remove(AccessCodePage))
-          .flatMap(_.remove(OtherReferenceLiabilityAmountPage))
-          .flatMap(_.remove(DefaultAmountPage))
+          .remove(GuaranteeReferencePage(index))
+          .flatMap(_.remove(LiabilityAmountPage(index)))
+          .flatMap(_.remove(AccessCodePage(index)))
+          .flatMap(_.remove(OtherReferenceLiabilityAmountPage(index)))
+          .flatMap(_.remove(DefaultAmountPage(index)))
 
       case _ => super.cleanup(value, userAnswers)
 

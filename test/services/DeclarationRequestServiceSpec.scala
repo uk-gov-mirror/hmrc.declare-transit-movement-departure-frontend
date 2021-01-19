@@ -16,12 +16,10 @@
 
 package services
 
-import java.time.LocalDateTime
-
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
 import models.UserAnswers
-import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
+import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import models.journeyDomain.{JourneyDomain, JourneyDomainSpec}
 import models.messages.goodsitem.SpecialMentionGuaranteeLiabilityAmount
 import models.messages.{DeclarationRequest, InterchangeControlReference}
@@ -29,6 +27,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import repositories.InterchangeControlReferenceIdRepository
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

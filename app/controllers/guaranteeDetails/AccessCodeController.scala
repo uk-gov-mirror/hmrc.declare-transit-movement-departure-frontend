@@ -19,7 +19,7 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import forms.AccessCodeFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.AccessCodePage
@@ -50,9 +50,9 @@ class AccessCodeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AccessCodePage) match {
+      val preparedForm = request.userAnswers.get(AccessCodePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -66,7 +66,7 @@ class AccessCodeController @Inject()(
       renderer.render("accessCode.njk", json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
@@ -83,9 +83,9 @@ class AccessCodeController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AccessCodePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AccessCodePage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AccessCodePage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AccessCodePage(index), mode, updatedAnswers))
         )
   }
 }
