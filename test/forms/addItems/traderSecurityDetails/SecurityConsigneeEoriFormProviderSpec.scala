@@ -44,7 +44,7 @@ class SecurityConsigneeEoriFormProviderSpec extends SpecBase with StringFieldBeh
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLengthEoriNumber,
+      maxLength   = maxLengthEoriNumber,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLengthEoriNumber))
     )
 
@@ -75,7 +75,7 @@ class SecurityConsigneeEoriFormProviderSpec extends SpecBase with StringFieldBeh
       val expectedError =
         List(FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex)))
 
-      val invalidString = "^[0-9]{2}[0-9a-zA-Z]{1,15}"
+      val invalidString          = "^[0-9]{2}[0-9a-zA-Z]{1,15}"
       val invalidStringGenerator = RegexpGen.from(invalidString)
 
       forAll(invalidStringGenerator) {
