@@ -134,7 +134,7 @@ class DeclarationRequestService @Inject()(
             dangerousGoodsCode               = None, // Add items security details
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
-            specialMention                   = Seq(additionalInformationLiabilityAmount(guaranteeDetails)),
+            specialMention                   = if (index == 0) Seq(additionalInformationLiabilityAmount(guaranteeDetails)) else Seq.empty,
             traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,
