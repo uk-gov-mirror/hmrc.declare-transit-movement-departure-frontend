@@ -21,8 +21,8 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoute}
 import forms.AddAnotherTransitOfficeFormProvider
 import matchers.JsonMatchers
-import models.reference.OfficeOfTransit
-import models.{NormalMode, OfficeOfTransitList}
+import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit}
+import models.{CountryList, CustomsOfficeList, NormalMode, OfficeOfTransitList}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -45,10 +45,12 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
 
   def onwardRoute = Call("GET", "/foo")
 
-  val officeOfTransit1: OfficeOfTransit        = OfficeOfTransit("1", "Transit1")
-  val officeOfTransit2: OfficeOfTransit        = OfficeOfTransit("2", "Transit2")
-  val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit1, officeOfTransit2))
-  val form                                     = new AddAnotherTransitOfficeFormProvider()(officeOfTransitList)
+  private val countryCode                       = CountryCode("GB")
+  private val countries                         = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
+  private val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", Seq.empty, None)
+  private val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", Seq.empty, None)
+  private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+  val form                                      = new AddAnotherTransitOfficeFormProvider()(customsOffices, "United Kingdom")
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
@@ -92,6 +94,43 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
       )
 
       templateCaptor.getValue mustEqual "addAnotherTransitOffice.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
+    }
+
+    "must return OK and the correct view for a GET" in {
+      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
+      dataRetrievalWithData(userAnswers)
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
+        .thenReturn(Future.successful(customsOffices))
+      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
+      val request        = FakeRequest(GET, destinationOfficeRoute)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+
+      val result = route(app, request).value
+
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      val expectedCustomsOfficeJson = Seq(
+        Json.obj("value" -> "", "text"         -> ""),
+        Json.obj("value" -> "officeId", "text" -> "someName (officeId)", "selected" -> false),
+        Json.obj("value" -> "id", "text"       -> "name (id)", "selected" -> false)
+      )
+
+      val expectedJson = Json.obj(
+        "form"           -> form,
+        "mode"           -> NormalMode,
+        "lrn"            -> lrn,
+        "countryName"    -> "United Kingdom",
+        "customsOffices" -> expectedCustomsOfficeJson
+      )
+
+      templateCaptor.getValue mustEqual "destinationOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
     }
 
