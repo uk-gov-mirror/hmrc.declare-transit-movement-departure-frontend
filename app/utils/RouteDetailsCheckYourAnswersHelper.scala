@@ -46,7 +46,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def destinationOffice(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(DestinationOfficePage) flatMap {
     answer =>
-      customsOfficeList.getCustomsOffice(answer) map {
+      customsOfficeList.getCustomsOffice(answer.id) map {
         customsOffice =>
           Row(
             key   = Key(msg"destinationOffice.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -80,7 +80,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def officeOfDeparture(customsOfficeList: CustomsOfficeList): Option[Row] = userAnswers.get(OfficeOfDeparturePage) flatMap {
     answer =>
-      customsOfficeList.getCustomsOffice(answer) map {
+      customsOfficeList.getCustomsOffice(answer.id) map {
         customsOffice =>
           Row(
             key   = Key(msg"officeOfDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),

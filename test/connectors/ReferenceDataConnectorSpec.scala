@@ -61,11 +61,13 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |   "id" : "testId1",
       |   "name" : "testName1",
       |   "roles" : ["role1", "role2"],
+      |   "countryId" : "GB",
       |   "phoneNumber" : "testPhoneNumber"
       | },
       | {
       |   "id" : "testId2",
       |   "name" : "testName2",
+      |   "countryId" : "GB",
       |   "roles" : ["role1", "role2"]
       | }
       |]
@@ -253,8 +255,8 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         val expectedResult =
           CustomsOfficeList(
             Seq(
-              CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
-              CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
+              CustomsOffice("testId1", "testName1", CountryCode("GB"), Seq("role1", "role2"), Some("testPhoneNumber")),
+              CustomsOffice("testId2", "testName2", CountryCode("GB"), Seq("role1", "role2"), None)
             )
           )
 
@@ -276,8 +278,8 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
         val expectedResult =
           CustomsOfficeList(
             Seq(
-              CustomsOffice("testId1", "testName1", Seq("role1", "role2"), Some("testPhoneNumber")),
-              CustomsOffice("testId2", "testName2", Seq("role1", "role2"), None)
+              CustomsOffice("testId1", "testName1", CountryCode("GB"), Seq("role1", "role2"), Some("testPhoneNumber")),
+              CustomsOffice("testId2", "testName2", CountryCode("GB"), Seq("role1", "role2"), None)
             )
           )
 

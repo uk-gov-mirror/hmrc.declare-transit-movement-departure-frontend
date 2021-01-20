@@ -167,15 +167,17 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] = {
 
-    val genRoles = Gen.someOf(Seq("TRA", "DEP", "DES"))
+    val genRoles       = Gen.someOf(Seq("TRA", "DEP", "DES"))
+    val genCountryCode = Gen.oneOf(CountryCode("AD"), CountryCode("DE"), CountryCode("GB"))
 
     Arbitrary {
       for {
         id          <- stringsWithMaxLength(stringMaxLength)
         name        <- stringsWithMaxLength(stringMaxLength)
         roles       <- genRoles
+        countryId   <- genCountryCode
         phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(id, name, roles, phoneNumber)
+      } yield CustomsOffice(id, name, countryId, roles, phoneNumber)
     }
   }
 

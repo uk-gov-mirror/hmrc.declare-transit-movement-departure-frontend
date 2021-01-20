@@ -18,7 +18,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import models.CustomsOfficeList
-import models.reference.CustomsOffice
+import models.reference.{CountryCode, CustomsOffice}
 import play.api.data.FormError
 
 class DestinationOfficeFormProviderSpec extends StringFieldBehaviours {
@@ -28,8 +28,8 @@ class DestinationOfficeFormProviderSpec extends StringFieldBehaviours {
   val maxLength   = 20
 
   val countryName                       = "United Kingdom"
-  val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", Seq.empty, None)
-  val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", Seq.empty, None)
+  val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)
+  val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
   val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
 
   val form = new DestinationOfficeFormProvider()(customsOffices, countryName)
