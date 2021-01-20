@@ -23,14 +23,14 @@ import cats.implicits._
 import derivable.DeriveNumberOfOfficeOfTransits
 import models.Index
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.reference.CountryCode
+import models.reference.{CountryCode, CustomsOffice}
 import pages._
 
 final case class RouteDetails(
   countryOfDispatch: CountryCode,
-  officeOfDeparture: String,
+  officeOfDeparture: CustomsOffice,
   destinationCountry: CountryCode,
-  destinationOffice: String,
+  destinationOffice: CustomsOffice,
   transitInformation: NonEmptyList[TransitInformation]
 )
 

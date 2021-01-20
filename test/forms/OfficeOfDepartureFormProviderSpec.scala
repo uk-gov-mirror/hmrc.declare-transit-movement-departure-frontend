@@ -18,7 +18,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import models.CustomsOfficeList
-import models.reference.CustomsOffice
+import models.reference.{CountryCode, CustomsOffice}
 import play.api.data.FormError
 
 class OfficeOfDepartureFormProviderSpec extends StringFieldBehaviours {
@@ -26,8 +26,9 @@ class OfficeOfDepartureFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "officeOfDeparture.error.required"
   val maxLength   = 8
 
-  val customsOffices = CustomsOfficeList(Seq(CustomsOffice("id", "name", Seq.empty, None), CustomsOffice("officeId", "someName", Seq.empty, None)))
-  val form           = new OfficeOfDepartureFormProvider()(customsOffices)
+  val customsOffices = CustomsOfficeList(
+    Seq(CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None), CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)))
+  val form = new OfficeOfDepartureFormProvider()(customsOffices)
 
   ".value" - {
 
