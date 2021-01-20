@@ -1104,7 +1104,7 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
                   .set(AddTransportChargesPaymentMethodPage, false).success.value
                 navigator
                   .nextPage(AddAdministrativeReferencePage(index), NormalMode, updatedAnswers)
-                  .mustBe(controllers.safetyAndSecurity.routes.TransportChargesPaymentMethodController.onPageLoad(updatedAnswers.id, NormalMode))
+                  .mustBe(controllers.addItems.securityDetails.routes.TransportChargesController.onPageLoad(updatedAnswers.id,itemIndex, NormalMode))
             }
           }
 
