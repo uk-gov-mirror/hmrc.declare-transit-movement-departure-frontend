@@ -20,6 +20,7 @@ import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber, validEoriCharacter
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class CarrierEoriFormProviderSpec extends StringFieldBehaviours {
 
@@ -73,11 +74,10 @@ class CarrierEoriFormProviderSpec extends StringFieldBehaviours {
       val expectedError =
         List(FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex)))
 
-      val genInvalidString: Gen[String] = {
-        alphaNumericWithMaxLength(maxLengthEoriNumber).map(_.toUpperCase) suchThat (!_.matches(eoriNumberRegex))
-      }
+      val invalidString          = "^[0-9]{2}[0-9a-zA-Z]{1,15}"
+      val invalidStringGenerator = RegexpGen.from(invalidString)
 
-      forAll(genInvalidString) {
+      forAll(invalidStringGenerator) {
         invalidString =>
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors mustBe expectedError
