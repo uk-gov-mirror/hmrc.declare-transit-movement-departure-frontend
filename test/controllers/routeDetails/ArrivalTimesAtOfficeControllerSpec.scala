@@ -116,6 +116,7 @@ class ArrivalTimesAtOfficeControllerSpec extends SpecBase with MockNunjucksRende
         .set(ArrivalTimesAtOfficePage(index), validAnswer)
         .success
         .value
+
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))

@@ -144,6 +144,7 @@ private[mappings] class LocalDateTimeFormatter(
 
   private def bind12HourClock(hour: Int) =
     hour match {
+      case 0  => 12
       case 13 => 1
       case 14 => 2
       case 15 => 3
