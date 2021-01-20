@@ -137,8 +137,25 @@ private[mappings] class LocalDateTimeFormatter(
       s"$key.day"    -> value.dateTime.getDayOfMonth.toString,
       s"$key.month"  -> value.dateTime.getMonthValue.toString,
       s"$key.year"   -> value.dateTime.getYear.toString,
-      s"$key.hour"   -> value.dateTime.getHour.toString,
+      s"$key.hour"   -> bind12HourClock(value.dateTime.getHour).toString,
       s"$key.minute" -> value.dateTime.getMinute.toString,
       s"$key.amOrPm" -> value.amOrPm
     )
+
+  private def bind12HourClock(hour: Int) =
+    hour match {
+      case 13 => 1
+      case 14 => 2
+      case 15 => 3
+      case 16 => 4
+      case 17 => 5
+      case 18 => 6
+      case 19 => 7
+      case 20 => 8
+      case 21 => 9
+      case 22 => 10
+      case 23 => 11
+      case 24 => 12
+      case _  => hour
+    }
 }

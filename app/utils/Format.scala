@@ -35,11 +35,11 @@ object Format {
 
   val timeFormatterFromAMPM: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mma")
 
+  val dateTimeFormatterAMPM: DateTimeFormatter               = DateTimeFormatter.ofPattern("dd MM yyyy h:mma")
+  def dateTimeFormattedAMPM(dateTime: LocalDateTime): String = dateTime.format(dateTimeFormatterAMPM)
+
   val dateTimeFormatter: DateTimeFormatter               = DateTimeFormatter.ofPattern("dd MM yyyy HH:mm")
   def dateTimeFormatted(dateTime: LocalDateTime): String = dateTime.format(dateTimeFormatter)
-
-  val dateTimeFormatterAMPM: DateTimeFormatter               = DateTimeFormatter.ofPattern("dd MM yyyy hh:mma")
-  def dateTimeFormattedAMPM(dateTime: LocalDateTime): String = dateTime.format(dateTimeFormatterAMPM)
 
   val dateTimeFormatterIE015: DateTimeFormatter               = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
   def dateTimeFormattedIE015(dateTime: LocalDateTime): String = dateTime.format(dateTimeFormatterIE015)

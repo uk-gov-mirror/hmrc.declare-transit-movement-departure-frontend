@@ -41,8 +41,6 @@ object LocalDateTimeWithAMPM {
 
     import play.api.libs.functional.syntax._
 
-    import java.time.format.DateTimeFormatter
-
     ((__ \ "dateTime").read[LocalDateTime] and
       (__ \ "amOrPm").read[String])(LocalDateTimeWithAMPM.apply _)
   }
