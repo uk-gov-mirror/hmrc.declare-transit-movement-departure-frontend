@@ -18,6 +18,7 @@ package controllers.routeDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
+import controllers.{routes => mainRoutes}
 import forms.AddAnotherTransitOfficeFormProvider
 import javax.inject.Inject
 import models.reference.{CountryCode, CustomsOffice}
@@ -25,7 +26,7 @@ import models.requests.DataRequest
 import models.{CustomsOfficeList, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
-import pages.{AddAnotherTransitOfficePage, DestinationCountryPage, DestinationOfficePage}
+import pages.{AddAnotherTransitOfficePage, DestinationCountryPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -34,8 +35,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.{getCustomsOfficesAsJson, getOfficeOfTransitAsJson}
-import controllers.{routes => mainRoutes}
+import utils.getCustomsOfficesAsJson
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,8 +46,8 @@ class AddAnotherTransitOfficeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddAnotherTransitOfficeFormProvider,
   referenceDataConnector: ReferenceDataConnector,
+  formProvider: AddAnotherTransitOfficeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -70,13 +70,13 @@ class AddAnotherTransitOfficeController @Inject()(
                 .getOrElse(form)
 
               val json = Json.obj(
-                "form"                -> preparedForm,
-                "lrn"                 -> lrn,
-                "officeOfTransitList" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
-                "countryName"         -> countryName,
-                "mode"                -> mode
+                "form"           -> preparedForm,
+                "lrn"            -> lrn,
+                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
+                "countryName"    -> countryName,
+                "mode"           -> mode
               )
-              renderer.render("destinationOffice.njk", json).map(Ok(_))
+              renderer.render("addAnotherTransitOffice.njk", json).map(Ok(_))
           }
 
         case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
@@ -102,7 +102,7 @@ class AddAnotherTransitOfficeController @Inject()(
                       "countryName"    -> countryName,
                       "mode"           -> mode
                     )
-                    renderer.render("destinationOffice.njk", json).map(BadRequest(_))
+                    renderer.render("addAnotherTransitOffice.njk", json).map(BadRequest(_))
                   },
                   value =>
                     for {
