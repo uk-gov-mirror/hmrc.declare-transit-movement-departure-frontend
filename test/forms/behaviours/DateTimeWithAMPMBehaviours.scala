@@ -33,17 +33,17 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
       forAll(validData -> "valid date") {
         date =>
           val data = Map(
-            s"$key.day"    -> date.dateTime.getDayOfMonth.toString,
-            s"$key.month"  -> date.dateTime.getMonthValue.toString,
-            s"$key.year"   -> date.dateTime.getYear.toString,
-            s"$key.hour"   -> date.dateTime.getHour.toString,
-            s"$key.minute" -> date.dateTime.getMinute.toString,
+            s"$key.day"    -> date.localDateTime.getDayOfMonth.toString,
+            s"$key.month"  -> date.localDateTime.getMonthValue.toString,
+            s"$key.year"   -> date.localDateTime.getYear.toString,
+            s"$key.hour"   -> date.localDateTime.getHour.toString,
+            s"$key.minute" -> date.localDateTime.getMinute.toString,
             s"$key.amOrPm" -> date.amOrPm
           )
 
           val result = form.bind(data)
 
-          result.value.value mustEqual date.copy(dateTime = date.dateTime.withSecond(0).withNano(0))
+          result.value.value mustEqual date.copy(localDateTime = date.localDateTime.withSecond(0).withNano(0))
       }
     }
 
@@ -57,11 +57,11 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
           val dateTimeWithAmPm = LocalDateTimeWithAMPM(dateTime, "am")
 
           val data = Map(
-            s"$key.day"    -> dateTimeWithAmPm.dateTime.getDayOfMonth.toString,
-            s"$key.month"  -> dateTimeWithAmPm.dateTime.getMonthValue.toString,
-            s"$key.year"   -> dateTimeWithAmPm.dateTime.getYear.toString,
-            s"$key.hour"   -> dateTimeWithAmPm.dateTime.getHour.toString,
-            s"$key.minute" -> dateTimeWithAmPm.dateTime.getMinute.toString,
+            s"$key.day"    -> dateTimeWithAmPm.localDateTime.getDayOfMonth.toString,
+            s"$key.month"  -> dateTimeWithAmPm.localDateTime.getMonthValue.toString,
+            s"$key.year"   -> dateTimeWithAmPm.localDateTime.getYear.toString,
+            s"$key.hour"   -> dateTimeWithAmPm.localDateTime.getHour.toString,
+            s"$key.minute" -> dateTimeWithAmPm.localDateTime.getMinute.toString,
             s"$key.amOrPm" -> dateTimeWithAmPm.amOrPm
           )
 
@@ -80,11 +80,11 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
         dateTime =>
           val dateTimeWithAmPm = LocalDateTimeWithAMPM(dateTime, "am")
           val data = Map(
-            s"$key.day"    -> dateTimeWithAmPm.dateTime.getDayOfMonth.toString,
-            s"$key.month"  -> dateTimeWithAmPm.dateTime.getMonthValue.toString,
-            s"$key.year"   -> dateTimeWithAmPm.dateTime.getYear.toString,
-            s"$key.hour"   -> dateTimeWithAmPm.dateTime.getHour.toString,
-            s"$key.minute" -> dateTimeWithAmPm.dateTime.getMinute.toString,
+            s"$key.day"    -> dateTimeWithAmPm.localDateTime.getDayOfMonth.toString,
+            s"$key.month"  -> dateTimeWithAmPm.localDateTime.getMonthValue.toString,
+            s"$key.year"   -> dateTimeWithAmPm.localDateTime.getYear.toString,
+            s"$key.hour"   -> dateTimeWithAmPm.localDateTime.getHour.toString,
+            s"$key.minute" -> dateTimeWithAmPm.localDateTime.getMinute.toString,
             s"$key.amOrPm" -> dateTimeWithAmPm.amOrPm
           )
 

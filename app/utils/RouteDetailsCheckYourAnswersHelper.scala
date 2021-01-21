@@ -29,7 +29,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def arrivalTimesAtOffice(index: Index): Option[Row] = userAnswers.get(ArrivalTimesAtOfficePage(index)) map {
     answer =>
-      val dateTime: String = s"${Format.dateTimeFormattedAMPM(answer.dateTime).toLowerCase}"
+      val dateTime: String = s"${Format.dateTimeFormattedAMPM(answer.localDateTime).toLowerCase}"
       Row(
         key   = Key(msg"arrivalTimesAtOffice.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal(dateTime)),
@@ -159,7 +159,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         officeOfTransitList.getOfficeOfTransit(answer).map {
           office =>
             val arrivalTime =
-              userAnswers.get(ArrivalTimesAtOfficePage(index)).map(time => s"${Format.dateTimeFormattedAMPM(time.dateTime).toLowerCase}").getOrElse("")
+              userAnswers.get(ArrivalTimesAtOfficePage(index)).map(time => s"${Format.dateTimeFormattedAMPM(time.localDateTime).toLowerCase}").getOrElse("")
 
             Row(
               key   = Key(lit"${office.name} (${office.id})"),
