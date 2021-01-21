@@ -32,6 +32,7 @@ import pages._
 import pages.addItems.containers._
 import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
+import pages.safetyAndSecurity.{AddCommercialReferenceNumberAllItemsPage, AddTransportChargesPaymentMethodPage, CommercialReferenceNumberAllItemsPage}
 import play.api.mvc.Call
 
 @Singleton
@@ -132,7 +133,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
   private def consigneeName(ua: UserAnswers, index: Index, mode: Mode) =
     (ua.get(TraderDetailsConsigneeAddressPage(index)), mode) match {
       case (Some(_), CheckMode) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id,index))
-      case (_, _) => Some(traderDetailsRoutes.TraderDetailsConsigneeAddressController.onPageLoad(ua.id, index, mode))
+      case _ => Some(traderDetailsRoutes.TraderDetailsConsigneeAddressController.onPageLoad(ua.id, index, mode))
     }
 
   private def consigneeEoriNumberCheckMode(ua: UserAnswers, index: Index) =
@@ -378,7 +379,14 @@ class AddItemsNavigator @Inject()() extends Navigator {
     ua.get(AddAdministrativeReferencePage(itemIndex)) map {
       case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, itemIndex, Index(referenceIndex), mode)
       case _ if mode == CheckMode => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
-      case _ => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex) //TODO must go to 'Has the user selected yes for safety and security?'
+      case _ => (ua.get(AddSecurityDetailsPage), ua.get(AddTransportChargesPaymentMethodPage)) match {
+        case (Some(true), Some(false)) => controllers.addItems.securityDetails.routes.TransportChargesController.onPageLoad(ua.id,itemIndex, NormalMode)
+        case (Some(true), Some(true)) => ua.get(AddCommercialReferenceNumberAllItemsPage) match {
+          case Some(true) => controllers.addItems.securityDetails.routes.AddDangerousGoodsCodeController.onPageLoad (ua.id, itemIndex, NormalMode)
+          case Some(false) => controllers.addItems.securityDetails.routes.CommercialReferenceNumberController.onPageLoad(ua.id, itemIndex, NormalMode)
+        }
+        case (Some(false), _) => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
+      }
     }
   }
 
@@ -391,15 +399,21 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
 
-  private def addAnotherPreviousAdministrativeReferenceRoute(index: Index, ua: UserAnswers, mode: Mode): Option[Call] = {
-    val newReferenceIndex = ua.get(DeriveNumberOfPreviousAdministrativeReferences(index)).getOrElse(0)
-    ua.get(AddAnotherPreviousAdministrativeReferencePage(index)) map {
-      case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, index, Index(newReferenceIndex), mode)
-      case false if mode == NormalMode => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index) //TODO must go to 'Has the user selected yes for safety and security?'
-      case _ => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index)
+  private def addAnotherPreviousAdministrativeReferenceRoute(itemIndex: Index, ua: UserAnswers, mode: Mode): Option[Call] = {
+    val newReferenceIndex = ua.get(DeriveNumberOfPreviousAdministrativeReferences(itemIndex)).getOrElse(0)
+    ua.get(AddAnotherPreviousAdministrativeReferencePage(itemIndex)) map {
+      case true => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, itemIndex, Index(newReferenceIndex), mode)
+      case _ if mode == CheckMode => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
+      case _ => (ua.get(AddSecurityDetailsPage), ua.get(AddTransportChargesPaymentMethodPage)) match {
+        case (Some(true), Some(false)) => controllers.addItems.securityDetails.routes.TransportChargesController.onPageLoad(ua.id, itemIndex, NormalMode)
+        case (Some(true), Some(true)) => ua.get(AddCommercialReferenceNumberAllItemsPage) match {
+          case Some(true) => controllers.addItems.securityDetails.routes.AddDangerousGoodsCodeController.onPageLoad(ua.id, itemIndex, NormalMode)
+          case Some(false) => controllers.addItems.securityDetails.routes.CommercialReferenceNumberController.onPageLoad(ua.id, itemIndex, NormalMode)
+        }
+        case (Some(false), _) => addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, itemIndex)
+      }
     }
   }
-
   private def removePreviousAdministrativeReference(itemIndex: Index, mode: Mode)(ua: UserAnswers) =
     ua.get(DeriveNumberOfPreviousAdministrativeReferences(itemIndex)) match {
       case None | Some(0) => previousReferencesRoutes.ReferenceTypeController.onPageLoad(ua.id, itemIndex, Index(0), mode)
