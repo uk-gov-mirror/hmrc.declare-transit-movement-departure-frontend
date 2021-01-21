@@ -82,17 +82,14 @@ class DeclarationRequestService @Inject()(
         case GuaranteeDetails.GuaranteeReference(guaranteeType, guaranteeReferenceNumber, _, accessCode) =>
           val guaranteeReferenceWithGrn = GuaranteeReferenceWithGrn(guaranteeReferenceNumber, accessCode)
           Guarantee(guaranteeType.toString, Seq(guaranteeReferenceWithGrn))
-        case GuaranteeDetails.GuaranteeOther(guaranteeType, otherReference, _) =>
+        case GuaranteeDetails.GuaranteeOther(guaranteeType, otherReference) =>
           val guaranteeReferenceOther = GuaranteeReferenceWithOther(otherReference, None)
           Guarantee(guaranteeType.toString, Seq(guaranteeReferenceOther))
       }
-    def additionalInformationLiabilityAmount(guaranteeDetails: GuaranteeDetails) =
-      guaranteeDetails match {
+    val additionalInformationLiabilityAmount =
+      guaranteeDetails {
         case GuaranteeDetails.GuaranteeReference(_, guaranteeReferenceNumber, liabilityAmount, _) =>
           specialMentionLiability(liabilityAmount, guaranteeReferenceNumber)
-
-        case GuaranteeDetails.GuaranteeOther(_, otherReference, liabilityAmount) =>
-          specialMentionLiability(liabilityAmount, otherReference)
       }
 
     def specialMentionLiability(liabilityAmount: String, guaranteeReferenceNumber: String): SpecialMentionGuaranteeLiabilityAmount =

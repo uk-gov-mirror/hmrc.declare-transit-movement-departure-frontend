@@ -56,8 +56,7 @@ object GuaranteeDetails {
 
   final case class GuaranteeOther(
     guaranteeType: GuaranteeType,
-    otherReference: String,
-    liabilityAmount: String
+    otherReference: String
   ) extends GuaranteeDetails
 
   object GuaranteeOther {
@@ -66,7 +65,6 @@ object GuaranteeDetails {
       (
         GuaranteeTypePage.reader,
         OtherReferencePage.reader,
-        OtherReferenceLiabilityAmountPage.reader
       ).tupled.map((GuaranteeOther.apply _).tupled)
   }
 
