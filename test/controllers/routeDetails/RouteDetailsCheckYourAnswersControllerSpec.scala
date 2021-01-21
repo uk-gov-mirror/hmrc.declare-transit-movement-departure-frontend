@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
   private val countries                                = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
-  private val customsOffice: CustomsOffice             = CustomsOffice("id", "name", Seq.empty, None)
+  private val customsOffice: CustomsOffice             = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
   private val customsOffices: CustomsOfficeList        = CustomsOfficeList(Seq(customsOffice))
   private val officeOfTransit                          = OfficeOfTransit("1", "name")
   private val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))

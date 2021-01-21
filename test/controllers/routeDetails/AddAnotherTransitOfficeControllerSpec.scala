@@ -29,7 +29,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddAnotherTransitOfficePage
+import pages.{AddAnotherTransitOfficePage, DestinationCountryPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -47,8 +47,8 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
 
   private val countryCode                       = CountryCode("GB")
   private val countries                         = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
-  private val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", Seq.empty, None)
-  private val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", Seq.empty, None)
+  private val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)
+  private val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
   private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
   val form                                      = new AddAnotherTransitOfficeFormProvider()(customsOffices, "United Kingdom")
 
@@ -65,10 +65,11 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
   "AddAnotherTransitOffice Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      dataRetrievalWithData(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
+      dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
+      when(mockRefDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any())).thenReturn(Future.successful(customsOffices))
 
       val request        = FakeRequest(GET, addAnotherTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -102,11 +103,11 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
+      when(mockRefDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
         .thenReturn(Future.successful(customsOffices))
-      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+      when(mockRefDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val request        = FakeRequest(GET, destinationOfficeRoute)
+      val request        = FakeRequest(GET, addAnotherTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
@@ -135,11 +136,11 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit1.id).success.value
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), "1").success.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
+      when(mockRefDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any())).thenReturn(Future.successful(customsOffices))
 
       val request        = FakeRequest(GET, addAnotherTransitOfficeRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -171,9 +172,10 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      dataRetrievalWithData(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
+      dataRetrievalWithData(userAnswers)
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
+      when(mockRefDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any())).thenReturn(Future.successful(customsOffices))
 
       val request =
         FakeRequest(POST, addAnotherTransitOfficeRoute)
@@ -190,7 +192,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
       dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
+      when(mockRefDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any())).thenReturn(Future.successful(customsOffices))
 
       val request        = FakeRequest(POST, addAnotherTransitOfficeRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))

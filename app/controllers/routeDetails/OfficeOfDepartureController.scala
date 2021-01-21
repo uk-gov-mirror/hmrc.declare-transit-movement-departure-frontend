@@ -61,7 +61,9 @@ class OfficeOfDepartureController @Inject()(
               val form = formProvider(customsOffices)
               val preparedForm = request.userAnswers
                 .get(OfficeOfDeparturePage)
-                .flatMap(customsOffices.getCustomsOffice)
+                .flatMap(
+                  x => customsOffices.getCustomsOffice(x.id)
+                )
                 .map(form.fill)
                 .getOrElse(form)
 
@@ -100,7 +102,7 @@ class OfficeOfDepartureController @Inject()(
                   },
                   value =>
                     for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfDeparturePage, value.id))
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfDeparturePage, value))
                       _              <- sessionRepository.set(updatedAnswers)
                     } yield Redirect(navigator.nextPage(OfficeOfDeparturePage, mode, updatedAnswers))
                 )
@@ -109,5 +111,4 @@ class OfficeOfDepartureController @Inject()(
       }
 
   }
-
 }

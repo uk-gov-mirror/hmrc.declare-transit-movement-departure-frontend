@@ -18,15 +18,15 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.messages.guarantee.Guarantee.Constants._
-import play.api.data.{Form, Forms}
+import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import models.messages.guarantee.Guarantee.Constants._
 
 class LiabilityAmountFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> Forms.text
+      "value" -> text("liabilityAmount.error.required")
         .verifying(StopOnFirstFail[String](
           regexp(liabilityAmountCharactersRegex, "liabilityAmount.error.characters"),
           regexp(liabilityAmountFormatRegex, "liabilityAmount.error.invalidFormat"),

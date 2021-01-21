@@ -48,8 +48,8 @@ class DestinationOfficeControllerSpec extends SpecBase with MockNunjucksRenderer
 
   private val countryCode                       = CountryCode("GB")
   private val countries                         = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
-  private val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", Seq.empty, None)
-  private val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", Seq.empty, None)
+  private val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)
+  private val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
   private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
   private val form                              = new DestinationOfficeFormProvider()(customsOffices, "United Kingdom")
   private val mockReferenceDataConnector        = mock[ReferenceDataConnector]
@@ -117,7 +117,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockNunjucksRenderer
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = emptyUserAnswers
-        .set(DestinationOfficePage, "officeId")
+        .set(DestinationOfficePage, customsOffice1)
         .success
         .value
         .set(DestinationCountryPage, countryCode)

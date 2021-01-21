@@ -17,21 +17,11 @@
 package viewModels
 
 import cats.data.{NonEmptyList, ReaderT}
-import derivable.DeriveNumberOfItems
 import models.journeyDomain._
 import models.{Index, NormalMode, SectionDetails, UserAnswers}
 import pages.guaranteeDetails.GuaranteeTypePage
 import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
-import pages.{
-  AddSecurityDetailsPage,
-  CountryOfDispatchPage,
-  DeclarationTypePage,
-  DeclarePackagesPage,
-  InlandModePage,
-  IsPrincipalEoriKnownPage,
-  ItemDescriptionPage,
-  ProcedureTypePage
-}
+import pages._
 import play.api.libs.json._
 
 private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {

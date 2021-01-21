@@ -328,11 +328,11 @@ class DeclarationRequestService @Inject()(
       headerConsignee(traderDetails),
       None,
       CustomsOfficeDeparture(
-        referenceNumber = routeDetails.officeOfDeparture
+        referenceNumber = routeDetails.officeOfDeparture.id
       ),
       customsOfficeTransit(routeDetails.transitInformation),
       CustomsOfficeDestination(
-        referenceNumber = routeDetails.destinationOffice
+        referenceNumber = routeDetails.destinationOffice.id
       ),
       None,
       representative(movementDetails),
