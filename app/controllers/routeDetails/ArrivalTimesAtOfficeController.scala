@@ -91,14 +91,6 @@ class ArrivalTimesAtOfficeController @Inject()(
     renderer.render("arrivalTimesAtOffice.njk", json)
   }
 
-  private def formatTo24hourTime(localDateTime: LocalDateTimeWithAMPM): LocalDateTimeWithAMPM = {
-    val formatTimeWithAmPm = localDateTime.dateTime.toLocalTime + localDateTime.amOrPm.toUpperCase
-    val parseToTime        = LocalTime.parse(formatTimeWithAmPm, timeFormatterFromAMPM)
-    val parseToDateTime    = LocalDateTime.of(localDateTime.dateTime.toLocalDate, parseToTime)
-
-    localDateTime.copy(dateTime = parseToDateTime)
-  }
-
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       request.userAnswers.get(AddAnotherTransitOfficePage(index)) match {
@@ -115,7 +107,7 @@ class ArrivalTimesAtOfficeController @Inject()(
                   },
                   value =>
                     for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(ArrivalTimesAtOfficePage(index), formatTo24hourTime(value)))
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(ArrivalTimesAtOfficePage(index), value.formatTo24hourTime))
                       _              <- sessionRepository.set(updatedAnswers)
                     } yield Redirect(navigator.nextPage(ArrivalTimesAtOfficePage(index), mode, updatedAnswers))
                 )
