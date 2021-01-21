@@ -85,6 +85,15 @@ class DeclarationRequestSpec
 
     }
 
+    "must serialise DeclarationRequest to xml where liability is added to first goodItem" in {
+      forAll(arbitrary[DeclarationRequest]) {
+        declarationRequest =>
+          val firstGoodsItem :: otherGoodsItems = declarationRequest.goodsItems.toList
+          firstGoodsItem.toXml.find(_.label == "SPEMENMT2") == true
+
+      }
+    }
+
     "must de-serialise xml to DeclarationRequest" in {
 
       forAll(arbitrary[DeclarationRequest]) {
