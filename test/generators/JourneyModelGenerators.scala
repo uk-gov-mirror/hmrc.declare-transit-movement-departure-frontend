@@ -39,7 +39,7 @@ import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMod
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
 import models.journeyDomain._
-import models.reference.{CircumstanceIndicator, Country, CountryCode, PackageType}
+import models.reference.{CircumstanceIndicator, Country, CountryCode, CustomsOffice, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -553,9 +553,9 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         countryOfDispatch  <- arbitrary[CountryCode]
-        officeOfDeparture  <- stringsWithMaxLength(stringMaxLength)
+        officeOfDeparture  <- arbitrary[CustomsOffice]
         destinationCountry <- arbitrary[CountryCode]
-        destinationOffice  <- stringsWithMaxLength(stringMaxLength)
+        destinationOffice  <- arbitrary[CustomsOffice]
         transitInformation <- nonEmptyListOf[TransitInformation](2)(arbTransitInformation)
       } yield
         RouteDetails(
