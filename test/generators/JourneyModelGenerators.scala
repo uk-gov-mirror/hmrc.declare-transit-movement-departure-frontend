@@ -393,10 +393,9 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryGuaranteeOther: Arbitrary[GuaranteeOther] =
     Arbitrary {
       for {
-        guaranteeType   <- Arbitrary.arbitrary[GuaranteeType]
-        otherReference  <- nonEmptyString
-        liabilityAmount <- nonEmptyString
-      } yield GuaranteeOther(guaranteeType, otherReference, liabilityAmount)
+        guaranteeType  <- Arbitrary.arbitrary[GuaranteeType]
+        otherReference <- nonEmptyString
+      } yield GuaranteeOther(guaranteeType)
     }
 
   implicit lazy val arbitraryGuaranteeReference: Arbitrary[GuaranteeReference] =

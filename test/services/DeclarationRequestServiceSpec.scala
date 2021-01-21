@@ -83,30 +83,30 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
     "Liability amount must always only add to first Goods Item and other Goods Items should not contain it" in {
 
-      forAll(arb[UserAnswers], arb[JourneyDomain]) {
-        (userAnswers, journeyDomain) =>
+      forAll(arb[UserAnswers], arb[JourneyDomain], arb[GuaranteeReference]) {
+        (userAnswers, journeyDomain, guaranteeReference) =>
           val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
 
           when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
           when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
-          val updatedUserAnswer                  = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
+          val updatedJourneyDomain: JourneyDomain = journeyDomain.copy(guarantee = guaranteeReference)
+
+          val updatedUserAnswer                  = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
           val result: Option[DeclarationRequest] = service.convert(updatedUserAnswer).futureValue
           result must be(defined)
+
           val firstGoodsItemSpecialMentionLiabilityAmount = result.get.goodsItems.head.specialMention.collect {
             case specialMention: SpecialMentionGuaranteeLiabilityAmount => specialMention
           }
-          val (expectedLiabilityAmount, expectedGuaranteeReference) = journeyDomain.guarantee match {
-            case guaranteeReference: GuaranteeReference  => (guaranteeReference.liabilityAmount, guaranteeReference.guaranteeReferenceNumber)
-            case otherGuaranteeReference: GuaranteeOther => (otherGuaranteeReference.liabilityAmount, otherGuaranteeReference.otherReference)
-          }
-          val expectedSpecialMention = expectedLiabilityAmount match {
+
+          val expectedSpecialMention = guaranteeReference.liabilityAmount match {
             case GuaranteeReference.defaultLiability =>
-              val defaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR$expectedGuaranteeReference"
+              val defaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReference.guaranteeReferenceNumber}"
               SpecialMentionGuaranteeLiabilityAmount("CAL", defaultLiabilityAmount)
 
             case otherAmount =>
-              val notDefaultAmount = s"${otherAmount}GBP$expectedGuaranteeReference"
+              val notDefaultAmount = s"${otherAmount}GBP${guaranteeReference.guaranteeReferenceNumber}"
               SpecialMentionGuaranteeLiabilityAmount("CAL", notDefaultAmount)
 
           }
