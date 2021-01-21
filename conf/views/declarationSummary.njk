@@ -25,7 +25,7 @@
 
          {{ summarySectionMacro(messages("declarationSummary.departureDetails"), sections) }}
 
-          {% if isDeclarationComplete %}
+
             <form action="{{ onSubmitUrl }}" method="post">
                 {{ csrf() | safe }}
 
@@ -41,7 +41,7 @@
                   attributes: {id:"submit"}
                 }) }}
             </form>
-         {% endif %}
+
 
          <p class="govuk-body"><a href={{backToTransitMovements}}>{{ messages("declarationSummary.backToTransitMovements")}}</a></p>
       </div>

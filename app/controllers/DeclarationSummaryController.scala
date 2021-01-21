@@ -21,6 +21,7 @@ import controllers.actions._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.LocalReferenceNumber
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
@@ -62,7 +63,9 @@ class DeclarationSummaryController @Inject()(
               case status if is4xx(status) => errorHandler.onClientError(request, status)
               case _                       => Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
             }
-          case None => errorHandler.onClientError(request, BAD_REQUEST)
+          case None =>
+            Logger.error("=================\n-===============")
+            errorHandler.onClientError(request, BAD_REQUEST)
         }
     }
 }
