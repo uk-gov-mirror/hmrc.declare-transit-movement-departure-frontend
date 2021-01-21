@@ -16,11 +16,21 @@
 
 package models
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, LocalTime}
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, _}
+import utils.Format.timeFormatterFromAMPM
 
-case class LocalDateTimeWithAMPM(dateTime: LocalDateTime, amOrPm: String)
+case class LocalDateTimeWithAMPM(localDateTime: LocalDateTime, amOrPm: String) {
+
+  def formatTo24hourTime: LocalDateTimeWithAMPM = {
+    val formatTimeWithAmPm = localDateTime.toLocalTime + amOrPm.toUpperCase
+    val parseToTime        = LocalTime.parse(formatTimeWithAmPm, timeFormatterFromAMPM)
+    val parseToDateTime    = LocalDateTime.of(localDateTime.toLocalDate, parseToTime)
+
+    LocalDateTimeWithAMPM(parseToDateTime, amOrPm)
+  }
+}
 
 object LocalDateTimeWithAMPM {
   implicit val format: OFormat[LocalDateTimeWithAMPM] = Json.format[LocalDateTimeWithAMPM]

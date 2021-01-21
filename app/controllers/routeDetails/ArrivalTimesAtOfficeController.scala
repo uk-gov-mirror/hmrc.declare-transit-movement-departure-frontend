@@ -34,8 +34,10 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.Format.timeFormatterFromAMPM
 import utils._
 import viewModels.DateTimeInput
+import java.time.{LocalDateTime, LocalTime}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -105,7 +107,7 @@ class ArrivalTimesAtOfficeController @Inject()(
                   },
                   value =>
                     for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(ArrivalTimesAtOfficePage(index), value))
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(ArrivalTimesAtOfficePage(index), value.formatTo24hourTime))
                       _              <- sessionRepository.set(updatedAnswers)
                     } yield Redirect(navigator.nextPage(ArrivalTimesAtOfficePage(index), mode, updatedAnswers))
                 )
