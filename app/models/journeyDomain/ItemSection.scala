@@ -35,6 +35,7 @@ case class ItemSection(
   containers: Option[NonEmptyList[Container]],
   specialMentions: Option[NonEmptyList[SpecialMention]],
   producedDocuments: Option[NonEmptyList[ProducedDocument]]
+ // securityDetails: Option[SecurityDetails]
 )
 
 object ItemSection {
