@@ -37,10 +37,12 @@
         <span class="govuk-caption-xl">{{messages('routeDetails.preHeading')}}</span>
 
         <h1 class="govuk-heading-xl">
-          {{ messages("addAnotherTransitOffice.heading") }}
+          {{ messages("addAnotherTransitOffice.heading", countryName) }}
         </h1>
 
         <form action="{{ routes.controllers.routeDetails.AddAnotherTransitOfficeController.onSubmit(lrn, mode).url }}" method="post">
+
+          <p class="govuk-body">{{messages('addAnotherTransitOffice.label')}}</p>
 
           {{ csrf() | safe }}
 
@@ -49,7 +51,7 @@
             id: "value",
             name: "value",
             errorMessage: form.value.error,
-            items: officeOfTransitList
+            items: customsOffices
           }) }}
 
           {{ govukButton({
@@ -62,7 +64,6 @@
       </div>
     </div>
   </div>
-
 {% endblock %}
 
 {% block pageScripts %}
