@@ -216,9 +216,6 @@ object GuaranteeDetailsSpec {
 
     val guaranteeOtherUserAnswers = startUserAnswers
       .unsafeSetVal(GuaranteeTypePage)(otherGuarantee.guaranteeType)
-      .unsafeSetVal(OtherReferencePage)(otherGuarantee.otherReference)
-      .unsafeSetVal(OtherReferenceLiabilityAmountPage)(otherGuarantee.liabilityAmount)
-
     guaranteeOtherUserAnswers
   }
 
