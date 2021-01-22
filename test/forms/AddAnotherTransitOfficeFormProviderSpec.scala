@@ -17,8 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.OfficeOfTransitList
-import models.reference.OfficeOfTransit
+import models.{CustomsOfficeList, OfficeOfTransitList}
+import models.reference.{CountryCode, CustomsOffice, OfficeOfTransit}
 import play.api.data.FormError
 
 class AddAnotherTransitOfficeFormProviderSpec extends StringFieldBehaviours {
@@ -26,8 +26,11 @@ class AddAnotherTransitOfficeFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "addAnotherTransitOffice.error.required"
   val maxLength   = 8
 
-  val officeOfTransitList = OfficeOfTransitList(Seq(OfficeOfTransit("id", "name"), OfficeOfTransit("officeId", "someName")))
-  val form                = new AddAnotherTransitOfficeFormProvider()(officeOfTransitList)
+  val countryName                       = "United Kingdom"
+  val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)
+  val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
+  val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+  val form                              = new AddAnotherTransitOfficeFormProvider()(customsOffices, "United Kingdom")
 
   ".value" - {
 
@@ -42,7 +45,7 @@ class AddAnotherTransitOfficeFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(countryName))
     )
 
     "not bind if customs office id does not exist in the customs office list" in {
