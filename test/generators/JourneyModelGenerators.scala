@@ -451,6 +451,15 @@ trait JourneyModelGenerators {
       } yield ItemDetails(itemDescription, totalGrossMass, totalNetMass, commodityCode)
     }
 
+  implicit lazy val arbitraryItemSecurityDetails: Arbitrary[SecurityDetails] =
+    Arbitrary {
+      for {
+        methodOfPayment           <- Gen.option(arbitrary[String])
+        commercialReferenceNumber <- Gen.option(arbitrary[String])
+        dangerousGoodsCode        <- Gen.option(arbitrary[String])
+      } yield SecurityDetails(methodOfPayment, commercialReferenceNumber, dangerousGoodsCode)
+    }
+
   implicit lazy val arbitrarySpecialMention: Arbitrary[SpecialMention] =
     Arbitrary {
       for {
