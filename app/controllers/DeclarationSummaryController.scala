@@ -64,7 +64,6 @@ class DeclarationSummaryController @Inject()(
               case _                       => Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
             }
           case None =>
-            Logger.error("=================\n-===============")
             errorHandler.onClientError(request, BAD_REQUEST)
         }
     }
