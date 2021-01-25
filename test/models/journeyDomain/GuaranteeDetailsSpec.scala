@@ -169,8 +169,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
       val mandatoryPages: Gen[QuestionPage[_]] = Gen.oneOf(
         GuaranteeTypePage,
-        OtherReferencePage,
-        OtherReferenceLiabilityAmountPage
+        OtherReferencePage
       )
 
       "can be parsed" - {
@@ -216,6 +215,7 @@ object GuaranteeDetailsSpec {
 
     val guaranteeOtherUserAnswers = startUserAnswers
       .unsafeSetVal(GuaranteeTypePage)(otherGuarantee.guaranteeType)
+      .unsafeSetVal(OtherReferencePage)(otherGuarantee.otherReference)
     guaranteeOtherUserAnswers
   }
 
