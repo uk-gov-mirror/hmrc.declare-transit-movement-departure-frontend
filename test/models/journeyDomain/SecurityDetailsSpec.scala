@@ -39,6 +39,47 @@ class SecurityDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
         }
       }
     }
+
+    "Cannot be parsed from UserAnswers" - {
+      "when AddTransportChargesPaymentMethodPage has not been answered" in {
+        forAll(arbitrary[SecurityDetails], arbitrary[UserAnswers]) {
+          case (securityDetails, userAnswers) =>
+            val updatedUserAnswers = setSecurityDetailsUserAnswers(securityDetails, index)(userAnswers)
+              .remove(AddTransportChargesPaymentMethodPage)
+              .success
+              .value
+            val result = UserAnswersReader[SecurityDetails](SecurityDetails.securityDetailsReader(index)).run(updatedUserAnswers)
+
+            result mustEqual None
+        }
+      }
+
+      "when AddCommercialReferenceNumberAllItemsPage has not been answered" in {
+        forAll(arbitrary[SecurityDetails], arbitrary[UserAnswers]) {
+          case (securityDetails, userAnswers) =>
+            val updatedUserAnswers = setSecurityDetailsUserAnswers(securityDetails, index)(userAnswers)
+              .remove(AddCommercialReferenceNumberAllItemsPage)
+              .success
+              .value
+            val result = UserAnswersReader[SecurityDetails](SecurityDetails.securityDetailsReader(index)).run(updatedUserAnswers)
+
+            result mustEqual None
+        }
+      }
+
+      "when AddDangerousGoodsCodePage has not been answered" in {
+        forAll(arbitrary[SecurityDetails], arbitrary[UserAnswers]) {
+          case (securityDetails, userAnswers) =>
+            val updatedUserAnswers = setSecurityDetailsUserAnswers(securityDetails, index)(userAnswers)
+              .remove(AddDangerousGoodsCodePage(index))
+              .success
+              .value
+            val result = UserAnswersReader[SecurityDetails](SecurityDetails.securityDetailsReader(index)).run(updatedUserAnswers)
+
+            result mustEqual None
+        }
+      }
+    }
   }
 }
 
@@ -94,4 +135,5 @@ object SecurityDetailsSpec {
     }
     dangerousGoodsCode
   }
+
 }

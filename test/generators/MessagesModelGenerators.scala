@@ -142,6 +142,15 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
       } yield CustomsOfficeTransit(customsOffice.mkString, arrivalDateTime)
     }
 
+  implicit lazy val arbitrarySecurityDetailsSubmission: Arbitrary[SecurityDetailsSubmission] =
+    Arbitrary {
+      for {
+        transportMethodOfPayment  <- Gen.option(arbitrary[String])
+        commercialReferenceNumber <- Gen.option(arbitrary[String])
+        unDangerouGoodsCode       <- Gen.option(arbitrary[String])
+      } yield SecurityDetailsSubmission(transportMethodOfPayment, commercialReferenceNumber, unDangerouGoodsCode)
+    }
+
   implicit lazy val arbitraryDeclarationRequest: Arbitrary[DeclarationRequest] = {
     Arbitrary {
       for {
