@@ -18,12 +18,16 @@ package controllers.routeDetails
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
+import controllers.{routes => mainRoutes}
 import forms.AddAnotherTransitOfficeFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.reference.{CountryCode, CustomsOffice}
+import models.requests.DataRequest
+import models.{CustomsOfficeList, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
-import pages.AddAnotherTransitOfficePage
+import pages.{AddAnotherTransitOfficePage, DestinationCountryPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,7 +35,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.getOfficeOfTransitAsJson
+import utils.getCustomsOfficesAsJson
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,8 +46,8 @@ class AddAnotherTransitOfficeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: AddAnotherTransitOfficeFormProvider,
   referenceDataConnector: ReferenceDataConnector,
+  formProvider: AddAnotherTransitOfficeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -53,51 +57,71 @@ class AddAnotherTransitOfficeController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getOfficeOfTransitList() flatMap {
-        officeOfTransitList =>
-          val form = formProvider(officeOfTransitList)
-          val preparedForm = request.userAnswers
-            .get(AddAnotherTransitOfficePage(index))
-            .flatMap(officeOfTransitList.getOfficeOfTransit)
-            .map(form.fill)
-            .getOrElse(form)
+      request.userAnswers.get(DestinationCountryPage) match {
+        case Some(countryCode) =>
+          getCustomsOfficeAndCountryName(countryCode) flatMap {
+            case (customsOffices, countryName) =>
+              val form: Form[CustomsOffice] = formProvider(customsOffices, countryName)
 
-          val json = Json.obj(
-            "form"                -> preparedForm,
-            "lrn"                 -> lrn,
-            "officeOfTransitList" -> getOfficeOfTransitAsJson(preparedForm.value, officeOfTransitList.officeOfTransits),
-            "mode"                -> mode
-          )
+              val preparedForm: Form[CustomsOffice] = request.userAnswers
+                .get(AddAnotherTransitOfficePage(index))
+                .flatMap(customsOffices.getCustomsOffice)
+                .map(form.fill)
+                .getOrElse(form)
 
-          renderer.render("addAnotherTransitOffice.njk", json).map(Ok(_))
+              val json = Json.obj(
+                "form"           -> preparedForm,
+                "lrn"            -> lrn,
+                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
+                "countryName"    -> countryName,
+                "mode"           -> mode
+              )
+              renderer.render("addAnotherTransitOffice.njk", json).map(Ok(_))
+          }
+
+        case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getOfficeOfTransitList() flatMap {
-        officeOfTransitList =>
-          val form = formProvider(officeOfTransitList)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => {
-                val json = Json.obj(
-                  "form"                -> formWithErrors,
-                  "lrn"                 -> lrn,
-                  "officeOfTransitList" -> getOfficeOfTransitAsJson(form.value, officeOfTransitList.officeOfTransits),
-                  "mode"                -> mode
+      request.userAnswers.get(DestinationCountryPage) match {
+        case Some(countryCode) =>
+          getCustomsOfficeAndCountryName(countryCode) flatMap {
+            case (customsOffices, countryName) =>
+              val form = formProvider(customsOffices, countryName)
+
+              form
+                .bindFromRequest()
+                .fold(
+                  formWithErrors => {
+                    val json = Json.obj(
+                      "form"           -> formWithErrors,
+                      "lrn"            -> lrn,
+                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.customsOffices),
+                      "countryName"    -> countryName,
+                      "mode"           -> mode
+                    )
+                    renderer.render("addAnotherTransitOffice.njk", json).map(BadRequest(_))
+                  },
+                  value =>
+                    for {
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransitOfficePage(index), value.id))
+                      _              <- sessionRepository.set(updatedAnswers)
+                    } yield Redirect(navigator.nextPage(AddAnotherTransitOfficePage(index), mode, updatedAnswers))
                 )
-
-                renderer.render("addAnotherTransitOffice.njk", json).map(BadRequest(_))
-              },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherTransitOfficePage(index), value.id))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(AddAnotherTransitOfficePage(index), mode, updatedAnswers))
-            )
+          }
+        case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
-
   }
+
+  private def getCustomsOfficeAndCountryName(countryCode: CountryCode)(implicit request: DataRequest[AnyContent]): Future[(CustomsOfficeList, String)] =
+    referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
+      customsOffices =>
+        referenceDataConnector.getTransitCountryList() map {
+          countryList =>
+            val countryName = countryList.getCountry(countryCode).fold(countryCode.code)(_.description)
+            (customsOffices, countryName)
+        }
+    }
 }

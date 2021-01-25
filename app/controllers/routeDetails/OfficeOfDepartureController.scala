@@ -109,5 +109,6 @@ class OfficeOfDepartureController @Inject()(
           }
         case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
+
   }
 }
