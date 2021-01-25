@@ -38,10 +38,12 @@ object SecurityDetails {
       }
 
   private def commercialReferenceNumberPage(index: Index): UserAnswersReader[Option[String]] =
-    (AddTransportChargesPaymentMethodPage.reader, AddCommercialReferenceNumberAllItemsPage.reader).tupled.flatMap {
-      case (true, false) => CommercialReferenceNumberPage(index).reader.map(Some(_))
-      case _             => none[String].pure[UserAnswersReader]
-    }
+    AddCommercialReferenceNumberAllItemsPage.reader
+      .flatMap {
+        bool =>
+          if (!bool) CommercialReferenceNumberPage(index).reader.map(Some(_))
+          else none[String].pure[UserAnswersReader]
+      }
 
   private def dangerousGoodsCodePage(index: Index): UserAnswersReader[Option[String]] =
     AddDangerousGoodsCodePage(index).reader

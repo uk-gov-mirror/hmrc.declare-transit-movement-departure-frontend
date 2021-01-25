@@ -45,7 +45,7 @@ class SecurityDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
 object SecurityDetailsSpec {
 
   def setSecurityDetailsUserAnswers(securityDetails: SecurityDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers = {
-    val methodOfPayment = securityDetails.methodOfPayment match {
+    val methodOfPayment: UserAnswers = securityDetails.methodOfPayment match {
       case Some(value) =>
         startUserAnswers
           .set(AddTransportChargesPaymentMethodPage, false)
@@ -64,9 +64,6 @@ object SecurityDetailsSpec {
     val commercialReferenceNumber = securityDetails.commercialReferenceNumber match {
       case Some(value) =>
         methodOfPayment
-          .set(AddTransportChargesPaymentMethodPage, true)
-          .toOption
-          .get
           .set(AddCommercialReferenceNumberAllItemsPage, false)
           .toOption
           .get
@@ -75,7 +72,7 @@ object SecurityDetailsSpec {
           .get
       case None =>
         methodOfPayment
-          .set(AddTransportChargesPaymentMethodPage, false)
+          .set(AddCommercialReferenceNumberAllItemsPage, true)
           .toOption
           .get
     }
