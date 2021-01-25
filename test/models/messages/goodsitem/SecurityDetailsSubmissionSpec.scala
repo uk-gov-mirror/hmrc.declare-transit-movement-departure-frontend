@@ -34,7 +34,7 @@ class SecurityDetailsSubmissionSpec
     with StreamlinedXmlEquality
     with OptionValues {
 
-  "SecurityDetailsSubmission" - {}
+  "SecurityDetailsSubmission" - {
   "must serialize SecurityDetailsSubmission to xml" in {
     forAll(arbitrary[SecurityDetailsSubmission]) {
       reference =>
