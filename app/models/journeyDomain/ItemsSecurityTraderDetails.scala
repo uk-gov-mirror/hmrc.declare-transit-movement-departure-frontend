@@ -73,7 +73,7 @@ object ItemsSecurityTraderDetails {
         isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
 
-    AddSafetyAndSecurityConsignorPage.reader
+    AddSafetyAndSecurityConsignorPage.reader //TODO - add a matcher
       .filter(identity)
       .flatMap {
         _ =>
