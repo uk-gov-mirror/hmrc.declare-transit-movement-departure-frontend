@@ -41,14 +41,14 @@ object ItemsSecurityTraderDetails {
   sealed trait SecurityTraderDetails
 
   object SecurityTraderDetails {
-    def apply(eori: EoriNumber): SecurityTraderDetails = TraderEori(eori)
+    def apply(eori: EoriNumber): SecurityTraderDetails = SecurityTraderEori(eori)
 
-    def apply(name: String, address: Address): SecurityTraderDetails = PersonalInformation(name, address)
+    def apply(name: String, address: Address): SecurityTraderDetails = SecurityPersonalInformation(name, address)
   }
 
-  final case class PersonalInformation(name: String, address: Address) extends SecurityTraderDetails
+  final case class SecurityPersonalInformation(name: String, address: Address) extends SecurityTraderDetails
 
-  final case class TraderEori(eori: EoriNumber) extends SecurityTraderDetails
+  final case class SecurityTraderEori(eori: EoriNumber) extends SecurityTraderDetails
 
   private def consignorDetails(index: Index): UserAnswersReader[Option[SecurityTraderDetails]] = {
 

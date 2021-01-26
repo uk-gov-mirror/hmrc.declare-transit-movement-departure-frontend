@@ -23,6 +23,7 @@ import models._
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
 import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
+import models.journeyDomain.ItemsSecurityTraderDetails.{SecurityPersonalInformation, SecurityTraderEori}
 import models.journeyDomain.MovementDetails.{
   DeclarationForSelf,
   DeclarationForSomeoneElse,
@@ -293,6 +294,32 @@ trait JourneyModelGenerators {
       } yield TraderDetails(principalTraderDetails, consignor, consignee)
     }
   }
+
+  implicit val arbitraryItemsSecurityTraderDetails: Arbitrary[ItemsSecurityTraderDetails] = {
+    val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
+    val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
+
+    Arbitrary {
+      for {
+        consignor <- Gen.option(arbitraryItemsSecurityTraderDetails(consignorAddress).arbitrary)
+        consignee <- Gen.option(arbitraryItemsSecurityTraderDetails(consigneeAddress).arbitrary)
+      } yield ItemsSecurityTraderDetails(consignor, consignor)
+    }
+  }
+
+  implicit def arbitraryItemsSecurityTraderDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[ItemsSecurityTraderDetails.SecurityTraderDetails] =
+    Arbitrary(Gen.oneOf(Arbitrary.arbitrary[SecurityPersonalInformation], Arbitrary.arbitrary[SecurityTraderEori]))
+
+  implicit lazy val arbitraryItemsSecurityTraderEori: Arbitrary[SecurityTraderEori] =
+    Arbitrary(Arbitrary.arbitrary[EoriNumber].map(SecurityTraderEori(_)))
+
+  implicit def arbitraryItemsSecurityPersonalInformation(implicit arbAddress: Arbitrary[Address]): Arbitrary[SecurityPersonalInformation] =
+    Arbitrary {
+      for {
+        name    <- stringsWithMaxLength(stringMaxLength)
+        address <- arbAddress.arbitrary
+      } yield SecurityPersonalInformation(name, address)
+    }
 
   implicit def arbitraryRequiredDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[RequiredDetails] =
     Arbitrary(Gen.oneOf(Arbitrary.arbitrary[PersonalInformation], Arbitrary.arbitrary[TraderEori]))
