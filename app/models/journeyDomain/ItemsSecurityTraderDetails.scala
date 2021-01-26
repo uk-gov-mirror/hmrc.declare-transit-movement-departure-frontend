@@ -16,27 +16,16 @@
 
 package models.journeyDomain
 
-import cats.data.ReaderT
 import cats.implicits._
 import models.domain.Address
-import models.journeyDomain.Itinerary.readItineraries
-import models.journeyDomain.SafetyAndSecurity.{
-  addCircumstanceIndicator,
-  carrierDetails,
-  commercialReferenceNumber,
-  consigneeDetails,
-  consignorDetails,
-  conveyanceReferenceNumber,
-  paymentMethod,
-  placeOfUnloading
-}
-import models.{EoriNumber, Index, UserAnswers}
+import models.journeyDomain.ItemsSecurityTraderDetails.SecurityTraderDetails
+import models.{EoriNumber, Index}
 import pages.addItems.traderSecurityDetails._
 import pages.safetyAndSecurity._
 
 final case class ItemsSecurityTraderDetails(
-  consignor: Option[ItemsSecurityTraderDetails],
-  consignee: Option[ItemsSecurityTraderDetails]
+  consignor: Option[SecurityTraderDetails],
+  consignee: Option[SecurityTraderDetails]
 )
 
 object ItemsSecurityTraderDetails {
@@ -45,7 +34,7 @@ object ItemsSecurityTraderDetails {
     UserAnswersOptionalParser(
       (
         consignorDetails(index),
-        none[SecurityTraderDetails].pure[UserAnswersReader]
+        consignorDetails(index)
       ).tupled
     )((ItemsSecurityTraderDetails.apply _).tupled)
 
@@ -61,9 +50,9 @@ object ItemsSecurityTraderDetails {
 
   final case class TraderEori(eori: EoriNumber) extends SecurityTraderDetails
 
-  private def consignorDetails(index: Index): UserAnswersReader[Option[ItemsSecurityTraderDetails]] = {
+  private def consignorDetails(index: Index): UserAnswersReader[Option[SecurityTraderDetails]] = {
 
-    val useEori: ReaderT[Option, UserAnswers, SecurityTraderDetails] =
+    val useEori =
       SecurityConsignorEoriPage(index).reader.map(
         eori => SecurityTraderDetails(EoriNumber(eori))
       )
@@ -76,11 +65,10 @@ object ItemsSecurityTraderDetails {
         .map {
           case (name, consignorAddress) =>
             val address = Address.prismAddressToConsignorAddress(consignorAddress)
-
             SecurityTraderDetails(name, address)
         }
 
-    val isEoriKnown: ReaderT[Option, UserAnswers, SecurityTraderDetails] =
+    val isEoriKnown =
       AddSecurityConsignorsEoriPage(index).reader.flatMap(
         isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
@@ -88,14 +76,11 @@ object ItemsSecurityTraderDetails {
     AddSafetyAndSecurityConsignorPage.reader
       .filter(identity)
       .flatMap {
-
-        case true  => none[SecurityTraderDetails].pure[UserAnswersReader]
-        case false => isEoriKnown
-
+        _ =>
+          isEoriKnown
       }
       .lower
   }
-
   //  private def consigneeDetails: UserAnswersReader[Option[ItemsSecurityTraderDetails]] = {
   //
   //    val useEori: ReaderT[Option, UserAnswers, ItemsSecurityTraderDetails] =
