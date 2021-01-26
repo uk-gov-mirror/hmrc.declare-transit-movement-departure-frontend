@@ -16,7 +16,6 @@
 
 package generators
 
-import java.io
 import java.time.{LocalDate, LocalDateTime}
 
 import models._
@@ -24,13 +23,7 @@ import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
 import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
 import models.journeyDomain.ItemsSecurityTraderDetails.{SecurityPersonalInformation, SecurityTraderEori}
-import models.journeyDomain.MovementDetails.{
-  DeclarationForSelf,
-  DeclarationForSomeoneElse,
-  DeclarationForSomeoneElseAnswer,
-  NormalMovementDetails,
-  SimplifiedMovementDetails
-}
+import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, DeclarationForSomeoneElseAnswer, NormalMovementDetails, SimplifiedMovementDetails}
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
@@ -40,7 +33,7 @@ import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMod
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
 import models.journeyDomain._
-import models.reference.{CircumstanceIndicator, Country, CountryCode, CustomsOffice, PackageType}
+import models.reference.{SpecialMention => _, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -303,7 +296,7 @@ trait JourneyModelGenerators {
       for {
         consignor <- Gen.option(arbitraryItemsSecurityTraderDetails(consignorAddress).arbitrary)
         consignee <- Gen.option(arbitraryItemsSecurityTraderDetails(consigneeAddress).arbitrary)
-      } yield ItemsSecurityTraderDetails(consignor, consignor)
+      } yield ItemsSecurityTraderDetails(consignor, consignee)
     }
   }
 

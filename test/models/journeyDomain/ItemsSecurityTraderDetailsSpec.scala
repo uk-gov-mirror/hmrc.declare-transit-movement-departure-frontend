@@ -19,30 +19,12 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
 import models.domain.Address
-import models.journeyDomain.ItemTraderDetails.{PersonalInformation, TraderEori}
 import models.journeyDomain.ItemsSecurityTraderDetails.{SecurityPersonalInformation, SecurityTraderEori}
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.{Index, UserAnswers}
 import org.scalatest.TryValues
-import pages.{AddConsigneePage, AddConsignorPage, ConsigneeForAllItemsPage, ConsignorForAllItemsPage}
-import pages.addItems.traderDetails.{
-  TraderDetailsConsigneeAddressPage,
-  TraderDetailsConsigneeEoriKnownPage,
-  TraderDetailsConsigneeEoriNumberPage,
-  TraderDetailsConsigneeNamePage,
-  TraderDetailsConsignorAddressPage,
-  TraderDetailsConsignorEoriKnownPage,
-  TraderDetailsConsignorEoriNumberPage,
-  TraderDetailsConsignorNamePage
-}
-import pages.addItems.traderSecurityDetails.{
-  AddSecurityConsigneesEoriPage,
-  AddSecurityConsignorsEoriPage,
-  SecurityConsignorAddressPage,
-  SecurityConsignorEoriPage,
-  SecurityConsignorNamePage
-}
-import pages.safetyAndSecurity.AddSafetyAndSecurityConsignorPage
+import pages.addItems.traderSecurityDetails._
+import pages.safetyAndSecurity.{AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorPage}
 
 class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators {
   "ItemsSecurityTraderDetails can be parsed within user answers" - {
@@ -59,6 +41,40 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
 
     }
 
+  }
+
+  "ItemsSecurityDetails cannot be parsed within user answers" - {
+    "when the safety and security consignor page cannot be read" in {
+
+      forAll(arb[UserAnswers], arb[ItemsSecurityTraderDetails]) {
+        (baseUserAnswers, itemsSecurityTraderDetails) =>
+          val userAnswers = ItemsSecurityTraderDetailsSpec
+            .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
+            .remove(AddSafetyAndSecurityConsignorPage)
+            .toOption
+            .value
+          val result: ItemsSecurityTraderDetails =
+            UserAnswersParser[Option, ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+
+          result.consignor mustBe None
+      }
+    }
+
+    "when the safety and security consignee page cannot be read" in {
+
+      forAll(arb[UserAnswers], arb[ItemsSecurityTraderDetails]) {
+        (baseUserAnswers, itemsSecurityTraderDetails) =>
+          val userAnswers = ItemsSecurityTraderDetailsSpec
+            .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
+            .remove(AddSafetyAndSecurityConsigneePage)
+            .toOption
+            .value
+          val result: ItemsSecurityTraderDetails =
+            UserAnswersParser[Option, ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+
+          result.consignee mustBe None
+      }
+    }
   }
 
   object ItemsSecurityTraderDetailsSpec {
@@ -81,22 +97,21 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
           case Some(SecurityPersonalInformation(_, address)) => Address.prismAddressToConsignorAddress.getOption(address).get
         })
 
-    // Set Consignee
-    //        .unsafeSetVal(ConsigneeForAllItemsPage)(false)
-    //        .unsafeSetVal(AddConsigneePage)(false)
-    //        .unsafeSetPFn(TraderDetailsConsigneeEoriKnownPage(index))(itemTraderDetails.consignee)({
-    //          case Some(TraderEori(_)) => true
-    //          case Some(_)             => false
-    //        })
-    //        .unsafeSetPFn(TraderDetailsConsigneeEoriNumberPage(index))(itemTraderDetails.consignee)({
-    //          case Some(TraderEori(eori)) => eori.value
-    //        })
-    //        .unsafeSetPFn(TraderDetailsConsigneeNamePage(index))(itemTraderDetails.consignee)({
-    //          case Some(PersonalInformation(name, _)) => name
-    //        })
-    //        .unsafeSetPFn(TraderDetailsConsigneeAddressPage(index))(itemTraderDetails.consignee)({
-    //          case Some(PersonalInformation(_, address)) => Address.prismAddressToConsigneeAddress.getOption(address).get
-    //        })
+//     Set Consignee
+        .unsafeSetVal(AddSafetyAndSecurityConsigneePage)(false)
+        .unsafeSetPFn(AddSecurityConsigneesEoriPage(index))(itemsSecurityTraderDetails.consignee)({
+          case Some(SecurityTraderEori(_)) => true
+          case Some(_)                     => false
+        })
+        .unsafeSetPFn(SecurityConsigneeEoriPage(index))(itemsSecurityTraderDetails.consignee)({
+          case Some(SecurityTraderEori(eori)) => eori.value
+        })
+        .unsafeSetPFn(SecurityConsigneeNamePage(index))(itemsSecurityTraderDetails.consignee)({
+          case Some(SecurityPersonalInformation(name, _)) => name
+        })
+        .unsafeSetPFn(SecurityConsigneeAddressPage(index))(itemsSecurityTraderDetails.consignee)({
+          case Some(SecurityPersonalInformation(_, address)) => Address.prismAddressToConsigneeAddress.getOption(address).get
+        })
 
   }
 

@@ -34,7 +34,7 @@ object ItemsSecurityTraderDetails {
     UserAnswersOptionalParser(
       (
         consignorDetails(index),
-        consignorDetails(index)
+        consigneeDetails(index)
       ).tupled
     )((ItemsSecurityTraderDetails.apply _).tupled)
 
@@ -57,7 +57,7 @@ object ItemsSecurityTraderDetails {
         eori => SecurityTraderDetails(EoriNumber(eori))
       )
 
-    val useAddress =
+    val useNameAndAddress =
       (
         SecurityConsignorNamePage(index).reader,
         SecurityConsignorAddressPage(index).reader
@@ -70,101 +70,41 @@ object ItemsSecurityTraderDetails {
 
     val isEoriKnown =
       AddSecurityConsignorsEoriPage(index).reader.flatMap(
-                isEoriKnown => if (isEoriKnown) useEori else useAddress
+        isEoriKnown => if (isEoriKnown) useEori else useNameAndAddress
       )
 
     AddSafetyAndSecurityConsignorPage.reader //TODO - add a matcher
-      .flatMap {
-        _ =>
-          isEoriKnown
-      }
-      .lower
+    .flatMap {
+      _ =>
+        isEoriKnown
+    }.lower
   }
-  //  private def consigneeDetails: UserAnswersReader[Option[ItemsSecurityTraderDetails]] = {
-  //
-  //    val useEori: ReaderT[Option, UserAnswers, ItemsSecurityTraderDetails] =
-  //      SafetyAndSecurityConsigneeEoriPage.reader.map(
-  //        eori => SecurityTraderDetails(EoriNumber(eori))
-  //      )
-  //
-  //    val useAddress =
-  //      (
-  //        SafetyAndSecurityConsigneeNamePage.reader,
-  //        SafetyAndSecurityConsigneeAddressPage.reader
-  //      ).tupled
-  //        .map {
-  //          case (name, consigneeAddress) =>
-  //            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
-  //
-  //            SecurityTraderDetails(name, address)
-  //        }
-  //
-  //    val isEoriKnown: ReaderT[Option, UserAnswers, ItemsSecurityTraderDetails] =
-  //      AddSafetyAndSecurityConsigneeEoriPage.reader.flatMap(
-  //        isEoriKnown => if (isEoriKnown) useEori else useAddress
-  //      )
-  //
-  //    AddSafetyAndSecurityConsigneePage.reader
-  //      .filter(identity)
-  //      .flatMap(
-  //        _ => isEoriKnown
-  //      )
-  //      .lower
-  //  }
-  //  private def securityConsignorsEoriPage(index: Index) : UserAnswersReader[Option[String]] =
-  //    AddSafetyAndSecurityConsignorEoriPage.reader
-  //      .flatMap {
-  //        bool =>
-  //          if (bool) SecurityConsignorEoriPage(index).reader.map(Some(_))
-  //          else none[String].pure[UserAnswersReader]
-  //      }
-  //
-  //  private def securityConsignorsNamePage(index: Index) : UserAnswersReader[Option[String]] =
-  //    AddSafetyAndSecurityConsignorEoriPage.reader
-  //      .flatMap {
-  //        bool =>
-  //          if (!bool) SecurityConsignorNamePage(index).reader.map(Some(_))
-  //          else none[String].pure[UserAnswersReader]
-  //      }
-  //
-  //  private def securityConsignorsAddressPage(index: Index) : UserAnswersReader[Option[String]] =
-  //    AddSafetyAndSecurityConsignorEoriPage.reader
-  //      .flatMap {
-  //        bool =>
-  //          if (!bool) SecurityConsignorAddressPage(index).reader.map(Some(_))
-  //          else none[String].pure[UserAnswersReader]
-  //      }
-  //
-  //  private def securityConsigneesEoriPage(index: Index) : UserAnswersReader[Option[String]] =
-  //    AddSafetyAndSecurityConsigneeEoriPage.reader
-  //      .flatMap {
-  //        bool =>
-  //          if (bool) SecurityConsigneeEoriPage(index).reader.map(Some(_))
-  //          else none[String].pure[UserAnswersReader]
-  //      }
-  //
-  //  private def securityConsigneesNamePage(index: Index) : UserAnswersReader[Option[String]] =
-  //    AddSafetyAndSecurityConsigneeEoriPage.reader
-  //      .flatMap {
-  //        bool =>
-  //          if (!bool) SecurityConsigneeNamePage(index).reader.map(Some(_))
-  //          else none[String].pure[UserAnswersReader]
-  //      }
-  //
-  //  private def securityConsigneesAddressPage(index: Index) : UserAnswersReader[Option[String]] =
-  //    AddSafetyAndSecurityConsigneeEoriPage.reader
-  //      .flatMap {
-  //        bool =>
-  //          if (!bool) SecurityConsigneeAddressPage(index).reader.map(Some(_))
-  //          else none[String].pure[UserAnswersReader]
-  //      }
-  //  def securityTraderDetailsReader(index: Index): UserAnswersReader[SecurityDetails] =
-  //    (
-  //      securityConsignorsEoriPage(index),
-  //      securityConsignorsNamePage(index),
-  //      securityConsignorsAddressPage(index),
-  //      securityConsigneesEoriPage(index),
-  //      securityConsigneesNamePage(index),
-  //      securityConsigneesAddressPage(index)
-  //      ).tupled.map((SecurityTraderDetails.apply _).tupled)
+
+  private def consigneeDetails(index: Index): UserAnswersReader[Option[SecurityTraderDetails]] = {
+
+    val useEori = SecurityConsigneeEoriPage(index).reader.map(
+      eori => SecurityTraderDetails(EoriNumber(eori))
+    )
+
+    val useNameAndAddress =
+      (
+        SecurityConsigneeNamePage(index).reader,
+        SecurityConsigneeAddressPage(index).reader
+      ).tupled
+        .map {
+          case (name, consigneeAddress) =>
+            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
+            SecurityTraderDetails(name, address)
+        }
+
+    val isEoriKnown = AddSecurityConsigneesEoriPage(index).reader.flatMap(
+      isEoriKnown => if (isEoriKnown) useEori else useNameAndAddress
+    )
+
+    AddSafetyAndSecurityConsigneePage.reader.flatMap {
+      _ =>
+        isEoriKnown
+    }.lower
+
+  }
 }
