@@ -16,4 +16,29 @@
 
 package models.messages.goodsitem
 
-class ItemsSecurityConsignorWithoutEori {}
+import models.LanguageCodeEnglish
+import xml.XMLWrites
+
+final case class ItemsSecurityConsignorWithoutEori(
+  name: String,
+  streetAndNumber: String,
+  postCode: String,
+  city: String,
+  countryCode: String
+)
+
+object ItemsSecurityConsignorWithoutEori {
+
+  implicit def writes: XMLWrites[ItemsSecurityConsignorWithoutEori] = XMLWrites[ItemsSecurityConsignorWithoutEori] {
+    consignor =>
+      <TRACORSECGOO021>
+        <NamTRACORSECGOO025>{consignor.name}</NamTRACORSECGOO025>
+        <StrNumTRACORSECGOO027>{consignor.streetAndNumber}</StrNumTRACORSECGOO027>
+        <PosCodTRACORSECGOO026>{consignor.postCode}</PosCodTRACORSECGOO026>
+        <CitTRACORSECGOO022>{consignor.city}</CitTRACORSECGOO022>
+        <CouCodTRACORSECGOO023>{consignor.countryCode}</CouCodTRACORSECGOO023>
+        <TRACORSECGOO021LNG>{LanguageCodeEnglish.code}</TRACORSECGOO021LNG>
+      </TRACORSECGOO021>
+  }
+
+}

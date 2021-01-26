@@ -17,13 +17,14 @@
 package models.messages.goodsitem
 
 import generators.MessagesModelGenerators
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalacheck.Arbitrary.arbitrary
+import xml.XMLWrites._
 
-class ItemSecurityConsignorWithEoriSpec
+class ItemsSecurityConsignorWithEoriSpec
     extends AnyFreeSpec
     with Matchers
     with ScalaCheckPropertyChecks
@@ -36,14 +37,14 @@ class ItemSecurityConsignorWithEoriSpec
 
       forAll(arbitrary[ItemsSecurityConsignorWithEori]) {
         reference =>
-          {
+          val expectedResult =
             <TRACORSECGOO021>
             <TINTRACORSECGOO028>
-              {reference}
+              {reference.eori}
             </TINTRACORSECGOO028>
           </TRACORSECGOO021>
 
-          }
+          reference.toXml mustEqual expectedResult
       }
     }
   }
