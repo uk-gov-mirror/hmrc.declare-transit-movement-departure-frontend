@@ -70,11 +70,10 @@ object ItemsSecurityTraderDetails {
 
     val isEoriKnown =
       AddSecurityConsignorsEoriPage(index).reader.flatMap(
-        isEoriKnown => if (isEoriKnown) useEori else useAddress
+                isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
 
     AddSafetyAndSecurityConsignorPage.reader //TODO - add a matcher
-      .filter(identity)
       .flatMap {
         _ =>
           isEoriKnown
