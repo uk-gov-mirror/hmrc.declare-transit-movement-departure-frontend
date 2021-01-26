@@ -25,7 +25,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import xml.XMLWrites.XMLWritesOps
 
 import scala.xml.NodeSeq
-
+//format off
 class SecurityDetailsSubmissionSpec
     extends AnyFreeSpec
     with Matchers
@@ -35,23 +35,27 @@ class SecurityDetailsSubmissionSpec
     with OptionValues {
 
   "SecurityDetailsSubmission" - {
-  "must serialize SecurityDetailsSubmission to xml" in {
-    forAll(arbitrary[SecurityDetailsSubmission]) {
-      reference =>
-        val comRefNumHEA = reference.ComRefNumHEA.fold(NodeSeq.Empty)(
-          value => <ComRefNumHEA>{value}</ComRefNumHEA>
-        )
-        val metOfPayGDI12 = reference.MetOfPayGDI12.fold(NodeSeq.Empty)(
-          value => <MetOfPayGDI12>{value}</MetOfPayGDI12>
-        )
-        val uNDanGooCodGDI = reference.UNDanGooCodGDI.fold(NodeSeq.Empty)(
-          value => <UNDanGooCodGDI>{value}</UNDanGooCodGDI>
-        )
-        val expectedResult =
-          comRefNumHEA ++ metOfPayGDI12 ++ uNDanGooCodGDI
+    "must serialize SecurityDetailsSubmission to xml" in {
+      forAll(arbitrary[SecurityDetailsSubmission]) {
+        reference =>
+          val comRefNumHEA = reference.ComRefNumHEA.fold(NodeSeq.Empty)(
+            value =>
+              <ComRefNumHEA>{value}</ComRefNumHEA>
+          )
+          val metOfPayGDI12 = reference.MetOfPayGDI12.fold(NodeSeq.Empty)(
+            value =>
+              <MetOfPayGDI12>{value}</MetOfPayGDI12>
+          )
+          val uNDanGooCodGDI = reference.UNDanGooCodGDI.fold(NodeSeq.Empty)(
+            value =>
+              <UNDanGooCodGDI>{value}</UNDanGooCodGDI>
+          )
+          val expectedResult =
+            comRefNumHEA ++ metOfPayGDI12 ++ uNDanGooCodGDI
 
-        reference.toXml mustEqual expectedResult
+          reference.toXml mustEqual expectedResult
+      }
     }
   }
-
 }
+//format on

@@ -16,7 +16,6 @@
 
 package models.messages.goodsitem
 
-import models.LanguageCodeEnglish
 import xml.XMLWrites
 
 import scala.xml.NodeSeq

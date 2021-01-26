@@ -15,7 +15,7 @@
  */
 
 package models.journeyDomain
-
+//format off
 import cats.implicits._
 import models.Index
 import pages.addItems.securityDetails.{AddDangerousGoodsCodePage, CommercialReferenceNumberPage, DangerousGoodsCodePage, TransportChargesPage}
@@ -60,3 +60,4 @@ object SecurityDetails {
       dangerousGoodsCodePage(index)
     ).tupled.map((SecurityDetails.apply _).tupled)
 }
+//format on
