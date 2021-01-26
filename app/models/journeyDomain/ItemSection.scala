@@ -34,9 +34,9 @@ case class ItemSection(
   packages: NonEmptyList[Packages],
   containers: Option[NonEmptyList[Container]],
   specialMentions: Option[NonEmptyList[SpecialMention]],
-  producedDocuments: Option[NonEmptyList[ProducedDocument]],
-  securityDetails: Option[SecurityDetails],
-  itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]
+  producedDocuments: Option[NonEmptyList[ProducedDocument]]
+//  securityDetails: Option[SecurityDetails],
+//  itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]
 )
 
 object ItemSection {
@@ -89,12 +89,11 @@ object ItemSection {
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
 
-  private def securityDetailsReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[SecurityDetails]] =
-    AddSecurityDetailsPage.reader.map{
-      case true => SecurityDetails.securityDetailsReader(itemIndex)
-      case false => ???
-    }
-
+//  private def securityDetailsReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[SecurityDetails]] =
+//    AddSecurityDetailsPage.reader.map{
+//      case true => SecurityDetails.securityDetailsReader(itemIndex)
+//      case false => ???
+//    }
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (

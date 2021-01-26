@@ -113,17 +113,17 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
     })
   }
 
-  def setItemsSecurityTraderDetails(itemsSecurityTraderDetails:Option[ItemsSecurityTraderDetails], index: Index) (userAnswers: UserAnswers) =
-   itemsSecurityTraderDetails match {
-    case Some(result) => ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(result, index)(userAnswers)
-    case None => userAnswers
+  def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(userAnswers: UserAnswers) =
+    itemsSecurityTraderDetails match {
+      case Some(result) => ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(result, index)(userAnswers)
+      case None         => userAnswers
 
-   }
+    }
 
   def setSecurityDetails(securityDetails: Option[SecurityDetails], index: Index)(userAnswers: UserAnswers) =
     securityDetails match {
       case Some(result) => SecurityDetailsSpec.setSecurityDetailsUserAnswers(result, index)(userAnswers)
-      case None => userAnswers
+      case None         => userAnswers
     }
 
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
@@ -133,9 +133,9 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         setPackages(itemSection.packages, itemIndex) andThen
         setContainers(itemSection.containers, itemIndex) andThen
         setSpecialMentions(itemSection.specialMentions, itemIndex) andThen
-        setProducedDocuments(itemSection.producedDocuments, itemIndex) andThen
-        setSecurityDetails(itemSection.securityDetails, itemIndex) andThen
-        setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex)
+        setProducedDocuments(itemSection.producedDocuments, itemIndex) // andThen
+//        setSecurityDetails(itemSection.securityDetails, itemIndex) andThen
+//        setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex)
     )(startUserAnswers)
 
 }

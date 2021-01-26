@@ -77,42 +77,41 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
     }
   }
 }
-  object ItemsSecurityTraderDetailsSpec {
 
-    def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: ItemsSecurityTraderDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
-      startUserAnswers
-      // Set Consignor
-        .unsafeSetVal(AddSafetyAndSecurityConsignorPage)(false)
-        .unsafeSetPFn(AddSecurityConsignorsEoriPage(index))(itemsSecurityTraderDetails.consignor)({
-          case Some(SecurityTraderEori(_)) => true
-          case Some(_)                     => false
-        })
-        .unsafeSetPFn(SecurityConsignorEoriPage(index))(itemsSecurityTraderDetails.consignor)({
-          case Some(SecurityTraderEori(eori)) => eori.value
-        })
-        .unsafeSetPFn(SecurityConsignorNamePage(index))(itemsSecurityTraderDetails.consignor)({
-          case Some(SecurityPersonalInformation(name, _)) => name
-        })
-        .unsafeSetPFn(SecurityConsignorAddressPage(index))(itemsSecurityTraderDetails.consignor)({
-          case Some(SecurityPersonalInformation(_, address)) => Address.prismAddressToConsignorAddress.getOption(address).get
-        })
+object ItemsSecurityTraderDetailsSpec {
+
+  def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: ItemsSecurityTraderDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
+    startUserAnswers
+    // Set Consignor
+      .unsafeSetVal(AddSafetyAndSecurityConsignorPage)(false)
+      .unsafeSetPFn(AddSecurityConsignorsEoriPage(index))(itemsSecurityTraderDetails.consignor)({
+        case Some(SecurityTraderEori(_)) => true
+        case Some(_)                     => false
+      })
+      .unsafeSetPFn(SecurityConsignorEoriPage(index))(itemsSecurityTraderDetails.consignor)({
+        case Some(SecurityTraderEori(eori)) => eori.value
+      })
+      .unsafeSetPFn(SecurityConsignorNamePage(index))(itemsSecurityTraderDetails.consignor)({
+        case Some(SecurityPersonalInformation(name, _)) => name
+      })
+      .unsafeSetPFn(SecurityConsignorAddressPage(index))(itemsSecurityTraderDetails.consignor)({
+        case Some(SecurityPersonalInformation(_, address)) => Address.prismAddressToConsignorAddress.getOption(address).get
+      })
 
 //     Set Consignee
-        .unsafeSetVal(AddSafetyAndSecurityConsigneePage)(false)
-        .unsafeSetPFn(AddSecurityConsigneesEoriPage(index))(itemsSecurityTraderDetails.consignee)({
-          case Some(SecurityTraderEori(_)) => true
-          case Some(_)                     => false
-        })
-        .unsafeSetPFn(SecurityConsigneeEoriPage(index))(itemsSecurityTraderDetails.consignee)({
-          case Some(SecurityTraderEori(eori)) => eori.value
-        })
-        .unsafeSetPFn(SecurityConsigneeNamePage(index))(itemsSecurityTraderDetails.consignee)({
-          case Some(SecurityPersonalInformation(name, _)) => name
-        })
-        .unsafeSetPFn(SecurityConsigneeAddressPage(index))(itemsSecurityTraderDetails.consignee)({
-          case Some(SecurityPersonalInformation(_, address)) => Address.prismAddressToConsigneeAddress.getOption(address).get
-        })
-
-
+      .unsafeSetVal(AddSafetyAndSecurityConsigneePage)(false)
+      .unsafeSetPFn(AddSecurityConsigneesEoriPage(index))(itemsSecurityTraderDetails.consignee)({
+        case Some(SecurityTraderEori(_)) => true
+        case Some(_)                     => false
+      })
+      .unsafeSetPFn(SecurityConsigneeEoriPage(index))(itemsSecurityTraderDetails.consignee)({
+        case Some(SecurityTraderEori(eori)) => eori.value
+      })
+      .unsafeSetPFn(SecurityConsigneeNamePage(index))(itemsSecurityTraderDetails.consignee)({
+        case Some(SecurityPersonalInformation(name, _)) => name
+      })
+      .unsafeSetPFn(SecurityConsigneeAddressPage(index))(itemsSecurityTraderDetails.consignee)({
+        case Some(SecurityPersonalInformation(_, address)) => Address.prismAddressToConsigneeAddress.getOption(address).get
+      })
 
 }
