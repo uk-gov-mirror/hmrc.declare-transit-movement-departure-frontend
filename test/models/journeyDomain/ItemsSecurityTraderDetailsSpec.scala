@@ -76,7 +76,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
       }
     }
   }
-
+}
   object ItemsSecurityTraderDetailsSpec {
 
     def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: ItemsSecurityTraderDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
@@ -113,6 +113,6 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
           case Some(SecurityPersonalInformation(_, address)) => Address.prismAddressToConsigneeAddress.getOption(address).get
         })
 
-  }
+
 
 }
