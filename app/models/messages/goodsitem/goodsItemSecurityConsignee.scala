@@ -16,14 +16,15 @@
 
 package models.messages.goodsitem
 
+import com.lucidchart.open.xtract.XmlReader
 import models.LanguageCodeEnglish
 import xml.XMLWrites
 
-trait goodsItemSecurityConsignee
+trait GoodsItemSecurityConsignee
 
-object goodsItemSecurityConsignee
+object GoodsItemSecurityConsignee
 
-final case class ItemsSecurityConsigneeWithEori(eori: String) extends goodsItemSecurityConsignee
+final case class ItemsSecurityConsigneeWithEori(eori: String) extends GoodsItemSecurityConsignee
 //format off
 
 object ItemsSecurityConsigneeWithEori {
@@ -41,7 +42,7 @@ final case class ItemsSecurityConsigneeWithoutEori(
   postCode: String,
   city: String,
   countryCode: String
-) extends goodsItemSecurityConsignee
+) extends GoodsItemSecurityConsignee
 
 object ItemsSecurityConsigneeWithoutEori {
 

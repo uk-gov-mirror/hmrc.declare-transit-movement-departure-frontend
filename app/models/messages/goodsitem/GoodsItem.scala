@@ -45,7 +45,9 @@ final case class GoodsItem(
   traderConsigneeGoodsItem: Option[TraderConsigneeGoodsItem],
   containers: Seq[String],
   packages: Seq[Package],
-  sensitiveGoodsInformation: Seq[SensitiveGoodsInformation]
+  sensitiveGoodsInformation: Seq[SensitiveGoodsInformation],
+  goodsItemSecurityConsignee: Option[GoodsItemSecurityConsignee],
+  goodsItemSecurityConsignor: Option[GoodsItemSecurityConsignor]
 )
 
 object GoodsItem {

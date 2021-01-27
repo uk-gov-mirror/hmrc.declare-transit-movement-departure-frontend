@@ -19,11 +19,11 @@ package models.messages.goodsitem
 import models.LanguageCodeEnglish
 import xml.XMLWrites
 //format off
-trait goodsItemSecurityConsignor
+trait GoodsItemSecurityConsignor
 
-object goodsItemSecurityConsignor
+object GoodsItemSecurityConsignor
 
-final case class ItemsSecurityConsignorWithEori(eori: String) extends goodsItemSecurityConsignor
+final case class ItemsSecurityConsignorWithEori(eori: String) extends GoodsItemSecurityConsignor
 
 object ItemsSecurityConsignorWithEori {
 
@@ -40,7 +40,7 @@ final case class ItemsSecurityConsignorWithoutEori(
   postCode: String,
   city: String,
   countryCode: String
-) extends goodsItemSecurityConsignee
+) extends GoodsItemSecurityConsignee
 
 object ItemsSecurityConsignorWithoutEori {
 
