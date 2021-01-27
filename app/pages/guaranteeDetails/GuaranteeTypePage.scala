@@ -44,7 +44,7 @@ case class GuaranteeTypePage(index: Index) extends QuestionPage[GuaranteeType] {
 
       case (Some(CashDepositGuarantee) | Some(GuaranteeNotRequired) | Some(GuaranteeWaivedRedirect) | Some(GuaranteeWaiverByAgreement) | Some(
               GuaranteeWaiverSecured),
-            Some(_),
+            None,
             _) =>
         userAnswers
           .remove(GuaranteeReferencePage(index))
