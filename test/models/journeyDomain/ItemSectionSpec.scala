@@ -133,9 +133,9 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         setPackages(itemSection.packages, itemIndex) andThen
         setContainers(itemSection.containers, itemIndex) andThen
         setSpecialMentions(itemSection.specialMentions, itemIndex) andThen
-        setProducedDocuments(itemSection.producedDocuments, itemIndex) // andThen
-//        setSecurityDetails(itemSection.securityDetails, itemIndex) andThen
-//        setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex)
+        setProducedDocuments(itemSection.producedDocuments, itemIndex) andThen
+        setSecurityDetails(itemSection.securityDetails, itemIndex) andThen
+        setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex)
     )(startUserAnswers)
 
 }

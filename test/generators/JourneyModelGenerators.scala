@@ -294,7 +294,7 @@ trait JourneyModelGenerators {
     }
   }
 
-  implicit val arbitraryItemsSecurityTraderDetails: Arbitrary[ItemsSecurityTraderDetails] = {
+  implicit val arbitraryItemSecurityTraderDetails: Arbitrary[ItemsSecurityTraderDetails] = {
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
@@ -383,7 +383,20 @@ trait JourneyModelGenerators {
       specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](maxNumberOfItemsLength))
 
       producedDocuments <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
-    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments)
+
+      securityDetails <- Gen.option(arbitraryItemSecurityDetails.arbitrary)
+
+      itemSecurityTraderDetails <- Gen.option(arbitraryItemSecurityTraderDetails.arbitrary)
+    } yield
+      ItemSection(itemDetail,
+                  itemConsignor,
+                  itemConsignee,
+                  packages,
+                  containers,
+                  specialMentions,
+                  producedDocuments,
+                  securityDetails,
+                  itemSecurityTraderDetails)
   }
 
   def genItemSectionOld(containersUsed: Boolean = false, addDocument: Boolean = false, circumstanceIndicator: Option[String] = None): Gen[ItemSection] = {
@@ -394,14 +407,26 @@ trait JourneyModelGenerators {
     val documentTypeIsMandatory = circumstanceIndicator.fold(addDocument)(CircumstanceIndicator.conditionalIndicators.contains(_))
 
     for {
-      itemDetail        <- arbitrary[ItemDetails]
-      itemConsignor     <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-      itemConsignee     <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages          <- nonEmptyListOf[Packages](maxNumberOfItemsLength)
-      containers        <- if (containersUsed) { nonEmptyListOf[Container](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
-      specialMentions   <- Gen.option(nonEmptyListOf[SpecialMention](maxNumberOfItemsLength))
-      producedDocuments <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
-    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments)
+      itemDetail                <- arbitrary[ItemDetails]
+      itemConsignor             <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee             <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      packages                  <- nonEmptyListOf[Packages](maxNumberOfItemsLength)
+      containers                <- if (containersUsed) { nonEmptyListOf[Container](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
+      specialMentions           <- Gen.option(nonEmptyListOf[SpecialMention](maxNumberOfItemsLength))
+      producedDocuments         <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
+      securityDetails           <- Gen.option(arbitraryItemSecurityDetails.arbitrary)
+      itemSecurityTraderDetails <- Gen.option(arbitrary[ItemsSecurityTraderDetails])
+
+    } yield
+      ItemSection(itemDetail,
+                  itemConsignor,
+                  itemConsignee,
+                  packages,
+                  containers,
+                  specialMentions,
+                  producedDocuments,
+                  securityDetails,
+                  itemSecurityTraderDetails)
   }
 
   implicit lazy val arbitraryPreTaskListDetails: Arbitrary[PreTaskListDetails] =

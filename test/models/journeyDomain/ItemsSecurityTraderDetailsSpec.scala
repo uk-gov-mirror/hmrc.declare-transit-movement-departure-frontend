@@ -34,7 +34,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
         (baseUserAnswers, itemsSecurityTraderDetails) =>
           val userAnswers = ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
           val result: ItemsSecurityTraderDetails =
-            UserAnswersParser[Option, ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
 
           result mustBe itemsSecurityTraderDetails
       }
@@ -54,7 +54,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .toOption
             .value
           val result: ItemsSecurityTraderDetails =
-            UserAnswersParser[Option, ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
 
           result.consignor mustBe None
       }
@@ -70,7 +70,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .toOption
             .value
           val result: ItemsSecurityTraderDetails =
-            UserAnswersParser[Option, ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
 
           result.consignee mustBe None
       }

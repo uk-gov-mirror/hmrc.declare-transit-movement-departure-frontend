@@ -88,7 +88,6 @@ object ItemSection {
 
   private def securityItemsSecurityTraderDetails(itemIndex: Index): ReaderT[Option, UserAnswers, Option[ItemsSecurityTraderDetails]] =
     AddSecurityDetailsPage.reader
-      .filter(identity)
       .flatMap(
         _ => ItemsSecurityTraderDetails.parser(itemIndex)
       )
@@ -96,11 +95,10 @@ object ItemSection {
 
   private def securityDetailsReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[SecurityDetails]] =
     AddSecurityDetailsPage.reader
-      .filter(identity)
       .flatMap(
         _ => SecurityDetails.securityDetailsReader(itemIndex)
       )
-      .lowe
+      .lower
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
