@@ -486,7 +486,8 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
           traderConsigneeGoodsItem,
           containers,
           packages,
-          sensitiveGoodsInformation
+          sensitiveGoodsInformation,
+          None //TODO Change this to gen
         )
     }
 

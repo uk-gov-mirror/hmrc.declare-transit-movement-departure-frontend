@@ -16,7 +16,6 @@
 
 package models.messages.goodsitem
 
-import com.lucidchart.open.xtract.XmlReader
 import models.LanguageCodeEnglish
 import xml.XMLWrites
 

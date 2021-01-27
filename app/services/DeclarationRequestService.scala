@@ -119,7 +119,8 @@ class DeclarationRequestService @Inject()(
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,
             packages                         = packages(itemSection.packages).toList,
-            sensitiveGoodsInformation        = Seq.empty //TODO look up this
+            sensitiveGoodsInformation        = Seq.empty, //TODO look up this
+            None
           )
       }
 

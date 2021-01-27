@@ -16,6 +16,7 @@
 
 package models.messages.goodsitem
 
+import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
@@ -23,6 +24,8 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import xml.XMLWrites._
+
+import scala.xml.NodeSeq
 
 //format off
 class GoodsItemSecurityConsignorSpec
@@ -34,6 +37,31 @@ class GoodsItemSecurityConsignorSpec
     with OptionValues {
 
   "GoodsItemSecurityConsignor" - {
+
+    "must deserialize ItemsSecurityConsignorWithEori" in {
+
+      forAll(arbitrary[ItemsSecurityConsignorWithEori]) {
+        consignor =>
+          val consignorToXml: NodeSeq = consignor.toXml
+
+          val result = XmlReader.of[GoodsItemSecurityConsignor].read(consignorToXml).toOption.value
+
+          result mustBe consignor
+      }
+    }
+
+    "must deserialize ItemsSecurityConsignorWithoutEori" in {
+
+      forAll(arbitrary[ItemsSecurityConsignorWithoutEori]) {
+        consignor =>
+          val consignorToXml: NodeSeq = consignor.toXml
+
+          val result = XmlReader.of[GoodsItemSecurityConsignor].read(consignorToXml).toOption.value
+
+          result mustBe consignor
+      }
+    }
+
     "must serialize ItemSecurityConsigneeWithEori to xml" in {
 
       forAll(arbitrary[ItemsSecurityConsigneeWithEori]) {
