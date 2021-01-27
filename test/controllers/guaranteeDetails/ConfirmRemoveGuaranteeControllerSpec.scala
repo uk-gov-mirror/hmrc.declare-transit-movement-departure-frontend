@@ -86,40 +86,6 @@ class ConfirmRemoveGuaranteeControllerSpec extends SpecBase with MockNunjucksRen
 
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
-      val userAnswers = UserAnswers(lrn, eoriNumber).set(ConfirmRemoveGuaranteePage, true).success.value
-      dataRetrievalWithData(userAnswers)
-
-      val request        = FakeRequest(GET, confirmRemoveGuaranteeRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val expectedJson = Json.obj(
-        "form"   -> filledForm,
-        "lrn"    -> lrn,
-        "index"  -> index.display,
-        "radios" -> Radios.yesNo(filledForm("value"))
-      )
-
-      val jsonWithoutConfig = jsonCaptor.getValue - configKey
-
-      templateCaptor.getValue mustEqual template
-      jsonWithoutConfig mustBe expectedJson
-
-    }
-
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
