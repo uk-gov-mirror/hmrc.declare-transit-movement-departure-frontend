@@ -34,9 +34,9 @@ case class ItemSection(
   packages: NonEmptyList[Packages],
   containers: Option[NonEmptyList[Container]],
   specialMentions: Option[NonEmptyList[SpecialMention]],
-  producedDocuments: Option[NonEmptyList[ProducedDocument]]
-//  securityDetails: Option[SecurityDetails],
-//  itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]
+  producedDocuments: Option[NonEmptyList[ProducedDocument]],
+  securityDetails: Option[SecurityDetails],
+  itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]
 )
 
 object ItemSection {
@@ -103,7 +103,9 @@ object ItemSection {
       derivePackage(index),
       deriveContainers(index),
       deriveSpecialMentions(index),
-      ProducedDocument.deriveProducedDocuments(index)
+      ProducedDocument.deriveProducedDocuments(index),
+      SecurityDetails.securityDetailsReader(index),
+      ItemsSecurityTraderDetails.parser(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =

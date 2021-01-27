@@ -30,13 +30,11 @@ final case class ItemsSecurityTraderDetails(
 
 object ItemsSecurityTraderDetails {
 
-  def parser(index: Index): UserAnswersParser[Option, ItemsSecurityTraderDetails] =
-    UserAnswersOptionalParser(
-      (
-        consignorDetails(index),
-        consigneeDetails(index)
-      ).tupled
-    )((ItemsSecurityTraderDetails.apply _).tupled)
+  def parser(index: Index): UserAnswersReader[ItemsSecurityTraderDetails] =
+    (
+      consignorDetails(index),
+      consigneeDetails(index)
+    ).tupled.map((ItemsSecurityTraderDetails.apply _).tupled)
 
   sealed trait SecurityTraderDetails
 
