@@ -16,12 +16,19 @@
 
 package models.messages.goodsitem
 
+import cats.implicits.catsSyntaxTuple5Semigroupal
+import com.lucidchart.open.xtract.{__, XmlReader}
 import models.LanguageCodeEnglish
 import xml.XMLWrites
 
 trait GoodsItemSecurityConsignee
 
-object GoodsItemSecurityConsignee
+object GoodsItemSecurityConsignee {
+
+  implicit val xmlReader: XmlReader[GoodsItemSecurityConsignee] =
+    ItemsSecurityConsigneeWithEori.xmlReader
+      .or(ItemsSecurityConsigneeWithoutEori.xmlReader)
+}
 
 final case class ItemsSecurityConsigneeWithEori(eori: String) extends GoodsItemSecurityConsignee
 //format off
@@ -34,6 +41,9 @@ object ItemsSecurityConsigneeWithEori {
         <TINTRACONSECGOO020>{consignee.eori}</TINTRACONSECGOO020>
       </TRACONSECGOO013>
   }
+
+  implicit val xmlReader: XmlReader[ItemsSecurityConsigneeWithEori] = (__ \ "TINTRACONSECGOO020").read[String].map(apply)
+
 }
 final case class ItemsSecurityConsigneeWithoutEori(
   name: String,
@@ -56,6 +66,14 @@ object ItemsSecurityConsigneeWithoutEori {
         <TRACONSECGOO013LNG>{LanguageCodeEnglish.code}</TRACONSECGOO013LNG>
       </TRACONSECGOO013>
   }
+
+  implicit val xmlReader: XmlReader[ItemsSecurityConsigneeWithoutEori] = (
+    (__ \ "NamTRACONSECGOO017").read[String],
+    (__ \ "StrNumTRACONSECGOO019").read[String],
+    (__ \ "PosCodTRACONSECGOO018").read[String],
+    (__ \ "CityTRACONSECGOO014").read[String],
+    (__ \ "CouCodTRACONSECGOO015").read[String]
+  ).mapN(apply)
 
 }
 //format on

@@ -120,6 +120,7 @@ class DeclarationRequestService @Inject()(
             containers                       = Seq.empty,
             packages                         = packages(itemSection.packages).toList,
             sensitiveGoodsInformation        = Seq.empty, //TODO look up this
+            None,
             None
           )
       }
