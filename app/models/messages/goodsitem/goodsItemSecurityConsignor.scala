@@ -19,14 +19,28 @@ package models.messages.goodsitem
 import models.LanguageCodeEnglish
 import xml.XMLWrites
 //format off
+trait goodsItemSecurityConsignor
 
+object goodsItemSecurityConsignor
+
+final case class ItemsSecurityConsignorWithEori(eori: String) extends goodsItemSecurityConsignor
+
+object ItemsSecurityConsignorWithEori {
+
+  implicit def writes: XMLWrites[ItemsSecurityConsignorWithEori] = XMLWrites[ItemsSecurityConsignorWithEori] {
+    consignor =>
+      <TRACORSECGOO021>
+         <TINTRACORSECGOO028>{consignor.eori}</TINTRACORSECGOO028>
+      </TRACORSECGOO021>
+  }
+}
 final case class ItemsSecurityConsignorWithoutEori(
   name: String,
   streetAndNumber: String,
   postCode: String,
   city: String,
   countryCode: String
-)
+) extends goodsItemSecurityConsignee
 
 object ItemsSecurityConsignorWithoutEori {
 
@@ -41,6 +55,5 @@ object ItemsSecurityConsignorWithoutEori {
         <TRACORSECGOO021LNG>{LanguageCodeEnglish.code}</TRACORSECGOO021LNG>
       </TRACORSECGOO021>
   }
-//format on
-
 }
+//format on

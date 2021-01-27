@@ -17,15 +17,15 @@
 package models.messages.goodsitem
 
 import generators.MessagesModelGenerators
-import org.scalacheck.Arbitrary.arbitrary
+import models.LanguageCodeEnglish
+import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalacheck.Arbitrary.arbitrary
 import xml.XMLWrites._
 
-//format off
-class ItemsSecurityConsigneeWithEoriSpec
+class GoodsItemSecurityConsigneeSpec
     extends AnyFreeSpec
     with Matchers
     with ScalaCheckPropertyChecks
@@ -33,7 +33,8 @@ class ItemsSecurityConsigneeWithEoriSpec
     with StreamlinedXmlEquality
     with OptionValues {
 
-  "ItemSecurityConsigneeWithEori" - {
+  //format off
+  "goodsItemSecurityConsignee" - {
     "must serialize ItemSecurityConsigneeWithEori to xml" in {
 
       forAll(arbitrary[ItemsSecurityConsigneeWithEori]) {
@@ -44,8 +45,26 @@ class ItemsSecurityConsigneeWithEoriSpec
             </TRACONSECGOO013>
 
           consignee.toXml mustEqual expectedResult
-//format on
+      }
+    }
+
+    "must serialize ItemSecurityConsigneeWithoutEori to xml" in {
+
+      forAll(arbitrary[ItemsSecurityConsigneeWithoutEori]) {
+        consignee =>
+          val expectedResult =
+            <TRACONSECGOO013>
+              <NamTRACONSECGOO017>{consignee.name}</NamTRACONSECGOO017>
+              <StrNumTRACONSECGOO019>{consignee.streetAndNumber}</StrNumTRACONSECGOO019>
+              <PosCodTRACONSECGOO018>{consignee.postCode}</PosCodTRACONSECGOO018>
+              <CityTRACONSECGOO014>{consignee.city}</CityTRACONSECGOO014>
+              <CouCodTRACONSECGOO015>{consignee.countryCode}</CouCodTRACONSECGOO015>
+              <TRACONSECGOO013LNG>{LanguageCodeEnglish.code}</TRACONSECGOO013LNG>
+            </TRACONSECGOO013>
+
+          consignee.toXml mustEqual expectedResult
       }
     }
   }
 }
+//format on
