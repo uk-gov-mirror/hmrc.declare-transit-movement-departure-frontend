@@ -20,13 +20,13 @@ import models.GuaranteeType._
 import models.{GuaranteeType, Index, UserAnswers}
 import pages._
 import play.api.libs.json.JsPath
-import queries.Constants
+import queries.Constants.guarantees
 
 import scala.util.Try
 
 case class GuaranteeTypePage(index: Index) extends QuestionPage[GuaranteeType] {
 
-  override def path: JsPath = JsPath \ Constants.guarantees \ index.position \ toString
+  override def path: JsPath = JsPath \ guarantees \ index.position \ toString
 
   override def toString: String = "guaranteeType"
 

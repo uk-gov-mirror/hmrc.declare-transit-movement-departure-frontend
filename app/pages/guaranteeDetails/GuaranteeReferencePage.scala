@@ -19,10 +19,11 @@ package pages.guaranteeDetails
 import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import queries.Constants.guarantees
 
 case class GuaranteeReferencePage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "guarantees" \ index.position \ toString
+  override def path: JsPath = JsPath \ guarantees \ index.position \ toString
 
   override def toString: String = "guaranteeReference"
 }

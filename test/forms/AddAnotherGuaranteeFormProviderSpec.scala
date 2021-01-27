@@ -26,7 +26,6 @@ class AddAnotherGuaranteeFormProviderSpec extends BooleanFieldBehaviours {
 
   val form = new AddAnotherGuaranteeFormProvider()
 
-  //TODO: Add the optional scenario
   ".value" - {
 
     val fieldName = "value"

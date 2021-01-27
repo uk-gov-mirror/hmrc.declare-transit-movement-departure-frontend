@@ -18,13 +18,13 @@ package pages
 
 import models.{Index, UserAnswers}
 import play.api.libs.json.JsPath
-import queries.Constants
+import queries.Constants.guarantees
 
 import scala.util.Try
 
 case class LiabilityAmountPage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ Constants.guarantees \ index.position \ toString
+  override def path: JsPath = JsPath \ guarantees \ index.position \ toString
 
   override def toString: String = "liabilityAmount"
 
