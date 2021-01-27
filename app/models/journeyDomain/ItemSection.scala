@@ -20,12 +20,9 @@ import cats.data._
 import cats.implicits._
 import derivable._
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
-import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
-import pages.addItems.AddDocumentsPage
-import pages.addItems.specialMentions.AddSpecialMentionPage
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
 import pages.{AddSecurityDetailsPage, ContainersUsedPage}
+import pages.addItems.specialMentions.AddSpecialMentionPage
 
 case class ItemSection(
   itemDetails: ItemDetails,
@@ -89,11 +86,21 @@ object ItemSection {
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
 
-//  private def securityDetailsReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[SecurityDetails]] =
-//    AddSecurityDetailsPage.reader.map{
-//      case true => SecurityDetails.securityDetailsReader(itemIndex)
-//      case false => ???
-//    }
+  private def securityItemsSecurityTraderDetails(itemIndex: Index): ReaderT[Option, UserAnswers, Option[ItemsSecurityTraderDetails]] =
+    AddSecurityDetailsPage.reader
+      .filter(identity)
+      .flatMap(
+        _ => ItemsSecurityTraderDetails.parser(itemIndex)
+      )
+      .lower
+
+  private def securityDetailsReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[SecurityDetails]] =
+    AddSecurityDetailsPage.reader
+      .filter(identity)
+      .flatMap(
+        _ => SecurityDetails.securityDetailsReader(itemIndex)
+      )
+      .lowe
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
@@ -104,8 +111,8 @@ object ItemSection {
       deriveContainers(index),
       deriveSpecialMentions(index),
       ProducedDocument.deriveProducedDocuments(index),
-      SecurityDetails.securityDetailsReader(index),
-      ItemsSecurityTraderDetails.parser(index)
+      securityDetailsReader(index),
+      securityItemsSecurityTraderDetails(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =
