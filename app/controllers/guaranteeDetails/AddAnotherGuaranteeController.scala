@@ -87,7 +87,7 @@ class AddAnotherGuaranteeController @Inject()(
     val numberOfItems         = request.userAnswers.get(DeriveNumberOfGuarantees).getOrElse(0)
     val indexList: Seq[Index] = List.range(0, numberOfItems).map(Index(_))
 
-    val itemRows = indexList.map {
+    val guaranteeRows = indexList.map {
       index =>
         cyaHelper.guaranteeRows(index)
     }
@@ -98,7 +98,7 @@ class AddAnotherGuaranteeController @Inject()(
       "lrn"                 -> lrn,
       "pageTitle"           -> msg"addAnotherGuarantee.title.$singularOrPlural".withArgs(numberOfItems),
       "heading"             -> msg"addAnotherGuarantee.heading.$singularOrPlural".withArgs(numberOfItems),
-      "guaranteeRows"       -> itemRows,
+      "guaranteeRows"       -> guaranteeRows,
       "allowMoreGuarantees" -> allowMoreGuarantees(request.userAnswers),
       "radios"              -> Radios.yesNo(form("value"))
     )
