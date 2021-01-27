@@ -24,6 +24,7 @@ import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import xml.XMLWrites._
 
+//format off
 class ItemsSecurityConsignorWithEoriSpec
     extends AnyFreeSpec
     with Matchers
@@ -36,15 +37,14 @@ class ItemsSecurityConsignorWithEoriSpec
     "must serialize ItemSecurityConsignorWithEori to xml" in {
 
       forAll(arbitrary[ItemsSecurityConsignorWithEori]) {
-        reference =>
+        consignor =>
           val expectedResult =
             <TRACORSECGOO021>
-            <TINTRACORSECGOO028>
-              {reference.eori}
-            </TINTRACORSECGOO028>
-          </TRACORSECGOO021>
+              <TINTRACORSECGOO028>{consignor.eori}</TINTRACORSECGOO028>
+            </TRACORSECGOO021>
 
-          reference.toXml mustEqual expectedResult
+          consignor.toXml mustEqual expectedResult
+//format on
       }
     }
   }

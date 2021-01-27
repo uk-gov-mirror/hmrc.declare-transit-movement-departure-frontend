@@ -25,7 +25,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import xml.XMLWrites._
 
 //format off
-class ItemsSecurityConsignorWithoutEoriSpec
+class ItemsSecurityConsigneeWithEoriSpec
     extends AnyFreeSpec
     with Matchers
     with ScalaCheckPropertyChecks
@@ -33,22 +33,17 @@ class ItemsSecurityConsignorWithoutEoriSpec
     with StreamlinedXmlEquality
     with OptionValues {
 
-  "ItemSecurityConsignorWithoutEori" - {
-    "must serialize ItemSecurityConsignorWithoutEori to xml" in {
+  "ItemSecurityConsigneeWithEori" - {
+    "must serialize ItemSecurityConsigneeWithEori to xml" in {
 
-      forAll(arbitrary[ItemsSecurityConsignorWithoutEori]) {
-        consignor =>
+      forAll(arbitrary[ItemsSecurityConsigneeWithEori]) {
+        consignee =>
           val expectedResult =
-            <TRACORSECGOO021>
-              <NamTRACORSECGOO025>{consignor.name}</NamTRACORSECGOO025>
-              <StrNumTRACORSECGOO027>{consignor.streetAndNumber}</StrNumTRACORSECGOO027>
-              <PosCodTRACORSECGOO026>{consignor.postCode}</PosCodTRACORSECGOO026>
-              <CitTRACORSECGOO022>{consignor.city}</CitTRACORSECGOO022>
-              <CouCodTRACORSECGOO023>{consignor.countryCode}</CouCodTRACORSECGOO023>
-              <TRACORSECGOO021LNG>EN</TRACORSECGOO021LNG>
-            </TRACORSECGOO021>
+            <TRACONSECGOO013>
+              <TINTRACONSECGOO020>{consignee.eori}</TINTRACONSECGOO020>
+            </TRACONSECGOO013>
 
-          consignor.toXml mustEqual expectedResult
+          consignee.toXml mustEqual expectedResult
 //format on
       }
     }

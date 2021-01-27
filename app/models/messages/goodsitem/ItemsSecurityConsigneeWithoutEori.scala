@@ -20,7 +20,7 @@ import models.LanguageCodeEnglish
 import xml.XMLWrites
 //format off
 
-final case class ItemsSecurityConsignorWithoutEori(
+final case class ItemsSecurityConsigneeWithoutEori(
   name: String,
   streetAndNumber: String,
   postCode: String,
@@ -28,18 +28,18 @@ final case class ItemsSecurityConsignorWithoutEori(
   countryCode: String
 )
 
-object ItemsSecurityConsignorWithoutEori {
+object ItemsSecurityConsigneeWithoutEori {
 
-  implicit def writes: XMLWrites[ItemsSecurityConsignorWithoutEori] = XMLWrites[ItemsSecurityConsignorWithoutEori] {
-    consignor =>
-      <TRACORSECGOO021>
-        <NamTRACORSECGOO025>{consignor.name}</NamTRACORSECGOO025>
-        <StrNumTRACORSECGOO027>{consignor.streetAndNumber}</StrNumTRACORSECGOO027>
-        <PosCodTRACORSECGOO026>{consignor.postCode}</PosCodTRACORSECGOO026>
-        <CitTRACORSECGOO022>{consignor.city}</CitTRACORSECGOO022>
-        <CouCodTRACORSECGOO023>{consignor.countryCode}</CouCodTRACORSECGOO023>
-        <TRACORSECGOO021LNG>{LanguageCodeEnglish.code}</TRACORSECGOO021LNG>
-      </TRACORSECGOO021>
+  implicit def writes: XMLWrites[ItemsSecurityConsigneeWithoutEori] = XMLWrites[ItemsSecurityConsigneeWithoutEori] {
+    consignee =>
+      <TRACONSECGOO013>
+        <NamTRACONSECGOO017>{consignee.name}</NamTRACONSECGOO017>
+        <StrNumTRACONSECGOO019>{consignee.streetAndNumber}</StrNumTRACONSECGOO019>
+        <PosCodTRACONSECGOO018>{consignee.postCode}</PosCodTRACONSECGOO018>
+        <CityTRACONSECGOO014>{consignee.city}</CityTRACONSECGOO014>
+        <CouCodTRACONSECGOO015>{consignee.countryCode}</CouCodTRACONSECGOO015>
+        <TRACONSECGOO013LNG>{LanguageCodeEnglish.code}</TRACONSECGOO013LNG>
+      </TRACONSECGOO013>
   }
 //format on
 

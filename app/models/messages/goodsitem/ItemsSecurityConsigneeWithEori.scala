@@ -19,15 +19,15 @@ package models.messages.goodsitem
 import xml.XMLWrites
 //format off
 
-final case class ItemsSecurityConsignorWithEori(eori: String)
+final case class ItemsSecurityConsigneeWithEori(eori: String)
 
-object ItemsSecurityConsignorWithEori {
+object ItemsSecurityConsigneeWithEori {
 
-  implicit def writes: XMLWrites[ItemsSecurityConsignorWithEori] = XMLWrites[ItemsSecurityConsignorWithEori] {
-    consignor =>
-      <TRACORSECGOO021>
-           <TINTRACORSECGOO028>{consignor.eori}</TINTRACORSECGOO028>
-      </TRACORSECGOO021>
+  implicit def writes: XMLWrites[ItemsSecurityConsigneeWithEori] = XMLWrites[ItemsSecurityConsigneeWithEori] {
+    consignee =>
+      <TRACONSECGOO013>
+           <TINTRACONSECGOO020>{consignee.eori}</TINTRACONSECGOO020>
+      </TRACONSECGOO013>
   }
 //format on
 

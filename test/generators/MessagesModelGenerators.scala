@@ -289,6 +289,25 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
       } yield ItemsSecurityConsignorWithEori(eori)
     }
 
+  implicit lazy val arbitraryItemsSecurityConsigneeWithoutEori: Arbitrary[ItemsSecurityConsigneeWithoutEori] =
+    Arbitrary {
+      for {
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength, alphaNumChar)
+        streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar)
+        postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar)
+        city            <- stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar)
+        countryCode     <- Gen.pick(2, 'A' to 'Z')
+      } yield ItemsSecurityConsigneeWithoutEori(name, streetAndNumber, postCode, city, countryCode.mkString)
+    }
+
+  implicit lazy val arbitraryItemsSecurityConsigneeWithEori: Arbitrary[ItemsSecurityConsigneeWithEori] =
+    Arbitrary {
+      for {
+        eori <- stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar)
+
+      } yield ItemsSecurityConsigneeWithEori(eori)
+    }
+
   implicit lazy val arbitraryItemsSecurityConsignorWithoutEori: Arbitrary[ItemsSecurityConsignorWithoutEori] =
     Arbitrary {
       for {
