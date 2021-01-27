@@ -23,8 +23,9 @@ import models.journeyDomain.ItemsSecurityTraderDetails.{SecurityPersonalInformat
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.{Index, UserAnswers}
 import org.scalatest.TryValues
+import pages.addItems.securityDetails.{AddDangerousGoodsCodePage, CommercialReferenceNumberPage, DangerousGoodsCodePage, TransportChargesPage}
 import pages.addItems.traderSecurityDetails._
-import pages.safetyAndSecurity.{AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorPage}
+import pages.safetyAndSecurity.{AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorPage, _}
 
 class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators {
   "ItemsSecurityTraderDetails can be parsed within user answers" - {
@@ -38,9 +39,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
 
           result mustBe itemsSecurityTraderDetails
       }
-
     }
-
   }
 
   "ItemsSecurityDetails cannot be parsed within user answers" - {
@@ -82,8 +81,21 @@ object ItemsSecurityTraderDetailsSpec {
 
   def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: ItemsSecurityTraderDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
-    // Set Consignor
+    // Set method of payment
+      .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
+      .unsafeSetOpt(TransportChargesPage(index))(itemsSecurityTraderDetails.methodOfPayment)
+
+      // Set commerical reference number
+      .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
+      .unsafeSetOpt(CommercialReferenceNumberPage(index))(itemsSecurityTraderDetails.commercialReferenceNumber)
+
+      // Set Dangerous goods
+      .unsafeSetVal(AddDangerousGoodsCodePage(index))(itemsSecurityTraderDetails.dangerousGoodsCode.isDefined)
+      .unsafeSetOpt(DangerousGoodsCodePage(index))(itemsSecurityTraderDetails.dangerousGoodsCode)
+
+      // Set Consignor
       .unsafeSetVal(AddSafetyAndSecurityConsignorPage)(false)
+      .unsafeSetOpt(TransportChargesPage(index))(itemsSecurityTraderDetails.methodOfPayment)
       .unsafeSetPFn(AddSecurityConsignorsEoriPage(index))(itemsSecurityTraderDetails.consignor)({
         case Some(SecurityTraderEori(_)) => true
         case Some(_)                     => false

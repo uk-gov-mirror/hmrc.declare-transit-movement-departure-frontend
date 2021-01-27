@@ -32,7 +32,6 @@ case class ItemSection(
   containers: Option[NonEmptyList[Container]],
   specialMentions: Option[NonEmptyList[SpecialMention]],
   producedDocuments: Option[NonEmptyList[ProducedDocument]],
-  securityDetails: Option[SecurityDetails],
   itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]
 )
 
@@ -93,13 +92,6 @@ object ItemSection {
       )
       .lower
 
-  private def securityDetailsReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[SecurityDetails]] =
-    AddSecurityDetailsPage.reader
-      .flatMap(
-        _ => SecurityDetails.securityDetailsReader(itemIndex)
-      )
-      .lower
-
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
       ItemDetails.itemDetailsReader(index),
@@ -109,7 +101,6 @@ object ItemSection {
       deriveContainers(index),
       deriveSpecialMentions(index),
       ProducedDocument.deriveProducedDocuments(index),
-      securityDetailsReader(index),
       securityItemsSecurityTraderDetails(index)
     ).tupled.map((ItemSection.apply _).tupled)
 

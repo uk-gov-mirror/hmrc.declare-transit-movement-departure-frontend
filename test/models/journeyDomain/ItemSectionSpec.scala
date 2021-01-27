@@ -19,10 +19,11 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
+import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
 import org.scalacheck.{Arbitrary, Gen}
-import pages.{AddSecurityDetailsPage, ContainersUsedPage}
+import pages.{AddSecurityDetailsPage, ConsignorForAllItemsPage, ContainersUsedPage}
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
 import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
@@ -32,11 +33,20 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(genItemSectionOld(), arb[UserAnswers]) {
-          case (itemSection, userAnswers) =>
-            val updatedUserAnswer           = ItemSectionSpec.setItemSection(itemSection, index)(userAnswers)
+          case (itemSection: ItemSection, userAnswers) =>
+            val updatedUserAnswer = ItemSectionSpec
+              .setItemSection(itemSection, index)(userAnswers)
+
             val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
 
-            result.value mustEqual itemSection
+            result.value.itemDetails mustEqual itemSection.itemDetails
+            result.value.consignor mustEqual itemSection.consignor
+            result.value.consignee mustEqual itemSection.consignee
+            result.value.packages mustEqual itemSection.packages
+            result.value.containers mustEqual itemSection.containers
+            result.value.specialMentions mustEqual itemSection.specialMentions
+            result.value.producedDocuments mustEqual itemSection.producedDocuments
+            result.value.itemSecurityTraderDetails mustEqual itemSection.itemSecurityTraderDetails
         }
       }
     }
@@ -57,12 +67,13 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
   "Seq of ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(nonEmptyListOf[ItemSection](3)(Arbitrary(genItemSectionOld())), arb[UserAnswers]) {
+        forAll(nonEmptyListOf[ItemSection](2)(Arbitrary(genItemSectionOld())), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
             val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
             val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
 
-            result.value mustEqual itemSections
+            result.value.head mustEqual itemSections.head
+            result.value.tail mustEqual itemSections.tail
         }
       }
     }
@@ -117,13 +128,6 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
     itemsSecurityTraderDetails match {
       case Some(result) => ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(result, index)(userAnswers)
       case None         => userAnswers
-
-    }
-
-  def setSecurityDetails(securityDetails: Option[SecurityDetails], index: Index)(userAnswers: UserAnswers) =
-    securityDetails match {
-      case Some(result) => SecurityDetailsSpec.setSecurityDetailsUserAnswers(result, index)(userAnswers)
-      case None         => userAnswers
     }
 
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
@@ -134,8 +138,6 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         setContainers(itemSection.containers, itemIndex) andThen
         setSpecialMentions(itemSection.specialMentions, itemIndex) andThen
         setProducedDocuments(itemSection.producedDocuments, itemIndex) andThen
-        setSecurityDetails(itemSection.securityDetails, itemIndex) andThen
         setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex)
     )(startUserAnswers)
-
 }

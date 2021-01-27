@@ -20,10 +20,14 @@ import cats.implicits._
 import models.domain.Address
 import models.journeyDomain.ItemsSecurityTraderDetails.SecurityTraderDetails
 import models.{EoriNumber, Index}
+import pages.addItems.securityDetails.{AddDangerousGoodsCodePage, CommercialReferenceNumberPage, DangerousGoodsCodePage, TransportChargesPage}
 import pages.addItems.traderSecurityDetails._
 import pages.safetyAndSecurity._
 
 final case class ItemsSecurityTraderDetails(
+  methodOfPayment: Option[String],
+  commercialReferenceNumber: Option[String],
+  dangerousGoodsCode: Option[String],
   consignor: Option[SecurityTraderDetails],
   consignee: Option[SecurityTraderDetails]
 )
@@ -32,6 +36,9 @@ object ItemsSecurityTraderDetails {
 
   def parser(index: Index): UserAnswersReader[ItemsSecurityTraderDetails] =
     (
+      methodOfPaymentPage(index),
+      commercialReferenceNumberPage(index),
+      dangerousGoodsCodePage(index),
       consignorDetails(index),
       consigneeDetails(index)
     ).tupled.map((ItemsSecurityTraderDetails.apply _).tupled)
@@ -105,4 +112,28 @@ object ItemsSecurityTraderDetails {
     }.lower
 
   }
+
+  private def methodOfPaymentPage(index: Index): UserAnswersReader[Option[String]] =
+    AddTransportChargesPaymentMethodPage.reader
+      .flatMap {
+        bool =>
+          if (!bool) TransportChargesPage(index).reader.map(Some(_))
+          else none[String].pure[UserAnswersReader]
+      }
+
+  private def commercialReferenceNumberPage(index: Index): UserAnswersReader[Option[String]] =
+    AddCommercialReferenceNumberAllItemsPage.reader
+      .flatMap {
+        bool =>
+          if (!bool) CommercialReferenceNumberPage(index).reader.map(Some(_))
+          else none[String].pure[UserAnswersReader]
+      }
+
+  private def dangerousGoodsCodePage(index: Index): UserAnswersReader[Option[String]] =
+    AddDangerousGoodsCodePage(index).reader
+      .flatMap {
+        bool =>
+          if (bool) DangerousGoodsCodePage(index).reader.map(Some(_))
+          else none[String].pure[UserAnswersReader]
+      }
 }
