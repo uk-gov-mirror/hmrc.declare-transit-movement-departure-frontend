@@ -54,16 +54,11 @@ class ConfirmRemoveGuaranteeController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ConfirmRemoveGuaranteePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
       val json = Json.obj(
-        "form"   -> preparedForm,
+        "form"   -> form,
         "index"  -> index.display,
         "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
+        "radios" -> Radios.yesNo(form("value"))
       )
 
       renderer.render(template, json).map(Ok(_))

@@ -166,13 +166,13 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               content            = msg"site.change",
               href               = routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(userAnswers.id, index).url,
               visuallyHiddenText = Some(msg"addAnotherGuarantee.guarantee.change.hidden".withArgs(msg"${GuaranteeType.getId(answer.toString)}")),
-              attributes         = Map("id" -> s"""change-item-${index.display}""")
+              attributes         = Map("id" -> s"""change-guarantee-${index.display}""")
             ),
             Action(
               content            = msg"site.delete",
               href               = routes.ConfirmRemoveGuaranteeController.onPageLoad(userAnswers.id, index).url,
               visuallyHiddenText = Some(msg"addAnotherGuarantee.guarantee.delete.hidden".withArgs(msg"${GuaranteeType.getId(answer.toString)}")),
-              attributes         = Map("id" -> s"""remove-item-${index.display}""")
+              attributes         = Map("id" -> s"""remove-guarantee-${index.display}""")
             )
           )
         )

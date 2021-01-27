@@ -58,14 +58,7 @@ class AddAnotherGuaranteeController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val form = formProvider(allowMoreGuarantees(request.userAnswers))
-
-      val preparedForm = request.userAnswers.get(AddAnotherGuaranteePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
-      renderPage(lrn, preparedForm).map(Ok(_))
+      renderPage(lrn, formProvider(allowMoreGuarantees(request.userAnswers))).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
