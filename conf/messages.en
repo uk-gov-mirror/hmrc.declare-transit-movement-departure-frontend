@@ -1463,3 +1463,6 @@ confirmRemoveCountry.title = Are you sure you want to remove this country?
 confirmRemoveCountry.heading = Are you sure you want to remove this country?
 confirmRemoveCountry.checkYourAnswersLabel = confirmRemoveCountry
 confirmRemoveCountry.error.required = Select yes if you want to remove the country
+
+noReleaseForTransit.title = noReleaseForTransit
+noReleaseForTransit.heading = noReleaseForTransit

@@ -42,3 +42,5 @@ GET        /:departureId/guarantee-rejection              controllers.GuaranteeN
 GET        /:departureId/departure-declaration-fail       controllers.DeclarationRejectionController.onPageLoad(departureId: DepartureId)
 
 GET        /:departureId/cancellation-decision-update     controllers.CancellationDecisionUpdateController.onPageLoad(departureId: DepartureId)
+
+GET        /:lrn/noReleaseForTransit                       controllers.NoReleaseForTransitController.onPageLoad(lrn: LocalReferenceNumber)
