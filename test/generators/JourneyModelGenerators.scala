@@ -18,6 +18,7 @@ package generators
 
 import java.time.{LocalDate, LocalDateTime}
 
+import cats.data.NonEmptyList
 import models._
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
@@ -74,7 +75,7 @@ trait JourneyModelGenerators {
           safetyAndSecurity.commercialReferenceNumber.isEmpty &&
           safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
 
-        itemDetails <- nonEmptyListOf(3)(Arbitrary(genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)))
+        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
 
         goodsummarydetailsType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
@@ -90,7 +91,7 @@ trait JourneyModelGenerators {
           routeDetails,
           transportDetails,
           traderDetails,
-          itemDetails,
+          NonEmptyList(itemDetails, List(itemDetails)),
           goodsSummary,
           guarantee,
           if (isSecurityDetailsRequired) Some(safetyAndSecurity) else None
@@ -391,7 +392,11 @@ trait JourneyModelGenerators {
     } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments, itemSecurityTraderDetails)
   }
 
-  def genItemSectionOld(containersUsed: Boolean = false, addDocument: Boolean = false, circumstanceIndicator: Option[String] = None): Gen[ItemSection] = {
+  def genItemSectionOld(
+    containersUsed: Boolean               = false,
+    addDocument: Boolean                  = false,
+    circumstanceIndicator: Option[String] = None
+  ): Gen[ItemSection] = {
 
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))

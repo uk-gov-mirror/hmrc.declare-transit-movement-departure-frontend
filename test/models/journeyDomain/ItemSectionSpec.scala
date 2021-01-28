@@ -83,12 +83,12 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
   "Seq of ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(nonEmptyListOf[ItemSection](1)(Arbitrary(genItemSectionOld())), arb[UserAnswers]) {
+        forAll(genItemSectionOld(), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
-            val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
+            val updatedUserAnswer = ItemSectionSpec.setItemSections(Seq(itemSections, itemSections).toList)(userAnswers)
             val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
 
-            result.value mustEqual itemSections
+            result.value mustEqual NonEmptyList(itemSections, List(itemSections))
         }
       }
     }
@@ -102,7 +102,14 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
       case (userAnswers, (pckge, index)) => PackagesSpec.setPackageUserAnswers(pckge, itemIndex, Index(index))(userAnswers)
     }
 
-  def setItemSections(itemSections: Seq[ItemSection])(startUserAnswers: UserAnswers): UserAnswers =
+  def setItemSections(itemSections: Seq[ItemSection])(startUserAnswers: UserAnswers): UserAnswers = {
+
+    val methodOfPayments: Seq[Option[Option[String]]]     = itemSections.map(_.itemSecurityTraderDetails.map(_.methodOfPayment))
+    val commercialReferences: Seq[Option[Option[String]]] = itemSections.map(_.itemSecurityTraderDetails.map(_.commercialReferenceNumber))
+
+    require(sequenceIsConsistent(methodOfPayments), "Method of payment contained a false")
+    require(sequenceIsConsistent(commercialReferences), "Commercial reference contained a false")
+
     itemSections.zipWithIndex.foldLeft(startUserAnswers) {
       case (ua, (section, i)) =>
         val updatedUserAnswer = {
@@ -116,6 +123,16 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
 
         ItemSectionSpec.setItemSection(section, Index(i))(updatedUserAnswer)
     }
+  }
+
+  def sequenceIsConsistent[A](xs: Seq[Option[Option[A]]]): Boolean = {
+
+    val topLevelNotDefined: Boolean = xs.forall(_.isEmpty)
+    val allDefined: Boolean         = xs.flatten.forall(_.isDefined)
+    val allUndefined: Boolean       = xs.flatten.forall(_.isEmpty)
+
+    topLevelNotDefined | allDefined | allUndefined
+  }
 
   private def setContainers(containers: Option[NonEmptyList[Container]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val ua = startUserAnswers.unsafeSetVal(ContainersUsedPage)(containers.isDefined)
