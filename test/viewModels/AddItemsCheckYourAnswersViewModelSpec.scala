@@ -53,7 +53,7 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
   "AddItemsCheckYourAnswersViewModel" - {
 
     "display the correct number of sections" in {
-      data.sections.length mustEqual 9
+      data.sections.length mustEqual 10
       data.sections.head.rows.length mustEqual 6
     }
     
@@ -63,13 +63,13 @@ class AddItemsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckProp
     }
 
     "containers sections have title and contain all rows" in {
-      data.sections(3).sectionTitle.get mustBe msg"addItems.checkYourAnswersLabel.containers"
-      data.sections(3).rows.length mustEqual 1
+      data.sections(4).sectionTitle.get mustBe msg"addItems.checkYourAnswersLabel.containers"
+      data.sections(4).rows.length mustEqual 1
     }
 
     "special mentions have title and contain all rows" in {
-      data.sections(4).sectionTitle.get mustBe msg"addItems.checkYourAnswersLabel.specialMentions"
-      data.sections(4).rows.length mustEqual 1
+      data.sections(5).sectionTitle.get mustBe msg"addItems.checkYourAnswersLabel.specialMentions"
+      data.sections(5).rows.length mustEqual 1
     }
   }
   // format: on
