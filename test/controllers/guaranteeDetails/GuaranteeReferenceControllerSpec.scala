@@ -21,7 +21,7 @@ import controllers.{routes => mainRoutes}
 import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import matchers.JsonMatchers
 import models.GuaranteeType.{FlatRateVoucher, GuaranteeWaiver}
-import models.NormalMode
+import models.{Index, NormalMode}
 import models.messages.guarantee.GuaranteeReferenceWithGrn
 import navigation.annotations.GuaranteeDetails
 import navigation.{FakeNavigator, Navigator}
@@ -48,7 +48,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockNunjucksRendere
   val formProvider = new GuaranteeReferenceFormProvider()
   val form         = formProvider(GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength)
 
-  lazy val guaranteeReferenceRoute = routes.GuaranteeReferenceController.onPageLoad(lrn, NormalMode).url
+  lazy val guaranteeReferenceRoute = routes.GuaranteeReferenceController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -83,7 +83,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockNunjucksRendere
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(GuaranteeReferencePage, "123456789012345678901234").success.value
+      val userAnswers = emptyUserAnswers.set(GuaranteeReferencePage(index), "123456789012345678901234").success.value
 
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
@@ -112,7 +112,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockNunjucksRendere
     }
 
     "must redirect to the next page when valid data is submitted for type that takes 24 chars" in {
-      val userAnswers = emptyUserAnswers.set(GuaranteeTypePage, FlatRateVoucher).success.value
+      val userAnswers = emptyUserAnswers.set(GuaranteeTypePage(index), FlatRateVoucher).success.value
       dataRetrievalWithData(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -128,7 +128,7 @@ class GuaranteeReferenceControllerSpec extends SpecBase with MockNunjucksRendere
     }
 
     "must redirect to the next page when valid data is submitted for type that takes 17 chars" in {
-      val userAnswers = emptyUserAnswers.set(GuaranteeTypePage, GuaranteeWaiver).success.value
+      val userAnswers = emptyUserAnswers.set(GuaranteeTypePage(index), GuaranteeWaiver).success.value
       dataRetrievalWithData(userAnswers)
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)

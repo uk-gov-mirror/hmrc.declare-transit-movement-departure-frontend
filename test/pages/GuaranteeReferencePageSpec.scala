@@ -16,6 +16,7 @@
 
 package pages
 
+import models.Index
 import pages.behaviours.PageBehaviours
 import pages.guaranteeDetails.GuaranteeReferencePage
 
@@ -23,10 +24,10 @@ class GuaranteeReferencePageSpec extends PageBehaviours {
 
   "GuaranteeReferencePage" - {
 
-    beRetrievable[String](GuaranteeReferencePage)
+    beRetrievable[String](GuaranteeReferencePage(Index(0)))
 
-    beSettable[String](GuaranteeReferencePage)
+    beSettable[String](GuaranteeReferencePage(Index(0)))
 
-    beRemovable[String](GuaranteeReferencePage)
+    beRemovable[String](GuaranteeReferencePage(Index(0)))
   }
 }

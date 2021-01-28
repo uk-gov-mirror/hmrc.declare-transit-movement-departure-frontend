@@ -18,7 +18,7 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.reference.CountryCode
 import pages.AddSecurityDetailsPage
 
@@ -61,7 +61,7 @@ object JourneyDomain {
       traderDetails     <- UserAnswersReader[TraderDetails]
       itemDetails       <- UserAnswersReader[NonEmptyList[ItemSection]]
       goodsSummary      <- UserAnswersReader[GoodsSummary]
-      guarantee         <- UserAnswersReader[GuaranteeDetails]
+      guarantee         <- UserAnswersReader[GuaranteeDetails](GuaranteeDetails.parseGuaranteeDetails(Index(0)))
       safetyAndSecurity <- safetyAndSecurityReader
     } yield
       JourneyDomain(

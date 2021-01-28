@@ -19,6 +19,7 @@ package viewModels
 import base.SpecBase
 import generators.Generators
 import models.GuaranteeType.GuaranteeWaiver
+import models.Index
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import pages.{AccessCodePage, DefaultAmountPage, LiabilityAmountPage, OtherReferencePage}
@@ -29,8 +30,8 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
   "GuaranteeDetailsCheckYourAnswersViewModel" - {
 
     "display Guarantee Type when selected" in {
-      val updatedAnswers = emptyUserAnswers.set(GuaranteeTypePage, GuaranteeWaiver).success.value
-      val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
+      val updatedAnswers = emptyUserAnswers.set(GuaranteeTypePage(Index(0)), GuaranteeWaiver).success.value
+      val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, Index(0))
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -41,8 +42,8 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
 
     "display Guarantee Reference number when selected" in {
 
-      val updatedAnswers = emptyUserAnswers.set(GuaranteeReferencePage, "test").success.value
-      val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
+      val updatedAnswers = emptyUserAnswers.set(GuaranteeReferencePage(index), "test").success.value
+      val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, Index(0))
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -52,8 +53,8 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
 
     "display Other Reference when selected" in {
 
-      val updatedAnswers = emptyUserAnswers.set(OtherReferencePage, "test").success.value
-      val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
+      val updatedAnswers = emptyUserAnswers.set(OtherReferencePage(index), "test").success.value
+      val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -63,8 +64,8 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
 
     "display Liability Amount" - {
       "and amount as 10 when selected" in {
-        val updatedAnswers = emptyUserAnswers.set(LiabilityAmountPage, "10.00").success.value
-        val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
+        val updatedAnswers = emptyUserAnswers.set(LiabilityAmountPage(index), "10.00").success.value
+        val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
 
         data.sections.head.sectionTitle must not be defined
         data.sections.length mustEqual 1
@@ -75,13 +76,13 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
     "display Default Liability Amount when selected" in {
 
       val updatedAnswers = emptyUserAnswers
-        .remove(LiabilityAmountPage)
+        .remove(LiabilityAmountPage(index))
         .success
         .value
-        .set(DefaultAmountPage, true)
+        .set(DefaultAmountPage(index), true)
         .success
         .value
-      val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
+      val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -92,13 +93,13 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
     "display Default Liability Amount when no is selected" in {
 
       val updatedAnswers = emptyUserAnswers
-        .remove(LiabilityAmountPage)
+        .remove(LiabilityAmountPage(index))
         .success
         .value
-        .set(DefaultAmountPage, false)
+        .set(DefaultAmountPage(index), false)
         .success
         .value
-      val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
+      val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
@@ -108,8 +109,8 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
     }
     "display Access Code when selected" in {
 
-      val updatedAnswers = emptyUserAnswers.set(AccessCodePage, "a1b2").success.value
-      val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers)
+      val updatedAnswers = emptyUserAnswers.set(AccessCodePage(index), "a1b2").success.value
+      val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1

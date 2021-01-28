@@ -118,14 +118,14 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
     taskListDsl
       .sectionName("declarationSummary.section.guarantee")
       .ifCompleted(
-        UserAnswersReader[GuaranteeDetails],
-        controllers.guaranteeDetails.routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(lrn).url
+        UserAnswersReader[GuaranteeDetails](GuaranteeDetails.parseGuaranteeDetails(Index(0))),
+        controllers.guaranteeDetails.routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
       )
       .ifInProgress(
-        GuaranteeTypePage.reader,
-        controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url
+        GuaranteeTypePage(Index(0)).reader,
+        controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, Index(0), NormalMode).url
       )
-      .ifNotStarted(controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, NormalMode).url)
+      .ifNotStarted(controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, Index(0), NormalMode).url)
       .section
 
   private val safetyAndSecurityDetails: Seq[SectionDetails] =

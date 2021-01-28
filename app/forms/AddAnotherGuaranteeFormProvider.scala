@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import javax.inject.Inject
 
-class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  "OtherReferenceliabilityAmountPage" - {
+class AddAnotherGuaranteeFormProvider @Inject() extends Mappings {
 
-    beRetrievable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-  }
+  def apply(allowMoreGuarantees: Boolean): Form[Boolean] =
+    Form(
+      "value" ->
+        mandatoryIfBoolean(allowMoreGuarantees, "addAnotherGuarantee.error.required")
+    )
 }

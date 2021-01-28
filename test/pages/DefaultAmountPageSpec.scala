@@ -16,16 +16,18 @@
 
 package pages
 
+import models.Index
 import pages.behaviours.PageBehaviours
 
 class DefaultAmountPageSpec extends PageBehaviours {
 
   "DefaultAmountPage" - {
 
-    beRetrievable[Boolean](DefaultAmountPage)
+    val index = Index(0)
+    beRetrievable[Boolean](DefaultAmountPage(index))
 
-    beSettable[Boolean](DefaultAmountPage)
+    beSettable[Boolean](DefaultAmountPage(index))
 
-    beRemovable[Boolean](DefaultAmountPage)
+    beRemovable[Boolean](DefaultAmountPage(index))
   }
 }

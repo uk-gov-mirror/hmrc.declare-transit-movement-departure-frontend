@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
 import models.Index
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath}
 
-class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
+final case class GuaranteesQuery(index: Index) extends QuestionPage[JsObject] {
 
-  "OtherReferenceliabilityAmountPage" - {
+  override def path: JsPath = JsPath \ Constants.guarantees \ index.position
 
-    beRetrievable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-  }
 }

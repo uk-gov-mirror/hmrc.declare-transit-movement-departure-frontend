@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.{guarantees, items}
 
-class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
+case object DeriveNumberOfGuarantees extends Derivable[List[JsObject], Int] {
 
-  "OtherReferenceliabilityAmountPage" - {
+  override val derive: List[JsObject] => Int = _.size
 
-    beRetrievable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-  }
+  override def path: JsPath = JsPath \ guarantees
 }

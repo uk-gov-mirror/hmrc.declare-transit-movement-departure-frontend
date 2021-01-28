@@ -19,7 +19,7 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import forms.OtherReferenceLiabilityAmountFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.OtherReferenceLiabilityAmountPage
@@ -50,9 +50,9 @@ class OtherReferenceLiabilityAmountController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(OtherReferenceLiabilityAmountPage) match {
+      val preparedForm = request.userAnswers.get(OtherReferenceLiabilityAmountPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -66,7 +66,7 @@ class OtherReferenceLiabilityAmountController @Inject()(
       renderer.render("otherReferenceLiabilityAmount.njk", json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
@@ -83,9 +83,9 @@ class OtherReferenceLiabilityAmountController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherReferenceLiabilityAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherReferenceLiabilityAmountPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(OtherReferenceLiabilityAmountPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(OtherReferenceLiabilityAmountPage(index), mode, updatedAnswers))
         )
   }
 }

@@ -16,17 +16,16 @@
 
 package pages
 
-import models.Index
 import pages.behaviours.PageBehaviours
 
-class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
+class AddAnotherGuaranteePageSpec extends PageBehaviours {
 
-  "OtherReferenceliabilityAmountPage" - {
+  "AddAnotherGuaranteePage" - {
 
-    beRetrievable[String](OtherReferenceLiabilityAmountPage(Index(0)))
+    beRetrievable[Boolean](AddAnotherGuaranteePage)
 
-    beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
+    beSettable[Boolean](AddAnotherGuaranteePage)
 
-    beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
+    beRemovable[Boolean](AddAnotherGuaranteePage)
   }
 }

@@ -19,7 +19,7 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import forms.LiabilityAmountFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.LiabilityAmountPage
@@ -50,9 +50,9 @@ class LiabilityAmountController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(LiabilityAmountPage) match {
+      val preparedForm = request.userAnswers.get(LiabilityAmountPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -66,7 +66,7 @@ class LiabilityAmountController @Inject()(
       renderer.render("liabilityAmount.njk", json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
@@ -83,9 +83,9 @@ class LiabilityAmountController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(LiabilityAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(LiabilityAmountPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(LiabilityAmountPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(LiabilityAmountPage(index), mode, updatedAnswers))
         )
   }
 }

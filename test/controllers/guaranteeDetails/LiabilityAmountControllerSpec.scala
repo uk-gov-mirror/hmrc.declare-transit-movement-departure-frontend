@@ -46,7 +46,7 @@ class LiabilityAmountControllerSpec extends SpecBase with MockNunjucksRendererAp
   val formProvider = new LiabilityAmountFormProvider()
   val form         = formProvider()
 
-  lazy val liabilityAmountRoute = routes.LiabilityAmountController.onPageLoad(lrn, NormalMode).url
+  lazy val liabilityAmountRoute = routes.LiabilityAmountController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -81,7 +81,7 @@ class LiabilityAmountControllerSpec extends SpecBase with MockNunjucksRendererAp
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(LiabilityAmountPage, "1.00").success.value
+      val userAnswers = emptyUserAnswers.set(LiabilityAmountPage(index), "1.00").success.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))

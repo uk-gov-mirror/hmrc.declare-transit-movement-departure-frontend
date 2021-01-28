@@ -21,7 +21,7 @@ import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import javax.inject.Inject
 import models.GuaranteeType.FlatRateVoucher
 import models.messages.guarantee.GuaranteeReferenceWithGrn
-import models.{LocalReferenceNumber, Mode, UserAnswers}
+import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
@@ -50,11 +50,11 @@ class GuaranteeReferenceController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val lengthGRN: Int = grnMaxLengthValue(request.userAnswers)
-        val preparedForm = request.userAnswers.get(GuaranteeReferencePage) match {
+        val lengthGRN: Int = grnMaxLengthValue(request.userAnswers, index)
+        val preparedForm = request.userAnswers.get(GuaranteeReferencePage(index)) match {
 
           case None        => formProvider(lengthGRN)
           case Some(value) => formProvider(lengthGRN).fill(value)
@@ -69,10 +69,10 @@ class GuaranteeReferenceController @Inject()(
         renderer.render("guaranteeDetails/guaranteeReference.njk", json).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        val grnMaxLength: Int = grnMaxLengthValue(request.userAnswers)
+        val grnMaxLength: Int = grnMaxLengthValue(request.userAnswers, index)
         formProvider(grnMaxLength)
           .bindFromRequest()
           .fold(
@@ -88,13 +88,13 @@ class GuaranteeReferenceController @Inject()(
             },
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(GuaranteeReferencePage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(GuaranteeReferencePage(index), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(GuaranteeReferencePage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(GuaranteeReferencePage(index), mode, updatedAnswers))
           )
     }
 
-  private def grnMaxLengthValue(userAnswers: UserAnswers) = userAnswers.get(GuaranteeTypePage) match {
+  private def grnMaxLengthValue(userAnswers: UserAnswers, index: Index) = userAnswers.get(GuaranteeTypePage(index)) match {
     case Some(FlatRateVoucher) => GuaranteeReferenceWithGrn.Constants.guaranteeReferenceNumberLength
     case _                     => GuaranteeReferenceWithGrn.Constants.grnOtherTypeLength
   }

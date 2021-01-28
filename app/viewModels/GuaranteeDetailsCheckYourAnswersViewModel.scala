@@ -16,7 +16,7 @@
 
 package viewModels
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import uk.gov.hmrc.viewmodels.SummaryList
 import utils.GuaranteeDetailsCheckYourAnswersHelper
 import viewModels.sections.Section
@@ -25,16 +25,16 @@ case class GuaranteeDetailsCheckYourAnswersViewModel(sections: Seq[Section])
 
 object GuaranteeDetailsCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers): GuaranteeDetailsCheckYourAnswersViewModel = {
+  def apply(userAnswers: UserAnswers, index: Index): GuaranteeDetailsCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper                                 = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers)
-    val guaranteeType: Option[SummaryList.Row]                 = checkYourAnswersHelper.guaranteeType
-    val guaranteeReference: Option[SummaryList.Row]            = checkYourAnswersHelper.guaranteeReference
-    val otherReference: Option[SummaryList.Row]                = checkYourAnswersHelper.otherReference
-    val liabilityAmount: Option[SummaryList.Row]               = checkYourAnswersHelper.liabilityAmount
-    val otherReferenceLiabilityAmount: Option[SummaryList.Row] = checkYourAnswersHelper.otherReferenceliabilityAmount
-    val accessCode: Option[SummaryList.Row]                    = checkYourAnswersHelper.accessCode
-    val defaultAmount: Option[SummaryList.Row]                 = checkYourAnswersHelper.defaultAmount
+    val guaranteeType: Option[SummaryList.Row]                 = checkYourAnswersHelper.guaranteeType(index)
+    val guaranteeReference: Option[SummaryList.Row]            = checkYourAnswersHelper.guaranteeReference(index)
+    val otherReference: Option[SummaryList.Row]                = checkYourAnswersHelper.otherReference(index)
+    val liabilityAmount: Option[SummaryList.Row]               = checkYourAnswersHelper.liabilityAmount(index)
+    val otherReferenceLiabilityAmount: Option[SummaryList.Row] = checkYourAnswersHelper.otherReferenceliabilityAmount(index)
+    val accessCode: Option[SummaryList.Row]                    = checkYourAnswersHelper.accessCode(index)
+    val defaultAmount: Option[SummaryList.Row]                 = checkYourAnswersHelper.defaultAmount(index)
 
     val checkYourAnswersData = Seq(
       guaranteeType,

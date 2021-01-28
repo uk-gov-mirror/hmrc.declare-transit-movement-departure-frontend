@@ -19,7 +19,7 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.LocalReferenceNumber
+import models.{Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,13 +41,13 @@ class GuaranteeDetailsCheckYourAnswersController @Inject()(
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val sections: Seq[Section] = GuaranteeDetailsCheckYourAnswersViewModel(request.userAnswers).sections
+      val sections: Seq[Section] = GuaranteeDetailsCheckYourAnswersViewModel(request.userAnswers, index).sections
       val json = Json.obj(
         "lrn"      -> lrn,
         "sections" -> Json.toJson(sections),
-        "nextPage" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+        "nextPage" -> routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
       )
 
       renderer.render("guaranteeDetailsCheckYourAnswers.njk", json).map(Ok(_))

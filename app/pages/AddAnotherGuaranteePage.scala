@@ -16,17 +16,13 @@
 
 package pages
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
 
-class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
+case object AddAnotherGuaranteePage extends QuestionPage[Boolean] {
 
-  "OtherReferenceliabilityAmountPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](OtherReferenceLiabilityAmountPage(Index(0)))
+  override def toString: String = "addAnotherGuarantee"
 
-    beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-  }
+  val maxAllowedGuarantees: Int = 9
 }
