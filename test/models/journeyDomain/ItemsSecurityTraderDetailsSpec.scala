@@ -33,7 +33,11 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
 
       forAll(arb[UserAnswers], arb[ItemsSecurityTraderDetails]) {
         (baseUserAnswers, itemsSecurityTraderDetails) =>
-          val userAnswers = ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
+          val userAnswers = ItemsSecurityTraderDetailsSpec
+            .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
+            .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
+            .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
+
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
 
@@ -49,9 +53,10 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
         (baseUserAnswers, itemsSecurityTraderDetails) =>
           val userAnswers = ItemsSecurityTraderDetailsSpec
             .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
-            .remove(AddSafetyAndSecurityConsignorPage)
-            .toOption
-            .value
+            .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
+            .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
+            .unsafeRemoveVal(AddSafetyAndSecurityConsignorPage)
+
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
 
@@ -65,9 +70,10 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
         (baseUserAnswers, itemsSecurityTraderDetails) =>
           val userAnswers = ItemsSecurityTraderDetailsSpec
             .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
-            .remove(AddSafetyAndSecurityConsigneePage)
-            .toOption
-            .value
+            .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
+            .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
+            .unsafeRemoveVal(AddSafetyAndSecurityConsigneePage)
+
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
 
@@ -82,11 +88,9 @@ object ItemsSecurityTraderDetailsSpec {
   def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: ItemsSecurityTraderDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
     // Set method of payment
-      .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
       .unsafeSetOpt(TransportChargesPage(index))(itemsSecurityTraderDetails.methodOfPayment)
 
       // Set commerical reference number
-      .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
       .unsafeSetOpt(CommercialReferenceNumberPage(index))(itemsSecurityTraderDetails.commercialReferenceNumber)
 
       // Set Dangerous goods

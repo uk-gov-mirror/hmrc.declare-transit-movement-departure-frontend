@@ -76,12 +76,12 @@ trait JourneyModelGenerators {
 
         itemDetails <- nonEmptyListOf(3)(Arbitrary(genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)))
 
-        goodsummarydetaislType = if (isNormalMovement) {
+        goodsummarydetailsType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
         } else {
           arbitrary[GoodSummarySimplifiedDetails]
         }
-        goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetaislType)).arbitrary
+        goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
         guarantee    <- arbitrary[GuaranteeDetails]
       } yield
         JourneyDomain(

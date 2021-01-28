@@ -18,18 +18,7 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
-import models.DeclarationType.Option4
-import models.ProcedureType.Simplified
-import models.domain.Address
-import models.journeyDomain.MovementDetails._
-import models.journeyDomain.RouteDetails.TransitInformation
-import models.journeyDomain.TraderDetails.{PersonalInformation, TraderEori}
-import models.journeyDomain.TransportDetails.DetailsAtBorder
-import models.journeyDomain.TransportDetails.DetailsAtBorder.NewDetailsAtBorder
-import models.journeyDomain.TransportDetails.InlandMode.Rail
-import models.journeyDomain._
-import models.reference.CountryCode
-import models.{EoriNumber, LocalReferenceNumber, RepresentativeCapacity, UserAnswers}
+import models.UserAnswers
 
 class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 

@@ -23,21 +23,37 @@ import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
 import org.scalacheck.{Arbitrary, Gen}
+import org.scalatest.OptionValues.convertOptionToValuable
 import pages.{AddSecurityDetailsPage, ConsignorForAllItemsPage, ContainersUsedPage}
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
+import pages.safetyAndSecurity.{
+  AddCircumstanceIndicatorPage,
+  AddCommercialReferenceNumberAllItemsPage,
+  AddCommercialReferenceNumberPage,
+  AddTransportChargesPaymentMethodPage,
+  CircumstanceIndicatorPage
+}
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(genItemSectionOld(), arb[UserAnswers]) {
-          case (itemSection: ItemSection, userAnswers) =>
-            val updatedUserAnswer = ItemSectionSpec
-              .setItemSection(itemSection, index)(userAnswers)
+          case (itemSection, userAnswers) =>
+            val updatedUserAnswer = {
+              itemSection.itemSecurityTraderDetails match {
+                case Some(value) =>
+                  userAnswers
+                    .unsafeSetVal(AddTransportChargesPaymentMethodPage)(value.methodOfPayment.isEmpty)
+                    .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(value.commercialReferenceNumber.isEmpty)
+                case None => userAnswers
+              }
+            }
 
-            val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
+            val setSectionUserAnswers = ItemSectionSpec.setItemSection(itemSection, index)(updatedUserAnswer)
+
+            val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(setSectionUserAnswers)
 
             result.value.itemDetails mustEqual itemSection.itemDetails
             result.value.consignor mustEqual itemSection.consignor
@@ -67,13 +83,12 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
   "Seq of ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(nonEmptyListOf[ItemSection](2)(Arbitrary(genItemSectionOld())), arb[UserAnswers]) {
+        forAll(nonEmptyListOf[ItemSection](1)(Arbitrary(genItemSectionOld())), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
             val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
             val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
 
-            result.value.head mustEqual itemSections.head
-            result.value.tail mustEqual itemSections.tail
+            result.value mustEqual itemSections
         }
       }
     }
@@ -90,7 +105,16 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
   def setItemSections(itemSections: Seq[ItemSection])(startUserAnswers: UserAnswers): UserAnswers =
     itemSections.zipWithIndex.foldLeft(startUserAnswers) {
       case (ua, (section, i)) =>
-        ItemSectionSpec.setItemSection(section, Index(i))(ua)
+        val updatedUserAnswer = {
+          section.itemSecurityTraderDetails match {
+            case Some(value) =>
+              ua.unsafeSetVal(AddTransportChargesPaymentMethodPage)(value.methodOfPayment.isEmpty)
+                .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(value.commercialReferenceNumber.isEmpty)
+            case None => ua
+          }
+        }
+
+        ItemSectionSpec.setItemSection(section, Index(i))(updatedUserAnswer)
     }
 
   private def setContainers(containers: Option[NonEmptyList[Container]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
@@ -124,7 +148,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
     })
   }
 
-  def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(userAnswers: UserAnswers) =
+  def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(userAnswers: UserAnswers): UserAnswers =
     itemsSecurityTraderDetails match {
       case Some(result) => ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(result, index)(userAnswers)
       case None         => userAnswers
