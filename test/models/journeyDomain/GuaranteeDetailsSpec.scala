@@ -41,6 +41,17 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
             result.value mustEqual guarantees.head
         }
       }
+      "when there are multiple GuaranteeDetails all details for section have been answered" in {
+        forAll(arb[GuaranteeDetails], arb[GuaranteeDetails], arbitrary[GuaranteeDetails], arbitrary[UserAnswers]) {
+          case (guarantee1, guarantee2, guarantee3, userAnswers) =>
+            val guarantees = NonEmptyList(guarantee1, List(guarantee2, guarantee3))
+
+            val updatedUserAnswer                              = GuaranteeDetailsSpec.setGuaranteeDetails(guarantees)(userAnswers)
+            val result: Option[NonEmptyList[GuaranteeDetails]] = UserAnswersReader[NonEmptyList[GuaranteeDetails]].run(updatedUserAnswer)
+
+            result.value mustEqual guarantees
+        }
+      }
     }
 
     "GuaranteeReference" - {
