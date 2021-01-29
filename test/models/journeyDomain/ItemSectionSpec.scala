@@ -19,13 +19,21 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
+import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
 import org.scalacheck.{Arbitrary, Gen}
-import pages.{AddSecurityDetailsPage, ContainersUsedPage}
+import org.scalatest.OptionValues.convertOptionToValuable
+import pages.{AddSecurityDetailsPage, ConsignorForAllItemsPage, ContainersUsedPage}
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
+import pages.safetyAndSecurity.{
+  AddCircumstanceIndicatorPage,
+  AddCommercialReferenceNumberAllItemsPage,
+  AddCommercialReferenceNumberPage,
+  AddTransportChargesPaymentMethodPage,
+  CircumstanceIndicatorPage
+}
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
@@ -33,10 +41,28 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
       "when all details for section have been answered" in {
         forAll(genItemSectionOld(), arb[UserAnswers]) {
           case (itemSection, userAnswers) =>
-            val updatedUserAnswer           = ItemSectionSpec.setItemSection(itemSection, index)(userAnswers)
-            val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(updatedUserAnswer)
+            val updatedUserAnswer = {
+              itemSection.itemSecurityTraderDetails match {
+                case Some(value) =>
+                  userAnswers
+                    .unsafeSetVal(AddTransportChargesPaymentMethodPage)(value.methodOfPayment.isEmpty)
+                    .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(value.commercialReferenceNumber.isEmpty)
+                case None => userAnswers
+              }
+            }
 
-            result.value mustEqual itemSection
+            val setSectionUserAnswers = ItemSectionSpec.setItemSection(itemSection, index)(updatedUserAnswer)
+
+            val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(setSectionUserAnswers)
+
+            result.value.itemDetails mustEqual itemSection.itemDetails
+            result.value.consignor mustEqual itemSection.consignor
+            result.value.consignee mustEqual itemSection.consignee
+            result.value.packages mustEqual itemSection.packages
+            result.value.containers mustEqual itemSection.containers
+            result.value.specialMentions mustEqual itemSection.specialMentions
+            result.value.producedDocuments mustEqual itemSection.producedDocuments
+            result.value.itemSecurityTraderDetails mustEqual itemSection.itemSecurityTraderDetails
         }
       }
     }
@@ -57,12 +83,12 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
   "Seq of ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(nonEmptyListOf[ItemSection](3)(Arbitrary(genItemSectionOld())), arb[UserAnswers]) {
+        forAll(genItemSectionOld(), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
-            val updatedUserAnswer = ItemSectionSpec.setItemSections(itemSections.toList)(userAnswers)
+            val updatedUserAnswer = ItemSectionSpec.setItemSections(Seq(itemSections, itemSections).toList)(userAnswers)
             val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
 
-            result.value mustEqual itemSections
+            result.value mustEqual NonEmptyList(itemSections, List(itemSections))
         }
       }
     }
@@ -76,11 +102,37 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
       case (userAnswers, (pckge, index)) => PackagesSpec.setPackageUserAnswers(pckge, itemIndex, Index(index))(userAnswers)
     }
 
-  def setItemSections(itemSections: Seq[ItemSection])(startUserAnswers: UserAnswers): UserAnswers =
+  def setItemSections(itemSections: Seq[ItemSection])(startUserAnswers: UserAnswers): UserAnswers = {
+
+    val methodOfPayments: Seq[Option[Option[String]]]     = itemSections.map(_.itemSecurityTraderDetails.map(_.methodOfPayment))
+    val commercialReferences: Seq[Option[Option[String]]] = itemSections.map(_.itemSecurityTraderDetails.map(_.commercialReferenceNumber))
+
+    require(sequenceIsConsistent(methodOfPayments), "Method of payment contained a false")
+    require(sequenceIsConsistent(commercialReferences), "Commercial reference contained a false")
+
     itemSections.zipWithIndex.foldLeft(startUserAnswers) {
       case (ua, (section, i)) =>
-        ItemSectionSpec.setItemSection(section, Index(i))(ua)
+        val updatedUserAnswer = {
+          section.itemSecurityTraderDetails match {
+            case Some(value) =>
+              ua.unsafeSetVal(AddTransportChargesPaymentMethodPage)(value.methodOfPayment.isEmpty)
+                .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(value.commercialReferenceNumber.isEmpty)
+            case None => ua
+          }
+        }
+
+        ItemSectionSpec.setItemSection(section, Index(i))(updatedUserAnswer)
     }
+  }
+
+  def sequenceIsConsistent[A](xs: Seq[Option[Option[A]]]): Boolean = {
+
+    val topLevelNotDefined: Boolean = xs.forall(_.isEmpty)
+    val allDefined: Boolean         = xs.flatten.forall(_.isDefined)
+    val allUndefined: Boolean       = xs.flatten.forall(_.isEmpty)
+
+    topLevelNotDefined | allDefined | allUndefined
+  }
 
   private def setContainers(containers: Option[NonEmptyList[Container]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val ua = startUserAnswers.unsafeSetVal(ContainersUsedPage)(containers.isDefined)
@@ -113,6 +165,12 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
     })
   }
 
+  def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(userAnswers: UserAnswers): UserAnswers =
+    itemsSecurityTraderDetails match {
+      case Some(result) => ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(result, index)(userAnswers)
+      case None         => userAnswers
+    }
+
   def setItemSection(itemSection: ItemSection, itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     (
       ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, itemIndex) _ andThen
@@ -120,7 +178,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         setPackages(itemSection.packages, itemIndex) andThen
         setContainers(itemSection.containers, itemIndex) andThen
         setSpecialMentions(itemSection.specialMentions, itemIndex) andThen
-        setProducedDocuments(itemSection.producedDocuments, itemIndex)
+        setProducedDocuments(itemSection.producedDocuments, itemIndex) andThen
+        setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex)
     )(startUserAnswers)
-
 }

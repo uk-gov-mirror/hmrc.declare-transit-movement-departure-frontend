@@ -128,9 +128,9 @@ class DeclarationRequestService @Inject()(
             netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)),
             countryOfDispatch                = None,
             countryOfDestination             = None,
-            methodOfPayment                  = None, // Add items Security details
-            commercialReferenceNumber        = None, // Add items Security details
-            dangerousGoodsCode               = None, // Add items security details
+            methodOfPayment                  = itemSection.itemSecurityTraderDetails.flatMap(_.methodOfPayment),
+            commercialReferenceNumber        = itemSection.itemSecurityTraderDetails.flatMap(_.commercialReferenceNumber),
+            dangerousGoodsCode               = itemSection.itemSecurityTraderDetails.flatMap(_.dangerousGoodsCode),
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
             specialMention                   = if (index == 0) additionalInformationLiabilityAmount(guaranteeDetails) else Seq.empty,
@@ -138,8 +138,32 @@ class DeclarationRequestService @Inject()(
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,
             packages                         = packages(itemSection.packages).toList,
-            sensitiveGoodsInformation        = Seq.empty //TODO look up this
+            sensitiveGoodsInformation        = Seq.empty, //TODO look up this
+            GoodsItemSafetyAndSecurityConsignor(itemSection.itemSecurityTraderDetails),
+            GoodsItemSafetyAndSecurityConsignee(itemSection.itemSecurityTraderDetails)
           )
+      }
+
+    def GoodsItemSafetyAndSecurityConsignor(itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]): Option[GoodsItemSecurityConsignor] =
+      itemSecurityTraderDetails.flatMap {
+        x =>
+          x.consignor.map {
+            case ItemsSecurityTraderDetails.SecurityPersonalInformation(name, Address(buildingAndStreet, city, postcode, _)) =>
+              ItemsSecurityConsignorWithoutEori(name, buildingAndStreet, postcode, city, "GB")
+            case ItemsSecurityTraderDetails.SecurityTraderEori(eori) =>
+              ItemsSecurityConsignorWithEori(eori.value)
+          }
+      }
+
+    def GoodsItemSafetyAndSecurityConsignee(itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]): Option[GoodsItemSecurityConsignee] =
+      itemSecurityTraderDetails.flatMap {
+        x =>
+          x.consignor.map {
+            case ItemsSecurityTraderDetails.SecurityPersonalInformation(name, Address(buildingAndStreet, city, postcode, _)) =>
+              ItemsSecurityConsigneeWithoutEori(name, buildingAndStreet, postcode, city, "GB")
+            case ItemsSecurityTraderDetails.SecurityTraderEori(eori) =>
+              ItemsSecurityConsigneeWithEori(eori.value)
+          }
       }
 
     def principalTrader(traderDetails: TraderDetails): TraderPrincipal =

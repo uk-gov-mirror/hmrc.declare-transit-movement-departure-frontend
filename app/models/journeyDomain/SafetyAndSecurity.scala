@@ -21,8 +21,7 @@ import cats.implicits._
 import models.domain.Address
 import models.journeyDomain.Itinerary.readItineraries
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
-import models.reference.{Country, CountryCode}
-import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
+import models.{EoriNumber, UserAnswers}
 import pages.ModeAtBorderPage
 import pages.safetyAndSecurity._
 

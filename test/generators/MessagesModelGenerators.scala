@@ -142,6 +142,15 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
       } yield CustomsOfficeTransit(customsOffice.mkString, arrivalDateTime)
     }
 
+  implicit lazy val arbitrarySecurityDetailsSubmission: Arbitrary[SecurityDetailsSubmission] =
+    Arbitrary {
+      for {
+        transportMethodOfPayment  <- Gen.option(arbitrary[String])
+        commercialReferenceNumber <- Gen.option(arbitrary[String])
+        unDangerouGoodsCode       <- Gen.option(arbitrary[String])
+      } yield SecurityDetailsSubmission(transportMethodOfPayment, commercialReferenceNumber, unDangerouGoodsCode)
+    }
+
   implicit lazy val arbitraryDeclarationRequest: Arbitrary[DeclarationRequest] = {
     Arbitrary {
       for {
@@ -270,6 +279,44 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
         city            <- Gen.option(stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar))
         countryCode     <- Gen.option(Gen.pick(2, 'A' to 'Z'))
       } yield TraderPrincipalWithEori(eori, name, streetAndNumber, postCode, city, countryCode.map(_.mkString))
+    }
+
+  implicit lazy val arbitraryItemsSecurityConsignorWithEori: Arbitrary[ItemsSecurityConsignorWithEori] =
+    Arbitrary {
+      for {
+        eori <- stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar)
+
+      } yield ItemsSecurityConsignorWithEori(eori)
+    }
+
+  implicit lazy val arbitraryItemsSecurityConsigneeWithoutEori: Arbitrary[ItemsSecurityConsigneeWithoutEori] =
+    Arbitrary {
+      for {
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength, alphaNumChar)
+        streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar)
+        postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar)
+        city            <- stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar)
+        countryCode     <- Gen.pick(2, 'A' to 'Z')
+      } yield ItemsSecurityConsigneeWithoutEori(name, streetAndNumber, postCode, city, countryCode.mkString)
+    }
+
+  implicit lazy val arbitraryItemsSecurityConsigneeWithEori: Arbitrary[ItemsSecurityConsigneeWithEori] =
+    Arbitrary {
+      for {
+        eori <- stringsWithMaxLength(Trader.Constants.eoriLength, alphaNumChar)
+
+      } yield ItemsSecurityConsigneeWithEori(eori)
+    }
+
+  implicit lazy val arbitraryItemsSecurityConsignorWithoutEori: Arbitrary[ItemsSecurityConsignorWithoutEori] =
+    Arbitrary {
+      for {
+        name            <- stringsWithMaxLength(Trader.Constants.nameLength, alphaNumChar)
+        streetAndNumber <- stringsWithMaxLength(Trader.Constants.streetAndNumberLength, alphaNumChar)
+        postCode        <- stringsWithMaxLength(Trader.Constants.postCodeLength, alphaNumChar)
+        city            <- stringsWithMaxLength(Trader.Constants.cityLength, alphaNumChar)
+        countryCode     <- Gen.pick(2, 'A' to 'Z')
+      } yield ItemsSecurityConsignorWithoutEori(name, streetAndNumber, postCode, city, countryCode.mkString)
     }
 
   implicit lazy val arbitraryTraderPrincipalWithoutEori: Arbitrary[TraderPrincipalWithoutEori] =
@@ -439,7 +486,9 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
           traderConsigneeGoodsItem,
           containers,
           packages,
-          sensitiveGoodsInformation
+          sensitiveGoodsInformation,
+          None, //TODO Change this to gen
+          None
         )
     }
 

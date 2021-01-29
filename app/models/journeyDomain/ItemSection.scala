@@ -20,12 +20,9 @@ import cats.data._
 import cats.implicits._
 import derivable._
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
-import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
-import pages.addItems.AddDocumentsPage
-import pages.addItems.specialMentions.AddSpecialMentionPage
-import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
 import pages.{AddSecurityDetailsPage, ContainersUsedPage}
+import pages.addItems.specialMentions.AddSpecialMentionPage
 
 case class ItemSection(
   itemDetails: ItemDetails,
@@ -34,7 +31,8 @@ case class ItemSection(
   packages: NonEmptyList[Packages],
   containers: Option[NonEmptyList[Container]],
   specialMentions: Option[NonEmptyList[SpecialMention]],
-  producedDocuments: Option[NonEmptyList[ProducedDocument]]
+  producedDocuments: Option[NonEmptyList[ProducedDocument]],
+  itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]
 )
 
 object ItemSection {
@@ -87,6 +85,13 @@ object ItemSection {
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
 
+  private def securityItemsSecurityTraderDetails(itemIndex: Index): ReaderT[Option, UserAnswers, Option[ItemsSecurityTraderDetails]] =
+    AddSecurityDetailsPage.reader
+      .flatMap(
+        _ => ItemsSecurityTraderDetails.parser(itemIndex)
+      )
+      .lower
+
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
       ItemDetails.itemDetailsReader(index),
@@ -95,7 +100,8 @@ object ItemSection {
       derivePackage(index),
       deriveContainers(index),
       deriveSpecialMentions(index),
-      ProducedDocument.deriveProducedDocuments(index)
+      ProducedDocument.deriveProducedDocuments(index),
+      securityItemsSecurityTraderDetails(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =

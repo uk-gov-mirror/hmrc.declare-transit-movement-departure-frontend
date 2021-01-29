@@ -20,9 +20,9 @@ import cats.syntax.all._
 import com.lucidchart.open.xtract.XmlReader.{seq, strictReadSeq}
 import com.lucidchart.open.xtract.{__, XmlReader}
 import models.LanguageCodeEnglish
-import xml.XMLWrites._
 import utils.BigDecimalXMLReader._
 import xml.XMLWrites
+import xml.XMLWrites._
 
 import scala.xml.NodeSeq
 
@@ -45,7 +45,9 @@ final case class GoodsItem(
   traderConsigneeGoodsItem: Option[TraderConsigneeGoodsItem],
   containers: Seq[String],
   packages: Seq[Package],
-  sensitiveGoodsInformation: Seq[SensitiveGoodsInformation]
+  sensitiveGoodsInformation: Seq[SensitiveGoodsInformation],
+  goodsItemSecurityConsignor: Option[GoodsItemSecurityConsignor],
+  goodsItemSecurityConsignee: Option[GoodsItemSecurityConsignee]
 )
 
 object GoodsItem {
@@ -78,7 +80,9 @@ object GoodsItem {
                                                   (__ \ "TRACONCE2").read[TraderConsigneeGoodsItem].optional,
                                                   (__ \ "CONNR2" \ "ConNumNR21").read(seq[String]),
                                                   (__ \ "PACGS2").read(strictReadSeq[Package]),
-                                                  (__ \ "SGICODSD2").read(strictReadSeq[SensitiveGoodsInformation])).mapN(apply)
+                                                  (__ \ "SGICODSD2").read(strictReadSeq[SensitiveGoodsInformation]),
+                                                  (__ \ "TRACORSECGOO021").read[GoodsItemSecurityConsignor].optional,
+                                                  (__ \ "TRACONSECGOO013").read[GoodsItemSecurityConsignee].optional).mapN(apply)
 
   implicit def writes: XMLWrites[GoodsItem] = XMLWrites[GoodsItem] {
     goodsItem =>
