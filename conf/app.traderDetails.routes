@@ -68,7 +68,7 @@ POST       /:lrn/trader-details/consignee-address                        control
 GET        /:lrn/trader-details/change-consignee-address                  controllers.traderDetails.ConsigneeAddressController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/trader-details/change-consignee-address                  controllers.traderDetails.ConsigneeAddressController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /:lrn/trader-details/check-your-answers                       controllers.traderDetails.TraderDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
+GET        /:lrn/trader-details/check-answers                       controllers.traderDetails.TraderDetailsCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 
 GET        /:lrn/trader-details/are-you-the-consignee                             controllers.traderDetails.ConsigneeForAllItemsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /:lrn/trader-details/are-you-the-consignee                             controllers.traderDetails.ConsigneeForAllItemsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

@@ -38,7 +38,8 @@ object AddItemsCheckYourAnswersViewModel {
     AddItemsCheckYourAnswersViewModel(
       Seq(
         itemsDetailsSection(checkYourAnswersHelper, index),
-        traderDetailsSection(checkYourAnswersHelper, index),
+        traderConsignorDetailsSection(checkYourAnswersHelper, index),
+        traderConsigneeDetailsSection(checkYourAnswersHelper, index),
         packagesSection(checkYourAnswersHelper, index)(userAnswers),
         containersSection(checkYourAnswersHelper, index)(userAnswers),
         specialMentionsSection(specialMentionsCheckYourAnswers, index, specialMentionList)(userAnswers),
@@ -86,20 +87,27 @@ object AddItemsCheckYourAnswersViewModel {
     ).flatten
   )
 
-  private def traderDetailsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
+  private def traderConsignorDetailsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
     msg"addItems.checkYourAnswersLabel.traderDetails",
+    msg"addItems.checkYourAnswersLabel.traderDetails.consignor",
     Seq(
-      //todo: add in subheading for consignor H3
       checkYourAnswersHelper.traderDetailsConsignorEoriKnown(index),
       checkYourAnswersHelper.traderDetailsConsignorEoriNumber(index),
       checkYourAnswersHelper.traderDetailsConsignorName(index),
       checkYourAnswersHelper.traderDetailsConsignorAddress(index),
-      //todo: add in subheading for consignee H3
+    ).flatten
+  )
+
+  private def traderConsigneeDetailsSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index) = Section(
+    None,
+    Some(msg"addItems.checkYourAnswersLabel.traderDetails.consignee"),
+    Seq(
       checkYourAnswersHelper.traderDetailsConsigneeEoriKnown(index),
       checkYourAnswersHelper.traderDetailsConsigneeEoriNumber(index),
       checkYourAnswersHelper.traderDetailsConsigneeName(index),
       checkYourAnswersHelper.traderDetailsConsigneeAddress(index)
-    ).flatten
+    ).flatten,
+    None
   )
 
   private def packagesSection(checkYourAnswersHelper: AddItemsCheckYourAnswersHelper, index: Index)(implicit userAnswers: UserAnswers): Section = {
