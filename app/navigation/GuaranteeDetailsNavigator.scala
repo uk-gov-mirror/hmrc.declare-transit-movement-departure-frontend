@@ -30,7 +30,7 @@ import play.api.mvc.Call
 
 @Singleton
 class GuaranteeDetailsNavigator @Inject()() extends Navigator {
-//format off
+// format: off
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddAnotherGuaranteePage => ua => addAnotherGuaranteeRoute(ua)
