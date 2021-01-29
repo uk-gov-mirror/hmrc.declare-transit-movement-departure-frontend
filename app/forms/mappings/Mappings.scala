@@ -20,12 +20,16 @@ import java.time.LocalDate
 
 import models.{Enumerable, LocalDateTimeWithAMPM, LocalReferenceNumber}
 import play.api.data.FieldMapping
-import play.api.data.Forms.of
+import play.api.data.Forms.{ignored, of}
+import play.api.data.format.Formats.ignoredFormat
 
 trait Mappings extends Formatters with Constraints {
 
   protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
+
+  protected def mandatoryIfBoolean(condition: Boolean, requiredKey: String = "error.required"): FieldMapping[Boolean] =
+    if (condition) boolean(requiredKey) else of(ignoredFormat(true))
 
   protected def int(requiredKey: String    = "error.required",
                     wholeNumberKey: String = "error.wholeNumber",

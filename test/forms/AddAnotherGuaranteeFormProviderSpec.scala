@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
+class AddAnotherGuaranteeFormProviderSpec extends BooleanFieldBehaviours {
 
-  "OtherReferenceliabilityAmountPage" - {
+  val requiredKey = "addAnotherGuarantee.error.required"
+  val invalidKey  = "error.boolean"
 
-    beRetrievable[String](OtherReferenceLiabilityAmountPage(Index(0)))
+  val form = new AddAnotherGuaranteeFormProvider()
 
-    beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
+  ".value" - {
 
-    beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
+    val fieldName = "value"
+
+    behave like booleanField(
+      form(true),
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form(true),
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

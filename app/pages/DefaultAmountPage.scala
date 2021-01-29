@@ -16,11 +16,13 @@
 
 package pages
 
+import models.Index
 import play.api.libs.json.JsPath
+import queries.Constants.guarantees
 
-case object DefaultAmountPage extends QuestionPage[Boolean] {
+case class DefaultAmountPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ guarantees \ index.position \ toString
 
   override def toString: String = "defaultAmount"
 }

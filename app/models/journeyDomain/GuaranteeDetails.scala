@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
-import models.GuaranteeType
+import models.{GuaranteeType, Index}
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
@@ -25,8 +25,10 @@ sealed trait GuaranteeDetails
 
 object GuaranteeDetails {
 
-  implicit val parseGuaranteeDetails: UserAnswersReader[GuaranteeDetails] =
-    UserAnswersReader[GuaranteeReference].widen[GuaranteeDetails] orElse UserAnswersReader[GuaranteeOther].widen[GuaranteeDetails]
+  def parseGuaranteeDetails(index: Index): UserAnswersReader[GuaranteeDetails] =
+    UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index))
+      .widen[GuaranteeDetails]
+      .orElse(UserAnswersReader[GuaranteeOther](GuaranteeOther.parseGuaranteeOther(index)).widen[GuaranteeDetails])
 
   final case class GuaranteeReference(
     guaranteeType: GuaranteeType,
@@ -37,36 +39,34 @@ object GuaranteeDetails {
 
   object GuaranteeReference {
 
-    private val defaultLiability = "10000"
+    val defaultLiability = "10000"
 
-    private val liabilityAmount: UserAnswersReader[String] = DefaultAmountPage.optionalReader.flatMap {
+    private def liabilityAmount(index: Index): UserAnswersReader[String] = DefaultAmountPage(index).optionalReader.flatMap {
       case Some(defaultAmountPage) =>
-        if (defaultAmountPage) defaultLiability.pure[UserAnswersReader] else LiabilityAmountPage.reader
-      case None => LiabilityAmountPage.reader
+        if (defaultAmountPage) defaultLiability.pure[UserAnswersReader] else LiabilityAmountPage(index).reader
+      case None => LiabilityAmountPage(index).reader
     }
 
-    implicit val parseGuaranteeReference: UserAnswersReader[GuaranteeReference] =
+    def parseGuaranteeReference(index: Index): UserAnswersReader[GuaranteeReference] =
       (
-        GuaranteeTypePage.reader,
-        GuaranteeReferencePage.reader,
-        liabilityAmount,
-        AccessCodePage.reader
+        GuaranteeTypePage(index).reader,
+        GuaranteeReferencePage(index).reader,
+        liabilityAmount(index),
+        AccessCodePage(index).reader
       ).tupled.map((GuaranteeReference.apply _).tupled)
   }
 
   final case class GuaranteeOther(
     guaranteeType: GuaranteeType,
-    otherReference: String,
-    liabilityAmount: String
+    otherReference: String
   ) extends GuaranteeDetails
 
   object GuaranteeOther {
 
-    implicit val parseGuaranteeOther: UserAnswersReader[GuaranteeOther] =
+    def parseGuaranteeOther(index: Index): UserAnswersReader[GuaranteeOther] =
       (
-        GuaranteeTypePage.reader,
-        OtherReferencePage.reader,
-        OtherReferenceLiabilityAmountPage.reader
+        GuaranteeTypePage(index).reader,
+        OtherReferencePage(index).reader
       ).tupled.map((GuaranteeOther.apply _).tupled)
   }
 

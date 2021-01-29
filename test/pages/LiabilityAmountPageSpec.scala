@@ -17,6 +17,7 @@
 package pages
 
 import generators.Generators
+import models.Index
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -26,10 +27,12 @@ class LiabilityAmountPageSpec extends PageBehaviours with Generators {
 
   "LiabilityAmountPage" - {
 
-    beRetrievable[String](LiabilityAmountPage)
+    val index = Index(0)
 
-    beSettable[String](LiabilityAmountPage)
+    beRetrievable[String](LiabilityAmountPage(index))
 
-    beRemovable[String](LiabilityAmountPage)
+    beSettable[String](LiabilityAmountPage(index))
+
+    beRemovable[String](LiabilityAmountPage(index))
   }
 }

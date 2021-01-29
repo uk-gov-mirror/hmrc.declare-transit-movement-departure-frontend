@@ -28,4 +28,5 @@ object Constants {
   val documents                    = "documents"
   val containers                   = "containers"
   val countriesOfRouting           = "countriesOfRouting"
+  val guarantees                   = "guarantees"
 }

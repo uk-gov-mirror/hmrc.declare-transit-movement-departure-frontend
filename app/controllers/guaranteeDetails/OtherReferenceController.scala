@@ -19,7 +19,7 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import forms.OtherReferenceFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.OtherReferencePage
@@ -50,9 +50,9 @@ class OtherReferenceController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(OtherReferencePage) match {
+      val preparedForm = request.userAnswers.get(OtherReferencePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -66,7 +66,7 @@ class OtherReferenceController @Inject()(
       renderer.render("otherReference.njk", json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
@@ -83,9 +83,9 @@ class OtherReferenceController @Inject()(
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherReferencePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherReferencePage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(OtherReferencePage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(OtherReferencePage(index), mode, updatedAnswers))
         )
   }
 }

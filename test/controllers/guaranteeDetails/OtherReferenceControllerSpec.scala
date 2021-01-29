@@ -20,7 +20,7 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import controllers.{routes => mainRoutes}
 import forms.OtherReferenceFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{Index, NormalMode}
 import navigation.annotations.GuaranteeDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -46,7 +46,7 @@ class OtherReferenceControllerSpec extends SpecBase with MockNunjucksRendererApp
   val formProvider = new OtherReferenceFormProvider()
   val form         = formProvider()
 
-  lazy val otherReferenceRoute = routes.OtherReferenceController.onPageLoad(lrn, NormalMode).url
+  lazy val otherReferenceRoute = routes.OtherReferenceController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -81,7 +81,7 @@ class OtherReferenceControllerSpec extends SpecBase with MockNunjucksRendererApp
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(OtherReferencePage, "12345678901234567890123456789012345").success.value
+      val userAnswers = emptyUserAnswers.set(OtherReferencePage(index), "12345678901234567890123456789012345").success.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))

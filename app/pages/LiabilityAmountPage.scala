@@ -16,20 +16,21 @@
 
 package pages
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import play.api.libs.json.JsPath
+import queries.Constants.guarantees
 
 import scala.util.Try
 
-case object LiabilityAmountPage extends QuestionPage[String] {
+case class LiabilityAmountPage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ guarantees \ index.position \ toString
 
   override def toString: String = "liabilityAmount"
 
   override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(x) if (x.trim.isEmpty) => userAnswers.remove(LiabilityAmountPage)
+      case Some(x) if (x.trim.isEmpty) => userAnswers.remove(LiabilityAmountPage(index))
       case _                           => super.cleanup(value, userAnswers)
     }
 }

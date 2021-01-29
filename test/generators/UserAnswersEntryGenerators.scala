@@ -75,6 +75,20 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryConfirmRemoveGuaranteeUserAnswersEntry: Arbitrary[(ConfirmRemoveGuaranteePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[ConfirmRemoveGuaranteePage.type#Data].map(Json.toJson(_))
+      } yield (ConfirmRemoveGuaranteePage, value)
+    }
+
+  implicit lazy val arbitraryAddAnotherGuaranteeUserAnswersEntry: Arbitrary[(AddAnotherGuaranteePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[AddAnotherGuaranteePage.type#Data].map(Json.toJson(_))
+      } yield (AddAnotherGuaranteePage, value)
+    }
+
   implicit lazy val arbitraryConfirmRemoveCountryUserAnswersEntry: Arbitrary[(ConfirmRemoveCountryPage.type, JsValue)] =
     Arbitrary {
       for {
@@ -692,46 +706,46 @@ trait UserAnswersEntryGenerators {
       } yield (ItemDescriptionPage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryOtherReferenceLiabilityAmountUserAnswersEntry: Arbitrary[(OtherReferenceLiabilityAmountPage.type, JsValue)] =
+  implicit lazy val arbitraryOtherReferenceLiabilityAmountUserAnswersEntry: Arbitrary[(OtherReferenceLiabilityAmountPage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (OtherReferenceLiabilityAmountPage, value)
+      } yield (OtherReferenceLiabilityAmountPage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryAccessCodeUserAnswersEntry: Arbitrary[(AccessCodePage.type, JsValue)] =
+  implicit lazy val arbitraryAccessCodeUserAnswersEntry: Arbitrary[(AccessCodePage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (AccessCodePage, value)
+      } yield (AccessCodePage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryGuaranteeTypeUserAnswersEntry: Arbitrary[(GuaranteeTypePage.type, JsValue)] =
+  implicit lazy val arbitraryGuaranteeTypeUserAnswersEntry: Arbitrary[(GuaranteeTypePage, JsValue)] =
     Arbitrary {
       for {
         value <- arbitrary[GuaranteeType].map(Json.toJson(_))
-      } yield (GuaranteeTypePage, value)
+      } yield (GuaranteeTypePage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryOtherReferenceUserAnswersEntry: Arbitrary[(OtherReferencePage.type, JsValue)] =
+  implicit lazy val arbitraryOtherReferenceUserAnswersEntry: Arbitrary[(OtherReferencePage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (OtherReferencePage, value)
+      } yield (OtherReferencePage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryLiabilityAmountUserAnswersEntry: Arbitrary[(LiabilityAmountPage.type, JsValue)] =
+  implicit lazy val arbitraryLiabilityAmountUserAnswersEntry: Arbitrary[(LiabilityAmountPage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (LiabilityAmountPage, value)
+      } yield (LiabilityAmountPage(Index(0)), value)
     }
 
-  implicit lazy val arbitraryGuaranteeReferenceUserAnswersEntry: Arbitrary[(GuaranteeReferencePage.type, JsValue)] =
+  implicit lazy val arbitraryGuaranteeReferenceUserAnswersEntry: Arbitrary[(GuaranteeReferencePage, JsValue)] =
     Arbitrary {
       for {
         value <- nonEmptyString.map(Json.toJson(_))
-      } yield (GuaranteeReferencePage, value)
+      } yield (GuaranteeReferencePage(Index(0)), value)
     }
 
   implicit lazy val arbitraryConfirmRemoveSealsUserAnswersEntry: Arbitrary[(ConfirmRemoveSealsPage.type, JsValue)] =

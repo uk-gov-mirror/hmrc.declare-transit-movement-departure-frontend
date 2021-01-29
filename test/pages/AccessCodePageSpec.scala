@@ -16,16 +16,17 @@
 
 package pages
 
+import models.Index
 import pages.behaviours.PageBehaviours
 
 class AccessCodePageSpec extends PageBehaviours {
 
   "AccessCodePage" - {
 
-    beRetrievable[String](AccessCodePage)
+    beRetrievable[String](AccessCodePage(Index(0)))
 
-    beSettable[String](AccessCodePage)
+    beSettable[String](AccessCodePage(Index(0)))
 
-    beRemovable[String](AccessCodePage)
+    beRemovable[String](AccessCodePage(Index(0)))
   }
 }

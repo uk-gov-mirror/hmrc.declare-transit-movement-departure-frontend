@@ -17,30 +17,31 @@
 package controllers.guaranteeDetails
 
 import controllers.actions._
-import forms.guaranteeDetails.GuaranteeTypeFormProvider
+import forms.ConfirmRemoveGuaranteeFormProvider
 import javax.inject.Inject
-import models.{GuaranteeType, Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, NormalMode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
-import pages.guaranteeDetails.GuaranteeTypePage
+import pages.ConfirmRemoveGuaranteePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.{GuaranteesQuery, ItemsQuery}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GuaranteeTypeController @Inject()(
+class ConfirmRemoveGuaranteeController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   @GuaranteeDetails navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: GuaranteeTypeFormProvider,
+  formProvider: ConfirmRemoveGuaranteeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
@@ -48,26 +49,22 @@ class GuaranteeTypeController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form = formProvider()
+  private val form     = formProvider()
+  private val template = "guaranteeDetails/confirmRemoveGuarantee.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(GuaranteeTypePage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
       val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
+        "form"   -> form,
+        "index"  -> index.display,
         "lrn"    -> lrn,
-        "radios" -> GuaranteeType.radios(preparedForm)
+        "radios" -> Radios.yesNo(form("value"))
       )
 
-      renderer.render("guaranteeDetails/guaranteeType.njk", json).map(Ok(_))
+      renderer.render(template, json).map(Ok(_))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       form
         .bindFromRequest()
@@ -76,18 +73,25 @@ class GuaranteeTypeController @Inject()(
 
             val json = Json.obj(
               "form"   -> formWithErrors,
-              "mode"   -> mode,
+              "index"  -> index.display,
               "lrn"    -> lrn,
-              "radios" -> GuaranteeType.radios(formWithErrors)
+              "radios" -> Radios.yesNo(formWithErrors("value"))
             )
 
-            renderer.render("guaranteeDetails/guaranteeType.njk", json).map(BadRequest(_))
+            renderer.render(template, json).map(BadRequest(_))
           },
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GuaranteeTypePage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(GuaranteeTypePage(index), mode, updatedAnswers))
+            Future.fromTry(request.userAnswers.set(ConfirmRemoveGuaranteePage, value)).flatMap {
+              updatedAnswers =>
+                if (value) {
+                  for {
+                    deletedAnswers <- Future.fromTry(updatedAnswers.remove(GuaranteesQuery(index)))
+                    _              <- sessionRepository.set(deletedAnswers)
+                  } yield Redirect(navigator.nextPage(ConfirmRemoveGuaranteePage, NormalMode, deletedAnswers))
+                } else {
+                  Future.successful(Redirect(navigator.nextPage(ConfirmRemoveGuaranteePage, NormalMode, updatedAnswers)))
+                }
+          }
         )
   }
 }

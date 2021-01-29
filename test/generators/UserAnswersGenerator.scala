@@ -40,7 +40,9 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
   val maxNumberOfGeneratedPageAnswers: Int = 1
 
   final val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitraryConfirmRemoveCountryUserAnswersEntry.arbitrary ::
+    arbitraryConfirmRemoveGuaranteeUserAnswersEntry.arbitrary ::
+      arbitraryAddAnotherGuaranteeUserAnswersEntry.arbitrary ::
+      arbitraryConfirmRemoveCountryUserAnswersEntry.arbitrary ::
       arbitraryCarrierNameUserAnswersEntry.arbitrary ::
       arbitraryCarrierEoriUserAnswersEntry.arbitrary ::
       arbitraryCarrierAddressUserAnswersEntry.arbitrary ::
