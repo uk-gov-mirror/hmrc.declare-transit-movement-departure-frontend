@@ -182,7 +182,7 @@ class ArrivalTimesAtOfficeControllerSpec
 
     "must populate the view correctly on a GET when the question has previously been answered in PM format" in {
 
-      val genPMHours = Gen.choose(13, 24).sample.value
+      val genPMHours = Gen.choose(13, 23).sample.value
 
       val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC).withHour(genPMHours), "pm")
 
