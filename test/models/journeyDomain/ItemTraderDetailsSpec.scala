@@ -29,7 +29,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
 
   "ItemTraderDetail can be parsed from UserAnswers" - {
 
-    "when there is no consignor eoriNumber" in {
+    "when there is no consignor eoriNumber but only name and address" in {
       forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
         case (baseUserAnswers, name, address) =>
           val userAnswers = baseUserAnswers
