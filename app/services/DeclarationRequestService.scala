@@ -77,8 +77,8 @@ class DeclarationRequestService @Inject()(
       safetyAndSecurity
     ) = journeyDomain
 
-    def guaranteeDetails(guaranteeDetails: GuaranteeDetails): Guarantee =
-      guaranteeDetails match {
+    def guaranteeDetails(guaranteeDetails: NonEmptyList[GuaranteeDetails]): NonEmptyList[Guarantee] =
+      guaranteeDetails map {
         case GuaranteeDetails.GuaranteeReference(guaranteeType, guaranteeReferenceNumber, _, accessCode) =>
           val guaranteeReferenceWithGrn = GuaranteeReferenceWithGrn(guaranteeReferenceNumber, accessCode)
           Guarantee(guaranteeType.toString, Seq(guaranteeReferenceWithGrn))
@@ -86,13 +86,14 @@ class DeclarationRequestService @Inject()(
           val guaranteeReferenceOther = GuaranteeReferenceWithOther(otherReference, None)
           Guarantee(guaranteeType.toString, Seq(guaranteeReferenceOther))
       }
-    def additionalInformationLiabilityAmount(guaranteeDetails: GuaranteeDetails) =
-      guaranteeDetails match {
-        case GuaranteeDetails.GuaranteeReference(_, guaranteeReferenceNumber, liabilityAmount, _) =>
-          Seq(specialMentionLiability(liabilityAmount, guaranteeReferenceNumber))
 
-        case _ => Seq.empty
-      }
+    def additionalInformationLiabilityAmount(itemIndex: Int, guaranteeDetails: NonEmptyList[GuaranteeDetails]): Seq[SpecialMentionGuaranteeLiabilityAmount] =
+      if (itemIndex == 0) {
+        guaranteeDetails.toList collect {
+          case GuaranteeDetails.GuaranteeReference(_, guaranteeReferenceNumber, liabilityAmount, _) =>
+            specialMentionLiability(liabilityAmount, guaranteeReferenceNumber)
+        }
+      } else Seq.empty
 
     def specialMentionLiability(liabilityAmount: String, guaranteeReferenceNumber: String): SpecialMentionGuaranteeLiabilityAmount =
       liabilityAmount match {
@@ -116,7 +117,7 @@ class DeclarationRequestService @Inject()(
       }
 
     // TODO finish this off
-    def goodsItems(goodsItems: NonEmptyList[ItemSection], guaranteeDetails: GuaranteeDetails): NonEmptyList[GoodsItem] =
+    def goodsItems(goodsItems: NonEmptyList[ItemSection], guaranteeDetails: NonEmptyList[GuaranteeDetails]): NonEmptyList[GoodsItem] =
       goodsItems.zipWithIndex.map {
         case (itemSection, index) =>
           GoodsItem(
@@ -133,7 +134,7 @@ class DeclarationRequestService @Inject()(
             dangerousGoodsCode               = itemSection.itemSecurityTraderDetails.flatMap(_.dangerousGoodsCode),
             previousAdministrativeReferences = Seq.empty,
             producedDocuments                = Seq.empty,
-            specialMention                   = if (index == 0) additionalInformationLiabilityAmount(guaranteeDetails) else Seq.empty,
+            specialMention                   = additionalInformationLiabilityAmount(index, guaranteeDetails),
             traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
             containers                       = Seq.empty,

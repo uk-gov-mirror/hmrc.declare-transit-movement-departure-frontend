@@ -16,14 +16,29 @@
 
 package models.journeyDomain
 
+import cats.data.{Kleisli, NonEmptyList}
 import cats.implicits._
-import models.{GuaranteeType, Index}
+import derivable.{DeriveNumberOfGuarantees, DeriveNumberOfItems}
+import models.journeyDomain.ItemSection.readerItemSection
+import models.{GuaranteeType, Index, UserAnswers}
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 sealed trait GuaranteeDetails
 
 object GuaranteeDetails {
+
+  implicit def parseListOfGuaranteeDetails: UserAnswersReader[NonEmptyList[GuaranteeDetails]] =
+    DeriveNumberOfGuarantees.reader
+      .filter(_.nonEmpty)
+      .flatMap {
+        _.zipWithIndex
+          .traverse[UserAnswersReader, GuaranteeDetails]({
+            case (_, index) =>
+              parseGuaranteeDetails(Index(index))
+          })
+          .map(NonEmptyList.fromListUnsafe)
+      }
 
   def parseGuaranteeDetails(index: Index): UserAnswersReader[GuaranteeDetails] =
     UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index))

@@ -83,7 +83,7 @@ trait JourneyModelGenerators {
           arbitrary[GoodSummarySimplifiedDetails]
         }
         goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
-        guarantee    <- arbitrary[GuaranteeDetails]
+        guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
       } yield
         JourneyDomain(
           preTaskList,
@@ -93,7 +93,7 @@ trait JourneyModelGenerators {
           traderDetails,
           NonEmptyList(itemDetails, List(itemDetails)),
           goodsSummary,
-          guarantee,
+          guarantees,
           if (isSecurityDetailsRequired) Some(safetyAndSecurity) else None
         )
     }

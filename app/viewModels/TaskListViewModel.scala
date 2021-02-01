@@ -118,7 +118,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
     taskListDsl
       .sectionName("declarationSummary.section.guarantee")
       .ifCompleted(
-        UserAnswersReader[GuaranteeDetails](GuaranteeDetails.parseGuaranteeDetails(Index(0))),
+        UserAnswersReader[NonEmptyList[GuaranteeDetails]],
         controllers.guaranteeDetails.routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
       )
       .ifInProgress(

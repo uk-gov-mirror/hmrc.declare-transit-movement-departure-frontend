@@ -166,7 +166,7 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
         controlResult             <- Gen.option(arbitrary[ControlResult])
         representative            <- Gen.option(arbitrary[Representative])
         seals                     <- Gen.option(arbitrary[Seals])
-        guarantee                 <- arbitrary[Guarantee]
+        guarantees                <- nonEmptyListWithMaxSize(10, arbitrary[Guarantee])
         goodsItems                <- nonEmptyListWithMaxSize(10, arbitrary[GoodsItem])
         itinerary                 <- listWithMaxLength[Itinerary](10)
       } yield
@@ -183,7 +183,7 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
           controlResult,
           representative,
           seals,
-          guarantee,
+          guarantees,
           goodsItems,
           itinerary,
           None,

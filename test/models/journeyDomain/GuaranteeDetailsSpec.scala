@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase}
+import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
 import models.{Index, UserAnswers}
 import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
@@ -32,12 +33,23 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(arbitrary[GuaranteeDetails], arbitrary[UserAnswers]) {
-          case (guarantee, userAnswers) =>
-            val updatedUserAnswer                = GuaranteeDetailsSpec.setGuaranteeDetails(guarantee)(userAnswers)
+        forAll(nonEmptyListOf[GuaranteeDetails](1), arbitrary[UserAnswers]) {
+          case (guarantees, userAnswers) =>
+            val updatedUserAnswer                = GuaranteeDetailsSpec.setGuaranteeDetails(guarantees)(userAnswers)
             val result: Option[GuaranteeDetails] = UserAnswersReader[GuaranteeDetails](GuaranteeDetails.parseGuaranteeDetails(index)).run(updatedUserAnswer)
 
-            result.value mustEqual guarantee
+            result.value mustEqual guarantees.head
+        }
+      }
+      "when there are multiple GuaranteeDetails all details for section have been answered" in {
+        forAll(arb[GuaranteeDetails], arb[GuaranteeDetails], arbitrary[GuaranteeDetails], arbitrary[UserAnswers]) {
+          case (guarantee1, guarantee2, guarantee3, userAnswers) =>
+            val guarantees = NonEmptyList(guarantee1, List(guarantee2, guarantee3))
+
+            val updatedUserAnswer                              = GuaranteeDetailsSpec.setGuaranteeDetails(guarantees)(userAnswers)
+            val result: Option[NonEmptyList[GuaranteeDetails]] = UserAnswersReader[NonEmptyList[GuaranteeDetails]].run(updatedUserAnswer)
+
+            result.value mustEqual guarantees
         }
       }
     }
@@ -59,7 +71,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
             case (expected, userAnswers) =>
               val updatedUserAnswer = {
                 GuaranteeDetailsSpec
-                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .remove(DefaultAmountPage(index))
                   .toOption
                   .value
@@ -76,7 +88,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
             case (expected, userAnswers) =>
               val updatedUserAnswer = {
                 GuaranteeDetailsSpec
-                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .set(DefaultAmountPage(index), true)
                   .toOption
                   .value
@@ -96,7 +108,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
             case (expected, userAnswers) =>
               val updatedUserAnswer = {
                 GuaranteeDetailsSpec
-                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .set(DefaultAmountPage(index), false)
                   .toOption
                   .value
@@ -127,7 +139,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
             case (expected, userAnswers) =>
               val updatedUserAnswer = {
                 GuaranteeDetailsSpec
-                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .set(DefaultAmountPage(index), false)
                   .toOption
                   .value
@@ -148,7 +160,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
             case (expected, userAnswers) =>
               val updatedUserAnswer = {
                 GuaranteeDetailsSpec
-                  .setGuaranteeReferenceUserAnswers(expected)(userAnswers)
+                  .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .remove(DefaultAmountPage(index))
                   .toOption
                   .value
@@ -178,7 +190,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
           forAll(arbitrary[GuaranteeOther], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
-              val updatedUserAnswer = GuaranteeDetailsSpec.setGuaranteeOtherUserAnswers(expected)(userAnswers)
+              val updatedUserAnswer = GuaranteeDetailsSpec.setGuaranteeOtherUserAnswers(expected, index)(userAnswers)
               val result            = UserAnswersReader[GuaranteeOther](GuaranteeOther.parseGuaranteeOther(index)).run(updatedUserAnswer).value
 
               result mustEqual expected
@@ -205,15 +217,15 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
 object GuaranteeDetailsSpec {
 
-  val index: Index = Index(0)
-
-  def setGuaranteeDetails(guaranteeDetails: GuaranteeDetails)(startUserAnswers: UserAnswers): UserAnswers =
-    guaranteeDetails match {
-      case guaranteeReference: GuaranteeReference => setGuaranteeReferenceUserAnswers(guaranteeReference)(startUserAnswers)
-      case guaranteeOther: GuaranteeOther         => setGuaranteeOtherUserAnswers(guaranteeOther)(startUserAnswers)
+  def setGuaranteeDetails(guaranteeDetails: NonEmptyList[GuaranteeDetails])(startUserAnswers: UserAnswers): UserAnswers =
+    guaranteeDetails.zipWithIndex.foldLeft[UserAnswers](startUserAnswers) {
+      case (updatedUserAnswers, (guaranteeReference: GuaranteeReference, index)) =>
+        setGuaranteeReferenceUserAnswers(guaranteeReference, Index(index))(updatedUserAnswers)
+      case (updatedUserAnswers, (guaranteeOther: GuaranteeOther, index)) =>
+        setGuaranteeOtherUserAnswers(guaranteeOther, Index(index))(updatedUserAnswers)
     }
 
-  def setGuaranteeOtherUserAnswers(otherGuarantee: GuaranteeOther)(startUserAnswers: UserAnswers): UserAnswers = {
+  def setGuaranteeOtherUserAnswers(otherGuarantee: GuaranteeOther, index: Index)(startUserAnswers: UserAnswers): UserAnswers = {
 
     val guaranteeOtherUserAnswers = startUserAnswers
       .unsafeSetVal(GuaranteeTypePage(index))(otherGuarantee.guaranteeType)
@@ -222,7 +234,7 @@ object GuaranteeDetailsSpec {
     guaranteeOtherUserAnswers
   }
 
-  def setGuaranteeReferenceUserAnswers(guaranteeReference: GuaranteeReference)(startUserAnswers: UserAnswers): UserAnswers =
+  def setGuaranteeReferenceUserAnswers(guaranteeReference: GuaranteeReference, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
       .unsafeSetVal(GuaranteeTypePage(index))(guaranteeReference.guaranteeType)
       .unsafeSetVal(GuaranteeReferencePage(index))(guaranteeReference.guaranteeReferenceNumber)

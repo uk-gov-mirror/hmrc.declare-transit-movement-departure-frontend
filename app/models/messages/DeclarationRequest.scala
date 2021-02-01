@@ -54,7 +54,7 @@ case class DeclarationRequest(meta: Meta,
                               controlResult: Option[ControlResult],
                               representative: Option[Representative],
                               seals: Option[Seals],
-                              guarantee: Guarantee,
+                              guarantee: NonEmptyList[Guarantee],
                               goodsItems: NonEmptyList[GoodsItem],
                               itinerary: Seq[Itinerary],
                               safetyAndSecurityCarrier: Option[SafetyAndSecurityCarrier],
@@ -80,7 +80,7 @@ object DeclarationRequest {
           declarationRequest.controlResult.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.representative.map(_.toXml).getOrElse(NodeSeq.Empty) ++
           declarationRequest.seals.map(_.toXml).getOrElse(NodeSeq.Empty) ++
-          declarationRequest.guarantee.toXml ++
+          declarationRequest.guarantee.toList.flatMap(_.toXml) ++
           declarationRequest.goodsItems.toList.flatMap(_.toXml) ++
           declarationRequest.itinerary.flatMap(_.toXml) ++
           safetyAndSecurityCarrier(declarationRequest.safetyAndSecurityCarrier) ++
@@ -127,7 +127,7 @@ object DeclarationRequest {
      (__ \ "CONRESERS").read[ControlResult].optional,
      (__ \ "REPREP").read[Representative].optional,
      (__ \ "SEAINFSLI").read[Seals].optional,
-     (__ \ "GUAGUA").read[Guarantee],
+     (__ \ "GUAGUA").read(xmlNonEmptyListReads[Guarantee]),
      (__ \ "GOOITEGDS").read(xmlNonEmptyListReads[GoodsItem]),
      (__ \ "ITI").read(strictReadSeq[Itinerary]),
      (__ \ "CARTRA100").read[SafetyAndSecurityCarrier].optional,

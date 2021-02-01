@@ -649,8 +649,8 @@ class TaskListViewModelSpec
           }
         }
 
-        "is Completed when all the answers are completed" in {
-          forAll(arb[GuaranteeDetails]) {
+        "is Completed when all the answers are completed for the first Item" in {
+          forAll(nonEmptyListOf[GuaranteeDetails](1)) {
             sectionDetails =>
               val userAnswers = GuaranteeDetailsSpec.setGuaranteeDetails(sectionDetails)(emptyUserAnswers)
 
@@ -684,7 +684,7 @@ class TaskListViewModelSpec
         }
 
         "when the status is Completed, links to the add another guarantee page" in {
-          forAll(arb[GuaranteeDetails]) {
+          forAll(nonEmptyListOf[GuaranteeDetails](2)) {
             sectionDetails =>
               val userAnswers = GuaranteeDetailsSpec.setGuaranteeDetails(sectionDetails)(emptyUserAnswers)
 
