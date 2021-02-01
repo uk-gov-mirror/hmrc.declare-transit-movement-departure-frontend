@@ -49,11 +49,13 @@ object TraderDetails {
   sealed trait RequiredDetails
 
   object RequiredDetails {
-    def apply(eori: EoriNumber): RequiredDetails               = TraderEori(eori)
-    def apply(name: String, address: Address): RequiredDetails = PersonalInformation(name, address)
+    def apply(eori: EoriNumber): RequiredDetails                                         = TraderEori(eori)
+    def apply(name: String, address: Address): RequiredDetails                           = PersonalInformation(name, address)
+    def apply(name: String, address: Address, eori: Option[EoriNumber]): RequiredDetails = TraderInformation(name, address, eori)
   }
 
   final case class PersonalInformation(name: String, address: Address) extends RequiredDetails
+  final case class TraderInformation(name: String, address: Address, eori: Option[EoriNumber]) extends RequiredDetails
   final case class TraderEori(eori: EoriNumber) extends RequiredDetails
 
   val principalTraderDetails: UserAnswersReader[RequiredDetails] = {
@@ -78,63 +80,58 @@ object TraderDetails {
   }
 
   val consignorDetails: UserAnswersReader[Option[RequiredDetails]] = {
-    val useEori: ReaderT[Option, UserAnswers, RequiredDetails] =
-      ConsignorEoriPage.reader.map(
-        eori => RequiredDetails(EoriNumber(eori))
-      )
-
-    val useAddress =
+    def readConsignorEoriPage: UserAnswersReader[Option[EoriNumber]] =
+      IsConsignorEoriKnownPage.reader
+        .flatMap {
+          bool =>
+            if (bool) ConsignorEoriPage.reader.map(eori => Some(EoriNumber(eori)))
+            else none[EoriNumber].pure[UserAnswersReader]
+        }
+    val consignorInformation =
       (
         ConsignorNamePage.reader,
-        ConsignorAddressPage.reader
+        ConsignorAddressPage.reader,
+        readConsignorEoriPage
       ).tupled
         .map {
-          case (name, consignorAddress) =>
+          case (name, consignorAddress, eori) =>
             val address = Address.prismAddressToConsignorAddress(consignorAddress)
-            RequiredDetails(name, address)
+            RequiredDetails(name, address, eori)
         }
-
-    val isEoriKnown: UserAnswersReader[RequiredDetails] =
-      IsConsignorEoriKnownPage.reader.flatMap(
-        isEoriKnown => if (isEoriKnown) useEori else useAddress
-      )
 
     AddConsignorPage.reader
       .filter(identity)
       .flatMap(
-        _ => isEoriKnown
+        _ => consignorInformation
       )
       .lower
   }
 
   val consigneeDetails: UserAnswersReader[Option[RequiredDetails]] = {
-    val useEori =
-      WhatIsConsigneeEoriPage.reader.map {
-        eori =>
-          RequiredDetails(EoriNumber(eori))
-      }
-
-    val useAddress =
-      (
-        ConsigneeNamePage.reader,
-        ConsigneeAddressPage.reader
-      ).tupled
-        .map {
-          case (name, consigneeAddress) =>
-            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
-            RequiredDetails(name, address)
+    def readConsigneeEoriPage: UserAnswersReader[Option[EoriNumber]] =
+      IsConsigneeEoriKnownPage.reader
+        .flatMap {
+          bool =>
+            if (bool) WhatIsConsigneeEoriPage.reader.map(eori => Some(EoriNumber(eori)))
+            else none[EoriNumber].pure[UserAnswersReader]
         }
 
-    val isConsigneeEoriKnown: UserAnswersReader[RequiredDetails] =
-      IsConsigneeEoriKnownPage.reader.flatMap {
-        isEoriKnown =>
-          if (isEoriKnown) useEori else useAddress
-      }
+    val consigneeInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
+      (
+        ConsigneeNamePage.reader,
+        ConsigneeAddressPage.reader,
+        readConsigneeEoriPage
+      ).tupled
+        .map {
+          case (name, consigneeAddress, eori) =>
+            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
+            RequiredDetails(name, address, eori)
+        }
 
     AddConsigneePage.reader
       .filter(identity)
       .flatMap(
-        _ => isConsigneeEoriKnown
+        _ => consigneeInformation
       )
       .lower
   }

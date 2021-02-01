@@ -34,7 +34,7 @@ import models.journeyDomain.MovementDetails.{
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
-import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori}
+import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori, TraderInformation}
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
@@ -289,8 +289,8 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         principalTraderDetails <- arbitraryRequiredDetails(pricipalAddress).arbitrary
-        consignor              <- Gen.option(arbitraryRequiredDetails(consignorAddress).arbitrary)
-        consignee              <- Gen.option(arbitraryRequiredDetails(consigneeAddress).arbitrary)
+        consignor              <- Gen.option(arbitraryTraderInformation(consignorAddress).arbitrary)
+        consignee              <- Gen.option(arbitraryTraderInformation(consigneeAddress).arbitrary)
       } yield TraderDetails(principalTraderDetails, consignor, consignee)
     }
   }
@@ -336,6 +336,15 @@ trait JourneyModelGenerators {
         name    <- stringsWithMaxLength(stringMaxLength)
         address <- arbAddress.arbitrary
       } yield PersonalInformation(name, address)
+    }
+
+  implicit def arbitraryTraderInformation(implicit arbAddress: Arbitrary[Address]): Arbitrary[TraderInformation] =
+    Arbitrary {
+      for {
+        name    <- stringsWithMaxLength(stringMaxLength)
+        address <- arbAddress.arbitrary
+        eori    <- Gen.option(arbitrary[EoriNumber])
+      } yield TraderInformation(name, address, eori)
     }
 
   implicit lazy val arbitraryItemTraderEori: Arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori] =

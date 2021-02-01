@@ -183,26 +183,21 @@ class DeclarationRequestService @Inject()(
     def headerConsignor(traderDetails: TraderDetails): Option[TraderConsignor] =
       traderDetails.consignor
         .flatMap {
-          case TraderDetails.PersonalInformation(name, address) =>
+          case TraderDetails.TraderInformation(name, address, eori) =>
             Address.prismAddressToConsignorAddress.getOption(address).map {
               case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+                TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-
-          case TraderDetails.TraderEori(EoriNumber(eori)) =>
-            Some(TraderConsignor("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
         }
 
     def headerConsignee(traderDetails: TraderDetails): Option[TraderConsignee] =
       traderDetails.consignee
         .flatMap {
-          case TraderDetails.PersonalInformation(name, address) =>
+          case TraderDetails.TraderInformation(name, address, eori) =>
             Address.prismAddressToConsigneeAddress.getOption(address).map {
               case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+                TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-          case TraderDetails.TraderEori(EoriNumber(eori)) =>
-            Some(TraderConsignee("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
         }
 
     def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder): Option[String] =
