@@ -17,6 +17,7 @@
 package services
 
 import base.{GeneratorSpec, SpecBase}
+import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
 import models.UserAnswers
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
@@ -82,14 +83,14 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
     "Liability amount must always only add to first Goods Item and other Goods Items should not contain it" in {
 
-      forAll(arb[UserAnswers], arb[JourneyDomain], arb[GuaranteeReference]) {
-        (userAnswers, journeyDomain, guaranteeReference) =>
+      forAll(arb[UserAnswers], arb[JourneyDomain], nonEmptyListOf[GuaranteeReference](3)) {
+        (userAnswers, journeyDomain, guaranteeReferences) =>
           val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
 
           when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
           when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
-          val updatedJourneyDomain: JourneyDomain = journeyDomain.copy(guarantee = guaranteeReference)
+          val updatedJourneyDomain: JourneyDomain = journeyDomain.copy(guarantee = guaranteeReferences)
 
           val updatedUserAnswer                  = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
           val result: Option[DeclarationRequest] = service.convert(updatedUserAnswer).futureValue
@@ -99,17 +100,17 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
             case specialMention: SpecialMentionGuaranteeLiabilityAmount => specialMention
           }
 
-          val expectedSpecialMention = guaranteeReference.liabilityAmount match {
-            case GuaranteeReference.defaultLiability =>
-              val defaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR${guaranteeReference.guaranteeReferenceNumber}"
+          val expectedSpecialMention: NonEmptyList[SpecialMentionGuaranteeLiabilityAmount] = guaranteeReferences.map {
+            case GuaranteeReference(_, guaranteeReferenceNumber, GuaranteeReference.defaultLiability, _) =>
+              val defaultLiabilityAmount = s"${GuaranteeReference.defaultLiability}EUR$guaranteeReferenceNumber"
               SpecialMentionGuaranteeLiabilityAmount("CAL", defaultLiabilityAmount)
 
-            case otherAmount =>
-              val notDefaultAmount = s"${otherAmount}GBP${guaranteeReference.guaranteeReferenceNumber}"
+            case GuaranteeReference(_, guaranteeReferenceNumber, otherAmount, _) =>
+              val notDefaultAmount = s"${otherAmount}GBP$guaranteeReferenceNumber"
               SpecialMentionGuaranteeLiabilityAmount("CAL", notDefaultAmount)
 
           }
-          firstGoodsItemSpecialMentionLiabilityAmount mustBe Seq(expectedSpecialMention)
+          firstGoodsItemSpecialMentionLiabilityAmount mustBe expectedSpecialMention.toList
 
           val otherGoodsItemsSpecialMentionLiabilityAmount = result.get.goodsItems.tail.flatMap(
             _.specialMention.collect {

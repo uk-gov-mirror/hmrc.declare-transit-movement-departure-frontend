@@ -30,7 +30,7 @@ case class JourneyDomain(
   traderDetails: TraderDetails,
   itemDetails: NonEmptyList[ItemSection],
   goodsSummary: GoodsSummary,
-  guarantee: GuaranteeDetails,
+  guarantee: NonEmptyList[GuaranteeDetails],
   safetyAndSecurity: Option[SafetyAndSecurity]
 )
 
@@ -61,7 +61,7 @@ object JourneyDomain {
       traderDetails     <- UserAnswersReader[TraderDetails]
       itemDetails       <- UserAnswersReader[NonEmptyList[ItemSection]]
       goodsSummary      <- UserAnswersReader[GoodsSummary]
-      guarantee         <- UserAnswersReader[GuaranteeDetails](GuaranteeDetails.parseGuaranteeDetails(Index(0)))
+      guarantee         <- UserAnswersReader[NonEmptyList[GuaranteeDetails]]
       safetyAndSecurity <- safetyAndSecurityReader
     } yield
       JourneyDomain(
