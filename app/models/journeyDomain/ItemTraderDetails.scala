@@ -28,73 +28,64 @@ case class ItemTraderDetails(consignor: Option[RequiredDetails], consignee: Opti
 
 object ItemTraderDetails {
 
-  sealed trait RequiredDetails
-
-  object RequiredDetails {
-    def apply(eori: EoriNumber): RequiredDetails               = TraderEori(eori)
-    def apply(name: String, address: Address): RequiredDetails = PersonalInformation(name, address)
-  }
-
-  final case class PersonalInformation(name: String, address: Address) extends RequiredDetails
-  final case class TraderEori(eori: EoriNumber) extends RequiredDetails
+  final case class RequiredDetails(name: String, address: Address, eori: Option[EoriNumber])
 
   def consignorDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
-    val useEori: ReaderT[Option, UserAnswers, RequiredDetails] =
-      TraderDetailsConsignorEoriNumberPage(index).reader.map(
-        eori => RequiredDetails(EoriNumber(eori))
-      )
-
-    val useAddress =
-      (
-        TraderDetailsConsignorNamePage(index).reader,
-        TraderDetailsConsignorAddressPage(index).reader
-      ).tupled
-        .map {
-          case (name, consignorAddress) =>
-            val address = Address.prismAddressToConsignorAddress(consignorAddress)
-            RequiredDetails(name, address)
+    def readConsignorEoriPage: UserAnswersReader[Option[EoriNumber]] =
+      TraderDetailsConsignorEoriKnownPage(index).reader
+        .flatMap {
+          bool =>
+            if (bool) TraderDetailsConsignorEoriNumberPage(index).reader.map(eori => Some(EoriNumber(eori)))
+            else none[EoriNumber].pure[UserAnswersReader]
         }
 
-    val isEoriKnown: UserAnswersReader[RequiredDetails] =
-      TraderDetailsConsignorEoriKnownPage(index).reader.flatMap(
-        isEoriKnown => if (isEoriKnown) useEori else useAddress
-      )
+    val consignorInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
+      (
+        TraderDetailsConsignorNamePage(index).reader,
+        TraderDetailsConsignorAddressPage(index).reader,
+        readConsignorEoriPage
+      ).tupled
+        .map {
+          case (name, consignorAddress, eori) =>
+            val address = Address.prismAddressToConsignorAddress(consignorAddress)
+            RequiredDetails(name, address, eori)
+        }
 
     (
       ConsignorForAllItemsPage.reader,
       AddConsignorPage.reader
     ).tupled.flatMap {
-      case (consignorForAllItems, addConsignor) if !consignorForAllItems | !addConsignor => isEoriKnown
+      case (consignorForAllItems, addConsignor) if !consignorForAllItems | !addConsignor => consignorInformation
     }.lower
   }
 
   def consigneeDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
-    val useEori: ReaderT[Option, UserAnswers, RequiredDetails] =
-      TraderDetailsConsigneeEoriNumberPage(index).reader.map(
-        eori => RequiredDetails(EoriNumber(eori))
-      )
 
-    val useAddress =
-      (
-        TraderDetailsConsigneeNamePage(index).reader,
-        TraderDetailsConsigneeAddressPage(index).reader
-      ).tupled
-        .map {
-          case (name, consigneeAddress) =>
-            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
-            RequiredDetails(name, address)
+    def readConsigneeEoriPage: UserAnswersReader[Option[EoriNumber]] =
+      TraderDetailsConsigneeEoriKnownPage(index).reader
+        .flatMap {
+          bool =>
+            if (bool) TraderDetailsConsigneeEoriNumberPage(index).reader.map(eori => Some(EoriNumber(eori)))
+            else none[EoriNumber].pure[UserAnswersReader]
         }
 
-    val isEoriKnown: UserAnswersReader[RequiredDetails] =
-      TraderDetailsConsigneeEoriKnownPage(index).reader.flatMap(
-        isEoriKnown => if (isEoriKnown) useEori else useAddress
-      )
+    val consigneeInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
+      (
+        TraderDetailsConsigneeNamePage(index).reader,
+        TraderDetailsConsigneeAddressPage(index).reader,
+        readConsigneeEoriPage
+      ).tupled
+        .map {
+          case (name, consigneeAddress, eori) =>
+            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
+            RequiredDetails(name, address, eori)
+        }
 
     (
       ConsigneeForAllItemsPage.reader,
       AddConsigneePage.reader
     ).tupled.flatMap {
-      case (consigneeForAllItems, addConsignee) if !consigneeForAllItems | !addConsignee => isEoriKnown
+      case (consigneeForAllItems, addConsignee) if !consigneeForAllItems | !addConsignee => consigneeInformation
     }.lower
   }
 

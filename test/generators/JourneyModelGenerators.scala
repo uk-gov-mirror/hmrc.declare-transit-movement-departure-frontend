@@ -347,26 +347,16 @@ trait JourneyModelGenerators {
       } yield TraderInformation(name, address, eori)
     }
 
-  implicit lazy val arbitraryItemTraderEori: Arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori] =
-    Arbitrary(Arbitrary.arbitrary[EoriNumber].map(models.journeyDomain.ItemTraderDetails.TraderEori))
-
-  implicit def arbitraryItemPersonalInformation(
+  implicit def arbitraryItemRequiredDetails(
     implicit
-    arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation] =
+    arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.RequiredDetails] =
     Arbitrary {
       for {
         name    <- stringsWithMaxLength(stringMaxLength)
         address <- arbAddress.arbitrary
-      } yield models.journeyDomain.ItemTraderDetails.PersonalInformation(name, address)
+        eori    <- Gen.option(arbitrary[EoriNumber])
+      } yield models.journeyDomain.ItemTraderDetails.RequiredDetails(name, address, eori)
     }
-
-  implicit def arbitraryItemRequiredDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.RequiredDetails] =
-    Arbitrary(
-      Gen.oneOf(
-        Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation],
-        Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori]
-      )
-    )
 
   implicit def arbitraryItemSection: Arbitrary[ItemSection] =
     Arbitrary {

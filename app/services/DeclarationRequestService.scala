@@ -188,6 +188,7 @@ class DeclarationRequestService @Inject()(
               case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
                 TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
+          case _ => None
         }
 
     def headerConsignee(traderDetails: TraderDetails): Option[TraderConsignee] =
@@ -198,6 +199,7 @@ class DeclarationRequestService @Inject()(
               case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
                 TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
+          case _ => None
         }
 
     def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder): Option[String] =
@@ -237,26 +239,22 @@ class DeclarationRequestService @Inject()(
     def traderConsignor(requiredDetails: Option[RequiredDetails]): Option[TraderConsignorGoodsItem] =
       requiredDetails
         .flatMap {
-          case ItemTraderDetails.PersonalInformation(name, address) =>
+          case ItemTraderDetails.RequiredDetails(name, address, eori) =>
             Address.prismAddressToConsignorAddress.getOption(address).map {
               case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsignorGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+                TraderConsignorGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
 
-          case ItemTraderDetails.TraderEori(EoriNumber(eori)) =>
-            Some(TraderConsignorGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
         }
 
     def traderConsignee(requiredDetails: Option[RequiredDetails]): Option[TraderConsigneeGoodsItem] =
       requiredDetails
         .flatMap {
-          case ItemTraderDetails.PersonalInformation(name, address) =>
+          case ItemTraderDetails.RequiredDetails(name, address, eori) =>
             Address.prismAddressToConsigneeAddress.getOption(address).map {
               case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsigneeGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+                TraderConsigneeGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-          case ItemTraderDetails.TraderEori(EoriNumber(eori)) =>
-            Some(TraderConsigneeGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
         }
 
     def nationalityAtDeparture(inlandMode: InlandMode): Option[String] =
