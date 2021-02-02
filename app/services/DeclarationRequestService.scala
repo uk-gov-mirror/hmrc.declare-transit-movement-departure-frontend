@@ -54,7 +54,7 @@ class DeclarationRequestService @Inject()(
 )(implicit ec: ExecutionContext)
     extends DeclarationRequestServiceInt {
 
-  val logger: Logger          = Logger(getClass)
+  val logger: Logger = Logger(getClass)
 
   override def convert(userAnswers: UserAnswers): Future[Option[DeclarationRequest]] =
     icrRepository.nextInterchangeControlReferenceId().map {
