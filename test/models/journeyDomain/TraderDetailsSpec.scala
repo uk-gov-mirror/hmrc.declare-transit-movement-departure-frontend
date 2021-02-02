@@ -19,10 +19,11 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.domain.Address
-import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori}
+import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori, TraderInformation}
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, UserAnswers}
+import org.scalacheck.Gen
 import org.scalatest.TryValues
-import pages._
+import pages.{ConsignorEoriPage, _}
 
 class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators {
   import TraderDetailsSpec._
@@ -69,21 +70,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
       }
     }
 
-    "when there is consignor eori details" in {
-      forAll(arb[UserAnswers], arb[EoriNumber], arb[EoriNumber]) {
-        case (baseUserAnswers, eori1, eori2) =>
-          val trader = TraderDetails(RequiredDetails.apply(eori1), Some(RequiredDetails.apply(eori2)), Some(RequiredDetails.apply(eori2)))
-
-          val userAnswers = setTraderDetails(trader)(baseUserAnswers)
-
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
-
-          result.consignor.value mustEqual TraderEori(eori2)
-
-      }
-    }
-
-    "when there is consignor name and address" in {
+    "when there is consignor name, address and eori" in {
       forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
         case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
           val userAnswers = baseUserAnswers
@@ -99,7 +86,10 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             .set(AddConsignorPage, true)
             .success
             .value
-            .set(IsConsignorEoriKnownPage, false)
+            .set(IsConsignorEoriKnownPage, true)
+            .success
+            .value
+            .set(ConsignorEoriPage, eoriNumber)
             .success
             .value
             .set(ConsignorNamePage, name)
@@ -113,42 +103,12 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
 
           val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
 
-          result.consignor.value mustEqual PersonalInformation(name, expectedAddress)
+          result.consignor.value mustEqual TraderInformation(name, expectedAddress, Some(EoriNumber(eoriNumber)))
 
       }
     }
 
-    "when there is consignee eori details" in {
-      forAll(arb[UserAnswers], arb[EoriNumber], arb[EoriNumber]) {
-        case (baseUserAnswers, eori1 @ EoriNumber(eoriNumber1), eori2 @ EoriNumber(eoriNumber2)) =>
-          val userAnswers = baseUserAnswers
-            .set(IsPrincipalEoriKnownPage, true)
-            .success
-            .value
-            .set(WhatIsPrincipalEoriPage, eoriNumber1)
-            .success
-            .value
-            .set(AddConsignorPage, false)
-            .success
-            .value
-            .set(AddConsigneePage, true)
-            .success
-            .value
-            .set(IsConsigneeEoriKnownPage, true)
-            .success
-            .value
-            .set(WhatIsConsigneeEoriPage, eoriNumber2)
-            .success
-            .value
-
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
-
-          result.consignee.value mustEqual TraderEori(eori2)
-
-      }
-    }
-
-    "when there is consignee name and address" in {
+    "when there is consignee name, address and eori" in {
       forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsigneeAddress]) {
         case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
           val userAnswers = baseUserAnswers
@@ -164,7 +124,10 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             .set(AddConsigneePage, true)
             .success
             .value
-            .set(IsConsigneeEoriKnownPage, false)
+            .set(IsConsigneeEoriKnownPage, true)
+            .success
+            .value
+            .set(WhatIsConsigneeEoriPage, eoriNumber)
             .success
             .value
             .set(ConsigneeNamePage, name)
@@ -178,7 +141,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
 
           val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
 
-          result.consignee.value mustEqual PersonalInformation(name, expectedAddress)
+          result.consignee.value mustEqual TraderInformation(name, expectedAddress, Some(EoriNumber(eoriNumber)))
 
       }
     }
@@ -214,32 +177,32 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
       // Set Consignor
       .unsafeSetVal(AddConsignorPage)(traderDetails.consignor.isDefined)
       .unsafeSetPFn(IsConsignorEoriKnownPage)(traderDetails.consignor)({
-        case Some(TraderEori(_)) => true
-        case Some(_)             => false
+        case Some(TraderInformation(_, _, Some(_))) => true
+        case Some(_)                                => false
       })
       .unsafeSetPFn(ConsignorEoriPage)(traderDetails.consignor)({
-        case Some(TraderEori(eori)) => eori.value
+        case Some(TraderInformation(_, _, Some(eori))) => eori.value
       })
       .unsafeSetPFn(ConsignorNamePage)(traderDetails.consignor)({
-        case Some(PersonalInformation(name, _)) => name
+        case Some(TraderInformation(name, _, _)) => name
       })
       .unsafeSetPFn(ConsignorAddressPage)(traderDetails.consignor)({
-        case Some(PersonalInformation(_, address)) => Address.prismAddressToConsignorAddress.getOption(address).get
+        case Some(TraderInformation(_, address, _)) => Address.prismAddressToConsignorAddress.getOption(address).get
       })
       // Set Consignee
       .unsafeSetVal(AddConsigneePage)(traderDetails.consignee.isDefined)
       .unsafeSetPFn(IsConsigneeEoriKnownPage)(traderDetails.consignee)({
-        case Some(TraderEori(_)) => true
-        case Some(_)             => false
+        case Some(TraderInformation(_, _, Some(_))) => true
+        case Some(_)                                => false
       })
       .unsafeSetPFn(WhatIsConsigneeEoriPage)(traderDetails.consignee)({
-        case Some(TraderEori(eori)) => eori.value
+        case Some(TraderInformation(_, _, Some(eori))) => eori.value
       })
       .unsafeSetPFn(ConsigneeNamePage)(traderDetails.consignee)({
-        case Some(PersonalInformation(name, _)) => name
+        case Some(TraderInformation(name, _, _)) => name
       })
       .unsafeSetPFn(ConsigneeAddressPage)(traderDetails.consignee)({
-        case Some(PersonalInformation(_, address)) => Address.prismAddressToConsigneeAddress.getOption(address).get
+        case Some(TraderInformation(_, address, _)) => Address.prismAddressToConsigneeAddress.getOption(address).get
       })
 
   def setTraderDetailsPrincipalEoriOnly(eoriNumber: EoriNumber)(startUserAnswers: UserAnswers): UserAnswers =

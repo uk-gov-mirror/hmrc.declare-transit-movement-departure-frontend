@@ -39,6 +39,7 @@ import models.messages.header.{Header, Transport}
 import models.messages.safetyAndSecurity._
 import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
 import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
+import play.api.Logger
 import repositories.InterchangeControlReferenceIdRepository
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,6 +53,8 @@ class DeclarationRequestService @Inject()(
   dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends DeclarationRequestServiceInt {
+
+  val logger: Logger = Logger(getClass)
 
   override def convert(userAnswers: UserAnswers): Future[Option[DeclarationRequest]] =
     icrRepository.nextInterchangeControlReferenceId().map {
@@ -184,26 +187,27 @@ class DeclarationRequestService @Inject()(
     def headerConsignor(traderDetails: TraderDetails): Option[TraderConsignor] =
       traderDetails.consignor
         .flatMap {
-          case TraderDetails.PersonalInformation(name, address) =>
+          case TraderDetails.TraderInformation(name, address, eori) =>
             Address.prismAddressToConsignorAddress.getOption(address).map {
               case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+                TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-
-          case TraderDetails.TraderEori(EoriNumber(eori)) =>
-            Some(TraderConsignor("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
+          case _ =>
+            logger.error(s"headerConsignor failed to get name and address")
+            None
         }
 
     def headerConsignee(traderDetails: TraderDetails): Option[TraderConsignee] =
       traderDetails.consignee
         .flatMap {
-          case TraderDetails.PersonalInformation(name, address) =>
+          case TraderDetails.TraderInformation(name, address, eori) =>
             Address.prismAddressToConsigneeAddress.getOption(address).map {
               case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+                TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-          case TraderDetails.TraderEori(EoriNumber(eori)) =>
-            Some(TraderConsignee("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
+          case _ =>
+            logger.error(s"headerConsignee failed to get name and address")
+            None
         }
 
     def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder): Option[String] =
@@ -243,26 +247,27 @@ class DeclarationRequestService @Inject()(
     def traderConsignor(requiredDetails: Option[RequiredDetails]): Option[TraderConsignorGoodsItem] =
       requiredDetails
         .flatMap {
-          case ItemTraderDetails.PersonalInformation(name, address) =>
+          case ItemTraderDetails.RequiredDetails(name, address, eori) =>
             Address.prismAddressToConsignorAddress.getOption(address).map {
               case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsignorGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+                TraderConsignorGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-
-          case ItemTraderDetails.TraderEori(EoriNumber(eori)) =>
-            Some(TraderConsignorGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
+          case _ =>
+            logger.error(s"traderConsignor failed to get name and address")
+            None
         }
 
     def traderConsignee(requiredDetails: Option[RequiredDetails]): Option[TraderConsigneeGoodsItem] =
       requiredDetails
         .flatMap {
-          case ItemTraderDetails.PersonalInformation(name, address) =>
+          case ItemTraderDetails.RequiredDetails(name, address, eori) =>
             Address.prismAddressToConsigneeAddress.getOption(address).map {
               case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsigneeGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, None)
+                TraderConsigneeGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-          case ItemTraderDetails.TraderEori(EoriNumber(eori)) =>
-            Some(TraderConsigneeGoodsItem("???", "???", "???", "???", "???", Some(eori))) //TODO populate this
+          case _ =>
+            logger.error(s"traderConsignee failed to get name and address")
+            None
         }
 
     def nationalityAtDeparture(inlandMode: InlandMode): Option[String] =

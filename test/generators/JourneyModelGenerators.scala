@@ -34,7 +34,7 @@ import models.journeyDomain.MovementDetails.{
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
-import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori}
+import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori, TraderInformation}
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
@@ -289,8 +289,8 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         principalTraderDetails <- arbitraryRequiredDetails(pricipalAddress).arbitrary
-        consignor              <- Gen.option(arbitraryRequiredDetails(consignorAddress).arbitrary)
-        consignee              <- Gen.option(arbitraryRequiredDetails(consigneeAddress).arbitrary)
+        consignor              <- Gen.option(arbitraryTraderInformation(consignorAddress).arbitrary)
+        consignee              <- Gen.option(arbitraryTraderInformation(consigneeAddress).arbitrary)
       } yield TraderDetails(principalTraderDetails, consignor, consignee)
     }
   }
@@ -338,26 +338,25 @@ trait JourneyModelGenerators {
       } yield PersonalInformation(name, address)
     }
 
-  implicit lazy val arbitraryItemTraderEori: Arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori] =
-    Arbitrary(Arbitrary.arbitrary[EoriNumber].map(models.journeyDomain.ItemTraderDetails.TraderEori))
-
-  implicit def arbitraryItemPersonalInformation(
-    implicit
-    arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation] =
+  implicit def arbitraryTraderInformation(implicit arbAddress: Arbitrary[Address]): Arbitrary[TraderInformation] =
     Arbitrary {
       for {
         name    <- stringsWithMaxLength(stringMaxLength)
         address <- arbAddress.arbitrary
-      } yield models.journeyDomain.ItemTraderDetails.PersonalInformation(name, address)
+        eori    <- Gen.option(arbitrary[EoriNumber])
+      } yield TraderInformation(name, address, eori)
     }
 
-  implicit def arbitraryItemRequiredDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.RequiredDetails] =
-    Arbitrary(
-      Gen.oneOf(
-        Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.PersonalInformation],
-        Arbitrary.arbitrary[models.journeyDomain.ItemTraderDetails.TraderEori]
-      )
-    )
+  implicit def arbitraryItemRequiredDetails(
+    implicit
+    arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.RequiredDetails] =
+    Arbitrary {
+      for {
+        name    <- stringsWithMaxLength(stringMaxLength)
+        address <- arbAddress.arbitrary
+        eori    <- Gen.option(arbitrary[EoriNumber])
+      } yield models.journeyDomain.ItemTraderDetails.RequiredDetails(name, address, eori)
+    }
 
   implicit def arbitraryItemSection: Arbitrary[ItemSection] =
     Arbitrary {
