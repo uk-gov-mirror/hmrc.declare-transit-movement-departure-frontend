@@ -39,6 +39,7 @@ import models.messages.header.{Header, Transport}
 import models.messages.safetyAndSecurity._
 import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
 import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
+import play.api.Logger
 import repositories.InterchangeControlReferenceIdRepository
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,6 +53,8 @@ class DeclarationRequestService @Inject()(
   dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends DeclarationRequestServiceInt {
+
+  val logger: Logger          = Logger(getClass)
 
   override def convert(userAnswers: UserAnswers): Future[Option[DeclarationRequest]] =
     icrRepository.nextInterchangeControlReferenceId().map {
@@ -189,7 +192,9 @@ class DeclarationRequestService @Inject()(
               case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
                 TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-          case _ => None
+          case _ =>
+            logger.error(s"headerConsignor failed to get name and address")
+            None
         }
 
     def headerConsignee(traderDetails: TraderDetails): Option[TraderConsignee] =
@@ -200,7 +205,9 @@ class DeclarationRequestService @Inject()(
               case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
                 TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-          case _ => None
+          case _ =>
+            logger.error(s"headerConsignee failed to get name and address")
+            None
         }
 
     def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder): Option[String] =
@@ -245,7 +252,9 @@ class DeclarationRequestService @Inject()(
               case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
                 TraderConsignorGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
-
+          case _ =>
+            logger.error(s"traderConsignor failed to get name and address")
+            None
         }
 
     def traderConsignee(requiredDetails: Option[RequiredDetails]): Option[TraderConsigneeGoodsItem] =
@@ -256,6 +265,9 @@ class DeclarationRequestService @Inject()(
               case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
                 TraderConsigneeGoodsItem(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
             }
+          case _ =>
+            logger.error(s"traderConsignee failed to get name and address")
+            None
         }
 
     def nationalityAtDeparture(inlandMode: InlandMode): Option[String] =
