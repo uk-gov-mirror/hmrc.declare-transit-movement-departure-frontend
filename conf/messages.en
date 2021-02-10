@@ -187,7 +187,7 @@ localReferenceNumber.heading = What is the local reference number (LRN)?
 localReferenceNumber.checkYourAnswersLabel = Local reference number
 localReferenceNumber.error.required = Enter the local reference number
 localReferenceNumber.error.length = Local reference number must be 22 characters or less
-localReferenceNumber.error.invalidCharacters = Local reference number must only include letters a to z, numbers 0 to 9, hyphens and underscores
+localReferenceNumber.error.invalidCharacters = Local reference number must only include letters a to z without accents, numbers 0 to 9, hyphens and underscores
 
 addSecurityDetails.title = Do you need to add safety and security details?
 addSecurityDetails.heading = Do you need to add safety and security details?
@@ -252,7 +252,7 @@ representativeName.heading = What is your company’s name?
 representativeName.checkYourAnswersLabel = Representative name
 representativeName.error.required = Enter your company’s name
 representativeName.error.length = Your company’s name must be 35 characters or less
-representativeName.error.invalid = Your company’s name must only include letters a to z or numbers 0 to 9
+representativeName.error.invalid = Your company’s name must only include letters a to z without accents or numbers 0 to 9
 
 representativeCapacity.title = What is your capacity?
 representativeCapacity.heading = What is your capacity?
@@ -275,7 +275,7 @@ principal.cya.section.heading = Principal
 principalName.checkYourAnswersLabel =  Principal’s name
 principalName.error.required =  Enter the principal's name
 principalName.error.length = PrincipalName must be 35 characters or less
-principalName.error.invalidCharacters =  The principal's name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, underscores, and greater than (>) and less than (<) signs
+principalName.error.invalidCharacters =  The principal's name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, underscores, and greater than (>) and less than (<) signs
 
 whatIsPrincipalEori.title = What is the principal’s EORI number?
 whatIsPrincipalEori.heading = What is the principal’s EORI number?
@@ -296,11 +296,11 @@ principalAddress.error.town.required = Enter the town of {0}’s address
 principalAddress.error.postcode.required = Enter the postcode of {0}’s address
 principalAddress.error.numberAndStreet.length = Number and street must be 35 characters or less
 principalAddress.error.town.length = Town must be 35 characters or less
-principalAddress.error.numberAndStreet.invalidCharacters = The  number and street of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+principalAddress.error.numberAndStreet.invalidCharacters = The  number and street of {0}’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 principalAddress.error.town.invalidCharacters = The town of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 principalAddress.error.postcode.length = Postcode must be 9 characters or less
 principalAddress.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
-principalAddress.error.postcode.invalidCharacters = The postcode of {0}’s address must only include letters a to z and numbers 0 to 9
+principalAddress.error.postcode.invalidCharacters = The postcode of {0}’s address must only include letters a to z without accents and numbers 0 to 9
 
 addConsignor.title = Is there a consignor for all items?
 addConsignor.heading = Is there a consignor for all items?
@@ -324,7 +324,7 @@ consignorEori.heading = What is the consignor’s EORI number?
 consignorEori.checkYourAnswersLabel = Consignor’s EORI number
 consignorEori.error.required = Enter the consignor’s EORI umber
 consignorEori.error.length = Consignor’s Eori number must be 17 characters or less
-consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z and numbers 0 to 9
+consignorEori.error.invalidCharacters = The consignor’s EORI number must only include letters a to z without accents and numbers 0 to 9
 consignorEori.error.invalidFormat = Enter the consignor’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 isConsigneeEoriKnown.title = Do you know the consignee’s EORI number?
@@ -350,7 +350,7 @@ whatIsConsigneeEori.heading = What is the consignee’s EORI number?
 whatIsConsigneeEori.checkYourAnswersLabel = What is the consignee’s EORI number?
 whatIsConsigneeEori.error.required = Enter the consignee’s EORI number
 whatIsConsigneeEori.error.length = The consignee’s EORI number must be 17 characters or less
-whatIsConsigneeEori.error.invalidCharacters = The consignee’s EORI number must only include letters a to z and numbers 0 to 9
+whatIsConsigneeEori.error.invalidCharacters = The consignee’s EORI number must only include letters a to z without accents and numbers 0 to 9
 whatIsConsigneeEori.error.invalidFormat = Enter the consignee’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 consignorAddress.title = What is the consignor's address?
@@ -367,8 +367,8 @@ consignorAddress.error.country.required = Enter the country of the consignor’s
 consignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
 consignorAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
 consignorAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
-consignorAddress.error.line1.invalid= The first line of the consignor’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-consignorAddress.error.line2.invalid= The second line of the consignor’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+consignorAddress.error.line1.invalid= The first line of the consignor’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+consignorAddress.error.line2.invalid= The second line of the consignor’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 consignorAddress.error.line3.invalid= The third line of the consignor’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 countryOfDispatch.title = What is the country of dispatch?
@@ -404,8 +404,8 @@ consigneeAddress.error.country.required = Enter the country of the consignee’s
 consigneeAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
 consigneeAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
 consigneeAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
-consigneeAddress.error.line1.invalid= The first line of the consignee’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-consigneeAddress.error.line2.invalid= The second line of the consignee’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+consigneeAddress.error.line1.invalid= The first line of the consignee’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+consigneeAddress.error.line2.invalid= The second line of the consignee’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 consigneeAddress.error.line3.invalid= The third line of the consignee’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 idAtDeparture.title = What is the name, registration or reference of the vehicle at departure?
@@ -413,7 +413,7 @@ idAtDeparture.heading = What is the name, registration or reference of the vehic
 idAtDeparture.checkYourAnswersLabel = Name, registration or reference at departure
 idAtDeparture.error.required = Enter the name, registration or reference of the vehicle at departure
 idAtDeparture.error.length = The name, registration or reference of the vehicle at departure must be 27 characters or less
-idAtDeparture.error.invalidCharacters = The name, registration or reference of the vehicle at departure must only include letters a to z, numbers 0 to 9 and blank spaces
+idAtDeparture.error.invalidCharacters = The name, registration or reference of the vehicle at departure must only include letters a to z without accents, numbers 0 to 9 and blank spaces
 
 nationalityAtDeparture.title = What is the nationality at departure?
 nationalityAtDeparture.heading = What is the nationality at departure?
@@ -518,7 +518,7 @@ authorisedLocationCode.checkYourAnswersLabel = What is the authorised location c
 authorisedLocationCode.paragraph = The code can be found in the registration documents.
 authorisedLocationCode.error.required = Enter the authorised location code
 authorisedLocationCode.error.length = The authorised location code must be 17 characters or less
-authorisedLocationCode.error.invalidCharacters = The authorised location code must only include letters a to z without accents, numbers 0 to 9
+authorisedLocationCode.error.invalidCharacters = The authorised location code must only include letters a to z without accents without accents, numbers 0 to 9
 
 customsApprovedLocation.title = Where is the Customs-approved location?
 customsApprovedLocation.heading = Where is the Customs-approved location?
@@ -736,7 +736,7 @@ declareMark.heading = What is the mark or number for package {0}?
 declareMark.error.required = Enter the mark or number for package {0}
 declareMark.error.length = The mark or number for package {0} must be {1} characters or less
 declareMark.error.emptyNumberOfPackages = Mark or number for package {0} must be 1 or more
-declareMark.error.format = The mark or number for package {0} must only include letters a to z, numbers 0 to 9
+declareMark.error.format = The mark or number for package {0} must only include letters a to z without accents, numbers 0 to 9
 
 addAnotherPackage.title.plural = You have added {0} packages
 addAnotherPackage.title.singular = You have added {0} package
@@ -752,7 +752,7 @@ commodityCode.checkYourAnswersLabel = Commodity code for item {0}
 commodityCode.error.required = Enter the commodity code for item {0}
 commodityCode.error.length = Commodity Code must be 10 characters or less
 commodityCode.hintText = Commodity codes are 6, 8 or 10 numbers.
-commodityCode.errors.invalidCharacters = The commodity code for item {0} must only include letters a to z and numbers 0 to 9
+commodityCode.errors.invalidCharacters = The commodity code for item {0} must only include letters a to z without accents and numbers 0 to 9
 commodityCode.errors.invalidFormat =  Enter the commodity code for item {0} in the right format, like 123456, 12345678 or 1234567890
 
 isCommodityCodeKnown.title = Do you know the commodity code for item {0}?
@@ -788,7 +788,7 @@ traderDetailsConsigneeAddress.checkYourAnswersLabel = {0}’s address
 traderDetailsConsigneeAddress.checkYourAnswersLabel.fallback = Consignee
 
 traderDetailsConsigneeAddress.error.line.required = Enter address line {0} of {1}’s address for item {2}
-traderDetailsConsigneeAddress.error.line.invalid = Address line {0} of {1}’s address for item {2} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+traderDetailsConsigneeAddress.error.line.invalid = Address line {0} of {1}’s address for item {2} must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 traderDetailsConsigneeAddress.error.line.length = Address line {0} of {1}’s address for item {2} must be 35 characters or less
 traderDetailsConsigneeAddress.error.line.country.required = Enter the country of consignee’s address for item {1}
 
@@ -800,7 +800,7 @@ traderDetailsConsigneeAddress.error.length = The address for {0} must be 100 cha
 
 traderDetailsConsigneeAddress.checkYourAnswersLabel.visuallyHidden = change [{0}’s address]
 
-traderDetailsConsigneeAddress.error.invalid = The {0} of {1}’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
+traderDetailsConsigneeAddress.error.invalid = The {0} of {1}’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 traderDetailsConsigneeAddress.error.required = Enter the {0} of {1}’s address
 traderDetailsConsigneeAddress.error.max_length = The {0} of {1}’s address must be 35 characters or less
 
@@ -815,9 +815,9 @@ traderDetailsConsigneeAddress.error.country.required = Enter the country of the 
 traderDetailsConsigneeAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
 traderDetailsConsigneeAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
 traderDetailsConsigneeAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
-traderDetailsConsigneeAddress.error.line1.invalid= The first line of the consignee’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-traderDetailsConsigneeAddress.error.line2.invalid= The second line of the consignee’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-traderDetailsConsigneeAddress.error.line3.invalid= The third line of the consignee’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+traderDetailsConsigneeAddress.error.line1.invalid= The first line of the consignee’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+traderDetailsConsigneeAddress.error.line2.invalid= The second line of the consignee’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+traderDetailsConsigneeAddress.error.line3.invalid= The third line of the consignee’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 traderDetailsConsigneeEoriKnown.title = Do you know the consignee’s EORI number for item {0}?
 traderDetailsConsigneeEoriKnown.heading = Do you know the consignee’s EORI number for item {0}?
@@ -831,7 +831,7 @@ traderDetailsConsigneeEoriNumber.checkYourAnswersLabel = Consignee’s EORI numb
 traderDetailsConsigneeEoriNumber.checkYourAnswersLabel.visuallyHidden = change [consignee’s EORI number for item {0}]
 traderDetailsConsigneeEoriNumber.error.required = Enter the consignee’s EORI number for item {0}
 traderDetailsConsigneeEoriNumber.error.length = The consignee’s EORI number for item must be {0} characters or less
-traderDetailsConsigneeEoriNumber.error.invalid = The consignee’s EORI number for item {0} must only include letters a to z and numbers 0 to 9
+traderDetailsConsigneeEoriNumber.error.invalid = The consignee’s EORI number for item {0} must only include letters a to z without accents and numbers 0 to 9
 traderDetailsConsigneeEoriNumber.error.invalidFormat = Enter the consignee’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 traderDetailsConsigneeName.title = What is the consignee’s name for item {0}?
@@ -840,7 +840,7 @@ traderDetailsConsigneeName.checkYourAnswersLabel = Consignee’s name for item {
 traderDetailsConsigneeName.checkYourAnswersLabel.visuallyHidden = change [consignee’s name for item {0}]
 traderDetailsConsigneeName.error.required =  Enter the consignee’s name for item {0}
 traderDetailsConsigneeName.error.length = The consignee’s name for item {0} must be {1} characters or less
-traderDetailsConsigneeName.error.invalid = The consignee’s name for item {0} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+traderDetailsConsigneeName.error.invalid = The consignee’s name for item {0} must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 traderDetailsConsignorAddress.title = What is the consignor’s address for item {0}
 traderDetailsConsignorAddress.heading = What is {0}’s address?
@@ -848,7 +848,7 @@ traderDetailsConsignorAddress.checkYourAnswersLabel = {0}’s address
 traderDetailsConsignorAddress.checkYourAnswersLabel.fallback = Consignor
 traderDetailsConsignorAddress.checkYourAnswersLabel.visuallyHidden = change [{0}’s address]
 traderDetailsConsignorAddress.error.line.required = Enter address line {0} of {1}’s address for item {2}
-traderDetailsConsignorAddress.error.line.invalid = Address line {0} of {1}’s address for item {2} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+traderDetailsConsignorAddress.error.line.invalid = Address line {0} of {1}’s address for item {2} must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 traderDetailsConsignorAddress.error.line.length = Address line {0} of {1}’s address for item {2} must be 35 characters or less
 traderDetailsConsignorAddress.error.line.country.required = Enter the country of consignor’s address for item {1}
 traderDetailsConsignorAddress.heading =  What is {0}’s address?
@@ -857,7 +857,7 @@ traderDetailsConsignorAddress.error.required = Enter {0}’s Address
 traderDetailsConsignorAddress.error.length = The address for {0} must be 100 characters or less
 traderDetailsConsignorAddress.checkYourAnswersLabel.visuallyHidden = change [{0}’s address]
 
-traderDetailsConsignorAddress.error.invalid = The {0} of {1}’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, asterisks, forward slashes, full stops, hyphens, question marks, and greater than (>) and less than (<) signs
+traderDetailsConsignorAddress.error.invalid = The {0} of {1}’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 traderDetailsConsignorAddress.error.required = Enter the {0} of {1}’s address
 traderDetailsConsignorAddress.error.max_length = The {0} of {1}’s address must be 35 characters or less
 
@@ -872,9 +872,9 @@ traderDetailsConsignorAddress.error.country.required = Enter the country of cons
 traderDetailsConsignorAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
 traderDetailsConsignorAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
 traderDetailsConsignorAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
-traderDetailsConsignorAddress.error.line1.invalid= The first line of consignor’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-traderDetailsConsignorAddress.error.line2.invalid= The second line of consignor’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-traderDetailsConsignorAddress.error.line3.invalid= The third line of consignor’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+traderDetailsConsignorAddress.error.line1.invalid= The first line of consignor’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+traderDetailsConsignorAddress.error.line2.invalid= The second line of consignor’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+traderDetailsConsignorAddress.error.line3.invalid= The third line of consignor’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 traderDetailsConsignorEoriKnown.title = Do you know the consignor’s EORI number for item {0}?
 traderDetailsConsignorEoriKnown.heading = Do you know the consignor’s EORI number for item {0}?
@@ -888,7 +888,7 @@ traderDetailsConsignorEoriNumber.checkYourAnswersLabel = Consignor’s EORI numb
 traderDetailsConsignorEoriNumber.checkYourAnswersLabel.visuallyHidden = change [consignor’s EORI number for item {0}]
 traderDetailsConsignorEoriNumber.error.required = Enter the consignor’s EORI number for item {0}
 traderDetailsConsignorEoriNumber.error.length = The consignor’s EORI number for item must be 17 characters or less
-traderDetailsConsignorEoriNumber.error.invalid = The consignor’s EORI number for item {0} must only include letters a to z and numbers 0 to 9
+traderDetailsConsignorEoriNumber.error.invalid = The consignor’s EORI number for item {0} must only include letters a to z without accents and numbers 0 to 9
 traderDetailsConsignorEoriNumber.error.invalidFormat = Enter the consignor’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 traderDetailsConsignorName.title = What is the consignor’s name for item {0}?
@@ -897,7 +897,7 @@ traderDetailsConsignorName.checkYourAnswersLabel = Consignor’s name for item {
 traderDetailsConsignorName.checkYourAnswersLabel.visuallyHidden = change [consignor’s name for item {0}]
 traderDetailsConsignorName.error.required =  Enter the consignor’s name for item {0}
 traderDetailsConsignorName.error.length = The consignor’s name for item {0} must be {1} characters or less
-traderDetailsConsignorName.error.invalid = The consignor’s name for item {0} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+traderDetailsConsignorName.error.invalid = The consignor’s name for item {0} must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 removeItem.title = Are you sure you want to remove this item?
 removeItem.heading = Are you sure you want to remove this item?
@@ -953,7 +953,7 @@ previousReference.title = What is the previous document reference?
 previousReference.heading = What is the previous document reference?
 previousReference.checkYourAnswersLabel = What is the previous document reference?
 previousReference.error.required = Enter the previous document reference
-previousReference.error.invalidCharacters = The previous document reference must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+previousReference.error.invalidCharacters = The previous document reference must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 previousReference.error.length = The previous document reference must be 35 characters or less
 
 addExtraInformation.title = Do you need to add any extra information for this document?
@@ -973,7 +973,7 @@ extraInformation.heading = What extra information for this document do you need 
 extraInformation.checkYourAnswersLabel = extraInformation
 extraInformation.error.required = Enter the extra information for this document
 extraInformation.error.length = The extra information for this document must be 26 characters or less
-extraInformation.error.invalid = The extra information for this document must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+extraInformation.error.invalid = The extra information for this document must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 confirmRemovePreviousAdministrativeReference.title = Are you sure you want to remove this previous administrative reference?
 confirmRemovePreviousAdministrativeReference.heading = Are you sure you want to remove this previous administrative reference?
@@ -995,7 +995,7 @@ specialMentionAdditionalInfo.title = What information do you need to add for spe
 specialMentionAdditionalInfo.heading = What information do you need to add for special mention {0} for item {1}?
 specialMentionAdditionalInfo.error.required = Enter the information you need to add for special mention {0} for item {0}
 specialMentionAdditionalInfo.error.length = The information you need to add for special mention {0} for item {0} must be 70 characters or less
-specialMentionAdditionalInfo.error.invalid = The information you need to add for special mention {0} for item {0} must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+specialMentionAdditionalInfo.error.invalid = The information you need to add for special mention {0} for item {0} must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 
 
@@ -1018,7 +1018,7 @@ containerNumber.heading = What is the shipping container number?
 containerNumber.checkYourAnswersLabel = Shipping container
 containerNumber.error.required = Enter the shipping container number
 containerNumber.error.length = The shipping container number must be {0} characters or less
-containerNumber.error.invalid = The shipping container number must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+containerNumber.error.invalid = The shipping container number must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 addAnotherContainer.title.singular = You have added {0} shipping container
 addAnotherContainer.title.plural = You have added {0} shipping containers
@@ -1097,7 +1097,7 @@ commercialReferenceNumber.title = What is the commercial reference number?
 commercialReferenceNumber.heading = What is the commercial reference number?
 commercialReferenceNumber.checkYourAnswersLabel = Commercial reference number
 commercialReferenceNumber.error.required = Enter the commercial reference number
-commercialReferenceNumber.error.invalidCharacters = The commercial reference number must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+commercialReferenceNumber.error.invalidCharacters = The commercial reference number must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 commercialReferenceNumber.error.length = The commercial reference number must be 70 characters or less
 
 addDangerousGoodsCode.title = Do you know the United Nations number for dangerous goods?
@@ -1150,7 +1150,7 @@ securityConsignorEori.heading = What is the security consignor’s EORI number?
 securityConsignorEori.checkYourAnswersLabel = Security consignor’s EORI number
 securityConsignorEori.error.required = Enter the security consignor’s EORI number
 securityConsignorEori.error.length = The security consignor’s EORI number must be 17 characters or less
-securityConsignorEori.error.invalid = The security consignor’s EORI number must only include letters a to z and numbers 0 to 9
+securityConsignorEori.error.invalid = The security consignor’s EORI number must only include letters a to z without accents and numbers 0 to 9
 securityConsignorEori.error.invalidFormat = Enter the security consignor’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 securityConsigneeEori.title = What is the security consignee’s EORI number?
@@ -1158,7 +1158,7 @@ securityConsigneeEori.heading = What is the security consignee’s EORI number?
 securityConsigneeEori.checkYourAnswersLabel = Security consignee’s EORI number
 securityConsigneeEori.error.required = Enter the security consignee’s EORI number
 securityConsigneeEori.error.length = The security consignee’s EORI number must be 17 characters or less
-securityConsigneeEori.error.invalid = The security consignee’s EORI number must only include letters a to z and numbers 0 to 9
+securityConsigneeEori.error.invalid = The security consignee’s EORI number must only include letters a to z without accents and numbers 0 to 9
 securityConsigneeEori.error.invalidFormat = Enter the security consignee’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 securityConsignorAddress.title = What is the security consignor’s address
@@ -1175,9 +1175,9 @@ securityConsignorAddress.error.country.required = Enter the country of {0}’s a
 securityConsignorAddress.error.AddressLine1.length = Address line 1 must be {0} characters or less
 securityConsignorAddress.error.AddressLine2.length = Address line 2 must be {0} characters or less
 securityConsignorAddress.error.AddressLine3.length = Address line 3 must be {0} characters or less
-securityConsignorAddress.error.line1.invalid= The first line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-securityConsignorAddress.error.line2.invalid= The second line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-securityConsignorAddress.error.line3.invalid= The third line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsignorAddress.error.line1.invalid= The first line of {0}’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsignorAddress.error.line2.invalid= The second line of {0}’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsignorAddress.error.line3.invalid= The third line of {0}’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 securityConsigneeAddress.title = What is the security consignee’s address
 securityConsigneeAddress.heading = What is {0}’s address?
@@ -1193,9 +1193,9 @@ securityConsigneeAddress.error.country.required = Enter the country of {0}’s a
 securityConsigneeAddress.error.AddressLine1.length = Address line 1 must be {0} characters or less
 securityConsigneeAddress.error.AddressLine2.length = Address line 2 must be {0} characters or less
 securityConsigneeAddress.error.AddressLine3.length = Address line 3 must be {0} characters or less
-securityConsigneeAddress.error.line1.invalid= The first line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-securityConsigneeAddress.error.line2.invalid= The second line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-securityConsigneeAddress.error.line3.invalid= The third line of {0}’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsigneeAddress.error.line1.invalid= The first line of {0}’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsigneeAddress.error.line2.invalid= The second line of {0}’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
+securityConsigneeAddress.error.line3.invalid= The third line of {0}’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 declarationRejection.title = There is a problem with this departure declaration
 declarationRejection.heading = There is a problem with this departure declaration
@@ -1281,7 +1281,7 @@ placeOfUnloadingCode.checkYourAnswersLabel =  Place of unloading code
 placeOfUnloadingCode.checkYourAnswersLabel.visuallyHidden =  change place of unloading code
 placeOfUnloadingCode.error.required = Enter the place of unloading code
 placeOfUnloadingCode.error.length = The place of unloading code must be 35 characters or less
-placeOfUnloadingCode.error.invalid = The place of unloading code must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+placeOfUnloadingCode.error.invalid = The place of unloading code must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 countryOfRouting.title =  What is the country of routing?
 countryOfRouting.heading =  What is the country of routing?
@@ -1322,7 +1322,7 @@ safetyAndSecurityConsignorAddress.AddressLine4 = Country
 safetyAndSecurityConsignorAddress.checkYourAnswersLabel.visuallyHidden = change security consignor’s address
 safetyAndSecurityConsignorAddress.error.required = Enter address line {0} of the security consignor’s address
 safetyAndSecurityConsignorAddress.error.length =  Address line {0} of of the security consignor’s address must be 35 characters or less
-safetyAndSecurityConsignorAddress.error.invalid =  Address line {0} of of the security consignor’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+safetyAndSecurityConsignorAddress.error.invalid =  Address line {0} of of the security consignor’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 safetyAndSecurityConsignorEori.title = What is the security consignor’s EORI number?
 safetyAndSecurityConsignorEori.heading = What is the security consignor’s EORI number?
@@ -1339,7 +1339,7 @@ safetyAndSecurityConsignorName.checkYourAnswersLabel = Security consignor’s na
 safetyAndSecurityConsignorName.checkYourAnswersLabel.visuallyHidden = change security consignor’s name
 safetyAndSecurityConsignorName.error.required = Enter the security consignor’s name
 safetyAndSecurityConsignorName.error.length = The security consignor’s name must be 35 characters or less
-safetyAndSecurityConsignorName.error.invalid = The security consignor’s name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+safetyAndSecurityConsignorName.error.invalid = The security consignor’s name must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 addSafetyAndSecurityConsignee.title =  Is this the security consignee for all items?
 addSafetyAndSecurityConsignee.heading = Is this the security consignee for all items?
@@ -1364,7 +1364,7 @@ safetyAndSecurityConsigneeAddress.checkYourAnswersLabel.visuallyHidden = change 
 safetyAndSecurityConsigneeAddress.error.required = Enter address line {0} of the security consignee’s address
 safetyAndSecurityConsigneeAddress.AddressLine4.required = Enter the country of the security consignee’s address
 safetyAndSecurityConsigneeAddress.error.length = Address line {0} of of the security consignee’s address must be 35 characters or less
-safetyAndSecurityConsigneeAddress.error.invalid = Address line {0} of of the security consignee’s address must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+safetyAndSecurityConsigneeAddress.error.invalid = Address line {0} of of the security consignee’s address must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 safetyAndSecurityConsigneeEori.title = What is the security consignee’s EORI number?
 safetyAndSecurityConsigneeEori.heading = What is the security consignee’s EORI number?
@@ -1379,7 +1379,7 @@ safetyAndSecurityConsigneeName.heading = What is the security consignee’s name
 safetyAndSecurityConsigneeName.checkYourAnswersLabel = Security consignee’s name
 safetyAndSecurityConsigneeName.checkYourAnswersLabel.visuallyHidden = change security consignee’s name
 safetyAndSecurityConsigneeName.error.required = Enter the security consignee’s name
-safetyAndSecurityConsigneeName.error.length = The security consignee’s name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+safetyAndSecurityConsigneeName.error.length = The security consignee’s name must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 safetyAndSecurityConsigneeName.error.invalid = The security consignee’s name must be 35 characters or less
 
 addCarrierEori.title =  Do you know the carrier’s EORI number?
@@ -1416,7 +1416,7 @@ carrierEori.heading = What is the carrier’s EORI number?
 carrierEori.checkYourAnswersLabel = Carrier's EORI number
 carrierEori.error.required = Enter the carrier’s EORI number
 carrierEori.error.length =  The carrier’s EORI number must be 17 characters or less
-carrierEori.error.invalidCharacters = The carrier's EORI number must only include letters a to z and numbers 0 to 9
+carrierEori.error.invalidCharacters = The carrier's EORI number must only include letters a to z without accents and numbers 0 to 9
 carrierEori.error.invalidFormat = Enter the carrier’s EORI number in the right format, like GB123456789012 or AT1A2B3C4D5E6F
 
 carrierName.title =  What is the carrier’s name?
@@ -1448,14 +1448,14 @@ securityConsignorName.heading = What is the security consignor’s name?
 securityConsignorName.checkYourAnswersLabel = Security consignor’s name
 securityConsignorName.error.required = Enter the security consignor’s name
 securityConsignorName.error.length = The security consignor’s name must be 35 characters or less
-securityConsignorName.error.invalid = The security consignor’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+securityConsignorName.error.invalid = The security consignor’s name must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 securityConsigneeName.title = What is the security consignee’s name?
 securityConsigneeName.heading = What is the security consignee’s name?
 securityConsigneeName.checkYourAnswersLabel =  Security consignee’s name
 securityConsigneeName.error.required = Enter the security consignee’s name
 securityConsigneeName.error.length =  The security consignee’s name must be 35 characters or less
-securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+securityConsigneeName.error.invalid = The security consignee’s name must only include letters a to z without accents, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
 
 
 confirmRemoveCountry.title = Are you sure you want to remove this country?
