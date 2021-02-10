@@ -16,17 +16,18 @@
 
 package forms
 
+import forms.Constants.vehicleIdMaxLength
 import forms.behaviours.StringFieldBehaviours
-import forms.Constants.{vehicleIdMaxLength, vehicleIdRegex}
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey       = "idCrossingBorder.error.required"
-  val lengthKey         = "idCrossingBorder.error.length"
-  val invalidCharacters = "idCrossingBorder.error.invalidCharacters"
-  val form              = new IdCrossingBorderFormProvider()()
+  val requiredKey = "idCrossingBorder.error.required"
+  val lengthKey   = "idCrossingBorder.error.length"
+  val invalidKey  = "idCrossingBorder.error.invalidCharacters"
+  val form        = new IdCrossingBorderFormProvider()()
 
   ".value" - {
 
@@ -51,19 +52,15 @@ class IdCrossingBorderFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the id regex" in {
+    "must not bind strings that do not match regex" in {
 
-      val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(vehicleIdRegex)))
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{27}")
 
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(vehicleIdMaxLength) suchThat (!_.matches(vehicleIdRegex))
-      }
-
-      forAll(genInvalidString) {
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }

@@ -16,11 +16,13 @@
 
 package forms
 
-import javax.inject.Inject
+import forms.Constants.vehicleIdMaxLength
 import forms.mappings.Mappings
-import forms.Constants.{vehicleIdMaxLength, vehicleIdRegex}
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class IdCrossingBorderFormProvider @Inject() extends Mappings {
 
@@ -30,6 +32,6 @@ class IdCrossingBorderFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(vehicleIdMaxLength, "idCrossingBorder.error.length"),
-            regexp(vehicleIdRegex, "idCrossingBorder.error.invalidCharacters"),
+            regexp(alphaNumericRegex, "idCrossingBorder.error.invalidCharacters", Seq.empty),
           )))
 }

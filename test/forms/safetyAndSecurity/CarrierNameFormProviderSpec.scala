@@ -17,16 +17,17 @@
 package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class CarrierNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey              = "carrierName.error.required"
-  val lengthKey                = "carrierName.error.length"
-  val maxLength                = 35
-  val invalidCharacters        = "carrierName.error.invalidCharacters"
-  val carrierNameRegex: String = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
+  val requiredKey = "carrierName.error.required"
+  val lengthKey   = "carrierName.error.length"
+  val maxLength   = 35
+  val invalidKey  = "carrierName.error.invalidCharacters"
 
   val form = new CarrierNameFormProvider()()
 
@@ -53,20 +54,17 @@ class CarrierNameFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the carrier name eori name regex" in {
+    "must not bind strings that do not match regex" in {
 
-      val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(carrierNameRegex)))
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
 
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(carrierNameRegex))
-      }
-
-      forAll(genInvalidString) {
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
+
   }
 }

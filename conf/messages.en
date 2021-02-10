@@ -318,7 +318,7 @@ consignor.cya.section.heading = Consignor
 consignorName.checkYourAnswersLabel = Consignor’s name
 consignorName.error.required = Enter the consignor’s name
 consignorName.error.length = Consignor’s name must be 35 characters or less
-consignorName.error.invalid = Consignor’s name must only include letters a to z and numbers 0 to 9 or blank spaces
+consignorName.error.invalid = Consignor’s name must only include letters a to z without accents and numbers 0 to 9 or blank spaces
 consignorEori.title = What is the consignor’s EORI number?
 consignorEori.heading = What is the consignor’s EORI number?
 consignorEori.checkYourAnswersLabel = Consignor’s EORI number
@@ -343,7 +343,7 @@ consignee.cya.section.heading = Consignee
 consigneeName.checkYourAnswersLabel = Consignee’s name
 consigneeName.error.required = Enter the consignee’s name
 consigneeName.error.length = The consignee’s name must be 35 characters or less
-consigneeName.error.invalid = The consignee’s name must only include letters a to z and numbers 0 to 9 or blank spaces
+consigneeName.error.invalid = The consignee’s name must only include letters a to z without accents and numbers 0 to 9 or blank spaces
 
 whatIsConsigneeEori.title = What is the consignee’s EORI number?
 whatIsConsigneeEori.heading = What is the consignee’s EORI number?
@@ -518,14 +518,14 @@ authorisedLocationCode.checkYourAnswersLabel = What is the authorised location c
 authorisedLocationCode.paragraph = The code can be found in the registration documents.
 authorisedLocationCode.error.required = Enter the authorised location code
 authorisedLocationCode.error.length = The authorised location code must be 17 characters or less
-authorisedLocationCode.error.invalidCharacters = The authorised location code must only include letters a to z, numbers 0 to 9
+authorisedLocationCode.error.invalidCharacters = The authorised location code must only include letters a to z without accents, numbers 0 to 9
 
 customsApprovedLocation.title = Where is the Customs-approved location?
 customsApprovedLocation.heading = Where is the Customs-approved location?
 customsApprovedLocation.checkYourAnswersLabel = Where is the Customs-approved location?
 customsApprovedLocation.error.required = Enter the Customs-approved location
 customsApprovedLocation.error.length = The Customs-approved location must be 17 characters or less
-customsApprovedLocation.error.invalidCharacters = The Customs-approved location must only include letters a to z, numbers 0 to 9 or blank spaces
+customsApprovedLocation.error.invalidCharacters = The Customs-approved location must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 
 addCustomsApprovedLocation.title = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.heading = Do you need to add a Customs-approved location?
@@ -665,7 +665,7 @@ accessCode.heading = What is the access code?
 accessCode.checkYourAnswersLabel = Access code
 accessCode.error.required = Enter the access code
 accessCode.error.length = Access code must be 4 characters
-accessCode.error.invalidCharacters = Access code must only include letters a to z and numbers 0 to 9
+accessCode.error.invalidCharacters = Access code must only include letters a to z without accents and numbers 0 to 9
 
 
 guaranteeDetailsCheckYourAnswers.title = Check your answers
@@ -1040,7 +1040,7 @@ documentReference.title = What is the document reference?
 documentReference.heading = What is the document reference?
 documentReference.checkYourAnswersLabel = Document reference
 documentReference.error.required = Enter the document reference
-documentReference.error.invalidCharacters = The document reference must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+documentReference.error.invalidCharacters = The document reference must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 documentReference.error.length = The document reference must be 35 characters or less
 
 documentExtraInformation.title = What extra information do you need to add for document {0}?
@@ -1048,7 +1048,7 @@ documentExtraInformation.heading = What extra information do you need to add for
 documentExtraInformation.checkYourAnswersLabel = Extra information for document {0}
 documentExtraInformation.error.required = Enter the extra information for document {0}
 documentExtraInformation.error.length = Document extra information must be 26 characters or less
-documentExtraInformation.error.invalid = The extra information for this document must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+documentExtraInformation.error.invalid = The extra information for this document must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 
 addAnotherDocument.title.singular = You have added {0} produced document or certificate
 addAnotherDocument.title.plural = You have added {0} produced documents or certificates
@@ -1251,7 +1251,7 @@ commercialReferenceNumberAllItems.heading =  What is the commercial reference nu
 commercialReferenceNumberAllItems.checkYourAnswersLabel = Same commercial reference number for all items?
 commercialReferenceNumberAllItems.checkYourAnswersLabel.visuallyHidden = change commercial reference number for all items
 commercialReferenceNumberAllItems.error.required = Enter the commercial reference number for all the items
-commercialReferenceNumberAllItems.error.invalid =  The commercial reference number must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+commercialReferenceNumberAllItems.error.invalid =  must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 commercialReferenceNumberAllItems.error.length =  The commercial reference number must be 70 characters or less
 
 addConveyancerReferenceNumber.title = Do you need to add a Conveyance Reference Number (CRN)?
@@ -1265,7 +1265,7 @@ conveyanceReferenceNumber.heading = What is the Conveyance Reference Number (CRN
 conveyanceReferenceNumber.checkYourAnswersLabel = Conveyance Reference Number
 conveyanceReferenceNumber.checkYourAnswersLabel.visuallyHidden = change conveyance reference number
 conveyanceReferenceNumber.error.required = Enter the Conveyance Reference Number
-conveyanceReferenceNumber.error.invalid = The Conveyance Reference Number must only include letters a to z and numbers 0 to 9
+conveyanceReferenceNumber.error.invalid = The Conveyance Reference Number must only include letters a to z without accents and numbers 0 to 9
 conveyanceReferenceNumber.error.minLength =  The Conveyance Reference Number must be 7 characters or more
 conveyanceReferenceNumber.error.maxLength = The Conveyance Reference Number must be 8 characters or less
 
@@ -1281,7 +1281,7 @@ placeOfUnloadingCode.checkYourAnswersLabel =  Place of unloading code
 placeOfUnloadingCode.checkYourAnswersLabel.visuallyHidden =  change place of unloading code
 placeOfUnloadingCode.error.required = Enter the place of unloading code
 placeOfUnloadingCode.error.length = The place of unloading code must be 35 characters or less
-placeOfUnloadingCode.error.invalid = The place of unloading code must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+placeOfUnloadingCode.error.invalid = The place of unloading code must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
 countryOfRouting.title =  What is the country of routing?
 countryOfRouting.heading =  What is the country of routing?
@@ -1329,7 +1329,7 @@ safetyAndSecurityConsignorEori.heading = What is the security consignor’s EORI
 safetyAndSecurityConsignorEori.checkYourAnswersLabel = Security consignor’s EORI number
 safetyAndSecurityConsignorEori.checkYourAnswersLabel.visuallyHidden = change security consignor’s EORI number
 safetyAndSecurityConsignorEori.error.required = Enter the security consignor’s EORI number
-safetyAndSecurityConsignorEori.error.length = The security consignor’s EORI number must only include letters a to z and numbers 0 to 9
+safetyAndSecurityConsignorEori.error.length = The security consignor’s EORI number must only include letters a to z without accents and numbers 0 to 9
 safetyAndSecurityConsignorEori.error.invalid = The security consignor’s EORI number must be 17 characters or less
 safetyAndSecurityConsignorEori.error.country.required = Enter the country of the security consignor’s address
 
@@ -1339,7 +1339,7 @@ safetyAndSecurityConsignorName.checkYourAnswersLabel = Security consignor’s na
 safetyAndSecurityConsignorName.checkYourAnswersLabel.visuallyHidden = change security consignor’s name
 safetyAndSecurityConsignorName.error.required = Enter the security consignor’s name
 safetyAndSecurityConsignorName.error.length = The security consignor’s name must be 35 characters or less
-safetyAndSecurityConsignorName.error.invalid = The security consignor’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+safetyAndSecurityConsignorName.error.invalid = The security consignor’s name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 
 addSafetyAndSecurityConsignee.title =  Is this the security consignee for all items?
 addSafetyAndSecurityConsignee.heading = Is this the security consignee for all items?
@@ -1372,14 +1372,14 @@ safetyAndSecurityConsigneeEori.checkYourAnswersLabel = Security consignee’s EO
 safetyAndSecurityConsigneeEori.checkYourAnswersLabel.visuallyHidden =  change security consignee’s EORI number
 safetyAndSecurityConsigneeEori.error.required = Enter the security consignee’s EORI number
 safetyAndSecurityConsigneeEori.error.length = The security consignee’s EORI number must be 17 characters or less
-safetyAndSecurityConsigneeEori.error.invalid = The security consignee’s EORI number must only include letters a to z and numbers 0 to 9
+safetyAndSecurityConsigneeEori.error.invalid = The security consignee’s EORI number must only include letters a to z without accents and numbers 0 to 9
 
 safetyAndSecurityConsigneeName.title = What is the security consignee’s name?
 safetyAndSecurityConsigneeName.heading = What is the security consignee’s name?
 safetyAndSecurityConsigneeName.checkYourAnswersLabel = Security consignee’s name
 safetyAndSecurityConsigneeName.checkYourAnswersLabel.visuallyHidden = change security consignee’s name
 safetyAndSecurityConsigneeName.error.required = Enter the security consignee’s name
-safetyAndSecurityConsigneeName.error.length = The security consignee’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+safetyAndSecurityConsigneeName.error.length = The security consignee’s name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
 safetyAndSecurityConsigneeName.error.invalid = The security consignee’s name must be 35 characters or less
 
 addCarrierEori.title =  Do you know the carrier’s EORI number?
@@ -1407,10 +1407,9 @@ carrierAddress.error.country.required = Enter the country of the carrier’s add
 carrierAddress.error.AddressLine1.length = Address line 1 must be 35 characters or less
 carrierAddress.error.AddressLine2.length = Address line 2 must be 35 characters or less
 carrierAddress.error.AddressLine3.length = Address line 3 must be 35 characters or less
-carrierAddress.error.line1.invalid= The first line of the carrier’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-carrierAddress.error.line2.invalid= The second line of the carrier’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-carrierAddress.error.line3.invalid= The third line of the carrier’s address must only include letters a to z, numbers 0 to 9, blank spaces, at signs (@), forward slashes, back slashes, full stops, commas, hyphens, and question marks
-carrierAddress.error.length = Carrier address must be 35 characters or less
+carrierAddress.error.line1.invalid= The first line of the carrier’s address must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
+carrierAddress.error.line2.invalid= The second line of the carrier’s address must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
+carrierAddress.error.line3.invalid= The third line of the carrier’s address must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 
 carrierEori.title = What is the carrier’s EORI number?
 carrierEori.heading = What is the carrier’s EORI number?
@@ -1425,7 +1424,7 @@ carrierName.heading = What is the carrier’s name?
 carrierName.checkYourAnswersLabel =  Carrier’s name
 carrierName.error.required =  Enter the carrier’s name
 carrierName.error.length = carrier’s name must be 35 characters or less
-carrierName.error.invalidCharacters = The carrier's name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks, and less than and greater than signs
+carrierName.error.invalidCharacters = The carrier's name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 
 cancellationDecisionUpdate.title = Cancellation decision
 cancellationDecisionUpdate.heading = Cancellation decision

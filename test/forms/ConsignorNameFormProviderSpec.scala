@@ -17,12 +17,15 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class ConsignorNameFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "consignorName.error.required"
   val lengthKey   = "consignorName.error.length"
+  val invalidKey  = "consignorName.error.invalid"
   val maxLength   = 35
 
   val form = new ConsignorNameFormProvider()()
@@ -49,5 +52,17 @@ class ConsignorNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings that do not match regex" in {
+
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
   }
 }

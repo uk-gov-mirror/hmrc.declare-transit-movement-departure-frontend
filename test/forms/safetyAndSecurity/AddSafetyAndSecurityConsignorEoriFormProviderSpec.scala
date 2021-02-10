@@ -41,5 +41,6 @@ class AddSafetyAndSecurityConsignorEoriFormProviderSpec extends BooleanFieldBeha
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
   }
 }

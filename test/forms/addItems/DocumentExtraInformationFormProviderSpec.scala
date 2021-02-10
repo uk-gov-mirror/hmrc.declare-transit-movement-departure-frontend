@@ -18,7 +18,9 @@ package forms.addItems
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class DocumentExtraInformationFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
@@ -52,5 +54,17 @@ class DocumentExtraInformationFormProviderSpec extends SpecBase with StringField
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
+
+    "must not bind strings that do not match regex" in {
+
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{26}")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
   }
 }

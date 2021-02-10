@@ -18,7 +18,7 @@ package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 class ConveyanceReferenceNumberFormProviderSpec extends StringFieldBehaviours {
@@ -63,18 +63,15 @@ class ConveyanceReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the invalid characters regex" in {
+    "must not bind strings that do not match regex" in {
 
-      val expectedError =
-        List(FormError(fieldName, invalidCharactersKey, Seq(RefRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithLength(minLength) suchThat (!_.matches(RefRegex))
-      }
+      val expectedError          = FormError(fieldName, invalidCharactersKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{8}")
 
-      forAll(genInvalidString) {
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }

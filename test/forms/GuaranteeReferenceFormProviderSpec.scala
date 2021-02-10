@@ -19,7 +19,8 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
 
@@ -56,15 +57,13 @@ class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind strings that do not match regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(representativeNameRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(representativeNameRegex))
-      }
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{$maxLength}")
 
-      forAll(genInvalidString) {
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }

@@ -17,6 +17,8 @@
 package forms.safetyAndSecurity
 
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.stringFieldRegex
+
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
@@ -24,7 +26,6 @@ import uk.gov.hmrc.play.mappers.StopOnFirstFail
 class CommercialReferenceNumberAllItemsFormProvider @Inject() extends Mappings {
 
   val maxLength = 70
-  val refRegex  = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,70}$"
 
   def apply(): Form[String] =
     Form(
@@ -32,7 +33,7 @@ class CommercialReferenceNumberAllItemsFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLength, "commercialReferenceNumberAllItems.error.length"),
-            regexp(refRegex, "commercialReferenceNumberAllItems.error.invalid")
+            regexp(stringFieldRegex, "commercialReferenceNumberAllItems.error.invalid", Seq.empty)
           )
         )
     )

@@ -18,9 +18,11 @@ package forms
 
 import forms.mappings.Mappings
 import forms.Constants._
+
 import javax.inject.Inject
 import models.PrincipalAddress
 import models.PrincipalAddress.Constants.{numberAndStreetLength, postcodeLength, townLength}
+import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
@@ -32,19 +34,19 @@ class PrincipalAddressFormProvider @Inject() extends Mappings {
       "numberAndStreet" -> text("principalAddress.error.numberAndStreet.required", Seq(principalName))
         .verifying(StopOnFirstFail[String](
           maxLength(numberAndStreetLength, "principalAddress.error.numberAndStreet.length"),
-          regexp(addressRegex, "principalAddress.error.numberAndStreet.invalidCharacters", principalName),
+          regexp(stringFieldRegex, "principalAddress.error.numberAndStreet.invalid", Seq.empty),
         )),
       "town" -> text("principalAddress.error.town.required", Seq(principalName))
         .verifying(
           StopOnFirstFail[String](
             maxLength(townLength, "principalAddress.error.town.length"),
-            regexp(addressRegex, "principalAddress.error.town.invalidCharacters", principalName),
+            regexp(stringFieldRegex, "principalAddress.error.town.invalid", Seq.empty),
           )),
       "postcode" -> text("principalAddress.error.postcode.required", Seq(principalName))
         .verifying(StopOnFirstFail[String](
           maxLength(postcodeLength, "principalAddress.error.postcode.length"),
-          regexp(validPostcodeCharactersRegex, "principalAddress.error.postcode.invalidCharacters", principalName),
-          regexp(postCodeRegex, "principalAddress.error.postcode.invalidFormat", principalName),
+          regexp(validPostcodeCharactersRegex, "principalAddress.error.postcode.invalid", Seq.empty),
+          regexp(postCodeRegex, "principalAddress.error.postcode.invalidCharacters", Seq.empty),
         ))
     )(PrincipalAddress.apply)(PrincipalAddress.unapply)
   )

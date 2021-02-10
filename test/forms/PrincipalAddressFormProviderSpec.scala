@@ -17,9 +17,9 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import forms.Constants._
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
 
@@ -31,6 +31,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName   = "numberAndStreet"
     val requiredKey = "principalAddress.error.numberAndStreet.required"
     val lengthKey   = "principalAddress.error.numberAndStreet.length"
+    val invalidKey  = "principalAddress.error.numberAndStreet.invalid"
     val maxLength   = 35
 
     behave like fieldThatBindsValidData(
@@ -52,21 +53,15 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
 
-    "must not bind strings that do not match the address line regex" in {
+    "must not bind strings that do not match regex" in {
 
-      val invalidChars = "principalAddress.error.numberAndStreet.invalidCharacters"
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
 
-      val expectedError =
-        List(FormError(fieldName, invalidChars, Seq(principalName)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))
-      }
-
-      forAll(genInvalidString) {
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }
@@ -76,6 +71,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName   = "town"
     val requiredKey = "principalAddress.error.town.required"
     val lengthKey   = "principalAddress.error.town.length"
+    val invalidKey  = "principalAddress.error.town.invalid"
     val maxLength   = 35
 
     behave like fieldThatBindsValidData(
@@ -97,21 +93,15 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
 
-    "must not bind strings that do not match the address line regex" in {
+    "must not bind strings that do not match regex" in {
 
-      val invalidChars = "principalAddress.error.town.invalidCharacters"
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
 
-      val expectedError =
-        List(FormError(fieldName, invalidChars, Seq(principalName)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(addressRegex))
-      }
-
-      forAll(genInvalidString) {
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }
@@ -121,7 +111,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName            = "postcode"
     val requiredKey          = "principalAddress.error.postcode.required"
     val lengthKey            = "principalAddress.error.postcode.length"
-    val invalidFormatKey     = "principalAddress.error.postcode.invalidFormat"
+    val invalidKey           = "principalAddress.error.postcode.invalid"
     val invalidCharactersKey = "principalAddress.error.postcode.invalidCharacters"
     val maxLength            = 9
 
@@ -148,35 +138,15 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "must not bind strings that do not match the valid postcode characters regex" in {
+    "must not bind strings that do not match regex" in {
 
-      val expectedError =
-        List(FormError(fieldName, invalidCharactersKey, Seq(principalName)))
+      val expectedError          = FormError(fieldName, invalidCharactersKey, Seq.empty)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{9}")
 
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(validPostcodeCharactersRegex))
-      }
-
-      forAll(genInvalidString) {
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
-
-    "must not bind strings that do not match postcode regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidFormatKey, Seq(principalName)))
-
-      val genInvalidString: Gen[String] = {
-        alphaNumericWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
 

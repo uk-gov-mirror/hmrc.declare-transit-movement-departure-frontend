@@ -18,14 +18,15 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class CustomsApprovedLocationFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey                          = "customsApprovedLocation.error.required"
   val lengthKey                            = "customsApprovedLocation.error.length"
   val maxLength                            = 17
-  val invalidCharacters                    = "customsApprovedLocation.error.invalidCharacters"
+  val invalidKey                           = "customsApprovedLocation.error.invalidCharacters"
   val customsApprovedLocationRegex: String = "^[a-zA-Z0-9/@'<>?%&.\\- ]*$"
 
   val form = new CustomsApprovedLocationFormProvider()()
@@ -53,19 +54,15 @@ class CustomsApprovedLocationFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the Customs-approved location name regex" in {
+    "must not bind strings that do not match regex" in {
 
-      val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(customsApprovedLocationRegex)))
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{17}")
 
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(customsApprovedLocationRegex))
-      }
-
-      forAll(genInvalidString) {
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }

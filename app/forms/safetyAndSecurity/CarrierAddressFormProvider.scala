@@ -18,26 +18,28 @@ package forms.safetyAndSecurity
 
 import forms.Constants.addressRegex
 import forms.mappings.Mappings
-import javax.inject.Inject
-import models.{CarrierAddress, CountryList}
+import models.domain.StringFieldRegex.stringFieldRegex
 import models.reference.Country
+import models.{Address, CarrierAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class CarrierAddressFormProvider @Inject() extends Mappings {
 
   def apply(countryList: CountryList): Form[CarrierAddress] = Form(
     mapping(
       "AddressLine1" -> text("carrierAddress.error.AddressLine1.required")
-        .verifying(
-          StopOnFirstFail[String](maxLength(35, "carrierAddress.error.AddressLine1.length"), regexp(addressRegex, "carrierAddress.error.line1.invalid"))),
+        .verifying(StopOnFirstFail[String](maxLength(35, "carrierAddress.error.AddressLine1.length"),
+                                           regexp(stringFieldRegex, "carrierAddress.error.AddressLine1.invalid", Seq.empty))),
       "AddressLine2" -> text("carrierAddress.error.AddressLine2.required")
-        .verifying(
-          StopOnFirstFail[String](maxLength(35, "carrierAddress.error.AddressLine2.length"), regexp(addressRegex, "carrierAddress.error.line2.invalid"))),
+        .verifying(StopOnFirstFail[String](maxLength(35, "carrierAddress.error.AddressLine2.length"),
+                                           regexp(stringFieldRegex, "carrierAddress.error.AddressLine2.invalid", Seq.empty))),
       "AddressLine3" -> text("carrierAddress.error.AddressLine3.required")
-        .verifying(
-          StopOnFirstFail[String](maxLength(35, "carrierAddress.error.AddressLine3.length"), regexp(addressRegex, "carrierAddress.error.line3.invalid"))),
+        .verifying(StopOnFirstFail[String](maxLength(35, "carrierAddress.error.AddressLine3.length"),
+                                           regexp(stringFieldRegex, "carrierAddress.error.AddressLine3.invalid", Seq.empty))),
       "country" -> text("carrierAddress.error.country.required")
         .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))
         .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)

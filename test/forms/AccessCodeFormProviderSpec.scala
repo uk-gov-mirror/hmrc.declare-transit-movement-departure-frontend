@@ -18,14 +18,14 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class AccessCodeFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey      = "accessCode.error.required"
   val lengthKey        = "accessCode.error.length"
   val accessCodeLength = 4
-  val accessCodeRegex  = "^[0-9A-Za-z]{4}$"
   val form             = new AccessCodeFormProvider()()
   val invalidKey       = "accessCode.error.invalidCharacters"
 
@@ -46,15 +46,13 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind strings that do not match regex" in {
 
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(accessCodeRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithLength(accessCodeLength) suchThat (!_.matches(accessCodeRegex))
-      }
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{4}")
 
-      forAll(genInvalidString) {
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }
