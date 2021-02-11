@@ -55,7 +55,7 @@ class DestinationCountryController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getTransitCountryList() flatMap {
+      referenceDataConnector.getCountryList() flatMap {
         countries =>
           val form = formProvider(countries)
 
@@ -71,7 +71,7 @@ class DestinationCountryController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      referenceDataConnector.getTransitCountryList() flatMap {
+      referenceDataConnector.getCountryList() flatMap {
         countries =>
           formProvider(countries)
             .bindFromRequest()
