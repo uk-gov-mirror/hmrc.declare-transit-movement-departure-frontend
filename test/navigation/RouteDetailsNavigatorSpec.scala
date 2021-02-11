@@ -55,12 +55,22 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
 
-        "must go from Destination country page to destination office page" in {
+        "must go from Destination Country page to Movement Destination Country page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
                 .nextPage(DestinationCountryPage, NormalMode, answers)
+                .mustBe(routes.MovementDestinationCountryController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Movement Destination Country page to Destination Office page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(MovementDestinationCountryPage, NormalMode, answers)
                 .mustBe(routes.DestinationOfficeController.onPageLoad(answers.id, NormalMode))
           }
         }

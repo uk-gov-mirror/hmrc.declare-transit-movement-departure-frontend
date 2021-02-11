@@ -35,6 +35,9 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
         Some(routes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
     case DestinationCountryPage =>
       ua =>
+        Some(routes.MovementDestinationCountryController.onPageLoad(ua.id, NormalMode))
+    case MovementDestinationCountryPage =>
+      ua =>
         Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
     case DestinationOfficePage =>
       ua =>
