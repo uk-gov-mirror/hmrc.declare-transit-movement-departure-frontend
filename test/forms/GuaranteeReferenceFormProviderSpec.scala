@@ -24,13 +24,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey                     = "guaranteeReference.error.required"
-  val lengthKey                       = "guaranteeReference.error.length"
-  val maxLength                       = 24
-  val invalidKey                      = "guaranteeReference.error.invalid"
-  val representativeNameRegex: String = "^[A-Z0-9]*$"
-
-  val form = new GuaranteeReferenceFormProvider()(maxLength)
+  private val requiredKey = "guaranteeReference.error.required"
+  private val lengthKey   = "guaranteeReference.error.length"
+  private val maxLength   = 24
+  private val invalidKey  = "guaranteeReference.error.invalid"
+  private val form        = new GuaranteeReferenceFormProvider()(maxLength)
 
   ".value" - {
 
@@ -55,7 +53,7 @@ class GuaranteeReferenceFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{$maxLength}")

@@ -23,15 +23,15 @@ import utils.Format
 
 class ArrivalTimesAtOfficeFormProviderSpec extends DateTimeWithAMPMBehaviours {
 
-  val officeOfTransit                 = "office"
-  val form                            = new ArrivalTimesAtOfficeFormProvider()(officeOfTransit)
-  val localDateTime                   = dateTime.withHour(1)
-  val pastDateTime                    = localDateTime.minusDays(1)
-  val futureDateTime                  = localDateTime.plusWeeks(2)
-  val formattedPastDateTime: String   = s"${Format.dateFormattedWithMonthName(pastDateTime)}"
-  val formattedFutureDateTime: String = s"${Format.dateFormattedWithMonthName(futureDateTime)}"
-  val formPastError                   = FormError("value", "arrivalTimesAtOffice.error.past.date", Seq(officeOfTransit, formattedPastDateTime))
-  val formFutureError                 = FormError("value", "arrivalTimesAtOffice.error.future.date", Seq(officeOfTransit, formattedFutureDateTime))
+  private val officeOfTransit                 = "office"
+  private val form                            = new ArrivalTimesAtOfficeFormProvider()(officeOfTransit)
+  private val localDateTime                   = dateTime.withHour(1)
+  private val pastDateTime                    = localDateTime.minusDays(1)
+  private val futureDateTime                  = localDateTime.plusWeeks(2)
+  private val formattedPastDateTime: String   = s"${Format.dateFormattedWithMonthName(pastDateTime)}"
+  private val formattedFutureDateTime: String = s"${Format.dateFormattedWithMonthName(futureDateTime)}"
+  private val formPastError                   = FormError("value", "arrivalTimesAtOffice.error.past.date", Seq(officeOfTransit, formattedPastDateTime))
+  private val formFutureError                 = FormError("value", "arrivalTimesAtOffice.error.future.date", Seq(officeOfTransit, formattedFutureDateTime))
 
   ".value" - {
 

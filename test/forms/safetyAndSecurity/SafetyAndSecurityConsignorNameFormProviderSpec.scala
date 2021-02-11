@@ -23,12 +23,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class SafetyAndSecurityConsignorNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "safetyAndSecurityConsignorName.error.required"
-  val lengthKey   = "safetyAndSecurityConsignorName.error.length"
-  val invalidKey  = "safetyAndSecurityConsignorName.error.invalid"
-  val maxLength   = 35
-
-  val form = new SafetyAndSecurityConsignorNameFormProvider()()
+  private val requiredKey = "safetyAndSecurityConsignorName.error.required"
+  private val lengthKey   = "safetyAndSecurityConsignorName.error.length"
+  private val invalidKey  = "safetyAndSecurityConsignorName.error.invalid"
+  private val maxLength   = 35
+  private val form        = new SafetyAndSecurityConsignorNameFormProvider()()
 
   ".value" - {
 
@@ -53,7 +52,7 @@ class SafetyAndSecurityConsignorNameFormProviderSpec extends StringFieldBehaviou
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")

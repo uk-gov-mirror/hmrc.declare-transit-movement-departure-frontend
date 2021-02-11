@@ -16,12 +16,14 @@
 
 package forms.addItems.traderDetails
 
-import forms.mappings.Mappings
 import forms.Constants._
-import javax.inject.Inject
+import forms.mappings.Mappings
 import models.Index
+import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class TraderDetailsConsigneeEoriNumberFormProvider @Inject() extends Mappings {
 
@@ -30,7 +32,7 @@ class TraderDetailsConsigneeEoriNumberFormProvider @Inject() extends Mappings {
       "value" -> text("traderDetailsConsigneeEoriNumber.error.required", Seq(index.display))
         .verifying(StopOnFirstFail[String](
           maxLength(maxLengthEoriNumber, "traderDetailsConsigneeEoriNumber.error.length"),
-          regexp(validEoriCharactersRegex, "traderDetailsConsigneeEoriNumber.error.invalid", index.display),
+          regexp(stringFieldRegex, "traderDetailsConsigneeEoriNumber.error.invalid", Seq.empty),
           regexp(eoriNumberRegex, "traderDetailsConsigneeEoriNumber.error.invalidFormat")
         )))
 }

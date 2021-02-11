@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber, validEoriCharactersRegex}
+import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber}
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
@@ -24,12 +24,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class WhatIsConsigneeEoriFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey      = "whatIsConsigneeEori.error.required"
-  val lengthKey        = "whatIsConsigneeEori.error.length"
-  val invalidCharsKey  = "whatIsConsigneeEori.error.invalidCharacters"
-  val invalidFormatKey = "whatIsConsigneeEori.error.invalidFormat"
-
-  val form = new WhatIsConsigneeEoriFormProvider()()
+  private val requiredKey      = "whatIsConsigneeEori.error.required"
+  private val lengthKey        = "whatIsConsigneeEori.error.length"
+  private val invalidCharsKey  = "whatIsConsigneeEori.error.invalidCharacters"
+  private val invalidFormatKey = "whatIsConsigneeEori.error.invalidFormat"
+  private val form             = new WhatIsConsigneeEoriFormProvider()()
 
   ".value" - {
 

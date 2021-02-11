@@ -20,15 +20,16 @@ import forms.behaviours.StringFieldBehaviours
 import forms.Constants._
 import models.Index
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class TraderDetailsConsigneeEoriNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey      = "traderDetailsConsigneeEoriNumber.error.required"
-  val lengthKey        = "traderDetailsConsigneeEoriNumber.error.length"
-  val invalidCharsKey  = "traderDetailsConsigneeEoriNumber.error.invalid"
-  val invalidFormatKey = "traderDetailsConsigneeEoriNumber.error.invalidFormat"
-  val index            = Index(0)
+  private val requiredKey      = "traderDetailsConsigneeEoriNumber.error.required"
+  private val lengthKey        = "traderDetailsConsigneeEoriNumber.error.length"
+  private val invalidKey       = "traderDetailsConsigneeEoriNumber.error.invalid"
+  private val invalidFormatKey = "traderDetailsConsigneeEoriNumber.error.invalidFormat"
+  private val index            = Index(0)
 
   val form = new TraderDetailsConsigneeEoriNumberFormProvider()(index)
 
@@ -55,19 +56,13 @@ class TraderDetailsConsigneeEoriNumberFormProviderSpec extends StringFieldBehavi
       requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
 
-    "must not bind strings that do not match the EORI number regex" ignore { //Need to address this random failure case
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharsKey, Seq(index.display)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLengthEoriNumber) suchThat (!_.matches(validEoriCharactersRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings with invalid characters" in {
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{17}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
 

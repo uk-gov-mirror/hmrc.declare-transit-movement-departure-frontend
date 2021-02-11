@@ -16,18 +16,21 @@
 
 package forms.addItems.traderDetails
 
+import forms.Constants.eoriNumberRegex
 import forms.behaviours.StringFieldBehaviours
 import models.Index
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class TraderDetailsConsignorNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "traderDetailsConsignorName.error.required"
-  val lengthKey   = "traderDetailsConsignorName.error.length"
-  val maxLength   = 35
-  val index       = Index(0)
-
-  val form = new TraderDetailsConsignorNameFormProvider()(index)
+  private val requiredKey = "traderDetailsConsignorName.error.required"
+  private val lengthKey   = "traderDetailsConsignorName.error.length"
+  private val invalidKey  = "traderDetailsConsignorName.error.invalid"
+  private val maxLength   = 35
+  private val index       = Index(0)
+  private val form        = new TraderDetailsConsignorNameFormProvider()(index)
 
   ".value" - {
 
@@ -51,5 +54,16 @@ class TraderDetailsConsignorNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
+
+    "must not bind strings with invalid characters" in {
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
+
   }
 }

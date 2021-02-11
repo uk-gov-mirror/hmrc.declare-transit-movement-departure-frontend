@@ -23,10 +23,10 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class PreviousReferenceFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "previousReference.error.required"
-  val lengthKey   = "previousReference.error.length"
-  val maxLength   = 35
-  val invalidKey  = "previousReference.error.invalidCharacters"
+  private val requiredKey = "previousReference.error.required"
+  private val lengthKey   = "previousReference.error.length"
+  private val maxLength   = 35
+  private val invalidKey  = "previousReference.error.invalidCharacters"
 
   val form = new PreviousReferenceFormProvider()()
 
@@ -53,7 +53,7 @@ class PreviousReferenceFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
       forAll(generator) {

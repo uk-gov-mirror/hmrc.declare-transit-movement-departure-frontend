@@ -24,7 +24,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new LiabilityAmountFormProvider()()
+  private val form = new LiabilityAmountFormProvider()()
 
   ".value" - {
 

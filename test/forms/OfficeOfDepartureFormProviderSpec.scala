@@ -23,12 +23,11 @@ import play.api.data.FormError
 
 class OfficeOfDepartureFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "officeOfDeparture.error.required"
-  val maxLength   = 8
-
-  val customsOffices = CustomsOfficeList(
+  private val requiredKey = "officeOfDeparture.error.required"
+  private val maxLength   = 8
+  private val customsOffices = CustomsOfficeList(
     Seq(CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None), CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)))
-  val form = new OfficeOfDepartureFormProvider()(customsOffices)
+  private val form = new OfficeOfDepartureFormProvider()(customsOffices)
 
   ".value" - {
 

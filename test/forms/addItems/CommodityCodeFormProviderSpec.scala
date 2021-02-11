@@ -23,15 +23,14 @@ import play.api.data.FormError
 
 class CommodityCodeFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
-  val requiredKey                      = "commodityCode.error.required"
-  val lengthKey                        = "commodityCode.error.length"
-  val maxLength                        = 10
-  val commodityCodeCharactersRegex     = "^[0-9]*$"
-  val commodityCodeFormatRegex         = "^([0-9]{6}|[0-9]{8}|[0-9]{10})$"
-  val commodityCodeInvalidCharacterKey = "commodityCode.errors.invalidCharacters"
-  val commodityCodeInvalidFormatKey    = "commodityCode.errors.invalidFormat"
-
-  val form = new CommodityCodeFormProvider()(index)
+  private val requiredKey                      = "commodityCode.error.required"
+  private val lengthKey                        = "commodityCode.error.length"
+  private val maxLength                        = 10
+  private val commodityCodeCharactersRegex     = "^[0-9]*$"
+  private val commodityCodeFormatRegex         = "^([0-9]{6}|[0-9]{8}|[0-9]{10})$"
+  private val commodityCodeInvalidCharacterKey = "commodityCode.errors.invalidCharacters"
+  private val commodityCodeInvalidFormatKey    = "commodityCode.errors.invalidFormat"
+  private val form                             = new CommodityCodeFormProvider()(index)
 
   ".value" - {
 

@@ -24,11 +24,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey          = "whatIsPrincipalEori.error.required"
-  val lengthKey            = "whatIsPrincipalEori.error.length"
-  val invalidCharactersKey = "whatIsPrincipalEori.error.invalidCharacters"
-  val invalidFormatKey     = "whatIsPrincipalEori.error.invalidFormat"
-  val invalidCharacterKey  = "whatIsPrincipalEori.error.invalidCharacters"
+  private val requiredKey          = "whatIsPrincipalEori.error.required"
+  private val lengthKey            = "whatIsPrincipalEori.error.length"
+  private val invalidCharactersKey = "whatIsPrincipalEori.error.invalidCharacters"
+  private val invalidFormatKey     = "whatIsPrincipalEori.error.invalidFormat"
+  private val invalidCharacterKey  = "whatIsPrincipalEori.error.invalidCharacters"
 
   val form = new WhatIsPrincipalEoriFormProvider()()
 

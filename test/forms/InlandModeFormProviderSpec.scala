@@ -23,17 +23,16 @@ import play.api.data.FormError
 
 class InlandModeFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "inlandMode.error.required"
-  val lengthKey   = "inlandMode.error.length"
-  val maxLength   = 100
-
-  val transportModeList: TransportModeList = TransportModeList(
+  private val requiredKey = "inlandMode.error.required"
+  private val lengthKey   = "inlandMode.error.length"
+  private val maxLength   = 100
+  private val transportModeList: TransportModeList = TransportModeList(
     Seq(
       TransportMode("1", "Sea transport"),
       TransportMode("10", "Sea transport")
     )
   )
-  val form = new InlandModeFormProvider()(transportModeList)
+  private val form = new InlandModeFormProvider()(transportModeList)
 
   ".value" - {
 

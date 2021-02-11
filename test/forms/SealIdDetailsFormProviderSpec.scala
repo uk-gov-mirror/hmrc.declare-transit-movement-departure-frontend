@@ -24,11 +24,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class SealIdDetailsFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
-  val requiredKey = "sealIdDetails.error.required"
-  val lengthKey   = "sealIdDetails.error.length"
-  val maxLength   = 20
-  val invalidKey  = "sealIdDetails.error.invalidCharacters"
-  val form        = new SealIdDetailsFormProvider()
+  private val requiredKey = "sealIdDetails.error.required"
+  private val lengthKey   = "sealIdDetails.error.length"
+  private val maxLength   = 20
+  private val invalidKey  = "sealIdDetails.error.invalidCharacters"
+  private val form        = new SealIdDetailsFormProvider()
 
   ".value" - {
 
@@ -53,7 +53,7 @@ class SealIdDetailsFormProviderSpec extends StringFieldBehaviours with SpecBase 
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{20}")
       forAll(generator) {

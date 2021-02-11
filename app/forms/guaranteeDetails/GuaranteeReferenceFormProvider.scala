@@ -18,7 +18,6 @@ package forms.guaranteeDetails
 
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericUpperCaseRegex
-
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail

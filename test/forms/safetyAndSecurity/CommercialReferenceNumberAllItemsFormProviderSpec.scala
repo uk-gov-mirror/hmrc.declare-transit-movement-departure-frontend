@@ -23,13 +23,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class CommercialReferenceNumberAllItemsFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey    = "commercialReferenceNumberAllItems.error.required"
-  val lengthKey      = "commercialReferenceNumberAllItems.error.length"
-  val maxLength      = 70
-  val RefNumberRegex = s"^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,$maxLength}$$"
-  val invalidKey     = "commercialReferenceNumberAllItems.error.invalid"
-
-  val form = new CommercialReferenceNumberAllItemsFormProvider()()
+  private val requiredKey = "commercialReferenceNumberAllItems.error.required"
+  private val lengthKey   = "commercialReferenceNumberAllItems.error.length"
+  private val maxLength   = 70
+  private val invalidKey  = "commercialReferenceNumberAllItems.error.invalid"
+  private val form        = new CommercialReferenceNumberAllItemsFormProvider()()
 
   ".value" - {
 
@@ -54,7 +52,7 @@ class CommercialReferenceNumberAllItemsFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")

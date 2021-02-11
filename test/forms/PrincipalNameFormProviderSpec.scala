@@ -23,11 +23,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "principalName.error.required"
-  val lengthKey   = "principalName.error.length"
-  val maxLength   = 35
-  val invalidKey  = "principalName.error.invalidCharacters"
-  val form        = new PrincipalNameFormProvider()()
+  private val requiredKey = "principalName.error.required"
+  private val lengthKey   = "principalName.error.length"
+  private val maxLength   = 35
+  private val invalidKey  = "principalName.error.invalidCharacters"
+  private val form        = new PrincipalNameFormProvider()()
 
   ".value" - {
 
@@ -52,7 +52,7 @@ class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
       forAll(generator) {

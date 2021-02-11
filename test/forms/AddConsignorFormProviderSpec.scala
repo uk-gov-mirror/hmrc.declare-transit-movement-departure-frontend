@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddConsignorFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addConsignor.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddConsignorFormProvider()()
+  private val requiredKey = "addConsignor.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddConsignorFormProvider()()
 
   ".value" - {
 

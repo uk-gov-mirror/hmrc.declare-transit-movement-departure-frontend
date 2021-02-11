@@ -24,7 +24,6 @@ import play.api.data.FormError
 class TransportChargesPaymentMethodFormProviderSpec extends StringFieldBehaviours {
 
   private val requiredKey = "transportChargesPaymentMethod.error.required"
-  private val lengthKey   = "transportChargesPaymentMethod.error.length"
   private val maxLength   = 2
   private val methodOfPaymentList = MethodOfPaymentList(
     Seq(
@@ -32,8 +31,7 @@ class TransportChargesPaymentMethodFormProviderSpec extends StringFieldBehaviour
       MethodOfPayment("B", "Payment by credit card")
     )
   )
-
-  val form = new TransportChargesPaymentMethodFormProvider()(methodOfPaymentList)
+  private val form = new TransportChargesPaymentMethodFormProvider()(methodOfPaymentList)
 
   ".value" - {
 

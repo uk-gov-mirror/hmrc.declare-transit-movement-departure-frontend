@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddExtraInformationFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addExtraInformation.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddExtraInformationFormProvider()()
+  private val requiredKey = "addExtraInformation.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddExtraInformationFormProvider()()
 
   ".value" - {
 

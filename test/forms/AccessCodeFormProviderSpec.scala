@@ -23,11 +23,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class AccessCodeFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey      = "accessCode.error.required"
-  val lengthKey        = "accessCode.error.length"
-  val accessCodeLength = 4
-  val form             = new AccessCodeFormProvider()()
-  val invalidKey       = "accessCode.error.invalidCharacters"
+  private val requiredKey      = "accessCode.error.required"
+  private val lengthKey        = "accessCode.error.length"
+  private val accessCodeLength = 4
+  private val invalidKey       = "accessCode.error.invalidCharacters"
+  private val form             = new AccessCodeFormProvider()()
 
   ".value" - {
     val fieldName = "value"
@@ -44,7 +44,7 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{4}")

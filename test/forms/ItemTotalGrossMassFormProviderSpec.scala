@@ -19,14 +19,13 @@ package forms
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import models.domain.GrossMass.Constants._
-import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
-  val form = new ItemTotalGrossMassFormProvider()(index)
+  private val form = new ItemTotalGrossMassFormProvider()(index)
 
   ".value" - {
 

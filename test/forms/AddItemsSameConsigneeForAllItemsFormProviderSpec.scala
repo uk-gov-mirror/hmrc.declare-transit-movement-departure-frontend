@@ -22,10 +22,9 @@ import play.api.data.FormError
 
 class AddItemsSameConsigneeForAllItemsFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addItemsSameConsigneeForAllItems.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddItemsSameConsigneeForAllItemsFormProvider()()
+  private val requiredKey = "addItemsSameConsigneeForAllItems.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddItemsSameConsigneeForAllItemsFormProvider()()
 
   ".value" - {
 

@@ -17,13 +17,16 @@
 package forms.addItems.containers
 
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class ContainerNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "containerNumber.error.required"
-  val lengthKey   = "containerNumber.error.length"
-  val maxLength   = 17
+  private val requiredKey = "containerNumber.error.required"
+  private val lengthKey   = "containerNumber.error.length"
+  private val invalidKey  = "containerNumber.error.invalid"
+  private val maxLength   = 17
 
   val form = new ContainerNumberFormProvider()()
 
@@ -49,5 +52,16 @@ class ContainerNumberFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind strings with invalid characters" in {
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{17}")
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
+
   }
 }

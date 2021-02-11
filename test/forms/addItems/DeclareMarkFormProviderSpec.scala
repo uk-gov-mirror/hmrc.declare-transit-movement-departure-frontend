@@ -22,9 +22,9 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class DeclareMarkFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "declareMark.error.required"
-  val lengthKey   = "declareMark.error.length"
-  val maxLength   = 42
+  private val requiredKey = "declareMark.error.required"
+  private val lengthKey   = "declareMark.error.length"
+  private val maxLength   = 42
 
   def form(totalPackages: Option[Int] = None) = new DeclareMarkFormProvider()(totalPackages, 1)
 

@@ -25,11 +25,10 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val country   = Country(CountryCode("GB"), "United Kingdom")
-  val countries = CountryList(Seq(country))
-
-  val formProvider = new TraderDetailsConsignorAddressFormProvider()
-  val form         = formProvider(countries)
+  private val country      = Country(CountryCode("GB"), "United Kingdom")
+  private val countries    = CountryList(Seq(country))
+  private val formProvider = new TraderDetailsConsignorAddressFormProvider()
+  private val form         = formProvider(countries)
 
   ".AddressLine1" - {
 
@@ -58,7 +57,7 @@ class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviour
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
@@ -98,7 +97,7 @@ class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviour
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
@@ -138,7 +137,7 @@ class TraderDetailsConsignorAddressFormProviderSpec extends StringFieldBehaviour
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")

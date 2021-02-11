@@ -23,8 +23,8 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val principalName: String = "principal Name"
-  val form                  = new PrincipalAddressFormProvider()(principalName)
+  private val principalName: String = "principal Name"
+  private val form                  = new PrincipalAddressFormProvider()(principalName)
 
   ".numberAndStreet" - {
 
@@ -53,7 +53,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
@@ -93,7 +93,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey, Seq(principalName))
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
@@ -138,7 +138,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidCharactersKey, Seq(principalName))
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{9}")

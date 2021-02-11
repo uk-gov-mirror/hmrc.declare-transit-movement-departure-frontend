@@ -23,12 +23,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class AuthorisedLocationCodeFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "authorisedLocationCode.error.required"
-  val lengthKey   = "authorisedLocationCode.error.length"
-  val maxLength   = 17
-  val invalidKey  = "authorisedLocationCode.error.invalidCharacters"
-
-  val form = new AuthorisedLocationCodeFormProvider()()
+  private val requiredKey = "authorisedLocationCode.error.required"
+  private val lengthKey   = "authorisedLocationCode.error.length"
+  private val maxLength   = 17
+  private val invalidKey  = "authorisedLocationCode.error.invalidCharacters"
+  private val form        = new AuthorisedLocationCodeFormProvider()()
 
   ".value" - {
 
@@ -53,7 +52,7 @@ class AuthorisedLocationCodeFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{17}")

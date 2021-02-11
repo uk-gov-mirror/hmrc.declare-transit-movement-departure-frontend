@@ -16,16 +16,15 @@
 
 package forms.addItems.traderSecurityDetails
 
-import forms.mappings.Mappings
 import forms.Constants.{addressMaxLength, consigneeNameMaxLength}
+import forms.mappings.Mappings
 import models.domain.StringFieldRegex.stringFieldRegex
-
-import javax.inject.Inject
 import models.reference.Country
-import models.{ConsigneeAddress, CountryList, Index}
+import models.{ConsigneeAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import javax.inject.Inject
 
 class SecurityConsigneeAddressFormProvider @Inject() extends Mappings {
 

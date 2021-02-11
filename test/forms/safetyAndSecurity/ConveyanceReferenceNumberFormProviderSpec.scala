@@ -23,13 +23,12 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class ConveyanceReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey          = "conveyanceReferenceNumber.error.required"
-  val maxLengthKey         = "conveyanceReferenceNumber.error.maxLength"
-  val minLengthKey         = "conveyanceReferenceNumber.error.minLength"
-  val maxLength            = 8
-  val minLength            = 7
-  val RefRegex             = "^[a-zA-Z0-9]{7,8}$"
-  val invalidCharactersKey = "conveyanceReferenceNumber.error.invalid"
+  private val requiredKey          = "conveyanceReferenceNumber.error.required"
+  private val maxLengthKey         = "conveyanceReferenceNumber.error.maxLength"
+  private val minLengthKey         = "conveyanceReferenceNumber.error.minLength"
+  private val maxLength            = 8
+  private val minLength            = 7
+  private val invalidCharactersKey = "conveyanceReferenceNumber.error.invalid"
 
   val form = new ConveyanceReferenceNumberFormProvider()()
 
@@ -63,7 +62,7 @@ class ConveyanceReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidCharactersKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{8}")

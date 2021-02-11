@@ -24,11 +24,10 @@ import play.api.data.FormError
 
 class SecurityConsigneeNameFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "securityConsigneeName.error.required"
-  val lengthKey   = "securityConsigneeName.error.length"
-  val invalidKey  = "securityConsigneeName.error.invalid"
-
-  val form = new SecurityConsigneeNameFormProvider()(index)
+  private val requiredKey = "securityConsigneeName.error.required"
+  private val lengthKey   = "securityConsigneeName.error.length"
+  private val invalidKey  = "securityConsigneeName.error.invalid"
+  private val form        = new SecurityConsigneeNameFormProvider()(index)
 
   ".value" - {
 

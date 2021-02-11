@@ -26,8 +26,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 class SafetyAndSecurityConsignorAddressFormProviderSpec extends StringFieldBehaviours {
 
   private val countries = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
-
-  val form = new SafetyAndSecurityConsignorAddressFormProvider()(countries)
+  private val form      = new SafetyAndSecurityConsignorAddressFormProvider()(countries)
 
   ".AddressLine1" - {
 
@@ -56,7 +55,7 @@ class SafetyAndSecurityConsignorAddressFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey, "1")
     )
 
-    "must not bind strings that do not match the address line regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
@@ -97,7 +96,7 @@ class SafetyAndSecurityConsignorAddressFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey, "2")
     )
 
-    "must not bind strings that do not match the address line regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
@@ -138,7 +137,7 @@ class SafetyAndSecurityConsignorAddressFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey, "3")
     )
 
-    "must not bind strings that do not match the address line regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")

@@ -43,9 +43,7 @@ class PlaceOfUnloadingCodeFormProviderSpec extends StringFieldBehaviours {
   private val lengthKey   = "placeOfUnloadingCode.error.length"
   private val invalidKey  = "placeOfUnloadingCode.error.invalid"
   private val maxLength   = 35
-  private val placeRegex  = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
-
-  val form = new PlaceOfUnloadingCodeFormProvider()()
+  private val form        = new PlaceOfUnloadingCodeFormProvider()()
 
   ".value" - {
 
@@ -70,7 +68,7 @@ class PlaceOfUnloadingCodeFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")

@@ -24,10 +24,10 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class OtherReferenceFormProviderSpec() extends StringFieldBehaviours {
 
-  val requiredKey = "otherReference.error.required"
-  val lengthKey   = "otherReference.error.length"
-  val maxLength   = otherReferenceNumberLength
-  val invalidKey  = "otherReference.error.invalid"
+  private val requiredKey = "otherReference.error.required"
+  private val lengthKey   = "otherReference.error.length"
+  private val maxLength   = otherReferenceNumberLength
+  private val invalidKey  = "otherReference.error.invalid"
 
   val form = new OtherReferenceFormProvider()()
 

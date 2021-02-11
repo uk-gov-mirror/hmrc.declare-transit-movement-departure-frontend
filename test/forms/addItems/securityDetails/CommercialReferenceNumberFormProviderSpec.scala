@@ -19,17 +19,16 @@ package forms.addItems.securityDetails
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class CommercialReferenceNumberFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey                    = "commercialReferenceNumber.error.required"
-  val lengthKey                      = "commercialReferenceNumber.error.length"
-  val invalidKey                     = "commercialReferenceNumber.error.invalidCharacters"
-  val maxLength                      = 70
-  val commercialReferenceNumberRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
-
-  val form = new CommercialReferenceNumberFormProvider()()
+  private val requiredKey = "commercialReferenceNumber.error.required"
+  private val lengthKey   = "commercialReferenceNumber.error.length"
+  private val invalidKey  = "commercialReferenceNumber.error.invalidCharacters"
+  private val maxLength   = 70
+  private val form        = new CommercialReferenceNumberFormProvider()()
 
   ".value" - {
 
@@ -54,17 +53,13 @@ class CommercialReferenceNumberFormProviderSpec extends SpecBase with StringFiel
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
-
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(commercialReferenceNumberRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithLength(maxLength) suchThat (!_.matches(commercialReferenceNumberRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings with invalid characters" in {
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{70}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }

@@ -24,7 +24,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new TotalGrossMassFormProvider()()
+  private val form = new TotalGrossMassFormProvider()()
 
   ".value" - {
 
@@ -49,7 +49,7 @@ class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKeyTotalGrossMass)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
       val invalidKey             = "totalGrossMass.error.invalidCharacters"
       val expectedError          = FormError(fieldName, invalidKey, Seq(totalGrossMassInvalidFormatRegex))
       val generator: Gen[String] = RegexpGen.from(s"[a-zA-Z!£^*(){}_+=:;|`~,±üçñèé@]{15}")

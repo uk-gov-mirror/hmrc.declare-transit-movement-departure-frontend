@@ -25,11 +25,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class SafetyAndSecurityConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey       = "safetyAndSecurityConsigneeAddress.error.required"
-  val lengthKey         = "safetyAndSecurityConsigneeAddress.error.length"
-  val invalidKey        = "safetyAndSecurityConsigneeAddress.error.invalid"
-  val maxLength         = 35
-  private val countries = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
+  private val requiredKey = "safetyAndSecurityConsigneeAddress.error.required"
+  private val lengthKey   = "safetyAndSecurityConsigneeAddress.error.length"
+  private val invalidKey  = "safetyAndSecurityConsigneeAddress.error.invalid"
+  private val maxLength   = 35
+  private val countries   = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
 
   val form = new SafetyAndSecurityConsigneeAddressFormProvider()(countries)
 
@@ -56,16 +56,18 @@ class SafetyAndSecurityConsigneeAddressFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey, "1")
     )
 
-    val expectedError          = FormError(fieldName, invalidKey)
-    val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+    "must not bind strings with invalid characters" in {
 
-    forAll(generator) {
-      invalidString =>
-        val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors must contain(expectedError)
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
     }
   }
-
   ".AddressLine2" - {
 
     val fieldName = "AddressLine2"
@@ -89,7 +91,7 @@ class SafetyAndSecurityConsigneeAddressFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey, "2")
     )
 
-    "must not bind strings that do not match the address line regex" in {
+    "must not bind strings with invalid characters" in {
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
 
@@ -124,13 +126,16 @@ class SafetyAndSecurityConsigneeAddressFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey, "3")
     )
 
-    val expectedError          = FormError(fieldName, invalidKey)
-    val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+    "must not bind strings with invalid characters" in {
 
-    forAll(generator) {
-      invalidString =>
-        val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors must contain(expectedError)
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
     }
   }
 }

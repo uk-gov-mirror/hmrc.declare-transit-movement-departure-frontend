@@ -22,10 +22,9 @@ import play.api.data.FormError
 
 class AddAnotherDocumentFormProviderSpec extends SpecBase with BooleanFieldBehaviours {
 
-  val requiredKey = "addAnotherDocument.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddAnotherDocumentFormProvider()(index)
+  private val requiredKey = "addAnotherDocument.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddAnotherDocumentFormProvider()(index)
 
   ".value" - {
 

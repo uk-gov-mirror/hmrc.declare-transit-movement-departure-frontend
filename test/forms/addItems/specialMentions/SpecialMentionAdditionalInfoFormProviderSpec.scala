@@ -18,13 +18,16 @@ package forms.addItems.specialMentions
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class SpecialMentionAdditionalInfoFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
-  val requiredKey = "specialMentionAdditionalInfo.error.required"
-  val lengthKey   = "specialMentionAdditionalInfo.error.length"
-  val maxLength   = 70
+  private val requiredKey = "specialMentionAdditionalInfo.error.required"
+  private val lengthKey   = "specialMentionAdditionalInfo.error.length"
+  private val invalidKey  = "specialMentionAdditionalInfo.error.invalid"
+  private val maxLength   = 70
 
   val form = new SpecialMentionAdditionalInfoFormProvider()(itemIndex, referenceIndex)
 
@@ -51,5 +54,14 @@ class SpecialMentionAdditionalInfoFormProviderSpec extends StringFieldBehaviours
       requiredError = FormError(fieldName, requiredKey, Seq(itemIndex.display, referenceIndex.display))
     )
 
+    "must not bind strings with invalid characters" in {
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
   }
 }

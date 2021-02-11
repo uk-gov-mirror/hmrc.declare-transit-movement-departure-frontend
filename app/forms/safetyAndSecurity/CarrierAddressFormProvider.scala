@@ -16,11 +16,10 @@
 
 package forms.safetyAndSecurity
 
-import forms.Constants.addressRegex
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.stringFieldRegex
 import models.reference.Country
-import models.{Address, CarrierAddress, CountryList}
+import models.{CarrierAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import uk.gov.hmrc.play.mappers.StopOnFirstFail

@@ -19,14 +19,13 @@ package forms
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import models.domain.NetMass.Constants._
-import models.messages.guarantee.Guarantee.Constants.{greaterThanZeroErrorKey, greaterThanZeroRegex}
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 class TotalNetMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
-  val form = new TotalNetMassFormProvider()(index)
+  private val form = new TotalNetMassFormProvider()(index)
 
   ".value" - {
 
@@ -75,10 +74,10 @@ class TotalNetMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
     "must not bind strings that do not match greater than zero regex" in {
 
-      val expectedError = List(FormError(fieldName, greaterThanZeroErrorKey, Seq(greaterThanZeroRegex)))
-      val invalidString = "0.5"
+      val expectedError = FormError(fieldName, invalidAmountKeyNetMass, Seq(Seq.empty))
+      val invalidString = "0.000"
       val result        = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-      result.errors mustBe expectedError
+      result.errors must contain(expectedError)
     }
 
   }

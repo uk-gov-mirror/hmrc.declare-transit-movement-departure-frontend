@@ -24,13 +24,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class DocumentReferenceFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey                      = "documentReference.error.required"
-  val lengthKey                        = "documentReference.error.length"
-  val maxLength                        = 35
-  val documentReferenceCharactersRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
-  val invalidKey                       = "documentReference.error.invalidCharacters"
-
-  val form = new DocumentReferenceFormProvider()(index)
+  private val requiredKey = "documentReference.error.required"
+  private val lengthKey   = "documentReference.error.length"
+  private val maxLength   = 35
+  private val invalidKey  = "documentReference.error.invalidCharacters"
+  private val form        = new DocumentReferenceFormProvider()(index)
 
   ".value" - {
 
@@ -55,7 +53,7 @@ class DocumentReferenceFormProviderSpec extends SpecBase with StringFieldBehavio
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
+    "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
