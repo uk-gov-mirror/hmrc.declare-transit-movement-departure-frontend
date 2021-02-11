@@ -1476,3 +1476,8 @@ addAnotherGuarantee.guarantee.delete.hidden = guarantee {0}
 confirmRemoveGuarantee.title =  Are you sure you want to remove this guarantee?
 confirmRemoveGuarantee.heading =  Are you sure you want to remove this guarantee?
 confirmRemoveGuarantee.error.required = Select yes if you want to remove this guarantee
+
+movementDestinationCountry.title = What country is the transit movement ending in?
+movementDestinationCountry.heading = What country is the transit movement ending in?
+movementDestinationCountry.checkYourAnswersLabel = Country transit movement is ending
+movementDestinationCountry.error.required = Enter the country the transit movement is ending in
