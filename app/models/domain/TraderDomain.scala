@@ -16,8 +16,6 @@
 
 package models.domain
 
-import scala.util.matching.Regex
-
 object TraderDomain {
 
   object Constants {
@@ -29,16 +27,16 @@ object TraderDomain {
   }
 
   /**
-    * letters a to z
-    * numbers 0 to 9
-    * ampersands (&)
-    * apostrophes
-    * asterisks,
-    * forward slashes
-    * full stops
-    * hyphens
-    * question marks
-    * and greater than (>) and less than (<) signs
-    */
+  * letters a to z
+  * numbers 0 to 9
+  * ampersands (&)
+  * apostrophes
+  * asterisks,
+  * forward slashes
+  * full stops
+  * hyphens
+  * question marks
+  * and greater than (>) and less than (<) signs
+  */
 
 }

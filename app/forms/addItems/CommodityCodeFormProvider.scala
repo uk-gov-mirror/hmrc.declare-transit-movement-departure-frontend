@@ -17,15 +17,14 @@
 package forms.addItems
 
 import forms.mappings.Mappings
+
 import javax.inject.Inject
 import models.Index
+import models.domain.StringFieldRegex.{commodityCodeCharactersRegex, commodityCodeFormatRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class CommodityCodeFormProvider @Inject() extends Mappings {
-
-  val commodityCodeCharactersRegex = "^[0-9]*$"
-  val commodityCodeFormatRegex     = "^([0-9]{6}|[0-9]{8}|[0-9]{10})$"
 
   def apply(index: Index): Form[String] =
     Form(

@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex._
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import models.messages.guarantee.Guarantee.Constants._

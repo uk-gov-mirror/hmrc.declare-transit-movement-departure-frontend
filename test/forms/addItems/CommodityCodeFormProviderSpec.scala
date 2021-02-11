@@ -18,6 +18,7 @@ package forms.addItems
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.commodityCodeCharactersRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -26,8 +27,6 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours with SpecBase 
   private val requiredKey                      = "commodityCode.error.required"
   private val lengthKey                        = "commodityCode.error.length"
   private val maxLength                        = 10
-  private val commodityCodeCharactersRegex     = "^[0-9]*$"
-  private val commodityCodeFormatRegex         = "^([0-9]{6}|[0-9]{8}|[0-9]{10})$"
   private val commodityCodeInvalidCharacterKey = "commodityCode.errors.invalidCharacters"
   private val commodityCodeInvalidFormatKey    = "commodityCode.errors.invalidFormat"
   private val form                             = new CommodityCodeFormProvider()(index)
