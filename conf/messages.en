@@ -1061,7 +1061,6 @@ addAnotherDocument.documentList.label = Document {0}
 addAnotherDocument.documentList.change.hidden = Document {0}
 addAnotherDocument.documentList.delete.hidden = Document {0}
 
-
 documentType.title = What type of document do you need to add?
 documentType.heading = What type of document do you need to add?
 documentType.checkYourAnswersLabel = Document type

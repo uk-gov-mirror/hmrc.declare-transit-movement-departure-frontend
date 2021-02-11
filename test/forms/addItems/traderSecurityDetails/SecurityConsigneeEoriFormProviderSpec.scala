@@ -19,7 +19,7 @@ package forms.addItems.traderSecurityDetails
 import base.SpecBase
 import forms.Constants._
 import forms.behaviours.StringFieldBehaviours
-import models.domain.StringFieldRegex
+import models.domain.StringFieldRegex.eoriNumberRegex
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen

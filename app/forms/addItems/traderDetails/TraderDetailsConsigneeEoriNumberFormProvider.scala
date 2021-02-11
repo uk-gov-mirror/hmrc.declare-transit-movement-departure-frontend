@@ -19,7 +19,7 @@ package forms.addItems.traderDetails
 import forms.Constants._
 import forms.mappings.Mappings
 import models.Index
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.{eoriNumberRegex, stringFieldRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 

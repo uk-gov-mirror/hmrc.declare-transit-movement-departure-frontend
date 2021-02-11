@@ -16,10 +16,11 @@
 
 package forms
 
-import forms.behaviours.StringFieldBehaviours
 import forms.Constants._
-import play.api.data.{Field, FormError}
+import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.eoriNumberRegex
 import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {

@@ -17,14 +17,11 @@
 package forms
 
 object Constants {
-  lazy val validPostcodeCharactersRegex: String = "^[a-zA-Z\\s*0-9]*$"
-  lazy val postCodeRegex: String                = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
-  lazy val eoriNumberRegex: String              = "^[a-zA-Z]{2}[0-9a-zA-Z]{1,15}"
-  lazy val maxLengthEoriNumber: Int             = 17
-  lazy val vehicleIdMaxLength                   = 27
-  lazy val consignorNameRegex                   = s"^[a-zA-Z0-9&'@\\/.\\-%?<> ]{1,35}"
-  lazy val consigneeNameMaxLength: Int          = 35
-  lazy val addressMaxLength: Int                = 35
-  lazy val addressRegex: String                 = "^[a-zA-Z0-9/@?%,.\\- ]*$"
+
+  lazy val maxLengthEoriNumber: Int    = 17
+  lazy val vehicleIdMaxLength          = 27
+  lazy val consigneeNameMaxLength: Int = 35
+  lazy val addressMaxLength: Int       = 35
+  lazy val addressRegex: String        = "^[a-zA-Z0-9/@?%,.\\- ]*$"
 
 }

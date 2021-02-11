@@ -16,10 +16,11 @@
 
 package forms
 
+import forms.Constants.maxLengthEoriNumber
+
 import javax.inject.Inject
 import forms.mappings.Mappings
-import forms.Constants._
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.{eoriNumberRegex, stringFieldRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 

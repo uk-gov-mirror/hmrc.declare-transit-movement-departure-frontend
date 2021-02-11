@@ -16,14 +16,14 @@
 
 package forms.addItems.traderDetails
 
-import forms.mappings.Mappings
 import forms.Constants._
-
-import javax.inject.Inject
+import forms.mappings.Mappings
 import models.Index
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.{eoriNumberRegex, stringFieldRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class TraderDetailsConsignorEoriNumberFormProvider @Inject() extends Mappings {
 

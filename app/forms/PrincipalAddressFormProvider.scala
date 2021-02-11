@@ -22,7 +22,7 @@ import forms.Constants._
 import javax.inject.Inject
 import models.PrincipalAddress
 import models.PrincipalAddress.Constants.{numberAndStreetLength, postcodeLength, townLength}
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.{postCodeRegex, stringFieldRegex, validPostcodeCharactersRegex}
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.play.mappers.StopOnFirstFail

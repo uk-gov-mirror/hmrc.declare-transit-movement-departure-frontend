@@ -16,10 +16,10 @@
 
 package forms.addItems.traderSecurityDetails
 
-import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber}
+import forms.Constants.maxLengthEoriNumber
 import forms.mappings.Mappings
 import models.Index
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.{eoriNumberRegex, stringFieldRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 

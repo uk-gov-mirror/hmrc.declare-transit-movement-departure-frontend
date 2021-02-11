@@ -16,12 +16,13 @@
 
 package forms
 
-import javax.inject.Inject
-import forms.mappings.Mappings
 import forms.Constants._
-import models.domain.StringFieldRegex.alphaNumericRegex
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.{alphaNumericRegex, eoriNumberRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class WhatIsConsigneeEoriFormProvider @Inject() extends Mappings {
 

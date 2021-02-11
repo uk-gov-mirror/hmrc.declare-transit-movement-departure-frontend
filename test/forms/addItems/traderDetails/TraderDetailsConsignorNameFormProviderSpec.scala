@@ -16,7 +16,6 @@
 
 package forms.addItems.traderDetails
 
-import forms.Constants.eoriNumberRegex
 import forms.behaviours.StringFieldBehaviours
 import models.Index
 import org.scalacheck.Gen

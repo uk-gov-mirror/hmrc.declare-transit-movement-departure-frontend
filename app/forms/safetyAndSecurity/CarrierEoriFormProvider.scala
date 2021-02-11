@@ -16,9 +16,9 @@
 
 package forms.safetyAndSecurity
 
-import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber}
+import forms.Constants.maxLengthEoriNumber
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.domain.StringFieldRegex.{alphaNumericRegex, eoriNumberRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 

@@ -16,8 +16,9 @@
 
 package forms.safetyAndSecurity
 
-import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber}
+import forms.Constants.maxLengthEoriNumber
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.eoriNumberRegex
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
