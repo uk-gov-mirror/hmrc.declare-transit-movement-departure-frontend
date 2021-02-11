@@ -19,8 +19,10 @@ package forms
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import models.domain.GrossMass.Constants._
+import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
@@ -49,37 +51,25 @@ class ItemTotalGrossMassFormProviderSpec extends StringFieldBehaviours with Spec
       requiredError = FormError(fieldName, requiredKeyGrossMass, Seq(index.display))
     )
 
-    "must not bind strings that do not match the total gross mass invalid characters regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharactersKeyGrossMass, Seq(index.display)))
-
-      val genMaxLengthAlpha = Gen.containerOfN[List, Char](maxLengthGrossMass, Gen.alphaChar).map(_.mkString)
-
-      forAll(genMaxLengthAlpha) {
+    "must not bind strings with invalid characters" in {
+      val invalidKey             = invalidCharactersKeyGrossMass
+      val expectedError          = FormError(fieldName, invalidKey, Seq(index.display))
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{15}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
 
     "must not bind strings that do not match the total gross mass invalid format regex" in {
 
-      val expectedError =
-        List(FormError(fieldName, invalidFormatKeyGrossMass, Seq(index.display)))
+      val invalidKey    = invalidFormatKeyGrossMass
+      val expectedError = FormError(fieldName, invalidKey, Seq(index.display))
 
-      val genInvalidString: Gen[String] = {
-        decimalsPositive
-          .suchThat(_.length < 16)
-          .suchThat(_.matches(totalGrossMassInvalidCharactersRegex))
-          .suchThat(!_.matches(totalGrossMassInvalidFormatRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
+      val invalidString = "0.100001"
+      val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+      result.errors must contain(expectedError)
     }
 
     "must not bind string of '0'" in {

@@ -140,7 +140,7 @@ class PrincipalAddressFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind strings that do not match regex" in {
 
-      val expectedError          = FormError(fieldName, invalidCharactersKey, Seq(Seq.empty))
+      val expectedError          = FormError(fieldName, invalidCharactersKey, Seq(principalName))
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{9}")
 
       forAll(generator) {
