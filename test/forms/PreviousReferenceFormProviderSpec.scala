@@ -18,15 +18,15 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class PreviousReferenceFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey                             = "previousReference.error.required"
-  val lengthKey                               = "previousReference.error.length"
-  val maxLength                               = 35
-  val previousReferenceInvalidCharactersRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
-  val previousReferenceInvalidCharactersKey   = "previousReference.error.invalidCharacters"
+  val requiredKey = "previousReference.error.required"
+  val lengthKey   = "previousReference.error.length"
+  val maxLength   = 35
+  val invalidKey  = "previousReference.error.invalidCharacters"
 
   val form = new PreviousReferenceFormProvider()()
 
@@ -53,19 +53,13 @@ class PreviousReferenceFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the previous reference invalid characters regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, previousReferenceInvalidCharactersKey, Seq(previousReferenceInvalidCharactersRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(previousReferenceInvalidCharactersRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings that do not match regex" in {
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }

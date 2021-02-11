@@ -19,16 +19,16 @@ package forms
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class SealIdDetailsFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
-  val requiredKey             = "sealIdDetails.error.required"
-  val lengthKey               = "sealIdDetails.error.length"
-  val maxLength               = 20
-  val invalidCharacters       = "sealIdDetails.error.invalidCharacters"
-  val sealNumberRegex: String = "^[a-zA-Z0-9]*$"
-  val form                    = new SealIdDetailsFormProvider()
+  val requiredKey = "sealIdDetails.error.required"
+  val lengthKey   = "sealIdDetails.error.length"
+  val maxLength   = 20
+  val invalidKey  = "sealIdDetails.error.invalidCharacters"
+  val form        = new SealIdDetailsFormProvider()
 
   ".value" - {
 
@@ -53,19 +53,13 @@ class SealIdDetailsFormProviderSpec extends StringFieldBehaviours with SpecBase 
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the seal number regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(sealNumberRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(sealNumberRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings that do not match regex" in {
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{20}")
+      forAll(generator) {
         invalidString =>
-          val result = form(sealIndex).bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form(sealIndex).bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
 

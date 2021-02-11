@@ -31,9 +31,9 @@ class TotalNetMassFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthNetMass, lengthKeyNetMass, index.display),
-            regexp(totalNetMassInvalidCharactersRegex, invalidCharactersKeyNetMass, index.display),
-            regexp(totalNetMassInvalidFormatRegex, invalidFormatKeyNetMass, index.display),
-            minGrossMax(0, invalidAmountKeyNetMass, index.display)
+            regexp(totalNetMassInvalidCharactersRegex, invalidCharactersKeyNetMass),
+            regexp(totalNetMassInvalidFormatRegex, invalidFormatKeyNetMass),
+            minGrossMass(0, invalidAmountKeyNetMass)
           )
         )
     )

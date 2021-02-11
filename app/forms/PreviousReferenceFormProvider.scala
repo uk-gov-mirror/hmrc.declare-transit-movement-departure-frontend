@@ -18,13 +18,13 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class PreviousReferenceFormProvider @Inject() extends Mappings {
 
-  val maxLength                        = 35
-  val previousReferenceCharactersRegex = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
+  val maxLength = 35
 
   def apply(): Form[String] =
     Form(
@@ -32,7 +32,7 @@ class PreviousReferenceFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLength, "previousReference.error.length"),
-            regexp(previousReferenceCharactersRegex, "previousReference.error.invalidCharacters")
+            regexp(stringFieldRegex, "previousReference.error.invalidCharacters", Seq.empty)
           )
         )
     )

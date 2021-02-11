@@ -18,13 +18,13 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class PrincipalNameFormProvider @Inject() extends Mappings {
 
-  val principalNameRegex: String = "^[a-zA-Z0-9 ]*$"
-  val maxLengthPrincipalName     = 35
+  val maxLengthPrincipalName = 35
 
   def apply(): Form[String] =
     Form(
@@ -32,6 +32,6 @@ class PrincipalNameFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthPrincipalName, "principalName.error.length"),
-            regexp(principalNameRegex, "principalName.error.invalidCharacters")
+            regexp(alphaNumericRegex, "principalName.error.invalidCharacters", Seq.empty)
           )))
 }

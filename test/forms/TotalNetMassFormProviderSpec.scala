@@ -19,8 +19,10 @@ package forms
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import models.domain.NetMass.Constants._
+import models.messages.guarantee.Guarantee.Constants.{greaterThanZeroErrorKey, greaterThanZeroRegex}
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class TotalNetMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
 
@@ -49,47 +51,35 @@ class TotalNetMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
       requiredError = FormError(fieldName, requiredKeyNetMass, Seq(index.display))
     )
 
-    "must not bind strings that do not match the total net mass invalid characters regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharactersKeyNetMass, Seq(index.display)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLengthNetMass) suchThat (!_.matches(totalNetMassInvalidCharactersRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings with invalid characters" in {
+      val invalidKey             = "totalNetMass.error.invalidCharacters"
+      val expectedError          = FormError(fieldName, invalidKey, Seq(totalNetMassInvalidCharactersRegex))
+      val generator: Gen[String] = RegexpGen.from(s"[a-zA-Z!£^*(){}_+=:;|`~,±üçñèé@]{15}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
 
-    "must not bind strings that do not match the total net mass invalid format regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidFormatKeyNetMass, Seq(index.display)))
-
-      val genInvalidString: Gen[String] = {
-        decimalsPositive
-          .suchThat(_.length < 16)
-          .suchThat(_.matches(totalNetMassInvalidCharactersRegex))
-          .suchThat(!_.matches(totalNetMassInvalidFormatRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings with invalid formatting" in {
+      val invalidKey             = "totalNetMass.error.invalidFormat"
+      val expectedError          = FormError(fieldName, invalidKey, Seq(totalNetMassInvalidFormatRegex))
+      val generator: Gen[String] = RegexpGen.from("^([1-9]\\.[1-9][1-9][1-9][1-9])$")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
 
-    "must not bind string of '0'" in {
+    "must not bind strings that do not match greater than zero regex" in {
 
-      val invalidString = "0"
-      val expectedError = List(FormError(fieldName, invalidAmountKeyNetMass, Seq(index.display)))
+      val expectedError = List(FormError(fieldName, greaterThanZeroErrorKey, Seq(greaterThanZeroRegex)))
+      val invalidString = "0.5"
       val result        = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
       result.errors mustBe expectedError
     }
+
   }
 }

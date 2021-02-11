@@ -26,5 +26,6 @@ object StringFieldRegex {
 
   val alphaNumericUpperCaseRegex: Regex = "^[A-Z0-9]*$".r
   val alphaNumericRegex: Regex          = "^[a-zA-Z0-9]*$".r
+  val alphaNumericWithSpaceRegex: Regex = "^[a-zA-Z0-9 ]*$".r
 
 }

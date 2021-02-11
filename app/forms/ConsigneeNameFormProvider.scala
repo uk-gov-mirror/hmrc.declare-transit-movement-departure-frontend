@@ -16,11 +16,12 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.domain.StringFieldRegex.alphaNumericWithSpaceRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class ConsigneeNameFormProvider @Inject() extends Mappings {
 
@@ -32,7 +33,7 @@ class ConsigneeNameFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthConsigneeName, "consigneeName.error.length"),
-            regexp(alphaNumericRegex, "consigneeName.error.invalid", Seq.empty)
+            regexp(alphaNumericWithSpaceRegex, "consigneeName.error.invalid", Seq.empty)
           ))
     )
 }

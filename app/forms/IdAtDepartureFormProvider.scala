@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants.vehicleIdMaxLength
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.domain.StringFieldRegex.{alphaNumericRegex, alphaNumericWithSpaceRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
@@ -32,6 +32,6 @@ class IdAtDepartureFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(vehicleIdMaxLength, "idAtDeparture.error.length"),
-            regexp(alphaNumericRegex, "idAtDeparture.error.invalidCharacters", Seq.empty),
+            regexp(alphaNumericWithSpaceRegex, "idAtDeparture.error.invalidCharacters", Seq.empty),
           )))
 }

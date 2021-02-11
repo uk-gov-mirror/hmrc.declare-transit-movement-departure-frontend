@@ -17,17 +17,17 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.messages.guarantee.GuaranteeReferenceWithOther
+import models.messages.guarantee.GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class OtherReferenceFormProviderSpec() extends StringFieldBehaviours {
 
-  val requiredKey                       = "otherReference.error.required"
-  val lengthKey                         = "otherReference.error.length"
-  val maxLength                         = GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength
-  val invalidKey                        = "otherReference.error.invalid"
-  val otherReferenceNumberRegex: String = "^[A-Z0-9]*$"
+  val requiredKey = "otherReference.error.required"
+  val lengthKey   = "otherReference.error.length"
+  val maxLength   = otherReferenceNumberLength
+  val invalidKey  = "otherReference.error.invalid"
 
   val form = new OtherReferenceFormProvider()()
 
@@ -54,17 +54,13 @@ class OtherReferenceFormProviderSpec() extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
-
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(otherReferenceNumberRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(otherReferenceNumberRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings with invalid characters" in {
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[a-z!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }

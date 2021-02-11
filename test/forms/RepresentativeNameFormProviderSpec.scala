@@ -18,16 +18,16 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class RepresentativeNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey                     = "representativeName.error.required"
-  val lengthKey                       = "representativeName.error.length"
-  val invalidKey                      = "representativeName.error.invalid"
-  val maxLength                       = 35
-  val representativeNameRegex: String = "^[a-zA-Z0-9 ]*$"
-  val form                            = new RepresentativeNameFormProvider()()
+  val requiredKey = "representativeName.error.required"
+  val lengthKey   = "representativeName.error.length"
+  val invalidKey  = "representativeName.error.invalid"
+  val maxLength   = 35
+  val form        = new RepresentativeNameFormProvider()()
 
   ".value" - {
 
@@ -57,16 +57,12 @@ class RepresentativeNameFormProviderSpec extends StringFieldBehaviours {
     }
 
     "must not bind strings that do not match regex" in {
-
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(representativeNameRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(representativeNameRegex))
-      }
-
-      forAll(genInvalidString) {
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
   }
