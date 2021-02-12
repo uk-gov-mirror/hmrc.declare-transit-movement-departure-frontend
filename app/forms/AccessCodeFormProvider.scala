@@ -30,7 +30,6 @@ class AccessCodeFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("accessCode.error.required")
         .verifying(
-          StopOnFirstFail[String](exactLength(accessCodeLength, "accessCode.error.length"),
-                                  regexp(alphaNumericRegex, "accessCode.error.invalidCharacters", Seq.empty)))
+          StopOnFirstFail[String](exactLength(accessCodeLength, "accessCode.error.length"), regexp(alphaNumericRegex, "accessCode.error.invalidCharacters")))
     )
 }

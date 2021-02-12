@@ -30,9 +30,10 @@ class DocumentExtraInformationFormProvider @Inject() extends Mappings {
   def apply(index: Index): Form[String] =
     Form(
       "value" -> text("documentExtraInformation.error.required", Seq(index.display))
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLength, "documentExtraInformation.error.length", index.display),
-          regexp(stringFieldRegex, "documentExtraInformation.error.invalid", Seq.empty),
-        ))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "documentExtraInformation.error.length", index.display),
+            regexp(stringFieldRegex, "documentExtraInformation.error.invalid"),
+          ))
     )
 }

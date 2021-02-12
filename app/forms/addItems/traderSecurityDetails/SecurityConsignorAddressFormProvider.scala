@@ -34,17 +34,17 @@ class SecurityConsignorAddressFormProvider @Inject() extends Mappings {
       "AddressLine1" -> text("securityConsignorAddress.error.AddressLine1.required", Seq(consignorName))
         .verifying(StopOnFirstFail[String](
           maxLength(addressMaxLength, "securityConsignorAddress.error.AddressLine1.length", consigneeNameMaxLength),
-          regexp(stringFieldRegex, "securityConsignorAddress.error.AddressLine1.invalid", Seq.empty)
+          regexp(stringFieldRegex, "securityConsignorAddress.error.AddressLine1.invalid")
         )),
       "AddressLine2" -> text("securityConsignorAddress.error.AddressLine2.required", Seq(consignorName))
         .verifying(StopOnFirstFail[String](
           maxLength(addressMaxLength, "securityConsignorAddress.error.AddressLine2.length", consigneeNameMaxLength),
-          regexp(stringFieldRegex, "securityConsignorAddress.error.AddressLine2.invalid", Seq.empty)
+          regexp(stringFieldRegex, "securityConsignorAddress.error.AddressLine2.invalid")
         )),
       "AddressLine3" -> text("securityConsignorAddress.error.AddressLine3.required", Seq(consignorName))
         .verifying(StopOnFirstFail[String](
           maxLength(addressMaxLength, "securityConsignorAddress.error.AddressLine3.length", consigneeNameMaxLength),
-          regexp(stringFieldRegex, "securityConsignorAddress.error.AddressLine3.invalid", Seq.empty)
+          regexp(stringFieldRegex, "securityConsignorAddress.error.AddressLine3.invalid")
         )),
       "country" -> text("securityConsignorAddress.error.country.required", Seq(consignorName))
         .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))

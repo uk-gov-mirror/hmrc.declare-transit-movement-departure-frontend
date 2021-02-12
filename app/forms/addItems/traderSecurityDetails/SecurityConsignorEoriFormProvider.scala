@@ -33,7 +33,7 @@ class SecurityConsignorEoriFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthEoriNumber, "securityConsignorEori.error.length"),
-            regexp(stringFieldRegex, "securityConsignorEori.error.invalid", Seq.empty),
+            regexp(stringFieldRegex, "securityConsignorEori.error.invalid"),
             regexp(eoriNumberRegex, "securityConsignorEori.error.invalidFormat")
           ))
     )

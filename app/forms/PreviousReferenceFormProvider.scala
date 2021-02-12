@@ -32,7 +32,7 @@ class PreviousReferenceFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLength, "previousReference.error.length"),
-            regexp(stringFieldRegex, "previousReference.error.invalidCharacters", Seq.empty)
+            regexp(stringFieldRegex, "previousReference.error.invalidCharacters")
           )
         )
     )

@@ -31,7 +31,7 @@ class WhatIsPrincipalEoriFormProvider @Inject() extends Mappings {
       "value" -> text("whatIsPrincipalEori.error.required")
         .verifying(StopOnFirstFail[String](
           maxLength(maxLengthEoriNumber, "whatIsPrincipalEori.error.length"),
-          regexp(alphaNumericRegex, "whatIsPrincipalEori.error.invalidCharacters", Seq.empty),
+          regexp(alphaNumericRegex, "whatIsPrincipalEori.error.invalidCharacters"),
           regexp(eoriNumberRegex, "whatIsPrincipalEori.error.invalidFormat")
         )))
 }

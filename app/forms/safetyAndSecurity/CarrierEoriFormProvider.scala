@@ -31,7 +31,7 @@ class CarrierEoriFormProvider @Inject() extends Mappings {
       "value" -> text("carrierEori.error.required")
         .verifying(StopOnFirstFail[String](
           maxLength(maxLengthEoriNumber, "carrierEori.error.length"),
-          regexp(alphaNumericRegex, "carrierEori.error.invalidCharacters", Seq.empty),
+          regexp(alphaNumericRegex, "carrierEori.error.invalidCharacters"),
           regexp(eoriNumberRegex, "carrierEori.error.invalidFormat")
         )))
 }

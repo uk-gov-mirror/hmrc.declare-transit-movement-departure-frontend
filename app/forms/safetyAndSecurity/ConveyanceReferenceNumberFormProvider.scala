@@ -34,7 +34,7 @@ class ConveyanceReferenceNumberFormProvider @Inject() extends Mappings {
           StopOnFirstFail[String](
             minLength(minLength, "conveyanceReferenceNumber.error.minLength", minLength),
             maxLength(maxLength, "conveyanceReferenceNumber.error.maxLength", maxLength),
-            regexp(alphaNumericRegex, "conveyanceReferenceNumber.error.invalid", Seq.empty)
+            regexp(alphaNumericRegex, "conveyanceReferenceNumber.error.invalid")
           )
         )
     )

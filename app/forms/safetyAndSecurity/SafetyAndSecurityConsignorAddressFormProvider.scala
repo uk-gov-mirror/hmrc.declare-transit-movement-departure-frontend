@@ -33,20 +33,23 @@ class SafetyAndSecurityConsignorAddressFormProvider @Inject() extends Mappings {
   def apply(countryList: CountryList): Form[ConsignorAddress] = Form(
     mapping(
       "AddressLine1" -> text("safetyAndSecurityConsignorAddress.error.required", "1")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLength, "safetyAndSecurityConsignorAddress.error.length", "1"),
-          regexp(stringFieldRegex, "safetyAndSecurityConsignorAddress.error.invalid", Seq.empty)
-        )),
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "safetyAndSecurityConsignorAddress.error.length", "1"),
+            regexp(stringFieldRegex, "safetyAndSecurityConsignorAddress.error.invalid")
+          )),
       "AddressLine2" -> text("safetyAndSecurityConsignorAddress.error.required", "2")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLength, "safetyAndSecurityConsignorAddress.error.length", "2"),
-          regexp(stringFieldRegex, "safetyAndSecurityConsignorAddress.error.invalid", Seq.empty)
-        )),
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "safetyAndSecurityConsignorAddress.error.length", "2"),
+            regexp(stringFieldRegex, "safetyAndSecurityConsignorAddress.error.invalid")
+          )),
       "AddressLine3" -> text("safetyAndSecurityConsignorAddress.error.required", "3")
-        .verifying(StopOnFirstFail[String](
-          maxLength(maxLength, "safetyAndSecurityConsignorAddress.error.length", "3"),
-          regexp(stringFieldRegex, "safetyAndSecurityConsignorAddress.error.invalid", Seq.empty)
-        )),
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxLength, "safetyAndSecurityConsignorAddress.error.length", "3"),
+            regexp(stringFieldRegex, "safetyAndSecurityConsignorAddress.error.invalid")
+          )),
       "country" -> text("safetyAndSecurityConsignorEori.error.country.required")
         .verifying("safetyAndSecurityConsignorEori.error.country.required", value => countryList.fullList.exists(_.code.code == value))
         .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)

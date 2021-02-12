@@ -54,15 +54,7 @@ class WhatIsConsigneeEoriFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings with invalid characters" in {
-      val expectedError          = FormError(fieldName, invalidCharsKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){<>}_+=:;|`~,±üçñèé@]{17}")
-      forAll(generator) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidCharsKey, maxLengthEoriNumber)
 
     "must not bind strings that do not match the eoriNumber format regex" in {
       val expectedError          = FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex))

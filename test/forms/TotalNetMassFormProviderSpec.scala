@@ -49,17 +49,9 @@ class TotalNetMassFormProviderSpec extends StringFieldBehaviours with SpecBase {
       fieldName,
       requiredError = FormError(fieldName, requiredKeyNetMass, Seq(index.display))
     )
+    val invalidKey = "totalNetMass.error.invalidCharacters"
 
-    "must not bind strings with invalid characters" in {
-      val invalidKey             = "totalNetMass.error.invalidCharacters"
-      val expectedError          = FormError(fieldName, invalidKey, Seq(totalNetMassInvalidCharactersRegex))
-      val generator: Gen[String] = RegexpGen.from(s"[a-zA-Z!£^*(<>){}_+=:;|`~,±üçñèé@]{15}")
-      forAll(generator) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLengthNetMass)
 
     "must not bind strings with invalid formatting" in {
       val invalidKey             = "totalNetMass.error.invalidFormat"

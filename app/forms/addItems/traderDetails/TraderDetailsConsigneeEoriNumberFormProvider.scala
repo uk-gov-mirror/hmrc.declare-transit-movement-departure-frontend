@@ -32,7 +32,7 @@ class TraderDetailsConsigneeEoriNumberFormProvider @Inject() extends Mappings {
       "value" -> text("traderDetailsConsigneeEoriNumber.error.required", Seq(index.display))
         .verifying(StopOnFirstFail[String](
           maxLength(maxLengthEoriNumber, "traderDetailsConsigneeEoriNumber.error.length"),
-          regexp(stringFieldRegex, "traderDetailsConsigneeEoriNumber.error.invalid", Seq.empty),
+          regexp(stringFieldRegex, "traderDetailsConsigneeEoriNumber.error.invalid"),
           regexp(eoriNumberRegex, "traderDetailsConsigneeEoriNumber.error.invalidFormat")
         )))
 }

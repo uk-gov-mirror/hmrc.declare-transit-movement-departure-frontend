@@ -32,6 +32,6 @@ class AuthorisedLocationCodeFormProvider @Inject() extends Mappings {
       "value" -> text("authorisedLocationCode.error.required")
         .verifying(StopOnFirstFail[String](
           maxLength(authorisedLocationCodeMaxLength, "authorisedLocationCode.error.length"),
-          regexp(alphaNumericRegex, "authorisedLocationCode.error.invalidCharacters", Seq.empty)
+          regexp(alphaNumericRegex, "authorisedLocationCode.error.invalidCharacters")
         )))
 }

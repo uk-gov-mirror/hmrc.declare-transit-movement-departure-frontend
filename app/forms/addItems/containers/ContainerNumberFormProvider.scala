@@ -33,7 +33,7 @@ class ContainerNumberFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail(
             maxLength(containerNumberMaxLength, "containerNumber.error.length", containerNumberMaxLength),
-            regexp(stringFieldRegex, "containerNumber.error.invalid", Seq.empty)
+            regexp(stringFieldRegex, "containerNumber.error.invalid")
           )
         )
     )

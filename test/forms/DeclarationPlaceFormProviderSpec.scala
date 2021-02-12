@@ -57,20 +57,6 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "must not bind strings with invalid characters" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidKey, Seq(postCodeRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(postCodeRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
   }
 }

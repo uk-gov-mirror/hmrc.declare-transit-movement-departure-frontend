@@ -55,17 +55,7 @@ class SafetyAndSecurityConsignorAddressFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey, "1")
     )
 
-    "must not bind strings with invalid characters" in {
-
-      val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
-
-      forAll(generator) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
   }
 
   ".AddressLine2" - {
@@ -96,17 +86,7 @@ class SafetyAndSecurityConsignorAddressFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey, "2")
     )
 
-    "must not bind strings with invalid characters" in {
-
-      val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
-
-      forAll(generator) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
   }
 
   ".AddressLine3" - {
@@ -137,17 +117,7 @@ class SafetyAndSecurityConsignorAddressFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey, "3")
     )
 
-    "must not bind strings with invalid characters" in {
-
-      val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
-
-      forAll(generator) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
   }
 
 }

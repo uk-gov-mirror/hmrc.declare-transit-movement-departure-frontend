@@ -33,7 +33,7 @@ class ConsignorNameFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthConsignorName, "consignorName.error.length"),
-            regexp(alphaNumericWithSpaceRegex, "consignorName.error.invalid", Seq.empty)
+            regexp(alphaNumericWithSpaceRegex, "consignorName.error.invalid")
           ))
     )
 }

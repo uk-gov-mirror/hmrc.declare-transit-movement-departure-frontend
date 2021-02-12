@@ -33,7 +33,7 @@ class SafetyAndSecurityConsigneeEoriFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail(
             maxLength(maxLength, "safetyAndSecurityConsigneeEori.error.length"),
-            regexp(alphaNumericRegex, "safetyAndSecurityConsigneeEori.error.invalid", Seq.empty)
+            regexp(alphaNumericRegex, "safetyAndSecurityConsigneeEori.error.invalid")
           )
         )
     )

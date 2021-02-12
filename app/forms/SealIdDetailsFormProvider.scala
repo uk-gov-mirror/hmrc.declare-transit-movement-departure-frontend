@@ -35,7 +35,7 @@ class SealIdDetailsFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxSealsNumberLength, "sealIdDetails.error.length"),
-            regexp(alphaNumericRegex, "sealIdDetails.error.invalidCharacters", Seq.empty),
+            regexp(alphaNumericRegex, "sealIdDetails.error.invalidCharacters"),
             doesNotExistIn(seals, index, "sealIdentity.error.duplicate")
           ))
     )

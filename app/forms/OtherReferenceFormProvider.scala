@@ -32,6 +32,6 @@ class OtherReferenceFormProvider @Inject()() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(otherReferenceNumberLength, "otherReference.error.length"),
-            regexp(alphaNumericUpperCaseRegex, "otherReference.error.invalid", Seq.empty)
+            regexp(alphaNumericUpperCaseRegex, "otherReference.error.invalid")
           )))
 }

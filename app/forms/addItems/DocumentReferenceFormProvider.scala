@@ -33,7 +33,7 @@ class DocumentReferenceFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLength, "documentReference.error.length"),
-            regexp(stringFieldRegex, "documentReference.error.invalidCharacters", Seq.empty)
+            regexp(stringFieldRegex, "documentReference.error.invalidCharacters")
           )
         ))
 }

@@ -33,6 +33,6 @@ class CarrierNameFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthCarrierlName, "carrierName.error.length"),
-            regexp(stringFieldRegex, "carrierName.error.invalidCharacters", Seq.empty)
+            regexp(stringFieldRegex, "carrierName.error.invalidCharacters")
           )))
 }

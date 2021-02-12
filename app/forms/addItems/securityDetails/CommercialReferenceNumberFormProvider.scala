@@ -33,7 +33,7 @@ class CommercialReferenceNumberFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(commercialRefMaxLength, "commercialReferenceNumber.error.length"),
-            regexp(stringFieldRegex, "commercialReferenceNumber.error.invalidCharacters", Seq.empty)
+            regexp(stringFieldRegex, "commercialReferenceNumber.error.invalidCharacters")
           ))
     )
 }

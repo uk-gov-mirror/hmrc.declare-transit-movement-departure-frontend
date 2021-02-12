@@ -33,7 +33,7 @@ class PlaceOfUnloadingCodeFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLength, "placeOfUnloadingCode.error.length"),
-            regexp(stringFieldRegex, "placeOfUnloadingCode.error.invalid", Seq.empty)
+            regexp(stringFieldRegex, "placeOfUnloadingCode.error.invalid")
           )
         ))
 }

@@ -32,6 +32,6 @@ class IdAtDepartureFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(vehicleIdMaxLength, "idAtDeparture.error.length"),
-            regexp(alphaNumericWithSpaceRegex, "idAtDeparture.error.invalidCharacters", Seq.empty),
+            regexp(alphaNumericWithSpaceRegex, "idAtDeparture.error.invalidCharacters"),
           )))
 }

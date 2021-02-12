@@ -30,6 +30,6 @@ class GuaranteeReferenceFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(grnMaxLength, "guaranteeReference.error.length"),
-            regexp(alphaNumericUpperCaseRegex, "guaranteeReference.error.invalid", Seq.empty)
+            regexp(alphaNumericUpperCaseRegex, "guaranteeReference.error.invalid")
           )))
 }

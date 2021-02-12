@@ -33,17 +33,17 @@ class TraderDetailsConsigneeAddressFormProvider @Inject() extends Mappings {
       "AddressLine1" -> text("traderDetailsConsigneeAddress.error.AddressLine1.required")
         .verifying(StopOnFirstFail[String](
           maxLength(35, "traderDetailsConsigneeAddress.error.AddressLine1.length"),
-          regexp(stringFieldRegex, "traderDetailsConsigneeAddress.error.AddressLine1.invalid", Seq.empty)
+          regexp(stringFieldRegex, "traderDetailsConsigneeAddress.error.AddressLine1.invalid")
         )),
       "AddressLine2" -> text("traderDetailsConsigneeAddress.error.AddressLine2.required")
         .verifying(StopOnFirstFail[String](
           maxLength(35, "traderDetailsConsigneeAddress.error.AddressLine2.length"),
-          regexp(stringFieldRegex, "traderDetailsConsigneeAddress.error.AddressLine2.invalid", Seq.empty)
+          regexp(stringFieldRegex, "traderDetailsConsigneeAddress.error.AddressLine2.invalid")
         )),
       "AddressLine3" -> text("traderDetailsConsigneeAddress.error.AddressLine3.required")
         .verifying(StopOnFirstFail[String](
           maxLength(35, "traderDetailsConsigneeAddress.error.AddressLine3.length"),
-          regexp(stringFieldRegex, "traderDetailsConsigneeAddress.error.AddressLine3.invalid", Seq.empty)
+          regexp(stringFieldRegex, "traderDetailsConsigneeAddress.error.AddressLine3.invalid")
         )),
       "country" -> text("traderDetailsConsigneeAddress.error.country.required")
         .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))

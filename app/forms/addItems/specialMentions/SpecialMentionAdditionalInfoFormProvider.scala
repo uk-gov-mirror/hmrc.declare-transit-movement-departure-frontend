@@ -31,6 +31,6 @@ class SpecialMentionAdditionalInfoFormProvider @Inject() extends Mappings {
       "value" -> text("specialMentionAdditionalInfo.error.required", Seq(itemIndex.display, referenceIndex.display))
         .verifying(StopOnFirstFail[String](
           maxLength(70, "specialMentionAdditionalInfo.error.length", itemIndex.display, referenceIndex.display),
-          regexp(alphaNumericWithSpaceRegex, "specialMentionAdditionalInfo.error.invalid", Seq.empty)
+          regexp(alphaNumericWithSpaceRegex, "specialMentionAdditionalInfo.error.invalid")
         )))
 }

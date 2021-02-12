@@ -18,19 +18,19 @@ package models.domain
 
 object StringFieldRegex {
 
-  lazy val stringFieldRegex                     = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
-  lazy val alphaNumericUpperCaseRegex           = "^[A-Z0-9]*$".r
-  lazy val alphaNumericRegex                    = "^[a-zA-Z0-9]*$".r
-  lazy val alphaNumericWithSpaceRegex           = "^[a-zA-Z0-9 ]*$".r
-  lazy val commodityCodeCharactersRegex         = "^[0-9]*$"
-  lazy val commodityCodeFormatRegex             = "^([0-9]{6}|[0-9]{8}|[0-9]{10})$"
-  lazy val liabilityAmountCharactersRegex       = "^$|^[0-9.]*$"
-  lazy val liabilityAmountFormatRegex           = "^$|([0-9]*(?:\\.[0-9]{1,2})?)$"
-  lazy val greaterThanZeroRegex                 = "^$|([1-9]{1}[0-9.]*)$"
-  lazy val validPostcodeCharactersRegex: String = "^[a-zA-Z\\s*0-9]*$"
-  lazy val postCodeRegex: String                = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
-  lazy val eoriNumberRegex: String              = "^[a-zA-Z]{2}[0-9a-zA-Z]{1,15}"
-  lazy val consignorNameRegex                   = s"^[a-zA-Z0-9&'@\\/.\\-%? ]{1,35}"
-  lazy val addressRegex: String                 = "^[a-zA-Z0-9/@?%,.\\- ]*$"
+  val stringFieldRegex                     = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
+  val alphaNumericUpperCaseRegex           = "^[A-Z0-9]*$".r
+  val alphaNumericRegex                    = "^[a-zA-Z0-9]*$".r
+  val alphaNumericWithSpaceRegex           = "^[a-zA-Z0-9 ]*$".r
+  val commodityCodeCharactersRegex         = "^[0-9]*$"
+  val commodityCodeFormatRegex             = "^([0-9]{6}|[0-9]{8}|[0-9]{10})$"
+  val liabilityAmountCharactersRegex       = "^$|^[0-9.]*$"
+  val liabilityAmountFormatRegex           = "^$|([0-9]*(?:\\.[0-9]{1,2})?)$"
+  val greaterThanZeroRegex                 = "^$|([1-9]{1}[0-9.]*)$"
+  val validPostcodeCharactersRegex: String = "^[a-zA-Z\\s*0-9]*$"
+  val postCodeRegex: String                = "^[a-zA-Z]{1,2}([0-9]{1,2}|[0-9][a-zA-Z])\\s*[0-9][a-zA-Z]{2}$"
+  val eoriNumberRegex: String              = "^[a-zA-Z]{2}[0-9a-zA-Z]{1,15}"
+  val consignorNameRegex                   = s"^[a-zA-Z0-9&'@\\/.\\-%? ]{1,35}"
+  val addressRegex: String                 = "^[a-zA-Z0-9/@?%,.\\- ]*$"
 
 }

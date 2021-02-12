@@ -33,6 +33,6 @@ class TraderDetailsConsignorNameFormProvider @Inject() extends Mappings {
       "value" -> text("traderDetailsConsignorName.error.required", Seq(index.display))
         .verifying(StopOnFirstFail[String](
           maxLength(maxLengthConsignorName, "traderDetailsConsignorName.error.length"),
-          regexp(alphaNumericWithSpaceRegex, "traderDetailsConsignorName.error.invalid", Seq.empty)
+          regexp(alphaNumericWithSpaceRegex, "traderDetailsConsignorName.error.invalid")
         )))
 }

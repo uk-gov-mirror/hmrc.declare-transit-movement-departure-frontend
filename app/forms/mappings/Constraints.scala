@@ -158,6 +158,14 @@ trait Constraints {
         Invalid(errorKey, args: _*)
     }
 
+  protected def regexp(regex: Regex, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if str.matches(regex.pattern.pattern()) =>
+        Valid
+      case _ =>
+        Invalid(errorKey)
+    }
+
   protected def minLength(minimum: Int, errorKey: String, args: Any*): Constraint[String] =
     Constraint {
       case str if str.length >= minimum =>

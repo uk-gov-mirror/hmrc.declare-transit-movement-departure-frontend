@@ -33,17 +33,17 @@ class TraderDetailsConsignorAddressFormProvider @Inject() extends Mappings {
       "AddressLine1" -> text("traderDetailsConsignorAddress.error.AddressLine1.required")
         .verifying(StopOnFirstFail[String](
           maxLength(35, "traderDetailsConsignorAddress.error.AddressLine1.length"),
-          regexp(stringFieldRegex, "traderDetailsConsignorAddress.error.AddressLine1.invalid", Seq.empty)
+          regexp(stringFieldRegex, "traderDetailsConsignorAddress.error.AddressLine1.invalid")
         )),
       "AddressLine2" -> text("traderDetailsConsignorAddress.error.AddressLine2.required")
         .verifying(StopOnFirstFail[String](
           maxLength(35, "traderDetailsConsignorAddress.error.AddressLine2.length"),
-          regexp(stringFieldRegex, "traderDetailsConsignorAddress.error.AddressLine2.invalid", Seq.empty)
+          regexp(stringFieldRegex, "traderDetailsConsignorAddress.error.AddressLine2.invalid")
         )),
       "AddressLine3" -> text("traderDetailsConsignorAddress.error.AddressLine3.required")
         .verifying(StopOnFirstFail[String](
           maxLength(35, "traderDetailsConsignorAddress.error.AddressLine3.length"),
-          regexp(stringFieldRegex, "traderDetailsConsignorAddress.error.AddressLine3.invalid", Seq.empty)
+          regexp(stringFieldRegex, "traderDetailsConsignorAddress.error.AddressLine3.invalid")
         )),
       "country" -> text("traderDetailsConsignorAddress.error.country.required")
         .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))

@@ -25,18 +25,4 @@ object TraderDomain {
     val postCodeLength        = 9
     val cityLength            = 35
   }
-
-  /**
-  * letters a to z
-  * numbers 0 to 9
-  * ampersands (&)
-  * apostrophes
-  * asterisks,
-  * forward slashes
-  * full stops
-  * hyphens
-  * question marks
-  * and greater than (>) and less than (<) signs
-  */
-
 }

@@ -32,13 +32,13 @@ class ConsigneeAddressFormProvider @Inject() extends Mappings {
     mapping(
       "AddressLine1" -> text("consigneeAddress.error.AddressLine1.required")
         .verifying(StopOnFirstFail[String](maxLength(35, "consigneeAddress.error.AddressLine1.length"),
-                                           regexp(stringFieldRegex, "consigneeAddress.error.AddressLine1.invalid", Seq.empty))),
+                                           regexp(stringFieldRegex, "consigneeAddress.error.AddressLine1.invalid"))),
       "AddressLine2" -> text("consigneeAddress.error.AddressLine2.required")
         .verifying(StopOnFirstFail[String](maxLength(35, "consigneeAddress.error.AddressLine2.length"),
-                                           regexp(stringFieldRegex, "consigneeAddress.error.AddressLine2.invalid", Seq.empty))),
+                                           regexp(stringFieldRegex, "consigneeAddress.error.AddressLine2.invalid"))),
       "AddressLine3" -> text("consigneeAddress.error.AddressLine3.required")
         .verifying(StopOnFirstFail[String](maxLength(35, "consigneeAddress.error.AddressLine3.length"),
-                                           regexp(stringFieldRegex, "consigneeAddress.error.AddressLine3.invalid", Seq.empty))),
+                                           regexp(stringFieldRegex, "consigneeAddress.error.AddressLine3.invalid"))),
       "country" -> text("consigneeAddress.error.country.required")
         .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))
         .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)

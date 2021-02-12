@@ -32,6 +32,6 @@ class IdCrossingBorderFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(vehicleIdMaxLength, "idCrossingBorder.error.length"),
-            regexp(alphaNumericRegex, "idCrossingBorder.error.invalidCharacters", Seq.empty),
+            regexp(alphaNumericRegex, "idCrossingBorder.error.invalidCharacters"),
           )))
 }

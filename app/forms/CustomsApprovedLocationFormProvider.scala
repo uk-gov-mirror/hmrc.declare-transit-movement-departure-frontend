@@ -31,6 +31,6 @@ class CustomsApprovedLocationFormProvider @Inject() extends Mappings {
       "value" -> text("customsApprovedLocation.error.required")
         .verifying(StopOnFirstFail[String](
           maxLength(maxLengthCustomsApprovedLocation, "customsApprovedLocation.error.length"),
-          regexp(stringFieldRegex, "customsApprovedLocation.error.invalidCharacters", Seq.empty)
+          regexp(stringFieldRegex, "customsApprovedLocation.error.invalidCharacters")
         )))
 }
