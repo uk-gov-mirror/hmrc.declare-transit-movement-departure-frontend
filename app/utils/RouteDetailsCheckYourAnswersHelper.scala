@@ -182,16 +182,18 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         }
     }
 
-  def movementDestinationCountry: Option[Row] = userAnswers.get(MovementDestinationCountryPage) map {
+  def movementDestinationCountry(countryList: CountryList): Option[Row] = userAnswers.get(MovementDestinationCountryPage) map {
     answer =>
+      val countryName = countryList.getCountry(answer).map(_.description).getOrElse(answer.code)
       Row(
         key   = Key(msg"movementDestinationCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(lit"$countryName"),
         actions = List(
           Action(
             content            = msg"site.edit",
             href               = routes.MovementDestinationCountryController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"movementDestinationCountry.checkYourAnswersLabel"))
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"movementDestinationCountry.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-movement-destination-country")
           )
         )
       )

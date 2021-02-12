@@ -74,8 +74,8 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
 
   private def isRouteDetailsSectionPage(page: Page): Boolean =
     page match {
-      case CountryOfDispatchPage | OfficeOfDeparturePage | DestinationCountryPage | DestinationOfficePage | AddAnotherTransitOfficePage(_) |
-          ArrivalTimesAtOfficePage(_) =>
+      case CountryOfDispatchPage | OfficeOfDeparturePage | DestinationCountryPage | MovementDestinationCountryPage | DestinationOfficePage |
+          AddAnotherTransitOfficePage(_) | ArrivalTimesAtOfficePage(_) =>
         true
       case _ => false
     }

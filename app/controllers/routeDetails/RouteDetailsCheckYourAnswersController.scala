@@ -24,7 +24,7 @@ import javax.inject.Inject
 import models.reference.CountryCode
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, NormalMode}
-import pages.DestinationCountryPage
+import pages.{DestinationCountryPage, MovementDestinationCountryPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -52,7 +52,7 @@ class RouteDetailsCheckYourAnswersController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(DestinationCountryPage) match {
+      request.userAnswers.get(MovementDestinationCountryPage) match {
         case Some(countryCode) =>
           createSections(countryCode) flatMap {
             sections =>
@@ -77,22 +77,26 @@ class RouteDetailsCheckYourAnswersController @Inject()(
       countryList =>
         referenceDataConnector.getCustomsOffices() flatMap {
           customsOfficeList =>
-            referenceDataConnector.getTransitCountryList() flatMap {
+            referenceDataConnector.getCountryList() flatMap {
               destCountryList =>
-                referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
-                  destOfficeList =>
-                    officeOfTransitSections(checkYourAnswersHelper) map {
-                      officeOfTransitSection =>
-                        val section: Section = Section(
-                          Seq(
-                            checkYourAnswersHelper.countryOfDispatch(countryList),
-                            checkYourAnswersHelper.officeOfDeparture(customsOfficeList),
-                            checkYourAnswersHelper.destinationCountry(destCountryList),
-                            checkYourAnswersHelper.destinationOffice(destOfficeList)
-                          ).flatten
-                        )
+                referenceDataConnector.getTransitCountryList() flatMap {
+                  movementCountryList =>
+                    referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
+                      destOfficeList =>
+                        officeOfTransitSections(checkYourAnswersHelper) map {
+                          officeOfTransitSection =>
+                            val section: Section = Section(
+                              Seq(
+                                checkYourAnswersHelper.countryOfDispatch(countryList),
+                                checkYourAnswersHelper.officeOfDeparture(customsOfficeList),
+                                checkYourAnswersHelper.destinationCountry(destCountryList),
+                                checkYourAnswersHelper.movementDestinationCountry(movementCountryList),
+                                checkYourAnswersHelper.destinationOffice(destOfficeList)
+                              ).flatten
+                            )
 
-                        Seq(section, officeOfTransitSection)
+                            Seq(section, officeOfTransitSection)
+                        }
                     }
                 }
             }
