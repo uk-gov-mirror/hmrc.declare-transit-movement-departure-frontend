@@ -47,7 +47,7 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours {
     "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{4}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`<>~,±üçñèé@]{4}")
 
       forAll(generator) {
         invalidString =>

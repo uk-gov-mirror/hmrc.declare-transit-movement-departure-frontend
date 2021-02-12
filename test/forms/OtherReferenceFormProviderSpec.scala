@@ -56,7 +56,7 @@ class OtherReferenceFormProviderSpec() extends StringFieldBehaviours {
 
     "must not bind strings with invalid characters" in {
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[a-z!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      val generator: Gen[String] = RegexpGen.from(s"[a-z!£^*(){}_<>+=:;|`~,±üçñèé@]{35}")
       forAll(generator) {
         invalidString =>
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)

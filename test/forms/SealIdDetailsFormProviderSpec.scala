@@ -55,7 +55,7 @@ class SealIdDetailsFormProviderSpec extends StringFieldBehaviours with SpecBase 
 
     "must not bind strings with invalid characters" in {
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{20}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=<>:;|`~,±üçñèé@]{20}")
       forAll(generator) {
         invalidString =>
           val result: Field = form(sealIndex).bind(Map(fieldName -> invalidString)).apply(fieldName)

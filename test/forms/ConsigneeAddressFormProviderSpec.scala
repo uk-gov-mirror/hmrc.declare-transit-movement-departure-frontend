@@ -60,7 +60,7 @@ class ConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
     "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}<>_+=:;|`~,±üçñèé@]{35}")
 
       forAll(generator) {
         invalidString =>
@@ -101,7 +101,7 @@ class ConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
     "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~<>,±üçñèé@]{35}")
 
       forAll(generator) {
         invalidString =>
@@ -141,7 +141,7 @@ class ConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
     "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(<>){}_+=:;|`~,<>±üçñèé@]{35}")
 
       forAll(generator) {
         invalidString =>

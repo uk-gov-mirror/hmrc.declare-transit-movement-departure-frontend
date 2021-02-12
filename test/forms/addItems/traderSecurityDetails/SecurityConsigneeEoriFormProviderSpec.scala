@@ -57,7 +57,7 @@ class SecurityConsigneeEoriFormProviderSpec extends SpecBase with StringFieldBeh
 
     "must not bind strings with invalid characters" in {
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{15}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}<>_+=:;|`~,±üçñèé@]{15}")
       forAll(generator) {
         invalidString =>
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)

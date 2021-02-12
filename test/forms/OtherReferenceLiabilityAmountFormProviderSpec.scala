@@ -40,7 +40,7 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
     "must not bind strings with invalid characters" in {
       val invalidKey             = "liabilityAmount.error.characters"
       val expectedError          = FormError(fieldName, invalidKey, Seq(liabilityAmountCharactersRegex))
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{100}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}<>_+=:;|`~,±üçñèé@]{100}")
       forAll(generator) {
         invalidString =>
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)

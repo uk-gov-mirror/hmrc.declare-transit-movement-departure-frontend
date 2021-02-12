@@ -57,7 +57,7 @@ class DocumentExtraInformationFormProviderSpec extends SpecBase with StringField
     "must not bind strings with invalid characters" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{26}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){<>}_+=:;|`~,±üçñèé@]{26}")
 
       forAll(generator) {
         invalidString =>
