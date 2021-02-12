@@ -38,8 +38,17 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
     )
     val invalidKey = "liabilityAmount.error.invalidFormat"
 
-    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
+    "must not bind strings with invalid characters" in {
+      val invalidKey = "liabilityAmount.error.characters"
 
+      val expectedError          = FormError(fieldName, invalidKey, Seq(liabilityAmountCharactersRegex))
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
     "must not bind strings with invalid formatting" in {
       val invalidKey             = "liabilityAmount.error.invalidFormat"
       val expectedError          = FormError(fieldName, invalidKey, Seq(liabilityAmountFormatRegex))

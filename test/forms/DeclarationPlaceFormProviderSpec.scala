@@ -17,16 +17,17 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.postCodeRegex
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey           = "declarationPlace.error.required"
-  private val lengthKey             = "declarationPlace.error.length"
-  private val invalidKey            = "declarationPlace.error.invalid"
-  private val maxLength             = 9
-  private val postCodeRegex: String = "^[a-zA-Z0-9]+([\\s]{1}[a-zA-Z0-9]+)*"
+  private val requiredKey = "declarationPlace.error.required"
+  private val lengthKey   = "declarationPlace.error.length"
+  private val invalidKey  = "declarationPlace.error.invalid"
+  private val maxLength   = 9
 
   val form = new DeclarationPlaceFormProvider()()
 
@@ -57,6 +58,14 @@ class DeclarationPlaceFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
+    "must not bind strings with invalid characters" in {
+      val expectedError          = FormError(fieldName, invalidKey, Seq(Seq.empty))
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{9}")
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
+    }
   }
 }

@@ -29,7 +29,7 @@ class OtherReferenceLiabilityAmountFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("liabilityAmount.error.required")
         .verifying(StopOnFirstFail[String](
-          regexp(liabilityAmountCharactersRegex, "liabilityAmount.error.characters"),
+          regexp(liabilityAmountCharactersRegex, "liabilityAmount.error.characters", Seq.empty),
           regexp(liabilityAmountFormatRegex, "liabilityAmount.error.invalidFormat"),
           regexp(greaterThanZeroRegex, "liabilityAmount.error.greaterThanZero"),
         )))
