@@ -30,7 +30,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{DestinationCountryPage, DestinationOfficePage}
+import pages.{DestinationCountryPage, DestinationOfficePage, MovementDestinationCountryPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -64,7 +64,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockNunjucksRenderer
   "DestinationOffice Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
+      val userAnswers = emptyUserAnswers.set(MovementDestinationCountryPage, countryCode).success.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -120,7 +120,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockNunjucksRenderer
         .set(DestinationOfficePage, customsOffice1)
         .success
         .value
-        .set(DestinationCountryPage, countryCode)
+        .set(MovementDestinationCountryPage, countryCode)
         .success
         .value
       dataRetrievalWithData(userAnswers)
@@ -161,7 +161,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockNunjucksRenderer
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
+      val userAnswers = emptyUserAnswers.set(MovementDestinationCountryPage, countryCode).success.value
       dataRetrievalWithData(userAnswers)
       when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
         .thenReturn(Future.successful(customsOffices))
@@ -179,7 +179,7 @@ class DestinationOfficeControllerSpec extends SpecBase with MockNunjucksRenderer
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, countryCode).success.value
+      val userAnswers = emptyUserAnswers.set(MovementDestinationCountryPage, countryCode).success.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
