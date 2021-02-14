@@ -54,6 +54,6 @@ class SpecialMentionAdditionalInfoFormProviderSpec extends StringFieldBehaviours
       requiredError = FormError(fieldName, requiredKey, Seq(itemIndex.display, referenceIndex.display))
     )
 
-    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength, itemIndex.display, referenceIndex.display)
   }
 }
