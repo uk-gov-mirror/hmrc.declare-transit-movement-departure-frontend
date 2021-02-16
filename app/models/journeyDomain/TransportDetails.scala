@@ -162,7 +162,9 @@ object TransportDetails {
 
   }
 
-  sealed trait ModeCrossingBorder
+  sealed trait ModeCrossingBorder {
+    def modeCode: Int
+  }
 
   object ModeCrossingBorder {
 
@@ -177,7 +179,7 @@ object TransportDetails {
               NationalityCrossingBorderPage.reader.map(ModeWithNationality(_, modeCode))
         )
 
-    final case class ModeExemptNationality(code: Int) extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
+    final case class ModeExemptNationality(modeCode: Int) extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
     final case class ModeWithNationality(nationalityCrossingBorder: CountryCode, modeCode: Int) extends ModeCrossingBorder
   }
 

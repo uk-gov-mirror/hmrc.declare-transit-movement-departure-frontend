@@ -28,8 +28,8 @@ import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
-import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
-import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode}
+import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
+import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
 import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
@@ -38,6 +38,7 @@ import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, Guarante
 import models.messages.header.{Header, Transport}
 import models.messages.safetyAndSecurity._
 import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
+import models.reference.CountryCode
 import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
 import play.api.Logger
 import repositories.InterchangeControlReferenceIdRepository
@@ -331,6 +332,28 @@ class DeclarationRequestService @Inject()(
             Some(SafetyAndSecurityCarrierWithEori(eori))
         }
 
+    def newDetailsCrossingBorder(detailsAtBorder: DetailsAtBorder): Option[NewDetailsAtBorder] =
+      detailsAtBorder match {
+        case newDetailsAtBorder: NewDetailsAtBorder => Some(newDetailsAtBorder)
+        case DetailsAtBorder.SameDetailsAtBorder    => None
+      }
+
+    def nationalityAtCrossing(detailsAtBorder: DetailsAtBorder): Option[CountryCode] =
+      detailsAtBorder match {
+        case newDetailsAtBorder: NewDetailsAtBorder =>
+          newDetailsAtBorder.modeCrossingBorder match {
+            case ModeCrossingBorder.ModeExemptNationality(_)                          => None
+            case ModeCrossingBorder.ModeWithNationality(nationalityCrossingBorder, _) => Some(nationalityCrossingBorder)
+          }
+        case DetailsAtBorder.SameDetailsAtBorder => None
+      }
+
+    def modeAtCrossing(detailsAtBorder: DetailsAtBorder): Option[Int] =
+      detailsAtBorder match {
+        case newDetailsAtBorder: NewDetailsAtBorder => Some(newDetailsAtBorder.modeCrossingBorder.modeCode)
+        case DetailsAtBorder.SameDetailsAtBorder    => None
+      }
+
     def itineraries(itineraries: NonEmptyList[Itinerary]): Seq[models.messages.Itinerary] =
       itineraries.toList.map(countryCode => models.messages.Itinerary(countryCode.countryCode.code))
 
@@ -355,9 +378,9 @@ class DeclarationRequestService @Inject()(
           traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
           ideOfMeaOfTraAtDHEA78 = identityOfTransportAtDeparture(transportDetails.inlandMode),
           natOfMeaOfTraAtDHEA80 = nationalityAtDeparture(transportDetails.inlandMode),
-          ideOfMeaOfTraCroHEA85 = None,
-          natOfMeaOfTraCroHEA87 = None,
-          typOfMeaOfTraCroHEA88 = None
+          ideOfMeaOfTraCroHEA85 = newDetailsCrossingBorder(transportDetails.detailsAtBorder).map(_.idCrossing),
+          natOfMeaOfTraCroHEA87 = nationalityAtCrossing(transportDetails.detailsAtBorder).map(_.code),
+          typOfMeaOfTraCroHEA88 = modeAtCrossing(transportDetails.detailsAtBorder)
         ),
         conIndHEA96        = booleanToInt(movementDetails.containersUsed),
         totNumOfIteHEA305  = itemDetails.size,
