@@ -16,21 +16,22 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
+import javax.inject.Inject
+
 class AuthorisedLocationCodeFormProvider @Inject() extends Mappings {
 
-  val authorisedLocationCodeRegex: String = "^[a-zA-Z0-9/@'<>?%&.\\- ]*$"
-  val authorisedLocationCodeMaxLength     = 17
+  val authorisedLocationCodeMaxLength = 17
 
   def apply(): Form[String] =
     Form(
       "value" -> text("authorisedLocationCode.error.required")
         .verifying(StopOnFirstFail[String](
           maxLength(authorisedLocationCodeMaxLength, "authorisedLocationCode.error.length"),
-          regexp(authorisedLocationCodeRegex, "authorisedLocationCode.error.invalidCharacters")
+          regexp(alphaNumericRegex, "authorisedLocationCode.error.invalidCharacters")
         )))
 }

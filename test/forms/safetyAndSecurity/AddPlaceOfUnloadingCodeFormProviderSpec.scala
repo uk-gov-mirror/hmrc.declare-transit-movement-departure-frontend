@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddPlaceOfUnloadingCodeFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addPlaceOfUnloadingCode.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddPlaceOfUnloadingCodeFormProvider()()
+  private val requiredKey = "addPlaceOfUnloadingCode.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddPlaceOfUnloadingCodeFormProvider()()
 
   ".value" - {
 

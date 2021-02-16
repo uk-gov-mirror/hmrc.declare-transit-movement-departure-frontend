@@ -18,17 +18,16 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey                = "principalName.error.required"
-  val lengthKey                  = "principalName.error.length"
-  val maxLength                  = 35
-  val invalidCharacters          = "principalName.error.invalidCharacters"
-  val principalNameRegex: String = "^[a-zA-Z0-9 ]*$"
-
-  val form = new PrincipalNameFormProvider()()
+  private val requiredKey = "principalName.error.required"
+  private val lengthKey   = "principalName.error.length"
+  private val maxLength   = 35
+  private val invalidKey  = "principalName.error.invalidCharacters"
+  private val form        = new PrincipalNameFormProvider()()
 
   ".value" - {
 
@@ -53,21 +52,7 @@ class PrincipalNameFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the principal eori name regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(principalNameRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(principalNameRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
 
   }
 }

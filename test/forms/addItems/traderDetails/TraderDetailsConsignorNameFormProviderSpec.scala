@@ -18,16 +18,18 @@ package forms.addItems.traderDetails
 
 import forms.behaviours.StringFieldBehaviours
 import models.Index
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class TraderDetailsConsignorNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "traderDetailsConsignorName.error.required"
-  val lengthKey   = "traderDetailsConsignorName.error.length"
-  val maxLength   = 35
-  val index       = Index(0)
-
-  val form = new TraderDetailsConsignorNameFormProvider()(index)
+  private val requiredKey = "traderDetailsConsignorName.error.required"
+  private val lengthKey   = "traderDetailsConsignorName.error.length"
+  private val invalidKey  = "traderDetailsConsignorName.error.invalid"
+  private val maxLength   = 35
+  private val index       = Index(0)
+  private val form        = new TraderDetailsConsignorNameFormProvider()(index)
 
   ".value" - {
 
@@ -51,5 +53,8 @@ class TraderDetailsConsignorNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
+
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
+
   }
 }

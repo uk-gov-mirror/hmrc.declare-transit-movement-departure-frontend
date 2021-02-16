@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddConveyancerReferenceNumberFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addConveyancerReferenceNumber.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddConveyancerReferenceNumberFormProvider()()
+  private val requiredKey = "addConveyancerReferenceNumber.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddConveyancerReferenceNumberFormProvider()()
 
   ".value" - {
 

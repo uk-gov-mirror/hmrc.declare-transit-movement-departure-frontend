@@ -18,17 +18,16 @@ package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class CommercialReferenceNumberAllItemsFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey          = "commercialReferenceNumberAllItems.error.required"
-  val lengthKey            = "commercialReferenceNumberAllItems.error.length"
-  val maxLength            = 70
-  val RefNumberRegex       = s"^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,$maxLength}$$"
-  val invalidCharactersKey = "commercialReferenceNumberAllItems.error.invalid"
-
-  val form = new CommercialReferenceNumberAllItemsFormProvider()()
+  private val requiredKey = "commercialReferenceNumberAllItems.error.required"
+  private val lengthKey   = "commercialReferenceNumberAllItems.error.length"
+  private val maxLength   = 70
+  private val invalidKey  = "commercialReferenceNumberAllItems.error.invalid"
+  private val form        = new CommercialReferenceNumberAllItemsFormProvider()()
 
   ".value" - {
 
@@ -53,21 +52,7 @@ class CommercialReferenceNumberAllItemsFormProviderSpec extends StringFieldBehav
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the invalid characters regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharactersKey, Seq(RefNumberRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(RefNumberRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
 
   }
 }

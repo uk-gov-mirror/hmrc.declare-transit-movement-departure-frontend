@@ -22,12 +22,11 @@ import play.api.data.FormError
 
 class TraderDetailsConsigneeNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "traderDetailsConsigneeName.error.required"
-  val lengthKey   = "traderDetailsConsigneeName.error.length"
-  val maxLength   = 35
-  val index       = Index(0)
-
-  val form = new TraderDetailsConsigneeNameFormProvider()(index)
+  private val requiredKey = "traderDetailsConsigneeName.error.required"
+  private val lengthKey   = "traderDetailsConsigneeName.error.length"
+  private val maxLength   = 35
+  private val index       = Index(0)
+  private val form        = new TraderDetailsConsigneeNameFormProvider()(index)
 
   ".value" - {
 

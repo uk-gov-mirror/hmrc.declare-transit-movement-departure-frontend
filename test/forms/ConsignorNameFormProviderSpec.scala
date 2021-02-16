@@ -17,15 +17,17 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class ConsignorNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "consignorName.error.required"
-  val lengthKey   = "consignorName.error.length"
-  val maxLength   = 35
-
-  val form = new ConsignorNameFormProvider()()
+  private val requiredKey = "consignorName.error.required"
+  private val lengthKey   = "consignorName.error.length"
+  private val invalidKey  = "consignorName.error.invalid"
+  private val maxLength   = 35
+  private val form        = new ConsignorNameFormProvider()()
 
   ".value" - {
 
@@ -49,5 +51,7 @@ class ConsignorNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
   }
 }

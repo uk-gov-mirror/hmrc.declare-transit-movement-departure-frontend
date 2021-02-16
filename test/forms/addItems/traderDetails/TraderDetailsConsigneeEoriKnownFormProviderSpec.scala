@@ -22,11 +22,10 @@ import play.api.data.FormError
 
 class TraderDetailsConsigneeEoriKnownFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "traderDetailsConsigneeEoriKnown.error.required"
-  val invalidKey  = "error.boolean"
-  val index       = Index(0)
-
-  val form = new TraderDetailsConsigneeEoriKnownFormProvider()(index)
+  private val requiredKey = "traderDetailsConsigneeEoriKnown.error.required"
+  private val invalidKey  = "error.boolean"
+  private val index       = Index(0)
+  private val form        = new TraderDetailsConsigneeEoriKnownFormProvider()(index)
 
   ".value" - {
 

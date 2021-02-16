@@ -18,18 +18,18 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class AccessCodeFormProvider @Inject() extends Mappings {
 
   val accessCodeLength = 4
-  val accessCodeRegex  = "^[0-9A-Za-z]{4}$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("accessCode.error.required")
         .verifying(
-          StopOnFirstFail[String](exactLength(accessCodeLength, "accessCode.error.length"), regexp(accessCodeRegex, "accessCode.error.invalidCharacters")))
+          StopOnFirstFail[String](exactLength(accessCodeLength, "accessCode.error.length"), regexp(alphaNumericRegex, "accessCode.error.invalidCharacters")))
     )
 }

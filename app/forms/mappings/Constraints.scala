@@ -102,7 +102,7 @@ trait Constraints {
         Invalid(errorKey, args: _*)
     }
 
-  protected def minGrossMax(minimum: Int, errorKey: String): Constraint[String] =
+  protected def minGrossMass(minimum: Int, errorKey: String): Constraint[String] =
     Constraint {
       case str if str.toDouble > minimum.toDouble =>
         Valid
@@ -110,7 +110,7 @@ trait Constraints {
         Invalid(errorKey, minimum)
     }
 
-  protected def minGrossMax(minimum: Int, errorKey: String, args: Any*): Constraint[String] =
+  protected def minGrossMass(minimum: Int, errorKey: String, args: Any*): Constraint[String] =
     Constraint {
       case str if str.toDouble > minimum.toDouble =>
         Valid
@@ -156,6 +156,14 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey, args: _*)
+    }
+
+  protected def regexp(regex: Regex, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if str.matches(regex.pattern.pattern()) =>
+        Valid
+      case _ =>
+        Invalid(errorKey)
     }
 
   protected def minLength(minimum: Int, errorKey: String, args: Any*): Constraint[String] =

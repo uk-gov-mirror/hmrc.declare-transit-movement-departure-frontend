@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddAnotherGuaranteeFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addAnotherGuarantee.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddAnotherGuaranteeFormProvider()
+  private val requiredKey = "addAnotherGuarantee.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddAnotherGuaranteeFormProvider()
 
   ".value" - {
 

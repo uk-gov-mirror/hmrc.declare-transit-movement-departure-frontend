@@ -23,12 +23,12 @@ import play.api.data.FormError
 
 class PackageTypeFormProviderSpec extends StringFieldBehaviours {
 
-  val packageTypeList: PackageTypeList = PackageTypeList(
+  private val packageTypeList: PackageTypeList = PackageTypeList(
     Seq(
       PackageType("AB", "Description 1")
     )
   )
-  val form = new PackageTypeFormProvider()(packageTypeList)
+  private val form = new PackageTypeFormProvider()(packageTypeList)
 
   ".value" - {
 

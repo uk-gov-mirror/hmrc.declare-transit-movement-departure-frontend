@@ -16,14 +16,15 @@
 
 package forms.addItems.traderSecurityDetails
 
+import forms.Constants.{addressMaxLength, consigneeNameMaxLength}
 import forms.mappings.Mappings
-import forms.Constants.{addressMaxLength, addressRegex, consigneeNameMaxLength}
-import javax.inject.Inject
+import models.domain.StringFieldRegex.stringFieldRegex
 import models.reference.Country
-import models.{ConsigneeAddress, CountryList, Index}
+import models.{ConsigneeAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+import javax.inject.Inject
 
 class SecurityConsigneeAddressFormProvider @Inject() extends Mappings {
 
@@ -32,17 +33,17 @@ class SecurityConsigneeAddressFormProvider @Inject() extends Mappings {
       "AddressLine1" -> text("securityConsigneeAddress.error.AddressLine1.required", Seq(consigneeName))
         .verifying(StopOnFirstFail[String](
           maxLength(addressMaxLength, "securityConsigneeAddress.error.AddressLine1.length", consigneeNameMaxLength),
-          regexp(addressRegex, "securityConsigneeAddress.error.line1.invalid", consigneeName)
+          regexp(stringFieldRegex, "securityConsigneeAddress.error.AddressLine1.invalid", Seq(consigneeName))
         )),
       "AddressLine2" -> text("securityConsigneeAddress.error.AddressLine2.required", Seq(consigneeName))
         .verifying(StopOnFirstFail[String](
           maxLength(addressMaxLength, "securityConsigneeAddress.error.AddressLine2.length", consigneeNameMaxLength),
-          regexp(addressRegex, "securityConsigneeAddress.error.line2.invalid", consigneeName)
+          regexp(stringFieldRegex, "securityConsigneeAddress.error.AddressLine2.invalid", Seq(consigneeName))
         )),
       "AddressLine3" -> text("securityConsigneeAddress.error.AddressLine3.required", Seq(consigneeName))
         .verifying(StopOnFirstFail[String](
           maxLength(addressMaxLength, "securityConsigneeAddress.error.AddressLine3.length", consigneeNameMaxLength),
-          regexp(addressRegex, "securityConsigneeAddress.error.line3.invalid", consigneeName)
+          regexp(stringFieldRegex, "securityConsigneeAddress.error.AddressLine3.invalid", Seq(consigneeName))
         )),
       "country" -> text("securityConsigneeAddress.error.country.required", Seq(consigneeName))
         .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))

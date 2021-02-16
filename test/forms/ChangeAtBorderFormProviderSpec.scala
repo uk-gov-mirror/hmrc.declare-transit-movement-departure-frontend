@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class ChangeAtBorderFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "changeAtBorder.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new ChangeAtBorderFormProvider()()
+  private val requiredKey = "changeAtBorder.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new ChangeAtBorderFormProvider()()
 
   ".value" - {
 

@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class ConfirmRemoveGuaranteeFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "confirmRemoveGuarantee.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new ConfirmRemoveGuaranteeFormProvider()()
+  private val requiredKey = "confirmRemoveGuarantee.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new ConfirmRemoveGuaranteeFormProvider()()
 
   ".value" - {
 

@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class DefaultAmountFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "defaultAmount.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new DefaultAmountFormProvider()()
+  private val requiredKey = "defaultAmount.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new DefaultAmountFormProvider()()
 
   ".value" - {
 

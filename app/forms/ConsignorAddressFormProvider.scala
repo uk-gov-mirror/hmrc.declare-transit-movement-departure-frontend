@@ -16,28 +16,29 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import forms.Constants.addressRegex
+import models.domain.StringFieldRegex.stringFieldRegex
+import models.reference.Country
+import models.{ConsignorAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms._
-import models.{ConsignorAddress, CountryList}
-import models.reference.Country
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class ConsignorAddressFormProvider @Inject() extends Mappings {
 
   def apply(countryList: CountryList): Form[ConsignorAddress] = Form(
     mapping(
       "AddressLine1" -> text("consignorAddress.error.AddressLine1.required")
-        .verifying(
-          StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine1.length"), regexp(addressRegex, "consignorAddress.error.line1.invalid"))),
+        .verifying(StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine1.length"),
+                                           regexp(stringFieldRegex, "consignorAddress.error.AddressLine1.invalid"))),
       "AddressLine2" -> text("consignorAddress.error.AddressLine2.required")
-        .verifying(
-          StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine2.length"), regexp(addressRegex, "consignorAddress.error.line2.invalid"))),
+        .verifying(StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine2.length"),
+                                           regexp(stringFieldRegex, "consignorAddress.error.AddressLine2.invalid"))),
       "AddressLine3" -> text("consignorAddress.error.AddressLine3.required")
-        .verifying(
-          StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine3.length"), regexp(addressRegex, "consignorAddress.error.line3.invalid"))),
+        .verifying(StopOnFirstFail[String](maxLength(35, "consignorAddress.error.AddressLine3.length"),
+                                           regexp(stringFieldRegex, "consignorAddress.error.AddressLine3.invalid"))),
       "country" -> text("consignorAddress.error.country.required")
         .verifying("eventCountry.error.required", value => countryList.fullList.exists(_.code.code == value))
         .transform[Country](value => countryList.fullList.find(_.code.code == value).get, _.code.code)

@@ -16,11 +16,13 @@
 
 package forms.safetyAndSecurity
 
-import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber, validEoriCharactersRegex}
+import forms.Constants.maxLengthEoriNumber
 import forms.mappings.Mappings
-import javax.inject.Inject
+import models.domain.StringFieldRegex.{alphaNumericRegex, eoriNumberRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class CarrierEoriFormProvider @Inject() extends Mappings {
 
@@ -29,7 +31,7 @@ class CarrierEoriFormProvider @Inject() extends Mappings {
       "value" -> text("carrierEori.error.required")
         .verifying(StopOnFirstFail[String](
           maxLength(maxLengthEoriNumber, "carrierEori.error.length"),
-          regexp(validEoriCharactersRegex, "carrierEori.error.invalidCharacters"),
+          regexp(alphaNumericRegex, "carrierEori.error.invalidCharacters"),
           regexp(eoriNumberRegex, "carrierEori.error.invalidFormat")
         )))
 }
