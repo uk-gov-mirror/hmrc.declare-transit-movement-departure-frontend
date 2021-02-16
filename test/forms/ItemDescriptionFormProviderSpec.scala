@@ -53,6 +53,6 @@ class ItemDescriptionFormProviderSpec extends StringFieldBehaviours with SpecBas
       requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
 
-    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength, index.display)
   }
 }
