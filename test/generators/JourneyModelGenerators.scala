@@ -190,19 +190,22 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryModeCrossingBorder: Arbitrary[ModeCrossingBorder] =
     Arbitrary(
       Gen.oneOf(
-        arbitrary[ModeExemptNationality.type],
+        arbitrary[ModeExemptNationality],
         arbitrary[ModeWithNationality]
       )
     )
 
-  implicit lazy val arbitraryModeExemptNationality: Arbitrary[ModeExemptNationality.type] =
-    Arbitrary(Gen.const(ModeExemptNationality))
+  implicit lazy val arbitraryModeExemptNationality: Arbitrary[ModeExemptNationality] =
+    Arbitrary {
+      for {
+        codeMode <- Gen.oneOf(Mode5or7.Constants.codes ++ Rail.Constants.codes)
+      } yield ModeExemptNationality(codeMode)
+    }
 
   implicit lazy val arbitraryModeWithNationality: Arbitrary[ModeWithNationality] =
     Arbitrary {
       for {
         cc <- arbitrary[CountryCode]
-
       } yield ModeWithNationality(cc)
     }
 

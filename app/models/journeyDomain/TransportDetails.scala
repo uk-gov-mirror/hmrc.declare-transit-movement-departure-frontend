@@ -172,12 +172,12 @@ object TransportDetails {
         .flatMap(
           modeCode =>
             if ((Mode5or7.Constants.codes ++ Rail.Constants.codes).contains(modeCode))
-              ModeExemptNationality.pure[UserAnswersReader].widen[ModeCrossingBorder]
+              ModeExemptNationality(modeCode).pure[UserAnswersReader].widen[ModeCrossingBorder]
             else
               NationalityCrossingBorderPage.reader.map(ModeWithNationality)
         )
 
-    object ModeExemptNationality extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
+    final case class ModeExemptNationality(code: Int) extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
     final case class ModeWithNationality(nationalityCrossingBorder: CountryCode) extends ModeCrossingBorder
   }
 
