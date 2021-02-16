@@ -18,7 +18,7 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.domain.StringFieldRegex.alphaNumericWithSpaceRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
@@ -32,6 +32,6 @@ class PrincipalNameFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthPrincipalName, "principalName.error.length"),
-            regexp(alphaNumericRegex, "principalName.error.invalidCharacters")
+            regexp(alphaNumericWithSpaceRegex, "principalName.error.invalidCharacters")
           )))
 }
