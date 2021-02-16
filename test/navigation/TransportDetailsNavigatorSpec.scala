@@ -46,9 +46,9 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            Seq("2", "20") foreach {
+            Seq(2, 20) foreach {
               inlandModeAnswer =>
-                val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer).success.value
+                val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer.toString).success.value
                 navigator
                   .nextPage(InlandModePage, NormalMode, updatedAnswers)
                   .mustBe(transportDetailsRoute.ChangeAtBorderController.onPageLoad(answers.id, NormalMode))
