@@ -36,7 +36,12 @@ class OtherReferenceLiabilityAmountFormProviderSpec extends StringFieldBehaviour
       fieldName,
       stringsWithMaxLength(maxLength)
     )
-    val invalidKey = "liabilityAmount.error.invalidFormat"
+
+    "must bind blank values" in {
+
+      val result = form.bind(Map(fieldName -> "")).apply(fieldName)
+      result.value.value mustBe ""
+    }
 
     "must not bind strings with invalid characters" in {
       val invalidKey = "liabilityAmount.error.characters"

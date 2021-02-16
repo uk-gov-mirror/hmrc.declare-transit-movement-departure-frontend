@@ -18,7 +18,7 @@ package forms
 
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.{greaterThanZeroRegex, liabilityAmountCharactersRegex, liabilityAmountFormatRegex}
-import play.api.data.Form
+import play.api.data.{Form, Forms}
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 import javax.inject.Inject
@@ -27,9 +27,9 @@ class OtherReferenceLiabilityAmountFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("liabilityAmount.error.required")
+      "value" -> Forms.text
         .verifying(StopOnFirstFail[String](
-          regexp(liabilityAmountCharactersRegex, "liabilityAmount.error.characters", Seq.empty),
+          regexp(liabilityAmountCharactersRegex, "liabilityAmount.error.characters"),
           regexp(liabilityAmountFormatRegex, "liabilityAmount.error.invalidFormat"),
           regexp(greaterThanZeroRegex, "liabilityAmount.error.greaterThanZero"),
         )))
