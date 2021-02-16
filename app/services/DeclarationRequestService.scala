@@ -367,10 +367,10 @@ class DeclarationRequestService @Inject()(
         refNumHEA4          = preTaskList.lrn.value,
         typOfDecHEA24       = movementDetails.declarationType.code,
         couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
-        agrLocOfGooCodHEA38 = None, // prelodge
+        agrLocOfGooCodHEA38 = None, // prelodge, this is a string page, where does the code come from
         agrLocOfGooHEA39    = agreedLocationOfGoods(movementDetails, goodsSummary.goodSummaryDetails), // prelodge
-        autLocOfGooCodHEA41 = None,
-        plaOfLoaCodHEA46    = None,
+        autLocOfGooCodHEA41 = None, // What does this link to??
+        plaOfLoaCodHEA46    = None, // This hasnt been added to the journey yet??
         couOfDisCodHEA55    = Some(routeDetails.countryOfDispatch.code),
         cusSubPlaHEA66      = customsSubPlace(goodsSummary),
         transportDetails = Transport(
@@ -378,7 +378,7 @@ class DeclarationRequestService @Inject()(
           traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
           ideOfMeaOfTraAtDHEA78 = identityOfTransportAtDeparture(transportDetails.inlandMode),
           natOfMeaOfTraAtDHEA80 = nationalityAtDeparture(transportDetails.inlandMode),
-          ideOfMeaOfTraCroHEA85 = newDetailsCrossingBorder(transportDetails.detailsAtBorder).map(_.idCrossing),
+          ideOfMeaOfTraCroHEA85 = newDetailsCrossingBorder(transportDetails.detailsAtBorder).map(_.idCrossing), // The user can select same details, what do we populate with??
           natOfMeaOfTraCroHEA87 = nationalityAtCrossing(transportDetails.detailsAtBorder).map(_.code),
           typOfMeaOfTraCroHEA88 = modeAtCrossing(transportDetails.detailsAtBorder)
         ),
