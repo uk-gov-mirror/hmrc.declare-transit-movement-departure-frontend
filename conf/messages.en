@@ -384,11 +384,11 @@ officeOfDeparture.error.required = Select the office of departure
 officeOfDeparture.hintText = Give the office location or code. Like, Dover or GB000060.
 officeOfDeparture.label = This is the Customs office where the transit movement starts.
 
-destinationCountry.title = What is the destination country?
-destinationCountry.heading = What is the destination country?
-destinationCountry.checkYourAnswersLabel = Destination country
-destinationCountry.label = This is the country where the transit movement is ending.
-destinationCountry.error.required = Select the destination country
+destinationCountry.title = What country are the goods ending in?
+destinationCountry.heading = What country are the goods ending in?
+destinationCountry.checkYourAnswersLabel = Country goods are ending
+destinationCountry.label = This may not be where the transit movement ends.
+destinationCountry.error.required = Enter the country the goods are ending in
 
 consigneeAddress.title = What is the consignee's address?
 consigneeAddress.heading = What is {0}’s address?
@@ -441,11 +441,11 @@ addIdAtDepartureLater.title = Name, registration or reference of the vehicle at 
 addIdAtDepartureLater.heading = Name, registration or reference of the vehicle at departure must be added later
 addIdAtDepartureLater.paragraph = This must be manually recorded on the transit accompanying document (TAD) box 55.
 
-destinationOffice.title = What is the office of destination in {0}?
-destinationOffice.heading = What is the office of destination in {0}?
-destinationOffice.label = This is the office in where the transit movement is ending.
+destinationOffice.title = What office in {0} is the transit movement ending in?
+destinationOffice.heading = What office in {0} is the transit movement ending in?
+destinationOffice.label = This is the office where the transit movement is ending.
 destinationOffice.checkYourAnswersLabel = Destination office
-destinationOffice.error.required = Select the office in {0} that the are goods ending up
+destinationOffice.error.required = Enter the office in {0} the transit movement is ending in
 
 nationalityCrossingBorder.title = What is the nationality crossing the border?
 nationalityCrossingBorder.heading = What is the nationality crossing the border?
@@ -1474,3 +1474,8 @@ addAnotherGuarantee.guarantee.delete.hidden = guarantee {0}
 confirmRemoveGuarantee.title =  Are you sure you want to remove this guarantee?
 confirmRemoveGuarantee.heading =  Are you sure you want to remove this guarantee?
 confirmRemoveGuarantee.error.required = Select yes if you want to remove this guarantee
+
+movementDestinationCountry.title = What country is the transit movement ending in?
+movementDestinationCountry.heading = What country is the transit movement ending in?
+movementDestinationCountry.checkYourAnswersLabel = Country transit movement is ending
+movementDestinationCountry.error.required = Enter the country the transit movement is ending in

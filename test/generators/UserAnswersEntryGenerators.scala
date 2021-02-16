@@ -75,6 +75,13 @@ trait UserAnswersEntryGenerators {
 
   self: Generators =>
 
+  implicit lazy val arbitraryMovementDestinationCountryUserAnswersEntry: Arbitrary[(MovementDestinationCountryPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        value <- arbitrary[MovementDestinationCountryPage.type#Data].map(Json.toJson(_))
+      } yield (MovementDestinationCountryPage, value)
+    }
+
   implicit lazy val arbitraryConfirmRemoveGuaranteeUserAnswersEntry: Arbitrary[(ConfirmRemoveGuaranteePage.type, JsValue)] =
     Arbitrary {
       for {

@@ -181,4 +181,19 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
             )
         }
     }
+
+  def movementDestinationCountry: Option[Row] = userAnswers.get(MovementDestinationCountryPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"movementDestinationCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.MovementDestinationCountryController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"movementDestinationCountry.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 }
