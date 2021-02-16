@@ -202,12 +202,17 @@ trait JourneyModelGenerators {
       } yield ModeExemptNationality(codeMode)
     }
 
-  implicit lazy val arbitraryModeWithNationality: Arbitrary[ModeWithNationality] =
+  implicit lazy val arbitraryModeWithNationality: Arbitrary[ModeWithNationality] = {
+
+    val codeList = Mode5or7.Constants.codes ++ Rail.Constants.codes
+
     Arbitrary {
       for {
-        cc <- arbitrary[CountryCode]
-      } yield ModeWithNationality(cc)
+        cc       <- arbitrary[CountryCode]
+        codeMode <- arbitrary[Int].suchThat(!codeList.contains(_))
+      } yield ModeWithNationality(cc, codeMode)
     }
+  }
 
   implicit lazy val arbitraryDetailsAtBorder: Arbitrary[DetailsAtBorder] =
     Arbitrary(
