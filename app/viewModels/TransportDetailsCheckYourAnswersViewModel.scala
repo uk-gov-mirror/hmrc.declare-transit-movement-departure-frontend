@@ -32,6 +32,7 @@ object TransportDetailsCheckYourAnswersViewModel {
     val inlandMode: Option[SummaryList.Row]                = checkYourAnswersHelper.inlandMode(transportModeList)
     val modeCrossingBorder: Option[SummaryList.Row]        = checkYourAnswersHelper.modeCrossingBorder(transportModeList)
     val modeAtBorder: Option[SummaryList.Row]              = checkYourAnswersHelper.modeAtBorder(transportModeList)
+    val addNationalityAtDeparture: Option[SummaryList.Row] = checkYourAnswersHelper.addNationalityAtDeparture
     val nationalityAtDeparture: Option[SummaryList.Row]    = checkYourAnswersHelper.nationalityAtDeparture(countryList)
     val nationalityCrossingBorder: Option[SummaryList.Row] = checkYourAnswersHelper.nationalityCrossingBorder(countryList)
     val addIdAtDeparture: Option[SummaryList.Row]          = checkYourAnswersHelper.addIdAtDeparture
@@ -45,6 +46,7 @@ object TransportDetailsCheckYourAnswersViewModel {
           inlandMode,
           addIdAtDeparture,
           idAtDeparture,
+          addNationalityAtDeparture,
           nationalityAtDeparture,
           changeAtBorder,
           modeAtBorder,

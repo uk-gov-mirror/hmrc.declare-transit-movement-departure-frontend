@@ -58,6 +58,9 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     case ChangeAtBorderPage =>
       ua =>
         Some(changeAtBorderRoute(ua, NormalMode))
+    case AddNationalityAtDeparturePage =>
+      ua =>
+        Some(addNationalityAtDepartureRoute(ua, NormalMode))
     case _ =>
       _ =>
         None
@@ -72,10 +75,10 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
         Some(addIdAtDepartureRoute(ua, CheckMode))
     case IdAtDeparturePage =>
       ua =>
-        Some(idAtDepartureRoute(ua, NormalMode))
+        Some(idAtDepartureRoute(ua, CheckMode))
     case AddIdAtDepartureLaterPage =>
       ua =>
-        Some(addIdAtDepartureLaterRoute(ua, NormalMode))
+        Some(addIdAtDepartureLaterRoute(ua, CheckMode))
     case NationalityAtDeparturePage =>
       ua =>
         Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
@@ -91,6 +94,9 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     case ModeCrossingBorderPage =>
       ua =>
         Some(modeCrossingBorderRoute(ua, CheckMode))
+    case AddNationalityAtDeparturePage =>
+      ua =>
+        Some(addNationalityAtDepartureRoute(ua, CheckMode))
     case NationalityCrossingBorderPage =>
       ua =>
         Some(routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id))
@@ -101,6 +107,13 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     (ua.get(AddIdAtDeparturePage), ua.get(IdAtDeparturePage), mode) match {
       case (Some(true), None, _)  => routes.IdAtDepartureController.onPageLoad(ua.id, mode)
       case (Some(false), None, _) => routes.AddIdAtDepartureLaterController.onPageLoad(ua.id)
+      case _                      => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    }
+
+  private def addNationalityAtDepartureRoute(ua: UserAnswers, mode: Mode): Call =
+    (ua.get(AddNationalityAtDeparturePage), ua.get(NationalityAtDeparturePage), mode) match {
+      case (Some(true), None, _)  => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case (Some(false), None, _) => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
       case _                      => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
 
@@ -133,25 +146,29 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     }
 
   private def addIdAtDepartureLaterRoute(ua: UserAnswers, mode: Mode): Call =
-    (ua.get(NationalityAtDeparturePage), ua.get(InlandModePage)) match {
-      case (None, Some(x)) if Rail.Constants.codes.contains(x) => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
-      case (None, _)                                           => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
-      case _                                                   => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    (ua.get(ContainersUsedPage), ua.get(InlandModePage)) match {
+      case (_, Some(x)) if Rail.Constants.codes.contains(x) => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
+      case (Some(false), _)                                 => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case (Some(true), _)                                  => routes.AddNationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case _                                                => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
 
   private def idAtDepartureRoute(ua: UserAnswers, mode: Mode): Call =
-    (ua.get(NationalityAtDeparturePage), ua.get(InlandModePage)) match {
-      case (None, Some(x)) if Rail.Constants.codes.contains(x) => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
-      case (None, _)                                           => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
-      case _                                                   => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    (ua.get(ContainersUsedPage), ua.get(InlandModePage), mode) match {
+      case (_, Some(x), NormalMode) if Rail.Constants.codes.contains(x) => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
+      case (Some(false), _, NormalMode)                                 => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case (Some(true), _, NormalMode)                                  => routes.AddNationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case _                                                            => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
 
   private def inlandModeRoute(ua: UserAnswers, mode: Mode): Call =
-    (ua.get(InlandModePage), ua.get(AddIdAtDeparturePage), mode) match {
-
-      case (Some(x), _, _) if Mode5or7.Constants.codes.contains(x) => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
-      case (_, Some(false), CheckMode)                             => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
-      case (_, Some(true), CheckMode)                              => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
-      case (_, _, _)                                               => routes.AddIdAtDepartureController.onPageLoad(ua.id, mode)
+    (ua.get(InlandModePage), ua.get(ContainersUsedPage), ua.get(AddIdAtDeparturePage), mode) match {
+      case (Some(x), _, _, NormalMode) if Mode5or7.Constants.codes.contains(x) => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
+      case (Some(x), _, _, CheckMode) if Mode5or7.Constants.codes.contains(x)  => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case (_, Some(true), _, NormalMode)                                      => routes.AddIdAtDepartureController.onPageLoad(ua.id, mode)
+      case (_, Some(false), _, NormalMode)                                     => routes.IdAtDepartureController.onPageLoad(ua.id, mode)
+      case (_, Some(true), None, CheckMode)                                    => routes.AddIdAtDepartureController.onPageLoad(ua.id, mode)
+      case (_, Some(false), None, CheckMode)                                   => routes.IdAtDepartureController.onPageLoad(ua.id, mode)
+      case (_, _, _, CheckMode)                                                => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
 }

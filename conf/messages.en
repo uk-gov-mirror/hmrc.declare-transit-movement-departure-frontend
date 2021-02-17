@@ -1482,3 +1482,9 @@ movementDestinationCountry.title = What country is the transit movement ending i
 movementDestinationCountry.heading = What country is the transit movement ending in?
 movementDestinationCountry.checkYourAnswersLabel = Country transit movement is ending
 movementDestinationCountry.error.required = Enter the country the transit movement is ending in
+
+addNationalityAtDeparture.title = Do you need to add the nationality at departure?
+addNationalityAtDeparture.heading = Do you need to add the nationality at departure?
+addNationalityAtDeparture.checkYourAnswersLabel = Add the nationality at departure
+addNationalityAtDeparture.error.required = Select yes if you need to add the nationality at departure
+addNationalityAtDeparture.checkYourAnswersLabel = Add nationality at departure?

@@ -176,5 +176,21 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
+  def addNationalityAtDeparture: Option[Row] = userAnswers.get(AddNationalityAtDeparturePage) map {
+    answer =>
+      Row(
+        key   = Key(msg"addNationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(yesOrNo(answer)),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.AddNationalityAtDepartureController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addNationalityAtDeparture.checkYourAnswersLabel")),
+            attributes         = Map("id" -> "change-add-nationality-at-departure")
+          )
+        )
+      )
+  }
+
   def lrn: LocalReferenceNumber = userAnswers.id
 }
