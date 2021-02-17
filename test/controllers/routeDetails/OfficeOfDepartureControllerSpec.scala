@@ -114,10 +114,10 @@ class OfficeOfDepartureControllerSpec extends SpecBase with MockNunjucksRenderer
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = emptyUserAnswers
-        .set(OfficeOfDeparturePage, customsOffice1)
+        .set(CountryOfDispatchPage, countryCode)
         .success
         .value
-        .set(CountryOfDispatchPage, countryCode)
+        .set(OfficeOfDeparturePage, customsOffice1)
         .success
         .value
       dataRetrievalWithData(userAnswers)
