@@ -38,7 +38,6 @@ import models.messages.guarantee.{Guarantee, GuaranteeReferenceWithGrn, Guarante
 import models.messages.header.{Header, Transport}
 import models.messages.safetyAndSecurity._
 import models.messages.trader.{TraderConsignor, TraderPrincipal, TraderPrincipalWithEori, TraderPrincipalWithoutEori, _}
-import models.reference.CountryCode
 import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, UserAnswers}
 import play.api.Logger
 import repositories.InterchangeControlReferenceIdRepository
@@ -211,10 +210,10 @@ class DeclarationRequestService @Inject()(
             None
         }
 
-    def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder): Option[String] =
+    def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder, inlandCode: Int): String =
       detailsAtBorder match {
-        case SameDetailsAtBorder                            => None
-        case DetailsAtBorder.NewDetailsAtBorder(mode, _, _) => Some(mode)
+        case DetailsAtBorder.NewDetailsAtBorder(mode, _, _) => mode
+        case SameDetailsAtBorder                            => inlandCode.toString
       }
 
     def customsOfficeTransit(transitInformation: NonEmptyList[TransitInformation]): Seq[CustomsOfficeTransit] =
@@ -291,6 +290,12 @@ class DeclarationRequestService @Inject()(
         case _ => None
       }
 
+    def authorisedLocationOfGoods(goodsSummaryDetails: GoodSummaryDetails): Option[String] =
+      goodsSummaryDetails match {
+        case GoodsSummary.GoodSummarySimplifiedDetails(authorisedLocationCode, _) => Some(authorisedLocationCode)
+        case GoodSummaryNormalDetails(_)                                          => None
+      }
+
     def safetyAndSecurityFlag(boolFlag: Boolean): Int = if (boolFlag) 1 else 0
 
     def safetyAndSecurityConsignee(securityTraderDetails: Option[SecurityTraderDetails]): Option[SafetyAndSecurityConsignee] =
@@ -332,26 +337,26 @@ class DeclarationRequestService @Inject()(
             Some(SafetyAndSecurityCarrierWithEori(eori))
         }
 
-    def newDetailsCrossingBorder(detailsAtBorder: DetailsAtBorder): Option[NewDetailsAtBorder] =
+    def identityOfTransportAtCrossing(detailsAtBorder: DetailsAtBorder, inlandMode: InlandMode): Option[String] =
       detailsAtBorder match {
-        case newDetailsAtBorder: NewDetailsAtBorder => Some(newDetailsAtBorder)
-        case DetailsAtBorder.SameDetailsAtBorder    => None
+        case newDetailsAtBorder: NewDetailsAtBorder => Some(newDetailsAtBorder.idCrossing)
+        case DetailsAtBorder.SameDetailsAtBorder    => identityOfTransportAtDeparture(inlandMode)
       }
 
-    def nationalityAtCrossing(detailsAtBorder: DetailsAtBorder): Option[CountryCode] =
+    def nationalityAtCrossing(detailsAtBorder: DetailsAtBorder, inlandMode: InlandMode): Option[String] =
       detailsAtBorder match {
         case newDetailsAtBorder: NewDetailsAtBorder =>
           newDetailsAtBorder.modeCrossingBorder match {
             case ModeCrossingBorder.ModeExemptNationality(_)                          => None
-            case ModeCrossingBorder.ModeWithNationality(nationalityCrossingBorder, _) => Some(nationalityCrossingBorder)
+            case ModeCrossingBorder.ModeWithNationality(nationalityCrossingBorder, _) => Some(nationalityCrossingBorder.code)
           }
-        case DetailsAtBorder.SameDetailsAtBorder => None
+        case DetailsAtBorder.SameDetailsAtBorder => nationalityAtDeparture(inlandMode)
       }
 
-    def modeAtCrossing(detailsAtBorder: DetailsAtBorder): Option[Int] =
+    def modeAtCrossing(detailsAtBorder: DetailsAtBorder, inlandMode: InlandMode): Int =
       detailsAtBorder match {
-        case newDetailsAtBorder: NewDetailsAtBorder => Some(newDetailsAtBorder.modeCrossingBorder.modeCode)
-        case DetailsAtBorder.SameDetailsAtBorder    => None
+        case newDetailsAtBorder: NewDetailsAtBorder => newDetailsAtBorder.modeCrossingBorder.modeCode
+        case DetailsAtBorder.SameDetailsAtBorder    => inlandMode.code
       }
 
     def itineraries(itineraries: NonEmptyList[Itinerary]): Seq[models.messages.Itinerary] =
@@ -367,20 +372,20 @@ class DeclarationRequestService @Inject()(
         refNumHEA4          = preTaskList.lrn.value,
         typOfDecHEA24       = movementDetails.declarationType.code,
         couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
-        agrLocOfGooCodHEA38 = None, // prelodge, this is a string page, where does the code come from
-        agrLocOfGooHEA39    = agreedLocationOfGoods(movementDetails, goodsSummary.goodSummaryDetails), // prelodge
-        autLocOfGooCodHEA41 = None, // What does this link to??
-        plaOfLoaCodHEA46    = None, // This hasnt been added to the journey yet??
+        agrLocOfGooCodHEA38 = None, // Not required
+        agrLocOfGooHEA39    = agreedLocationOfGoods(movementDetails, goodsSummary.goodSummaryDetails),
+        autLocOfGooCodHEA41 = authorisedLocationOfGoods(goodsSummary.goodSummaryDetails),
+        plaOfLoaCodHEA46    = None, // Journey is currently missing for this
         couOfDisCodHEA55    = Some(routeDetails.countryOfDispatch.code),
         cusSubPlaHEA66      = customsSubPlace(goodsSummary),
         transportDetails = Transport(
           inlTraModHEA75        = Some(transportDetails.inlandMode.code),
-          traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
+          traModAtBorHEA76      = Some(detailsAtBorderMode(transportDetails.detailsAtBorder, transportDetails.inlandMode.code)),
           ideOfMeaOfTraAtDHEA78 = identityOfTransportAtDeparture(transportDetails.inlandMode),
           natOfMeaOfTraAtDHEA80 = nationalityAtDeparture(transportDetails.inlandMode),
-          ideOfMeaOfTraCroHEA85 = newDetailsCrossingBorder(transportDetails.detailsAtBorder).map(_.idCrossing), // The user can select same details, what do we populate with??
-          natOfMeaOfTraCroHEA87 = nationalityAtCrossing(transportDetails.detailsAtBorder).map(_.code),
-          typOfMeaOfTraCroHEA88 = modeAtCrossing(transportDetails.detailsAtBorder)
+          ideOfMeaOfTraCroHEA85 = identityOfTransportAtCrossing(transportDetails.detailsAtBorder, transportDetails.inlandMode),
+          natOfMeaOfTraCroHEA87 = nationalityAtCrossing(transportDetails.detailsAtBorder, transportDetails.inlandMode),
+          typOfMeaOfTraCroHEA88 = Some(modeAtCrossing(transportDetails.detailsAtBorder, transportDetails.inlandMode))
         ),
         conIndHEA96        = booleanToInt(movementDetails.containersUsed),
         totNumOfIteHEA305  = itemDetails.size,
