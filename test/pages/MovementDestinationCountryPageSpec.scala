@@ -16,16 +16,17 @@
 
 package pages
 
+import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
 class MovementDestinationCountryPageSpec extends PageBehaviours {
 
   "MovementDestinationCountryPage" - {
 
-    beRetrievable[String](MovementDestinationCountryPage)
+    beRetrievable[CountryCode](MovementDestinationCountryPage)
 
-    beSettable[String](MovementDestinationCountryPage)
+    beSettable[CountryCode](MovementDestinationCountryPage)
 
-    beRemovable[String](MovementDestinationCountryPage)
+    beRemovable[CountryCode](MovementDestinationCountryPage)
   }
 }

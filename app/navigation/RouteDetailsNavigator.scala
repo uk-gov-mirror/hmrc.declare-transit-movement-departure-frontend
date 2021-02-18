@@ -35,6 +35,9 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
         Some(routes.DestinationCountryController.onPageLoad(ua.id, NormalMode))
     case DestinationCountryPage =>
       ua =>
+        Some(routes.MovementDestinationCountryController.onPageLoad(ua.id, NormalMode))
+    case MovementDestinationCountryPage =>
+      ua =>
         Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
     case DestinationOfficePage =>
       ua =>
@@ -55,6 +58,16 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
   }
 
   override val checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case CountryOfDispatchPage =>
+      ua =>
+        Some(routes.OfficeOfDepartureController.onPageLoad(ua.id, CheckMode))
+    case DestinationCountryPage =>
+      ua =>
+        val count = ua.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+        Some(routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(count), CheckMode))
+    case MovementDestinationCountryPage =>
+      ua =>
+        Some(routes.DestinationOfficeController.onPageLoad(ua.id, CheckMode))
     case page if isRouteDetailsSectionPage(page) =>
       ua =>
         Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
@@ -71,8 +84,7 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
 
   private def isRouteDetailsSectionPage(page: Page): Boolean =
     page match {
-      case CountryOfDispatchPage | OfficeOfDeparturePage | DestinationCountryPage | DestinationOfficePage | AddAnotherTransitOfficePage(_) |
-          ArrivalTimesAtOfficePage(_) =>
+      case OfficeOfDeparturePage | DestinationOfficePage | AddAnotherTransitOfficePage(_) | ArrivalTimesAtOfficePage(_) =>
         true
       case _ => false
     }

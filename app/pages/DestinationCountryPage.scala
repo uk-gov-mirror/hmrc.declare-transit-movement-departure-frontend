@@ -16,12 +16,25 @@
 
 package pages
 
+import derivable.DeriveNumberOfOfficeOfTransits
+import models.{Index, UserAnswers}
 import models.reference.CountryCode
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object DestinationCountryPage extends QuestionPage[CountryCode] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "destinationCountry"
+
+  override def cleanup(value: Option[CountryCode], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        val count = userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+        userAnswers
+          .remove(AddAnotherTransitOfficePage(Index(count)))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

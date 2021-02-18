@@ -26,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DestinationCountryPage
+import pages.{DestinationCountryPage, MovementDestinationCountryPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -54,7 +54,7 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunju
   "RouteDetailsCheckYourAnswers Controller" - {
 
     "return OK and the correct view for a GET" in {
-      val userAnswers = emptyUserAnswers.set(DestinationCountryPage, CountryCode("GB")).toOption.value
+      val userAnswers = emptyUserAnswers.set(MovementDestinationCountryPage, CountryCode("GB")).toOption.value
       dataRetrievalWithData(userAnswers)
       when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
