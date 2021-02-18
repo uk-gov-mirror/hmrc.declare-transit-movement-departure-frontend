@@ -73,34 +73,24 @@ class RouteDetailsCheckYourAnswersController @Inject()(
   private def createSections(countryCode: CountryCode)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Seq[Section]] = {
     val checkYourAnswersHelper = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
 
-    referenceDataConnector.getCountryList() flatMap {
-      countryList =>
-        referenceDataConnector.getCustomsOffices() flatMap {
-          customsOfficeList =>
-            referenceDataConnector.getCountryList() flatMap {
-              destCountryList =>
-                referenceDataConnector.getTransitCountryList() flatMap {
-                  movementCountryList =>
-                    referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
-                      destOfficeList =>
-                        officeOfTransitSections(checkYourAnswersHelper) map {
-                          officeOfTransitSection =>
-                            val section: Section = Section(
-                              Seq(
-                                checkYourAnswersHelper.countryOfDispatch(countryList),
-                                checkYourAnswersHelper.officeOfDeparture(customsOfficeList),
-                                checkYourAnswersHelper.destinationCountry(destCountryList),
-                                checkYourAnswersHelper.movementDestinationCountry(movementCountryList),
-                                checkYourAnswersHelper.destinationOffice(destOfficeList)
-                              ).flatten
-                            )
-
-                            Seq(section, officeOfTransitSection)
-                        }
-                    }
-                }
-            }
-        }
+    for {
+      countryList            <- referenceDataConnector.getCountryList()
+      customsOfficeList      <- referenceDataConnector.getCustomsOffices()
+      destCountryList        <- referenceDataConnector.getCountryList()
+      movementCountryList    <- referenceDataConnector.getTransitCountryList()
+      destOfficeList         <- referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode)
+      officeOfTransitSection <- officeOfTransitSections(checkYourAnswersHelper)
+    } yield {
+      val section: Section = Section(
+        Seq(
+          checkYourAnswersHelper.countryOfDispatch(countryList),
+          checkYourAnswersHelper.officeOfDeparture(customsOfficeList),
+          checkYourAnswersHelper.destinationCountry(destCountryList),
+          checkYourAnswersHelper.movementDestinationCountry(movementCountryList),
+          checkYourAnswersHelper.destinationOffice(destOfficeList)
+        ).flatten
+      )
+      Seq(section, officeOfTransitSection)
     }
   }
 
