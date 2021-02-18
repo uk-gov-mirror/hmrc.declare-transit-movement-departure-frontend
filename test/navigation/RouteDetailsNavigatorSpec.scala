@@ -262,24 +262,13 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
       }
 
-      "Must go from Destination Country to Add Another Transit Office" in {
+      "Must go from Destination Country to Router Details Check Your Answers" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val userAnswers = answers
-              .set(AddTransitOfficePage, true)
-              .toOption
-              .value
-              .set(AddAnotherTransitOfficePage(index), "id1")
-              .toOption
-              .value
-              .set(AddAnotherTransitOfficePage(Index(1)), "id2")
-              .toOption
-              .value
-
             navigator
-              .nextPage(DestinationCountryPage, CheckMode, userAnswers)
-              .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, Index(2), CheckMode))
+              .nextPage(DestinationCountryPage, CheckMode, answers)
+              .mustBe(routes.RouteDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
         }
 
