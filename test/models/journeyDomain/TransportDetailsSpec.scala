@@ -144,13 +144,13 @@ object TransportDetailsSpec extends UserAnswersSpecHelper {
             case NewDetailsAtBorder(_, idCrossing, _) => idCrossing
           })
           .unsafeSetPFn(ModeCrossingBorderPage)(transportDetails.detailsAtBorder)({
-            case NewDetailsAtBorder(_, _, ModeExemptNationality) => InlandMode.Constants.codes.head
+            case NewDetailsAtBorder(_, _, ModeExemptNationality(modeCode)) => modeCode.toString
           })
           .unsafeSetPFn(ModeCrossingBorderPage)(transportDetails.detailsAtBorder)({
-            case NewDetailsAtBorder(_, _, ModeWithNationality(_)) => "ZZ"
+            case NewDetailsAtBorder(_, _, ModeWithNationality(_, modeCode)) => modeCode.toString
           })
           .unsafeSetPFn(NationalityCrossingBorderPage)(transportDetails.detailsAtBorder)({
-            case NewDetailsAtBorder(_, _, ModeWithNationality(nationalityCrossingBorder)) => nationalityCrossingBorder
+            case NewDetailsAtBorder(_, _, ModeWithNationality(nationalityCrossingBorder, _)) => nationalityCrossingBorder
           })
 
       case Mode5or7(code, nationalityAtDeparture) =>
@@ -165,13 +165,13 @@ object TransportDetailsSpec extends UserAnswersSpecHelper {
             case NewDetailsAtBorder(_, idCrossing, _) => idCrossing
           })
           .unsafeSetPFn(ModeCrossingBorderPage)(transportDetails.detailsAtBorder)({
-            case NewDetailsAtBorder(_, _, ModeExemptNationality) => InlandMode.Constants.codes.head
+            case NewDetailsAtBorder(_, _, ModeExemptNationality(modeCode)) => modeCode.toString
           })
           .unsafeSetPFn(ModeCrossingBorderPage)(transportDetails.detailsAtBorder)({
-            case NewDetailsAtBorder(_, _, ModeWithNationality(_)) => "ZZ"
+            case NewDetailsAtBorder(_, _, ModeWithNationality(_, modeCode)) => modeCode.toString
           })
           .unsafeSetPFn(NationalityCrossingBorderPage)(transportDetails.detailsAtBorder)({
-            case NewDetailsAtBorder(_, _, ModeWithNationality(nationalityCrossingBorder)) => nationalityCrossingBorder
+            case NewDetailsAtBorder(_, _, ModeWithNationality(nationalityCrossingBorder, _)) => nationalityCrossingBorder
           })
 
       case NonSpecialMode(code, nationalityAtDeparture, departureId) =>
@@ -188,19 +188,19 @@ object TransportDetailsSpec extends UserAnswersSpecHelper {
             case NewDetailsAtBorder(_, idCrossing, _) => idCrossing
           })
           .unsafeSetPFn(ModeCrossingBorderPage)(transportDetails.detailsAtBorder)({
-            case NewDetailsAtBorder(_, _, ModeExemptNationality) => InlandMode.Constants.codes.head
+            case NewDetailsAtBorder(_, _, ModeExemptNationality(modeCode)) => modeCode.toString
           })
           .unsafeSetPFn(ModeCrossingBorderPage)(transportDetails.detailsAtBorder)({
-            case NewDetailsAtBorder(_, _, ModeWithNationality(_)) => "ZZ"
+            case NewDetailsAtBorder(_, _, ModeWithNationality(_, modeCode)) => modeCode.toString
           })
           .unsafeSetPFn(NationalityCrossingBorderPage)(transportDetails.detailsAtBorder)({
-            case NewDetailsAtBorder(_, _, ModeWithNationality(nationalityCrossingBorder)) => nationalityCrossingBorder
+            case NewDetailsAtBorder(_, _, ModeWithNationality(nationalityCrossingBorder, _)) => nationalityCrossingBorder
           })
     }
 
-  def setTransportDetailsRail(changeAtBorder: Boolean, mode: String = Rail.Constants.codes.head)(startUserAnswers: UserAnswers): UserAnswers =
+  def setTransportDetailsRail(changeAtBorder: Boolean, mode: Int = Rail.Constants.codes.head)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
       .unsafeSetVal(ChangeAtBorderPage)(changeAtBorder)
-      .unsafeSetVal(InlandModePage)(mode)
+      .unsafeSetVal(InlandModePage)(mode.toString)
 
 }

@@ -125,9 +125,9 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
 
   private def modeCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call =
     (ua.get(ModeCrossingBorderPage), ua.get(NationalityCrossingBorderPage), mode) match {
-      case (Some(x), _, NormalMode) if !InlandMode.Constants.codesSingleDigit.contains(x) =>
+      case (Some(x), _, NormalMode) if !InlandMode.Constants.codesSingleDigit.map(_.toString).contains(x) =>
         routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
-      case (Some(x), None, CheckMode) if !InlandMode.Constants.codesSingleDigit.contains(x) =>
+      case (Some(x), None, CheckMode) if !InlandMode.Constants.codesSingleDigit.map(_.toString).contains(x) =>
         routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
       case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
@@ -140,10 +140,9 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
 
   private def inlandModeRoute(ua: UserAnswers, mode: Mode): Call =
     (ua.get(InlandModePage), ua.get(AddIdAtDeparturePage), mode) match {
-      case (Some(x), _, _) if Rail.Constants.codes.contains(x)     => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
-      case (Some(x), _, _) if Mode5or7.Constants.codes.contains(x) => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
-      case (_, Some(false), CheckMode)                             => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
-      case (_, Some(true), CheckMode)                              => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
-      case (_, _, _)                                               => routes.AddIdAtDepartureController.onPageLoad(ua.id, mode)
+      case (Some(x), _, _) if Rail.Constants.codes.map(_.toString).contains(x)     => routes.ChangeAtBorderController.onPageLoad(ua.id, mode)
+      case (Some(x), _, _) if Mode5or7.Constants.codes.map(_.toString).contains(x) => routes.NationalityAtDepartureController.onPageLoad(ua.id, mode)
+      case (_, Some(_), CheckMode)                                                 => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+      case _                                                                       => routes.AddIdAtDepartureController.onPageLoad(ua.id, mode)
     }
 }
