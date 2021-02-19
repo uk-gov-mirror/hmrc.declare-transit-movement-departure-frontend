@@ -32,6 +32,6 @@ class DeclarationPlaceFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthPostCode, "declarationPlace.error.length"),
-            regexp(postCodeRegex, "declarationPlace.error.invalid")
+            regexp(postCodeRegex, "declarationPlace.error.invalid", Seq.empty)
           )))
 }

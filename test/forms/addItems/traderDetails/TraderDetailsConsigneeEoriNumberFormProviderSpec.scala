@@ -16,19 +16,21 @@
 
 package forms.addItems.traderDetails
 
-import forms.behaviours.StringFieldBehaviours
 import forms.Constants._
+import forms.behaviours.StringFieldBehaviours
 import models.Index
+import models.domain.StringFieldRegex.eoriNumberRegex
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class TraderDetailsConsigneeEoriNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey      = "traderDetailsConsigneeEoriNumber.error.required"
-  val lengthKey        = "traderDetailsConsigneeEoriNumber.error.length"
-  val invalidCharsKey  = "traderDetailsConsigneeEoriNumber.error.invalid"
-  val invalidFormatKey = "traderDetailsConsigneeEoriNumber.error.invalidFormat"
-  val index            = Index(0)
+  private val requiredKey      = "traderDetailsConsigneeEoriNumber.error.required"
+  private val lengthKey        = "traderDetailsConsigneeEoriNumber.error.length"
+  private val invalidKey       = "traderDetailsConsigneeEoriNumber.error.invalid"
+  private val invalidFormatKey = "traderDetailsConsigneeEoriNumber.error.invalidFormat"
+  private val index            = Index(0)
 
   val form = new TraderDetailsConsigneeEoriNumberFormProvider()(index)
 
@@ -55,21 +57,7 @@ class TraderDetailsConsigneeEoriNumberFormProviderSpec extends StringFieldBehavi
       requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
 
-    "must not bind strings that do not match the EORI number regex" ignore { //Need to address this random failure case
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharsKey, Seq(index.display)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLengthEoriNumber) suchThat (!_.matches(validEoriCharactersRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLengthEoriNumber)
 
     "must not bind strings that do not match the EORI number format regex" ignore {
 

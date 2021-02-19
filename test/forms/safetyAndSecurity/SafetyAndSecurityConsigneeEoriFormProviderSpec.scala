@@ -18,15 +18,15 @@ package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class SafetyAndSecurityConsigneeEoriFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey       = "safetyAndSecurityConsigneeEori.error.required"
-  val lengthKey         = "safetyAndSecurityConsigneeEori.error.length"
-  val invalidKey        = "safetyAndSecurityConsigneeEori.error.invalid"
-  private val maxLength = 17
-  private val eoriRegex = s"^[a-zA-Z0-9]{1,$maxLength}$$"
+  private val requiredKey = "safetyAndSecurityConsigneeEori.error.required"
+  private val lengthKey   = "safetyAndSecurityConsigneeEori.error.length"
+  private val invalidKey  = "safetyAndSecurityConsigneeEori.error.invalid"
+  private val maxLength   = 17
 
   val form = new SafetyAndSecurityConsigneeEoriFormProvider()()
 
@@ -53,19 +53,6 @@ class SafetyAndSecurityConsigneeEoriFormProviderSpec extends StringFieldBehaviou
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the invalid characters regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidKey, Seq(eoriRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithLength(maxLength) suchThat (!_.matches(eoriRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
   }
 }

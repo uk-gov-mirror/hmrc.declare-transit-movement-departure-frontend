@@ -16,18 +16,18 @@
 
 package forms
 
+import forms.Constants.vehicleIdMaxLength
 import forms.behaviours.StringFieldBehaviours
-import forms.Constants.{vehicleIdMaxLength, vehicleIdRegex}
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey       = "idAtDeparture.error.required"
-  val lengthKey         = "idAtDeparture.error.length"
-  val invalidCharacters = "idAtDeparture.error.invalidCharacters"
-
-  val form = new IdAtDepartureFormProvider()()
+  private val requiredKey = "idAtDeparture.error.required"
+  private val lengthKey   = "idAtDeparture.error.length"
+  private val invalidKey  = "idAtDeparture.error.invalidCharacters"
+  private val form        = new IdAtDepartureFormProvider()()
 
   ".value" - {
 
@@ -52,21 +52,7 @@ class IdAtDepartureFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the id regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharacters, Seq(vehicleIdRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(vehicleIdMaxLength) suchThat (!_.matches(vehicleIdRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, vehicleIdMaxLength)
 
   }
 }

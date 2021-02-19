@@ -17,13 +17,15 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex._
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
 import models.messages.guarantee.Guarantee.Constants._
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new LiabilityAmountFormProvider()()
+  private val form = new LiabilityAmountFormProvider()()
 
   ".value" - {
 
@@ -41,39 +43,28 @@ class LiabilityAmountFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match invalid characters regex" in {
+    "must not bind strings with invalid characters" in {
 
-      val expectedError     = List(FormError(fieldName, invalidCharactersKey, Seq(liabilityAmountCharactersRegex)))
-      val genMaxLengthAlpha = Gen.containerOfN[List, Char](maxLength, Gen.alphaChar).map(_.mkString)
+      val invalidKey = "liabilityAmount.error.characters"
 
-      forAll(genMaxLengthAlpha) {
+      val expectedError          = FormError(fieldName, invalidKey, Seq(liabilityAmountCharactersRegex))
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
 
-    "must not bind strings that do not match invalid format regex" ignore { //todo: fix generators to remote suchThat
-
-      val expectedError = List(FormError(fieldName, invalidFormatKey, Seq(liabilityAmountFormatRegex)))
-      val genInvalidString: Gen[String] = {
-        decimalsPositive
-          .suchThat(_.matches(liabilityAmountCharactersRegex))
-          .suchThat(!_.matches(liabilityAmountFormatRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings with invalid formatting" in {
+      val invalidKey             = "liabilityAmount.error.invalidFormat"
+      val expectedError          = FormError(fieldName, invalidKey, Seq(liabilityAmountFormatRegex))
+      val generator: Gen[String] = RegexpGen.from("^([1-9]\\.[1-9][1-9][1-9])$")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
-    }
-
-    "must not bind strings that do not match invalid format regex (simple)" in {
-      val expectedError = List(FormError(fieldName, invalidFormatKey, Seq(liabilityAmountFormatRegex)))
-      val invalidString = "12.000"
-      val result        = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-      result.errors mustBe expectedError
     }
 
     "must not bind strings that do not match greater than zero regex" in {

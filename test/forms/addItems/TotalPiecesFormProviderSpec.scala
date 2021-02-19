@@ -21,15 +21,13 @@ import play.api.data.FormError
 
 class TotalPiecesFormProviderSpec extends IntFieldBehaviours {
 
-  val form = new TotalPiecesFormProvider()(1)
+  private val form = new TotalPiecesFormProvider()(1)
 
   ".value" - {
 
-    val fieldName = "value"
-
-    val minimum = 0
-    val maximum = 99999
-
+    val fieldName          = "value"
+    val minimum            = 0
+    val maximum            = 99999
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 
     behave like fieldThatBindsValidData(

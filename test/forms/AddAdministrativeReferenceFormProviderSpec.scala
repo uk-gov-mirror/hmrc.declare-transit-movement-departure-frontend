@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddAdministrativeReferenceFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addAdministrativeReference.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddAdministrativeReferenceFormProvider()()
+  private val requiredKey = "addAdministrativeReference.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddAdministrativeReferenceFormProvider()()
 
   ".value" - {
 

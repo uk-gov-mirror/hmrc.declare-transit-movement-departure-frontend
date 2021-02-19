@@ -34,7 +34,8 @@ package forms.safetyAndSecurity
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class PlaceOfUnloadingCodeFormProviderSpec extends StringFieldBehaviours {
 
@@ -42,9 +43,7 @@ class PlaceOfUnloadingCodeFormProviderSpec extends StringFieldBehaviours {
   private val lengthKey   = "placeOfUnloadingCode.error.length"
   private val invalidKey  = "placeOfUnloadingCode.error.invalid"
   private val maxLength   = 35
-  private val placeRegex  = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,35}$"
-
-  val form = new PlaceOfUnloadingCodeFormProvider()()
+  private val form        = new PlaceOfUnloadingCodeFormProvider()()
 
   ".value" - {
 
@@ -69,20 +68,6 @@ class PlaceOfUnloadingCodeFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind invalid string" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidKey, Seq(placeRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(placeRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
   }
 }

@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class ConfirmRemoveOfficeOfTransitFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "confirmRemoveOfficeOfTransit.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new ConfirmRemoveOfficeOfTransitFormProvider()()
+  private val requiredKey = "confirmRemoveOfficeOfTransit.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new ConfirmRemoveOfficeOfTransitFormProvider()()
 
   ".value" - {
 

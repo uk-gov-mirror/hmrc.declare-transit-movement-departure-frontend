@@ -17,6 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.CountryList
+import models.reference.{Country, CountryCode}
 import play.api.data.FormError
 
 class MovementDestinationCountryFormProviderSpec extends StringFieldBehaviours {
@@ -25,7 +27,9 @@ class MovementDestinationCountryFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "movementDestinationCountry.error.required"
   val maxLength   = 2
 
-  val form = new MovementDestinationCountryFormProvider()()
+  val countries: CountryList = CountryList(Seq(Country(CountryCode("GB"), "Great Britain")))
+
+  val form = new MovementDestinationCountryFormProvider()(countries)
 
   ".value" - {
 
@@ -42,5 +46,19 @@ class MovementDestinationCountryFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind if country code does not exist in the country list" in {
+
+      val boundForm = form.bind(Map("value" -> "invalid"))
+      val field     = boundForm("value")
+      field.errors mustNot be(empty)
+    }
+
+    "bind a country code which is in the list" in {
+
+      val boundForm = form.bind(Map("value" -> "GB"))
+      val field     = boundForm("value")
+      field.errors must be(empty)
+    }
   }
 }

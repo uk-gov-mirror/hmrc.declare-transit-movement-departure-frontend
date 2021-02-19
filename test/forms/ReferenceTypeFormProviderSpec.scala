@@ -23,18 +23,16 @@ import play.api.data.FormError
 
 class ReferenceTypeFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "referenceType.error.required"
-  val lengthKey   = "referenceType.error.length"
-  val maxLength   = 12
-
+  private val requiredKey = "referenceType.error.required"
+  private val lengthKey   = "referenceType.error.length"
+  private val maxLength   = 12
   private val documentList = PreviousReferencesDocumentTypeList(
     Seq(
       PreviousReferencesDocumentType("T1", "Description T1"),
       PreviousReferencesDocumentType("T2F", "Description T2F")
     )
   )
-
-  val form = new ReferenceTypeFormProvider()(documentList)
+  private val form = new ReferenceTypeFormProvider()(documentList)
 
   ".value" - {
 

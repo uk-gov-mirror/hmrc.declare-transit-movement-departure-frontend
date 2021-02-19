@@ -17,17 +17,17 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.messages.guarantee.GuaranteeReferenceWithOther
+import models.messages.guarantee.GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class OtherReferenceFormProviderSpec() extends StringFieldBehaviours {
 
-  val requiredKey                       = "otherReference.error.required"
-  val lengthKey                         = "otherReference.error.length"
-  val maxLength                         = GuaranteeReferenceWithOther.Constants.otherReferenceNumberLength
-  val invalidKey                        = "otherReference.error.invalid"
-  val otherReferenceNumberRegex: String = "^[A-Z0-9]*$"
+  private val requiredKey = "otherReference.error.required"
+  private val lengthKey   = "otherReference.error.length"
+  private val maxLength   = otherReferenceNumberLength
+  private val invalidKey  = "otherReference.error.invalid"
 
   val form = new OtherReferenceFormProvider()()
 
@@ -54,18 +54,6 @@ class OtherReferenceFormProviderSpec() extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
-
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(otherReferenceNumberRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLength) suchThat (!_.matches(otherReferenceNumberRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
   }
 }

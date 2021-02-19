@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddTransportChargesPaymentMethodFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addTransportChargesPaymentMethod.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddTransportChargesPaymentMethodFormProvider()()
+  private val requiredKey = "addTransportChargesPaymentMethod.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddTransportChargesPaymentMethodFormProvider()()
 
   ".value" - {
 

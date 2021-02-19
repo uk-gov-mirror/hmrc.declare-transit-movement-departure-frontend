@@ -33,7 +33,7 @@ class ItemTotalGrossMassFormProvider @Inject() extends Mappings {
             maxLength(maxLengthGrossMass, lengthKeyGrossMass, index.display),
             regexp(totalGrossMassInvalidCharactersRegex, invalidCharactersKeyGrossMass, index.display),
             regexp(totalGrossMassInvalidFormatRegex, invalidFormatKeyGrossMass, index.display),
-            minGrossMax(0, invalidAmountKeyGrossMass, index.display)
+            minGrossMass(0, invalidAmountKeyGrossMass, index.display)
           )
         )
     )

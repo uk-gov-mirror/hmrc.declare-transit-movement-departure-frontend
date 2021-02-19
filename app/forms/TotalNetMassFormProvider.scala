@@ -16,12 +16,13 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import models.Index
-import play.api.data.Form
 import models.domain.NetMass.Constants._
+import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class TotalNetMassFormProvider @Inject() extends Mappings {
 
@@ -31,9 +32,9 @@ class TotalNetMassFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthNetMass, lengthKeyNetMass, index.display),
-            regexp(totalNetMassInvalidCharactersRegex, invalidCharactersKeyNetMass, index.display),
-            regexp(totalNetMassInvalidFormatRegex, invalidFormatKeyNetMass, index.display),
-            minGrossMax(0, invalidAmountKeyNetMass, index.display)
+            regexp(totalNetMassInvalidCharactersRegex, invalidCharactersKeyNetMass),
+            regexp(totalNetMassInvalidFormatRegex, invalidFormatKeyNetMass),
+            minGrossMass(0, invalidAmountKeyNetMass, Seq.empty)
           )
         )
     )

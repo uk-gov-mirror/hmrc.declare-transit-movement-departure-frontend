@@ -17,16 +17,17 @@
 package forms
 
 import forms.mappings.Mappings
+
 import javax.inject.Inject
 import models.Index
 import models.domain.SealDomain
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class SealIdDetailsFormProvider @Inject() extends Mappings {
 
   val maxSealsNumberLength = 20
-  val sealNumberRegex      = "^[a-zA-Z0-9]*$"
 
   def apply(index: Index, seals: Seq[SealDomain] = Seq.empty[SealDomain]): Form[String] =
     Form(
@@ -34,7 +35,7 @@ class SealIdDetailsFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxSealsNumberLength, "sealIdDetails.error.length"),
-            regexp(sealNumberRegex, "sealIdDetails.error.invalidCharacters"),
+            regexp(alphaNumericRegex, "sealIdDetails.error.invalidCharacters"),
             doesNotExistIn(seals, index, "sealIdentity.error.duplicate")
           ))
     )

@@ -23,18 +23,16 @@ import play.api.data.FormError
 
 class ModeCrossingBorderFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "modeCrossingBorder.error.required"
-  val lengthKey   = "modeCrossingBorder.error.length"
-  val maxLength   = 100
-
-  val transportModeList = TransportModeList(
+  private val requiredKey = "modeCrossingBorder.error.required"
+  private val lengthKey   = "modeCrossingBorder.error.length"
+  private val maxLength   = 100
+  private val transportModeList = TransportModeList(
     Seq(
       TransportMode("1", "Sea transport"),
       TransportMode("10", "Sea transport")
     )
   )
-
-  val form = new ModeCrossingBorderFormProvider()(transportModeList)
+  private val form = new ModeCrossingBorderFormProvider()(transportModeList)
 
   ".value" - {
 

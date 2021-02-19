@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddCommercialReferenceNumberAllItemsFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addCommercialReferenceNumberAllItems.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddCommercialReferenceNumberAllItemsFormProvider()()
+  private val requiredKey = "addCommercialReferenceNumberAllItems.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddCommercialReferenceNumberAllItemsFormProvider()()
 
   ".value" - {
 

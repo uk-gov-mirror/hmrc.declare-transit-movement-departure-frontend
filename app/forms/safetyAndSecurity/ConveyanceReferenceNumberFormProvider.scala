@@ -17,14 +17,15 @@
 package forms.safetyAndSecurity
 
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
+
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class ConveyanceReferenceNumberFormProvider @Inject() extends Mappings {
-  val maxLength      = 8
-  val minLength      = 7
-  val refNumberRegex = s"^[a-zA-Z0-9]{$minLength,$maxLength}$$"
+  val maxLength = 8
+  val minLength = 7
 
   def apply(): Form[String] =
     Form(
@@ -33,7 +34,7 @@ class ConveyanceReferenceNumberFormProvider @Inject() extends Mappings {
           StopOnFirstFail[String](
             minLength(minLength, "conveyanceReferenceNumber.error.minLength", minLength),
             maxLength(maxLength, "conveyanceReferenceNumber.error.maxLength", maxLength),
-            regexp(refNumberRegex, "conveyanceReferenceNumber.error.invalid")
+            regexp(alphaNumericRegex, "conveyanceReferenceNumber.error.invalid")
           )
         )
     )

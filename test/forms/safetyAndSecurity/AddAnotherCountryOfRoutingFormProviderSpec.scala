@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddAnotherCountryOfRoutingFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addAnotherCountryOfRouting.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddAnotherCountryOfRoutingFormProvider()()
+  private val requiredKey = "addAnotherCountryOfRouting.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddAnotherCountryOfRoutingFormProvider()()
 
   ".value" - {
 

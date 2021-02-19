@@ -24,15 +24,13 @@ import play.api.data.FormError
 
 class DangerousGoodsCodeFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "dangerousGoodsCode.error.required"
-  val lengthKey   = "dangerousGoodsCode.error.length"
-  val maxLength   = 4
-
-  val dangerousGoodsCode1 = DangerousGoodsCode("0004", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass")
-  val dangerousGoodsCode2 = DangerousGoodsCode("0005", "CARTRIDGES FOR WEAPONS with bursting charge")
-  val dangerousGoodsCodes = DangerousGoodsCodeList(Seq(dangerousGoodsCode1, dangerousGoodsCode2))
-
-  val form = new DangerousGoodsCodeFormProvider()(dangerousGoodsCodes)
+  private val requiredKey         = "dangerousGoodsCode.error.required"
+  private val lengthKey           = "dangerousGoodsCode.error.length"
+  private val maxLength           = 4
+  private val dangerousGoodsCode1 = DangerousGoodsCode("0004", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass")
+  private val dangerousGoodsCode2 = DangerousGoodsCode("0005", "CARTRIDGES FOR WEAPONS with bursting charge")
+  private val dangerousGoodsCodes = DangerousGoodsCodeList(Seq(dangerousGoodsCode1, dangerousGoodsCode2))
+  private val form                = new DangerousGoodsCodeFormProvider()(dangerousGoodsCodes)
 
   ".value" - {
 

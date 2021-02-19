@@ -28,8 +28,8 @@ import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
-import models.journeyDomain.TransportDetails.DetailsAtBorder.SameDetailsAtBorder
-import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode}
+import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
+import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
 import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
@@ -210,10 +210,10 @@ class DeclarationRequestService @Inject()(
             None
         }
 
-    def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder): Option[String] =
+    def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder, inlandCode: Int): String =
       detailsAtBorder match {
-        case SameDetailsAtBorder                            => None
-        case DetailsAtBorder.NewDetailsAtBorder(mode, _, _) => Some(mode)
+        case DetailsAtBorder.NewDetailsAtBorder(mode, _, _) => mode
+        case SameDetailsAtBorder                            => inlandCode.toString
       }
 
     def customsOfficeTransit(transitInformation: NonEmptyList[TransitInformation]): Seq[CustomsOfficeTransit] =
@@ -290,6 +290,12 @@ class DeclarationRequestService @Inject()(
         case _ => None
       }
 
+    def authorisedLocationOfGoods(goodsSummaryDetails: GoodSummaryDetails): Option[String] =
+      goodsSummaryDetails match {
+        case GoodsSummary.GoodSummarySimplifiedDetails(authorisedLocationCode, _) => Some(authorisedLocationCode)
+        case GoodSummaryNormalDetails(_)                                          => None
+      }
+
     def safetyAndSecurityFlag(boolFlag: Boolean): Int = if (boolFlag) 1 else 0
 
     def safetyAndSecurityConsignee(securityTraderDetails: Option[SecurityTraderDetails]): Option[SafetyAndSecurityConsignee] =
@@ -331,6 +337,28 @@ class DeclarationRequestService @Inject()(
             Some(SafetyAndSecurityCarrierWithEori(eori))
         }
 
+    def identityOfTransportAtCrossing(detailsAtBorder: DetailsAtBorder, inlandMode: InlandMode): Option[String] =
+      detailsAtBorder match {
+        case newDetailsAtBorder: NewDetailsAtBorder => Some(newDetailsAtBorder.idCrossing)
+        case DetailsAtBorder.SameDetailsAtBorder    => identityOfTransportAtDeparture(inlandMode)
+      }
+
+    def nationalityAtCrossing(detailsAtBorder: DetailsAtBorder, inlandMode: InlandMode): Option[String] =
+      detailsAtBorder match {
+        case newDetailsAtBorder: NewDetailsAtBorder =>
+          newDetailsAtBorder.modeCrossingBorder match {
+            case ModeCrossingBorder.ModeExemptNationality(_)                          => None
+            case ModeCrossingBorder.ModeWithNationality(nationalityCrossingBorder, _) => Some(nationalityCrossingBorder.code)
+          }
+        case DetailsAtBorder.SameDetailsAtBorder => nationalityAtDeparture(inlandMode)
+      }
+
+    def modeAtCrossing(detailsAtBorder: DetailsAtBorder, inlandMode: InlandMode): Int =
+      detailsAtBorder match {
+        case newDetailsAtBorder: NewDetailsAtBorder => newDetailsAtBorder.modeCrossingBorder.modeCode
+        case DetailsAtBorder.SameDetailsAtBorder    => inlandMode.code
+      }
+
     def itineraries(itineraries: NonEmptyList[Itinerary]): Seq[models.messages.Itinerary] =
       itineraries.toList.map(countryCode => models.messages.Itinerary(countryCode.countryCode.code))
 
@@ -344,20 +372,20 @@ class DeclarationRequestService @Inject()(
         refNumHEA4          = preTaskList.lrn.value,
         typOfDecHEA24       = movementDetails.declarationType.code,
         couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
-        agrLocOfGooCodHEA38 = None, // prelodge
-        agrLocOfGooHEA39    = agreedLocationOfGoods(movementDetails, goodsSummary.goodSummaryDetails), // prelodge
-        autLocOfGooCodHEA41 = None,
-        plaOfLoaCodHEA46    = None,
+        agrLocOfGooCodHEA38 = None, // Not required
+        agrLocOfGooHEA39    = agreedLocationOfGoods(movementDetails, goodsSummary.goodSummaryDetails),
+        autLocOfGooCodHEA41 = authorisedLocationOfGoods(goodsSummary.goodSummaryDetails),
+        plaOfLoaCodHEA46    = None, // Journey is currently missing for this
         couOfDisCodHEA55    = Some(routeDetails.countryOfDispatch.code),
         cusSubPlaHEA66      = customsSubPlace(goodsSummary),
         transportDetails = Transport(
           inlTraModHEA75        = Some(transportDetails.inlandMode.code),
-          traModAtBorHEA76      = detailsAtBorderMode(transportDetails.detailsAtBorder),
+          traModAtBorHEA76      = Some(detailsAtBorderMode(transportDetails.detailsAtBorder, transportDetails.inlandMode.code)),
           ideOfMeaOfTraAtDHEA78 = identityOfTransportAtDeparture(transportDetails.inlandMode),
           natOfMeaOfTraAtDHEA80 = nationalityAtDeparture(transportDetails.inlandMode),
-          ideOfMeaOfTraCroHEA85 = None,
-          natOfMeaOfTraCroHEA87 = None,
-          typOfMeaOfTraCroHEA88 = None
+          ideOfMeaOfTraCroHEA85 = identityOfTransportAtCrossing(transportDetails.detailsAtBorder, transportDetails.inlandMode),
+          natOfMeaOfTraCroHEA87 = nationalityAtCrossing(transportDetails.detailsAtBorder, transportDetails.inlandMode),
+          typOfMeaOfTraCroHEA88 = Some(modeAtCrossing(transportDetails.detailsAtBorder, transportDetails.inlandMode))
         ),
         conIndHEA96        = booleanToInt(movementDetails.containersUsed),
         totNumOfIteHEA305  = itemDetails.size,

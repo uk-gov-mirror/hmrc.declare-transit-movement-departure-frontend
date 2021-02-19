@@ -18,12 +18,13 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
 import models.domain.GrossMass.Constants._
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new TotalGrossMassFormProvider()()
+  private val form = new TotalGrossMassFormProvider()()
 
   ".value" - {
 
@@ -48,19 +49,14 @@ class TotalGrossMassFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKeyTotalGrossMass)
     )
 
-    "must not bind strings that do not match the totalgross mass regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidCharactersTotalGrossMass, Seq(totalGrossMassInvalidFormatRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLengthGrossMass) suchThat (!_.matches(totalGrossMassInvalidFormatRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings with invalid characters" in {
+      val invalidKey             = "totalGrossMass.error.invalidCharacters"
+      val expectedError          = FormError(fieldName, invalidKey, Seq(totalGrossMassInvalidFormatRegex))
+      val generator: Gen[String] = RegexpGen.from(s"[a-zA-Z!£^*(){}_+=:;|`~,±üçñèé@]{15}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
 

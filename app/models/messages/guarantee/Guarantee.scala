@@ -29,17 +29,14 @@ case class Guarantee(guaranteeType: String, guaranteeReference: Seq[GuaranteeRef
 object Guarantee {
 
   object Constants {
-    val guaranteeTypeLength            = 1
-    val guaranteeReferenceCount        = 99
-    val requiredKey                    = "liabilityAmount.error.required"
-    val lengthKey                      = "liabilityAmount.error.length"
-    val invalidCharactersKey           = "liabilityAmount.error.characters"
-    val invalidFormatKey               = "liabilityAmount.error.invalidFormat"
-    val greaterThanZeroErrorKey        = "liabilityAmount.error.greaterThanZero"
-    val maxLength                      = 100
-    val liabilityAmountCharactersRegex = "^$|^[0-9.]*$"
-    val liabilityAmountFormatRegex     = "^$|([0-9]*(?:\\.[0-9]{1,2})?)$"
-    val greaterThanZeroRegex           = "^$|([1-9]{1}[0-9.]*)$"
+    val guaranteeTypeLength     = 1
+    val guaranteeReferenceCount = 99
+    val requiredKey             = "liabilityAmount.error.required"
+    val lengthKey               = "liabilityAmount.error.length"
+    val invalidCharactersKey    = "liabilityAmount.error.characters"
+    val invalidFormatKey        = "liabilityAmount.error.invalidFormat"
+    val greaterThanZeroErrorKey = "liabilityAmount.error.greaterThanZero"
+    val maxLength               = 100
   }
 
   implicit val xmlReader: XmlReader[Guarantee] = (

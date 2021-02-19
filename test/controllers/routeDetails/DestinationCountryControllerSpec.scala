@@ -70,7 +70,7 @@ class DestinationCountryControllerSpec extends SpecBase with MockNunjucksRendere
       dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       val request        = FakeRequest(GET, destinationCountryRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -99,7 +99,7 @@ class DestinationCountryControllerSpec extends SpecBase with MockNunjucksRendere
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       val request        = FakeRequest(GET, destinationCountryRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -132,7 +132,7 @@ class DestinationCountryControllerSpec extends SpecBase with MockNunjucksRendere
     "must redirect to the next page when valid data is submitted" in {
       dataRetrievalWithData(emptyUserAnswers)
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       val request =
         FakeRequest(POST, destinationCountryRoute)
@@ -149,7 +149,7 @@ class DestinationCountryControllerSpec extends SpecBase with MockNunjucksRendere
       dataRetrievalWithData(emptyUserAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+      when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       val request        = FakeRequest(POST, destinationCountryRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm      = form.bind(Map("value" -> "invalid value"))

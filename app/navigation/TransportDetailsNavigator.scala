@@ -138,9 +138,9 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
 
   private def modeCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call =
     (ua.get(ModeCrossingBorderPage), ua.get(NationalityCrossingBorderPage), mode) match {
-      case (Some(x), _, NormalMode) if !InlandMode.Constants.codesSingleDigit.contains(x) =>
+      case (Some(x), _, NormalMode) if !InlandMode.Constants.codesSingleDigit.map(_.toString).contains(x) =>
         routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
-      case (Some(x), None, CheckMode) if !InlandMode.Constants.codesSingleDigit.contains(x) =>
+      case (Some(x), None, CheckMode) if !InlandMode.Constants.codesSingleDigit.map(_.toString).contains(x) =>
         routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
       case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }

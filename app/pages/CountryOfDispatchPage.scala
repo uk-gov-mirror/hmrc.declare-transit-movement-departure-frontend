@@ -16,12 +16,22 @@
 
 package pages
 
+import models.UserAnswers
 import models.reference.CountryCode
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object CountryOfDispatchPage extends QuestionPage[CountryCode] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "countryOfDispatch"
+
+  override def cleanup(value: Option[CountryCode], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        userAnswers.remove(OfficeOfDeparturePage)
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

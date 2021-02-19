@@ -21,7 +21,7 @@ import play.api.data.FormError
 
 class TotalPackagesFormProviderSpec extends IntFieldBehaviours {
 
-  val form = new TotalPackagesFormProvider()()
+  private val form = new TotalPackagesFormProvider()()
 
   ".value" - {
 

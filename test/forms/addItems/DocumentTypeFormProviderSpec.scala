@@ -24,7 +24,7 @@ import play.api.data.FormError
 
 class DocumentTypeFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "documentType.error.required"
+  private val requiredKey = "documentType.error.required"
 
   private val documentList = DocumentTypeList(
     Seq(
@@ -33,7 +33,7 @@ class DocumentTypeFormProviderSpec extends SpecBase with StringFieldBehaviours {
     )
   )
 
-  val form = new DocumentTypeFormProvider()(documentList)
+  private val form = new DocumentTypeFormProvider()(documentList)
 
   ".value" - {
 

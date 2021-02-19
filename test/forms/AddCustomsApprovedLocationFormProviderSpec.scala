@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddCustomsApprovedLocationFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addCustomsApprovedLocation.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddCustomsApprovedLocationFormProvider()()
+  private val requiredKey = "addCustomsApprovedLocation.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddCustomsApprovedLocationFormProvider()()
 
   ".value" - {
 

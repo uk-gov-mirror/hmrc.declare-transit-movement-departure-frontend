@@ -16,17 +16,20 @@
 
 package forms
 
-import forms.behaviours.StringFieldBehaviours
 import forms.Constants._
-import play.api.data.FormError
+import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.eoriNumberRegex
 import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey          = "whatIsPrincipalEori.error.required"
-  val lengthKey            = "whatIsPrincipalEori.error.length"
-  val invalidCharactersKey = "whatIsPrincipalEori.error.invalidCharacters"
-  val invalidFormatKey     = "whatIsPrincipalEori.error.invalidFormat"
+  private val requiredKey          = "whatIsPrincipalEori.error.required"
+  private val lengthKey            = "whatIsPrincipalEori.error.length"
+  private val invalidCharactersKey = "whatIsPrincipalEori.error.invalidCharacters"
+  private val invalidFormatKey     = "whatIsPrincipalEori.error.invalidFormat"
+  private val invalidCharacterKey  = "whatIsPrincipalEori.error.invalidCharacters"
 
   val form = new WhatIsPrincipalEoriFormProvider()()
 
@@ -53,36 +56,17 @@ class WhatIsPrincipalEoriFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match the valid eori characters regex" in {
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidCharacterKey, maxLengthEoriNumber)
 
-      val expectedError =
-        List(FormError(fieldName, invalidCharactersKey, Seq(validEoriCharactersRegex)))
-
-      val genInvalidString: Gen[String] = {
-        stringsWithMaxLength(maxLengthEoriNumber) suchThat (!_.matches(validEoriCharactersRegex))
-      }
-
-      forAll(genInvalidString) {
+    "must not bind strings that do not match the eoriNumber format regex" in {
+      val expectedError          = FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex))
+      val generator: Gen[String] = RegexpGen.from("^[a-zA-Z]{1}[0-9]{1}[0-9a-zA-Z]{1,13}")
+      forAll(generator) {
         invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
       }
     }
 
-    "must not bind strings that do not match the eori number format regex" in {
-
-      val expectedError =
-        List(FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex)))
-
-      val genInvalidString: Gen[String] = {
-        alphaNumericWithMaxLength(maxLengthEoriNumber).map(_.toUpperCase) suchThat (!_.matches(eoriNumberRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
   }
 }
