@@ -46,7 +46,7 @@ object TransportDetails {
     object Constants {
       val codesSingleDigit: Seq[Int] = Rail.Constants.codesSingleDigit ++ Mode5or7.Constants.codesSingleDigit
       val codesDoubleDigit: Seq[Int] = Rail.Constants.codesDoubleDigit ++ Mode5or7.Constants.codesDoubleDigit
-      val codes: Seq[Int] = codesSingleDigit ++ codesDoubleDigit
+      val codes: Seq[Int]            = codesSingleDigit ++ codesDoubleDigit
     }
 
     implicit val userAnswersReader: UserAnswersReader[InlandMode] =
@@ -54,67 +54,47 @@ object TransportDetails {
         UserAnswersReader[Mode5or7].widen[InlandMode] orElse
         UserAnswersReader[NonSpecialMode].widen[InlandMode]
 
-    //    final case class Rail(code: Int) extends InlandMode
-    final case class Rail(code: Int, departureId: Option[String]) extends InlandMode
+    case class Rail(code: Int) extends InlandMode
 
     object Rail {
 
       object Constants {
         val codesSingleDigit: Seq[Int] = Seq(2)
         val codesDoubleDigit: Seq[Int] = Seq(20)
-        val codes: Seq[Int] = codesSingleDigit ++ codesDoubleDigit
+        val codes: Seq[Int]            = codesSingleDigit ++ codesDoubleDigit
       }
 
       implicit val userAnswersReaderRail: UserAnswersReader[Rail] =
         InlandModePage.reader
           .map(_.toInt)
           .filter(Rail.Constants.codes.contains(_))
-          .flatMap(
-            code =>
-              AddIdAtDeparturePage.reader
-                .flatMap {
-                  bool =>
-                    if (bool) {
-                      IdAtDeparturePage.reader.map(
-                        x => Rail(code, Some(x)))
-                    } else {
-                      Rail(code, None).pure[UserAnswersReader]
-                    }
-                }
+          .map(Rail(_))
 
-          )
     }
 
-    final case class Mode5or7(code: Int) extends InlandMode
-
-    //    final case class Mode5or7(code: Int, countryCode: CountryCode) extends InlandMode
+    final case class Mode5or7(code: Int, nationalityAtDeparture: CountryCode) extends InlandMode
 
     case object Mode5or7 {
 
       object Constants {
         val codesSingleDigit: Seq[Int] = Seq(5, 7)
         val codesDoubleDigit: Seq[Int] = Seq(50, 70)
-        val codes: Seq[Int] = codesSingleDigit ++ codesDoubleDigit
+        val codes: Seq[Int]            = codesSingleDigit ++ codesDoubleDigit
       }
 
       implicit val userAnswersReaderMode5or7: UserAnswersReader[Mode5or7] =
         InlandModePage.reader
           .map(_.toInt)
           .filter(Mode5or7.Constants.codes.contains(_))
-          .map(Mode5or7(_))
-      //      implicit val userAnswersReaderMode5or7: UserAnswersReader[Mode5or7] =
-      //        InlandModePage.reader
-      //          .map(_.toInt)
-      //          .filter(Mode5or7.Constants.codes.contains(_))
-      //          .flatMap(
-      //            code =>
-      //              NationalityAtDeparturePage.reader
-      //                .map(Mode5or7(code, _))
-      //          )
+          .flatMap(
+            code =>
+              NationalityAtDeparturePage.reader
+                .map(Mode5or7(code, _))
+          )
 
     }
 
-    final case class NonSpecialMode(code: Int, nationalityAtDeparture: Option[CountryCode], departureId: Option[String]) extends InlandMode
+    final case class NonSpecialMode(code: Int, nationalityAtDeparture: CountryCode, departureId: Option[String]) extends InlandMode
 
     object NonSpecialMode {
 
@@ -123,11 +103,21 @@ object TransportDetails {
           .map(_.toInt)
           .filterNot(InlandMode.Constants.codes.contains(_))
           .flatMap(
-            code=>
-              (code,
-                NationalityAtDeparturePage.optionalReader,
-                IdAtDeparturePage.optionalReader).tupled.map((NonSpecialMode.apply _).tupled)
+            code =>
+              AddIdAtDeparturePage.reader
+                .flatMap {
+                  bool =>
+                    if (bool) {
+                      (
+                        NationalityAtDeparturePage.reader,
+                        IdAtDeparturePage.reader.map(Some(_))
+                        ).tupled.map((NonSpecialMode(code, _, _)).tupled)
+                    } else {
+                      NationalityAtDeparturePage.reader.map(NonSpecialMode(code, _, None))
+                    }
+                }
           )
+
     }
 
   }
@@ -191,7 +181,6 @@ object TransportDetails {
 
     final case class ModeExemptNationality(modeCode: Int) extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
     final case class ModeWithNationality(nationalityCrossingBorder: CountryCode, modeCode: Int) extends ModeCrossingBorder
-
   }
 
 }
