@@ -28,13 +28,4 @@ case object DestinationCountryPage extends QuestionPage[CountryCode] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "destinationCountry"
-
-  override def cleanup(value: Option[CountryCode], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(_) =>
-        val count = userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
-        userAnswers
-          .remove(AddAnotherTransitOfficePage(Index(count)))
-      case _ => super.cleanup(value, userAnswers)
-    }
 }

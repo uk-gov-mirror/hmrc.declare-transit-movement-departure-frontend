@@ -61,10 +61,6 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     case CountryOfDispatchPage =>
       ua =>
         Some(routes.OfficeOfDepartureController.onPageLoad(ua.id, CheckMode))
-    case DestinationCountryPage =>
-      ua =>
-        val count = ua.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
-        Some(routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(count), CheckMode))
     case MovementDestinationCountryPage =>
       ua =>
         Some(routes.DestinationOfficeController.onPageLoad(ua.id, CheckMode))
@@ -84,7 +80,7 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
 
   private def isRouteDetailsSectionPage(page: Page): Boolean =
     page match {
-      case OfficeOfDeparturePage | DestinationOfficePage | AddAnotherTransitOfficePage(_) | ArrivalTimesAtOfficePage(_) =>
+      case OfficeOfDeparturePage | DestinationOfficePage | DestinationCountryPage | AddAnotherTransitOfficePage(_) | ArrivalTimesAtOfficePage(_) =>
         true
       case _ => false
     }
