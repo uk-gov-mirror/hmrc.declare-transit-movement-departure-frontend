@@ -17,18 +17,18 @@
 package forms.addItems.traderSecurityDetails
 
 import base.SpecBase
-import forms.Constants.{consigneeNameMaxLength, consignorNameRegex}
+import forms.Constants.consigneeNameMaxLength
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.consignorNameRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
 class SecurityConsignorNameFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "securityConsignorName.error.required"
-  val lengthKey   = "securityConsignorName.error.length"
-  val invalidKey  = "securityConsignorName.error.invalid"
-
-  val form = new SecurityConsignorNameFormProvider()(index)
+  private val requiredKey = "securityConsignorName.error.required"
+  private val lengthKey   = "securityConsignorName.error.length"
+  private val invalidKey  = "securityConsignorName.error.invalid"
+  private val form        = new SecurityConsignorNameFormProvider()(index)
 
   ".value" - {
 

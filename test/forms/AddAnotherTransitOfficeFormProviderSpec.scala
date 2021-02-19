@@ -23,14 +23,13 @@ import play.api.data.FormError
 
 class AddAnotherTransitOfficeFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "addAnotherTransitOffice.error.required"
-  val maxLength   = 8
-
-  val countryName                       = "United Kingdom"
-  val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)
-  val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
-  val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
-  val form                              = new AddAnotherTransitOfficeFormProvider()(customsOffices, "United Kingdom")
+  private val requiredKey                       = "addAnotherTransitOffice.error.required"
+  private val maxLength                         = 8
+  private val countryName                       = "United Kingdom"
+  private val customsOffice1: CustomsOffice     = CustomsOffice("officeId", "someName", CountryCode("GB"), Seq.empty, None)
+  private val customsOffice2: CustomsOffice     = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
+  private val customsOffices: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice1, customsOffice2))
+  private val form                              = new AddAnotherTransitOfficeFormProvider()(customsOffices, "United Kingdom")
 
   ".value" - {
 

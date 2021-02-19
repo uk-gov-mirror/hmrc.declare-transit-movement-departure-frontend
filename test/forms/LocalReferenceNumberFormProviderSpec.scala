@@ -24,11 +24,10 @@ import play.api.data.FormError
 
 class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "localReferenceNumber.error.required"
-  val lengthKey   = "localReferenceNumber.error.length"
-  val invalidKey  = "localReferenceNumber.error.invalidCharacters"
-
-  val form = new LocalReferenceNumberFormProvider()()
+  private val requiredKey = "localReferenceNumber.error.required"
+  private val lengthKey   = "localReferenceNumber.error.length"
+  private val invalidKey  = "localReferenceNumber.error.invalidCharacters"
+  private val form        = new LocalReferenceNumberFormProvider()()
 
   ".value" - {
 

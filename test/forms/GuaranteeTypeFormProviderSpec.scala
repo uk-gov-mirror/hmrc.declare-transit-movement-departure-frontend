@@ -23,7 +23,7 @@ import play.api.data.FormError
 
 class GuaranteeTypeFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new GuaranteeTypeFormProvider()()
+  private val form = new GuaranteeTypeFormProvider()()
 
   ".value" - {
 

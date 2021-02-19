@@ -19,13 +19,13 @@ package forms.addItems
 import forms.mappings.Mappings
 import javax.inject.Inject
 import models.Index
+import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class DocumentExtraInformationFormProvider @Inject() extends Mappings {
 
   val maxLength = 26
-  val regex     = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
 
   def apply(index: Index): Form[String] =
     Form(
@@ -33,7 +33,7 @@ class DocumentExtraInformationFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLength, "documentExtraInformation.error.length", index.display),
-            regexp(regex, "documentExtraInformation.error.invalid", index.display)
+            regexp(stringFieldRegex, "documentExtraInformation.error.invalid"),
           ))
     )
 }

@@ -44,9 +44,9 @@ object TransportDetails {
   object InlandMode {
 
     object Constants {
-      val codesSingleDigit: Seq[String] = Rail.Constants.codesSingleDigit ++ Mode5or7.Constants.codesSingleDigit
-      val codesDoubleDigit: Seq[String] = Rail.Constants.codesDoubleDigit ++ Mode5or7.Constants.codesDoubleDigit
-      val codes: Seq[String]            = codesSingleDigit ++ codesDoubleDigit
+      val codesSingleDigit: Seq[Int] = Rail.Constants.codesSingleDigit ++ Mode5or7.Constants.codesSingleDigit
+      val codesDoubleDigit: Seq[Int] = Rail.Constants.codesDoubleDigit ++ Mode5or7.Constants.codesDoubleDigit
+      val codes: Seq[Int]            = codesSingleDigit ++ codesDoubleDigit
     }
 
     implicit val userAnswersReader: UserAnswersReader[InlandMode] =
@@ -59,15 +59,15 @@ object TransportDetails {
     object Rail {
 
       object Constants {
-        val codesSingleDigit: Seq[String] = Seq("2")
-        val codesDoubleDigit: Seq[String] = Seq("20")
-        val codes: Seq[String]            = codesSingleDigit ++ codesDoubleDigit
+        val codesSingleDigit: Seq[Int] = Seq(2)
+        val codesDoubleDigit: Seq[Int] = Seq(20)
+        val codes: Seq[Int]            = codesSingleDigit ++ codesDoubleDigit
       }
 
       implicit val userAnswersReaderRail: UserAnswersReader[Rail] =
         InlandModePage.reader
-          .filter(Rail.Constants.codes.contains(_))
           .map(_.toInt)
+          .filter(Rail.Constants.codes.contains(_))
           .map(Rail(_))
 
     }
@@ -77,15 +77,15 @@ object TransportDetails {
     case object Mode5or7 {
 
       object Constants {
-        val codesSingleDigit: Seq[String] = Seq("5", "7")
-        val codesDoubleDigit: Seq[String] = Seq("50", "70")
-        val codes: Seq[String]            = codesSingleDigit ++ codesDoubleDigit
+        val codesSingleDigit: Seq[Int] = Seq(5, 7)
+        val codesDoubleDigit: Seq[Int] = Seq(50, 70)
+        val codes: Seq[Int]            = codesSingleDigit ++ codesDoubleDigit
       }
 
       implicit val userAnswersReaderMode5or7: UserAnswersReader[Mode5or7] =
         InlandModePage.reader
-          .filter(Mode5or7.Constants.codes.contains(_))
           .map(_.toInt)
+          .filter(Mode5or7.Constants.codes.contains(_))
           .flatMap(
             code =>
               NationalityAtDeparturePage.reader
@@ -100,8 +100,8 @@ object TransportDetails {
 
       implicit val userAnswersReaderNonSpecialMode: UserAnswersReader[NonSpecialMode] =
         InlandModePage.reader
-          .filterNot(InlandMode.Constants.codes.contains(_))
           .map(_.toInt)
+          .filterNot(InlandMode.Constants.codes.contains(_))
           .flatMap(
             code =>
               AddIdAtDeparturePage.reader
@@ -162,21 +162,25 @@ object TransportDetails {
 
   }
 
-  sealed trait ModeCrossingBorder
+  sealed trait ModeCrossingBorder {
+    def modeCode: Int
+  }
 
   object ModeCrossingBorder {
 
     implicit val reader: UserAnswersReader[ModeCrossingBorder] =
-      ModeCrossingBorderPage.reader.flatMap(
-        modeCode =>
-          if ((Mode5or7.Constants.codes ++ Rail.Constants.codes).contains(modeCode))
-            ModeExemptNationality.pure[UserAnswersReader].widen[ModeCrossingBorder]
-          else
-            NationalityCrossingBorderPage.reader.map(ModeWithNationality(_))
-      )
+      ModeCrossingBorderPage.reader
+        .map(_.toInt)
+        .flatMap(
+          modeCode =>
+            if ((Mode5or7.Constants.codes ++ Rail.Constants.codes).contains(modeCode))
+              ModeExemptNationality(modeCode).pure[UserAnswersReader].widen[ModeCrossingBorder]
+            else
+              NationalityCrossingBorderPage.reader.map(ModeWithNationality(_, modeCode))
+        )
 
-    object ModeExemptNationality extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
-    final case class ModeWithNationality(nationalityCrossingBorder: CountryCode) extends ModeCrossingBorder
+    final case class ModeExemptNationality(modeCode: Int) extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
+    final case class ModeWithNationality(nationalityCrossingBorder: CountryCode, modeCode: Int) extends ModeCrossingBorder
   }
 
 }

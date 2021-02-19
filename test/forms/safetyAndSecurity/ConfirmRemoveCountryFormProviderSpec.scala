@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class ConfirmRemoveCountryFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "confirmRemoveCountry.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new ConfirmRemoveCountryFormProvider()()
+  private val requiredKey = "confirmRemoveCountry.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new ConfirmRemoveCountryFormProvider()()
 
   ".value" - {
 

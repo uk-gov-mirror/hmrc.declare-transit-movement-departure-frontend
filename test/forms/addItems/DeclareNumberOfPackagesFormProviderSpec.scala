@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class DeclareNumberOfPackagesFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "declareNumberOfPackages.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new DeclareNumberOfPackagesFormProvider()(1)
+  private val requiredKey = "declareNumberOfPackages.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new DeclareNumberOfPackagesFormProvider()(1)
 
   ".value" - {
 

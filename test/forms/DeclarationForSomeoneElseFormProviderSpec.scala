@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class DeclarationForSomeoneElseFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "declarationForSomeoneElse.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new DeclarationForSomeoneElseFormProvider()()
+  private val requiredKey = "declarationForSomeoneElse.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new DeclarationForSomeoneElseFormProvider()()
 
   ".value" - {
 

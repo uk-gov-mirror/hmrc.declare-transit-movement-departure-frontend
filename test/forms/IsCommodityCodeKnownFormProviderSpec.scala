@@ -22,10 +22,9 @@ import play.api.data.FormError
 
 class IsCommodityCodeKnownFormProviderSpec extends BooleanFieldBehaviours with SpecBase {
 
-  val requiredKey = "isCommodityCodeKnown.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new IsCommodityCodeKnownFormProvider()(index)
+  private val requiredKey = "isCommodityCodeKnown.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new IsCommodityCodeKnownFormProvider()(index)
 
   ".value" - {
 

@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class RemovePackageFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "removePackage.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new RemovePackageFormProvider()(1)
+  private val requiredKey = "removePackage.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new RemovePackageFormProvider()(1)
 
   ".value" - {
 

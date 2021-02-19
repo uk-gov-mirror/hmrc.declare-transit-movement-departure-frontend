@@ -26,7 +26,7 @@ import models.requests.DataRequest
 import models.{CustomsOfficeList, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
-import pages.{DestinationCountryPage, DestinationOfficePage}
+import pages.{DestinationOfficePage, MovementDestinationCountryPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -57,7 +57,7 @@ class DestinationOfficeController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(DestinationCountryPage) match {
+      request.userAnswers.get(MovementDestinationCountryPage) match {
         case Some(countryCode) =>
           getCustomsOfficeAndCountryName(countryCode) flatMap {
             case (customsOffices, countryName) =>
@@ -85,7 +85,7 @@ class DestinationOfficeController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(DestinationCountryPage) match {
+      request.userAnswers.get(MovementDestinationCountryPage) match {
         case Some(countryCode) =>
           getCustomsOfficeAndCountryName(countryCode) flatMap {
             case (customsOffices, countryName) =>

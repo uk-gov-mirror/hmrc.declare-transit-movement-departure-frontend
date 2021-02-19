@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddCircumstanceIndicatorFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addCircumstanceIndicator.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddCircumstanceIndicatorFormProvider()()
+  private val requiredKey = "addCircumstanceIndicator.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddCircumstanceIndicatorFormProvider()()
 
   ".value" - {
 

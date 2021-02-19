@@ -22,7 +22,7 @@ import play.api.data.FormError
 
 class DeclarationTypeFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DeclarationTypeFormProvider()()
+  private val form = new DeclarationTypeFormProvider()()
 
   ".value" - {
 

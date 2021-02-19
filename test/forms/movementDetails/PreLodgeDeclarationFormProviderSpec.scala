@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class PreLodgeDeclarationFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "preLodgeDeclaration.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new PreLodgeDeclarationFormProvider()()
+  private val requiredKey = "preLodgeDeclaration.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new PreLodgeDeclarationFormProvider()()
 
   ".value" - {
 

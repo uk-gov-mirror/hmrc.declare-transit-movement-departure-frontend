@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class ContainersUsedFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "containersUsed.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new ContainersUsedPageFormProvider()()
+  private val requiredKey = "containersUsed.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new ContainersUsedPageFormProvider()()
 
   ".value" - {
 

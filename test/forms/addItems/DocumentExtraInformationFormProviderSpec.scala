@@ -18,15 +18,16 @@ package forms.addItems
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class DocumentExtraInformationFormProviderSpec extends SpecBase with StringFieldBehaviours {
 
-  val requiredKey = "documentExtraInformation.error.required"
-  val lengthKey   = "documentExtraInformation.error.length"
-  val maxLength   = 26
-  val validRegex  = "^[a-zA-Z0-9&'@\\/.\\-%?<>]{1,26}$"
-  val invalidKey  = "documentExtraInformation.error.invalid"
+  private val requiredKey = "documentExtraInformation.error.required"
+  private val lengthKey   = "documentExtraInformation.error.length"
+  private val maxLength   = 26
+  private val invalidKey  = "documentExtraInformation.error.invalid"
 
   val form = new DocumentExtraInformationFormProvider()(index)
 
@@ -52,5 +53,7 @@ class DocumentExtraInformationFormProviderSpec extends SpecBase with StringField
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(index.display))
     )
+
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
   }
 }

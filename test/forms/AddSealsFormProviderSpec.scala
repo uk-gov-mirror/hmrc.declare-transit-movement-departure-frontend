@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddSealsFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addSeals.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddSealsFormProvider()()
+  private val requiredKey = "addSeals.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddSealsFormProvider()()
 
   ".value" - {
 

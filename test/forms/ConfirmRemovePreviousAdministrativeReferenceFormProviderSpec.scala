@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class ConfirmRemovePreviousAdministrativeReferenceFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "confirmRemovePreviousAdministrativeReference.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new ConfirmRemovePreviousAdministrativeReferenceFormProvider()()
+  private val requiredKey = "confirmRemovePreviousAdministrativeReference.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new ConfirmRemovePreviousAdministrativeReferenceFormProvider()()
 
   ".value" - {
 

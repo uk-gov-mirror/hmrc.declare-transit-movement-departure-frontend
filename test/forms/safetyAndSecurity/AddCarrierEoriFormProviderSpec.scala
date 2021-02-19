@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddCarrierEoriFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addCarrierEori.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddCarrierEoriFormProvider()()
+  private val requiredKey = "addCarrierEori.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddCarrierEoriFormProvider()()
 
   ".value" - {
 
@@ -41,5 +40,6 @@ class AddCarrierEoriFormProviderSpec extends BooleanFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
   }
 }

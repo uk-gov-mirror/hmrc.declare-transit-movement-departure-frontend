@@ -18,16 +18,16 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class AccessCodeFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey      = "accessCode.error.required"
-  val lengthKey        = "accessCode.error.length"
-  val accessCodeLength = 4
-  val accessCodeRegex  = "^[0-9A-Za-z]{4}$"
-  val form             = new AccessCodeFormProvider()()
-  val invalidKey       = "accessCode.error.invalidCharacters"
+  private val requiredKey      = "accessCode.error.required"
+  private val lengthKey        = "accessCode.error.length"
+  private val accessCodeLength = 4
+  private val invalidKey       = "accessCode.error.invalidCharacters"
+  private val form             = new AccessCodeFormProvider()()
 
   ".value" - {
     val fieldName = "value"
@@ -44,18 +44,6 @@ class AccessCodeFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind strings that do not match regex" in {
-
-      val expectedError = List(FormError(fieldName, invalidKey, Seq(accessCodeRegex)))
-      val genInvalidString: Gen[String] = {
-        stringsWithLength(accessCodeLength) suchThat (!_.matches(accessCodeRegex))
-      }
-
-      forAll(genInvalidString) {
-        invalidString =>
-          val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors mustBe expectedError
-      }
-    }
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, accessCodeLength)
   }
 }

@@ -16,12 +16,14 @@
 
 package forms.addItems.traderSecurityDetails
 
-import forms.Constants.{eoriNumberRegex, maxLengthEoriNumber, validEoriCharactersRegex}
+import forms.Constants.maxLengthEoriNumber
 import forms.mappings.Mappings
-import javax.inject.Inject
 import models.Index
+import models.domain.StringFieldRegex.{eoriNumberRegex, stringFieldRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class SecurityConsignorEoriFormProvider @Inject() extends Mappings {
 
@@ -31,7 +33,7 @@ class SecurityConsignorEoriFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxLengthEoriNumber, "securityConsignorEori.error.length"),
-            regexp(validEoriCharactersRegex, "securityConsignorEori.error.invalid"),
+            regexp(stringFieldRegex, "securityConsignorEori.error.invalid"),
             regexp(eoriNumberRegex, "securityConsignorEori.error.invalidFormat")
           ))
     )

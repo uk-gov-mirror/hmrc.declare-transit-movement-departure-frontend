@@ -22,7 +22,7 @@ import play.api.data.FormError
 
 class RepresentativeCapacityFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new RepresentativeCapacityFormProvider()()
+  private val form = new RepresentativeCapacityFormProvider()()
 
   ".value" - {
 

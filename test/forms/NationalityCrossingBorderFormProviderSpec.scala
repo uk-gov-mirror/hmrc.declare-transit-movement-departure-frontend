@@ -23,9 +23,9 @@ import play.api.data.FormError
 
 class NationalityCrossingBorderFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "nationalityCrossingBorder.error.required"
-  val countries   = CountryList(Seq(Country(CountryCode("AD"), "Andorra")))
-  val form        = new NationalityCrossingBorderFormProvider()(countries)
+  private val requiredKey = "nationalityCrossingBorder.error.required"
+  private val countries   = CountryList(Seq(Country(CountryCode("AD"), "Andorra")))
+  private val form        = new NationalityCrossingBorderFormProvider()(countries)
 
   ".value" - {
 

@@ -23,8 +23,8 @@ import play.api.data.FormError
 
 class DestinationCountryFormProviderSpec extends StringFieldBehaviours {
 
-  val countries: CountryList = CountryList(Seq(Country(CountryCode("AD"), "Andorra")))
-  val form                   = new DestinationCountryFormProvider()(countries)
+  private val countries: CountryList = CountryList(Seq(Country(CountryCode("AD"), "Andorra")))
+  private val form                   = new DestinationCountryFormProvider()(countries)
 
   ".value" - {
 

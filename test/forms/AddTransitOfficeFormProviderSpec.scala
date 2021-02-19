@@ -21,10 +21,9 @@ import play.api.data.FormError
 
 class AddTransitOfficeFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addTransitOffice.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new AddTransitOfficeFormProvider()()
+  private val requiredKey = "addTransitOffice.error.required"
+  private val invalidKey  = "error.boolean"
+  private val form        = new AddTransitOfficeFormProvider()()
 
   ".value" - {
 

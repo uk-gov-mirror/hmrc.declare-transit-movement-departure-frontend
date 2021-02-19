@@ -17,21 +17,19 @@
 package forms.guaranteeDetails
 
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericUpperCaseRegex
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 class GuaranteeReferenceFormProvider @Inject() extends Mappings {
 
-  def apply(grnMaxLength: Int): Form[String] = {
-
-    val guaranteeReferenceRegex: String = "^[A-Z0-9]*$"
+  def apply(grnMaxLength: Int): Form[String] =
     Form(
       "value" -> text("guaranteeReference.error.required")
         .verifying(
           StopOnFirstFail[String](
             maxLength(grnMaxLength, "guaranteeReference.error.length"),
-            regexp(guaranteeReferenceRegex, "guaranteeReference.error.invalid")
+            regexp(alphaNumericUpperCaseRegex, "guaranteeReference.error.invalid")
           )))
-  }
 }
