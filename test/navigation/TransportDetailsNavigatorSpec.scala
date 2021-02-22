@@ -32,27 +32,25 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
   "TransportDetailsNavigator" - {
 
     "in Normal Mode" - {
-      "must go from InlandMode page to AddIdAtDeparture Page if value is not 2,5,7 or 20,50,70" in {
+      "must go from InlandMode page to AddIdAtDeparture Page if value is not 5,7 or 50,70 and selected yes to using containers" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.set(ContainersUsedPage, true).toOption.value
             navigator
-              .nextPage(InlandModePage, NormalMode, answers)
+              .nextPage(InlandModePage, NormalMode, updatedAnswers)
               .mustBe(transportDetailsRoute.AddIdAtDepartureController.onPageLoad(answers.id, NormalMode))
         }
       }
 
-      "must go from InlandMode page to Will these details change at border Page if value is 2/20" in {
+      "must go from InlandMode page to AddIdAtDeparture Page if value is not 5,7 or 50,70 and selected no to using containers" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            Seq(2, 20) foreach {
-              inlandModeAnswer =>
-                val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer.toString).success.value
-                navigator
-                  .nextPage(InlandModePage, NormalMode, updatedAnswers)
-                  .mustBe(transportDetailsRoute.ChangeAtBorderController.onPageLoad(answers.id, NormalMode))
-            }
+            val updatedAnswers = answers.set(ContainersUsedPage, false).toOption.value
+            navigator
+              .nextPage(InlandModePage, NormalMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.IdAtDepartureController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -65,7 +63,7 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
                 val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer).success.value
                 navigator
                   .nextPage(InlandModePage, NormalMode, updatedAnswers)
-                  .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(answers.id, NormalMode))
+                  .mustBe(transportDetailsRoute.ChangeAtBorderController.onPageLoad(answers.id, NormalMode))
             }
         }
       }
@@ -100,25 +98,49 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "must go from AddIdAtDepartureLater page to NationalityAtDeparture Page" in {
+      "must go from AddIdAtDepartureLater page to NationalityAtDeparture Page if selected no to using containers" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.remove(NationalityAtDeparturePage).success.value
+            val updatedAnswers = answers.set(ContainersUsedPage, false).toOption.value
 
             navigator
               .nextPage(AddIdAtDepartureLaterPage, NormalMode, updatedAnswers)
-              .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(updatedAnswers.id, NormalMode))
+              .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(answers.id, NormalMode))
         }
       }
 
-      "must go from IdAtDeparture page to NationalityAtDeparture Page" in {
+      "must go from AddIdAtDepartureLater page to AddNationalityAtDeparture Page if selected yes to using containers" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
+            val updatedAnswers = answers.set(ContainersUsedPage, true).toOption.value
+
             navigator
-              .nextPage(IdAtDeparturePage, NormalMode, answers)
+              .nextPage(AddIdAtDepartureLaterPage, NormalMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.AddNationalityAtDepartureController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from IdAtDeparture page to NationalityAtDeparture Page if selected no to using containers" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(ContainersUsedPage, false).toOption.value
+            navigator
+              .nextPage(IdAtDeparturePage, NormalMode, updatedAnswers)
               .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
+      "must go from IdAtDeparture page to AddNationalityAtDeparture Page if selected yes to using containers" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(ContainersUsedPage, true).toOption.value
+            navigator
+              .nextPage(IdAtDeparturePage, NormalMode, updatedAnswers)
+              .mustBe(transportDetailsRoute.AddNationalityAtDepartureController.onPageLoad(answers.id, NormalMode))
         }
       }
 
@@ -214,54 +236,24 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
     "in Check Mode" - {
 
-      "must go from InlandMode page to Transport CYA if Add id at departure page was answered true" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers.set(AddIdAtDeparturePage, true).toOption.value
-            navigator
-              .nextPage(InlandModePage, CheckMode, updatedAnswers)
-              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
-        }
-      }
-
-      "must go from InlandMode page to Transport CYA if Add id at departure page was answered false" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers.set(AddIdAtDeparturePage, false).toOption.value
-            navigator
-              .nextPage(InlandModePage, CheckMode, updatedAnswers)
-              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
-        }
-      }
-
       "must go from InlandMode page to Add Id at Departure Page if add id at departure page was not asked previously" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
-            val updatedAnswers = answers.remove(AddIdAtDeparturePage).success.value
+            val updatedAnswers = answers
+              .set(ContainersUsedPage, true)
+              .toOption
+              .value
+              .remove(AddIdAtDeparturePage)
+              .success
+              .value
             navigator
               .nextPage(InlandModePage, CheckMode, updatedAnswers)
               .mustBe(transportDetailsRoute.AddIdAtDepartureController.onPageLoad(answers.id, CheckMode))
         }
       }
 
-      "must go from InlandMode page to Will these details change at border Page if 2/20 selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            Seq("2", "20") foreach {
-              inlandModeAnswer =>
-                val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer).success.value
-                navigator
-                  .nextPage(InlandModePage, CheckMode, updatedAnswers)
-                  .mustBe(transportDetailsRoute.ChangeAtBorderController.onPageLoad(answers.id, CheckMode))
-            }
-        }
-      }
-
-      "must go from InlandMode page to What is the nationality at Departure Page if 5/50 or 7/70" in {
+      "must go from InlandMode page to Change at Border Page if 5/50 or 7/70" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -270,7 +262,7 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
                 val updatedAnswers = answers.set(InlandModePage, inlandModeAnswer).success.value
                 navigator
                   .nextPage(InlandModePage, CheckMode, updatedAnswers)
-                  .mustBe(transportDetailsRoute.NationalityAtDepartureController.onPageLoad(answers.id, CheckMode))
+                  .mustBe(transportDetailsRoute.ChangeAtBorderController.onPageLoad(answers.id, CheckMode))
             }
         }
       }
@@ -290,34 +282,6 @@ class TransportDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
             navigator
               .nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
               .mustBe(transportDetailsRoute.IdAtDepartureController.onPageLoad(answers.id, CheckMode))
-        }
-      }
-
-      "must go from AddIdAtDeparture page to CYA page on selecting option 'Yes' and IdAtDeparture has data" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedUserAnswers = answers
-              .set(AddIdAtDeparturePage, true)
-              .toOption
-              .value
-              .set(IdAtDeparturePage, "Bob")
-              .toOption
-              .value
-
-            navigator
-              .nextPage(AddIdAtDeparturePage, CheckMode, updatedUserAnswers)
-              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
-        }
-      }
-
-      "must go from IdAtDeparturePage to TransportDetailsCheckYourAnswers Page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(IdAtDeparturePage, CheckMode, answers)
-              .mustBe(transportDetailsRoute.TransportDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
 

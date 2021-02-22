@@ -64,10 +64,31 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
     "display country" in {
 
       val updatedAnswers = emptyUserAnswers
+        .set(InlandModePage, "1")
+        .success
+        .value
         .set(NationalityAtDeparturePage, country1.code)
         .success
         .value
         .set(NationalityCrossingBorderPage, country2.code)
+        .success
+        .value
+
+      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+
+      data.sections.head.sectionTitle must not be defined
+      data.sections.length mustEqual 1
+      data.sections.head.rows.length mustEqual 3
+      data.sections.head.rows(1).value.content mustEqual Literal("GB")
+      data.sections.head.rows(2).value.content mustEqual Literal("AD")
+
+    }
+    "display changeAtBorder " in {
+      val updatedAnswers = emptyUserAnswers
+        .set(InlandModePage, "1")
+        .success
+        .value
+        .set(ChangeAtBorderPage, true)
         .success
         .value
       val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
@@ -75,50 +96,58 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 2
-      data.sections.head.rows.head.value.content mustEqual Literal("GB")
-      data.sections.head.rows(1).value.content mustEqual Literal("AD")
-
-    }
-    "display changeAtBorder " in {
-      val updatedAnswers = emptyUserAnswers.set(ChangeAtBorderPage, true).success.value
-      val data           = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
-
-      data.sections.head.sectionTitle must not be defined
-      data.sections.length mustEqual 1
-      data.sections.head.rows.length mustEqual 1
-      val message: Message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
+      val message: Message = data.sections.head.rows(1).value.content.asInstanceOf[Message]
       message.key mustBe "site.yes"
     }
 
     "display addIdAdDeparture " in {
-      val updatedAnswers = emptyUserAnswers.set(AddIdAtDeparturePage, true).success.value
-      val data           = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+      val updatedAnswers = emptyUserAnswers
+        .set(InlandModePage, "1")
+        .success
+        .value
+        .set(AddIdAtDeparturePage, true)
+        .success
+        .value
+
+      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
-      data.sections.head.rows.length mustEqual 1
-      val message: Message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
+      data.sections.head.rows.length mustEqual 2
+      val message: Message = data.sections.head.rows(1).value.content.asInstanceOf[Message]
       message.key mustBe "site.yes"
     }
 
     "display idAtDeparture " in {
-      val updatedAnswers = emptyUserAnswers.set(IdAtDeparturePage, "test").success.value
-      val data           = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+      val updatedAnswers = emptyUserAnswers
+        .set(InlandModePage, "1")
+        .success
+        .value
+        .set(IdAtDeparturePage, "test")
+        .success
+        .value
+      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
-      data.sections.head.rows.length mustEqual 1
-      data.sections.head.rows.head.value.content mustEqual Literal("test")
+      data.sections.head.rows.length mustEqual 2
+      data.sections.head.rows(1).value.content mustEqual Literal("test")
     }
 
     "display idCrossingBorder " in {
-      val updatedAnswers = emptyUserAnswers.set(IdCrossingBorderPage, "test").success.value
-      val data           = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
+      val updatedAnswers = emptyUserAnswers
+        .set(InlandModePage, "1")
+        .success
+        .value
+        .set(IdCrossingBorderPage, "test")
+        .success
+        .value
+      val data = TransportDetailsCheckYourAnswersViewModel(updatedAnswers, countryList, transportModes)
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
-      data.sections.head.rows.length mustEqual 1
-      data.sections.head.rows.head.value.content mustEqual Literal("test")
+      data.sections.head.rows.length mustEqual 2
+      data.sections.head.rows(1).value.content mustEqual Literal("test")
     }
 
   }
