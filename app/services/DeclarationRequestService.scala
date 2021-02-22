@@ -403,7 +403,7 @@ class DeclarationRequestService @Inject()(
       principalTrader(traderDetails),
       headerConsignor(traderDetails),
       headerConsignee(traderDetails),
-      None,
+      None, // not required
       CustomsOfficeDeparture(
         referenceNumber = routeDetails.officeOfDeparture.id
       ),
