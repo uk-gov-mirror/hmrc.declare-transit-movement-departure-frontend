@@ -23,9 +23,9 @@ import models.reference.CountryCode
 import pages._
 
 case class TransportDetails(
-                             inlandMode: InlandMode,
-                             detailsAtBorder: DetailsAtBorder
-                           )
+  inlandMode: InlandMode,
+  detailsAtBorder: DetailsAtBorder
+)
 
 object TransportDetails {
 
@@ -34,7 +34,7 @@ object TransportDetails {
       (
         UserAnswersReader[InlandMode],
         UserAnswersReader[DetailsAtBorder]
-        ).tupled
+      ).tupled
     )((TransportDetails.apply _).tupled)
 
   sealed trait InlandMode {
@@ -111,11 +111,11 @@ object TransportDetails {
                       (
                         NationalityAtDeparturePage.reader,
                         IdAtDeparturePage.reader.map(Some(_))
-                        ).tupled.map((NonSpecialMode(code, _, _)).tupled)
+                      ).tupled.map((NonSpecialMode(code, _, _)).tupled)
                     } else {
                       NationalityAtDeparturePage.reader.map(NonSpecialMode(code, _, None))
                     }
-                }
+              }
           )
 
     }
@@ -140,10 +140,10 @@ object TransportDetails {
     }
 
     final case class NewDetailsAtBorder(
-                                         mode: String,
-                                         idCrossing: String,
-                                         modeCrossingBorder: ModeCrossingBorder
-                                       ) extends DetailsAtBorder
+      mode: String,
+      idCrossing: String,
+      modeCrossingBorder: ModeCrossingBorder
+    ) extends DetailsAtBorder
 
     object NewDetailsAtBorder {
 
@@ -155,7 +155,7 @@ object TransportDetails {
               ModeAtBorderPage.reader,
               IdCrossingBorderPage.reader,
               UserAnswersReader[ModeCrossingBorder]
-              ).tupled.map((NewDetailsAtBorder.apply _).tupled)
+            ).tupled.map((NewDetailsAtBorder.apply _).tupled)
           )
 
     }
