@@ -269,21 +269,37 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
     "goodsSummarySimplifiedDetails" - {
       "must populate controlResult and authorisedLocationOfGoods when Simplified" in {
 
-        forAll(arb[UserAnswers], arb[JourneyDomain], arb[GoodSummarySimplifiedDetails]) {
-          (userAnswers, journeyDomain, simplifiedDetails) =>
+        forAll(arb[UserAnswers], arbitrarySimplifiedJourneyDomain.arbitrary) {
+          (userAnswers, journeyDomain) =>
             val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
 
             when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
             when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
-            val goodsDetails: GoodsSummary           = journeyDomain.goodsSummary.copy(goodSummaryDetails = simplifiedDetails)
-            val updatedJourneyDomain: JourneyDomain  = journeyDomain.copy(goodsSummary = goodsDetails)
-            val updatedUserAnswer: UserAnswers       = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
-            val result           = service.convert(updatedUserAnswer)
-            val expectedControlResult: ControlResult = ControlResult(simplifiedDetails.controlResultDateLimit)
+            val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
 
-//            result.controlResult.value mustBe expectedControlResult
-//            result.header.autLocOfGooCodHEA41.value mustBe simplifiedDetails.authorisedLocationCode
+            val result = service.convert(updatedUserAnswer).futureValue.value
+
+            result.controlResult must be(defined)
+            result.header.autLocOfGooCodHEA41 must be(defined)
+        }
+      }
+
+      "must populate not controlResult and authorisedLocationOfGoods when Normal" in {
+
+        forAll(arb[UserAnswers], arbitraryNormalJourneyDomain.arbitrary) {
+          (userAnswers, journeyDomain) =>
+            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
+
+            when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
+            when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
+
+            val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
+
+            val result = service.convert(updatedUserAnswer).futureValue.value
+
+            result.controlResult must not be (defined)
+            result.header.autLocOfGooCodHEA41 must not be (defined)
         }
       }
     }
