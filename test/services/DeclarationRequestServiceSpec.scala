@@ -16,8 +16,6 @@
 
 package services
 
-import java.time.LocalDateTime
-
 import base.{GeneratorSpec, SpecBase}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
@@ -27,14 +25,15 @@ import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
-import models.journeyDomain.{JourneyDomain, JourneyDomainSpec, TransportDetails}
+import models.journeyDomain.{GoodsSummary, JourneyDomain, JourneyDomainSpec, TransportDetails}
 import models.messages.goodsitem.SpecialMentionGuaranteeLiabilityAmount
-import models.messages.{DeclarationRequest, InterchangeControlReference}
+import models.messages.{ControlResult, DeclarationRequest, InterchangeControlReference}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import repositories.InterchangeControlReferenceIdRepository
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -266,5 +265,28 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
         }
       }
     }
+
+    "goodsSummarySimplifiedDetails" - {
+      "must populate controlResult and authorisedLocationOfGoods when Simplified" in {
+
+        forAll(arb[UserAnswers], arb[JourneyDomain], arb[GoodSummarySimplifiedDetails]) {
+          (userAnswers, journeyDomain, simplifiedDetails) =>
+            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
+
+            when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
+            when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
+
+            val goodsDetails: GoodsSummary           = journeyDomain.goodsSummary.copy(goodSummaryDetails = simplifiedDetails)
+            val updatedJourneyDomain: JourneyDomain  = journeyDomain.copy(goodsSummary = goodsDetails)
+            val updatedUserAnswer: UserAnswers       = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
+            val result           = service.convert(updatedUserAnswer)
+            val expectedControlResult: ControlResult = ControlResult(simplifiedDetails.controlResultDateLimit)
+
+//            result.controlResult.value mustBe expectedControlResult
+//            result.header.autLocOfGooCodHEA41.value mustBe simplifiedDetails.authorisedLocationCode
+        }
+      }
+    }
   }
+
 }

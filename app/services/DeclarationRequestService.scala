@@ -332,7 +332,6 @@ class DeclarationRequestService @Inject()(
               case CarrierAddress(addressLine1, addressLine2, addressLine3, country) =>
                 SafetyAndSecurityCarrierWithoutEori(name, addressLine1, addressLine3, addressLine2, country.code.code)
             }
-
           case SafetyAndSecurity.TraderEori(EoriNumber(eori)) =>
             Some(SafetyAndSecurityCarrierWithEori(eori))
         }
