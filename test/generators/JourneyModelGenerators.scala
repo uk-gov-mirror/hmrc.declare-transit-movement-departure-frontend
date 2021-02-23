@@ -66,7 +66,7 @@ trait JourneyModelGenerators {
         } else {
           Arbitrary(genTransitInformationWithoutArrivalTime)
         }
-        routeDetails      <- arbitraryRouteDetails(transitInformation).arbitrary
+        routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitrary[TraderDetails]
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
@@ -593,14 +593,14 @@ trait JourneyModelGenerators {
     Arbitrary(Gen.oneOf(genTransitInformationWithoutArrivalTime, genTransitInformationWithArrivalTime))
 
   // TODO: refactor this. Remove parameter, make all transit informations consistent with security flag and create generator.
-  implicit def arbitraryRouteDetails(implicit arbTransitInformation: Arbitrary[TransitInformation]): Arbitrary[RouteDetails] =
+  implicit def arbitraryRouteDetails(safetyAndSecurityFlag: Boolean): Arbitrary[RouteDetails] =
     Arbitrary {
       for {
         countryOfDispatch  <- arbitrary[CountryCode]
         officeOfDeparture  <- arbitrary[CustomsOffice]
         destinationCountry <- arbitrary[CountryCode]
         destinationOffice  <- arbitrary[CustomsOffice]
-        transitInformation <- nonEmptyListOf[TransitInformation](2)(arbTransitInformation)
+        transitInformation <- transitInformation(safetyAndSecurityFlag)
       } yield
         RouteDetails(
           countryOfDispatch,
@@ -610,6 +610,19 @@ trait JourneyModelGenerators {
           transitInformation
         )
     }
+
+  private def transitInformation(safetyAndSecurityFlag: Boolean): Gen[NonEmptyList[TransitInformation]] =
+    for {
+      transitInformation <- Gen.listOfN(2, arbitrary[TransitInformation])
+      dateTime           <- arbitrary[LocalDateTime]
+      updatedTransitInformation = {
+        if (safetyAndSecurityFlag) {
+          transitInformation.map(_.copy(arrivalTime = Some(dateTime)))
+        } else {
+          transitInformation.map(_.copy(arrivalTime = None))
+        }
+      }
+    } yield NonEmptyList(updatedTransitInformation.head, updatedTransitInformation.tail)
 
   implicit lazy val arbitraryGoodSummarySimplifiedDetails: Arbitrary[GoodSummarySimplifiedDetails] =
     Arbitrary {

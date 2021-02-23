@@ -62,10 +62,10 @@ object JourneyDomainSpec {
   def setJourneyDomain(journeyDomain: JourneyDomain)(startUserAnswers: UserAnswers): UserAnswers =
     (
       PreTaskListDetailsSpec.setPreTaskListDetails(journeyDomain.preTaskList) _ andThen
-        RouteDetailsSpec.setRouteDetails(journeyDomain.routeDetails, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
+        RouteDetailsSpec.setRouteDetails(journeyDomain.routeDetails) andThen
         TransportDetailsSpec.setTransportDetail(journeyDomain.transportDetails) andThen
         ItemSectionSpec.setItemSections(journeyDomain.itemDetails.toList) andThen
-        GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary, Some(journeyDomain.preTaskList.addSecurityDetails)) andThen
+        GoodsSummarySpec.setGoodsSummary(journeyDomain.goodsSummary) andThen
         GuaranteeDetailsSpec.setGuaranteeDetails(journeyDomain.guarantee) andThen
         TraderDetailsSpec.setTraderDetails(journeyDomain.traderDetails) andThen
         MovementDetailsSpec.setMovementDetails(journeyDomain.movementDetails) andThen

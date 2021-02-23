@@ -167,9 +167,9 @@ class TaskListViewModelSpec
         "is Completed when all the answers are completed" in {
           forAll(arb[TransitInformation]) {
             ti =>
-              forAll(arbitraryRouteDetails(Arbitrary(Gen.const(ti))).arbitrary) {
+              forAll(arbitraryRouteDetails(true).arbitrary) {
                 sectionDetails =>
-                  val userAnswers = RouteDetailsSpec.setRouteDetails(sectionDetails, None)(emptyUserAnswers)
+                  val userAnswers = RouteDetailsSpec.setRouteDetails(sectionDetails)(emptyUserAnswers)
 
                   val viewModel = TaskListViewModel(userAnswers)
 
@@ -205,9 +205,9 @@ class TaskListViewModelSpec
         "when the status is Completed, links to the Check your answers page for the section" in {
           forAll(arb[TransitInformation]) {
             ti =>
-              forAll(arbitraryRouteDetails(Arbitrary(Gen.const(ti))).arbitrary) {
+              forAll(arbitraryRouteDetails(true).arbitrary) {
                 sectionDetails =>
-                  val userAnswers = RouteDetailsSpec.setRouteDetails(sectionDetails, None)(emptyUserAnswers)
+                  val userAnswers = RouteDetailsSpec.setRouteDetails(sectionDetails)(emptyUserAnswers)
 
                   val viewModel = TaskListViewModel(userAnswers)
 
@@ -577,7 +577,7 @@ class TaskListViewModelSpec
         "is Completed when all the answers are completed" in {
           forAll(arb[GoodsSummary]) {
             sectionDetails =>
-              val userAnswers = GoodsSummarySpec.setGoodsSummary(sectionDetails, None)(emptyUserAnswers)
+              val userAnswers = GoodsSummarySpec.setGoodsSummary(sectionDetails)(emptyUserAnswers)
 
               val viewModel = TaskListViewModel(userAnswers)
 
@@ -611,7 +611,7 @@ class TaskListViewModelSpec
         "when the status is Completed, links to the Check your answers page for the section" in {
           forAll(arb[GoodsSummary]) {
             sectionDetails =>
-              val userAnswers = GoodsSummarySpec.setGoodsSummary(sectionDetails, None)(emptyUserAnswers)
+              val userAnswers = GoodsSummarySpec.setGoodsSummary(sectionDetails)(emptyUserAnswers)
 
               val viewModel = TaskListViewModel(userAnswers)
 
