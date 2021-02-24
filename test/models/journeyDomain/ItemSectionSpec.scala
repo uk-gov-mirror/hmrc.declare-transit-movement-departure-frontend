@@ -22,18 +22,10 @@ import generators.JourneyModelGenerators
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.OptionValues.convertOptionToValuable
-import pages.{AddSecurityDetailsPage, ConsignorForAllItemsPage, ContainersUsedPage}
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
-import pages.safetyAndSecurity.{
-  AddCircumstanceIndicatorPage,
-  AddCommercialReferenceNumberAllItemsPage,
-  AddCommercialReferenceNumberPage,
-  AddTransportChargesPaymentMethodPage,
-  CircumstanceIndicatorPage
-}
+import pages.safetyAndSecurity._
+import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {

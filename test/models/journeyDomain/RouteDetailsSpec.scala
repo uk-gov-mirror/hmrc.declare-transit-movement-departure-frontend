@@ -22,6 +22,8 @@ import models.journeyDomain.RouteDetails.TransitInformation
 import models.{Index, LocalDateTimeWithAMPM, UserAnswers}
 import pages._
 
+import scala.util.Random
+
 class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   import RouteDetailsSpec._
 
@@ -30,7 +32,6 @@ class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGene
 
       forAll(arbitraryRouteDetails(true).arbitrary, arb[UserAnswers]) {
         (expected, baseUserAnswers) =>
-
           val userAnswers = setRouteDetails(expected)(baseUserAnswers)
             .unsafeSetVal(AddSecurityDetailsPage)(true)
 
@@ -46,7 +47,6 @@ class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGene
 
     forAll(arbitraryRouteDetails(false).arbitrary, arb[UserAnswers]) {
       (expected, baseUserAnswers) =>
-      
         val userAnswers = setRouteDetails(expected)(baseUserAnswers)
           .unsafeSetVal(AddSecurityDetailsPage)(false)
 
@@ -70,10 +70,13 @@ object RouteDetailsSpec extends UserAnswersSpecHelper {
         .unsafeSetVal(DestinationOfficePage)(routeDetails.destinationOffice)
 
     // TODO replace with unsafeSetSeq
+
+    def pickAmOrPm(): String = Random.shuffle(List("AM", "PM")).head
+
     val userAnswers = routeDetails.transitInformation.zipWithIndex.foldLeft(interstitialUserAnswers) {
       case (ua, (TransitInformation(transitOffice, arrivalTime), index)) =>
         ua.unsafeSetVal(AddAnotherTransitOfficePage(Index(index)))(transitOffice)
-          .unsafeSetOpt(ArrivalTimesAtOfficePage(Index(index)))(arrivalTime.map(LocalDateTimeWithAMPM(_, "PM")))
+          .unsafeSetOpt(ArrivalTimesAtOfficePage(Index(index)))(arrivalTime.map(LocalDateTimeWithAMPM(_, pickAmOrPm())))
     }
 
     userAnswers
