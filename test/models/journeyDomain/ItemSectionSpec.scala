@@ -33,15 +33,22 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
       "when all details for section have been answered" in {
         forAll(genItemSectionOld(), arb[UserAnswers]) {
           case (itemSection, userAnswers) =>
+            val indicator = CircumstanceIndicator.conditionalIndicators.head
+
             val updatedUserAnswer = {
               itemSection.itemSecurityTraderDetails match {
                 case Some(value) =>
                   userAnswers
                     .unsafeSetVal(AddTransportChargesPaymentMethodPage)(value.methodOfPayment.isEmpty)
                     .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(value.commercialReferenceNumber.isEmpty)
+
                 case None => userAnswers
               }
-            }
+            }.unsafeSetVal(AddSecurityDetailsPage)(itemSection.producedDocuments.isDefined)
+              .unsafeSetVal(AddCircumstanceIndicatorPage)(itemSection.producedDocuments.isDefined)
+              .unsafeSetVal(AddCommercialReferenceNumberPage)(itemSection.producedDocuments.isDefined)
+              .unsafeSetVal(AddDocumentsPage(itemIndex))(itemSection.producedDocuments.isDefined)
+              .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
 
             val setSectionUserAnswers = ItemSectionSpec.setItemSection(itemSection, index)(updatedUserAnswer)
 
@@ -77,8 +84,24 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
       "when all details for section have been answered" in {
         forAll(genItemSectionOld(), arb[UserAnswers]) {
           case (itemSections, userAnswers) =>
-            val updatedUserAnswer = ItemSectionSpec.setItemSections(Seq(itemSections, itemSections).toList)(userAnswers)
-            val result            = ItemSection.readerItemSections.run(updatedUserAnswer)
+            val indicator = CircumstanceIndicator.conditionalIndicators.head
+
+            val updatedUserAnswer = {
+              itemSections.itemSecurityTraderDetails match {
+                case Some(value) =>
+                  userAnswers
+                    .unsafeSetVal(AddTransportChargesPaymentMethodPage)(value.methodOfPayment.isEmpty)
+                    .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(value.commercialReferenceNumber.isEmpty)
+                case None => userAnswers
+              }
+            }.unsafeSetVal(AddSecurityDetailsPage)(itemSections.producedDocuments.isDefined)
+              .unsafeSetVal(AddCircumstanceIndicatorPage)(itemSections.producedDocuments.isDefined)
+              .unsafeSetVal(AddCommercialReferenceNumberPage)(itemSections.producedDocuments.isDefined)
+              .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
+
+            val setItemSections = ItemSectionSpec.setItemSections(Seq(itemSections, itemSections).toList)(updatedUserAnswer)
+
+            val result = ItemSection.readerItemSections.run(setItemSections)
 
             result.value mustEqual NonEmptyList(itemSections, List(itemSections))
         }
@@ -104,15 +127,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
 
     itemSections.zipWithIndex.foldLeft(startUserAnswers) {
       case (ua, (section, i)) =>
-        val updatedUserAnswer = {
-          section.itemSecurityTraderDetails match {
-            case Some(value) =>
-              ua.unsafeSetVal(AddTransportChargesPaymentMethodPage)(value.methodOfPayment.isEmpty)
-                .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(value.commercialReferenceNumber.isEmpty)
-            case None => ua
-          }
-        }
-
+        val updatedUserAnswer = ua.unsafeSetVal(AddDocumentsPage(Index(i)))(section.producedDocuments.isDefined)
         ItemSectionSpec.setItemSection(section, Index(i))(updatedUserAnswer)
     }
   }
@@ -142,20 +157,11 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
     })
   }
 
-  private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
-    val indicator = CircumstanceIndicator.conditionalIndicators.head
-    val smUserAnswers = startUserAnswers
-      .unsafeSetVal(AddSecurityDetailsPage)(producedDocument.isDefined)
-      .unsafeSetVal(AddCircumstanceIndicatorPage)(producedDocument.isDefined)
-      .unsafeSetVal(AddCommercialReferenceNumberPage)(producedDocument.isDefined)
-      .unsafeSetVal(AddDocumentsPage(itemIndex))(producedDocument.isDefined)
-      .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
-
-    producedDocument.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
+  private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
+    producedDocument.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
       case (userAnswers, (producedDocument, index)) =>
         ProducedDocumentSpec.setProducedDocumentsUserAnswers(producedDocument, itemIndex, Index(index))(userAnswers)
     })
-  }
 
   def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(userAnswers: UserAnswers): UserAnswers =
     itemsSecurityTraderDetails match {
