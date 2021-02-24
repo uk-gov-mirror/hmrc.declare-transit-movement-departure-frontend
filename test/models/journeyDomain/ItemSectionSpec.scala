@@ -25,7 +25,7 @@ import models.{Index, UserAnswers}
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
 import pages.safetyAndSecurity._
-import pages.{AddSecurityDetailsPage, ContainersUsedPage}
+import pages.{AddConsigneePage, AddConsignorPage, AddSecurityDetailsPage, ConsigneeForAllItemsPage, ConsignorForAllItemsPage, ContainersUsedPage}
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   "ItemSection" - {
@@ -49,6 +49,10 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
               .unsafeSetVal(AddCommercialReferenceNumberPage)(itemSection.producedDocuments.isDefined)
               .unsafeSetVal(AddDocumentsPage(itemIndex))(itemSection.producedDocuments.isDefined)
               .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
+              .unsafeSetVal(ConsignorForAllItemsPage)(false)
+              .unsafeSetVal(AddConsignorPage)(false)
+              .unsafeSetVal(ConsigneeForAllItemsPage)(false)
+              .unsafeSetVal(AddConsigneePage)(false)
 
             val setSectionUserAnswers = ItemSectionSpec.setItemSection(itemSection, index)(updatedUserAnswer)
 
@@ -98,6 +102,10 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
               .unsafeSetVal(AddCircumstanceIndicatorPage)(itemSections.producedDocuments.isDefined)
               .unsafeSetVal(AddCommercialReferenceNumberPage)(itemSections.producedDocuments.isDefined)
               .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
+              .unsafeSetVal(ConsignorForAllItemsPage)(false)
+              .unsafeSetVal(AddConsignorPage)(false)
+              .unsafeSetVal(ConsigneeForAllItemsPage)(false)
+              .unsafeSetVal(AddConsigneePage)(false)
 
             val setItemSections = ItemSectionSpec.setItemSections(Seq(itemSections, itemSections).toList)(updatedUserAnswer)
 

@@ -61,11 +61,6 @@ trait JourneyModelGenerators {
         }
 
         isSecurityDetailsRequired = preTaskList.addSecurityDetails
-        transitInformation = if (isSecurityDetailsRequired) {
-          Arbitrary(genTransitInformationWithArrivalTime)
-        } else {
-          Arbitrary(genTransitInformationWithoutArrivalTime)
-        }
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitrary[TraderDetails]
