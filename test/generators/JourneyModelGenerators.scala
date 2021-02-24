@@ -69,9 +69,7 @@ trait JourneyModelGenerators {
         isDocumentTypeMandatory = isSecurityDetailsRequired &&
           safetyAndSecurity.commercialReferenceNumber.isEmpty &&
           safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
-
-        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
-
+        itemDetails <- genItemSectionOld()
         goodsummarydetailsType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
         } else {
@@ -382,7 +380,7 @@ trait JourneyModelGenerators {
       itemDetail    <- arbitrary[ItemDetails]
       itemConsignor <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
       itemConsignee <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages      <- nonEmptyListOf[Packages](maxNumberOfItemsLength)
+      packages      <- nonEmptyListOf[Packages](1)
 
       containers <- if (containersUsed) { nonEmptyListOf[Container](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
 

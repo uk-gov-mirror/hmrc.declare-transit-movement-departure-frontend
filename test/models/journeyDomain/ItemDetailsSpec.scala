@@ -130,9 +130,6 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 object ItemDetailsSpec {
   //format off
 
-  /**
-    * TODO use [[base.UserAnswersSpecHelper]] to avoid cleanup
-    */
   def setItemDetailsUserAnswers(itemDetails: ItemDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val userAnswers =
       startUserAnswers

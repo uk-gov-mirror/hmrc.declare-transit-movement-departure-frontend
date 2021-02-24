@@ -122,7 +122,8 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
 
   private def setPackages(packages: NonEmptyList[Packages], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
     packages.zipWithIndex.foldLeft(startUserAnswers) {
-      case (userAnswers, (pckge, index)) => PackagesSpec.setPackageUserAnswers(pckge, itemIndex, Index(index))(userAnswers)
+      case (userAnswers, (pckge, index)) =>
+        PackagesSpec.setPackageUserAnswers(pckge, itemIndex, Index(index))(userAnswers)
     }
 
   def setItemSections(itemSections: Seq[ItemSection])(startUserAnswers: UserAnswers): UserAnswers = {
