@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package generators
 
 import java.time.{LocalDate, LocalDateTime}
@@ -103,7 +102,7 @@ trait JourneyModelGenerators {
         } else {
           Arbitrary(genTransitInformationWithoutArrivalTime)
         }
-        routeDetails      <- arbitraryRouteDetails(transitInformation).arbitrary
+        routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitrary[TraderDetails]
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
@@ -143,7 +142,7 @@ trait JourneyModelGenerators {
         } else {
           Arbitrary(genTransitInformationWithoutArrivalTime)
         }
-        routeDetails      <- arbitraryRouteDetails(transitInformation).arbitrary
+        routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitrary[TraderDetails]
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
