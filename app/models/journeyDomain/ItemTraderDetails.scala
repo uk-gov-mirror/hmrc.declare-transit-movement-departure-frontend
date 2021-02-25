@@ -85,6 +85,7 @@ object ItemTraderDetails {
       ConsigneeForAllItemsPage.reader,
       AddConsigneePage.reader
     ).tupled.flatMap {
+      //TODO this can throw matcher error, need amending
       case (consigneeForAllItems, addConsignee) if !consigneeForAllItems | !addConsignee => consigneeInformation
     }.lower
   }

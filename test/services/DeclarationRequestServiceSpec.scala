@@ -48,7 +48,7 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
     reset(mockDateTimeService)
   }
 
-  "DomainModelToSubmissionModel" - {
+  "DomainModelToSubmissionModel" ignore {
     "must convert JourneyDomain model to DeclarationRequest model" in {
 
       forAll(arb[UserAnswers], arb[JourneyDomain]) {

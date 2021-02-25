@@ -16,34 +16,44 @@
 
 package models.journeyDomain
 
-import java.time.LocalDateTime
-
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.{Index, LocalDateTimeWithAMPM, UserAnswers}
-import org.scalacheck.Arbitrary
 import pages._
+
+import scala.util.Random
 
 class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   import RouteDetailsSpec._
 
   "RouteDetails" - {
-    "can be constructed when all the answers have been answered" in {
-      forAll(arb[Option[LocalDateTime]]) {
-        dateTime =>
-          implicit val constTransitInformation =
-            Arbitrary(arb[TransitInformation].map(_.copy(arrivalTime = dateTime)))
+    "can be constructed when all the answers have been answered and safetyAndSecurityFlag is true" in {
 
-          forAll(arbitraryRouteDetails(constTransitInformation).arbitrary, arb[UserAnswers]) {
-            (expected, baseUserAnswers) =>
-              val userAnswers = setRouteDetails(expected, None)(baseUserAnswers)
+      forAll(arbitraryRouteDetails(true).arbitrary, arb[UserAnswers]) {
+        (expected, baseUserAnswers) =>
+          val userAnswers = setRouteDetails(expected)(baseUserAnswers)
+            .unsafeSetVal(AddSecurityDetailsPage)(true)
 
-              val result = UserAnswersParser[Option, RouteDetails].run(userAnswers).value
+          val result = UserAnswersParser[Option, RouteDetails].run(userAnswers).value
 
-              result mustEqual expected
-          }
+          result.transitInformation.forall(_.arrivalTime.isDefined) mustBe true
+          result mustEqual expected
       }
+    }
+  }
+
+  "can be constructed when all the answers have been answered and safetyAndSecurityFlag is false" in {
+
+    forAll(arbitraryRouteDetails(false).arbitrary, arb[UserAnswers]) {
+      (expected, baseUserAnswers) =>
+        val userAnswers = setRouteDetails(expected)(baseUserAnswers)
+          .unsafeSetVal(AddSecurityDetailsPage)(false)
+
+        val result = UserAnswersParser[Option, RouteDetails].run(userAnswers).value
+
+        result.transitInformation.forall(_.arrivalTime.isDefined) mustBe false
+        result mustEqual expected
     }
   }
 
@@ -51,7 +61,7 @@ class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGene
 
 object RouteDetailsSpec extends UserAnswersSpecHelper {
 
-  def setRouteDetails(routeDetails: RouteDetails, addSecurityDetails: Option[Boolean])(startUserAnswers: UserAnswers): UserAnswers = {
+  def setRouteDetails(routeDetails: RouteDetails)(startUserAnswers: UserAnswers): UserAnswers = {
     val interstitialUserAnswers =
       startUserAnswers
         .unsafeSetVal(CountryOfDispatchPage)(routeDetails.countryOfDispatch)
@@ -59,11 +69,14 @@ object RouteDetailsSpec extends UserAnswersSpecHelper {
         .unsafeSetVal(DestinationCountryPage)(routeDetails.destinationCountry)
         .unsafeSetVal(DestinationOfficePage)(routeDetails.destinationOffice)
 
+    // TODO replace with unsafeSetSeq
+
+    def pickAmOrPm(): String = Random.shuffle(List("AM", "PM")).head
+
     val userAnswers = routeDetails.transitInformation.zipWithIndex.foldLeft(interstitialUserAnswers) {
       case (ua, (TransitInformation(transitOffice, arrivalTime), index)) =>
         ua.unsafeSetVal(AddAnotherTransitOfficePage(Index(index)))(transitOffice)
-          .unsafeSetVal(AddSecurityDetailsPage)(addSecurityDetails.getOrElse(arrivalTime.isDefined))
-          .unsafeSetOpt(ArrivalTimesAtOfficePage(Index(index)))(arrivalTime.map(LocalDateTimeWithAMPM(_, "PM")))
+          .unsafeSetOpt(ArrivalTimesAtOfficePage(Index(index)))(arrivalTime.map(LocalDateTimeWithAMPM(_, pickAmOrPm())))
     }
 
     userAnswers

@@ -200,9 +200,4 @@ object TransportDetailsSpec extends UserAnswersSpecHelper {
           })
     }
 
-  def setTransportDetailsRail(changeAtBorder: Boolean, mode: Int = Rail.Constants.codes.head)(startUserAnswers: UserAnswers): UserAnswers =
-    startUserAnswers
-      .unsafeSetVal(ChangeAtBorderPage)(changeAtBorder)
-      .unsafeSetVal(InlandModePage)(mode.toString)
-
 }
