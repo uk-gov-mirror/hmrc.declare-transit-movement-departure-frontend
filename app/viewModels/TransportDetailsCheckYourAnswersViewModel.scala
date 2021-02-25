@@ -17,6 +17,7 @@
 package viewModels
 
 import models.{CountryList, TransportModeList, UserAnswers}
+import pages.InlandModePage
 import uk.gov.hmrc.viewmodels.SummaryList
 import utils.TransportDetailsCheckYourAnswersHelper
 import viewModels.sections.Section
@@ -28,14 +29,16 @@ object TransportDetailsCheckYourAnswersViewModel {
   def apply(userAnswers: UserAnswers, countryList: CountryList, transportModeList: TransportModeList): TransportDetailsCheckYourAnswersViewModel = {
 
     val checkYourAnswersHelper = new TransportDetailsCheckYourAnswersHelper(userAnswers)
+    val inlandModeCode         = userAnswers.get(InlandModePage).get
 
     val inlandMode: Option[SummaryList.Row]                = checkYourAnswersHelper.inlandMode(transportModeList)
     val modeCrossingBorder: Option[SummaryList.Row]        = checkYourAnswersHelper.modeCrossingBorder(transportModeList)
     val modeAtBorder: Option[SummaryList.Row]              = checkYourAnswersHelper.modeAtBorder(transportModeList)
-    val nationalityAtDeparture: Option[SummaryList.Row]    = checkYourAnswersHelper.nationalityAtDeparture(countryList)
+    val addNationalityAtDeparture: Option[SummaryList.Row] = checkYourAnswersHelper.addNationalityAtDeparture(inlandModeCode)
+    val nationalityAtDeparture: Option[SummaryList.Row]    = checkYourAnswersHelper.nationalityAtDeparture(countryList, inlandModeCode)
     val nationalityCrossingBorder: Option[SummaryList.Row] = checkYourAnswersHelper.nationalityCrossingBorder(countryList)
-    val addIdAtDeparture: Option[SummaryList.Row]          = checkYourAnswersHelper.addIdAtDeparture
-    val idAtDeparture: Option[SummaryList.Row]             = checkYourAnswersHelper.idAtDeparture
+    val addIdAtDeparture: Option[SummaryList.Row]          = checkYourAnswersHelper.addIdAtDeparture(inlandModeCode)
+    val idAtDeparture: Option[SummaryList.Row]             = checkYourAnswersHelper.idAtDeparture(inlandModeCode)
     val changeAtBorder: Option[SummaryList.Row]            = checkYourAnswersHelper.changeAtBorder
     val idCrossingBorder: Option[SummaryList.Row]          = checkYourAnswersHelper.idCrossingBorder
 
@@ -45,6 +48,7 @@ object TransportDetailsCheckYourAnswersViewModel {
           inlandMode,
           addIdAtDeparture,
           idAtDeparture,
+          addNationalityAtDeparture,
           nationalityAtDeparture,
           changeAtBorder,
           modeAtBorder,

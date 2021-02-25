@@ -102,9 +102,9 @@ object Packages {
     DeclareNumberOfPackagesPage(itemIndex, referenceIndex).reader
       .flatMap {
         bool =>
-          if (bool) {
+          if (bool)
             HowManyPackagesPage(itemIndex, referenceIndex).reader.map(_.some)
-          } else {
+          else {
             none[Int].pure[UserAnswersReader]
           }
       }

@@ -434,6 +434,7 @@ changeAtBorder.error.required = Select yes if these details will change at the b
 
 addIdAtDeparture.title = Do you need to add the name, registration or reference of the vehicle at departure?
 addIdAtDeparture.heading = Do you need to add the name, registration or reference of the vehicle at departure?
+addIdAtDeparture.hint = You need approval from the NCTS helpdesk before you can leave out these details.
 addIdAtDeparture.checkYourAnswersLabel = Add the name, registration or reference of the vehicle at departure
 addIdAtDeparture.error.required = Select yes if you need to add the name, registration or reference of the vehicle at departure
 
@@ -939,10 +940,10 @@ addItems.checkYourAnswersLabel.references.addRemove = Add or remove previous adm
 addItems.checkYourAnswersLabel.documents = Produced documents and work certificates
 addItems.checkYourAnswersLabel.documents.addRemove = Add or remove documents
 
-addAdministrativeReference.title = Do you need to add a previous administrative reference?
-addAdministrativeReference.heading = Do you need to add a previous administrative reference?
+addAdministrativeReference.title = Do you have a proof of customs status document for any goods in this movement?
+addAdministrativeReference.heading = Do you have a proof of customs status document for any goods in this movement?
 addAdministrativeReference.checkYourAnswersLabel = Add previous administrative reference?
-addAdministrativeReference.error.required = Select yes if you need to add a previous administrative reference
+addAdministrativeReference.error.required = Select yes if you have a proof of customs status document for any goods in this movement
 
 referenceType.title = What type of reference do you want to add?
 referenceType.heading = What type of reference do you want to add?
@@ -1479,3 +1480,9 @@ movementDestinationCountry.title = What country is the transit movement ending i
 movementDestinationCountry.heading = What country is the transit movement ending in?
 movementDestinationCountry.checkYourAnswersLabel = Country transit movement is ending
 movementDestinationCountry.error.required = Enter the country the transit movement is ending in
+
+addNationalityAtDeparture.title = Do you need to add the nationality at departure?
+addNationalityAtDeparture.heading = Do you need to add the nationality at departure?
+addNationalityAtDeparture.checkYourAnswersLabel = Add the nationality at departure
+addNationalityAtDeparture.error.required = Select yes if you need to add the nationality at departure
+addNationalityAtDeparture.checkYourAnswersLabel = Add nationality at departure?

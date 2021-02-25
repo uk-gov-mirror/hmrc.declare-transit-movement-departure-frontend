@@ -17,6 +17,7 @@
 package utils
 
 import controllers.transportDetails.routes
+import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, Rail}
 import models.{CheckMode, CountryList, LocalReferenceNumber, TransportModeList, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -77,39 +78,45 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def idCrossingBorder: Option[Row] = userAnswers.get(IdCrossingBorderPage) map {
-    answer =>
-      Row(
-        key   = Key(msg"idCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.IdCrossingBorderController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idCrossingBorder.checkYourAnswersLabel")),
-            attributes         = Map("id" -> "change-id-crossing-border")
+  def idCrossingBorder: Option[Row] =
+    userAnswers.get(IdCrossingBorderPage) map {
+
+      answer =>
+        Row(
+          key   = Key(msg"idCrossingBorder.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          value = Value(lit"$answer"),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = routes.IdCrossingBorderController.onPageLoad(lrn, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idCrossingBorder.checkYourAnswersLabel")),
+              attributes         = Map("id" -> "change-id-crossing-border")
+            )
           )
         )
-      )
-  }
+    }
 
-  def nationalityAtDeparture(codeList: CountryList): Option[Row] = userAnswers.get(NationalityAtDeparturePage) map {
-    answer =>
-      val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
+  def nationalityAtDeparture(codeList: CountryList, inlandModeCode: String): Option[Row] =
+    if (!Mode5or7.Constants.codes.contains(inlandModeCode)
+        && !Rail.Constants.codes.contains(inlandModeCode)) {
+      userAnswers.get(NationalityAtDeparturePage) map {
+        answer =>
+          val countryName = codeList.getCountry(answer).map(_.description).getOrElse(answer.code)
 
-      Row(
-        key   = Key(msg"nationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$countryName"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.NationalityAtDepartureController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityAtDeparture.checkYourAnswersLabel")),
-            attributes         = Map("id" -> "change-nationality-at-departure")
+          Row(
+            key   = Key(msg"nationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value = Value(lit"$countryName"),
+            actions = List(
+              Action(
+                content            = msg"site.edit",
+                href               = routes.NationalityAtDepartureController.onPageLoad(lrn, CheckMode).url,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"nationalityAtDeparture.checkYourAnswersLabel")),
+                attributes         = Map("id" -> "change-nationality-at-departure")
+              )
+            )
           )
-        )
-      )
-  }
+      }
+    } else None
 
   def nationalityCrossingBorder(codeList: CountryList): Option[Row] = userAnswers.get(NationalityCrossingBorderPage) map {
     answer =>
@@ -129,20 +136,24 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def idAtDeparture: Option[Row] = userAnswers.get(IdAtDeparturePage) map {
-    answer =>
-      Row(
-        key   = Key(msg"idAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.IdAtDepartureController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idAtDeparture.checkYourAnswersLabel")),
+  def idAtDeparture(inlandModeCode: String): Option[Row] =
+    if (!Mode5or7.Constants.codes.contains(inlandModeCode)) {
+      userAnswers.get(IdAtDeparturePage) map {
+        answer =>
+          Row(
+            key   = Key(msg"idAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value = Value(lit"$answer"),
+            actions = List(
+              Action(
+                content            = msg"site.edit",
+                href               = routes.IdAtDepartureController.onPageLoad(lrn, CheckMode).url,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"idAtDeparture.checkYourAnswersLabel")),
+              )
+            )
           )
-        )
-      )
-  }
+      }
+    } else
+      None
 
   def changeAtBorder: Option[Row] = userAnswers.get(ChangeAtBorderPage) map {
     answer =>
@@ -160,21 +171,44 @@ class TransportDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def addIdAtDeparture: Option[Row] = userAnswers.get(AddIdAtDeparturePage) map {
-    answer =>
-      Row(
-        key   = Key(msg"addIdAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.AddIdAtDepartureController.onPageLoad(lrn, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addIdAtDeparture.checkYourAnswersLabel")),
-            attributes         = Map("id" -> "change-add-id-at-departure")
+  def addIdAtDeparture(inlandModeCode: String): Option[Row] =
+    if (!Mode5or7.Constants.codes.contains(inlandModeCode)) {
+      userAnswers.get(AddIdAtDeparturePage) map {
+        answer =>
+          Row(
+            key   = Key(msg"addIdAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value = Value(yesOrNo(answer)),
+            actions = List(
+              Action(
+                content            = msg"site.edit",
+                href               = routes.AddIdAtDepartureController.onPageLoad(lrn, CheckMode).url,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addIdAtDeparture.checkYourAnswersLabel")),
+                attributes         = Map("id" -> "change-add-id-at-departure")
+              )
+            )
           )
-        )
-      )
-  }
+      }
+    } else None
+
+  def addNationalityAtDeparture(inlandModeCode: String): Option[Row] =
+    if (!Mode5or7.Constants.codes.contains(inlandModeCode)
+        && !Rail.Constants.codes.contains(inlandModeCode)) {
+      userAnswers.get(AddNationalityAtDeparturePage) map {
+        answer =>
+          Row(
+            key   = Key(msg"addNationalityAtDeparture.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value = Value(yesOrNo(answer)),
+            actions = List(
+              Action(
+                content            = msg"site.edit",
+                href               = routes.AddNationalityAtDepartureController.onPageLoad(lrn, CheckMode).url,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addNationalityAtDeparture.checkYourAnswersLabel")),
+                attributes         = Map("id" -> "change-add-nationality-at-departure")
+              )
+            )
+          )
+      }
+    } else None
 
   def lrn: LocalReferenceNumber = userAnswers.id
 }
