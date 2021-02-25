@@ -19,6 +19,7 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
 import models.journeyDomain.ItemDetailsSpec.setItemDetailsUserAnswers
+import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -52,12 +53,8 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
-              .set(AddTotalNetMassPage(index), false)
-              .toOption
-              .get
-              .set(TotalNetMassPage(index), itemDetails.totalNetMass.value)
-              .toOption
-              .get
+              .unsafeSetVal(AddTotalNetMassPage(index))(false)
+              .unsafeSetVal(TotalNetMassPage(index))(itemDetails.totalNetMass.value)
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
@@ -72,12 +69,8 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
-              .set(IsCommodityCodeKnownPage(index), false)
-              .toOption
-              .get
-              .set(CommodityCodePage(index), itemDetails.commodityCode.value)
-              .toOption
-              .get
+              .unsafeSetVal(IsCommodityCodeKnownPage(index))(false)
+              .unsafeSetVal(CommodityCodePage(index))(itemDetails.commodityCode.value)
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
@@ -105,9 +98,8 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
-              .set(AddTotalNetMassPage(index), true)
-              .toOption
-              .get
+              .unsafeSetVal(AddTotalNetMassPage(index))(true)
+              .unsafeRemoveVal(TotalNetMassPage(index))
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
@@ -122,9 +114,8 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
         forAll(arbitrary[UserAnswers], genItemDetailsNetMassSet) {
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
-              .set(IsCommodityCodeKnownPage(index), true)
-              .toOption
-              .get
+              .unsafeSetVal(IsCommodityCodeKnownPage(index))(true)
+              .unsafeRemoveVal(CommodityCodePage(index))
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
@@ -142,44 +133,28 @@ object ItemDetailsSpec {
   def setItemDetailsUserAnswers(itemDetails: ItemDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers = {
     val userAnswers =
       startUserAnswers
-        .set(ItemTotalGrossMassPage(index), itemDetails.totalGrossMass)
-        .toOption
-        .get
-        .set(ItemDescriptionPage(index), itemDetails.itemDescription)
-        .toOption
-        .get
+        .unsafeSetVal(ItemTotalGrossMassPage(index))(itemDetails.totalGrossMass)
+        .unsafeSetVal(ItemDescriptionPage(index))(itemDetails.itemDescription)
 
     val totalNetMass = itemDetails.totalNetMass match {
       case Some(value) =>
         userAnswers
-          .set(AddTotalNetMassPage(index), true)
-          .toOption
-          .get
-          .set(TotalNetMassPage(index), value)
-          .toOption
-          .get
+          .unsafeSetVal(AddTotalNetMassPage(index))(true)
+          .unsafeSetVal(TotalNetMassPage(index))(value)
 
       case _ =>
         userAnswers
-          .set(AddTotalNetMassPage(index), false)
-          .toOption
-          .get
+          .unsafeSetVal(AddTotalNetMassPage(index))(false)
     }
 
     val commodityCode = itemDetails.commodityCode match {
       case Some(value) =>
         totalNetMass
-          .set(IsCommodityCodeKnownPage(index), true)
-          .toOption
-          .get
-          .set(CommodityCodePage(index), value)
-          .toOption
-          .get
+          .unsafeSetVal(IsCommodityCodeKnownPage(index))(true)
+          .unsafeSetVal(CommodityCodePage(index))(value)
       case _ =>
         totalNetMass
-          .set(IsCommodityCodeKnownPage(index), false)
-          .toOption
-          .get
+          .unsafeSetVal(IsCommodityCodeKnownPage(index))(false)
     }
 
     commodityCode
