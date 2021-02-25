@@ -21,8 +21,8 @@ import cats.implicits._
 import derivable._
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.{Index, UserAnswers}
-import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 import pages.addItems.specialMentions.AddSpecialMentionPage
+import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 
 case class ItemSection(
   itemDetails: ItemDetails,
@@ -39,16 +39,17 @@ object ItemSection {
 
   private def derivePackage(itemIndex: Index): ReaderT[Option, UserAnswers, NonEmptyList[Packages]] =
     DeriveNumberOfPackages(itemIndex).reader
+      .filter {
+        x =>
+          x.nonEmpty
+      }
       .flatMap {
-        y =>
-          println(s"**** $y ****")
-          y.zipWithIndex
-            .traverse[UserAnswersReader, Packages]({
-              case (value, index) =>
-                println(s"**** Loop: $index $value ****")
-                Packages.packagesReader(itemIndex, Index(index))
-            })
-            .map(NonEmptyList.fromListUnsafe)
+        _.zipWithIndex
+          .traverse[UserAnswersReader, Packages]({
+            case (value, index) =>
+              Packages.packagesReader(itemIndex, Index(index))
+          })
+          .map(NonEmptyList.fromListUnsafe)
       }
 
   private def deriveContainers(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[Container]]] =
@@ -94,41 +95,17 @@ object ItemSection {
       )
       .lower
 
-  implicit def readerItemSection(index: Index): ReaderT[Option, UserAnswers, ItemSection] =
-    for {
-      a <- {
-        println(s"\n\n GOT HERE 1 \n\n")
-        ItemDetails.itemDetailsReader(index)
-      }
-      b <- {
-        println(s"\n\n GOT HERE 2 \n\n")
-        ItemTraderDetails.consignorDetails(index)
-      }
-      c <- {
-        println(s"\n\n GOT HERE 3 \n\n")
-        ItemTraderDetails.consigneeDetails(index)
-      }
-      d <- {
-        println(s"\n\n GOT HERE 4 \n\n")
-        derivePackage(index)
-      }
-      e <- {
-        println(s"\n\n GOT HERE 5 \n\n")
-        deriveContainers(index)
-      }
-      f <- {
-        println(s"\n\n GOT HERE 6 \n\n")
-        deriveSpecialMentions(index)
-      }
-      g <- {
-        println(s"\n\n GOT HERE 7 \n\n")
-        ProducedDocument.deriveProducedDocuments(index)
-      }
-      h <- {
-        println(s"\n\n GOT HERE 8 \n\n")
-        securityItemsSecurityTraderDetails(index)
-      }
-    } yield ItemSection(a, b, c, d, e, f, g, h)
+  implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
+    (
+      ItemDetails.itemDetailsReader(index),
+      ItemTraderDetails.consignorDetails(index),
+      ItemTraderDetails.consigneeDetails(index),
+      derivePackage(index),
+      deriveContainers(index),
+      deriveSpecialMentions(index),
+      ProducedDocument.deriveProducedDocuments(index),
+      securityItemsSecurityTraderDetails(index)
+    ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =
     DeriveNumberOfItems.reader

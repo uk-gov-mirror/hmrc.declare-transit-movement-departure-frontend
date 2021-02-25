@@ -85,9 +85,9 @@ object Packages {
 
     def otherPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[OtherPackages] =
       PackageTypePage(itemIndex, referenceIndex).reader
-//        .filter(
-//          packageType => !PackageType.bulkAndUnpackedCodes.contains(packageType.code)
-//        )
+        .filter(
+          packageType => !PackageType.bulkAndUnpackedCodes.contains(packageType.code)
+        )
         .productR(
           (
             PackageTypePage(itemIndex, referenceIndex).reader,

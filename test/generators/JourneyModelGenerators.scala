@@ -49,42 +49,42 @@ trait JourneyModelGenerators {
 
   val maxNumberOfItemsLength = 2
 
+  // Wip
   implicit def arbitraryJourneyDomain: Arbitrary[JourneyDomain] =
     Arbitrary {
       for {
         preTaskList <- arbitrary[PreTaskListDetails]
-        isNormalMovement = preTaskList.procedureType == ProcedureType.Normal
+        updatedPreTaskList = preTaskList.copy(addSecurityDetails = true)
+        isNormalMovement   = updatedPreTaskList.procedureType == ProcedureType.Normal
         movementDetails <- if (isNormalMovement) {
           arbitrary[NormalMovementDetails]
         } else {
           arbitrary[SimplifiedMovementDetails]
         }
 
-        isSecurityDetailsRequired = preTaskList.addSecurityDetails
+        isSecurityDetailsRequired = updatedPreTaskList.addSecurityDetails
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitrary[TraderDetails]
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
 
-        isDocumentTypeMandatory = isSecurityDetailsRequired &&
-          safetyAndSecurity.commercialReferenceNumber.isEmpty &&
-          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
-        itemDetails <- genItemSectionOld()
+        isDocumentTypeMandatory = false
+        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
         goodsummarydetailsType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
         } else {
           arbitrary[GoodSummarySimplifiedDetails]
         }
         goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
-        guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
+        guarantees   <- nonEmptyListOf[GuaranteeDetails](1)
       } yield
         JourneyDomain(
-          preTaskList,
+          updatedPreTaskList,
           movementDetails,
           routeDetails,
           transportDetails,
           traderDetails,
-          NonEmptyList(itemDetails, List(itemDetails)),
+          NonEmptyList(itemDetails, List.empty),
           goodsSummary,
           guarantees,
           if (isSecurityDetailsRequired) Some(safetyAndSecurity) else None
@@ -382,11 +382,11 @@ trait JourneyModelGenerators {
       itemConsignee <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
       packages      <- nonEmptyListOf[Packages](1)
 
-      containers <- if (containersUsed) { nonEmptyListOf[Container](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
+      containers <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
 
-      specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](maxNumberOfItemsLength))
+      specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](1))
 
-      producedDocuments <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
+      producedDocuments <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
 
       itemSecurityTraderDetails <- Gen.option(arbitraryItemSecurityTraderDetails.arbitrary)
     } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments, itemSecurityTraderDetails)
@@ -407,10 +407,10 @@ trait JourneyModelGenerators {
       itemDetail                <- arbitrary[ItemDetails]
       itemConsignor             <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
       itemConsignee             <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages                  <- nonEmptyListOf[Packages](maxNumberOfItemsLength)
-      containers                <- if (containersUsed) { nonEmptyListOf[Container](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
-      specialMentions           <- Gen.option(nonEmptyListOf[SpecialMention](maxNumberOfItemsLength))
-      producedDocuments         <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](maxNumberOfItemsLength).map(Some(_)) } else Gen.const(None)
+      packages                  <- nonEmptyListOf[Packages](1)
+      containers                <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
+      specialMentions           <- Gen.option(nonEmptyListOf[SpecialMention](1))
+      producedDocuments         <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
       itemSecurityTraderDetails <- Gen.option(arbitrary[ItemsSecurityTraderDetails])
 
     } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments, itemSecurityTraderDetails)
