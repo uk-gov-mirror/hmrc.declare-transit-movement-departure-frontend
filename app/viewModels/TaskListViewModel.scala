@@ -17,8 +17,10 @@
 package viewModels
 
 import cats.data.{NonEmptyList, ReaderT}
+import cats.implicits.catsStdInstancesForOption
+import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain._
-import models.{Index, NormalMode, SectionDetails, UserAnswers}
+import models.{Index, NormalMode, ProcedureType, SectionDetails, UserAnswers}
 import pages.guaranteeDetails.GuaranteeTypePage
 import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
 import pages._
@@ -72,6 +74,13 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url)
       .section
 
+  def traderDetailsStartPage(reader: Option[ProcedureType]): String =
+    reader match {
+      case Some(Normal)     => controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
+      case Some(Simplified) => controllers.traderDetails.routes.WhatIsPrincipalEoriController.onPageLoad(userAnswers.id, NormalMode).url
+      case _                => controllers.routes.SessionExpiredController.onPageLoad().url
+    }
+
   private val traderDetails =
     taskListDsl
       .sectionName("declarationSummary.section.tradersDetails")
@@ -80,10 +89,10 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
         controllers.traderDetails.routes.TraderDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
       )
       .ifInProgress(
-        IsPrincipalEoriKnownPage.reader,
-        controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
+        ProcedureTypePage.reader,
+        traderDetailsStartPage(ProcedureTypePage.reader.run(userAnswers))
       )
-      .ifNotStarted(controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url)
+      .ifNotStarted(traderDetailsStartPage(ProcedureTypePage.reader.run(userAnswers)))
       .section
 
   private val itemDetails =
