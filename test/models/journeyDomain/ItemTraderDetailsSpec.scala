@@ -20,6 +20,7 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.domain.Address
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
+import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, Index, UserAnswers}
 import org.scalatest.TryValues
 import pages._
@@ -33,24 +34,12 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
         case (baseUserAnswers, name, address) =>
           val userAnswers = baseUserAnswers
-            .set(AddConsignorPage, false)
-            .success
-            .value
-            .set(ConsignorForAllItemsPage, false)
-            .success
-            .value
-            .set(TraderDetailsConsignorEoriKnownPage(index), false)
-            .success
-            .value
-            .set(TraderDetailsConsignorNamePage(index), name)
-            .success
-            .value
-            .set(TraderDetailsConsignorAddressPage(index), address)
-            .success
-            .value
-            .set(TraderDetailsConsignorEoriKnownPage(index), false)
-            .success
-            .value
+            .unsafeSetVal(AddConsignorPage)(false)
+            .unsafeSetVal(ConsignorForAllItemsPage)(false)
+            .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(false)
+            .unsafeSetVal(TraderDetailsConsignorNamePage(index))(name)
+            .unsafeSetVal(TraderDetailsConsignorAddressPage(index))(address)
+            .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(false)
 
           val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
           val result                   = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
@@ -63,24 +52,12 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress], arb[EoriNumber]) {
         case (baseUserAnswers, name, address, eori @ EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
-            .set(AddConsignorPage, false)
-            .success
-            .value
-            .set(ConsignorForAllItemsPage, false)
-            .success
-            .value
-            .set(TraderDetailsConsignorNamePage(index), name)
-            .success
-            .value
-            .set(TraderDetailsConsignorAddressPage(index), address)
-            .success
-            .value
-            .set(TraderDetailsConsignorEoriKnownPage(index), true)
-            .success
-            .value
-            .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber1)
-            .success
-            .value
+            .unsafeSetVal(AddConsignorPage)(false)
+            .unsafeSetVal(ConsignorForAllItemsPage)(false)
+            .unsafeSetVal(TraderDetailsConsignorNamePage(index))(name)
+            .unsafeSetVal(TraderDetailsConsignorAddressPage(index))(address)
+            .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(true)
+            .unsafeSetVal(TraderDetailsConsignorEoriNumberPage(index))(eoriNumber1)
 
           val result = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
 
@@ -94,21 +71,11 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[ConsigneeAddress]) {
         case (baseUserAnswers, name, address) =>
           val userAnswers = baseUserAnswers
-            .set(AddConsigneePage, false)
-            .success
-            .value
-            .set(ConsigneeForAllItemsPage, false)
-            .success
-            .value
-            .set(TraderDetailsConsigneeNamePage(index), name)
-            .success
-            .value
-            .set(TraderDetailsConsigneeAddressPage(index), address)
-            .success
-            .value
-            .set(TraderDetailsConsigneeEoriKnownPage(index), false)
-            .success
-            .value
+            .unsafeSetVal(AddConsigneePage)(false)
+            .unsafeSetVal(ConsigneeForAllItemsPage)(false)
+            .unsafeSetVal(TraderDetailsConsigneeNamePage(index))(name)
+            .unsafeSetVal(TraderDetailsConsigneeAddressPage(index))(address)
+            .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(false)
 
           val result                   = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
           val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
@@ -122,24 +89,12 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[ConsigneeAddress], arb[EoriNumber]) {
         case (baseUserAnswers, name, address, eori @ EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
-            .set(AddConsigneePage, false)
-            .success
-            .value
-            .set(ConsigneeForAllItemsPage, false)
-            .success
-            .value
-            .set(TraderDetailsConsigneeEoriKnownPage(index), true)
-            .success
-            .value
-            .set(TraderDetailsConsigneeEoriNumberPage(index), eoriNumber1)
-            .success
-            .value
-            .set(TraderDetailsConsigneeNamePage(index), name)
-            .success
-            .value
-            .set(TraderDetailsConsigneeAddressPage(index), address)
-            .success
-            .value
+            .unsafeSetVal(AddConsigneePage)(false)
+            .unsafeSetVal(ConsigneeForAllItemsPage)(false)
+            .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(true)
+            .unsafeSetVal(TraderDetailsConsigneeEoriNumberPage(index))(eoriNumber1)
+            .unsafeSetVal(TraderDetailsConsigneeNamePage(index))(name)
+            .unsafeSetVal(TraderDetailsConsigneeAddressPage(index))(address)
 
           val result = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
 
@@ -153,18 +108,10 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], arb[EoriNumber]) {
         case (baseUserAnswers, _ @EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
-            .set(AddConsignorPage, true)
-            .success
-            .value
-            .set(ConsignorForAllItemsPage, true)
-            .success
-            .value
-            .set(TraderDetailsConsignorEoriKnownPage(index), true)
-            .success
-            .value
-            .set(TraderDetailsConsignorEoriNumberPage(index), eoriNumber1)
-            .success
-            .value
+            .unsafeRemoveVal(AddConsignorPage)
+            .unsafeSetVal(ConsignorForAllItemsPage)(true)
+            .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(true)
+            .unsafeSetVal(TraderDetailsConsignorEoriNumberPage(index))(eoriNumber1)
 
           val result = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
 
@@ -177,18 +124,10 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], arb[EoriNumber]) {
         case (baseUserAnswers, eori1 @ EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
-            .set(AddConsigneePage, true)
-            .success
-            .value
-            .set(ConsigneeForAllItemsPage, true)
-            .success
-            .value
-            .set(TraderDetailsConsigneeEoriKnownPage(index), true)
-            .success
-            .value
-            .set(TraderDetailsConsigneeEoriNumberPage(index), eoriNumber1)
-            .success
-            .value
+            .unsafeRemoveVal(AddConsigneePage)
+            .unsafeSetVal(ConsigneeForAllItemsPage)(true)
+            .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(true)
+            .unsafeSetVal(TraderDetailsConsigneeEoriNumberPage(index))(eoriNumber1)
 
           val result = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
 
@@ -203,8 +142,6 @@ object ItemTraderDetailsSpec extends UserAnswersSpecHelper {
   def setItemTraderDetails(itemTraderDetails: ItemTraderDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
     // Set Consignor
-      .unsafeSetVal(ConsignorForAllItemsPage)(false)
-      .unsafeSetVal(AddConsignorPage)(false)
       .unsafeSetPFn(TraderDetailsConsignorEoriKnownPage(index))(itemTraderDetails.consignor)({
         case Some(RequiredDetails(_, _, Some(_))) => true
         case Some(_)                              => false
@@ -219,8 +156,6 @@ object ItemTraderDetailsSpec extends UserAnswersSpecHelper {
         case Some(RequiredDetails(_, address, _)) => Address.prismAddressToConsignorAddress.getOption(address).get
       })
       // Set Consignee
-      .unsafeSetVal(ConsigneeForAllItemsPage)(false)
-      .unsafeSetVal(AddConsigneePage)(false)
       .unsafeSetPFn(TraderDetailsConsigneeEoriKnownPage(index))(itemTraderDetails.consignee)({
         case Some(RequiredDetails(_, _, Some(_))) => true
         case Some(_)                              => false

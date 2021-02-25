@@ -21,8 +21,8 @@ import cats.implicits._
 import derivable._
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.{Index, UserAnswers}
-import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 import pages.addItems.specialMentions.AddSpecialMentionPage
+import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 
 case class ItemSection(
   itemDetails: ItemDetails,
