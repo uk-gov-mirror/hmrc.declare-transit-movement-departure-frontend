@@ -16,7 +16,6 @@
 
 package services
 
-
 import java.time.LocalDateTime
 import base.{GeneratorSpec, SpecBase}
 import cats.data.NonEmptyList
