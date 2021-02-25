@@ -39,14 +39,11 @@ object ItemSection {
 
   private def derivePackage(itemIndex: Index): ReaderT[Option, UserAnswers, NonEmptyList[Packages]] =
     DeriveNumberOfPackages(itemIndex).reader
-      .filter {
-        x =>
-          x.nonEmpty
-      }
+      .filter(_.nonEmpty)
       .flatMap {
         _.zipWithIndex
           .traverse[UserAnswersReader, Packages]({
-            case (value, index) =>
+            case (_, index) =>
               Packages.packagesReader(itemIndex, Index(index))
           })
           .map(NonEmptyList.fromListUnsafe)
