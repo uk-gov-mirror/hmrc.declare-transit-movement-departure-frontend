@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package generators
 
 import java.time.{LocalDate, LocalDateTime}
@@ -85,6 +84,86 @@ trait JourneyModelGenerators {
           transportDetails,
           traderDetails,
           NonEmptyList(itemDetails, List.empty),
+          goodsSummary,
+          guarantees,
+          if (isSecurityDetailsRequired) Some(safetyAndSecurity) else None
+        )
+    }
+
+  lazy val arbitrarySimplifiedJourneyDomain: Arbitrary[JourneyDomain] =
+    Arbitrary {
+      for {
+        preTaskList <- arbitrary[PreTaskListDetails]
+        simplifiedTaskList = preTaskList.copy(procedureType = ProcedureType.Simplified)
+        movementDetails <- arbitrary[SimplifiedMovementDetails]
+        isSecurityDetailsRequired = preTaskList.addSecurityDetails
+        transitInformation = if (isSecurityDetailsRequired) {
+          Arbitrary(genTransitInformationWithArrivalTime)
+        } else {
+          Arbitrary(genTransitInformationWithoutArrivalTime)
+        }
+        routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
+        transportDetails  <- arbitrary[TransportDetails]
+        traderDetails     <- arbitrary[TraderDetails]
+        safetyAndSecurity <- arbitrary[SafetyAndSecurity]
+
+        isDocumentTypeMandatory = isSecurityDetailsRequired &&
+          safetyAndSecurity.commercialReferenceNumber.isEmpty &&
+          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
+
+        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
+
+        goodsummarydetailsType = arbitrary[GoodSummarySimplifiedDetails]
+        goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
+        guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
+      } yield
+        JourneyDomain(
+          simplifiedTaskList,
+          movementDetails,
+          routeDetails,
+          transportDetails,
+          traderDetails,
+          NonEmptyList(itemDetails, List(itemDetails)),
+          goodsSummary,
+          guarantees,
+          if (isSecurityDetailsRequired) Some(safetyAndSecurity) else None
+        )
+    }
+
+  lazy val arbitraryNormalJourneyDomain: Arbitrary[JourneyDomain] =
+    Arbitrary {
+      for {
+        preTaskList <- arbitrary[PreTaskListDetails]
+        simplifiedTaskList = preTaskList.copy(procedureType = ProcedureType.Normal)
+        movementDetails <- arbitrary[NormalMovementDetails]
+        isSecurityDetailsRequired = preTaskList.addSecurityDetails
+        transitInformation = if (isSecurityDetailsRequired) {
+          Arbitrary(genTransitInformationWithArrivalTime)
+        } else {
+          Arbitrary(genTransitInformationWithoutArrivalTime)
+        }
+        routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
+        transportDetails  <- arbitrary[TransportDetails]
+        traderDetails     <- arbitrary[TraderDetails]
+        safetyAndSecurity <- arbitrary[SafetyAndSecurity]
+
+        isDocumentTypeMandatory = isSecurityDetailsRequired &&
+          safetyAndSecurity.commercialReferenceNumber.isEmpty &&
+          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
+
+        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
+
+        goodsummarydetailsType = arbitrary[GoodSummaryNormalDetails]
+        goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
+        guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
+      } yield
+        JourneyDomain(
+          simplifiedTaskList,
+          movementDetails,
+          routeDetails,
+          transportDetails,
+          traderDetails,
+          NonEmptyList(itemDetails, List(itemDetails)),
           goodsSummary,
           guarantees,
           if (isSecurityDetailsRequired) Some(safetyAndSecurity) else None

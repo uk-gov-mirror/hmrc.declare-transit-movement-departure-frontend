@@ -16,13 +16,13 @@
 
 package services
 
-import java.time.LocalDateTime
-
+import java.time.{LocalDate, LocalDateTime}
 import cats.data.NonEmptyList
 import cats.implicits._
+
 import javax.inject.Inject
 import models.domain.{Address, SealDomain}
-import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails}
+import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.journeyDomain.JourneyDomain.Constants
@@ -289,10 +289,10 @@ class DeclarationRequestService @Inject()(
         case _ => None
       }
 
-    def authorisedLocationOfGoods(goodsSummaryDetails: GoodSummaryDetails): Option[String] =
+    def goodsSummarySimplifiedDetails(goodsSummaryDetails: GoodSummaryDetails): Option[GoodSummarySimplifiedDetails] =
       goodsSummaryDetails match {
-        case GoodsSummary.GoodSummarySimplifiedDetails(authorisedLocationCode, _) => Some(authorisedLocationCode)
-        case GoodSummaryNormalDetails(_)                                          => None
+        case result: GoodSummarySimplifiedDetails => Some(result)
+        case _                                    => None
       }
 
     def safetyAndSecurityFlag(boolFlag: Boolean): Int = if (boolFlag) 1 else 0
@@ -331,7 +331,6 @@ class DeclarationRequestService @Inject()(
               case CarrierAddress(addressLine1, addressLine2, addressLine3, country) =>
                 SafetyAndSecurityCarrierWithoutEori(name, addressLine1, addressLine3, addressLine2, country.code.code)
             }
-
           case SafetyAndSecurity.TraderEori(EoriNumber(eori)) =>
             Some(SafetyAndSecurityCarrierWithEori(eori))
         }
@@ -373,7 +372,7 @@ class DeclarationRequestService @Inject()(
         couOfDesCodHEA30    = Some(routeDetails.destinationCountry.code),
         agrLocOfGooCodHEA38 = None, // Not required
         agrLocOfGooHEA39    = agreedLocationOfGoods(movementDetails, goodsSummary.goodSummaryDetails),
-        autLocOfGooCodHEA41 = authorisedLocationOfGoods(goodsSummary.goodSummaryDetails),
+        autLocOfGooCodHEA41 = goodsSummarySimplifiedDetails(goodsSummary.goodSummaryDetails).map(_.authorisedLocationCode),
         plaOfLoaCodHEA46    = None, // Journey is currently missing for this
         couOfDisCodHEA55    = Some(routeDetails.countryOfDispatch.code),
         cusSubPlaHEA66      = customsSubPlace(goodsSummary),
@@ -410,7 +409,7 @@ class DeclarationRequestService @Inject()(
       CustomsOfficeDestination(
         referenceNumber = routeDetails.destinationOffice.id
       ),
-      None,
+      goodsSummarySimplifiedDetails(goodsSummary.goodSummaryDetails).map(x => ControlResult(x.controlResultDateLimit)),
       representative(movementDetails),
       headerSeals(goodsSummary.sealNumbers),
       guaranteeDetails(guarantee),
