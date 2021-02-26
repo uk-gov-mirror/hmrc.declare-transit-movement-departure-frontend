@@ -41,7 +41,7 @@ import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNatio
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
 import models.journeyDomain._
 import models.reference.{SpecialMention => _, _}
-import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Arbitrary.{arbFunction0, arbitrary}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait JourneyModelGenerators {
@@ -70,7 +70,7 @@ trait JourneyModelGenerators {
           safetyAndSecurity.commercialReferenceNumber.isDefined &&
           safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
 
-        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
+        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
         goodsummarydetailsType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
         } else {
@@ -115,7 +115,7 @@ trait JourneyModelGenerators {
         SafetyAndSecurity(
           addCircumstanceIndicator,
           paymentMethod,
-          Some("abcdefg"),
+          commercialReference,
           convenyanceReferenceNumber,
           placeOfUnloading,
           consignorAddress,
@@ -375,23 +375,37 @@ trait JourneyModelGenerators {
       } yield itemSection
     }
 
-  def genItemSection(isDocumentTypeMandatory: Boolean, containersUsed: Boolean): Gen[ItemSection] = {
+  def genItemSection(isDocumentTypeMandatory: Boolean,
+                     containersUsed: Boolean,
+                     addSafetyAndSecurity: Boolean,
+                     safetyAndSecurity: SafetyAndSecurity): Gen[ItemSection] = {
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
     for {
-      itemDetail    <- arbitrary[ItemDetails]
-      itemConsignor <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-      itemConsignee <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages      <- nonEmptyListOf[Packages](1)
-
-      containers <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
-
-      specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](1))
-
+      itemDetail        <- arbitrary[ItemDetails]
+      itemConsignor     <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee     <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      packages          <- nonEmptyListOf[Packages](1)
+      containers        <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
+      specialMentions   <- Gen.option(nonEmptyListOf[SpecialMention](1))
       producedDocuments <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
+      itemSecurityTraderDetails <- if (addSafetyAndSecurity) arbitrary[ItemsSecurityTraderDetails].map {
+        itemsSecurityTraderDetails =>
+          {
+            val setMethodOfPayment = safetyAndSecurity.paymentMethod match {
+              case Some(value) => Some(value)
+              case None        => itemsSecurityTraderDetails.methodOfPayment
+            }
 
-      itemSecurityTraderDetails <- Gen.option(arbitraryItemSecurityTraderDetails.arbitrary)
+            val setCommercialReferenceNumber = safetyAndSecurity.commercialReferenceNumber match {
+              case Some(value) => Some(value)
+              case None        => itemsSecurityTraderDetails.commercialReferenceNumber
+            }
+
+            Some(itemsSecurityTraderDetails.copy(methodOfPayment = setMethodOfPayment, commercialReferenceNumber = setCommercialReferenceNumber))
+          }
+      } else Gen.const(None)
     } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments, itemSecurityTraderDetails)
   }
 
