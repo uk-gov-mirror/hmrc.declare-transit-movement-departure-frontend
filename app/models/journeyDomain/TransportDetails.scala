@@ -85,8 +85,6 @@ object TransportDetails {
 
     final case class Mode5or7(code: Int) extends InlandMode
 
-    //    final case class Mode5or7(code: Int, countryCode: CountryCode) extends InlandMode
-
     case object Mode5or7 {
 
       object Constants {
@@ -100,16 +98,6 @@ object TransportDetails {
           .map(_.toInt)
           .filter(Mode5or7.Constants.codes.contains(_))
           .map(Mode5or7(_))
-      //      implicit val userAnswersReaderMode5or7: UserAnswersReader[Mode5or7] =
-      //        InlandModePage.reader
-      //          .map(_.toInt)
-      //          .filter(Mode5or7.Constants.codes.contains(_))
-      //          .flatMap(
-      //            code =>
-      //              NationalityAtDeparturePage.reader
-      //                .map(Mode5or7(code, _))
-      //          )
-
     }
 
     final case class NonSpecialMode(code: Int, nationalityAtDeparture: Option[CountryCode], departureId: Option[String]) extends InlandMode
