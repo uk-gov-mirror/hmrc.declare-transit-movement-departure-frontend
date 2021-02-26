@@ -941,8 +941,8 @@ addItems.checkYourAnswersLabel.references.addRemove = Add or remove previous adm
 addItems.checkYourAnswersLabel.documents = Produced documents and work certificates
 addItems.checkYourAnswersLabel.documents.addRemove = Add or remove documents
 
-addAdministrativeReference.title = Do you have a proof of customs status document for any goods in this movement?
-addAdministrativeReference.heading = Do you have a proof of customs status document for any goods in this movement?
+addAdministrativeReference.title = Do you have a document to prove the customs status of item {0}?
+addAdministrativeReference.heading = Do you have a document to prove the customs status of item {0}?
 addAdministrativeReference.checkYourAnswersLabel = Add previous administrative reference?
 addAdministrativeReference.error.required = Select yes if you have a proof of customs status document for any goods in this movement
 
