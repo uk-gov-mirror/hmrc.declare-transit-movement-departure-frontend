@@ -272,8 +272,7 @@ class DeclarationRequestService @Inject()(
 
     def nationalityAtDeparture(inlandMode: InlandMode): Option[String] =
       inlandMode match {
-        case InlandMode.Mode5or7(_, nationalityAtDeparture)          => Some(nationalityAtDeparture.code)
-        case InlandMode.NonSpecialMode(_, nationalityAtDeparture, _) => Some(nationalityAtDeparture.code)
+        case InlandMode.NonSpecialMode(_, nationalityAtDeparture, _) => Some(nationalityAtDeparture.get.code)
         case _                                                       => None
       }
 
