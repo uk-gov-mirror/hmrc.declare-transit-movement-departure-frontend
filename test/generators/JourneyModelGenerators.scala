@@ -49,26 +49,27 @@ trait JourneyModelGenerators {
 
   val maxNumberOfItemsLength = 2
 
-  // Wip
   implicit def arbitraryJourneyDomain: Arbitrary[JourneyDomain] =
     Arbitrary {
       for {
         preTaskList <- arbitrary[PreTaskListDetails]
-        updatedPreTaskList = preTaskList.copy(addSecurityDetails = true)
-        isNormalMovement   = updatedPreTaskList.procedureType == ProcedureType.Normal
+        isNormalMovement = preTaskList.procedureType == ProcedureType.Normal
         movementDetails <- if (isNormalMovement) {
           arbitrary[NormalMovementDetails]
         } else {
           arbitrary[SimplifiedMovementDetails]
         }
 
-        isSecurityDetailsRequired = updatedPreTaskList.addSecurityDetails
+        isSecurityDetailsRequired = preTaskList.addSecurityDetails
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitrary[TraderDetails]
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
 
-        isDocumentTypeMandatory = false
+        isDocumentTypeMandatory = isSecurityDetailsRequired &&
+          safetyAndSecurity.commercialReferenceNumber.isDefined &&
+          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
+
         itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
         goodsummarydetailsType = if (isNormalMovement) {
           arbitrary[GoodSummaryNormalDetails]
@@ -77,9 +78,10 @@ trait JourneyModelGenerators {
         }
         goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
         guarantees   <- nonEmptyListOf[GuaranteeDetails](1)
-      } yield
+      } yield {
+
         JourneyDomain(
-          updatedPreTaskList,
+          preTaskList,
           movementDetails,
           routeDetails,
           transportDetails,
@@ -89,6 +91,7 @@ trait JourneyModelGenerators {
           guarantees,
           if (isSecurityDetailsRequired) Some(safetyAndSecurity) else None
         )
+      }
     }
 
   implicit lazy val arbitrarySecurityDetails: Arbitrary[SafetyAndSecurity] = {
@@ -112,7 +115,7 @@ trait JourneyModelGenerators {
         SafetyAndSecurity(
           addCircumstanceIndicator,
           paymentMethod,
-          commercialReference,
+          Some("abcdefg"),
           convenyanceReferenceNumber,
           placeOfUnloading,
           consignorAddress,

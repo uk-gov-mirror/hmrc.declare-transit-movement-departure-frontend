@@ -32,13 +32,13 @@ object ProducedDocument {
   private def readDocumentType(itemIndex: Index): ReaderT[Option, UserAnswers, Boolean] =
     (for {
       addSecurity     <- AddSecurityDetailsPage.reader
-      addRef          <- AddCommercialReferenceNumberPage.reader
-      addCircumstance <- AddCircumstanceIndicatorPage.reader
+      addRef          <- AddCommercialReferenceNumberPage.optionalReader
+      addCircumstance <- AddCircumstanceIndicatorPage.optionalReader
     } yield {
       (addSecurity, addRef, addCircumstance, itemIndex.position == 0) match {
-        case (true, false, false, true) => true.pure[UserAnswersReader]
-        case (true, false, true, true)  => CircumstanceIndicatorPage.reader.map(x => CircumstanceIndicator.conditionalIndicators.contains(x))
-        case _                          => AddDocumentsPage(itemIndex).reader
+        case (true, Some(false), Some(false), true) => true.pure[UserAnswersReader]
+        case (true, Some(false), Some(true), true)  => CircumstanceIndicatorPage.reader.map(x => CircumstanceIndicator.conditionalIndicators.contains(x))
+        case _                                      => AddDocumentsPage(itemIndex).reader
       }
     }).flatMap(x => x)
 
