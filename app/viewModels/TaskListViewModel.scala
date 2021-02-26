@@ -17,7 +17,7 @@
 package viewModels
 
 import cats.data.{NonEmptyList, ReaderT}
-import cats.implicits.catsStdInstancesForOption
+import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain._
 import models.{Index, NormalMode, ProcedureType, SectionDetails, UserAnswers}
@@ -74,11 +74,17 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url)
       .section
 
-  def traderDetailsStartPage(reader: Option[ProcedureType]): String =
-    reader match {
+  private def traderDetailsStartPage(procedureType: Option[ProcedureType]): String =
+    procedureType match {
       case Some(Normal)     => controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(userAnswers.id, NormalMode).url
       case Some(Simplified) => controllers.traderDetails.routes.WhatIsPrincipalEoriController.onPageLoad(userAnswers.id, NormalMode).url
       case _                => controllers.routes.SessionExpiredController.onPageLoad().url
+    }
+
+  private def traderDetailsInProgressReader: UserAnswersReader[_] =
+    ProcedureTypePage.reader.flatMap {
+      case Normal     => IsPrincipalEoriKnownPage.reader
+      case Simplified => WhatIsPrincipalEoriPage.reader.map(_.nonEmpty)
     }
 
   private val traderDetails =
@@ -89,10 +95,10 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
         controllers.traderDetails.routes.TraderDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
       )
       .ifInProgress(
-        ProcedureTypePage.reader,
-        traderDetailsStartPage(ProcedureTypePage.reader.run(userAnswers))
+        traderDetailsInProgressReader,
+        traderDetailsStartPage(userAnswers.get(ProcedureTypePage))
       )
-      .ifNotStarted(traderDetailsStartPage(ProcedureTypePage.reader.run(userAnswers)))
+      .ifNotStarted(traderDetailsStartPage(userAnswers.get(ProcedureTypePage)))
       .section
 
   private val itemDetails =

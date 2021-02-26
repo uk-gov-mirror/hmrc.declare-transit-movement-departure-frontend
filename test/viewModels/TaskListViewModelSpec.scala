@@ -20,7 +20,7 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.{JourneyModelGenerators, ModelGenerators, UserAnswersGenerator}
 import models.journeyDomain._
 import models.reference.CountryCode
-import models.{DeclarationType, GuaranteeType, Index, NormalMode, ProcedureType, Status}
+import models.{DeclarationType, EoriNumber, GuaranteeType, Index, NormalMode, ProcedureType, Status}
 import org.scalacheck.Gen
 import pages._
 import pages.guaranteeDetails.GuaranteeTypePage
@@ -302,6 +302,29 @@ class TaskListViewModelSpec
 
               viewModel.getStatus(tradersSectionName).value mustEqual Status.InProgress
           }
+        }
+
+        "is InProgress when the first question for the section has been answered for Procedure type 'Simplified'" ignore { //TODO 
+          val eori = arb[EoriNumber].sample.value
+          val userAnswers = emptyUserAnswers
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
+            .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
+
+          val viewModel = TaskListViewModel(userAnswers)
+
+          viewModel.getStatus(tradersSectionName).value mustEqual Status.InProgress
+        }
+
+        "is InProgress when the first question for the section has been answered for Procedure type 'Normal'" ignore { //TODO
+          val eori = arb[EoriNumber].sample.value
+          val userAnswers = emptyUserAnswers
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+            .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+            .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
+
+          val viewModel = TaskListViewModel(userAnswers)
+
+          viewModel.getStatus(tradersSectionName).value mustEqual Status.InProgress
         }
 
         "is Completed when all the answers are completed" in {
