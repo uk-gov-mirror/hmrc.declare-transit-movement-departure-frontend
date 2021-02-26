@@ -304,7 +304,7 @@ class TaskListViewModelSpec
           }
         }
 
-        "is InProgress when the first question for the section has been answered for Procedure type 'Simplified'" ignore { //TODO 
+        "is InProgress when the first question for the section has been answered for Procedure type 'Simplified'" ignore { //TODO Bug CTCTRADERS-2071
           val eori = arb[EoriNumber].sample.value
           val userAnswers = emptyUserAnswers
             .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
@@ -315,7 +315,7 @@ class TaskListViewModelSpec
           viewModel.getStatus(tradersSectionName).value mustEqual Status.InProgress
         }
 
-        "is InProgress when the first question for the section has been answered for Procedure type 'Normal'" ignore { //TODO
+        "is InProgress when the first question for the section has been answered for Procedure type 'Normal'" ignore { //TODO Bug CTCTRADERS-2071
           val eori = arb[EoriNumber].sample.value
           val userAnswers = emptyUserAnswers
             .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
