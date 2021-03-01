@@ -133,10 +133,12 @@ object TransportDetailsSpec extends UserAnswersSpecHelper {
 
   def setTransportDetail(transportDetails: TransportDetails)(startUserAnswers: UserAnswers): UserAnswers =
     transportDetails.inlandMode match {
-      case InlandMode.Rail(code) =>
+      case InlandMode.Rail(code, departureId) =>
         startUserAnswers
           .unsafeSetVal(ChangeAtBorderPage)(!transportDetails.detailsAtBorder.isInstanceOf[SameDetailsAtBorder.type])
           .unsafeSetVal(InlandModePage)(code.toString)
+          .unsafeSetVal(AddIdAtDeparturePage)(departureId.isDefined)
+          .unsafeSetOpt(IdAtDeparturePage)(departureId)
           .unsafeSetPFn(ModeAtBorderPage)(transportDetails.detailsAtBorder)({
             case NewDetailsAtBorder(mode, _, _) => mode
           })
@@ -153,11 +155,10 @@ object TransportDetailsSpec extends UserAnswersSpecHelper {
             case NewDetailsAtBorder(_, _, ModeWithNationality(nationalityCrossingBorder, _)) => nationalityCrossingBorder
           })
 
-      case Mode5or7(code, nationalityAtDeparture) =>
+      case Mode5or7(code) =>
         startUserAnswers
           .unsafeSetVal(ChangeAtBorderPage)(!transportDetails.detailsAtBorder.isInstanceOf[SameDetailsAtBorder.type])
           .unsafeSetVal(InlandModePage)(code.toString)
-          .unsafeSetVal(NationalityAtDeparturePage)(nationalityAtDeparture)
           .unsafeSetPFn(ModeAtBorderPage)(transportDetails.detailsAtBorder)({
             case NewDetailsAtBorder(mode, _, _) => mode
           })
@@ -178,9 +179,10 @@ object TransportDetailsSpec extends UserAnswersSpecHelper {
         startUserAnswers
           .unsafeSetVal(ChangeAtBorderPage)(!transportDetails.detailsAtBorder.isInstanceOf[SameDetailsAtBorder.type])
           .unsafeSetVal(InlandModePage)(code.toString)
-          .unsafeSetVal(NationalityAtDeparturePage)(nationalityAtDeparture)
           .unsafeSetVal(AddIdAtDeparturePage)(departureId.isDefined)
           .unsafeSetOpt(IdAtDeparturePage)(departureId)
+          .unsafeSetVal(AddNationalityAtDeparturePage)(nationalityAtDeparture.isDefined)
+          .unsafeSetOpt(NationalityAtDeparturePage)(nationalityAtDeparture)
           .unsafeSetPFn(ModeAtBorderPage)(transportDetails.detailsAtBorder)({
             case NewDetailsAtBorder(mode, _, _) => mode
           })

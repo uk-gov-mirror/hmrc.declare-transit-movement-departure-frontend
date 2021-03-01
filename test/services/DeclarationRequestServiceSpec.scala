@@ -17,24 +17,24 @@
 package services
 
 import java.time.LocalDateTime
-
 import base.{GeneratorSpec, SpecBase}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
-import models.UserAnswers
+import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import models.journeyDomain.GoodsSummary.GoodSummarySimplifiedDetails
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
-import models.journeyDomain.{JourneyDomain, JourneyDomainSpec, TransportDetails}
+import models.journeyDomain.{GoodsSummary, JourneyDomain, JourneyDomainSpec, TransportDetails}
 import models.messages.goodsitem.SpecialMentionGuaranteeLiabilityAmount
-import models.messages.{DeclarationRequest, InterchangeControlReference}
+import models.messages.{ControlResult, DeclarationRequest, InterchangeControlReference}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import repositories.InterchangeControlReferenceIdRepository
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -151,8 +151,9 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
       "must return id of departure when there are no new details at border and inlandMode is a nonSpecialMode" in {
 
-        forAll(arb[UserAnswers], arb[JourneyDomain], arb[NonSpecialMode]) {
-          (userAnswers, journeyDomain, nonSpecialMode) =>
+        forAll(arb[JourneyDomain], arb[NonSpecialMode]) {
+          (journeyDomain, nonSpecialMode) =>
+            val userAnswers = UserAnswers(LocalReferenceNumber("lrn").value, EoriNumber("1"))
             when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
             when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
@@ -169,8 +170,9 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
       "must return none when there are no id at departure or crossing" in {
 
-        forAll(arb[UserAnswers], arb[JourneyDomain], arb[Rail]) {
-          (userAnswers, journeyDomain, rail) =>
+        forAll(arb[JourneyDomain], arb[Rail]) {
+          (journeyDomain, rail) =>
+            val userAnswers = UserAnswers(LocalReferenceNumber("lrn").value, EoriNumber("1"))
             when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
             when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
@@ -228,23 +230,21 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
         }
       }
 
-      "must return nationality of departure when there are no new details at border and the mode is either Mode5or7 or NonSpecialMode" in {
+      "must return nationality of departure when there are no new details at border and the mode is NonSpecialMode" in {
 
-        val genModeWithNationality: Gen[TransportDetails.InlandMode] = Gen.oneOf(arb[Mode5or7], arb[NonSpecialMode])
-
-        forAll(arb[UserAnswers], arb[JourneyDomain], genModeWithNationality) {
-          (userAnswers, journeyDomain, modeWithNationality) =>
+        forAll(arb[UserAnswers], arb[JourneyDomain], arb[NonSpecialMode]) {
+          (userAnswers, journeyDomain, nonSpecialMode) =>
             when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
             when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
-            val updatedTransportDetails = journeyDomain.transportDetails.copy(detailsAtBorder = SameDetailsAtBorder, inlandMode = modeWithNationality)
+            val updatedTransportDetails = journeyDomain.transportDetails.copy(detailsAtBorder = SameDetailsAtBorder, inlandMode = nonSpecialMode)
             val updatedJourneyDomain    = journeyDomain.copy(transportDetails                 = updatedTransportDetails)
 
             val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
 
             val result = service.convert(updatedUserAnswer).futureValue
 
-            result.value.header.transportDetails.natOfMeaOfTraCroHEA87 must be(defined)
+            result.value.header.transportDetails.natOfMeaOfTraCroHEA87.get mustBe nonSpecialMode.nationalityAtDeparture.get.code
         }
       }
 
@@ -266,5 +266,44 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
         }
       }
     }
+
+    "goodsSummarySimplifiedDetails" - {
+      "must populate controlResult and authorisedLocationOfGoods when Simplified" in {
+
+        forAll(arb[UserAnswers], arbitrarySimplifiedJourneyDomain.arbitrary) {
+          (userAnswers, journeyDomain) =>
+            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
+
+            when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
+            when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
+
+            val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
+
+            val result = service.convert(updatedUserAnswer).futureValue.value
+
+            result.controlResult must be(defined)
+            result.header.autLocOfGooCodHEA41 must be(defined)
+        }
+      }
+
+      "must populate not controlResult and authorisedLocationOfGoods when Normal" in {
+
+        forAll(arb[UserAnswers], arbitraryNormalJourneyDomain.arbitrary) {
+          (userAnswers, journeyDomain) =>
+            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
+
+            when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
+            when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
+
+            val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
+
+            val result = service.convert(updatedUserAnswer).futureValue.value
+
+            result.controlResult must not be (defined)
+            result.header.autLocOfGooCodHEA41 must not be (defined)
+        }
+      }
+    }
   }
+
 }

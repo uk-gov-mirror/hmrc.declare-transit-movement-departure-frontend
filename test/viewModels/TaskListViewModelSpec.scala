@@ -20,7 +20,7 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.{JourneyModelGenerators, ModelGenerators, UserAnswersGenerator}
 import models.journeyDomain._
 import models.reference.CountryCode
-import models.{DeclarationType, GuaranteeType, Index, NormalMode, ProcedureType, Status}
+import models.{DeclarationType, EoriNumber, GuaranteeType, Index, NormalMode, ProcedureType, Status}
 import org.scalacheck.Gen
 import pages._
 import pages.guaranteeDetails.GuaranteeTypePage
@@ -294,7 +294,9 @@ class TaskListViewModelSpec
         "is InProgress when the first question for the section has been answered" in {
           forAll(arb[Boolean]) {
             pageAnswer =>
-              val userAnswers = emptyUserAnswers.unsafeSetVal(IsPrincipalEoriKnownPage)(pageAnswer)
+              val userAnswers = emptyUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(pageAnswer)
 
               val viewModel = TaskListViewModel(userAnswers)
 
@@ -302,8 +304,32 @@ class TaskListViewModelSpec
           }
         }
 
+        "is InProgress when the first question for the section has been answered for Procedure type 'Simplified'" ignore { //TODO Bug CTCTRADERS-2071
+          val eori = arb[EoriNumber].sample.value
+          val userAnswers = emptyUserAnswers
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
+            .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
+
+          val viewModel = TaskListViewModel(userAnswers)
+
+          viewModel.getStatus(tradersSectionName).value mustEqual Status.InProgress
+        }
+
+        "is InProgress when the first question for the section has been answered for Procedure type 'Normal'" ignore { //TODO Bug CTCTRADERS-2071
+          val eori = arb[EoriNumber].sample.value
+          val userAnswers = emptyUserAnswers
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+            .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+            .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
+
+          val viewModel = TaskListViewModel(userAnswers)
+
+          viewModel.getStatus(tradersSectionName).value mustEqual Status.InProgress
+        }
+
         "is Completed when all the answers are completed" in {
-          forAll(arb[TraderDetails]) {
+          val procedureType = arb[ProcedureType].sample.value
+          forAll(arbitraryTraderDetails(procedureType).arbitrary) {
             sectionDetails =>
               val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
 
@@ -315,18 +341,38 @@ class TaskListViewModelSpec
       }
 
       "navigation" - {
-        "when the status is Not started, links to the first page" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
+        "when the status is Not started and 'Procedure Type is Normal', links to the first page" in {
+          val userAnswers = emptyUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+          val viewModel   = TaskListViewModel(userAnswers)
 
           val expectedHref: String = controllers.traderDetails.routes.IsPrincipalEoriKnownController.onPageLoad(lrn, NormalMode).url
 
           viewModel.getHref(tradersSectionName).value mustEqual expectedHref
         }
 
-        "when the status is InProgress, links to the first page" in {
+        "when the status is Not started and 'Procedure Type is Simplified', links to the first page" in {
+          val userAnswers = emptyUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
+          val viewModel   = TaskListViewModel(userAnswers)
+
+          val expectedHref: String = controllers.traderDetails.routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url
+
+          viewModel.getHref(tradersSectionName).value mustEqual expectedHref
+        }
+
+        "when the status is Not started and 'Procedure Type is Unknown', links to the first page" in {
+          val viewModel = TaskListViewModel(emptyUserAnswers)
+
+          val expectedHref: String = controllers.routes.SessionExpiredController.onPageLoad().url
+
+          viewModel.getHref(tradersSectionName).value mustEqual expectedHref
+        }
+
+        "when the status is InProgress and 'Procedure Type is Normal', links to the first page" in {
           forAll(arb[Boolean]) {
             pageAnswer =>
-              val userAnswers = emptyUserAnswers.unsafeSetVal(IsPrincipalEoriKnownPage)(pageAnswer)
+              val userAnswers = emptyUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(pageAnswer)
 
               val viewModel = TaskListViewModel(userAnswers)
 
@@ -336,8 +382,37 @@ class TaskListViewModelSpec
           }
         }
 
+        "when the status is InProgress and 'Procedure Type is Simplified', links to the first page" in {
+          forAll(arb[Boolean]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.traderDetails.routes.WhatIsPrincipalEoriController.onPageLoad(lrn, NormalMode).url
+
+              viewModel.getHref(tradersSectionName).value mustEqual expectedHref
+          }
+        }
+
+        "when the status is InProgress and 'Procedure Type is Unknown', links to the first page" in {
+          forAll(arb[Boolean]) {
+            pageAnswer =>
+              val userAnswers = emptyUserAnswers.unsafeSetVal(IsPrincipalEoriKnownPage)(pageAnswer)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.routes.SessionExpiredController.onPageLoad().url
+
+              viewModel.getHref(tradersSectionName).value mustEqual expectedHref
+          }
+        }
+
         "when the status is Completed, links to the Check your answers page for the section" in {
-          forAll(arb[TraderDetails]) {
+          val procedureType = arb[ProcedureType].sample.value
+          forAll(arbitraryTraderDetails(procedureType).arbitrary) {
             sectionDetails =>
               val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
 
