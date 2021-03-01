@@ -43,6 +43,7 @@ import models.journeyDomain._
 import models.reference.{SpecialMention => _, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import uk.gov.hmrc.play.http.ws.WSProxyConfiguration.ProxyConfigurationException
 
 trait JourneyModelGenerators {
   self: Generators =>
@@ -56,16 +57,16 @@ trait JourneyModelGenerators {
         preTaskList <- arbitrary[PreTaskListDetails]
         updatedPreTaskList = preTaskList.copy(addSecurityDetails = true)
         isNormalMovement   = updatedPreTaskList.procedureType == ProcedureType.Normal
+        procedureType      = if (isNormalMovement) { ProcedureType.Normal } else { ProcedureType.Normal }
         movementDetails <- if (isNormalMovement) {
           arbitrary[NormalMovementDetails]
         } else {
           arbitrary[SimplifiedMovementDetails]
         }
-
         isSecurityDetailsRequired = updatedPreTaskList.addSecurityDetails
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
-        traderDetails     <- arbitrary[TraderDetails]
+        traderDetails     <- arbitraryTraderDetails(procedureType).arbitrary
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
 
         isDocumentTypeMandatory = false
@@ -105,7 +106,7 @@ trait JourneyModelGenerators {
         }
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
-        traderDetails     <- arbitrary[TraderDetails]
+        traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
 
         isDocumentTypeMandatory = isSecurityDetailsRequired &&
@@ -145,7 +146,7 @@ trait JourneyModelGenerators {
         }
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
-        traderDetails     <- arbitrary[TraderDetails]
+        traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
 
         isDocumentTypeMandatory = isSecurityDetailsRequired &&
@@ -362,14 +363,14 @@ trait JourneyModelGenerators {
         )
     }
 
-  implicit val arbitraryTraderDetails: Arbitrary[TraderDetails] = {
+  implicit def arbitraryTraderDetails(implicit procedureType: ProcedureType): Arbitrary[TraderDetails] = {
     val pricipalAddress  = Arbitrary(arbitrary[PrincipalAddress].map(Address.prismAddressToPrincipalAddress.reverseGet))
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
     Arbitrary {
       for {
-        principalTraderDetails <- arbitraryRequiredDetails(pricipalAddress).arbitrary
+        principalTraderDetails <- arbitraryRequiredDetails(pricipalAddress, procedureType).arbitrary
         consignor              <- Gen.option(arbitraryTraderInformation(consignorAddress).arbitrary)
         consignee              <- Gen.option(arbitraryTraderInformation(consigneeAddress).arbitrary)
       } yield TraderDetails(principalTraderDetails, consignor, consignee)
@@ -405,8 +406,12 @@ trait JourneyModelGenerators {
       } yield SecurityPersonalInformation(name, address)
     }
 
-  implicit def arbitraryRequiredDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[RequiredDetails] =
-    Arbitrary(Gen.oneOf(Arbitrary.arbitrary[PersonalInformation], Arbitrary.arbitrary[TraderEori]))
+  implicit def arbitraryRequiredDetails(implicit arbAddress: Arbitrary[Address], procedureType: ProcedureType): Arbitrary[RequiredDetails] =
+    if (procedureType == ProcedureType.Simplified) {
+      Arbitrary(Arbitrary.arbitrary[TraderEori])
+    } else {
+      Arbitrary(Gen.oneOf(Arbitrary.arbitrary[PersonalInformation], Arbitrary.arbitrary[TraderEori]))
+    }
 
   implicit lazy val arbitraryTraderEori: Arbitrary[TraderEori] =
     Arbitrary(Arbitrary.arbitrary[EoriNumber].map(TraderEori(_)))

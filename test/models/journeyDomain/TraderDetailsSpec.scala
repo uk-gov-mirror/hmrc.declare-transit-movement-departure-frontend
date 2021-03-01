@@ -20,7 +20,7 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.domain.Address
 import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori, TraderInformation}
-import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, UserAnswers}
+import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, ProcedureType, UserAnswers}
 import org.scalacheck.Gen
 import org.scalatest.TryValues
 import pages.{ConsignorEoriPage, _}
@@ -29,10 +29,26 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
   import TraderDetailsSpec._
 
   "TraderDetail can be parser from UserAnswers" - {
-    "when there is a principal trader eori details only" in {
+    "when there is a principal trader eori details only and procedure type is Normal" in {
       forAll(arb[UserAnswers], arb[EoriNumber]) {
         (baseUserAnswers, eori) =>
           val userAnswers = setTraderDetailsPrincipalEoriOnly(eori)(baseUserAnswers)
+
+          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+          result mustEqual TraderDetails(TraderEori(eori), None, None)
+
+      }
+    }
+
+    "when there is a principal trader eori details only and procedure type is Simplified" in {
+      forAll(arb[UserAnswers], arb[EoriNumber]) {
+        (baseUserAnswers, eori) =>
+          val userAnswers = baseUserAnswers
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
+            .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
+            .unsafeSetVal(AddConsigneePage)(false)
+            .unsafeSetVal(AddConsignorPage)(false)
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
@@ -45,21 +61,12 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
       forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[PrincipalAddress]) {
         case (baseUserAnswers, name, principalAddress) =>
           val userAnswers = baseUserAnswers
-            .set(IsPrincipalEoriKnownPage, false)
-            .success
-            .value
-            .set(PrincipalNamePage, name)
-            .success
-            .value
-            .set(PrincipalAddressPage, principalAddress)
-            .success
-            .value
-            .set(AddConsigneePage, false)
-            .success
-            .value
-            .set(AddConsignorPage, false)
-            .success
-            .value
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+            .unsafeSetVal(IsPrincipalEoriKnownPage)(false)
+            .unsafeSetVal(PrincipalNamePage)(name)
+            .unsafeSetVal(PrincipalAddressPage)(principalAddress)
+            .unsafeSetVal(AddConsigneePage)(false)
+            .unsafeSetVal(AddConsignorPage)(false)
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
@@ -74,30 +81,15 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
       forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
         case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
           val userAnswers = baseUserAnswers
-            .set(IsPrincipalEoriKnownPage, true)
-            .success
-            .value
-            .set(WhatIsPrincipalEoriPage, eoriNumber)
-            .success
-            .value
-            .set(AddConsigneePage, false)
-            .success
-            .value
-            .set(AddConsignorPage, true)
-            .success
-            .value
-            .set(IsConsignorEoriKnownPage, true)
-            .success
-            .value
-            .set(ConsignorEoriPage, eoriNumber)
-            .success
-            .value
-            .set(ConsignorNamePage, name)
-            .success
-            .value
-            .set(ConsignorAddressPage, address)
-            .success
-            .value
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+            .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+            .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
+            .unsafeSetVal(AddConsigneePage)(false)
+            .unsafeSetVal(AddConsignorPage)(true)
+            .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+            .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
+            .unsafeSetVal(ConsignorNamePage)(name)
+            .unsafeSetVal(ConsignorAddressPage)(address)
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
@@ -112,30 +104,16 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
       forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsigneeAddress]) {
         case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
           val userAnswers = baseUserAnswers
-            .set(IsPrincipalEoriKnownPage, true)
-            .success
-            .value
-            .set(WhatIsPrincipalEoriPage, eoriNumber)
-            .success
-            .value
-            .set(AddConsignorPage, false)
-            .success
-            .value
-            .set(AddConsigneePage, true)
-            .success
-            .value
-            .set(IsConsigneeEoriKnownPage, true)
-            .success
-            .value
-            .set(WhatIsConsigneeEoriPage, eoriNumber)
-            .success
-            .value
-            .set(ConsigneeNamePage, name)
-            .success
-            .value
-            .set(ConsigneeAddressPage, address)
-            .success
-            .value
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+            .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+            .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
+            .unsafeSetVal(AddConsignorPage)(false)
+            .unsafeSetVal(AddConsigneePage)(true)
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+            .unsafeSetVal(IsConsigneeEoriKnownPage)(true)
+            .unsafeSetVal(WhatIsConsigneeEoriPage)(eoriNumber)
+            .unsafeSetVal(ConsigneeNamePage)(name)
+            .unsafeSetVal(ConsigneeAddressPage)(address)
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
@@ -147,7 +125,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
     }
 
     "when there is a TraderDetails" in {
-      forAll(arb[UserAnswers], arb[TraderDetails]) {
+      forAll(arb[UserAnswers], arbitraryTraderDetails(ProcedureType.Normal).arbitrary) {
         (baseUserAnswers, traderDetails) =>
           val userAnswers = setTraderDetails(traderDetails)(baseUserAnswers)
 
@@ -168,6 +146,10 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
       .unsafeSetPFn(WhatIsPrincipalEoriPage)(traderDetails.principalTraderDetails)({
         case TraderEori(eori) => eori.value
       })
+      .unsafeSetPFn(ProcedureTypePage)(traderDetails.principalTraderDetails)({
+        case TraderEori(_) => ProcedureType.Simplified
+        case _             => ProcedureType.Normal
+      })
       .unsafeSetPFn(PrincipalNamePage)(traderDetails.principalTraderDetails)({
         case PersonalInformation(name, _) => name
       })
@@ -175,6 +157,7 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
         case PersonalInformation(_, address) => Address.prismAddressToPrincipalAddress.getOption(address).get
       })
       // Set Consignor
+      .unsafeSetVal(ConsignorForAllItemsPage)(traderDetails.consignor.isDefined)
       .unsafeSetVal(AddConsignorPage)(traderDetails.consignor.isDefined)
       .unsafeSetPFn(IsConsignorEoriKnownPage)(traderDetails.consignor)({
         case Some(TraderInformation(_, _, Some(_))) => true
@@ -190,6 +173,7 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
         case Some(TraderInformation(_, address, _)) => Address.prismAddressToConsignorAddress.getOption(address).get
       })
       // Set Consignee
+      .unsafeSetVal(ConsigneeForAllItemsPage)(traderDetails.consignee.isDefined)
       .unsafeSetVal(AddConsigneePage)(traderDetails.consignee.isDefined)
       .unsafeSetPFn(IsConsigneeEoriKnownPage)(traderDetails.consignee)({
         case Some(TraderInformation(_, _, Some(_))) => true
@@ -207,6 +191,7 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
 
   def setTraderDetailsPrincipalEoriOnly(eoriNumber: EoriNumber)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
+      .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
       .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
       .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber.value)
       .unsafeSetVal(AddConsigneePage)(false)

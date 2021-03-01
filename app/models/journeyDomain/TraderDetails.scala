@@ -18,25 +18,11 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import models.{EoriNumber, UserAnswers}
-import TraderDetails.RequiredDetails
+import models.ProcedureType.{Normal, Simplified}
 import models.domain.Address
-import pages.{
-  AddConsigneePage,
-  AddConsignorPage,
-  ConsigneeAddressPage,
-  ConsigneeNamePage,
-  ConsignorAddressPage,
-  ConsignorEoriPage,
-  ConsignorNamePage,
-  IsConsigneeEoriKnownPage,
-  IsConsignorEoriKnownPage,
-  IsPrincipalEoriKnownPage,
-  PrincipalAddressPage,
-  PrincipalNamePage,
-  WhatIsConsigneeEoriPage,
-  WhatIsPrincipalEoriPage
-}
+import models.journeyDomain.TraderDetails.RequiredDetails
+import models.{EoriNumber, UserAnswers}
+import pages._
 
 case class TraderDetails(
   principalTraderDetails: RequiredDetails,
@@ -73,9 +59,14 @@ object TraderDetails {
         PersonalInformation(name, address)
     }
 
-    IsPrincipalEoriKnownPage.reader.flatMap {
+    val eoriOrNameAndAddress = IsPrincipalEoriKnownPage.reader.flatMap {
       isPrincipalEoriKnown =>
         if (isPrincipalEoriKnown) useEori else useNameAndAddress
+    }
+
+    ProcedureTypePage.reader.flatMap {
+      case Normal     => eoriOrNameAndAddress
+      case Simplified => useEori
     }
   }
 
