@@ -328,7 +328,8 @@ class TaskListViewModelSpec
         }
 
         "is Completed when all the answers are completed" in {
-          forAll(arb[TraderDetails]) {
+          val procedureType = arb[ProcedureType].sample.value
+          forAll(arbitraryTraderDetails(procedureType).arbitrary) {
             sectionDetails =>
               val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
 
@@ -410,7 +411,8 @@ class TaskListViewModelSpec
         }
 
         "when the status is Completed, links to the Check your answers page for the section" in {
-          forAll(arb[TraderDetails]) {
+          val procedureType = arb[ProcedureType].sample.value
+          forAll(arbitraryTraderDetails(procedureType).arbitrary) {
             sectionDetails =>
               val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
 

@@ -125,7 +125,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
     }
 
     "when there is a TraderDetails" in {
-      forAll(arb[UserAnswers], arb[TraderDetails]) {
+      forAll(arb[UserAnswers], arbitraryTraderDetails(ProcedureType.Normal).arbitrary) {
         (baseUserAnswers, traderDetails) =>
           val userAnswers = setTraderDetails(traderDetails)(baseUserAnswers)
 
