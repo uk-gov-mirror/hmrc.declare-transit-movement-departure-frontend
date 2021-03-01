@@ -28,7 +28,7 @@ import pages.addItems.traderSecurityDetails._
 import pages.safetyAndSecurity.{AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorPage, _}
 
 class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators {
-  "ItemsSecurityTraderDetails can be parsed within user answers" - {
+  "ItemsSecurityTraderDetails can be parsed within user answers" ignore {
     "when the minimal user answers has been answered" in {
 
       forAll(arb[UserAnswers], arb[ItemsSecurityTraderDetails]) {
@@ -46,7 +46,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
     }
   }
 
-  "ItemsSecurityDetails cannot be parsed within user answers" - {
+  "ItemsSecurityDetails cannot be parsed within user answers" ignore {
     "when the safety and security consignor page cannot be read" in {
 
       forAll(arb[UserAnswers], arb[ItemsSecurityTraderDetails]) {
