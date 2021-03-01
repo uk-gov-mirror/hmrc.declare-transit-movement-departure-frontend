@@ -43,44 +43,31 @@ import models.journeyDomain._
 import models.reference.{SpecialMention => _, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import uk.gov.hmrc.play.http.ws.WSProxyConfiguration.ProxyConfigurationException
 
 trait JourneyModelGenerators {
   self: Generators =>
 
   val maxNumberOfItemsLength = 2
 
-  // Wip
   implicit def arbitraryJourneyDomain: Arbitrary[JourneyDomain] =
     Arbitrary {
       for {
         preTaskList <- arbitrary[PreTaskListDetails]
-        updatedPreTaskList = preTaskList.copy(addSecurityDetails = true)
-        isNormalMovement   = updatedPreTaskList.procedureType == ProcedureType.Normal
-        procedureType      = if (isNormalMovement) { ProcedureType.Normal } else { ProcedureType.Normal }
-        movementDetails <- if (isNormalMovement) {
-          arbitrary[NormalMovementDetails]
-        } else {
-          arbitrary[SimplifiedMovementDetails]
-        }
-        isSecurityDetailsRequired = updatedPreTaskList.addSecurityDetails
+        isNormalMovement          = preTaskList.procedureType == ProcedureType.Normal
+        isSecurityDetailsRequired = preTaskList.addSecurityDetails
+        goodsummarydetailsType    = if (isNormalMovement) arbitrary[GoodSummaryNormalDetails] else arbitrary[GoodSummarySimplifiedDetails]
+        movementDetails   <- if (isNormalMovement) arbitrary[NormalMovementDetails] else arbitrary[SimplifiedMovementDetails]
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
-        traderDetails     <- arbitraryTraderDetails(procedureType).arbitrary
+        traderDetails     <- arbitraryTraderDetails(preTaskList.procedureType).arbitrary
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
+        itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
+        goodsSummary      <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
+        guarantees        <- nonEmptyListOf[GuaranteeDetails](1)
+      } yield {
 
-        isDocumentTypeMandatory = false
-        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
-        goodsummarydetailsType = if (isNormalMovement) {
-          arbitrary[GoodSummaryNormalDetails]
-        } else {
-          arbitrary[GoodSummarySimplifiedDetails]
-        }
-        goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
-        guarantees   <- nonEmptyListOf[GuaranteeDetails](1)
-      } yield
         JourneyDomain(
-          updatedPreTaskList,
+          preTaskList,
           movementDetails,
           routeDetails,
           transportDetails,
@@ -90,6 +77,7 @@ trait JourneyModelGenerators {
           guarantees,
           if (isSecurityDetailsRequired) Some(safetyAndSecurity) else None
         )
+      }
     }
 
   lazy val arbitrarySimplifiedJourneyDomain: Arbitrary[JourneyDomain] =
@@ -99,22 +87,11 @@ trait JourneyModelGenerators {
         simplifiedTaskList = preTaskList.copy(procedureType = ProcedureType.Simplified)
         movementDetails <- arbitrary[SimplifiedMovementDetails]
         isSecurityDetailsRequired = preTaskList.addSecurityDetails
-        transitInformation = if (isSecurityDetailsRequired) {
-          Arbitrary(genTransitInformationWithArrivalTime)
-        } else {
-          Arbitrary(genTransitInformationWithoutArrivalTime)
-        }
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-
-        isDocumentTypeMandatory = isSecurityDetailsRequired &&
-          safetyAndSecurity.commercialReferenceNumber.isEmpty &&
-          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
-
-        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
-
+        itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
         goodsummarydetailsType = arbitrary[GoodSummarySimplifiedDetails]
         goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
         guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
@@ -139,22 +116,11 @@ trait JourneyModelGenerators {
         simplifiedTaskList = preTaskList.copy(procedureType = ProcedureType.Normal)
         movementDetails <- arbitrary[NormalMovementDetails]
         isSecurityDetailsRequired = preTaskList.addSecurityDetails
-        transitInformation = if (isSecurityDetailsRequired) {
-          Arbitrary(genTransitInformationWithArrivalTime)
-        } else {
-          Arbitrary(genTransitInformationWithoutArrivalTime)
-        }
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-
-        isDocumentTypeMandatory = isSecurityDetailsRequired &&
-          safetyAndSecurity.commercialReferenceNumber.isEmpty &&
-          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
-
-        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
-
+        itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
         goodsummarydetailsType = arbitrary[GoodSummaryNormalDetails]
         goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
         guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
@@ -363,7 +329,7 @@ trait JourneyModelGenerators {
         )
     }
 
-  implicit def arbitraryTraderDetails(implicit procedureType: ProcedureType): Arbitrary[TraderDetails] = {
+  implicit def arbitraryTraderDetails(procedureType: ProcedureType): Arbitrary[TraderDetails] = {
     val pricipalAddress  = Arbitrary(arbitrary[PrincipalAddress].map(Address.prismAddressToPrincipalAddress.reverseGet))
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
@@ -457,23 +423,40 @@ trait JourneyModelGenerators {
       } yield itemSection
     }
 
-  def genItemSection(isDocumentTypeMandatory: Boolean, containersUsed: Boolean): Gen[ItemSection] = {
+  def genItemSection(containersUsed: Boolean, addSafetyAndSecurity: Boolean, safetyAndSecurity: SafetyAndSecurity): Gen[ItemSection] = {
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
+    val isDocumentTypeMandatory = addSafetyAndSecurity &&
+      safetyAndSecurity.commercialReferenceNumber.isDefined &&
+      safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
+
     for {
-      itemDetail    <- arbitrary[ItemDetails]
-      itemConsignor <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-      itemConsignee <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages      <- nonEmptyListOf[Packages](1)
+      itemDetail                <- arbitrary[ItemDetails]
+      itemConsignor             <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee             <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      packages                  <- nonEmptyListOf[Packages](1)
+      containers                <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
+      specialMentions           <- Gen.option(nonEmptyListOf[SpecialMention](1))
+      producedDocuments         <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
+      methodOfPayment           <- arbitrary[String]
+      commercialReferenceNumber <- arbitrary[String]
+      itemSecurityTraderDetails <- if (addSafetyAndSecurity) arbitrary[ItemsSecurityTraderDetails].map {
+        itemsSecurityTraderDetails =>
+          {
+            val setMethodOfPayment = safetyAndSecurity.paymentMethod match {
+              case None    => Some(methodOfPayment)
+              case Some(_) => None
+            }
 
-      containers <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
+            val setCommercialReferenceNumber = safetyAndSecurity.commercialReferenceNumber match {
+              case None    => Some(commercialReferenceNumber)
+              case Some(_) => None
+            }
 
-      specialMentions <- Gen.option(nonEmptyListOf[SpecialMention](1))
-
-      producedDocuments <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
-
-      itemSecurityTraderDetails <- Gen.option(arbitraryItemSecurityTraderDetails.arbitrary)
+            Some(itemsSecurityTraderDetails.copy(methodOfPayment = setMethodOfPayment, commercialReferenceNumber = setCommercialReferenceNumber))
+          }
+      } else Gen.const(None)
     } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments, itemSecurityTraderDetails)
   }
 
@@ -727,7 +710,6 @@ trait JourneyModelGenerators {
       for {
         numberOfPackages   <- Gen.option(Gen.choose(1, 100))
         totalMass          <- Gen.choose(1, 100).map(_.toString)
-        loadingPlace       <- Gen.option(stringsWithMaxLength(stringMaxLength)) // TODO: awaiting implementation
         goodSummaryDetails <- arbitraryGoodSummaryDetails.arbitrary
         sealNumbers        <- listWithMaxLength[SealDomain](10)
       } yield

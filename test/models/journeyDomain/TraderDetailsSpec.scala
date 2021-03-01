@@ -157,7 +157,7 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
         case PersonalInformation(_, address) => Address.prismAddressToPrincipalAddress.getOption(address).get
       })
       // Set Consignor
-      .unsafeSetVal(ConsignorForAllItemsPage)(traderDetails.consignor.isDefined)
+      .unsafeSetVal(ConsignorForAllItemsPage)(false) // TODO Need to account for this in reader (AddConsignorPage etc wont be asked)
       .unsafeSetVal(AddConsignorPage)(traderDetails.consignor.isDefined)
       .unsafeSetPFn(IsConsignorEoriKnownPage)(traderDetails.consignor)({
         case Some(TraderInformation(_, _, Some(_))) => true
@@ -173,7 +173,7 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
         case Some(TraderInformation(_, address, _)) => Address.prismAddressToConsignorAddress.getOption(address).get
       })
       // Set Consignee
-      .unsafeSetVal(ConsigneeForAllItemsPage)(traderDetails.consignee.isDefined)
+      .unsafeSetVal(ConsigneeForAllItemsPage)(false) // TODO Need to account for this in reader (AddConsigneePage etc wont be asked)
       .unsafeSetVal(AddConsigneePage)(traderDetails.consignee.isDefined)
       .unsafeSetPFn(IsConsigneeEoriKnownPage)(traderDetails.consignee)({
         case Some(TraderInformation(_, _, Some(_))) => true

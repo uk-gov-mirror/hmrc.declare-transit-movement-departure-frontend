@@ -24,7 +24,7 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
 
   "JourneyDomain" - {
     "can be parsed UserAnswers" - {
-      "when all details for section have been answered" ignore {
+      "when all details for section have been answered" in {
         forAll(arb[JourneyDomain]) {
           journeyDomain =>
             val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
@@ -36,7 +36,6 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
             result.value.routeDetails mustEqual journeyDomain.routeDetails
             result.value.transportDetails mustEqual journeyDomain.transportDetails
             result.value.traderDetails mustEqual journeyDomain.traderDetails
-            //        result.value.itemDetails mustEqual journeyDomain.itemDetails
             result.value.goodsSummary mustEqual journeyDomain.goodsSummary
             result.value.guarantee mustEqual journeyDomain.guarantee
             result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
