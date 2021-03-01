@@ -39,16 +39,6 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
             result.value.goodsSummary mustEqual journeyDomain.goodsSummary
             result.value.guarantee mustEqual journeyDomain.guarantee
             result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
-
-            result.value.itemDetails.head.itemDetails mustEqual journeyDomain.itemDetails.head.itemDetails
-            result.value.itemDetails.head.producedDocuments mustEqual journeyDomain.itemDetails.head.producedDocuments
-            result.value.itemDetails.head.specialMentions mustEqual journeyDomain.itemDetails.head.specialMentions
-            result.value.itemDetails.head.containers mustEqual journeyDomain.itemDetails.head.containers
-            result.value.itemDetails.head.packages mustEqual journeyDomain.itemDetails.head.packages
-            result.value.itemDetails.head.consignee mustEqual journeyDomain.itemDetails.head.consignee
-            result.value.itemDetails.head.consignor mustEqual journeyDomain.itemDetails.head.consignor
-
-            result.value.itemDetails.head.itemSecurityTraderDetails mustEqual journeyDomain.itemDetails.head.itemSecurityTraderDetails
         }
       }
     }

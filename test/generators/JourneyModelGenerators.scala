@@ -53,31 +53,17 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         preTaskList <- arbitrary[PreTaskListDetails]
-        isNormalMovement = preTaskList.procedureType == ProcedureType.Normal
-        movementDetails <- if (isNormalMovement) {
-          arbitrary[NormalMovementDetails]
-        } else {
-          arbitrary[SimplifiedMovementDetails]
-        }
-
+        isNormalMovement          = preTaskList.procedureType == ProcedureType.Normal
         isSecurityDetailsRequired = preTaskList.addSecurityDetails
+        goodsummarydetailsType    = if (isNormalMovement) arbitrary[GoodSummaryNormalDetails] else arbitrary[GoodSummarySimplifiedDetails]
+        movementDetails   <- if (isNormalMovement) arbitrary[NormalMovementDetails] else arbitrary[SimplifiedMovementDetails]
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitrary[TraderDetails]
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-
-        isDocumentTypeMandatory = isSecurityDetailsRequired &&
-          safetyAndSecurity.commercialReferenceNumber.isDefined &&
-          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
-
-        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
-        goodsummarydetailsType = if (isNormalMovement) {
-          arbitrary[GoodSummaryNormalDetails]
-        } else {
-          arbitrary[GoodSummarySimplifiedDetails]
-        }
-        goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
-        guarantees   <- nonEmptyListOf[GuaranteeDetails](1)
+        itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
+        goodsSummary      <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
+        guarantees        <- nonEmptyListOf[GuaranteeDetails](1)
       } yield {
 
         JourneyDomain(
@@ -375,12 +361,13 @@ trait JourneyModelGenerators {
       } yield itemSection
     }
 
-  def genItemSection(isDocumentTypeMandatory: Boolean,
-                     containersUsed: Boolean,
-                     addSafetyAndSecurity: Boolean,
-                     safetyAndSecurity: SafetyAndSecurity): Gen[ItemSection] = {
+  def genItemSection(containersUsed: Boolean, addSafetyAndSecurity: Boolean, safetyAndSecurity: SafetyAndSecurity): Gen[ItemSection] = {
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
+
+    val isDocumentTypeMandatory = addSafetyAndSecurity &&
+      safetyAndSecurity.commercialReferenceNumber.isDefined &&
+      safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
 
     for {
       itemDetail                <- arbitrary[ItemDetails]
