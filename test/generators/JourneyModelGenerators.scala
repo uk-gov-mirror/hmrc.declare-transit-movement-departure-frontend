@@ -41,9 +41,8 @@ import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNatio
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
 import models.journeyDomain._
 import models.reference.{SpecialMention => _, _}
-import org.scalacheck.Arbitrary.{arbFunction0, arbitrary}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import uk.gov.hmrc.play.http.ws.WSProxyConfiguration.ProxyConfigurationException
 
 trait JourneyModelGenerators {
   self: Generators =>
@@ -60,7 +59,7 @@ trait JourneyModelGenerators {
         movementDetails   <- if (isNormalMovement) arbitrary[NormalMovementDetails] else arbitrary[SimplifiedMovementDetails]
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
-        traderDetails     <- arbitraryTraderDetails(procedureType).arbitrary
+        traderDetails     <- arbitraryTraderDetails(preTaskList.procedureType).arbitrary
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
         itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
         goodsSummary      <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
@@ -88,22 +87,11 @@ trait JourneyModelGenerators {
         simplifiedTaskList = preTaskList.copy(procedureType = ProcedureType.Simplified)
         movementDetails <- arbitrary[SimplifiedMovementDetails]
         isSecurityDetailsRequired = preTaskList.addSecurityDetails
-        transitInformation = if (isSecurityDetailsRequired) {
-          Arbitrary(genTransitInformationWithArrivalTime)
-        } else {
-          Arbitrary(genTransitInformationWithoutArrivalTime)
-        }
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-
-        isDocumentTypeMandatory = isSecurityDetailsRequired &&
-          safetyAndSecurity.commercialReferenceNumber.isEmpty &&
-          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
-
-        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
-
+        itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
         goodsummarydetailsType = arbitrary[GoodSummarySimplifiedDetails]
         goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
         guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
@@ -128,22 +116,11 @@ trait JourneyModelGenerators {
         simplifiedTaskList = preTaskList.copy(procedureType = ProcedureType.Normal)
         movementDetails <- arbitrary[NormalMovementDetails]
         isSecurityDetailsRequired = preTaskList.addSecurityDetails
-        transitInformation = if (isSecurityDetailsRequired) {
-          Arbitrary(genTransitInformationWithArrivalTime)
-        } else {
-          Arbitrary(genTransitInformationWithoutArrivalTime)
-        }
         routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
         transportDetails  <- arbitrary[TransportDetails]
         traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
         safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-
-        isDocumentTypeMandatory = isSecurityDetailsRequired &&
-          safetyAndSecurity.commercialReferenceNumber.isEmpty &&
-          safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
-
-        itemDetails <- genItemSection(isDocumentTypeMandatory, movementDetails.containersUsed)
-
+        itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
         goodsummarydetailsType = arbitrary[GoodSummaryNormalDetails]
         goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
         guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
@@ -352,7 +329,7 @@ trait JourneyModelGenerators {
         )
     }
 
-  implicit def arbitraryTraderDetails(implicit procedureType: ProcedureType): Arbitrary[TraderDetails] = {
+  implicit def arbitraryTraderDetails(procedureType: ProcedureType): Arbitrary[TraderDetails] = {
     val pricipalAddress  = Arbitrary(arbitrary[PrincipalAddress].map(Address.prismAddressToPrincipalAddress.reverseGet))
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
