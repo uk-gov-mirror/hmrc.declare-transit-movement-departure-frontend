@@ -383,24 +383,26 @@ trait JourneyModelGenerators {
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
     for {
-      itemDetail        <- arbitrary[ItemDetails]
-      itemConsignor     <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-      itemConsignee     <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
-      packages          <- nonEmptyListOf[Packages](1)
-      containers        <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
-      specialMentions   <- Gen.option(nonEmptyListOf[SpecialMention](1))
-      producedDocuments <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
+      itemDetail                <- arbitrary[ItemDetails]
+      itemConsignor             <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee             <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      packages                  <- nonEmptyListOf[Packages](1)
+      containers                <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
+      specialMentions           <- Gen.option(nonEmptyListOf[SpecialMention](1))
+      producedDocuments         <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
+      methodOfPayment           <- arbitrary[String]
+      commercialReferenceNumber <- arbitrary[String]
       itemSecurityTraderDetails <- if (addSafetyAndSecurity) arbitrary[ItemsSecurityTraderDetails].map {
         itemsSecurityTraderDetails =>
           {
             val setMethodOfPayment = safetyAndSecurity.paymentMethod match {
-              case Some(value) => Some(value)
-              case None        => itemsSecurityTraderDetails.methodOfPayment
+              case None    => Some(methodOfPayment)
+              case Some(_) => None
             }
 
             val setCommercialReferenceNumber = safetyAndSecurity.commercialReferenceNumber match {
-              case Some(value) => Some(value)
-              case None        => itemsSecurityTraderDetails.commercialReferenceNumber
+              case None    => Some(commercialReferenceNumber)
+              case Some(_) => None
             }
 
             Some(itemsSecurityTraderDetails.copy(methodOfPayment = setMethodOfPayment, commercialReferenceNumber = setCommercialReferenceNumber))
@@ -659,7 +661,6 @@ trait JourneyModelGenerators {
       for {
         numberOfPackages   <- Gen.option(Gen.choose(1, 100))
         totalMass          <- Gen.choose(1, 100).map(_.toString)
-        loadingPlace       <- Gen.option(stringsWithMaxLength(stringMaxLength)) // TODO: awaiting implementation
         goodSummaryDetails <- arbitraryGoodSummaryDetails.arbitrary
         sealNumbers        <- listWithMaxLength[SealDomain](10)
       } yield
