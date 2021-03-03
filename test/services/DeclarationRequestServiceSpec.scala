@@ -270,7 +270,7 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
     "goodsSummarySimplifiedDetails" - {
       "must populate controlResult and authorisedLocationOfGoods when Simplified" in {
 
-        forAll(arb[UserAnswers], arbitrarySimplifiedJourneyDomain.arbitrary) {
+        forAll(arb[UserAnswers], arbitrarySimplifiedJourneyDomain) {
           (userAnswers, journeyDomain) =>
             val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
 
@@ -288,7 +288,7 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
       "must populate not controlResult and authorisedLocationOfGoods when Normal" in {
 
-        forAll(arb[UserAnswers], arbitraryNormalJourneyDomain.arbitrary) {
+        forAll(arb[UserAnswers], arbitraryNormalJourneyDomain) {
           (userAnswers, journeyDomain) =>
             val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
 
