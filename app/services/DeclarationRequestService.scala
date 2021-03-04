@@ -119,19 +119,18 @@ class DeclarationRequestService @Inject()(
           RegularPackage(packageType.code, howManyPackagesPage, markOrNumber)
       }
 
-    // TODO finish this off
     def goodsItems(goodsItems: NonEmptyList[ItemSection], guaranteeDetails: NonEmptyList[GuaranteeDetails]): NonEmptyList[GoodsItem] =
       goodsItems.zipWithIndex.map {
         case (itemSection, index) =>
           GoodsItem(
             itemNumber                       = index + 1,
             commodityCode                    = itemSection.itemDetails.commodityCode,
-            declarationType                  = None,
+            declarationType                  = Some(movementDetails.declarationType.code), // This is defined at header level, is this correct to be repeated for each movement ???
             description                      = itemSection.itemDetails.itemDescription,
             grossMass                        = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)),
             netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)),
-            countryOfDispatch                = None,
-            countryOfDestination             = None,
+            countryOfDispatch                = None, // Where is this defined?
+            countryOfDestination             = None, // Where is this defined?
             methodOfPayment                  = itemSection.itemSecurityTraderDetails.flatMap(_.methodOfPayment),
             commercialReferenceNumber        = itemSection.itemSecurityTraderDetails.flatMap(_.commercialReferenceNumber),
             dangerousGoodsCode               = itemSection.itemSecurityTraderDetails.flatMap(_.dangerousGoodsCode),
@@ -147,6 +146,10 @@ class DeclarationRequestService @Inject()(
             GoodsItemSafetyAndSecurityConsignee(itemSection.itemSecurityTraderDetails)
           )
       }
+
+//    def previousAdministrativeReference(itemSection: ItemSection) = {
+//      itemSection
+//    }
 
     def GoodsItemSafetyAndSecurityConsignor(itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]): Option[GoodsItemSecurityConsignor] =
       itemSecurityTraderDetails.flatMap {
