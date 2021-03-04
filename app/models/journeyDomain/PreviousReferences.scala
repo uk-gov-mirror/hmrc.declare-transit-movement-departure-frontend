@@ -16,9 +16,14 @@
 
 package models.journeyDomain
 
+import cats.data.{NonEmptyList, ReaderT}
 import cats.implicits._
-import models.Index
-import pages.addItems.{AddExtraInformationPage, ExtraInformationPage, PreviousReferencePage, ReferenceTypePage}
+import derivable.DeriveNumberOfPreviousAdministrativeReferences
+import models.DeclarationType.{Option2, Option4}
+import models.reference.CountryCode
+import models.{Index, UserAnswers}
+import pages.addItems._
+import pages.{CountryOfDispatchPage, DeclarationTypePage}
 
 final case class PreviousReferences(
   referenceType: String,
@@ -42,5 +47,34 @@ object PreviousReferences {
       extraInformation
     ).tupled.map((PreviousReferences.apply _).tupled)
   }
+
+  def derivePreviousReferences(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] = {
+
+    val nonEUCountries =
+      Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
+    (
+      DeclarationTypePage.reader,
+      CountryOfDispatchPage.reader
+    ).tupled.flatMap {
+      case (Option2 | Option4, code) if nonEUCountries.contains(code) =>
+        allPreviousReferencesReader(itemIndex) // Mandatory reader if 'T2' or 'T2F' and non EU country
+      case _ =>
+        AddAdministrativeReferencePage(itemIndex).reader.flatMap { // Optional reader if any other condition
+          case true  => allPreviousReferencesReader(itemIndex)
+          case false => none[NonEmptyList[PreviousReferences]].pure[UserAnswersReader]
+        }
+    }
+  }
+
+  private def allPreviousReferencesReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
+    DeriveNumberOfPreviousAdministrativeReferences(itemIndex).reader
+      .filter(_.nonEmpty)
+      .flatMap(
+        _.zipWithIndex.traverse[UserAnswersReader, PreviousReferences]({
+          case (_, index) =>
+            PreviousReferences.previousReferenceReader(itemIndex, Index(index))
+        })
+      )
+      .map(NonEmptyList.fromList)
 
 }
