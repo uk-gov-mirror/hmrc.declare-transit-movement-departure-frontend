@@ -48,10 +48,7 @@ object PreviousReferences {
     ).tupled.map((PreviousReferences.apply _).tupled)
   }
 
-  def derivePreviousReferences(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] = {
-
-    val nonEUCountries =
-      Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
+  def derivePreviousReferences(itemIndex: Index, nonEUCountries: Seq[CountryCode]): ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
     (
       DeclarationTypePage.reader,
       CountryOfDispatchPage.reader
@@ -64,7 +61,6 @@ object PreviousReferences {
           case false => none[NonEmptyList[PreviousReferences]].pure[UserAnswersReader]
         }
     }
-  }
 
   private def allPreviousReferencesReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
     DeriveNumberOfPreviousAdministrativeReferences(itemIndex).reader

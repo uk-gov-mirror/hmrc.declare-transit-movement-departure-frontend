@@ -125,7 +125,7 @@ class DeclarationRequestService @Inject()(
           GoodsItem(
             itemNumber                       = index + 1,
             commodityCode                    = itemSection.itemDetails.commodityCode,
-            declarationType                  = Some(movementDetails.declarationType.code), // This is defined at header level, is this correct to be repeated for each movement ???
+            declarationType                  = None, // This is defined at header level, is this correct to be repeated for each movement?
             description                      = itemSection.itemDetails.itemDescription,
             grossMass                        = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)),
             netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)),
