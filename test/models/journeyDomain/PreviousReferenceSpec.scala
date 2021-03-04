@@ -22,7 +22,6 @@ import generators.JourneyModelGenerators
 import models.DeclarationType.{Option1, Option2, Option3, Option4}
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.journeyDomain.PreviousReferenceSpec.setPreviousReferenceUserAnswers
-import models.reference.CountryCode
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -91,9 +90,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
     val genT2DeclarationType    = Gen.oneOf(Option2, Option4)
     val genOtherDeclarationType = Gen.oneOf(Option1, Option3)
-    val nonEUCountries =
-      Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
-    val genNonEUCountry = Gen.oneOf(nonEUCountries)
+    val genNonEUCountry         = Gen.oneOf(nonEUCountries)
 
     "can be parsed from UserAnswers when" - {
 
@@ -111,7 +108,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
               .unsafeSetVal(CountryOfDispatchPage)(countryCode)
 
             val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
-              PreviousReferences.derivePreviousReferences(index, nonEUCountries)
+              PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
@@ -134,7 +131,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
               .unsafeSetVal(CountryOfDispatchPage)(countryCode)
 
             val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
-              PreviousReferences.derivePreviousReferences(index, nonEUCountries)
+              PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
@@ -158,7 +155,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
               .unsafeSetVal(AddAdministrativeReferencePage(index))(false)
 
             val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
-              PreviousReferences.derivePreviousReferences(index, nonEUCountries)
+              PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
@@ -186,7 +183,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
               .unsafeRemoveVal(mandatoryPage)
 
             val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
-              PreviousReferences.derivePreviousReferences(index, nonEUCountries)
+              PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
@@ -210,7 +207,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
               .unsafeRemoveVal(AddAdministrativeReferencePage(index))
 
             val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
-              PreviousReferences.derivePreviousReferences(index, nonEUCountries)
+              PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 

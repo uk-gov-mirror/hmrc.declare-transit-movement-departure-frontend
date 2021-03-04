@@ -65,7 +65,6 @@ trait JourneyModelGenerators {
         goodsSummary      <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
         guarantees        <- nonEmptyListOf[GuaranteeDetails](1)
       } yield {
-
         JourneyDomain(
           preTaskList,
           movementDetails,
@@ -441,6 +440,7 @@ trait JourneyModelGenerators {
       producedDocuments         <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
       methodOfPayment           <- arbitrary[String]
       commercialReferenceNumber <- arbitrary[String]
+      previousReferences        <- Gen.option(nonEmptyListOf[PreviousReferences](1))
       itemSecurityTraderDetails <- if (addSafetyAndSecurity) arbitrary[ItemsSecurityTraderDetails].map {
         itemsSecurityTraderDetails =>
           {
@@ -457,7 +457,16 @@ trait JourneyModelGenerators {
             Some(itemsSecurityTraderDetails.copy(methodOfPayment = setMethodOfPayment, commercialReferenceNumber = setCommercialReferenceNumber))
           }
       } else Gen.const(None)
-    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments, itemSecurityTraderDetails)
+    } yield
+      ItemSection(itemDetail,
+                  itemConsignor,
+                  itemConsignee,
+                  packages,
+                  containers,
+                  specialMentions,
+                  producedDocuments,
+                  itemSecurityTraderDetails,
+                  previousReferences)
   }
 
   def genItemSectionOld(
@@ -479,9 +488,19 @@ trait JourneyModelGenerators {
       containers                <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
       specialMentions           <- Gen.option(nonEmptyListOf[SpecialMention](1))
       producedDocuments         <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
+      previousReferences        <- Gen.option(nonEmptyListOf[PreviousReferences](1))
       itemSecurityTraderDetails <- Gen.option(arbitrary[ItemsSecurityTraderDetails])
 
-    } yield ItemSection(itemDetail, itemConsignor, itemConsignee, packages, containers, specialMentions, producedDocuments, itemSecurityTraderDetails)
+    } yield
+      ItemSection(itemDetail,
+                  itemConsignor,
+                  itemConsignee,
+                  packages,
+                  containers,
+                  specialMentions,
+                  producedDocuments,
+                  itemSecurityTraderDetails,
+                  previousReferences)
   }
 
   implicit lazy val arbitraryPreTaskListDetails: Arbitrary[PreTaskListDetails] =

@@ -19,20 +19,36 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
+import models.DeclarationType.{Option2, Option4}
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
+import org.scalacheck.Gen
 import pages.addItems.AddDocumentsPage
 import pages.addItems.specialMentions.AddSpecialMentionPage
 import pages.safetyAndSecurity._
-import pages.{AddConsigneePage, AddConsignorPage, AddSecurityDetailsPage, ConsigneeForAllItemsPage, ConsignorForAllItemsPage, ContainersUsedPage}
+import pages.{
+  AddConsigneePage,
+  AddConsignorPage,
+  AddSecurityDetailsPage,
+  ConsigneeForAllItemsPage,
+  ConsignorForAllItemsPage,
+  ContainersUsedPage,
+  CountryOfDispatchPage,
+  DeclarationTypePage
+}
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
+
   "ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
-        forAll(genItemSectionOld(), arb[UserAnswers]) {
-          case (itemSection, userAnswers) =>
+
+        val genT2DeclarationType = Gen.oneOf(Option2, Option4)
+        val genNonEUCountries    = Gen.oneOf(nonEUCountries)
+
+        forAll(genItemSectionOld(), arb[UserAnswers], genT2DeclarationType, genNonEUCountries) {
+          case (itemSection, userAnswers, declarationType, countryCode) =>
             val indicator = CircumstanceIndicator.conditionalIndicators.head
 
             val updatedUserAnswer = {
@@ -53,6 +69,8 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
               .unsafeSetVal(AddConsignorPage)(false)
               .unsafeSetVal(ConsigneeForAllItemsPage)(false)
               .unsafeSetVal(AddConsigneePage)(false)
+              .unsafeSetVal(DeclarationTypePage)(declarationType)
+              .unsafeSetVal(CountryOfDispatchPage)(countryCode)
 
             val setSectionUserAnswers = ItemSectionSpec.setItemSection(itemSection, index)(updatedUserAnswer)
 
@@ -172,6 +190,13 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         ProducedDocumentSpec.setProducedDocumentsUserAnswers(producedDocument, itemIndex, Index(index))(userAnswers)
     })
 
+  private def setPreviousReferences(previousReferences: Option[NonEmptyList[PreviousReferences]], itemIndex: Index)(
+    startUserAnswers: UserAnswers): UserAnswers =
+    previousReferences.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
+      case (userAnswers, (previousReferences, index)) =>
+        PreviousReferenceSpec.setPreviousReferenceUserAnswers(previousReferences, itemIndex, Index(index))(userAnswers)
+    })
+
   def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(userAnswers: UserAnswers): UserAnswers =
     itemsSecurityTraderDetails match {
       case Some(result) => ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(result, index)(userAnswers)
@@ -186,6 +211,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         setContainers(itemSection.containers, itemIndex) andThen
         setSpecialMentions(itemSection.specialMentions, itemIndex) andThen
         setProducedDocuments(itemSection.producedDocuments, itemIndex) andThen
-        setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex)
+        setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex) andThen
+        setPreviousReferences(itemSection.previousReferences, itemIndex)
     )(startUserAnswers)
 }
