@@ -721,4 +721,16 @@ trait JourneyModelGenerators {
           sealNumbers
         )
     }
+
+  implicit lazy val arbitraryPreviousReference: Arbitrary[PreviousReferences] =
+    Arbitrary {
+      for {
+        referenceType     <- nonEmptyString
+        previousReference <- nonEmptyString
+        extraInformation  <- Gen.option(nonEmptyString)
+      } yield {
+        PreviousReferences(referenceType, previousReference, extraInformation)
+      }
+    }
+
 }

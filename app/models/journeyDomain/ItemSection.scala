@@ -33,6 +33,7 @@ case class ItemSection(
   specialMentions: Option[NonEmptyList[SpecialMention]],
   producedDocuments: Option[NonEmptyList[ProducedDocument]],
   itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]
+//  previousReferences: Option[NonEmptyList[PreviousReferences]]
 )
 
 object ItemSection {
