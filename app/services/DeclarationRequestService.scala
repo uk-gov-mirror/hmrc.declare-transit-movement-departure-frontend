@@ -17,9 +17,9 @@
 package services
 
 import java.time.{LocalDate, LocalDateTime}
+
 import cats.data.NonEmptyList
 import cats.implicits._
-
 import javax.inject.Inject
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
@@ -42,6 +42,7 @@ import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, U
 import play.api.Logger
 import repositories.InterchangeControlReferenceIdRepository
 
+import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DeclarationRequestServiceInt {
@@ -134,7 +135,7 @@ class DeclarationRequestService @Inject()(
             methodOfPayment                  = itemSection.itemSecurityTraderDetails.flatMap(_.methodOfPayment),
             commercialReferenceNumber        = itemSection.itemSecurityTraderDetails.flatMap(_.commercialReferenceNumber),
             dangerousGoodsCode               = itemSection.itemSecurityTraderDetails.flatMap(_.dangerousGoodsCode),
-            previousAdministrativeReferences = Seq.empty,
+            previousAdministrativeReferences = previousAdministrativeReference(itemSection.previousReferences),
             producedDocuments                = Seq.empty,
             specialMention                   = additionalInformationLiabilityAmount(index, guaranteeDetails),
             traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
@@ -147,9 +148,8 @@ class DeclarationRequestService @Inject()(
           )
       }
 
-//    def previousAdministrativeReference(itemSection: ItemSection) = {
-//      itemSection
-//    }
+    def previousAdministrativeReference(previousReferences: Option[NonEmptyList[PreviousReferences]]): Seq[PreviousAdministrativeReference] =
+      previousReferences.map(_.toList.map(x => PreviousAdministrativeReference(x.referenceType, x.previousReference, x.extraInformation))).getOrElse(List.empty)
 
     def GoodsItemSafetyAndSecurityConsignor(itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]): Option[GoodsItemSecurityConsignor] =
       itemSecurityTraderDetails.flatMap {
