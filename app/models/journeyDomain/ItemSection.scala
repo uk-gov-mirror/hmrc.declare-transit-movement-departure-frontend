@@ -20,7 +20,6 @@ import cats.data._
 import cats.implicits._
 import derivable._
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
-import models.reference.CountryCode
 import models.{Index, UserAnswers}
 import pages.addItems.specialMentions.AddSpecialMentionPage
 import pages.{AddSecurityDetailsPage, ContainersUsedPage}

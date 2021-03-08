@@ -33,7 +33,7 @@ final case class PreviousReferences(
 
 object PreviousReferences {
 
-  private val nonEUCountries =
+  val nonEUCountries =
     Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
 
   def previousReferenceReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[PreviousReferences] = {

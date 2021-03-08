@@ -19,6 +19,7 @@ package generators
 import java.time.{LocalDate, LocalDateTime}
 
 import cats.data.NonEmptyList
+import models.DeclarationType.{Option2, Option4}
 import models._
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
@@ -32,6 +33,7 @@ import models.journeyDomain.MovementDetails.{
   SimplifiedMovementDetails
 }
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
+import models.journeyDomain.PreviousReferences.nonEUCountries
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori, TraderInformation}
@@ -61,7 +63,7 @@ trait JourneyModelGenerators {
       transportDetails  <- arbitrary[TransportDetails]
       traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
       safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-      itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
+      itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
       goodsummarydetailsType = arbitrary[GoodSummarySimplifiedDetails]
       goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
       guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
@@ -88,7 +90,7 @@ trait JourneyModelGenerators {
       transportDetails  <- arbitrary[TransportDetails]
       traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
       safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-      itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity)
+      itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
       goodsummarydetailsType = arbitrary[GoodSummaryNormalDetails]
       goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
       guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
@@ -390,13 +392,24 @@ trait JourneyModelGenerators {
       } yield itemSection
     }
 
-  def genItemSection(containersUsed: Boolean, addSafetyAndSecurity: Boolean, safetyAndSecurity: SafetyAndSecurity): Gen[ItemSection] = {
+  def genItemSection(
+    containersUsed: Boolean,
+    addSafetyAndSecurity: Boolean,
+    safetyAndSecurity: SafetyAndSecurity,
+    movementDetails: MovementDetails,
+    routeDetails: RouteDetails
+  ): Gen[ItemSection] = {
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
     val isDocumentTypeMandatory = addSafetyAndSecurity &&
       safetyAndSecurity.commercialReferenceNumber.isDefined &&
       safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
+
+    val isPreviousReferenceMandatory: Boolean = (movementDetails.declarationType, routeDetails.countryOfDispatch) match {
+      case (Option2 | Option4, code) if nonEUCountries.contains(code) => true
+      case _                                                          => false
+    }
 
     for {
       itemDetail                <- arbitrary[ItemDetails]
@@ -408,7 +421,7 @@ trait JourneyModelGenerators {
       producedDocuments         <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
       methodOfPayment           <- arbitrary[String]
       commercialReferenceNumber <- arbitrary[String]
-      previousReferences        <- Gen.option(nonEmptyListOf[PreviousReferences](1))
+      previousReferences        <- if (isPreviousReferenceMandatory) nonEmptyListOf[PreviousReferences](1).map(Some(_)) else Gen.const(None)
       itemSecurityTraderDetails <- if (addSafetyAndSecurity) arbitrary[ItemsSecurityTraderDetails].map {
         itemsSecurityTraderDetails =>
           {
