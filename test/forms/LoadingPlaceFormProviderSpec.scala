@@ -19,13 +19,14 @@ package forms
 import forms.Constants.loadingPlaceMaxLength
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import models.messages.header.Header.Constants.placeOfLoadingGoodsCodeLength
 
 class LoadingPlaceFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "loadingPlace.error.required"
   val lengthKey   = "loadingPlace.error.length"
   val invalidKey  = "loadingPlace.error.invalid"
-  val maxLength   = loadingPlaceMaxLength
+  val maxLength   = placeOfLoadingGoodsCodeLength
 
   val form = new LoadingPlaceFormProvider()()
 
@@ -52,7 +53,7 @@ class LoadingPlaceFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, loadingPlaceMaxLength)
+    behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLength)
 
   }
 }

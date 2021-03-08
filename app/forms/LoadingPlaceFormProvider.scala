@@ -16,9 +16,9 @@
 
 package forms
 
-import forms.Constants.loadingPlaceMaxLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericWithSpaceRegex
+import models.messages.header.Header.Constants.placeOfLoadingGoodsCodeLength
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
@@ -31,7 +31,7 @@ class LoadingPlaceFormProvider @Inject() extends Mappings {
       "value" -> text("loadingPlace.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(loadingPlaceMaxLength, "loadingPlace.error.length"),
+            maxLength(placeOfLoadingGoodsCodeLength, "loadingPlace.error.length"),
             regexp(alphaNumericWithSpaceRegex, "loadingPlace.error.invalid")
           )))
 }

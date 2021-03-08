@@ -71,24 +71,24 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         }
       }
 
-      "must go from TotalGrossMassPage to AuthorisedLocationCodePage when on Simplified journey" in {
+      "must go from Loading Place page to AuthorisedLocationCodePage when on Simplified journey" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers.set(ProcedureTypePage, Simplified).toOption.value
 
             navigator
-              .nextPage(TotalGrossMassPage, NormalMode, updatedAnswers)
+              .nextPage(LoadingPlacePage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.AuthorisedLocationCodeController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
 
-      "must go from TotalGrossMassPage to AddCustomsApprovedLocationPage when on Normal journey" in {
+      "must go from Loading Place page to AddCustomsApprovedLocationPage when on Normal journey" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             val updatedAnswers = answers.set(ProcedureTypePage, Normal).toOption.value
 
             navigator
-              .nextPage(TotalGrossMassPage, NormalMode, updatedAnswers)
+              .nextPage(LoadingPlacePage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.AddCustomsApprovedLocationController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
@@ -112,6 +112,43 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
             navigator
               .nextPage(AddCustomsApprovedLocationPage, NormalMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.CustomsApprovedLocationController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+      "must go from TotalGrossMassPage to LoadingPlace page when previously answered Yes to add Safety And Security Details" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(AddSecurityDetailsPage, true).toOption.value
+
+            navigator
+              .nextPage(TotalGrossMassPage, NormalMode, updatedAnswers)
+              .mustBe(controllers.routes.LoadingPlaceController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+      "must go from TotalGrossMassPage to AddCustomsApprovedLocation page when previously answered No to add Safety And Security Details on a Normal route" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSecurityDetailsPage, false).toOption.value
+              .set(ProcedureTypePage, Normal).toOption.value
+
+            navigator
+              .nextPage(TotalGrossMassPage, NormalMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.AddCustomsApprovedLocationController.onPageLoad(updatedAnswers.id, NormalMode))
+        }
+      }
+
+      "must go from TotalGrossMassPage to AuthoriedLocationCode page when previously answered No to add Safety And Security Details on a Simplified route" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+              .set(AddSecurityDetailsPage, false).toOption.value
+              .set(ProcedureTypePage, Simplified).toOption.value
+
+            navigator
+              .nextPage(TotalGrossMassPage, NormalMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.AuthorisedLocationCodeController.onPageLoad(updatedAnswers.id, NormalMode))
         }
       }
 
@@ -159,6 +196,8 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
               .mustBe(goodsSummaryRoute.SealIdDetailsController.onPageLoad(updatedAnswers.id, sealIndex, NormalMode))
         }
       }
+
+
 
       "must go from SealsInformationPage to GoodsSummaryCheckYourAnswersPage when answer is No" in {
         forAll(arbitrary[UserAnswers]) {
@@ -331,6 +370,17 @@ class GoodsSummaryNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
             navigator
               .nextPage(TotalGrossMassPage, CheckMode, updatedAnswers)
+              .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
+        }
+      }
+
+      "must go from Loading Place page to CheckYourAnswersPage " in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers.set(TotalGrossMassPage, "TestPlace").success.value
+
+            navigator
+              .nextPage(LoadingPlacePage , CheckMode, updatedAnswers)
               .mustBe(goodsSummaryRoute.GoodsSummaryCheckYourAnswersController.onPageLoad(updatedAnswers.id))
         }
       }

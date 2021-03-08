@@ -23,6 +23,7 @@ import models.ProcedureType.{Normal, Simplified}
 import models._
 import pages._
 import play.api.mvc.Call
+import controllers.LoadingPlaceController
 
 @Singleton
 class GoodsSummaryNavigator @Inject()() extends Navigator {
@@ -43,6 +44,7 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case SealsInformationPage           => ua => Some(sealsInformationRoute(ua, NormalMode))
     case ConfirmRemoveSealsPage         => ua => Some(confirmRemoveSealsRoute(ua, CheckMode))
     case ConfirmRemoveSealPage()        => ua => Some(confirmRemoveSeal(ua, NormalMode))
+    case LoadingPlacePage               => ua => Some(loadingPlaceRoute(ua))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -60,6 +62,8 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     case SealsInformationPage           => ua => Some(sealsInformationRoute(ua, CheckMode))
     case ConfirmRemoveSealsPage         => ua => Some(confirmRemoveSealsRoute(ua, CheckMode))
     case ConfirmRemoveSealPage()        => ua => Some(confirmRemoveSeal(ua, CheckMode))
+    case LoadingPlacePage               => ua => Some(routes.GoodsSummaryCheckYourAnswersController.onPageLoad(ua.id))
+
   }
 
   def confirmRemoveSealsRoute(ua: UserAnswers, mode: Mode) =
@@ -86,6 +90,13 @@ class GoodsSummaryNavigator @Inject()() extends Navigator {
     }
 
   def totalGrossMassRoute(ua: UserAnswers): Call =
+    (ua.get(ProcedureTypePage), ua.get(AddSecurityDetailsPage)) match {
+      case (_, Some(true) )     => controllers.routes.LoadingPlaceController.onPageLoad(ua.id, NormalMode)
+      case (Some(Normal), _) =>  routes.AddCustomsApprovedLocationController.onPageLoad(ua.id, NormalMode)
+      case (Some(Simplified), _) => routes.AuthorisedLocationCodeController.onPageLoad(ua.id, NormalMode)
+    }
+
+  def loadingPlaceRoute(ua: UserAnswers): Call =
     ua.get(ProcedureTypePage) match {
       case Some(Normal)     => routes.AddCustomsApprovedLocationController.onPageLoad(ua.id, NormalMode)
       case Some(Simplified) => routes.AuthorisedLocationCodeController.onPageLoad(ua.id, NormalMode)
