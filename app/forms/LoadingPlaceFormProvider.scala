@@ -16,16 +16,22 @@
 
 package forms
 
-import javax.inject.Inject
-
+import forms.Constants.loadingPlaceMaxLength
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericWithSpaceRegex
 import play.api.data.Form
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
+
+import javax.inject.Inject
 
 class LoadingPlaceFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
       "value" -> text("loadingPlace.error.required")
-        .verifying(maxLength(35, "loadingPlace.error.length"))
-    )
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(loadingPlaceMaxLength, "loadingPlace.error.length"),
+            regexp(alphaNumericWithSpaceRegex, "loadingPlace.error.invalid")
+          )))
 }
