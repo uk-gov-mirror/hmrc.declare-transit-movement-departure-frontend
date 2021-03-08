@@ -26,7 +26,8 @@ import org.scalacheck.{Arbitrary, Gen, Shrink}
 // TODO: Move away from mixing style to using objects
 trait Generators extends UserAnswersGenerator with ModelGenerators {
 
-  lazy val stringMaxLength = 128
+  lazy val stringMaxLength = 36
+
   require(stringMaxLength > 1, "Value for `stringMaxLength` must be greater than 1")
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
