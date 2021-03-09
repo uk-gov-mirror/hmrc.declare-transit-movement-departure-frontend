@@ -30,7 +30,7 @@ import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
-import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
+import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, ProducedDocument, TraderDetails, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
@@ -126,23 +126,23 @@ class DeclarationRequestService @Inject()(
           GoodsItem(
             itemNumber                       = index + 1,
             commodityCode                    = itemSection.itemDetails.commodityCode,
-            declarationType                  = None, // This is defined at header level, is this correct to be repeated for each movement?
+            declarationType                  = None, // Clarify with policy
             description                      = itemSection.itemDetails.itemDescription,
             grossMass                        = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)),
             netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)),
-            countryOfDispatch                = None, // Where is this defined?
-            countryOfDestination             = None, // Where is this defined?
+            countryOfDispatch                = None, // Not required, defined at header level
+            countryOfDestination             = None, // Not required, defined at header level
             methodOfPayment                  = itemSection.itemSecurityTraderDetails.flatMap(_.methodOfPayment),
             commercialReferenceNumber        = itemSection.itemSecurityTraderDetails.flatMap(_.commercialReferenceNumber),
             dangerousGoodsCode               = itemSection.itemSecurityTraderDetails.flatMap(_.dangerousGoodsCode),
             previousAdministrativeReferences = previousAdministrativeReference(itemSection.previousReferences),
-            producedDocuments                = Seq.empty,
+            producedDocuments                = producedDocuments(itemSection.producedDocuments),
             specialMention                   = additionalInformationLiabilityAmount(index, guaranteeDetails),
             traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
-            containers                       = Seq.empty,
+            containers                       = containers(itemSection.containers),
             packages                         = packages(itemSection.packages).toList,
-            sensitiveGoodsInformation        = Seq.empty, //TODO look up this
+            sensitiveGoodsInformation        = Seq.empty, // Not required, defined at security level
             GoodsItemSafetyAndSecurityConsignor(itemSection.itemSecurityTraderDetails),
             GoodsItemSafetyAndSecurityConsignee(itemSection.itemSecurityTraderDetails)
           )
@@ -150,6 +150,12 @@ class DeclarationRequestService @Inject()(
 
     def previousAdministrativeReference(previousReferences: Option[NonEmptyList[PreviousReferences]]): Seq[PreviousAdministrativeReference] =
       previousReferences.map(_.toList.map(x => PreviousAdministrativeReference(x.referenceType, x.previousReference, x.extraInformation))).getOrElse(List.empty)
+
+    def producedDocuments(producedDocument: Option[NonEmptyList[models.journeyDomain.ProducedDocument]]): Seq[goodsitem.ProducedDocument] =
+      producedDocument.map(_.toList.map(x => goodsitem.ProducedDocument(x.documentType, Some(x.documentReference), x.extraInformation))).getOrElse(List.empty)
+
+    def containers(containers: Option[NonEmptyList[Container]]): Seq[String] =
+      containers.map(_.toList.map(_.containerNumber)).getOrElse(List.empty)
 
     def GoodsItemSafetyAndSecurityConsignor(itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]): Option[GoodsItemSecurityConsignor] =
       itemSecurityTraderDetails.flatMap {
