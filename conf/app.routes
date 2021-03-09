@@ -43,3 +43,7 @@ GET        /:departureId/departure-declaration-fail       controllers.Declaratio
 
 GET        /:departureId/cancellation-decision-update     controllers.CancellationDecisionUpdateController.onPageLoad(departureId: DepartureId)
 
+GET        /:lrn/goods-summary/loading-place                            controllers.LoadingPlaceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/goods-summary/loading-place                            controllers.LoadingPlaceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/goods-summary/change-loading-place                      controllers.LoadingPlaceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/goods-summary/change-loading-place                     controllers.LoadingPlaceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
