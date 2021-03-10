@@ -32,7 +32,8 @@ case class ItemSection(
   containers: Option[NonEmptyList[Container]],
   specialMentions: Option[NonEmptyList[SpecialMention]],
   producedDocuments: Option[NonEmptyList[ProducedDocument]],
-  itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]
+  itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails],
+  previousReferences: Option[NonEmptyList[PreviousReferences]]
 )
 
 object ItemSection {
@@ -101,7 +102,8 @@ object ItemSection {
       deriveContainers(index),
       deriveSpecialMentions(index),
       ProducedDocument.deriveProducedDocuments(index),
-      securityItemsSecurityTraderDetails(index)
+      securityItemsSecurityTraderDetails(index),
+      PreviousReferences.derivePreviousReferences(index)
     ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =

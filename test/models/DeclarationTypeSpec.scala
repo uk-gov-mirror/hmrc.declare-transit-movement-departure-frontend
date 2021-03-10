@@ -16,23 +16,20 @@
 
 package models
 
+import generators.{Generators, ModelGenerators}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
+import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with Generators {
 
   "DeclarationType" - {
 
     "must deserialise valid values" in {
-
-      val gen = Gen.oneOf(DeclarationType.values)
-
-      forAll(gen) {
+      forAll(arbitrary[DeclarationType]) {
         declarationType =>
           JsString(declarationType.toString).validate[DeclarationType].asOpt.value mustEqual declarationType
       }
@@ -49,10 +46,7 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
     }
 
     "must serialise" in {
-
-      val gen = Gen.oneOf(DeclarationType.values)
-
-      forAll(gen) {
+      forAll(arbitrary[DeclarationType]) {
         declarationType =>
           Json.toJson(declarationType) mustEqual JsString(declarationType.toString)
       }

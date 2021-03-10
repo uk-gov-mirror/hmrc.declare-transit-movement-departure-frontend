@@ -45,10 +45,10 @@ class MovementDetailsNavigator @Inject()() extends Navigator {
 
   private def declarationType(ua: UserAnswers, mode: Mode): Option[Call] =
     (ua.get(ProcedureTypePage), ua.get(PreLodgeDeclarationPage), mode) match {
-      case (Some(Simplified), _, NormalMode) => Some(routes.ContainersUsedPageController.onPageLoad(ua.id, mode))
-      case (Some(Normal), _, NormalMode) => Some(routes.PreLodgeDeclarationController.onPageLoad(ua.id, mode))
-      case (Some(Normal), None, CheckMode) => Some(routes.PreLodgeDeclarationController.onPageLoad(ua.id, mode))
-      case _ => Some(routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id))
+      case (Some(Simplified), _, NormalMode)  => Some(routes.ContainersUsedPageController.onPageLoad(ua.id, mode))
+      case (Some(Normal), _, NormalMode)      => Some(routes.PreLodgeDeclarationController.onPageLoad(ua.id, mode))
+      case (Some(Normal), None, CheckMode)    => Some(routes.PreLodgeDeclarationController.onPageLoad(ua.id, mode))
+      case _                                  => Some(routes.MovementDetailsCheckYourAnswersController.onPageLoad(ua.id))
     }
 
   private def isDeclarationForSomeoneElse(ua: UserAnswers, mode: Mode): Call =
