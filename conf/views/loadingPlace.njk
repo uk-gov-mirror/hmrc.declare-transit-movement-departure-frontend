@@ -28,20 +28,22 @@
         {% endif %}
 
         <form action="{{ routes.controllers.LoadingPlaceController.onSubmit(lrn, mode).url }}" method="post">
+
         <span class="govuk-caption-xl">{{messages('goodsSummary.preHeading')}}</span>
         <h1 class="govuk-heading-xl"> {{ messages("loadingPlace.heading", index) }}  </h1>
+        <p class="govuk-body"> {{ messages("loadingPlace.paragraph", index) }}  </p>
 
           {{ csrf() | safe }}
 
           {{ govukInput({
             label: {
-              text: messages('loadingPlace.paragraph'),
               isPageHeading: false,
               classes: "govuk-label--medium"
             },
             id: "value",
             name: "value",
             value: form.value.value,
+            classes: "govuk-input--width-20",
             errorMessage: form.value.error
           }) }}
 
