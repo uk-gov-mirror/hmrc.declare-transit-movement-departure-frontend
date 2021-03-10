@@ -19,15 +19,22 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
+import models.DeclarationType.{Option1, Option2, Option3, Option4}
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
-import models.reference.CircumstanceIndicator
+import models.reference.{CircumstanceIndicator, CountryCode}
 import models.{Index, UserAnswers}
-import pages.addItems.AddDocumentsPage
+import org.scalacheck.Gen
+import pages.addItems.{AddAdministrativeReferencePage, AddDocumentsPage}
 import pages.addItems.specialMentions.AddSpecialMentionPage
 import pages.safetyAndSecurity._
-import pages.{AddConsigneePage, AddConsignorPage, AddSecurityDetailsPage, ConsigneeForAllItemsPage, ConsignorForAllItemsPage, ContainersUsedPage}
+import pages._
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
+
+  private val genT2DeclarationType    = Gen.oneOf(Option2, Option4).sample.value
+  private val genNonEUCountries       = Gen.oneOf(nonEUCountries).sample.value
+  private val genOtherDeclarationType = Gen.oneOf(Option1, Option3).sample.value
+
   "ItemSection" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
@@ -35,7 +42,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
           case (itemSection, userAnswers) =>
             val indicator = CircumstanceIndicator.conditionalIndicators.head
 
-            val updatedUserAnswer = {
+            val updatedUserAnswer1 = {
               itemSection.itemSecurityTraderDetails match {
                 case Some(value) =>
                   userAnswers
@@ -54,7 +61,19 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
               .unsafeSetVal(ConsigneeForAllItemsPage)(false)
               .unsafeSetVal(AddConsigneePage)(false)
 
-            val setSectionUserAnswers = ItemSectionSpec.setItemSection(itemSection, index)(updatedUserAnswer)
+            val updatedUserAnswer2 = itemSection.previousReferences match {
+              case None =>
+                updatedUserAnswer1
+                  .unsafeSetVal(DeclarationTypePage)(genOtherDeclarationType)
+                  .unsafeSetVal(CountryOfDispatchPage)(genNonEUCountries)
+                  .unsafeSetVal(AddAdministrativeReferencePage(itemIndex))(false)
+              case Some(_) =>
+                updatedUserAnswer1
+                  .unsafeSetVal(DeclarationTypePage)(genT2DeclarationType)
+                  .unsafeSetVal(CountryOfDispatchPage)(genNonEUCountries)
+            }
+
+            val setSectionUserAnswers = ItemSectionSpec.setItemSection(itemSection, index)(updatedUserAnswer2)
 
             val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(setSectionUserAnswers)
 
@@ -90,7 +109,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
           case (itemSections, userAnswers) =>
             val indicator = CircumstanceIndicator.conditionalIndicators.head
 
-            val updatedUserAnswer = {
+            val updatedUserAnswer1 = {
               itemSections.itemSecurityTraderDetails match {
                 case Some(value) =>
                   userAnswers
@@ -107,7 +126,20 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
               .unsafeSetVal(ConsigneeForAllItemsPage)(false)
               .unsafeSetVal(AddConsigneePage)(false)
 
-            val setItemSections = ItemSectionSpec.setItemSections(Seq(itemSections, itemSections).toList)(updatedUserAnswer)
+            val updatedUserAnswer2 = itemSections.previousReferences match {
+              case None =>
+                updatedUserAnswer1
+                  .unsafeSetVal(DeclarationTypePage)(genOtherDeclarationType)
+                  .unsafeSetVal(CountryOfDispatchPage)(genNonEUCountries)
+                  .unsafeSetVal(AddAdministrativeReferencePage(Index(0)))(false)
+                  .unsafeSetVal(AddAdministrativeReferencePage(Index(1)))(false)
+              case Some(_) =>
+                updatedUserAnswer1
+                  .unsafeSetVal(DeclarationTypePage)(genT2DeclarationType)
+                  .unsafeSetVal(CountryOfDispatchPage)(genNonEUCountries)
+            }
+
+            val setItemSections = ItemSectionSpec.setItemSections(Seq(itemSections, itemSections).toList)(updatedUserAnswer2)
 
             val result = ItemSection.readerItemSections.run(setItemSections)
 
@@ -136,7 +168,9 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
 
     itemSections.zipWithIndex.foldLeft(startUserAnswers) {
       case (ua, (section, i)) =>
-        val updatedUserAnswer = ua.unsafeSetVal(AddDocumentsPage(Index(i)))(section.producedDocuments.isDefined)
+        val updatedUserAnswer =
+          ua.unsafeSetVal(AddDocumentsPage(Index(i)))(section.producedDocuments.isDefined)
+            .unsafeSetVal(AddAdministrativeReferencePage(Index(i)))(section.previousReferences.isDefined)
         ItemSectionSpec.setItemSection(section, Index(i))(updatedUserAnswer)
     }
   }
@@ -172,7 +206,15 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         ProducedDocumentSpec.setProducedDocumentsUserAnswers(producedDocument, itemIndex, Index(index))(userAnswers)
     })
 
-  def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(userAnswers: UserAnswers): UserAnswers =
+  private def setPreviousReferences(previousReferences: Option[NonEmptyList[PreviousReferences]], itemIndex: Index)(
+    startUserAnswers: UserAnswers): UserAnswers =
+    previousReferences.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
+      case (userAnswers, (previousReferences, index)) =>
+        PreviousReferenceSpec.setPreviousReferenceUserAnswers(previousReferences, itemIndex, Index(index))(userAnswers)
+    })
+
+  private def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(
+    userAnswers: UserAnswers): UserAnswers =
     itemsSecurityTraderDetails match {
       case Some(result) => ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(result, index)(userAnswers)
       case None         => userAnswers
@@ -186,6 +228,7 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
         setContainers(itemSection.containers, itemIndex) andThen
         setSpecialMentions(itemSection.specialMentions, itemIndex) andThen
         setProducedDocuments(itemSection.producedDocuments, itemIndex) andThen
-        setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex)
+        setItemsSecurityTraderDetails(itemSection.itemSecurityTraderDetails, itemIndex) andThen
+        setPreviousReferences(itemSection.previousReferences, itemIndex)
     )(startUserAnswers)
 }

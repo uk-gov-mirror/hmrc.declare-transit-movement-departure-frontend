@@ -17,9 +17,9 @@
 package services
 
 import java.time.{LocalDate, LocalDateTime}
+
 import cats.data.NonEmptyList
 import cats.implicits._
-
 import javax.inject.Inject
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
@@ -30,7 +30,7 @@ import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
-import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
+import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, ProducedDocument, TraderDetails, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
@@ -42,6 +42,7 @@ import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, U
 import play.api.Logger
 import repositories.InterchangeControlReferenceIdRepository
 
+import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DeclarationRequestServiceInt {
@@ -119,34 +120,42 @@ class DeclarationRequestService @Inject()(
           RegularPackage(packageType.code, howManyPackagesPage, markOrNumber)
       }
 
-    // TODO finish this off
     def goodsItems(goodsItems: NonEmptyList[ItemSection], guaranteeDetails: NonEmptyList[GuaranteeDetails]): NonEmptyList[GoodsItem] =
       goodsItems.zipWithIndex.map {
         case (itemSection, index) =>
           GoodsItem(
             itemNumber                       = index + 1,
             commodityCode                    = itemSection.itemDetails.commodityCode,
-            declarationType                  = None,
+            declarationType                  = None, // Clarify with policy
             description                      = itemSection.itemDetails.itemDescription,
             grossMass                        = Some(BigDecimal(itemSection.itemDetails.totalGrossMass)),
             netMass                          = itemSection.itemDetails.totalNetMass.map(BigDecimal(_)),
-            countryOfDispatch                = None,
-            countryOfDestination             = None,
+            countryOfDispatch                = None, // Not required, defined at header level
+            countryOfDestination             = None, // Not required, defined at header level
             methodOfPayment                  = itemSection.itemSecurityTraderDetails.flatMap(_.methodOfPayment),
             commercialReferenceNumber        = itemSection.itemSecurityTraderDetails.flatMap(_.commercialReferenceNumber),
             dangerousGoodsCode               = itemSection.itemSecurityTraderDetails.flatMap(_.dangerousGoodsCode),
-            previousAdministrativeReferences = Seq.empty,
-            producedDocuments                = Seq.empty,
+            previousAdministrativeReferences = previousAdministrativeReference(itemSection.previousReferences),
+            producedDocuments                = producedDocuments(itemSection.producedDocuments),
             specialMention                   = additionalInformationLiabilityAmount(index, guaranteeDetails),
             traderConsignorGoodsItem         = traderConsignor(itemSection.consignor),
             traderConsigneeGoodsItem         = traderConsignee(itemSection.consignee),
-            containers                       = Seq.empty,
+            containers                       = containers(itemSection.containers),
             packages                         = packages(itemSection.packages).toList,
-            sensitiveGoodsInformation        = Seq.empty, //TODO look up this
+            sensitiveGoodsInformation        = Seq.empty, // Not required, defined at security level
             GoodsItemSafetyAndSecurityConsignor(itemSection.itemSecurityTraderDetails),
             GoodsItemSafetyAndSecurityConsignee(itemSection.itemSecurityTraderDetails)
           )
       }
+
+    def previousAdministrativeReference(previousReferences: Option[NonEmptyList[PreviousReferences]]): Seq[PreviousAdministrativeReference] =
+      previousReferences.map(_.toList.map(x => PreviousAdministrativeReference(x.referenceType, x.previousReference, x.extraInformation))).getOrElse(List.empty)
+
+    def producedDocuments(producedDocument: Option[NonEmptyList[models.journeyDomain.ProducedDocument]]): Seq[goodsitem.ProducedDocument] =
+      producedDocument.map(_.toList.map(x => goodsitem.ProducedDocument(x.documentType, Some(x.documentReference), x.extraInformation))).getOrElse(List.empty)
+
+    def containers(containers: Option[NonEmptyList[Container]]): Seq[String] =
+      containers.map(_.toList.map(_.containerNumber)).getOrElse(List.empty)
 
     def GoodsItemSafetyAndSecurityConsignor(itemSecurityTraderDetails: Option[ItemsSecurityTraderDetails]): Option[GoodsItemSecurityConsignor] =
       itemSecurityTraderDetails.flatMap {

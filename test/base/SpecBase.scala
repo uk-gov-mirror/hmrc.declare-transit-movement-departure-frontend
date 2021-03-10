@@ -17,6 +17,7 @@
 package base
 
 import models.domain.SealDomain
+import models.reference.CountryCode
 import models.{DepartureId, EoriNumber, Index, LocalReferenceNumber, PrincipalAddress, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -29,6 +30,9 @@ import play.api.test.Helpers
 import uk.gov.hmrc.http.HeaderCarrier
 
 trait SpecBase extends AnyFreeSpec with Matchers with OptionValues with TryValues with ScalaFutures with IntegrationPatience with MockitoSugar {
+
+  val nonEUCountries =
+    Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))
 
   val userAnswersId             = "id"
   val eoriNumber: EoriNumber    = EoriNumber("EoriNumber")
