@@ -81,7 +81,7 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
             answers =>
               navigator
                 .nextPage(DestinationOfficePage, NormalMode, answers)
-                .mustBe(routes.OfficeOfTransitCountryController.onPageLoad(answers.id, NormalMode))
+                .mustBe(routes.OfficeOfTransitCountryController.onPageLoad(answers.id, index, NormalMode))
           }
         }
 
@@ -90,7 +90,7 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(OfficeOfTransitCountryPage, NormalMode, answers)
+                .nextPage(OfficeOfTransitCountryPage(index), NormalMode, answers)
                 .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(answers.id, index, NormalMode))
           }
         }
@@ -227,7 +227,7 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
           navigator
             .nextPage(ConfirmRemoveOfficeOfTransitPage, NormalMode, userAnswers)
-            .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
+            .mustBe(routes.OfficeOfTransitCountryController.onPageLoad(emptyUserAnswers.id, index, NormalMode))
 
         }
       }
@@ -313,7 +313,7 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(OfficeOfTransitCountryPage, CheckMode, answers)
+              .nextPage(OfficeOfTransitCountryPage(index), CheckMode, answers)
               .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(answers.id, index, CheckMode))
 
         }

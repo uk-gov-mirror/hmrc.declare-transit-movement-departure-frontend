@@ -65,7 +65,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
   "AddAnotherTransitOffice Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage, countryCode).success.value
+      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage(index), countryCode).success.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
@@ -121,7 +121,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
         .set(AddAnotherTransitOfficePage(index), customsOffice1.id)
         .success
         .value
-        .set(OfficeOfTransitCountryPage, countryCode)
+        .set(OfficeOfTransitCountryPage(index), countryCode)
         .success
         .value
       dataRetrievalWithData(userAnswers)
@@ -159,7 +159,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage, countryCode).success.value
+      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage(index), countryCode).success.value
       dataRetrievalWithData(userAnswers)
       when(mockRefDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any()))
         .thenReturn(Future.successful(customsOffices))
@@ -177,7 +177,7 @@ class AddAnotherTransitOfficeControllerSpec extends SpecBase with MockNunjucksRe
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage, countryCode).success.value
+      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage(index), countryCode).success.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))

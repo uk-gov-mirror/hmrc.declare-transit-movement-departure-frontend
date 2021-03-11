@@ -52,7 +52,7 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
   private val form         = formProvider(countries)
   private val template     = "officeOfTransitCountry.njk"
 
-  lazy val officeOfTransitCountryRoute = routes.OfficeOfTransitCountryController.onPageLoad(lrn, NormalMode).url
+  lazy val officeOfTransitCountryRoute = routes.OfficeOfTransitCountryController.onPageLoad(lrn, index, NormalMode).url
 
   def jsonCountryList(preSelected: Boolean): Seq[JsObject] = Seq(
     Json.obj("text" -> "", "value"               -> ""),
@@ -91,7 +91,7 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
         "mode"        -> NormalMode,
         "lrn"         -> lrn,
         "countries"   -> jsonCountryList(preSelected = false),
-        "onSubmitUrl" -> routes.OfficeOfTransitCountryController.onSubmit(lrn, NormalMode).url
+        "onSubmitUrl" -> routes.OfficeOfTransitCountryController.onSubmit(lrn, index, NormalMode).url
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -108,7 +108,7 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
 
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
-      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage, CountryCode("GB")).success.value
+      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage(index), CountryCode("GB")).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, officeOfTransitCountryRoute)
@@ -128,7 +128,7 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
         "lrn"         -> lrn,
         "mode"        -> NormalMode,
         "countries"   -> jsonCountryList(true),
-        "onSubmitUrl" -> routes.OfficeOfTransitCountryController.onSubmit(lrn, NormalMode).url
+        "onSubmitUrl" -> routes.OfficeOfTransitCountryController.onSubmit(lrn, index, NormalMode).url
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey

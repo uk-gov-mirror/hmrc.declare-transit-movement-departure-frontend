@@ -16,10 +16,11 @@
 
 package pages
 
+import models.Index
 import models.reference.CountryCode
 import play.api.libs.json.JsPath
 
-case object OfficeOfTransitCountryPage extends QuestionPage[CountryCode] {
+case class OfficeOfTransitCountryPage(index: Index) extends QuestionPage[CountryCode] {
 
   override def path: JsPath = JsPath \ toString
 

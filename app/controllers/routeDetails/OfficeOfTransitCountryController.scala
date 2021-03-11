@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.OfficeOfTransitCountryFormProvider
 import javax.inject.Inject
 import models.reference.Country
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
 import pages.OfficeOfTransitCountryPage
@@ -53,47 +53,47 @@ class OfficeOfTransitCountryController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       referenceDataConnector.getTransitCountryList() flatMap {
         countries =>
           val form = formProvider(countries)
 
           val preparedForm = request.userAnswers
-            .get(OfficeOfTransitCountryPage)
+            .get(OfficeOfTransitCountryPage(index))
             .flatMap(countries.getCountry)
             .map(form.fill)
             .getOrElse(form)
 
-          renderPage(lrn, mode, preparedForm, countries.fullList, Results.Ok)
+          renderPage(lrn, index, mode, preparedForm, countries.fullList, Results.Ok)
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       referenceDataConnector.getTransitCountryList() flatMap {
         countries =>
           formProvider(countries)
             .bindFromRequest()
             .fold(
-              formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList, Results.BadRequest),
+              formWithErrors => renderPage(lrn, index, mode, formWithErrors, countries.fullList, Results.BadRequest),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfTransitCountryPage, value.code))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfTransitCountryPage(index), value.code))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(OfficeOfTransitCountryPage, mode, updatedAnswers))
+                } yield Redirect(navigator.nextPage(OfficeOfTransitCountryPage(index), mode, updatedAnswers))
             )
       }
   }
 
-  def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
+  def renderPage(lrn: LocalReferenceNumber, index: Index, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
     implicit request: Request[AnyContent]): Future[Result] = {
     val json = Json.obj(
       "form"        -> form,
       "lrn"         -> lrn,
       "mode"        -> mode,
       "countries"   -> countryJsonList(form.value, countries),
-      "onSubmitUrl" -> routes.OfficeOfTransitCountryController.onSubmit(lrn, mode).url
+      "onSubmitUrl" -> routes.OfficeOfTransitCountryController.onSubmit(lrn, index, mode).url
     )
 
     renderer.render("officeOfTransitCountry.njk", json).map(status(_))
