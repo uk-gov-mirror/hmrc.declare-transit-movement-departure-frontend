@@ -75,12 +75,22 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
 
-        "must go from Destination Office Page to Add another transit office page" in {
+        "must go from Destination Office Page to Office Of Transit Country page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
                 .nextPage(DestinationOfficePage, NormalMode, answers)
+                .mustBe(routes.OfficeOfTransitCountryController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Office Of Transit Country to Add Another Transit Office page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(OfficeOfTransitCountryPage, NormalMode, answers)
                 .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(answers.id, index, NormalMode))
           }
         }
@@ -274,6 +284,18 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
       }
 
+      "Must go from Movement Destination Country to Destination Office" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(MovementDestinationCountryPage, CheckMode, answers)
+              .mustBe(routes.DestinationOfficeController.onPageLoad(answers.id, CheckMode))
+
+        }
+
+      }
+
       "Must go from Destination Office to Router Details Check Your Answers" in {
 
         forAll(arbitrary[UserAnswers]) {
@@ -284,6 +306,17 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         }
 
+      }
+
+      "Must go from Office Of Transit Country to Add Another Transit Office" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(OfficeOfTransitCountryPage, CheckMode, answers)
+              .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(answers.id, index, CheckMode))
+
+        }
       }
     }
   }

@@ -17,9 +17,10 @@
 package controllers.routeDetails
 
 import base.{MockNunjucksRendererApp, SpecBase}
+import connectors.ReferenceDataConnector
 import forms.OfficeOfTransitCountryFormProvider
 import matchers.JsonMatchers
-import models.NormalMode
+import models.{CountryList, NormalMode}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -36,23 +37,33 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
+import models.reference.{Country, CountryCode}
 
 import scala.concurrent.Future
 
 class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with NunjucksSupport with JsonMatchers {
 
+  val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+
   def onwardRoute = Call("GET", "/foo")
 
+  private val countries    = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
   private val formProvider = new OfficeOfTransitCountryFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(countries)
   private val template     = "officeOfTransitCountry.njk"
 
   lazy val officeOfTransitCountryRoute = routes.OfficeOfTransitCountryController.onPageLoad(lrn, NormalMode).url
+
+  def jsonCountryList(preSelected: Boolean): Seq[JsObject] = Seq(
+    Json.obj("text" -> "", "value"               -> ""),
+    Json.obj("text" -> "United Kingdom", "value" -> "GB", "selected" -> preSelected)
+  )
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[Navigator]).qualifiedWith(classOf[RouteDetails]).toInstance(new FakeNavigator(onwardRoute)))
+      .overrides(bind(classOf[ReferenceDataConnector]).toInstance(mockReferenceDataConnector))
 
   "OfficeOfTransitCountry Controller" - {
 
@@ -60,6 +71,8 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -74,9 +87,11 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val expectedJson = Json.obj(
-        "form" -> form,
-        "mode" -> NormalMode,
-        "lrn"  -> lrn
+        "form"        -> form,
+        "mode"        -> NormalMode,
+        "lrn"         -> lrn,
+        "countries"   -> jsonCountryList(preSelected = false),
+        "onSubmitUrl" -> routes.OfficeOfTransitCountryController.onSubmit(lrn, NormalMode).url
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -91,7 +106,9 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage, "answer").success.value
+      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
+      val userAnswers = emptyUserAnswers.set(OfficeOfTransitCountryPage, CountryCode("GB")).success.value
       dataRetrievalWithData(userAnswers)
 
       val request        = FakeRequest(GET, officeOfTransitCountryRoute)
@@ -104,12 +121,14 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
 
       verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> "GB"))
 
       val expectedJson = Json.obj(
-        "form" -> filledForm,
-        "lrn"  -> lrn,
-        "mode" -> NormalMode
+        "form"        -> filledForm,
+        "lrn"         -> lrn,
+        "mode"        -> NormalMode,
+        "countries"   -> jsonCountryList(true),
+        "onSubmitUrl" -> routes.OfficeOfTransitCountryController.onSubmit(lrn, NormalMode).url
       )
 
       val jsonWithoutConfig = jsonCaptor.getValue - configKey
@@ -123,11 +142,13 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
+
       dataRetrievalWithData(emptyUserAnswers)
 
       val request =
         FakeRequest(POST, officeOfTransitCountryRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "GB"))
 
       val result = route(app, request).value
 
@@ -140,6 +161,8 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
+
+      when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
 
       dataRetrievalWithData(emptyUserAnswers)
 
@@ -185,7 +208,7 @@ class OfficeOfTransitCountryControllerSpec extends SpecBase with MockNunjucksRen
 
       val request =
         FakeRequest(POST, officeOfTransitCountryRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", "GB"))
 
       val result = route(app, request).value
 

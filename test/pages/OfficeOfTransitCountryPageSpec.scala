@@ -16,16 +16,17 @@
 
 package pages
 
+import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
 class OfficeOfTransitCountryPageSpec extends PageBehaviours {
 
   "OfficeOfTransitCountryPage" - {
 
-    beRetrievable[String](OfficeOfTransitCountryPage)
+    beRetrievable[CountryCode](OfficeOfTransitCountryPage)
 
-    beSettable[String](OfficeOfTransitCountryPage)
+    beSettable[CountryCode](OfficeOfTransitCountryPage)
 
-    beRemovable[String](OfficeOfTransitCountryPage)
+    beRemovable[CountryCode](OfficeOfTransitCountryPage)
   }
 }

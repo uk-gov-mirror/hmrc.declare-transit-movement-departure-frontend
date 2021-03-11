@@ -53,8 +53,6 @@ class MovementDestinationCountryController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val template = "movementDestinationCountry.njk"
-
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
       referenceDataConnector.getTransitCountryList() flatMap {

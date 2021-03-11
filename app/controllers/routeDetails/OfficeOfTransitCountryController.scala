@@ -16,20 +16,24 @@
 
 package controllers.routeDetails
 
+import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.OfficeOfTransitCountryFormProvider
 import javax.inject.Inject
+import models.reference.Country
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
 import pages.OfficeOfTransitCountryPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result, Results}
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import utils.countryJsonList
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,6 +44,7 @@ class OfficeOfTransitCountryController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  referenceDataConnector: ReferenceDataConnector,
   formProvider: OfficeOfTransitCountryFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -48,45 +53,49 @@ class OfficeOfTransitCountryController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  private val form     = formProvider()
-  private val template = "officeOfTransitCountry.njk"
-
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(OfficeOfTransitCountryPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      referenceDataConnector.getTransitCountryList() flatMap {
+        countries =>
+          val form = formProvider(countries)
+
+          val preparedForm = request.userAnswers
+            .get(OfficeOfTransitCountryPage)
+            .flatMap(countries.getCountry)
+            .map(form.fill)
+            .getOrElse(form)
+
+          renderPage(lrn, mode, preparedForm, countries.fullList, Results.Ok)
       }
-
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render(template, json).map(Ok(_))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
+      referenceDataConnector.getTransitCountryList() flatMap {
+        countries =>
+          formProvider(countries)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList, Results.BadRequest),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfTransitCountryPage, value.code))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(OfficeOfTransitCountryPage, mode, updatedAnswers))
             )
+      }
+  }
 
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfTransitCountryPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(OfficeOfTransitCountryPage, mode, updatedAnswers))
-        )
+  def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
+    implicit request: Request[AnyContent]): Future[Result] = {
+    val json = Json.obj(
+      "form"        -> form,
+      "lrn"         -> lrn,
+      "mode"        -> mode,
+      "countries"   -> countryJsonList(form.value, countries),
+      "onSubmitUrl" -> routes.OfficeOfTransitCountryController.onSubmit(lrn, mode).url
+    )
+
+    renderer.render("officeOfTransitCountry.njk", json).map(status(_))
   }
 }
