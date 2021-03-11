@@ -41,9 +41,6 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
         Some(routes.DestinationOfficeController.onPageLoad(ua.id, NormalMode))
     case DestinationOfficePage =>
       ua =>
-        Some(routes.OfficeOfTransitCountryController.onPageLoad(ua.id, NormalMode))
-    case OfficeOfTransitCountryPage =>
-      ua =>
         Some(routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(0), NormalMode))
     case AddAnotherTransitOfficePage(index) =>
       ua =>
@@ -67,9 +64,6 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     case MovementDestinationCountryPage =>
       ua =>
         Some(routes.DestinationOfficeController.onPageLoad(ua.id, CheckMode))
-    case OfficeOfTransitCountryPage =>
-      ua =>
-        Some(routes.AddAnotherTransitOfficeController.onPageLoad(ua.id, Index(0), CheckMode))
     case page if isRouteDetailsSectionPage(page) =>
       ua =>
         Some(routes.RouteDetailsCheckYourAnswersController.onPageLoad(ua.id))
