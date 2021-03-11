@@ -22,7 +22,7 @@ import models.UserAnswers
 
 class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
-  "JourneyDomain" - {
+  "JourneyDomain" ignore {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(arb[JourneyDomain]) {
