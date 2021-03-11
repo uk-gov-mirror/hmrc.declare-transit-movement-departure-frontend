@@ -632,9 +632,14 @@ class TaskListViewModelSpec
         }
 
         "is Completed when all the answers are completed" in {
-          forAll(arb[GoodsSummary]) {
+
+          val isSecurityDefined = arb[Boolean].sample.value
+
+          forAll(arb(arbitraryGoodsSummary(isSecurityDefined))) {
             sectionDetails =>
-              val userAnswers = GoodsSummarySpec.setGoodsSummary(sectionDetails)(emptyUserAnswers)
+              val userAnswers = GoodsSummarySpec
+                .setGoodsSummary(sectionDetails)(emptyUserAnswers)
+                .unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
               val viewModel = TaskListViewModel(userAnswers)
 
@@ -666,9 +671,13 @@ class TaskListViewModelSpec
         }
 
         "when the status is Completed, links to the Check your answers page for the section" in {
-          forAll(arb[GoodsSummary]) {
+          val isSecurityDefined = arb[Boolean].sample.value
+
+          forAll(arb(arbitraryGoodsSummary(isSecurityDefined))) {
             sectionDetails =>
-              val userAnswers = GoodsSummarySpec.setGoodsSummary(sectionDetails)(emptyUserAnswers)
+              val userAnswers = GoodsSummarySpec
+                .setGoodsSummary(sectionDetails)(emptyUserAnswers)
+                .unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
               val viewModel = TaskListViewModel(userAnswers)
 
@@ -676,7 +685,6 @@ class TaskListViewModelSpec
 
               viewModel.getHref(goodsSummarySectionName).value mustEqual expectedHref
           }
-
         }
       }
     }
