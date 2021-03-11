@@ -198,4 +198,19 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
       )
   }
+
+  def officeOfTransitCountry: Option[Row] = userAnswers.get(OfficeOfTransitCountryPage) map {
+    answer =>
+      Row(
+        key   = Key(msg"officeOfTransitCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+        value = Value(lit"$answer"),
+        actions = List(
+          Action(
+            content            = msg"site.edit",
+            href               = routes.OfficeOfTransitCountryController.onPageLoad(lrn, CheckMode).url,
+            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"officeOfTransitCountry.checkYourAnswersLabel"))
+          )
+        )
+      )
+  }
 }
