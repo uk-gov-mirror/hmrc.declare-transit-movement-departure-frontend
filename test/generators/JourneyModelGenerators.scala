@@ -17,8 +17,7 @@
 package generators
 
 import java.time.{LocalDate, LocalDateTime}
-
-import cats.data.NonEmptyList
+import cats.data.{NonEmptyList, NonEmptyMap}
 import models.DeclarationType.{Option2, Option4}
 import models._
 import models.domain.{Address, SealDomain}
@@ -59,14 +58,14 @@ trait JourneyModelGenerators {
       simplifiedTaskList = preTaskList.copy(procedureType = ProcedureType.Simplified)
       movementDetails <- arbitrary[SimplifiedMovementDetails]
       isSecurityDetailsRequired = preTaskList.addSecurityDetails
-      routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
-      transportDetails  <- arbitrary[TransportDetails]
-      traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
-      safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-      itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
-      goodsummarydetailsType = arbitrary[GoodSummarySimplifiedDetails]
-      goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
-      guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
+      routeDetails           <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
+      transportDetails       <- arbitrary[TransportDetails]
+      traderDetails          <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
+      safetyAndSecurity      <- arbitrary[SafetyAndSecurity]
+      itemDetails            <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
+      goodsummarydetailsType <- arbitrary[GoodSummarySimplifiedDetails]
+      goodsSummary           <- arbitraryGoodsSummary(isSecurityDetailsRequired, goodsummarydetailsType).arbitrary
+      guarantees             <- nonEmptyListOf[GuaranteeDetails](3)
     } yield
       JourneyDomain(
         simplifiedTaskList,
@@ -86,14 +85,14 @@ trait JourneyModelGenerators {
       simplifiedTaskList = preTaskList.copy(procedureType = ProcedureType.Normal)
       movementDetails <- arbitrary[NormalMovementDetails]
       isSecurityDetailsRequired = preTaskList.addSecurityDetails
-      routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
-      transportDetails  <- arbitrary[TransportDetails]
-      traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
-      safetyAndSecurity <- arbitrary[SafetyAndSecurity]
-      itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
-      goodsummarydetailsType = arbitrary[GoodSummaryNormalDetails]
-      goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
-      guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
+      routeDetails           <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
+      transportDetails       <- arbitrary[TransportDetails]
+      traderDetails          <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
+      safetyAndSecurity      <- arbitrary[SafetyAndSecurity]
+      itemDetails            <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
+      goodsummarydetailsType <- arbitrary[GoodSummaryNormalDetails]
+      goodsSummary           <- arbitraryGoodsSummary(isSecurityDetailsRequired, goodsummarydetailsType).arbitrary
+      guarantees             <- nonEmptyListOf[GuaranteeDetails](3)
     } yield
       JourneyDomain(
         simplifiedTaskList,
@@ -705,18 +704,18 @@ trait JourneyModelGenerators {
       Gen.oneOf(arbitrary[GoodSummaryNormalDetails], arbitrary[GoodSummarySimplifiedDetails])
     }
 
-  implicit def arbitraryGoodsSummary(implicit arbitraryGoodSummaryDetails: Arbitrary[GoodSummaryDetails]): Arbitrary[GoodsSummary] =
+  def arbitraryGoodsSummary(safetyAndSecurity: Boolean = false, goodSummaryDetails: GoodSummaryDetails): Arbitrary[GoodsSummary] =
     Arbitrary {
       for {
-        numberOfPackages   <- Gen.option(Gen.choose(1, 100))
-        totalMass          <- Gen.choose(1, 100).map(_.toString)
-        goodSummaryDetails <- arbitraryGoodSummaryDetails.arbitrary
-        sealNumbers        <- listWithMaxLength[SealDomain](10)
+        loadingPlace     <- if (safetyAndSecurity) { nonEmptyString.map(Some(_)) } else { Gen.const(None) }
+        numberOfPackages <- Gen.option(Gen.choose(1, 100))
+        totalMass        <- Gen.choose(1, 100).map(_.toString)
+        sealNumbers      <- listWithMaxLength[SealDomain](10)
       } yield
         GoodsSummary(
           numberOfPackages,
           totalMass,
-          None, // loadingPlace,
+          loadingPlace,
           goodSummaryDetails,
           sealNumbers
         )

@@ -382,7 +382,7 @@ class DeclarationRequestService @Inject()(
         agrLocOfGooCodHEA38 = None, // Not required
         agrLocOfGooHEA39    = agreedLocationOfGoods(movementDetails, goodsSummary.goodSummaryDetails),
         autLocOfGooCodHEA41 = goodsSummarySimplifiedDetails(goodsSummary.goodSummaryDetails).map(_.authorisedLocationCode),
-        plaOfLoaCodHEA46    = None, // Journey is currently missing for this
+        plaOfLoaCodHEA46    = goodsSummary.loadingPlace,
         couOfDisCodHEA55    = Some(routeDetails.countryOfDispatch.code),
         cusSubPlaHEA66      = customsSubPlace(goodsSummary),
         transportDetails = Transport(
