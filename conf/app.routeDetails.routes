@@ -44,3 +44,8 @@ GET        /:lrn/route/:index/confirm-remove-office-of-transit                  
 POST       /:lrn/route/:index/confirm-remove-office-of-transit                         controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = NormalMode)
 GET        /:lrn/route/:index/change-confirm-remove-office-of-transit                  controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
 POST       /:lrn/route/:index/change-confirm-remove-office-of-transit                  controllers.routeDetails.ConfirmRemoveOfficeOfTransitController.onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode = CheckMode)
+
+GET        /:lrn/route/office-of-transit-country                        controllers.routeDetails.OfficeOfTransitCountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/route/office-of-transit-country                       controllers.routeDetails.OfficeOfTransitCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/route/change-office-of-transit-country                 controllers.routeDetails.OfficeOfTransitCountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/route/change-office-of-transit-country                  controllers.routeDetails.OfficeOfTransitCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

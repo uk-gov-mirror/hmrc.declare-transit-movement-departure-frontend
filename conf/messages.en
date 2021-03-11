@@ -485,12 +485,11 @@ addTransitOffice.maxLimit.label = You cannot add any more offices of transit.
 officesOfTransit.checkYourAnswersLabel = Offices of transit
 addOrRemoveOfficesOfTransit.checkYourAnswersLabel = Add or remove offices of transit
 
-addAnotherTransitOffice.title = Which office of transit do you want to add?
-addAnotherTransitOffice.heading = Which office of transit do you want to add?
-addAnotherTransitOffice.label = Which office of transit do you want to add?
+addAnotherTransitOffice.title = What office of transit in {0} do you want to add?
+addAnotherTransitOffice.heading = What office of transit in {0} do you want to add?
 addAnotherTransitOffice.checkYourAnswersLabel = Office of transit {0}
-addAnotherTransitOffice.hintText = Give the office location or code. For example, Dover or GB000060.
-addAnotherTransitOffice.error.required = Select the office of transit you want to add
+addAnotherTransitOffice.paragraph = If there is no office of transit, enter the office of destination.
+addAnotherTransitOffice.error.required = Enter the office of transit in {0} that you want to add
 
 declarePackages.title = Do you have any packages to declare?
 declarePackages.heading = Do you have any packages to declare?
@@ -1495,3 +1494,9 @@ loadingPlace.error.required = Enter the loading place
 loadingPlace.error.length = The loading place must be 35 characters or less
 loadingPlace.error.invalid = The loading place must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 loadingPlace.paragraph = This is where the goods will be loaded onto the vehicle that will transport them. You can use the postcode or the location code (unlocode).
+
+officeOfTransitCountry.title = Which country is the office of transit in?
+officeOfTransitCountry.heading = Which country is the office of transit in?
+officeOfTransitCountry.checkYourAnswersLabel = officeOfTransitCountry
+officeOfTransitCountry.paragraph = This is where the goods and accompanying documents are presented. If there is no office of transit, enter the office of destination.
+officeOfTransitCountry.error.required = Enter the country the office of transit is in
