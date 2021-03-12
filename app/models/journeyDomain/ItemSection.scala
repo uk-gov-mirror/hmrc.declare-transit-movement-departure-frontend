@@ -94,17 +94,60 @@ object ItemSection {
       .lower
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
-    (
-      ItemDetails.itemDetailsReader(index),
-      ItemTraderDetails.consignorDetails(index),
-      ItemTraderDetails.consigneeDetails(index),
-      derivePackage(index),
-      deriveContainers(index),
-      deriveSpecialMentions(index),
-      ProducedDocument.deriveProducedDocuments(index),
-      securityItemsSecurityTraderDetails(index),
-      PreviousReferences.derivePreviousReferences(index)
-    ).tupled.map((ItemSection.apply _).tupled)
+    for {
+      a <- {
+        println(s"------START-------  \n\n 1")
+        ItemDetails.itemDetailsReader(index)
+      }
+      b <- {
+        println(s"2")
+        ItemTraderDetails.consignorDetails(index)
+      }
+      c <- {
+        println(s"3")
+        ItemTraderDetails.consigneeDetails(index)
+      }
+      d <- {
+        println(s"4")
+        derivePackage(index)
+      }
+      e <- {
+        println(s"5")
+        deriveContainers(index)
+      }
+      f <- {
+        println(s"6")
+        deriveSpecialMentions(index)
+      }
+      g <- {
+        println(s"7")
+        ProducedDocument.deriveProducedDocuments(index)
+      }
+      h <- {
+        println(s"8")
+        securityItemsSecurityTraderDetails(index)
+      }
+      i <- {
+        println(s"9")
+        PreviousReferences.derivePreviousReferences(index)
+      }
+    } yield {
+      println("\n\n------END------- \n")
+      ItemSection(a, b, c, d, e, f, g, h, i)
+    }
+
+  //
+  //    (
+  //      ItemDetails.itemDetailsReader(index),
+  //      ItemTraderDetails.consignorDetails(index),
+  //      ItemTraderDetails.consigneeDetails(index),
+  //      derivePackage(index),
+  //      deriveContainers(index),
+  //      deriveSpecialMentions(index),
+  //      ProducedDocument.deriveProducedDocuments(index),
+  //      securityItemsSecurityTraderDetails(index),
+  //      PreviousReferences.derivePreviousReferences(index)
+  //    ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =
     DeriveNumberOfItems.reader

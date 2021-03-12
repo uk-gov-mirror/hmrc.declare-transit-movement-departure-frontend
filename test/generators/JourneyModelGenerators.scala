@@ -403,8 +403,13 @@ trait JourneyModelGenerators {
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
     val isDocumentTypeMandatory = addSafetyAndSecurity &&
-      safetyAndSecurity.commercialReferenceNumber.isDefined &&
-      safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
+      safetyAndSecurity.commercialReferenceNumber.isEmpty &&
+      safetyAndSecurity.circumstanceIndicator.isDefined
+
+    println(s"\n\n^^^^^^^ $addSafetyAndSecurity")
+    println(s"^^^^^^^ ${safetyAndSecurity.commercialReferenceNumber.isDefined}")
+    println(s"^^^^^^^ ${safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))}")
+    println(s"^^^^^^^ $isDocumentTypeMandatory")
 
     val isPreviousReferenceMandatory: Boolean = (movementDetails.declarationType, routeDetails.countryOfDispatch) match {
       case (Option2 | Option4, code) if nonEUCountries.contains(code) => true

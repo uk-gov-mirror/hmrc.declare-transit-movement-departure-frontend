@@ -54,15 +54,42 @@ object JourneyDomain {
     }
 
     for {
-      preTaskList       <- UserAnswersReader[PreTaskListDetails]
-      movementDetails   <- UserAnswersReader[MovementDetails]
-      routeDetails      <- UserAnswersReader[RouteDetails]
-      transportDetails  <- UserAnswersReader[TransportDetails]
-      traderDetails     <- UserAnswersReader[TraderDetails]
-      itemDetails       <- UserAnswersReader[NonEmptyList[ItemSection]]
-      goodsSummary      <- UserAnswersReader[GoodsSummary]
-      guarantee         <- UserAnswersReader[NonEmptyList[GuaranteeDetails]]
-      safetyAndSecurity <- safetyAndSecurityReader
+      preTaskList <- {
+        //println(s"******START******** \n\n PretaskList")
+        UserAnswersReader[PreTaskListDetails]
+      }
+      movementDetails <- {
+        //println(s"movementDetails")
+        UserAnswersReader[MovementDetails]
+      }
+      routeDetails <- {
+        //println(s"routeDetails")
+        UserAnswersReader[RouteDetails]
+      }
+      transportDetails <- {
+        //println(s"transportDetails")
+        UserAnswersReader[TransportDetails]
+      }
+      traderDetails <- {
+        //println(s"traderDetails")
+        UserAnswersReader[TraderDetails]
+      }
+      itemDetails <- {
+        //println(s"itemDetails")
+        UserAnswersReader[NonEmptyList[ItemSection]]
+      }
+      goodsSummary <- {
+        //println(s"goodsSummary")
+        UserAnswersReader[GoodsSummary]
+      }
+      guarantee <- {
+        //println(s"guarantee")
+        UserAnswersReader[NonEmptyList[GuaranteeDetails]]
+      }
+      safetyAndSecurity <- {
+        //println(s"safetyAndSecurity \n\n ********END****** \n\n")
+        safetyAndSecurityReader
+      }
     } yield
       JourneyDomain(
         preTaskList,
