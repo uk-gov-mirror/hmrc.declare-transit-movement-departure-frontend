@@ -55,11 +55,11 @@ object ProducedDocument {
       addRef <- {
         println(s"GOT ADD COMMERCIAL REFERENCE NUMBER")
         AddCommercialReferenceNumberPage.optionalReader
-      }
+      } // False
       addCircumstance <- {
         println(s"GOT ADD CIRCUMSTANCE INDICATOR")
         AddCircumstanceIndicatorPage.optionalReader
-      }
+      } // False
     } yield {
 
       println(s"GREAT SUCCESS $addSecurity \n\n")

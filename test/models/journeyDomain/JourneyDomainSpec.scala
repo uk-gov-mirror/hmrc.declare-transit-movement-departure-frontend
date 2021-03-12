@@ -43,26 +43,159 @@ import models.reference.{Country, CountryCode, CustomsOffice, PackageType}
 class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
   "JourneyDomain" - {
-//    "can be parsed UserAnswers" - {
-//      "when all details for section have been answered" in {
-//        forAll(arb[JourneyDomain]) {
-//          journeyDomain =>
-//            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
-//
-//            println(s"\n\n ${updatedUserAnswer.data} \n\n")
-//            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
-//
-//            result.value.preTaskList mustEqual journeyDomain.preTaskList
-//            result.value.movementDetails mustEqual journeyDomain.movementDetails
-//            result.value.routeDetails mustEqual journeyDomain.routeDetails
-//            result.value.transportDetails mustEqual journeyDomain.transportDetails
-//            result.value.traderDetails mustEqual journeyDomain.traderDetails
-//            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
-//            result.value.guarantee mustEqual journeyDomain.guarantee
-//            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
-//        }
-//      }
-//    }
+    "can be parsed UserAnswers" - {
+      "when all details for section have been answered" in {
+        forAll(arb[JourneyDomain]) {
+          journeyDomain =>
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
+
+            println(s"\n\n ${updatedUserAnswer.data} \n\n")
+            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
+        }
+      }
+
+      "when all details for section have been answered 1" in {
+        forAll(arb[JourneyDomain]) {
+          journeyDomain =>
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
+
+            println(s"\n\n ${updatedUserAnswer.data} \n\n")
+            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
+        }
+      }
+
+      "when all details for section have been answered 2" in {
+        forAll(arb[JourneyDomain]) {
+          journeyDomain =>
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
+
+            println(s"\n\n ${updatedUserAnswer.data} \n\n")
+            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
+        }
+      }
+
+      "when all details for section have been answered 3" in {
+        forAll(arb[JourneyDomain]) {
+          journeyDomain =>
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
+
+            println(s"\n\n ${updatedUserAnswer.data} \n\n")
+            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
+        }
+      }
+
+      "when all details for section have been answered 4" in {
+        forAll(arb[JourneyDomain]) {
+          journeyDomain =>
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
+
+            println(s"\n\n ${updatedUserAnswer.data} \n\n")
+            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
+        }
+      }
+
+      "when all details for section have been answered 5" in {
+        forAll(arb[JourneyDomain]) {
+          journeyDomain =>
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
+
+            println(s"\n\n ${updatedUserAnswer.data} \n\n")
+            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
+        }
+      }
+
+      "when all details for section have been answered 6" in {
+        forAll(arb[JourneyDomain]) {
+          journeyDomain =>
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
+
+            println(s"\n\n ${updatedUserAnswer.data} \n\n")
+            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
+        }
+      }
+
+      "when all details for section have been answered 7" in {
+        forAll(arb[JourneyDomain]) {
+          journeyDomain =>
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(emptyUserAnswers)
+
+            println(s"\n\n ${updatedUserAnswer.data} \n\n")
+            val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
+
+            result.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.value.guarantee mustEqual journeyDomain.guarantee
+            result.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
+        }
+      }
+    }
 
     "this should fail" in {
 

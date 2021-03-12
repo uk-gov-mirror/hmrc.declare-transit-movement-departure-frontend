@@ -406,10 +406,8 @@ trait JourneyModelGenerators {
       safetyAndSecurity.commercialReferenceNumber.isEmpty &&
       safetyAndSecurity.circumstanceIndicator.isDefined
 
-    println(s"\n\n^^^^^^^ $addSafetyAndSecurity")
-    println(s"^^^^^^^ ${safetyAndSecurity.commercialReferenceNumber.isDefined}")
-    println(s"^^^^^^^ ${safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))}")
-    println(s"^^^^^^^ $isDocumentTypeMandatory")
+    val thisIsCorrect = addSafetyAndSecurity &&
+      safetyAndSecurity.commercialReferenceNumber.isEmpty
 
     val isPreviousReferenceMandatory: Boolean = (movementDetails.declarationType, routeDetails.countryOfDispatch) match {
       case (Option2 | Option4, code) if nonEUCountries.contains(code) => true
@@ -423,7 +421,7 @@ trait JourneyModelGenerators {
       packages                  <- nonEmptyListOf[Packages](1)
       containers                <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
       specialMentions           <- Gen.option(nonEmptyListOf[SpecialMention](1))
-      producedDocuments         <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
+      producedDocuments         <- if (thisIsCorrect) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
       methodOfPayment           <- arbitrary[String]
       commercialReferenceNumber <- arbitrary[String]
       previousReferences        <- if (isPreviousReferenceMandatory) nonEmptyListOf[PreviousReferences](1).map(Some(_)) else Gen.const(None)
