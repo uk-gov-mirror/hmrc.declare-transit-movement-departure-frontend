@@ -47,7 +47,14 @@ object GoodsSummary {
                 none[Int].pure[UserAnswersReader]
           ),
         TotalGrossMassPage.reader,
-        none[String].pure[UserAnswersReader],
+        AddSecurityDetailsPage.reader
+          .flatMap(
+            bool =>
+              if (bool)
+                LoadingPlacePage.optionalReader
+              else
+                none[String].pure[UserAnswersReader]
+          ),
         UserAnswersReader[GoodSummaryDetails],
         DeriveNumberOfSeals.reader orElse List.empty[SealDomain].pure[UserAnswersReader]
       ).tupled
