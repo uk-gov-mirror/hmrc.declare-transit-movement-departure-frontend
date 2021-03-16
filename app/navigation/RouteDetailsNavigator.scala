@@ -97,7 +97,7 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
     userAnswers.get(AddTransitOfficePage) match {
       case Some(true) if count <= maxNumberOfOfficesAllowed =>
         val index = Index(count)
-        routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode)
+        routes.OfficeOfTransitCountryController.onPageLoad(userAnswers.id, index, mode)
       case _ =>
         routes.RouteDetailsCheckYourAnswersController.onPageLoad(userAnswers.id)
     }

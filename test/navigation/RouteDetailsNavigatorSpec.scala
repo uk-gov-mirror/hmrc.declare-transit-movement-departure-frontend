@@ -129,7 +129,7 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
 
-        "must go from Added transit office page to Add another transit office page when selected option 'Yes'" in {
+        "must go from Added transit office page to Office of Transit Country page when selected option 'Yes'" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -146,7 +146,7 @@ class RouteDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
               navigator
                 .nextPage(AddTransitOfficePage, NormalMode, userAnswers)
-                .mustBe(routes.AddAnotherTransitOfficeController.onPageLoad(answers.id, Index(2), NormalMode))
+                .mustBe(routes.OfficeOfTransitCountryController.onPageLoad(answers.id, Index(2), NormalMode))
           }
         }
 
