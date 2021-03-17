@@ -26,10 +26,15 @@ class OfficeOfTransitList(officesOfTransit: Seq[OfficeOfTransit]) {
   def getById(id: String): Option[OfficeOfTransit] =
     officesOfTransit.find(_.id == id)
 
-  def filter(customOfficeIds: Seq[String]): Seq[OfficeOfTransit] =
+  def filterNot(customOfficeIds: Seq[String]): Seq[OfficeOfTransit] =
     officesOfTransit.filterNot(
       office => customOfficeIds.contains(office.id)
     )
+
+  override def equals(obj: Any): Boolean = obj match {
+    case x: OfficeOfTransitList => x.getAll == getAll
+    case _                      => false
+  }
 
 }
 

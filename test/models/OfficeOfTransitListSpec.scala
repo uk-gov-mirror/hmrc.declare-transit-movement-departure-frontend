@@ -86,7 +86,7 @@ class OfficeOfTransitListSpec extends SpecBase with Generators with ScalaCheckPr
         OfficeOfTransit("5", "five")
       )
 
-      officeOfTransitList.filter(officeIds) must contain theSameElementsAs expectedOffices
+      officeOfTransitList.filterNot(officeIds) must contain theSameElementsAs expectedOffices
 
     }
 
@@ -109,7 +109,7 @@ class OfficeOfTransitListSpec extends SpecBase with Generators with ScalaCheckPr
         OfficeOfTransit("4", "four")
       )
 
-      officeOfTransitList.filter(officeIds) must contain theSameElementsAs expectedOffices
+      officeOfTransitList.filterNot(officeIds) must contain theSameElementsAs expectedOffices
 
     }
 
@@ -126,7 +126,7 @@ class OfficeOfTransitListSpec extends SpecBase with Generators with ScalaCheckPr
 
       val officeIds = Seq("13")
 
-      officeOfTransitList.filter(officeIds) must contain theSameElementsAs officesOfTransit
+      officeOfTransitList.filterNot(officeIds) must contain theSameElementsAs officesOfTransit
 
     }
 
