@@ -100,7 +100,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def addAnotherTransitOffice(index: Index, officeOfTransitList: OfficeOfTransitList): Option[Row] =
     userAnswers.get(AddAnotherTransitOfficePage(index)) flatMap {
       answer =>
-        officeOfTransitList.getOfficeOfTransit(answer) map {
+        officeOfTransitList.getById(answer) map {
           officeOfTransit =>
             Row(
               key   = Key(msg"addAnotherTransitOffice.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
@@ -156,10 +156,15 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def officeOfTransitRow(index: Index, officeOfTransitList: OfficeOfTransitList, mode: Mode): Option[Row] =
     userAnswers.get(AddAnotherTransitOfficePage(index)).flatMap {
       answer =>
-        officeOfTransitList.getOfficeOfTransit(answer).map {
+        officeOfTransitList.getById(answer).map {
           office =>
             val arrivalTime =
-              userAnswers.get(ArrivalTimesAtOfficePage(index)).map(time => s"${Format.dateTimeFormattedAMPM(time.localDateTime).toLowerCase}").getOrElse("")
+              userAnswers
+                .get(ArrivalTimesAtOfficePage(index))
+                .map(
+                  time => s"${Format.dateTimeFormattedAMPM(time.localDateTime).toLowerCase}"
+                )
+                .getOrElse("")
 
             Row(
               key   = Key(lit"${office.name} (${office.id})"),

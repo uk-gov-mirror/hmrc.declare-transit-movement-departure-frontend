@@ -18,9 +18,24 @@ package models
 
 import models.reference.OfficeOfTransit
 
-case class OfficeOfTransitList(officeOfTransits: Seq[OfficeOfTransit]) {
+class OfficeOfTransitList(officesOfTransit: Seq[OfficeOfTransit]) {
 
-  def getOfficeOfTransit(id: String): Option[OfficeOfTransit] =
-    officeOfTransits.find(_.id == id)
+  def getAll: Seq[OfficeOfTransit] =
+    officesOfTransit
+
+  def getById(id: String): Option[OfficeOfTransit] =
+    officesOfTransit.find(_.id == id)
+
+  def filter(customOfficeIds: Seq[String]): Seq[OfficeOfTransit] =
+    officesOfTransit.filterNot(
+      office => customOfficeIds.contains(office.id)
+    )
+
+}
+
+object OfficeOfTransitList {
+
+  def apply(officesOfTransit: Seq[OfficeOfTransit]): OfficeOfTransitList =
+    new OfficeOfTransitList(officesOfTransit)
 
 }
