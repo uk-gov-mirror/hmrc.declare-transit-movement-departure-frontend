@@ -375,8 +375,8 @@ consignorAddress.error.line3.invalid= The third line of the consignor’s addres
 countryOfDispatch.title = What is the country of dispatch?
 countryOfDispatch.heading = What is the country of dispatch?
 countryOfDispatch.checkYourAnswersLabel = Country of dispatch
-countryOfDispatch.label = This is the country where the goods started. This may not be where the transit movement started.
-countryOfDispatch.error.required = Select the country of dispatch
+countryOfDispatch.label = This is the country where the goods originated. This may not be where the transit movement started.
+countryOfDispatch.error.required = Enter the country of dispatch
 
 officeOfDeparture.title = Where is the office of departure?
 officeOfDeparture.heading = Where is the office of departure?
