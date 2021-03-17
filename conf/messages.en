@@ -1034,6 +1034,7 @@ addExtraDocumentInformation.error.required = Select yes if you need to add any e
 
 addDocuments.title = Do you need to add any produced documents or work certificates for item {0}?
 addDocuments.heading = Do you need to add any produced documents or work certificates for item {0}?
+addDocuments.paragraph = These include certificates of origin, authorised economic operator (AEO) certificates, or transit GB (TGB) documents for domestic goods moving between GB and NI.
 addDocuments.checkYourAnswersLabel = Do you need to add any produced documents or work certificates for item {0}?
 addDocuments.error.required = Select yes if you need to add any produced documents or work certificates for item {0}
 
