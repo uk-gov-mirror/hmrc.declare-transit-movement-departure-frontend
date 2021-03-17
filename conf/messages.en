@@ -375,8 +375,8 @@ consignorAddress.error.line3.invalid= The third line of the consignor’s addres
 countryOfDispatch.title = What is the country of dispatch?
 countryOfDispatch.heading = What is the country of dispatch?
 countryOfDispatch.checkYourAnswersLabel = Country of dispatch
-countryOfDispatch.label = This is the country where the goods started. This may not be where the transit movement started.
-countryOfDispatch.error.required = Select the country of dispatch
+countryOfDispatch.label = This is the country where the goods originated. This may not be where the transit movement started.
+countryOfDispatch.error.required = Enter the country of dispatch
 
 officeOfDeparture.title = Where is the office of departure?
 officeOfDeparture.heading = Where is the office of departure?
@@ -1495,7 +1495,6 @@ loadingPlace.error.required = Enter the loading place
 loadingPlace.error.length = The loading place must be 35 characters or less
 loadingPlace.error.invalid = The loading place must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 loadingPlace.paragraph = This is where the goods will be loaded onto the vehicle that will transport them. You can use the postcode or the location code (unlocode).
-
 
 officeOfTransitCountry.title = Which country is the office of transit in?
 officeOfTransitCountry.heading = Which country is the office of transit in?
