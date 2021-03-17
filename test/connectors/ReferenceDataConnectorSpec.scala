@@ -367,7 +367,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return Seq of Offices of transit when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/custom-offices"))
+          get(urlEqualTo(s"/$startUrl/customs-offices"))
             .willReturn(okJson(officeOfTransitResponseJson))
         )
 
