@@ -1495,6 +1495,7 @@ loadingPlace.error.length = The loading place must be 35 characters or less
 loadingPlace.error.invalid = The loading place must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 loadingPlace.paragraph = This is where the goods will be loaded onto the vehicle that will transport them. You can use the postcode or the location code (unlocode).
 
+
 officeOfTransitCountry.title = Which country is the office of transit in?
 officeOfTransitCountry.heading = Which country is the office of transit in?
 officeOfTransitCountry.checkYourAnswersLabel = officeOfTransitCountry
