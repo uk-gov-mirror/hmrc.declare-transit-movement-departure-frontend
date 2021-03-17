@@ -91,7 +91,7 @@ technicalDifficulties.heading = Sorry, there is a problem with the service
 technicalDifficulties.tryAgain = Try again later.
 technicalDifficulties.savedAnswers = We saved your answers. They will be available for up to 28 days.
 technicalDifficulties.contact = You can
-technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement(opens in a new tab)
+technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement(opens in a new tab).
 
 concurrent.officeOfTransit = office of transit
 concurrent.remove.error.title = Sorry, there is a problem with this {0}
@@ -1494,6 +1494,7 @@ loadingPlace.error.required = Enter the loading place
 loadingPlace.error.length = The loading place must be 35 characters or less
 loadingPlace.error.invalid = The loading place must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 loadingPlace.paragraph = This is where the goods will be loaded onto the vehicle that will transport them. You can use the postcode or the location code (unlocode).
+
 
 officeOfTransitCountry.title = Which country is the office of transit in?
 officeOfTransitCountry.heading = Which country is the office of transit in?
