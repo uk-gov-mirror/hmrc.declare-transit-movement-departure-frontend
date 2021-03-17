@@ -91,7 +91,7 @@ technicalDifficulties.heading = Sorry, there is a problem with the service
 technicalDifficulties.tryAgain = Try again later.
 technicalDifficulties.savedAnswers = We saved your answers. They will be available for up to 28 days.
 technicalDifficulties.contact = You can
-technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement(opens in a new tab)
+technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement(opens in a new tab).
 
 concurrent.officeOfTransit = office of transit
 concurrent.remove.error.title = Sorry, there is a problem with this {0}
