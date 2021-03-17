@@ -538,18 +538,34 @@ class TaskListViewModelSpec
       }
 
       "status" - {
-        "is Not started when there are no answers for the section" in {
+
+        "is Cannot start yet when there are no answers for the section" in {
           val viewModel = TaskListViewModel(emptyUserAnswers)
 
-          viewModel.getStatus(addItemsSectionName).value mustEqual Status.NotStarted
+          viewModel.getStatus(addItemsSectionName).value mustEqual Status.CannotStartYet
+        }
+
+        "is Not started when there are no answers for the section" in {
+          val procedureType = arb[ProcedureType].sample.value
+          forAll(arbitraryTraderDetails(procedureType).arbitrary) {
+            sectionDetails =>
+              val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              viewModel.getStatus(addItemsSectionName).value mustEqual Status.NotStarted
+          }
         }
 
         "is InProgress when the first question for the section has been answered" in {
+          val procedureType = arb[ProcedureType].sample.value
+          val traderDetails = arbitraryTraderDetails(procedureType).arbitrary.sample.value
           forAll(stringsWithMaxLength(stringMaxLength)) {
             pageAnswer =>
-              val userAnswers = emptyUserAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
+              val userAnswers        = TraderDetailsSpec.setTraderDetails(traderDetails)(emptyUserAnswers)
+              val updatedUserAnswers = userAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
 
-              val viewModel = TaskListViewModel(userAnswers)
+              val viewModel = TaskListViewModel(updatedUserAnswers)
 
               viewModel.getStatus(addItemsSectionName).value mustEqual Status.InProgress
           }
@@ -568,8 +584,20 @@ class TaskListViewModelSpec
       }
 
       "navigation" - {
-        "when the status is Not started, links to the first page" in {
+
+        "when the status is Cannot start yet with links disable until trader details section is complete" in {
           val viewModel = TaskListViewModel(emptyUserAnswers)
+
+          val expectedHref: String = controllers.addItems.routes.ItemDescriptionController.onPageLoad(lrn, zeroIndex, NormalMode).url
+
+          viewModel.getHref(addItemsSectionName).value.isEmpty mustEqual true
+        }
+
+        "when the status is Not started, links to the first page" in {
+          val procedureType = arb[ProcedureType].sample.value
+          val traderDetails = arbitraryTraderDetails(procedureType).arbitrary.sample.value
+          val userAnswers   = TraderDetailsSpec.setTraderDetails(traderDetails)(emptyUserAnswers)
+          val viewModel     = TaskListViewModel(userAnswers)
 
           val expectedHref: String = controllers.addItems.routes.ItemDescriptionController.onPageLoad(lrn, zeroIndex, NormalMode).url
 
@@ -577,11 +605,14 @@ class TaskListViewModelSpec
         }
 
         "when the status is InProgress, links to the first page" in {
+          val procedureType = arb[ProcedureType].sample.value
+          val traderDetails = arbitraryTraderDetails(procedureType).arbitrary.sample.value
+          val userAnswers   = TraderDetailsSpec.setTraderDetails(traderDetails)(emptyUserAnswers)
           forAll(stringsWithMaxLength(stringMaxLength)) {
             pageAnswer =>
-              val userAnswers = emptyUserAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
+              val updatedUserAnswers = userAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
 
-              val viewModel = TaskListViewModel(userAnswers)
+              val viewModel = TaskListViewModel(updatedUserAnswers)
 
               val expectedHref: String = controllers.addItems.routes.ItemDescriptionController.onPageLoad(lrn, zeroIndex, NormalMode).url
 
