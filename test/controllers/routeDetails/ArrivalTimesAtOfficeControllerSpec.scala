@@ -23,7 +23,7 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.ArrivalTimesAtOfficeFormProvider
 import matchers.JsonMatchers
-import models.reference.OfficeOfTransit
+import models.reference.{CountryCode, CustomsOffice}
 import models.{LocalDateTimeWithAMPM, NormalMode}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
@@ -55,8 +55,8 @@ class ArrivalTimesAtOfficeControllerSpec
     with GeneratorSpec {
 
   val formProvider                 = new ArrivalTimesAtOfficeFormProvider()
-  private val officeOfTransit      = OfficeOfTransit("1", "name")
-  private def form                 = formProvider(officeOfTransit.name)
+  private val customsOffice        = CustomsOffice("1", "name", CountryCode("GB"), Seq.empty, None)
+  private def form                 = formProvider(customsOffice.name)
   private val mockRefDataConnector = mock[ReferenceDataConnector]
 
   def onwardRoute = Call("GET", "/foo")
@@ -105,11 +105,11 @@ class ArrivalTimesAtOfficeControllerSpec
   "ArrivalTimesAtOffice Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), customsOffice.id).toOption.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -136,7 +136,7 @@ class ArrivalTimesAtOfficeControllerSpec
     "must populate the view correctly on a GET when the question has previously been answered in AM format" in {
 
       val userAnswers = emptyUserAnswers
-        .set(AddAnotherTransitOfficePage(index), officeOfTransit.id)
+        .set(AddAnotherTransitOfficePage(index), customsOffice.id)
         .toOption
         .value
         .set(ArrivalTimesAtOfficePage(index), validAnswer)
@@ -146,7 +146,7 @@ class ArrivalTimesAtOfficeControllerSpec
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -187,7 +187,7 @@ class ArrivalTimesAtOfficeControllerSpec
       val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC).withHour(genPMHours), "pm")
 
       val userAnswers = emptyUserAnswers
-        .set(AddAnotherTransitOfficePage(index), officeOfTransit.id)
+        .set(AddAnotherTransitOfficePage(index), customsOffice.id)
         .toOption
         .value
         .set(ArrivalTimesAtOfficePage(index), validAnswer)
@@ -197,7 +197,7 @@ class ArrivalTimesAtOfficeControllerSpec
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
@@ -232,10 +232,10 @@ class ArrivalTimesAtOfficeControllerSpec
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), customsOffice.id).toOption.value
       dataRetrievalWithData(userAnswers)
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val result = route(app, postRequest).value
 
@@ -245,11 +245,11 @@ class ArrivalTimesAtOfficeControllerSpec
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), officeOfTransit.id).toOption.value
+      val userAnswers = emptyUserAnswers.set(AddAnotherTransitOfficePage(index), customsOffice.id).toOption.value
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      when(mockRefDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val request        = FakeRequest(POST, arrivalTimesAtOfficeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm      = form.bind(Map("value" -> "invalid value"))

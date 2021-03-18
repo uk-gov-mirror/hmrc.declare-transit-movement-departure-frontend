@@ -21,7 +21,7 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.ConfirmRemoveOfficeOfTransitFormProvider
 import matchers.JsonMatchers
-import models.reference.OfficeOfTransit
+import models.reference.{CountryCode, CustomsOffice}
 import models.{Index, NormalMode, UserAnswers}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
@@ -49,7 +49,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
   val formProvider                                   = new ConfirmRemoveOfficeOfTransitFormProvider()
   val form                                           = formProvider()
   private val mockReferenceDataConnector             = mock[ReferenceDataConnector]
-  private val officeOfTransit                        = OfficeOfTransit("id", "name")
+  private val customsOffice                          = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
   lazy val confirmRemoveOfficeOfTransitRoute: String = routes.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn, index, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -65,7 +65,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val request        = FakeRequest(GET, confirmRemoveOfficeOfTransitRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -80,7 +80,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       val expectedJson = Json.obj(
         "form"            -> form,
         "mode"            -> NormalMode,
-        "officeOfTransit" -> s"${officeOfTransit.name} (${officeOfTransit.id})",
+        "officeOfTransit" -> s"${customsOffice.name} (${customsOffice.id})",
         "lrn"             -> lrn,
         "radios"          -> Radios.yesNo(form("value"))
       )
@@ -101,7 +101,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val request        = FakeRequest(GET, confirmRemoveOfficeOfTransitRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -137,7 +137,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       dataRetrievalWithData(updatedAnswer)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val confirmRemoveRoute = routes.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn, Index(1), NormalMode).url
       val request            = FakeRequest(GET, confirmRemoveRoute)
@@ -191,7 +191,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(officeOfTransit))
+      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val request        = FakeRequest(POST, confirmRemoveOfficeOfTransitRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
@@ -207,7 +207,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       val expectedJson = Json.obj(
         "form"            -> boundForm,
         "mode"            -> NormalMode,
-        "officeOfTransit" -> s"${officeOfTransit.name} (${officeOfTransit.id})",
+        "officeOfTransit" -> s"${customsOffice.name} (${customsOffice.id})",
         "lrn"             -> lrn,
         "radios"          -> Radios.yesNo(boundForm("value"))
       )

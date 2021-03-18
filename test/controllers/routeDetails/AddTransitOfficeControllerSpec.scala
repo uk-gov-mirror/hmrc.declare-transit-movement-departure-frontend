@@ -21,7 +21,7 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.AddTransitOfficeFormProvider
 import matchers.JsonMatchers
-import models.reference.{CountryCode, CustomsOffice, OfficeOfTransit}
+import models.reference.{CountryCode, CustomsOffice}
 import models.{CustomsOfficeList, NormalMode}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}

@@ -20,7 +20,7 @@ import base.{MockNunjucksRendererApp, SpecBase}
 import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
-import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit}
+import models.reference.{Country, CountryCode, CustomsOffice}
 import models.{CountryList, CustomsOfficeList, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

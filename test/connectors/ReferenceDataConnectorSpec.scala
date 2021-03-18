@@ -106,11 +106,14 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |]
       |""".stripMargin
 
-  private val officeOfTransitJson: String =
+  private val customsOfficeJson: String =
     """
       |  {
       |    "id": "1",
-      |    "name": "Data1"
+      |    "name": "Data1",
+      |    "roles" : ["role1", "role2"],
+      |    "countryId" : "GB",
+      |    "phoneNumber" : "testPhoneNumber"
       |  }
       |""".stripMargin
 
@@ -378,10 +381,10 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return Offices of transit when successful" in {
         server.stubFor(
           get(urlEqualTo(s"/$startUrl/customs-office/1"))
-            .willReturn(okJson(officeOfTransitJson))
+            .willReturn(okJson(customsOfficeJson))
         )
 
-        val expectedResult: OfficeOfTransit = OfficeOfTransit("1", "Data1")
+        val expectedResult: CustomsOffice = CustomsOffice("1", "Data1", CountryCode("GB"), Seq("role1", "role2"), Some("testPhoneNumber"))
 
         connector.getOfficeOfTransit("1").futureValue mustEqual expectedResult
       }
