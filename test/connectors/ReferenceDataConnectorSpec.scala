@@ -351,34 +351,9 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       }
     }
 
-    "getOfficeOfTransitList" - {
+    "getCustomsOffice" - {
 
-      "must return Seq of Offices of transit when successful" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$startUrl/customs-offices"))
-            .willReturn(okJson(customsOfficeResponseJson))
-        )
-
-        val expectedResult =
-          CustomsOfficeList(
-            Seq(
-              CustomsOffice("testId1", "testName1", CountryCode("GB"), Seq("role1", "role2"), Some("testPhoneNumber")),
-              CustomsOffice("testId2", "testName2", CountryCode("GB"), Seq("role1", "role2"), None)
-            )
-          )
-
-        connector.getOfficeOfTransitList().futureValue mustEqual expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-
-        checkErrorResponse(s"/$startUrl/office-transit", connector.getOfficeOfTransitList())
-      }
-    }
-
-    "getOfficeOfTransit" - {
-
-      "must return Offices of transit when successful" in {
+      "must return a Customs Office when successful" in {
         server.stubFor(
           get(urlEqualTo(s"/$startUrl/customs-office/1"))
             .willReturn(okJson(customsOfficeJson))
@@ -386,12 +361,12 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
         val expectedResult: CustomsOffice = CustomsOffice("1", "Data1", CountryCode("GB"), Seq("role1", "role2"), Some("testPhoneNumber"))
 
-        connector.getOfficeOfTransit("1").futureValue mustEqual expectedResult
+        connector.getCustomsOffice("1").futureValue mustEqual expectedResult
       }
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$startUrl/office-transit/1", connector.getOfficeOfTransitList())
+        checkErrorResponse(s"/$startUrl/customs-office/1", connector.getCustomsOffice("1"))
       }
     }
 

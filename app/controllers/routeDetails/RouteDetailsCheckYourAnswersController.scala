@@ -97,7 +97,7 @@ class RouteDetailsCheckYourAnswersController @Inject()(
   private def officeOfTransitSections(
     routesCYAHelper: RouteDetailsCheckYourAnswersHelper
   )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Section] =
-    referenceDataConnector.getOfficeOfTransitList() map {
+    referenceDataConnector.getCustomsOffices() map {
       officeOfTransitList =>
         val numberOfTransitOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
         val index: Seq[Index]      = List.range(0, numberOfTransitOffices).map(Index(_))

@@ -65,7 +65,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
+      when(mockReferenceDataConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val request        = FakeRequest(GET, confirmRemoveOfficeOfTransitRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -101,7 +101,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
 
-      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
+      when(mockReferenceDataConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val request        = FakeRequest(GET, confirmRemoveOfficeOfTransitRoute)
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
@@ -137,7 +137,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       dataRetrievalWithData(updatedAnswer)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
+      when(mockReferenceDataConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val confirmRemoveRoute = routes.ConfirmRemoveOfficeOfTransitController.onPageLoad(lrn, Index(1), NormalMode).url
       val request            = FakeRequest(GET, confirmRemoveRoute)
@@ -191,7 +191,7 @@ class ConfirmRemoveOfficeOfTransitControllerSpec extends SpecBase with MockNunju
       dataRetrievalWithData(userAnswers)
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
-      when(mockReferenceDataConnector.getOfficeOfTransit(any())(any(), any())).thenReturn(Future.successful(customsOffice))
+      when(mockReferenceDataConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val request        = FakeRequest(POST, confirmRemoveOfficeOfTransitRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm      = form.bind(Map("value" -> ""))
