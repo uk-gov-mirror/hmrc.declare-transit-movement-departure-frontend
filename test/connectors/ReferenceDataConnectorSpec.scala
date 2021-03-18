@@ -27,7 +27,6 @@ import models.{
   DangerousGoodsCodeList,
   DocumentTypeList,
   MethodOfPaymentList,
-  OfficeOfTransitList,
   PackageTypeList,
   PreviousReferencesDocumentTypeList,
   SpecialMentionList,
@@ -103,20 +102,6 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |    "activeFrom": "2015-07-01",
       |    "code": "10",
       |    "description": "Sea transport"
-      |  }
-      |]
-      |""".stripMargin
-
-  private val officeOfTransitResponseJson: String =
-    """
-      |[
-      |  {
-      |    "id": "1",
-      |    "name": "Data1"
-      |  },
-      |  {
-      |    "id": "2",
-      |    "name": "Data2"
       |  }
       |]
       |""".stripMargin
@@ -368,15 +353,16 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       "must return Seq of Offices of transit when successful" in {
         server.stubFor(
           get(urlEqualTo(s"/$startUrl/customs-offices"))
-            .willReturn(okJson(officeOfTransitResponseJson))
+            .willReturn(okJson(customsOfficeResponseJson))
         )
 
-        val expectedResult: OfficeOfTransitList = OfficeOfTransitList(
-          Seq(
-            OfficeOfTransit("1", "Data1"),
-            OfficeOfTransit("2", "Data2")
+        val expectedResult =
+          CustomsOfficeList(
+            Seq(
+              CustomsOffice("testId1", "testName1", CountryCode("GB"), Seq("role1", "role2"), Some("testPhoneNumber")),
+              CustomsOffice("testId2", "testName2", CountryCode("GB"), Seq("role1", "role2"), None)
+            )
           )
-        )
 
         connector.getOfficeOfTransitList().futureValue mustEqual expectedResult
       }

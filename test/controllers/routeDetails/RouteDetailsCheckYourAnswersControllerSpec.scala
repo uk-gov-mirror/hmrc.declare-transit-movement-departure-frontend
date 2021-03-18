@@ -21,12 +21,12 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import matchers.JsonMatchers
 import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit}
-import models.{CountryList, CustomsOfficeList, NormalMode, OfficeOfTransitList}
+import models.{CountryList, CustomsOfficeList, NormalMode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{DestinationCountryPage, MovementDestinationCountryPage}
+import pages.MovementDestinationCountryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -38,13 +38,11 @@ import scala.concurrent.Future
 
 class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunjucksRendererApp with MockitoSugar with JsonMatchers {
 
-  private val countries                                = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
-  private val customsOffice: CustomsOffice             = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
-  private val customsOffices: CustomsOfficeList        = CustomsOfficeList(Seq(customsOffice))
-  private val officeOfTransit                          = OfficeOfTransit("1", "name")
-  private val officeOfTransitList: OfficeOfTransitList = OfficeOfTransitList(Seq(officeOfTransit))
-  lazy val routeDetailsCheckYourAnswersRoute           = mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
-  val mockReferenceDataConnector                       = mock[ReferenceDataConnector]
+  private val countries                            = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
+  private val customsOffice: CustomsOffice         = CustomsOffice("id", "name", CountryCode("GB"), Seq.empty, None)
+  private val customsOfficeList: CustomsOfficeList = CustomsOfficeList(Seq(customsOffice))
+  lazy val routeDetailsCheckYourAnswersRoute       = mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+  val mockReferenceDataConnector                   = mock[ReferenceDataConnector]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -58,9 +56,9 @@ class RouteDetailsCheckYourAnswersControllerSpec extends SpecBase with MockNunju
       dataRetrievalWithData(userAnswers)
       when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
       when(mockReferenceDataConnector.getTransitCountryList()(any(), any())).thenReturn(Future.successful(countries))
-      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any())).thenReturn(Future.successful(customsOffices))
-      when(mockReferenceDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOffices))
-      when(mockReferenceDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(officeOfTransitList))
+      when(mockReferenceDataConnector.getCustomsOfficesOfTheCountry(any())(any(), any())).thenReturn(Future.successful(customsOfficeList))
+      when(mockReferenceDataConnector.getCustomsOffices()(any(), any())).thenReturn(Future.successful(customsOfficeList))
+      when(mockReferenceDataConnector.getOfficeOfTransitList()(any(), any())).thenReturn(Future.successful(customsOfficeList))
 
       when(mockRenderer.render(any(), any())(any()))
         .thenReturn(Future.successful(Html("")))
