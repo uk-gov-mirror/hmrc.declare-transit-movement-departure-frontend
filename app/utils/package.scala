@@ -77,7 +77,7 @@ package object utils {
     defaultOption +: jsObjects
   }
 
-  def getOfficeOfTransitAsJson(value: Option[OfficeOfTransit], officeOfTransitList: Seq[OfficeOfTransit]): Seq[JsObject] = {
+  def getOfficeOfTransitAsJson(value: Option[CustomsOffice], officeOfTransitList: Seq[CustomsOffice]): Seq[JsObject] = {
     val officeOfTransitObjects = officeOfTransitList.map {
       office =>
         Json.obj(

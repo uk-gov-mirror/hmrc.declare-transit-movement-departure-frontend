@@ -27,7 +27,6 @@ import models.{
   DangerousGoodsCodeList,
   DocumentTypeList,
   MethodOfPaymentList,
-  OfficeOfTransitList,
   PackageTypeList,
   PreviousReferencesDocumentTypeList,
   SpecialMentionList,
@@ -107,25 +106,14 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       |]
       |""".stripMargin
 
-  private val officeOfTransitResponseJson: String =
-    """
-      |[
-      |  {
-      |    "id": "1",
-      |    "name": "Data1"
-      |  },
-      |  {
-      |    "id": "2",
-      |    "name": "Data2"
-      |  }
-      |]
-      |""".stripMargin
-
-  private val officeOfTransitJson: String =
+  private val customsOfficeJson: String =
     """
       |  {
       |    "id": "1",
-      |    "name": "Data1"
+      |    "name": "Data1",
+      |    "roles" : ["role1", "role2"],
+      |    "countryId" : "GB",
+      |    "phoneNumber" : "testPhoneNumber"
       |  }
       |""".stripMargin
 
@@ -363,46 +351,22 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
       }
     }
 
-    "getOfficeOfTransitList" - {
+    "getCustomsOffice" - {
 
-      "must return Seq of Offices of transit when successful" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$startUrl/customs-offices"))
-            .willReturn(okJson(officeOfTransitResponseJson))
-        )
-
-        val expectedResult: OfficeOfTransitList = OfficeOfTransitList(
-          Seq(
-            OfficeOfTransit("1", "Data1"),
-            OfficeOfTransit("2", "Data2")
-          )
-        )
-
-        connector.getOfficeOfTransitList().futureValue mustEqual expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-
-        checkErrorResponse(s"/$startUrl/office-transit", connector.getOfficeOfTransitList())
-      }
-    }
-
-    "getOfficeOfTransit" - {
-
-      "must return Offices of transit when successful" in {
+      "must return a Customs Office when successful" in {
         server.stubFor(
           get(urlEqualTo(s"/$startUrl/customs-office/1"))
-            .willReturn(okJson(officeOfTransitJson))
+            .willReturn(okJson(customsOfficeJson))
         )
 
-        val expectedResult: OfficeOfTransit = OfficeOfTransit("1", "Data1")
+        val expectedResult: CustomsOffice = CustomsOffice("1", "Data1", CountryCode("GB"), Seq("role1", "role2"), Some("testPhoneNumber"))
 
-        connector.getOfficeOfTransit("1").futureValue mustEqual expectedResult
+        connector.getCustomsOffice("1").futureValue mustEqual expectedResult
       }
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$startUrl/office-transit/1", connector.getOfficeOfTransitList())
+        checkErrorResponse(s"/$startUrl/customs-office/1", connector.getCustomsOffice("1"))
       }
     }
 
