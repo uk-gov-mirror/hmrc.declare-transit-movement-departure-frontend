@@ -74,7 +74,7 @@ class AddTransitOfficeController @Inject()(
   }
 
   private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] =
-    referenceDataConnector.getOfficeOfTransitList() flatMap {
+    referenceDataConnector.getCustomsOffices() flatMap {
       officeOfTransitList =>
         val routesCYAHelper          = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
         val numberOfTransitOffices   = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)

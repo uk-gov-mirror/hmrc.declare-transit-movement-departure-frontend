@@ -61,7 +61,7 @@ class ArrivalTimesAtOfficeController @Inject()(
     implicit request =>
       request.userAnswers.get(AddAnotherTransitOfficePage(index)) match {
         case Some(officeOfTransitId) =>
-          referenceDataConnector.getOfficeOfTransit(officeOfTransitId) flatMap {
+          referenceDataConnector.getCustomsOffice(officeOfTransitId) flatMap {
             office =>
               val form: Form[LocalDateTimeWithAMPM] = formProvider(office.name)
 
@@ -95,7 +95,7 @@ class ArrivalTimesAtOfficeController @Inject()(
     implicit request =>
       request.userAnswers.get(AddAnotherTransitOfficePage(index)) match {
         case Some(officeOfTransitId) =>
-          referenceDataConnector.getOfficeOfTransit(officeOfTransitId) flatMap {
+          referenceDataConnector.getCustomsOffice(officeOfTransitId) flatMap {
             office =>
               val form: Form[LocalDateTimeWithAMPM] = formProvider(office.name)
 
