@@ -17,7 +17,7 @@
 package utils
 
 import controllers.routeDetails.routes
-import models.{CheckMode, CountryList, CustomsOfficeList, Index, LocalReferenceNumber, Mode, OfficeOfTransitList, UserAnswers}
+import models.{CheckMode, CountryList, CustomsOfficeList, Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
@@ -97,10 +97,10 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       }
   }
 
-  def addAnotherTransitOffice(index: Index, officeOfTransitList: OfficeOfTransitList): Option[Row] =
+  def addAnotherTransitOffice(index: Index, customsOfficeList: CustomsOfficeList): Option[Row] =
     userAnswers.get(AddAnotherTransitOfficePage(index)) flatMap {
       answer =>
-        officeOfTransitList.getById(answer) map {
+        customsOfficeList.getCustomsOffice(answer) map {
           officeOfTransit =>
             Row(
               key   = Key(msg"addAnotherTransitOffice.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
@@ -153,10 +153,10 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def officeOfTransitRow(index: Index, officeOfTransitList: OfficeOfTransitList, mode: Mode): Option[Row] =
+  def officeOfTransitRow(index: Index, customsOfficeList: CustomsOfficeList, mode: Mode): Option[Row] =
     userAnswers.get(AddAnotherTransitOfficePage(index)).flatMap {
       answer =>
-        officeOfTransitList.getById(answer).map {
+        customsOfficeList.getCustomsOffice(answer).map {
           office =>
             val arrivalTime =
               userAnswers

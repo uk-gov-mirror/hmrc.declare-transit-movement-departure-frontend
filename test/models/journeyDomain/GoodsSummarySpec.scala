@@ -28,45 +28,32 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
 
   "GoodsSummary can be parsed" - {
 
-    "when number of packages is declared" in {
+    val isSecurityDefined: Boolean = arb[Boolean].sample.value
 
-      val arbGoodsSummary = arb[GoodsSummary].map(_.copy(numberOfPackages = Some(123)))
+    "when number of packages is declared and SafetyAndSecurity is True" in {
 
-      forAll(arbGoodsSummary, arb[UserAnswers]) {
-        (goodsSummary, ua) =>
-          val userAnswers = setGoodsSummary(goodsSummary)(ua)
-
-          UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
-
-      }
-    }
-
-    "when number of packages is not declared" in {
-
-      val arbGoodsSummary = arb[GoodsSummary].map(_.copy(numberOfPackages = None))
+      val arbGoodsSummary = arb(arbitraryGoodsSummary(isSecurityDefined)).map(_.copy(numberOfPackages = Some(123)))
 
       forAll(arbGoodsSummary, arb[UserAnswers]) {
         (goodsSummary, ua) =>
-          val userAnswers = setGoodsSummary(goodsSummary)(ua)
+          val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
           UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
-
       }
-
     }
 
-    "when safety and security doesn't need to be declared" in {
+    "when number of packages is not declared and SafetyAndSecurity is False" in {
 
-      forAll(arb[GoodsSummary], arb[UserAnswers]) {
+      val arbGoodsSummary = arb(arbitraryGoodsSummary(isSecurityDefined)).map(_.copy(numberOfPackages = None))
+
+      forAll(arbGoodsSummary, arb[UserAnswers]) {
         (goodsSummary, ua) =>
-          val userAnswers = setGoodsSummary(goodsSummary)(ua)
+          val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
           UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
 
       }
     }
-
-    "when safety and security does need to be declared" ignore {}
 
     "when the declaration is Normal procedure" - {
       "and when there are no customs approved location" in {
@@ -74,11 +61,11 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
         val normalDetail: Arbitrary[GoodSummaryDetails] =
           Arbitrary(Gen.const(GoodSummaryNormalDetails(None)))
 
-        val genGoodsSummary = arbitraryGoodsSummary(normalDetail)
+        val arbGoodsSummary = arb(arbitraryGoodsSummary(isSecurityDefined)(normalDetail))
 
-        forAll(genGoodsSummary.arbitrary, arb[UserAnswers]) {
+        forAll(arbGoodsSummary, arb[UserAnswers]) {
           (goodsSummary, ua) =>
-            val userAnswers = setGoodsSummary(goodsSummary)(ua)
+            val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
             UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
 
@@ -93,11 +80,11 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
             )
           )
 
-        val genGoodsSummary = arbitraryGoodsSummary(normalDetail)
+        val arbGoodsSummary = arb(arbitraryGoodsSummary(isSecurityDefined)(normalDetail))
 
-        forAll(genGoodsSummary.arbitrary, arb[UserAnswers]) {
+        forAll(arbGoodsSummary, arb[UserAnswers]) {
           (goodsSummary, ua) =>
-            val userAnswers = setGoodsSummary(goodsSummary)(ua)
+            val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
             UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
 
@@ -111,11 +98,11 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
       val simplifiedDetail: Arbitrary[GoodSummaryDetails] =
         Arbitrary(arbitraryGoodSummarySimplifiedDetails.arbitrary.map(identity[GoodSummaryDetails]))
 
-      val genGoodsSummary = arbitraryGoodsSummary(simplifiedDetail)
+      val arbGoodsSummary = arb(arbitraryGoodsSummary(isSecurityDefined)(simplifiedDetail))
 
-      forAll(genGoodsSummary.arbitrary, arb[UserAnswers]) {
+      forAll(arbGoodsSummary, arb[UserAnswers]) {
         (goodsSummary, ua) =>
-          val userAnswers = setGoodsSummary(goodsSummary)(ua)
+          val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
           UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
 
@@ -124,11 +111,12 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
     }
 
     "when there are no seals" in {
-      val arbGoodsSummary = arb[GoodsSummary].map(_.copy(sealNumbers = Seq.empty))
+
+      val arbGoodsSummary = arb(arbitraryGoodsSummary(isSecurityDefined)).map(_.copy(sealNumbers = Seq.empty))
 
       forAll(arbGoodsSummary, arb[UserAnswers]) {
         (goodsSummary, ua) =>
-          val userAnswers = setGoodsSummary(goodsSummary)(ua)
+          val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
           UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
 
@@ -137,11 +125,11 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
     }
 
     "when there are seals" in {
-      val arbGoodsSummary = arb[GoodsSummary].suchThat(_.sealNumbers.nonEmpty)
+      val arbGoodsSummary = arb(arbitraryGoodsSummary(isSecurityDefined)).suchThat(_.sealNumbers.nonEmpty)
 
       forAll(arbGoodsSummary, arb[UserAnswers]) {
         (goodsSummary, ua) =>
-          val userAnswers = setGoodsSummary(goodsSummary)(ua)
+          val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
           UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
 
@@ -182,4 +170,6 @@ object GoodsSummarySpec extends UserAnswersSpecHelper {
       .unsafeSetPFn(ControlResultDateLimitPage)(goodsSummary.goodSummaryDetails) {
         case GoodSummarySimplifiedDetails(_, controlResultDateLimit) => controlResultDateLimit
       }
+      .unsafeSetOpt(LoadingPlacePage)(goodsSummary.loadingPlace)
+
 }

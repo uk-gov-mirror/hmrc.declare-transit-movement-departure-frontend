@@ -18,10 +18,29 @@ package models
 
 import models.reference.CustomsOffice
 
-case class CustomsOfficeList(customsOffices: Seq[CustomsOffice]) {
+class CustomsOfficeList(customsOffices: Seq[CustomsOffice]) {
 
-  def getCustomsOffice(customsOfficeId: String): Option[CustomsOffice] =
-    customsOffices.find(_.id == customsOfficeId)
+  def getAll: Seq[CustomsOffice] =
+    customsOffices
+
+  def getCustomsOffice(id: String): Option[CustomsOffice] =
+    customsOffices.find(_.id == id)
+
+  def filterNot(customOfficeIds: Seq[String]): Seq[CustomsOffice] =
+    customsOffices.filterNot(
+      office => customOfficeIds.contains(office.id)
+    )
+
+  override def equals(obj: Any): Boolean = obj match {
+    case x: CustomsOfficeList => x.getAll == getAll
+    case _                    => false
+  }
+
 }
 
-object CustomsOfficeList
+object CustomsOfficeList {
+
+  def apply(customsOffices: Seq[CustomsOffice]): CustomsOfficeList =
+    new CustomsOfficeList(customsOffices)
+
+}

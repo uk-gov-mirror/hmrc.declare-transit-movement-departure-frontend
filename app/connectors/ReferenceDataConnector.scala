@@ -52,14 +52,9 @@ class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClie
     http.GET[Seq[TransportMode]](serviceUrl).map(TransportModeList)
   }
 
-  def getOfficeOfTransitList()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[OfficeOfTransitList] = {
-    val serviceUrl = s"${config.referenceDataUrl}/office-transit"
-    http.GET[Seq[OfficeOfTransit]](serviceUrl).map(OfficeOfTransitList(_))
-  }
-
-  def getOfficeOfTransit(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[OfficeOfTransit] = {
-    val serviceUrl = s"${config.referenceDataUrl}/office-transit/$id"
-    http.GET[OfficeOfTransit](serviceUrl)
+  def getCustomsOffice(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CustomsOffice] = {
+    val serviceUrl = s"${config.referenceDataUrl}/customs-office/$id"
+    http.GET[CustomsOffice](serviceUrl)
   }
 
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[PackageTypeList] = {

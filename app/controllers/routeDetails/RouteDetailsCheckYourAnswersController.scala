@@ -97,14 +97,14 @@ class RouteDetailsCheckYourAnswersController @Inject()(
   private def officeOfTransitSections(
     routesCYAHelper: RouteDetailsCheckYourAnswersHelper
   )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Section] =
-    referenceDataConnector.getOfficeOfTransitList() map {
-      officeOfTransitList =>
+    referenceDataConnector.getCustomsOffices() map {
+      customsOfficeList =>
         val numberOfTransitOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
         val index: Seq[Index]      = List.range(0, numberOfTransitOffices).map(Index(_))
         val rows = index.flatMap {
           index =>
             Seq(
-              routesCYAHelper.addAnotherTransitOffice(index, officeOfTransitList),
+              routesCYAHelper.addAnotherTransitOffice(index, customsOfficeList),
               routesCYAHelper.arrivalTimesAtOffice(index)
             ).flatten
         }

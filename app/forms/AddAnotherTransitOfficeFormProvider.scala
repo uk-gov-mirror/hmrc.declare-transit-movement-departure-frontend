@@ -18,8 +18,8 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{CustomsOfficeList, OfficeOfTransitList}
-import models.reference.{CustomsOffice, OfficeOfTransit}
+import models.CustomsOfficeList
+import models.reference.CustomsOffice
 import play.api.data.Form
 
 class AddAnotherTransitOfficeFormProvider @Inject() extends Mappings {
@@ -27,7 +27,7 @@ class AddAnotherTransitOfficeFormProvider @Inject() extends Mappings {
   def apply(customsOffices: CustomsOfficeList, countryName: String): Form[CustomsOffice] =
     Form(
       "value" -> text("addAnotherTransitOffice.error.required", Seq(countryName))
-        .verifying("addAnotherTransitOffice.error.required", value => customsOffices.customsOffices.exists(_.id == value))
+        .verifying("addAnotherTransitOffice.error.required", value => customsOffices.getAll.exists(_.id == value))
         .transform[CustomsOffice](value => customsOffices.getCustomsOffice(value).get, _.id)
     )
 }

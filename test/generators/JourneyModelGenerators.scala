@@ -17,8 +17,7 @@
 package generators
 
 import java.time.{LocalDate, LocalDateTime}
-
-import cats.data.NonEmptyList
+import cats.data.{NonEmptyList, NonEmptyMap}
 import models.DeclarationType.{Option2, Option4}
 import models._
 import models.domain.{Address, SealDomain}
@@ -65,7 +64,7 @@ trait JourneyModelGenerators {
       safetyAndSecurity <- arbitrary[SafetyAndSecurity]
       itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
       goodsummarydetailsType = arbitrary[GoodSummarySimplifiedDetails]
-      goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
+      goodsSummary <- arbitraryGoodsSummary(isSecurityDetailsRequired)(Arbitrary(goodsummarydetailsType)).arbitrary
       guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
     } yield
       JourneyDomain(
@@ -92,7 +91,7 @@ trait JourneyModelGenerators {
       safetyAndSecurity <- arbitrary[SafetyAndSecurity]
       itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
       goodsummarydetailsType = arbitrary[GoodSummaryNormalDetails]
-      goodsSummary <- arbitraryGoodsSummary(Arbitrary(goodsummarydetailsType)).arbitrary
+      goodsSummary <- arbitraryGoodsSummary(isSecurityDetailsRequired)(Arbitrary(goodsummarydetailsType)).arbitrary
       guarantees   <- nonEmptyListOf[GuaranteeDetails](3)
     } yield
       JourneyDomain(
@@ -403,8 +402,7 @@ trait JourneyModelGenerators {
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
 
     val isDocumentTypeMandatory = addSafetyAndSecurity &&
-      safetyAndSecurity.commercialReferenceNumber.isDefined &&
-      safetyAndSecurity.circumstanceIndicator.exists(CircumstanceIndicator.conditionalIndicators.contains(_))
+      safetyAndSecurity.commercialReferenceNumber.isDefined
 
     val isPreviousReferenceMandatory: Boolean = (movementDetails.declarationType, routeDetails.countryOfDispatch) match {
       case (Option2 | Option4, code) if nonEUCountries.contains(code) => true
@@ -705,9 +703,10 @@ trait JourneyModelGenerators {
       Gen.oneOf(arbitrary[GoodSummaryNormalDetails], arbitrary[GoodSummarySimplifiedDetails])
     }
 
-  implicit def arbitraryGoodsSummary(implicit arbitraryGoodSummaryDetails: Arbitrary[GoodSummaryDetails]): Arbitrary[GoodsSummary] =
+  implicit def arbitraryGoodsSummary(safetyAndSecurity: Boolean)(implicit arbitraryGoodSummaryDetails: Arbitrary[GoodSummaryDetails]): Arbitrary[GoodsSummary] =
     Arbitrary {
       for {
+        loadingPlace       <- if (safetyAndSecurity) { nonEmptyString.map(Some(_)) } else { Gen.const(None) }
         numberOfPackages   <- Gen.option(Gen.choose(1, 100))
         totalMass          <- Gen.choose(1, 100).map(_.toString)
         goodSummaryDetails <- arbitraryGoodSummaryDetails.arbitrary
@@ -716,7 +715,7 @@ trait JourneyModelGenerators {
         GoodsSummary(
           numberOfPackages,
           totalMass,
-          None, // loadingPlace,
+          loadingPlace,
           goodSummaryDetails,
           sealNumbers
         )

@@ -17,10 +17,11 @@
 package generators
 
 import java.time.LocalDateTime
+
 import models._
 import models.domain.SealDomain
 import models.domain.SealDomain.Constants
-import models.reference.{Country, CountryCode, CustomsOffice, OfficeOfTransit, PackageType}
+import models.reference.{Country, CountryCode, CustomsOffice, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -197,13 +198,6 @@ trait ModelGenerators {
       } yield Address(buildingAndStreet, city, postcode)
     }
 
-  implicit lazy val arbitraryOfficeOfTransit: Arbitrary[OfficeOfTransit] =
-    Arbitrary {
-      for {
-        id   <- alphaStringsWithMaxLength(10)
-        name <- alphaStringsWithMaxLength(10)
-      } yield OfficeOfTransit(id, name)
-    }
 }
 
 object ModelGenerators extends ModelGenerators with Generators
