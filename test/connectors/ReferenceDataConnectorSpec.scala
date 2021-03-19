@@ -400,7 +400,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return list of previous document types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/previous-document-type"))
+          get(urlEqualTo(s"/$startUrl/previous-document-types"))
             .willReturn(okJson(previousDocumentJson))
         )
 
@@ -416,7 +416,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$startUrl/previous-document-type", connector.getPreviousReferencesDocumentTypes())
+        checkErrorResponse(s"/$startUrl/previous-document-types", connector.getPreviousReferencesDocumentTypes())
       }
 
     }
