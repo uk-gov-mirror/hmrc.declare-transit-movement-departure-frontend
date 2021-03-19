@@ -46,7 +46,7 @@ class TaskListViewModelSpec
   val guaranteeSectionName         = "declarationSummary.section.guarantee"
   val safetyAndSecuritySectionName = "declarationSummary.section.safetyAndSecurity"
 
-  "TaskListViewModelSpec" - {
+  /* "TaskListViewModelSpec" - {
 
     "MovementDetails" - {
       "section task is always included" in {
@@ -653,12 +653,21 @@ class TaskListViewModelSpec
           }
         }
 
-        "is Completed when all the answers are completed" ignore {
+        "is Completed when all the answers are completed" in {
+          val procedureType            = arb[ProcedureType].sample.value
+          val traderDetails            = arbitraryTraderDetails(procedureType).arbitrary.sample.value
+          val routeDetails             = arbitraryRouteDetails(false).arbitrary.sample.value
+          val generalInformation       = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+          val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
+          val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
+          val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
+          val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
+
           forAll(arb[ItemSection]) {
             sectionDetails =>
-              val userAnswers = ItemSectionSpec.setItemSection(sectionDetails, zeroIndex)(emptyUserAnswers)
+              val updatedUserAnswers = ItemSectionSpec.setItemSection(sectionDetails, zeroIndex)(routerDetailsUserAnswers)
 
-              val viewModel = TaskListViewModel(userAnswers)
+              val viewModel = TaskListViewModel(updatedUserAnswers)
 
               viewModel.getStatus(addItemsSectionName).value mustEqual Status.Completed
           }
@@ -933,6 +942,26 @@ class TaskListViewModelSpec
           }
         }
       }
+    }
+  }*/
+
+  "is Completed when all the answers are completed" in {
+    val procedureType            = arb[ProcedureType].sample.value
+    val traderDetails            = arbitraryTraderDetails(procedureType).arbitrary.sample.value
+    val routeDetails             = arbitraryRouteDetails(false).arbitrary.sample.value
+    val generalInformation       = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+    val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
+    val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
+    val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
+    val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
+
+    forAll(arb[ItemSection]) {
+      sectionDetails =>
+        val updatedUserAnswers = ItemSectionSpec.setItemSection(sectionDetails, Index(0))(routerDetailsUserAnswers)
+
+        val viewModel = TaskListViewModel(updatedUserAnswers)
+
+        viewModel.getStatus(addItemsSectionName).value mustEqual Status.Completed
     }
   }
 

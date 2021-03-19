@@ -147,7 +147,7 @@ object ItemDetailsSpec {
           .unsafeSetVal(AddTotalNetMassPage(index))(false)
     }
 
-    val commodityCode = itemDetails.commodityCode match {
+    val commodityCode= itemDetails.commodityCode match {
       case Some(value) =>
         totalNetMass
           .unsafeSetVal(IsCommodityCodeKnownPage(index))(true)
