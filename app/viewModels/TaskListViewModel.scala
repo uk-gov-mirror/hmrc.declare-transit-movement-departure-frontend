@@ -21,9 +21,9 @@ import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain.{UserAnswersReader, _}
 import models.{Index, NormalMode, ProcedureType, SectionDetails, UserAnswers}
+import pages._
 import pages.guaranteeDetails.GuaranteeTypePage
 import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
-import pages._
 import play.api.libs.json._
 
 private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
@@ -105,36 +105,18 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(traderDetailsStartPage(userAnswers.get(ProcedureTypePage)))
       .section
 
-  val addItemsDependentSections: UserAnswersReader[_] = {
-    val test: ReaderT[Option, UserAnswers, _] = for {
+  private val addItemsDependentSections: UserAnswersReader[_] = {
+    for {
       _            <- UserAnswersReader[MovementDetails]
       _            <- UserAnswersReader[TraderDetails]
       routeDetails <- UserAnswersReader[RouteDetails]
     } yield {
-
       if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
-        println("++++****************SafetyAndSecurity****&&&&&&&&**++++++++++")
         UserAnswersReader[SafetyAndSecurity]
       } else {
-        println("++++****************routeDetails****&&&&&&&&**++++++++++")
         routeDetails
       }
     }
-
-    val x = UserAnswersReader[MovementDetails].run(userAnswers).isDefined
-    val y = UserAnswersReader[TraderDetails].run(userAnswers).isDefined
-    val z = UserAnswersReader[RouteDetails].run(userAnswers).isDefined
-    val a = UserAnswersReader[SafetyAndSecurity].run(userAnswers).isDefined
-    val b = test.run(userAnswers).isDefined
-    println("-------------x---------" + x)
-    println("------------------y---------" + y)
-    println("----------------------z-----------" + z)
-    println("----------------------------a------" + a)
-    println("---------------------------b-------" + b)
-
-    println("++++++++++++++AddSecurityDetailsPage+++++++++++" + userAnswers.get(AddSecurityDetailsPage))
-
-    test
   }
 
   private val itemDetails =
