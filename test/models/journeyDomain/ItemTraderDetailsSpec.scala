@@ -20,7 +20,7 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.domain.Address
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
-import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
+import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, Index, UserAnswers}
 import org.scalatest.TryValues
 import pages._

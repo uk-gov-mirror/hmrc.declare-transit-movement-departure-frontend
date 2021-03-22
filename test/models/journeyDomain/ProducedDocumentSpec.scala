@@ -19,7 +19,7 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.{NonEmptyList, ReaderT}
 import generators.JourneyModelGenerators
-import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
+import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.journeyDomain.ProducedDocumentSpec.setProducedDocumentsUserAnswers
 import models.reference.CircumstanceIndicator
 import models.{Index, UserAnswers}
