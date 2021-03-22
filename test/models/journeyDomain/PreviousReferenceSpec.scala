@@ -20,7 +20,7 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.{NonEmptyList, ReaderT}
 import generators.JourneyModelGenerators
 import models.DeclarationType.{Option1, Option2, Option3, Option4}
-import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
+import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.journeyDomain.PreviousReferenceSpec.setPreviousReferenceUserAnswers
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary

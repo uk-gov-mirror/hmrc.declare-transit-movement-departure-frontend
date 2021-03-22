@@ -25,7 +25,7 @@ import queries.Gettable
 
 trait UserAnswersSpecHelper {
 
-  implicit class UserAnswersNoErrorSet(userAnswers: UserAnswers) {
+  implicit class UserAnswersSpecHelperOps(userAnswers: UserAnswers) {
     import models.RichJsObject
 
     private def unsafeSetWithOutCleanup[A: Writes](page: QuestionPage[A], value: A): UserAnswers =
