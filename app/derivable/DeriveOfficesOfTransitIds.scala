@@ -20,8 +20,8 @@ import play.api.libs.json.{JsObject, JsPath}
 import queries.Constants.routeDetailsOfficesOfTransit
 
 case object DeriveOfficesOfTransitIds extends Derivable[List[JsObject], List[String]] {
-  override val derive: List[JsObject] => List[String] = _.map(
-    y => (y \ "addAnotherTransitOffice").as[String]
+  override val derive: List[JsObject] => List[String] = _.flatMap(
+    y => (y \ "addAnotherTransitOffice").asOpt[String]
   )
 
   override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit

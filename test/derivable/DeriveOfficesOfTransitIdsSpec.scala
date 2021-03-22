@@ -17,30 +17,48 @@
 package derivable
 
 import base.{SpecBase, UserAnswersSpecHelper}
+import models.reference.CountryCode
 import models.{Index, UserAnswers}
-import pages.AddAnotherTransitOfficePage
+import pages.{AddAnotherTransitOfficePage, OfficeOfTransitCountryPage}
 
 class DeriveOfficesOfTransitIdsSpec extends SpecBase with UserAnswersSpecHelper {
 
-  "returns the office ids from user answers" in {
-
-    val userAnswers = emptyUserAnswers
-      .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("officeId0")
-      .unsafeSetVal(AddAnotherTransitOfficePage(Index(1)))("officeId1")
-      .unsafeSetVal(AddAnotherTransitOfficePage(Index(2)))("officeId2")
-
-    val result = userAnswers.get(DeriveOfficesOfTransitIds).value
-
-    result must contain theSameElementsInOrderAs Seq("officeId0", "officeId1", "officeId2")
+  "when there are no answer for any question in the routeDetailsOfficesOfTransit loop" - {
+    "returns None" in {
+      val userAnswers = emptyUserAnswers
+      val result      = userAnswers.get(DeriveOfficesOfTransitIds)
+      result mustBe None
+    }
   }
 
-  "returns None when there are no office ids in user answers" in {
+  "when there are answer for questions in the routeDetailsOfficesOfTransit loop" - {
+    "when all office ids are answered and there are no incomplete loops from user answers" in {
+      val userAnswers = emptyUserAnswers
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("GB"))
+        .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("officeId0")
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(1)))(CountryCode("GB"))
+        .unsafeSetVal(AddAnotherTransitOfficePage(Index(1)))("officeId1")
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(2)))(CountryCode("GB"))
+        .unsafeSetVal(AddAnotherTransitOfficePage(Index(2)))("officeId2")
+      val result = userAnswers.get(DeriveOfficesOfTransitIds).value
+      result must contain theSameElementsInOrderAs Seq("officeId0", "officeId1", "officeId2")
+    }
 
-    val userAnswers = emptyUserAnswers
+    "when there is a single incomplete loop and Offices Of Transit hasn't been answered, returns None" in {
+      val userAnswers = emptyUserAnswers
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("TT"))
+      val result = userAnswers.get(DeriveOfficesOfTransitIds).value
+      result mustBe Seq.empty
+    }
 
-    val result = userAnswers.get(DeriveOfficesOfTransitIds)
-
-    result mustBe None
+    "when there complete loops and an incomplete loop, returns a list with an office id" in {
+      val userAnswers = emptyUserAnswers
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("GB"))
+        .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("officeId0")
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(1)))(CountryCode("GB"))
+      val result = userAnswers.get(DeriveOfficesOfTransitIds).value
+      result mustBe List("officeId0")
+    }
   }
 
 }
