@@ -19,6 +19,7 @@ package controllers.routeDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
+import derivable.DeriveOfficesOfTransitIds
 import forms.AddAnotherTransitOfficeFormProvider
 import javax.inject.Inject
 import models.reference.{CountryCode, CustomsOffice}
@@ -69,10 +70,12 @@ class AddAnotherTransitOfficeController @Inject()(
                 .map(form.fill)
                 .getOrElse(form)
 
+              val selectedCustomsOfficeIds = request.userAnswers.get(DeriveOfficesOfTransitIds).getOrElse(Nil)
+
               val json = Json.obj(
                 "form"           -> preparedForm,
                 "lrn"            -> lrn,
-                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.getAll),
+                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.filterNot(selectedCustomsOfficeIds)),
                 "countryName"    -> countryName,
                 "mode"           -> mode
               )
@@ -91,6 +94,8 @@ class AddAnotherTransitOfficeController @Inject()(
             case (customsOffices, countryName) =>
               val form = formProvider(customsOffices, countryName)
 
+              val selectedCustomsOfficeIds = request.userAnswers.get(DeriveOfficesOfTransitIds).getOrElse(Nil)
+
               form
                 .bindFromRequest()
                 .fold(
@@ -98,7 +103,7 @@ class AddAnotherTransitOfficeController @Inject()(
                     val json = Json.obj(
                       "form"           -> formWithErrors,
                       "lrn"            -> lrn,
-                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.getAll),
+                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.filterNot(selectedCustomsOfficeIds)),
                       "countryName"    -> countryName,
                       "mode"           -> mode
                     )
@@ -115,6 +120,7 @@ class AddAnotherTransitOfficeController @Inject()(
       }
   }
 
+  //TODO Refactor - 1) Make concurrent calls 2) Use transit country lookup by code
   private def getCustomsOfficeAndCountryName(countryCode: CountryCode)(implicit request: DataRequest[AnyContent]): Future[(CustomsOfficeList, String)] =
     referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
       customsOffices =>
