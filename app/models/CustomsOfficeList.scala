@@ -20,8 +20,7 @@ import models.reference.CustomsOffice
 
 case class CustomsOfficeList(customsOffices: Seq[CustomsOffice]) {
 
-  def getCustomsOffice(customsOfficeId: String): Option[CustomsOffice] =
-    customsOffices.find(_.id == customsOfficeId)
-}
+  def getCustomsOffice(id: String): Option[CustomsOffice] =
+    customsOffices.find(_.id == id)
 
-object CustomsOfficeList
+}

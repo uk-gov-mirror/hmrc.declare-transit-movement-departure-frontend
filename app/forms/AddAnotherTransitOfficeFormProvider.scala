@@ -18,8 +18,8 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{CustomsOfficeList, OfficeOfTransitList}
-import models.reference.{CustomsOffice, OfficeOfTransit}
+import models.CustomsOfficeList
+import models.reference.CustomsOffice
 import play.api.data.Form
 
 class AddAnotherTransitOfficeFormProvider @Inject() extends Mappings {
