@@ -191,8 +191,7 @@ trait JourneyModelGenerators {
       for {
         name    <- stringsWithMaxLength(stringMaxLength)
         address <- arbAddress.arbitrary
-      } yield
-        SafetyAndSecurity.PersonalInformation(name, Address(address.line1, "", "", Some(Country(CountryCode("GB"), "")))) // TODO update when actual address
+      } yield SafetyAndSecurity.PersonalInformation(name, Address(address.line1, "", "", Some(Country(CountryCode("GB"), ""))))
     }
 
   implicit lazy val arbitraryModeCrossingBorder: Arbitrary[ModeCrossingBorder] =
@@ -367,9 +366,7 @@ trait JourneyModelGenerators {
       } yield TraderInformation(name, address, eori)
     }
 
-  implicit def arbitraryItemRequiredDetails(
-    implicit
-    arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.RequiredDetails] =
+  implicit def arbitraryItemRequiredDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.RequiredDetails] =
     Arbitrary {
       for {
         name    <- stringsWithMaxLength(stringMaxLength)
@@ -422,19 +419,17 @@ trait JourneyModelGenerators {
       previousReferences        <- if (isPreviousReferenceMandatory) nonEmptyListOf[PreviousReferences](1).map(Some(_)) else Gen.const(None)
       itemSecurityTraderDetails <- if (addSafetyAndSecurity) arbitrary[ItemsSecurityTraderDetails].map {
         itemsSecurityTraderDetails =>
-          {
-            val setMethodOfPayment = safetyAndSecurity.paymentMethod match {
-              case None    => Some(methodOfPayment)
-              case Some(_) => None
-            }
-
-            val setCommercialReferenceNumber = safetyAndSecurity.commercialReferenceNumber match {
-              case None    => Some(commercialReferenceNumber)
-              case Some(_) => None
-            }
-
-            Some(itemsSecurityTraderDetails.copy(methodOfPayment = setMethodOfPayment, commercialReferenceNumber = setCommercialReferenceNumber))
+          val setMethodOfPayment = safetyAndSecurity.paymentMethod match {
+            case None    => Some(methodOfPayment)
+            case Some(_) => None
           }
+
+          val setCommercialReferenceNumber = safetyAndSecurity.commercialReferenceNumber match {
+            case None    => Some(commercialReferenceNumber)
+            case Some(_) => None
+          }
+
+          Some(itemsSecurityTraderDetails.copy(methodOfPayment = setMethodOfPayment, commercialReferenceNumber = setCommercialReferenceNumber))
       } else Gen.const(None)
     } yield
       ItemSection(itemDetail,
@@ -727,9 +722,7 @@ trait JourneyModelGenerators {
         referenceType     <- nonEmptyString
         previousReference <- nonEmptyString
         extraInformation  <- Gen.option(nonEmptyString)
-      } yield {
-        PreviousReferences(referenceType, previousReference, extraInformation)
-      }
+      } yield PreviousReferences(referenceType, previousReference, extraInformation)
     }
 
 }

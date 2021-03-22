@@ -67,7 +67,11 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
 
     "when the full UserAnswers has been answered and modeAtBorder is not 4 or 40" in {
 
-      forAll(arb[UserAnswers], arb[SafetyAndSecurity], arb[String].suchThat(mode => mode != "4" | mode != "40")) {
+      forAll(arb[UserAnswers],
+             arb[SafetyAndSecurity],
+             arb[String].suchThat(
+               mode => mode != "4" | mode != "40"
+             )) {
         (baseUserAnswers, safetyAndSecurity, mode) =>
           val updatedUserAnswers = baseUserAnswers.unsafeSetVal(ModeAtBorderPage)(mode)
 
