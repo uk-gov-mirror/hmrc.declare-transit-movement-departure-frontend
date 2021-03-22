@@ -106,16 +106,16 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
       .section
 
   private val addItemsDependentSections: UserAnswersReader[_] = {
-    val routeDetails = for {
+    val completedSection = for {
       _            <- UserAnswersReader[MovementDetails]
       _            <- UserAnswersReader[TraderDetails]
       routeDetails <- UserAnswersReader[RouteDetails]
-    } yield routeDetails
+    } yield completedSection
 
     if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
       UserAnswersReader[SafetyAndSecurity]
     } else {
-      routeDetails
+      completedSection
     }
   }
 
