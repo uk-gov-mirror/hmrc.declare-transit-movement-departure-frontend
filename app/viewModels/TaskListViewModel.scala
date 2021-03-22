@@ -110,7 +110,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
       _            <- UserAnswersReader[MovementDetails]
       _            <- UserAnswersReader[TraderDetails]
       routeDetails <- UserAnswersReader[RouteDetails]
-    } yield completedSection
+    } yield routeDetails
 
     if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
       UserAnswersReader[SafetyAndSecurity]
