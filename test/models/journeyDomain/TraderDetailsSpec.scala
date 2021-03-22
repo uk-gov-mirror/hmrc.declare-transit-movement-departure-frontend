@@ -21,7 +21,6 @@ import generators.JourneyModelGenerators
 import models.domain.Address
 import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori, TraderInformation}
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, ProcedureType, UserAnswers}
-import org.scalacheck.Gen
 import org.scalatest.TryValues
 import pages.{ConsignorEoriPage, _}
 
@@ -32,7 +31,12 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
     "when there is a principal trader eori details only and procedure type is Normal" in {
       forAll(arb[UserAnswers], arb[EoriNumber]) {
         (baseUserAnswers, eori) =>
-          val userAnswers = setTraderDetailsPrincipalEoriOnly(eori)(baseUserAnswers)
+          val userAnswers = baseUserAnswers
+            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+            .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+            .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
+            .unsafeSetVal(AddConsigneePage)(false)
+            .unsafeSetVal(AddConsignorPage)(false)
 
           val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
@@ -72,7 +76,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
 
           val expectedAddress = Address.prismAddressToPrincipalAddress(principalAddress)
 
-          result mustEqual TraderDetails(PersonalInformation(name, expectedAddress), None, None)
+          result mustEqual TraderDetails(RequiredDetails(name, expectedAddress), None, None)
 
       }
     }
@@ -189,11 +193,4 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
         case Some(TraderInformation(_, address, _)) => Address.prismAddressToConsigneeAddress.getOption(address).get
       })
 
-  def setTraderDetailsPrincipalEoriOnly(eoriNumber: EoriNumber)(startUserAnswers: UserAnswers): UserAnswers =
-    startUserAnswers
-      .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
-      .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
-      .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber.value)
-      .unsafeSetVal(AddConsigneePage)(false)
-      .unsafeSetVal(AddConsignorPage)(false)
 }
