@@ -207,14 +207,16 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
     })
 
   private def setPreviousReferences(previousReferences: Option[NonEmptyList[PreviousReferences]], itemIndex: Index)(
-    startUserAnswers: UserAnswers): UserAnswers =
+    startUserAnswers: UserAnswers
+  ): UserAnswers =
     previousReferences.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
       case (userAnswers, (previousReferences, index)) =>
         PreviousReferenceSpec.setPreviousReferenceUserAnswers(previousReferences, itemIndex, Index(index))(userAnswers)
     })
 
   private def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(
-    userAnswers: UserAnswers): UserAnswers =
+    userAnswers: UserAnswers
+  ): UserAnswers =
     itemsSecurityTraderDetails match {
       case Some(result) => ItemsSecurityTraderDetailsSpec.setItemsSecurityTraderDetails(result, index)(userAnswers)
       case None         => userAnswers
