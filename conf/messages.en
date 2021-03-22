@@ -22,6 +22,7 @@ site.continue = Save and continue
 site.notStarted = Not started
 site.inProgress = In Progress
 site.completed = Completed
+site.cannotStartYet = Cannot start yet
 site.service_name =  Manage your transit movements
 site.textarea.char_limit = (Limit is {0} characters)
 site.title.suffix = -  Manage your transit movements - GOV.UK

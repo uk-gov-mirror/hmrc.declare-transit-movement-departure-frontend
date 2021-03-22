@@ -626,8 +626,12 @@ trait JourneyModelGenerators {
         )
     }
 
-  implicit lazy val arbitraryMovementDetails: Arbitrary[MovementDetails] =
-    Arbitrary(Gen.oneOf(arbitrary[NormalMovementDetails], arbitrary[SimplifiedMovementDetails]))
+  implicit def arbitraryMovementDetails(procedureType: ProcedureType): Arbitrary[MovementDetails] =
+    if (procedureType == ProcedureType.Normal) {
+      Arbitrary(arbitrary[NormalMovementDetails])
+    } else {
+      Arbitrary(arbitrary[SimplifiedMovementDetails])
+    }
 
   val genTransitInformationWithoutArrivalTime =
     for {
