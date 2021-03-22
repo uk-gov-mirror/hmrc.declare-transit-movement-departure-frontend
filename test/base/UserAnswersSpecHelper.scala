@@ -17,8 +17,11 @@
 package base
 
 import models.{Index, UserAnswers}
+import org.scalactic.source.Position
+import org.scalatest.exceptions.TestFailedException
 import pages.QuestionPage
-import play.api.libs.json.{JsResultException, Json, Writes}
+import play.api.libs.json.{JsResultException, Json, Reads, Writes}
+import queries.Gettable
 
 trait UserAnswersSpecHelper {
 
@@ -72,6 +75,25 @@ trait UserAnswersSpecHelper {
           _ => userAnswers,
           jsValue => userAnswers.copy(data = jsValue)
         )
+
+    def assert[A: Reads](description: String)(assertion: UserAnswers => Boolean)(implicit pos: Position): UserAnswers =
+      if (assertion(userAnswers)) {
+        userAnswers
+      } else {
+
+        val msg = s"Validation failed - $description. Validation is run on user answers before this assertion."
+        throw UserAnswersNoErrorException("checkValidity", msg)
+      }
+
+    def unsafeGet[A: Reads](gettable: Gettable[A]): A =
+      userAnswers.get(gettable).getOrElse(throw UserAnswersNoErrorException("unsafeGet", "Value not defined. It must be set prior to this get call."))
+
   }
 
+  class UserAnswersNoErrorException(method: String, message: String, pos: Position)
+      extends TestFailedException(_ => Some(s"Failed while calling $method. Message: $message"), None, pos)
+
+  object UserAnswersNoErrorException {
+    def apply(method: String, message: String)(implicit pos: Position) = new UserAnswersNoErrorException(method, message, pos)
+  }
 }
