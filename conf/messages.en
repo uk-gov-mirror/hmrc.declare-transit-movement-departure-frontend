@@ -230,10 +230,10 @@ containersUsed.error.required = Select yes if you have used any containers
 
 procedureType.title = What type of procedure are you using?
 procedureType.heading = What type of procedure are you using?
-procedureType.normal = Normal
-procedureType.simplified = Simplified
+procedureType.normal = Normal (customs-approved location)
+procedureType.simplified = Simplified (authorised consignor’s location)
 procedureType.checkYourAnswersLabel = Procedure type
-procedureType.error.required = Select the type of procedure are you using
+procedureType.error.required = Select which type of procedure you are using
 
 declarationPlace.title = What is the postcode for the place of declaration?
 declarationPlace.heading = What is the postcode for the place of declaration?
