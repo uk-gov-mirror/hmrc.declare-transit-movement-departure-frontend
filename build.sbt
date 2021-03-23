@@ -89,8 +89,12 @@ lazy val root = (project in file("."))
   )
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
-  fork := false,
-  javaOptions ++= Seq("-Dconfig.resource=test.application.conf")
+  fork := true,
+  unmanagedResourceDirectories += baseDirectory.value / "test" / "resources",
+  javaOptions ++= Seq(
+    "-Dconfig.resource=test.application.conf",
+    "-Dlogger.resource=logback-test.xml"
+  )
 )
 
 lazy val itSettings = Defaults.itSettings ++ Seq(
