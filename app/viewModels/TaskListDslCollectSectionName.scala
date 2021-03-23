@@ -105,7 +105,7 @@ private[viewModels] class TaskListDsl[A, B, C](userAnswers: UserAnswers)(
       .run(userAnswers)
       .getOrElse((urlIfNotStarted, NotStarted))
 
-    val (onwardRoute1, status1) = readerIfDependentSectionCompleted match {
+    val (updatedOnwardRoute, updatedStatus) = readerIfDependentSectionCompleted match {
       case Some(reader) =>
         reader.run(userAnswers) match {
           case Some(_) => (onwardRoute, status)
@@ -114,6 +114,6 @@ private[viewModels] class TaskListDsl[A, B, C](userAnswers: UserAnswers)(
       case _ => (onwardRoute, status)
     }
 
-    SectionDetails(sectionName, onwardRoute1, status1)
+    SectionDetails(sectionName, updatedOnwardRoute, updatedStatus)
   }
 }

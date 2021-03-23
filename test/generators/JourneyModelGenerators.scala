@@ -114,7 +114,7 @@ trait JourneyModelGenerators {
 
     Arbitrary {
       for {
-        addCircumstanceIndicator   <- Gen.option(nonEmptyString)
+        addCircumstanceIndicator   <- Gen.option(Gen.oneOf(CircumstanceIndicator.conditionalIndicators))
         paymentMethod              <- Gen.option(nonEmptyString)
         commercialReference        <- Gen.option(nonEmptyString)
         convenyanceReferenceNumber <- Gen.option(nonEmptyString)
@@ -123,18 +123,24 @@ trait JourneyModelGenerators {
         consigneeAddress           <- Gen.option(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
         carrierAddress             <- Gen.option(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
         itineraries                <- nonEmptyListOf[Itinerary](5)
-      } yield
+      } yield {
+        val placeOfUnloadingData = addCircumstanceIndicator match {
+          case Some("E") => placeOfUnloading
+          case Some(_)   => Some(placeOfUnloading.getOrElse("sampleData"))
+          case _         => None
+        }
         SafetyAndSecurity(
           addCircumstanceIndicator,
           paymentMethod,
           commercialReference,
           convenyanceReferenceNumber,
-          placeOfUnloading,
+          placeOfUnloadingData,
           consignorAddress,
           consigneeAddress,
           carrierAddress,
           itineraries
         )
+      }
     }
   }
 
@@ -157,7 +163,7 @@ trait JourneyModelGenerators {
     }
 
     for {
-      addCircumstanceIndicator   <- Gen.option(nonEmptyString)
+      addCircumstanceIndicator   <- Gen.option(Gen.oneOf(CircumstanceIndicator.conditionalIndicators))
       paymentMethod              <- Gen.option(nonEmptyString)
       commercialReference        <- Gen.option(nonEmptyString)
       convenyanceReferenceNumber <- genConvenyanceReferenceNumber
@@ -166,18 +172,25 @@ trait JourneyModelGenerators {
       consigneeAddress           <- Gen.option(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
       carrierAddress             <- Gen.option(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
       itineraries                <- nonEmptyListOf[Itinerary](5)
-    } yield
+    } yield {
+      val placeOfUnloadingData = addCircumstanceIndicator match {
+        case Some("E") => placeOfUnloading
+        case Some(_)   => Some(placeOfUnloading.getOrElse("sampleData"))
+        case _         => None
+      }
+
       SafetyAndSecurity(
         addCircumstanceIndicator,
         paymentMethod,
         commercialReference,
         convenyanceReferenceNumber,
-        placeOfUnloading,
+        placeOfUnloadingData,
         consignorAddress,
         consigneeAddress,
         carrierAddress,
         itineraries
       )
+    }
   }
 
   implicit def arbitrarySecurityTraderDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[SecurityTraderDetails] =

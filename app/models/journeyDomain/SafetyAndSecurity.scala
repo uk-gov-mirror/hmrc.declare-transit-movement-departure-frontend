@@ -91,9 +91,14 @@ object SafetyAndSecurity {
     }
 
   private def placeOfUnloading: UserAnswersReader[Option[String]] =
-    AddPlaceOfUnloadingCodePage.reader.flatMap(
-      bool => if (bool) PlaceOfUnloadingCodePage.optionalReader else none[String].pure[UserAnswersReader]
-    )
+    addCircumstanceIndicator.flatMap {
+      case Some("E") =>
+        AddPlaceOfUnloadingCodePage.reader.flatMap(
+          bool => if (bool) PlaceOfUnloadingCodePage.optionalReader else none[String].pure[UserAnswersReader]
+        )
+      case Some(_) => PlaceOfUnloadingCodePage.reader.map(Some(_))
+      case _       => none[String].pure[UserAnswersReader]
+    }
 
   private def consignorDetails: UserAnswersReader[Option[SecurityTraderDetails]] = {
 
