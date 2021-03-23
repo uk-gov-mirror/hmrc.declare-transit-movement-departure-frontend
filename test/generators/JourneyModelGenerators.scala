@@ -114,14 +114,14 @@ trait JourneyModelGenerators {
 
     Arbitrary {
       for {
-        addCircumstanceIndicator   <- Gen.option(Gen.oneOf(CircumstanceIndicator.conditionalIndicators))
-        paymentMethod              <- Gen.option(nonEmptyString)
-        commercialReference        <- Gen.option(nonEmptyString)
-        convenyanceReferenceNumber <- Gen.option(nonEmptyString)
-        placeOfUnloading           <- Gen.option(nonEmptyString)
-        consignorAddress           <- Gen.option(arbitrarySecurityTraderDetails(consignorAddress).arbitrary)
-        consigneeAddress           <- Gen.option(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
-        carrierAddress             <- Gen.option(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
+        addCircumstanceIndicator   <- Gen.some(nonEmptyString)
+        paymentMethod              <- Gen.some(nonEmptyString)
+        commercialReference        <- Gen.some(nonEmptyString)
+        convenyanceReferenceNumber <- Gen.some(nonEmptyString)
+        placeOfUnloading           <- Gen.some(nonEmptyString)
+        consignorAddress           <- Gen.some(arbitrarySecurityTraderDetails(consignorAddress).arbitrary)
+        consigneeAddress           <- Gen.some(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
+        carrierAddress             <- Gen.some(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
         itineraries                <- nonEmptyListOf[Itinerary](5)
       } yield {
         val placeOfUnloadingData = addCircumstanceIndicator match {
@@ -159,18 +159,18 @@ trait JourneyModelGenerators {
 
     val genConvenyanceReferenceNumber: Gen[Option[String]] = modeAtBorder.flatMap {
       case "4" | "40" => nonEmptyString.map(Some(_))
-      case _          => Gen.option(nonEmptyString)
+      case _          => Gen.some(nonEmptyString)
     }
 
     for {
       addCircumstanceIndicator   <- Gen.option(Gen.oneOf(CircumstanceIndicator.conditionalIndicators))
-      paymentMethod              <- Gen.option(nonEmptyString)
-      commercialReference        <- Gen.option(nonEmptyString)
+      paymentMethod              <- Gen.some(nonEmptyString)
+      commercialReference        <- Gen.some(nonEmptyString)
       convenyanceReferenceNumber <- genConvenyanceReferenceNumber
-      placeOfUnloading           <- Gen.option(nonEmptyString)
-      consignorAddress           <- Gen.option(arbitrarySecurityTraderDetails(consignorAddress).arbitrary)
-      consigneeAddress           <- Gen.option(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
-      carrierAddress             <- Gen.option(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
+      placeOfUnloading           <- Gen.some(nonEmptyString)
+      consignorAddress           <- Gen.some(arbitrarySecurityTraderDetails(consignorAddress).arbitrary)
+      consigneeAddress           <- Gen.some(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
+      carrierAddress             <- Gen.some(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
       itineraries                <- nonEmptyListOf[Itinerary](5)
     } yield {
       val placeOfUnloadingData = addCircumstanceIndicator match {
@@ -273,7 +273,7 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         code        <- Gen.oneOf(Rail.Constants.codes).map(_.toInt)
-        departureId <- Gen.option(stringsWithMaxLength(stringMaxLength))
+        departureId <- Gen.some(stringsWithMaxLength(stringMaxLength))
       } yield Rail(code, departureId)
     }
 
@@ -289,7 +289,7 @@ trait JourneyModelGenerators {
       for {
         code                   <- Gen.const(42)
         nationalityAtDeparture <- arbitrary[CountryCode]
-        departureId            <- Gen.option(stringsWithMaxLength(stringMaxLength))
+        departureId            <- Gen.some(stringsWithMaxLength(stringMaxLength))
       } yield
         NonSpecialMode(
           code,
@@ -318,8 +318,8 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         principalTraderDetails <- arbitraryRequiredDetails(pricipalAddress, procedureType).arbitrary
-        consignor              <- Gen.option(arbitraryTraderInformation(consignorAddress).arbitrary)
-        consignee              <- Gen.option(arbitraryTraderInformation(consigneeAddress).arbitrary)
+        consignor              <- Gen.some(arbitraryTraderInformation(consignorAddress).arbitrary)
+        consignee              <- Gen.some(arbitraryTraderInformation(consigneeAddress).arbitrary)
       } yield TraderDetails(principalTraderDetails, consignor, consignee)
     }
   }
@@ -330,11 +330,11 @@ trait JourneyModelGenerators {
 
     Arbitrary {
       for {
-        methodOfPayment           <- Gen.option(nonEmptyString)
-        commercialReferenceNumber <- Gen.option(nonEmptyString)
-        dangerousGoodsCode        <- Gen.option(nonEmptyString)
-        consignor                 <- Gen.option(arbitraryItemsSecurityTraderDetails(consignorAddress).arbitrary)
-        consignee                 <- Gen.option(arbitraryItemsSecurityTraderDetails(consigneeAddress).arbitrary)
+        methodOfPayment           <- Gen.some(nonEmptyString)
+        commercialReferenceNumber <- Gen.some(nonEmptyString)
+        dangerousGoodsCode        <- Gen.some(nonEmptyString)
+        consignor                 <- Gen.some(arbitraryItemsSecurityTraderDetails(consignorAddress).arbitrary)
+        consignee                 <- Gen.some(arbitraryItemsSecurityTraderDetails(consigneeAddress).arbitrary)
       } yield ItemsSecurityTraderDetails(methodOfPayment, commercialReferenceNumber, dangerousGoodsCode, consignor, consignee)
     }
   }
@@ -376,7 +376,7 @@ trait JourneyModelGenerators {
       for {
         name    <- stringsWithMaxLength(stringMaxLength)
         address <- arbAddress.arbitrary
-        eori    <- Gen.option(arbitrary[EoriNumber])
+        eori    <- Gen.some(arbitrary[EoriNumber])
       } yield TraderInformation(name, address, eori)
     }
 
@@ -387,7 +387,7 @@ trait JourneyModelGenerators {
       for {
         name    <- stringsWithMaxLength(stringMaxLength)
         address <- arbAddress.arbitrary
-        eori    <- Gen.option(arbitrary[EoriNumber])
+        eori    <- Gen.some(arbitrary[EoriNumber])
       } yield models.journeyDomain.ItemTraderDetails.RequiredDetails(name, address, eori)
     }
 
@@ -424,11 +424,11 @@ trait JourneyModelGenerators {
 
     for {
       itemDetail                <- arbitrary[ItemDetails]
-      itemConsignor             <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-      itemConsignee             <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      itemConsignor             <- Gen.some(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee             <- Gen.some(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
       packages                  <- nonEmptyListOf[Packages](1)
       containers                <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
-      specialMentions           <- Gen.option(nonEmptyListOf[SpecialMention](1))
+      specialMentions           <- Gen.some(nonEmptyListOf[SpecialMention](1))
       producedDocuments         <- if (isDocumentTypeMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
       methodOfPayment           <- arbitrary[String]
       commercialReferenceNumber <- arbitrary[String]
@@ -474,14 +474,14 @@ trait JourneyModelGenerators {
 
     for {
       itemDetail                <- arbitrary[ItemDetails]
-      itemConsignor             <- Gen.option(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
-      itemConsignee             <- Gen.option(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
+      itemConsignor             <- Gen.some(arbitraryItemRequiredDetails(consignorAddress).arbitrary)
+      itemConsignee             <- Gen.some(arbitraryItemRequiredDetails(consigneeAddress).arbitrary)
       packages                  <- nonEmptyListOf[Packages](1)
       containers                <- if (containersUsed) { nonEmptyListOf[Container](1).map(Some(_)) } else Gen.const(None)
-      specialMentions           <- Gen.option(nonEmptyListOf[SpecialMention](1))
+      specialMentions           <- Gen.some(nonEmptyListOf[SpecialMention](1))
       producedDocuments         <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
-      previousReferences        <- Gen.option(nonEmptyListOf[PreviousReferences](1))
-      itemSecurityTraderDetails <- Gen.option(arbitrary[ItemsSecurityTraderDetails])
+      previousReferences        <- Gen.some(nonEmptyListOf[PreviousReferences](1))
+      itemSecurityTraderDetails <- Gen.some(arbitrary[ItemsSecurityTraderDetails])
 
     } yield
       ItemSection(itemDetail,
@@ -532,9 +532,9 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         packageType         <- arbitraryUnPackedPackageType.arbitrary
-        howManyPackagesPage <- Gen.option(Gen.choose(1, 10))
+        howManyPackagesPage <- Gen.some(Gen.choose(1, 10))
         totalPieces         <- Gen.choose(1, 10)
-        markOrNumber        <- Gen.option(nonEmptyString)
+        markOrNumber        <- Gen.some(nonEmptyString)
       } yield UnpackedPackages(packageType, howManyPackagesPage, totalPieces, markOrNumber)
     }
 
@@ -542,8 +542,8 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         bulkPackage         <- arbitraryBulkPackageType.arbitrary
-        howManyPackagesPage <- Gen.option(Gen.choose(1, 10))
-        markOrNumber        <- Gen.option(nonEmptyString)
+        howManyPackagesPage <- Gen.some(Gen.choose(1, 10))
+        markOrNumber        <- Gen.some(nonEmptyString)
       } yield BulkPackages(bulkPackage, howManyPackagesPage, markOrNumber)
     }
 
@@ -562,8 +562,8 @@ trait JourneyModelGenerators {
       for {
         itemDescription <- nonEmptyString
         totalGrossMass  <- genNumberString
-        totalNetMass    <- Gen.option(genNumberString)
-        commodityCode   <- Gen.option(nonEmptyString)
+        totalNetMass    <- Gen.some(genNumberString)
+        commodityCode   <- Gen.some(nonEmptyString)
       } yield ItemDetails(itemDescription, totalGrossMass, totalNetMass, commodityCode)
     }
 
@@ -580,7 +580,7 @@ trait JourneyModelGenerators {
       for {
         documentType      <- nonEmptyString
         documentReference <- nonEmptyString
-        extraInformation  <- Gen.option(nonEmptyString)
+        extraInformation  <- Gen.some(nonEmptyString)
       } yield ProducedDocument(documentType, documentReference, extraInformation)
     }
 
@@ -711,7 +711,7 @@ trait JourneyModelGenerators {
   implicit lazy val arbitraryGoodSummaryNormalDetails: Arbitrary[GoodSummaryNormalDetails] =
     Arbitrary {
       for {
-        customsApprovedLocation <- Gen.option(stringsWithMaxLength(stringMaxLength))
+        customsApprovedLocation <- Gen.some(stringsWithMaxLength(stringMaxLength))
       } yield GoodSummaryNormalDetails(customsApprovedLocation)
     }
 
@@ -724,7 +724,7 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         loadingPlace       <- if (safetyAndSecurity) { nonEmptyString.map(Some(_)) } else { Gen.const(None) }
-        numberOfPackages   <- Gen.option(Gen.choose(1, 100))
+        numberOfPackages   <- Gen.some(Gen.choose(1, 100))
         totalMass          <- Gen.choose(1, 100).map(_.toString)
         goodSummaryDetails <- arbitraryGoodSummaryDetails.arbitrary
         sealNumbers        <- listWithMaxLength[SealDomain](10)
@@ -743,7 +743,7 @@ trait JourneyModelGenerators {
       for {
         referenceType     <- nonEmptyString
         previousReference <- nonEmptyString
-        extraInformation  <- Gen.option(nonEmptyString)
+        extraInformation  <- Gen.some(nonEmptyString)
       } yield {
         PreviousReferences(referenceType, previousReference, extraInformation)
       }
