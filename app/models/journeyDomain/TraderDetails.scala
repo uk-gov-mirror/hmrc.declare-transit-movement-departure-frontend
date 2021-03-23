@@ -45,29 +45,36 @@ object TraderDetails {
   final case class TraderEori(eori: EoriNumber) extends RequiredDetails
 
   val principalTraderDetails: UserAnswersReader[RequiredDetails] = {
-    val useEori = WhatIsPrincipalEoriPage.reader
-      .map(
-        eori => RequiredDetails(EoriNumber(eori))
+    val simplified = ProcedureTypePage.reader
+      .filter(_ == Simplified)
+      .productR(
+        WhatIsPrincipalEoriPage.reader
+          .map(EoriNumber(_))
+          .map(RequiredDetails(_))
       )
 
-    val useNameAndAddress: UserAnswersReader[RequiredDetails] = (
-      PrincipalNamePage.reader,
-      PrincipalAddressPage.reader
-    ).tupled.map {
-      case (name, principalAddress) =>
-        val address = Address.prismAddressToPrincipalAddress(principalAddress)
-        PersonalInformation(name, address)
-    }
+    val normal = ProcedureTypePage.reader
+      .filter(_ == Normal)
+      .productR {
+        IsPrincipalEoriKnownPage.reader
+          .flatMap {
+            case true =>
+              WhatIsPrincipalEoriPage.reader
+                .map(EoriNumber(_))
+                .map(RequiredDetails(_))
+            case false =>
+              (
+                PrincipalNamePage.reader,
+                PrincipalAddressPage.reader
+              ).tupled.map {
+                case (name, principalAddress) =>
+                  val address = Address.prismAddressToPrincipalAddress(principalAddress)
+                  RequiredDetails(name, address)
+              }
+          }
+      }
 
-    val eoriOrNameAndAddress = IsPrincipalEoriKnownPage.reader.flatMap {
-      isPrincipalEoriKnown =>
-        if (isPrincipalEoriKnown) useEori else useNameAndAddress
-    }
-
-    ProcedureTypePage.reader.flatMap {
-      case Normal     => eoriOrNameAndAddress
-      case Simplified => useEori
-    }
+    normal orElse simplified
   }
 
   val consignorDetails: UserAnswersReader[Option[RequiredDetails]] = {
@@ -75,7 +82,10 @@ object TraderDetails {
       IsConsignorEoriKnownPage.reader
         .flatMap {
           bool =>
-            if (bool) ConsignorEoriPage.reader.map(eori => Some(EoriNumber(eori)))
+            if (bool)
+              ConsignorEoriPage.reader.map(
+                eori => Some(EoriNumber(eori))
+              )
             else none[EoriNumber].pure[UserAnswersReader]
         }
     val consignorInformation =
@@ -103,7 +113,10 @@ object TraderDetails {
       IsConsigneeEoriKnownPage.reader
         .flatMap {
           bool =>
-            if (bool) WhatIsConsigneeEoriPage.reader.map(eori => Some(EoriNumber(eori)))
+            if (bool)
+              WhatIsConsigneeEoriPage.reader.map(
+                eori => Some(EoriNumber(eori))
+              )
             else none[EoriNumber].pure[UserAnswersReader]
         }
 
