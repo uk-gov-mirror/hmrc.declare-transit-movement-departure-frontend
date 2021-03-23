@@ -126,8 +126,7 @@ trait JourneyModelGenerators {
       } yield {
         val placeOfUnloadingData = addCircumstanceIndicator match {
           case Some("E") => placeOfUnloading
-          case Some(_)   => Some(placeOfUnloading.getOrElse("sampleData"))
-          case _         => None
+          case _         => Some(placeOfUnloading.getOrElse("sampleData"))
         }
         SafetyAndSecurity(
           addCircumstanceIndicator,
@@ -175,8 +174,7 @@ trait JourneyModelGenerators {
     } yield {
       val placeOfUnloadingData = addCircumstanceIndicator match {
         case Some("E") => placeOfUnloading
-        case Some(_)   => Some(placeOfUnloading.getOrElse("sampleData"))
-        case _         => None
+        case _         => Some(placeOfUnloading.getOrElse("sampleData"))
       }
 
       SafetyAndSecurity(

@@ -75,9 +75,9 @@ object SafetyAndSecurity {
     )
 
   private def commercialReferenceNumber: UserAnswersReader[Option[String]] =
-    (AddCommercialReferenceNumberPage.reader, AddCommercialReferenceNumberAllItemsPage.reader).tupled.flatMap {
-      case (true, true) => CommercialReferenceNumberAllItemsPage.optionalReader
-      case _            => none[String].pure[UserAnswersReader]
+    (AddCommercialReferenceNumberPage.reader, AddCommercialReferenceNumberAllItemsPage.optionalReader).tupled.flatMap {
+      case (true, Some(true)) => CommercialReferenceNumberAllItemsPage.optionalReader
+      case _                  => none[String].pure[UserAnswersReader]
     }
 
   private def conveyanceReferenceNumber: UserAnswersReader[Option[String]] =
@@ -96,8 +96,8 @@ object SafetyAndSecurity {
         AddPlaceOfUnloadingCodePage.reader.flatMap(
           bool => if (bool) PlaceOfUnloadingCodePage.optionalReader else none[String].pure[UserAnswersReader]
         )
-      case Some(_) => PlaceOfUnloadingCodePage.reader.map(Some(_))
-      case _       => none[String].pure[UserAnswersReader]
+      case _ =>
+        PlaceOfUnloadingCodePage.reader.map(Some(_))
     }
 
   private def consignorDetails: UserAnswersReader[Option[SecurityTraderDetails]] = {
