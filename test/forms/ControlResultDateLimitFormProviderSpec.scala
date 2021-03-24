@@ -25,8 +25,8 @@ import play.api.data.FormError
 class ControlResultDateLimitFormProviderSpec extends DateBehaviours {
 
   private val form                             = new ControlResultDateLimitFormProvider()()
-  private val dateIn15Days: LocalDate          = LocalDate.now.plusDays(15)
-  private val dateIn14Days: LocalDate          = LocalDate.now.plusDays(14)
+  private def dateIn15Days: LocalDate          = LocalDate.now.plusDays(15)
+  private def dateIn14Days: LocalDate          = LocalDate.now.plusDays(14)
   private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
   ".value" - {
