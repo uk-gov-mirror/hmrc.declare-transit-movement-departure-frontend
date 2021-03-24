@@ -57,7 +57,7 @@ object PreviousReferences {
       CountryOfDispatchPage.reader
     ).tupled.flatMap {
       case (Option2, code) if nonEUCountries.contains(code) =>
-        allPreviousReferencesReader(itemIndex) // Mandatory reader if 'T2' or 'T2F' and non EU country
+        allPreviousReferencesReader(itemIndex)
       case _ =>
         AddAdministrativeReferencePage(itemIndex).reader.flatMap { // Optional reader if any other condition
           case true  => allPreviousReferencesReader(itemIndex)
