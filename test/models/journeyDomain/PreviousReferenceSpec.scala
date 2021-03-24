@@ -19,7 +19,7 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.{NonEmptyList, ReaderT}
 import generators.JourneyModelGenerators
-import models.DeclarationType.{Option1, Option2, Option3, Option4}
+import models.DeclarationType.{Option1, Option2}
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.journeyDomain.PreviousReferenceSpec.setPreviousReferenceUserAnswers
 import models.{Index, UserAnswers}
@@ -88,8 +88,8 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
   "derivePreviousReferences" - {
 
-    val genT2DeclarationType    = Gen.oneOf(Option2, Option4)
-    val genOtherDeclarationType = Gen.oneOf(Option1, Option3)
+    val genT2DeclarationType    = Option2
+    val genOtherDeclarationType = Option1
     val genNonEUCountry         = Gen.oneOf(nonEUCountries)
 
     "can be parsed from UserAnswers when" - {

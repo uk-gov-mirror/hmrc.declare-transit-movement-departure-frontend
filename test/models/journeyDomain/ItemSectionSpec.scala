@@ -19,10 +19,10 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
-import models.DeclarationType.{Option1, Option2, Option3, Option4}
+import models.DeclarationType.{Option1, Option2}
 import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
 import models.reference.{CircumstanceIndicator, CountryCode}
-import models.{Index, UserAnswers}
+import models.{DeclarationType, Index, UserAnswers}
 import org.scalacheck.Gen
 import pages.addItems.{AddAdministrativeReferencePage, AddDocumentsPage}
 import pages.addItems.specialMentions.AddSpecialMentionPage
@@ -31,9 +31,9 @@ import pages._
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
-  private val genT2DeclarationType    = Gen.oneOf(Option2, Option4).sample.value
+  private val genT2DeclarationType    = Option2
   private val genNonEUCountries       = Gen.oneOf(nonEUCountries).sample.value
-  private val genOtherDeclarationType = Gen.oneOf(Option1, Option3).sample.value
+  private val genOtherDeclarationType = Option1
 
   "ItemSection" - {
     "can be parsed UserAnswers" - {

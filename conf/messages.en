@@ -194,6 +194,7 @@ localReferenceNumber.error.invalidCharacters = Local reference number must only 
 addSecurityDetails.title = Do you need to add safety and security details?
 addSecurityDetails.heading = Do you need to add safety and security details?
 addSecurityDetails.checkYourAnswersLabel = Do you need to add safety and security details?
+addSecurityDetails.paragraph = These details are usually sent as an entry summary declaration. Some countries will allow you to send these details as part of a departures declaration. You must check the countries the goods will be travelling through.
 addSecurityDetails.error.required = Select yes if you need to add safety and security details
 
 declarationSummary.title = Declaration summary
@@ -221,10 +222,9 @@ declarationSummary.confirmAndSend = Confirm and send
 
 declarationType.title = What declaration do you want to create?
 declarationType.heading = What declaration do you want to create?
-declarationType.option1 = T1 (goods moving under external Union Transit procedure)
-declarationType.option2 = T2 (goods moving under internal Union Transit procedure)
-declarationType.option3 = T- (mixed consignment of T1 and T2 goods)
-declarationType.option4 = T2 (T2F between different fiscal territories)
+declarationType.option1 = T1 (goods originating outside the EU, such as GB)
+declarationType.option2 = T2 (goods originating inside the EU, such as NI)
+declarationType.paragraph = For mixed consignments, you will need to create separate T1 and T2 declarations.
 declarationType.checkYourAnswersLabel = Declaration type
 declarationType.error.required = Select the declaration you want to create
 
@@ -235,10 +235,10 @@ containersUsed.error.required = Select yes if you have used any containers
 
 procedureType.title = What type of procedure are you using?
 procedureType.heading = What type of procedure are you using?
-procedureType.normal = Normal
-procedureType.simplified = Simplified
+procedureType.normal = Normal (customs-approved location)
+procedureType.simplified = Simplified (authorised consignor’s location)
 procedureType.checkYourAnswersLabel = Procedure type
-procedureType.error.required = Select the type of procedure are you using
+procedureType.error.required = Select which type of procedure you are using
 
 declarationPlace.title = What is the postcode for the place of declaration?
 declarationPlace.heading = What is the postcode for the place of declaration?

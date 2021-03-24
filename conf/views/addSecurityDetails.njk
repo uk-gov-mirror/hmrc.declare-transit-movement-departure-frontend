@@ -31,13 +31,15 @@
 
           {{ csrf() | safe }}
 
+        <h1 class="govuk-heading-xl">{{messages('addSecurityDetails.heading')}}</h1>
+
           {{ govukRadios({
             name: 'value',
             fieldset: {
               legend: {
-                text: messages('addSecurityDetails.heading'),
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--xl"
+                text: messages('addSecurityDetails.paragraph'),
+                isPageHeading: false,
+                classes: "govuk-label--medium"
               }
             },
             items: radios,
