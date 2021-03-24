@@ -203,10 +203,14 @@ declarationSummary.p = You can save your declaration and come back later. You ha
 declarationSummary.section.movementDetails = {0} general information
 declarationSummary.section.routes = {0} route
 declarationSummary.section.transport = {0} transport
+declarationSummary.section.transport.cannotStart = Transport
 declarationSummary.section.tradersDetails = {0} trader’s details
 declarationSummary.section.goodsSummary = {0} goods summary
 declarationSummary.section.guarantee = {0} guarantee
+declarationSummary.section.guarantee.cannotStart = Guarantee
 declarationSummary.section.safetyAndSecurity = {0} safety and security details
+declarationSummary.section.safetyAndSecurity.cannotStart = Safety and security details
+declarationSummary.section.addItems.cannotStart = Items
 declarationSummary.section.addItems = {0} items
 declarationSummary.backToTransitMovements = Back to transit movements
 

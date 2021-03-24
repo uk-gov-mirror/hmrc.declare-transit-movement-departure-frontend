@@ -14,8 +14,8 @@
                            <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.taskList.edit")) }}
                             <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.taskList.edit")) }}</span></a>
                         {% elif section.status == "cannotStartYet" %}
-                            <p class="govuk-body">{{ messages(section.name, messages("site.taskList.add")) }}
-                             <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.taskList.add")) }}</span></p>
+                            <p class="govuk-body">{{ messages(section.name+".cannotStart") }}
+                             <span class="govuk-visually-hidden"> {{ messages(section.name+".cannotStart") }}</span></p>
                         {% else %}
                            <a class="govuk-link" href={{section.href}} >{{ messages(section.name, messages("site.taskList.add")) }}
                             <span class="govuk-visually-hidden"> {{ messages(section.name, messages("site.taskList.add")) }}</span></a>
