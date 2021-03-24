@@ -20,37 +20,38 @@ import cats.data._
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.domain.Address
-import models.journeyDomain.TraderDetails.RequiredDetails
+import models.journeyDomain.TraderDetails._
 import models.{EoriNumber, UserAnswers}
 import pages._
 
 case class TraderDetails(
-  principalTraderDetails: RequiredDetails,
-  consignor: Option[RequiredDetails],
-  consignee: Option[RequiredDetails]
+  principalTraderDetails: PrincipalTraderDetails,
+  consignor: Option[ConsignorDetails],
+  consignee: Option[ConsigneeDetails]
 )
 
 object TraderDetails {
 
-  sealed trait RequiredDetails
+  case class ConsignorDetails(name: String, address: Address, eori: Option[EoriNumber])
+  case class ConsigneeDetails(name: String, address: Address, eori: Option[EoriNumber])
 
-  object RequiredDetails {
-    def apply(eori: EoriNumber): RequiredDetails                                         = TraderEori(eori)
-    def apply(name: String, address: Address): RequiredDetails                           = PersonalInformation(name, address)
-    def apply(name: String, address: Address, eori: Option[EoriNumber]): RequiredDetails = TraderInformation(name, address, eori)
+  sealed trait PrincipalTraderDetails
+
+  object PrincipalTraderDetails {
+    def apply(eori: EoriNumber): PrincipalTraderDetails               = PrincipalTraderEoriInfo(eori)
+    def apply(name: String, address: Address): PrincipalTraderDetails = PrincipalTraderPersonalInfo(name, address)
   }
 
-  final case class PersonalInformation(name: String, address: Address) extends RequiredDetails
-  final case class TraderInformation(name: String, address: Address, eori: Option[EoriNumber]) extends RequiredDetails
-  final case class TraderEori(eori: EoriNumber) extends RequiredDetails
+  final case class PrincipalTraderPersonalInfo(name: String, address: Address) extends PrincipalTraderDetails
+  final case class PrincipalTraderEoriInfo(eori: EoriNumber) extends PrincipalTraderDetails
 
-  val principalTraderDetails: UserAnswersReader[RequiredDetails] = {
+  val principalTraderDetails: UserAnswersReader[PrincipalTraderDetails] = {
     val simplified = ProcedureTypePage.reader
       .filter(_ == Simplified)
       .productR(
         WhatIsPrincipalEoriPage.reader
           .map(EoriNumber(_))
-          .map(RequiredDetails(_))
+          .map(PrincipalTraderDetails(_))
       )
 
     val normal = ProcedureTypePage.reader
@@ -61,7 +62,7 @@ object TraderDetails {
             case true =>
               WhatIsPrincipalEoriPage.reader
                 .map(EoriNumber(_))
-                .map(RequiredDetails(_))
+                .map(PrincipalTraderDetails(_))
             case false =>
               (
                 PrincipalNamePage.reader,
@@ -69,7 +70,7 @@ object TraderDetails {
               ).tupled.map {
                 case (name, principalAddress) =>
                   val address = Address.prismAddressToPrincipalAddress(principalAddress)
-                  RequiredDetails(name, address)
+                  PrincipalTraderDetails(name, address)
               }
           }
       }
@@ -77,7 +78,7 @@ object TraderDetails {
     normal orElse simplified
   }
 
-  val consignorDetails: UserAnswersReader[Option[RequiredDetails]] = {
+  val consignorDetails: UserAnswersReader[Option[ConsignorDetails]] = {
     def readConsignorEoriPage: UserAnswersReader[Option[EoriNumber]] =
       IsConsignorEoriKnownPage.reader
         .flatMap {
@@ -88,7 +89,7 @@ object TraderDetails {
               )
             else none[EoriNumber].pure[UserAnswersReader]
         }
-    val consignorInformation =
+    val consignorInformation: UserAnswersReader[ConsignorDetails] =
       (
         ConsignorNamePage.reader,
         ConsignorAddressPage.reader,
@@ -97,7 +98,8 @@ object TraderDetails {
         .map {
           case (name, consignorAddress, eori) =>
             val address = Address.prismAddressToConsignorAddress(consignorAddress)
-            RequiredDetails(name, address, eori)
+//            PrincipalTrader(name, address, eori)
+            ???
         }
 
     AddConsignorPage.reader
@@ -108,7 +110,7 @@ object TraderDetails {
       .lower
   }
 
-  val consigneeDetails: UserAnswersReader[Option[RequiredDetails]] = {
+  val consigneeDetails: UserAnswersReader[Option[ConsigneeDetails]] = {
     def readConsigneeEoriPage: UserAnswersReader[Option[EoriNumber]] =
       IsConsigneeEoriKnownPage.reader
         .flatMap {
@@ -120,7 +122,7 @@ object TraderDetails {
             else none[EoriNumber].pure[UserAnswersReader]
         }
 
-    val consigneeInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
+    val consigneeInformation: UserAnswersReader[ConsigneeDetails] =
       (
         ConsigneeNamePage.reader,
         ConsigneeAddressPage.reader,
@@ -129,7 +131,7 @@ object TraderDetails {
         .map {
           case (name, consigneeAddress, eori) =>
             val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
-            RequiredDetails(name, address, eori)
+            ???
         }
 
     AddConsigneePage.reader

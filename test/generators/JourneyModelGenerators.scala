@@ -35,7 +35,7 @@ import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPacka
 import models.journeyDomain.PreviousReferences.nonEUCountries
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
-import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori, TraderInformation}
+import models.journeyDomain.TraderDetails._
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
@@ -60,7 +60,7 @@ trait JourneyModelGenerators {
       isSecurityDetailsRequired = preTaskList.addSecurityDetails
       routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
       transportDetails  <- arbitrary[TransportDetails]
-      traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
+      traderDetails     <- genTraderDetailsSimplified
       safetyAndSecurity <- arbitrary[SafetyAndSecurity]
       itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
       goodsummarydetailsType = arbitrary[GoodSummarySimplifiedDetails]
@@ -87,7 +87,7 @@ trait JourneyModelGenerators {
       isSecurityDetailsRequired = preTaskList.addSecurityDetails
       routeDetails      <- arbitraryRouteDetails(isSecurityDetailsRequired).arbitrary
       transportDetails  <- arbitrary[TransportDetails]
-      traderDetails     <- arbitraryTraderDetails(simplifiedTaskList.procedureType).arbitrary
+      traderDetails     <- genTraderDetailsNormal
       safetyAndSecurity <- arbitrary[SafetyAndSecurity]
       itemDetails       <- genItemSection(movementDetails.containersUsed, isSecurityDetailsRequired, safetyAndSecurity, movementDetails, routeDetails)
       goodsummarydetailsType = arbitrary[GoodSummaryNormalDetails]
@@ -296,19 +296,24 @@ trait JourneyModelGenerators {
         )
     }
 
-  implicit def arbitraryTraderDetails(procedureType: ProcedureType): Arbitrary[TraderDetails] = {
-    val pricipalAddress  = Arbitrary(arbitrary[PrincipalAddress].map(Address.prismAddressToPrincipalAddress.reverseGet))
-    val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
-    val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
+  lazy val genTraderDetailsSimplified: Gen[TraderDetails] =
+    for {
+      principalTraderDetails <- arbitrary[PrincipalTraderEoriInfo]
+      consignor              <- Gen.option(arbitrary[ConsignorDetails])
+      consignee              <- Gen.option(arbitrary[ConsigneeDetails])
+    } yield TraderDetails(principalTraderDetails, consignor, consignee)
 
-    Arbitrary {
-      for {
-        principalTraderDetails <- arbitraryRequiredDetails(pricipalAddress, procedureType).arbitrary
-        consignor              <- Gen.option(arbitraryTraderInformation(consignorAddress).arbitrary)
-        consignee              <- Gen.option(arbitraryTraderInformation(consigneeAddress).arbitrary)
-      } yield TraderDetails(principalTraderDetails, consignor, consignee)
-    }
-  }
+  lazy val genTraderDetailsNormal: Gen[TraderDetails] =
+    for {
+      principalTraderDetails <- arbitrary[PrincipalTraderDetails]
+      consignor              <- Gen.option(arbitrary[ConsignorDetails])
+      consignee              <- Gen.option(arbitrary[ConsigneeDetails])
+    } yield TraderDetails(principalTraderDetails, consignor, consignee)
+
+//  implicit lazy val arbitraryTraderDetails: Arbitrary[TraderDetails] =
+//    // Since genTraderDetailsSimplified is a subset of genTraderDetailsNormal
+//    //     the Normal generator is the generalised case
+//    Arbitrary(genTraderDetailsNormal)
 
   implicit val arbitraryItemSecurityTraderDetails: Arbitrary[ItemsSecurityTraderDetails] = {
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
@@ -339,31 +344,61 @@ trait JourneyModelGenerators {
       } yield SecurityPersonalInformation(name, address)
     }
 
-  implicit def arbitraryRequiredDetails(implicit arbAddress: Arbitrary[Address], procedureType: ProcedureType): Arbitrary[RequiredDetails] =
-    if (procedureType == ProcedureType.Simplified) {
-      Arbitrary(Arbitrary.arbitrary[TraderEori])
-    } else {
-      Arbitrary(Gen.oneOf(Arbitrary.arbitrary[PersonalInformation], Arbitrary.arbitrary[TraderEori]))
-    }
+  implicit lazy val arbitraryTraderEori: Arbitrary[PrincipalTraderEoriInfo] =
+    Arbitrary(arbitrary[EoriNumber].map(PrincipalTraderEoriInfo(_)))
 
-  implicit lazy val arbitraryTraderEori: Arbitrary[TraderEori] =
-    Arbitrary(Arbitrary.arbitrary[EoriNumber].map(TraderEori(_)))
-
-  implicit def arbitraryPersonalInformation(implicit arbAddress: Arbitrary[Address]): Arbitrary[PersonalInformation] =
+  implicit lazy val arbitraryPrincipalTraderPersonalInfo: Arbitrary[PrincipalTraderPersonalInfo] =
     Arbitrary {
       for {
-        name    <- stringsWithMaxLength(stringMaxLength)
-        address <- arbAddress.arbitrary
-      } yield PersonalInformation(name, address)
+        name             <- stringsWithMaxLength(stringMaxLength)
+        principalAddress <- arbitrary[PrincipalAddress]
+        address = Address.prismAddressToPrincipalAddress.reverseGet(principalAddress)
+      } yield PrincipalTraderPersonalInfo(name, address)
     }
 
-  implicit def arbitraryTraderInformation(implicit arbAddress: Arbitrary[Address]): Arbitrary[TraderInformation] =
+  implicit lazy val arbitraryRequiredDetails: Arbitrary[PrincipalTraderDetails] =
     Arbitrary {
-      for {
-        name    <- stringsWithMaxLength(stringMaxLength)
-        address <- arbAddress.arbitrary
-        eori    <- Gen.option(arbitrary[EoriNumber])
-      } yield TraderInformation(name, address, eori)
+      Gen.oneOf(Arbitrary.arbitrary[PrincipalTraderPersonalInfo], Arbitrary.arbitrary[PrincipalTraderEoriInfo])
+    }
+
+  val genConsignorDetailsWithEori: Gen[ConsignorDetails] =
+    for {
+      name             <- stringsWithMaxLength(stringMaxLength)
+      consignorAddress <- arbitrary[ConsignorAddress]
+      eori             <- arbitrary[EoriNumber]
+      address = Address.prismAddressToConsignorAddress.reverseGet(consignorAddress)
+    } yield ConsignorDetails(name, address, Some(eori))
+
+  val genConsignorDetailsWithoutEori: Gen[ConsignorDetails] =
+    for {
+      name             <- stringsWithMaxLength(stringMaxLength)
+      consignorAddress <- arbitrary[ConsignorAddress]
+      address = Address.prismAddressToConsignorAddress.reverseGet(consignorAddress)
+    } yield ConsignorDetails(name, address, None)
+
+  implicit def arbitraryConsignorDetails: Arbitrary[ConsignorDetails] =
+    Arbitrary {
+      Gen.oneOf(genConsignorDetailsWithEori, genConsignorDetailsWithoutEori)
+    }
+
+  val genConsigneeDetailsWithEori: Gen[ConsigneeDetails] =
+    for {
+      name             <- stringsWithMaxLength(stringMaxLength)
+      consigneeAddress <- arbitrary[ConsigneeAddress]
+      eori             <- arbitrary[EoriNumber]
+      address = Address.prismAddressToConsigneeAddress.reverseGet(consigneeAddress)
+    } yield ConsigneeDetails(name, address, Some(eori))
+
+  val genConsigneeDetailsWithoutEori: Gen[ConsigneeDetails] =
+    for {
+      name             <- stringsWithMaxLength(stringMaxLength)
+      consigneeAddress <- arbitrary[ConsigneeAddress]
+      address = Address.prismAddressToConsigneeAddress.reverseGet(consigneeAddress)
+    } yield ConsigneeDetails(name, address, None)
+
+  implicit lazy val arbitraryConsigneeDetails: Arbitrary[ConsigneeDetails] =
+    Arbitrary {
+      Gen.oneOf(genConsigneeDetailsWithEori, genConsigneeDetailsWithoutEori)
     }
 
   implicit def arbitraryItemRequiredDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[models.journeyDomain.ItemTraderDetails.RequiredDetails] =
