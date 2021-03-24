@@ -327,15 +327,29 @@ class TaskListViewModelSpec
           viewModel.getStatus(tradersSectionName).value mustEqual Status.InProgress
         }
 
-        "is Completed when all the answers are completed" in {
-          val procedureType = arb[ProcedureType].sample.value
-          forAll(arbitraryTraderDetails(procedureType).arbitrary) {
-            sectionDetails =>
-              val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
+        "is Completed when all the answers are completed" - {
 
-              val viewModel = TaskListViewModel(userAnswers)
+          "for Normal procedure" in {
+            forAll(genTraderDetailsNormal) {
+              sectionDetails =>
+                val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
 
-              viewModel.getStatus(tradersSectionName).value mustEqual Status.Completed
+                val viewModel = TaskListViewModel(userAnswers)
+
+                viewModel.getStatus(tradersSectionName).value mustEqual Status.Completed
+            }
+
+          }
+
+          "for Simplified procedure" in {
+            forAll(genTraderDetailsSimplified) {
+              sectionDetails =>
+                val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
+
+                val viewModel = TaskListViewModel(userAnswers)
+
+                viewModel.getStatus(tradersSectionName).value mustEqual Status.Completed
+            }
           }
         }
       }
@@ -411,8 +425,7 @@ class TaskListViewModelSpec
         }
 
         "when the status is Completed, links to the Check your answers page for the section" in {
-          val procedureType = arb[ProcedureType].sample.value
-          forAll(arbitraryTraderDetails(procedureType).arbitrary) {
+          forAll(Gen.oneOf(genTraderDetailsNormal, genTraderDetailsSimplified)) {
             sectionDetails =>
               val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
 
@@ -422,7 +435,6 @@ class TaskListViewModelSpec
 
               viewModel.getHref(tradersSectionName).value mustEqual expectedHref
           }
-
         }
       }
     }

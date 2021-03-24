@@ -149,10 +149,22 @@ class DeclarationRequestService @Inject()(
       }
 
     def previousAdministrativeReference(previousReferences: Option[NonEmptyList[PreviousReferences]]): Seq[PreviousAdministrativeReference] =
-      previousReferences.map(_.toList.map(x => PreviousAdministrativeReference(x.referenceType, x.previousReference, x.extraInformation))).getOrElse(List.empty)
+      previousReferences
+        .map(
+          _.toList.map(
+            x => PreviousAdministrativeReference(x.referenceType, x.previousReference, x.extraInformation)
+          )
+        )
+        .getOrElse(List.empty)
 
     def producedDocuments(producedDocument: Option[NonEmptyList[models.journeyDomain.ProducedDocument]]): Seq[goodsitem.ProducedDocument] =
-      producedDocument.map(_.toList.map(x => goodsitem.ProducedDocument(x.documentType, Some(x.documentReference), x.extraInformation))).getOrElse(List.empty)
+      producedDocument
+        .map(
+          _.toList.map(
+            x => goodsitem.ProducedDocument(x.documentType, Some(x.documentReference), x.extraInformation)
+          )
+        )
+        .getOrElse(List.empty)
 
     def containers(containers: Option[NonEmptyList[Container]]): Seq[String] =
       containers.map(_.toList.map(_.containerNumber)).getOrElse(List.empty)
@@ -181,7 +193,7 @@ class DeclarationRequestService @Inject()(
 
     def principalTrader(traderDetails: TraderDetails): TraderPrincipal =
       traderDetails.principalTraderDetails match {
-        case TraderDetails.PersonalInformation(name, Address(buildingAndStreet, city, postcode, _)) =>
+        case TraderDetails.PrincipalTraderPersonalInfo(name, Address(buildingAndStreet, city, postcode, _)) =>
           TraderPrincipalWithoutEori(
             name            = name,
             streetAndNumber = buildingAndStreet,
@@ -189,18 +201,18 @@ class DeclarationRequestService @Inject()(
             city            = city,
             countryCode     = Constants.principalTraderCountryCode.code
           )
-        case TraderDetails.TraderEori(traderEori) =>
+        case TraderDetails.PrincipalTraderEoriInfo(traderEori) =>
           TraderPrincipalWithEori(eori = traderEori.value, None, None, None, None, None)
       }
 
     def headerConsignor(traderDetails: TraderDetails): Option[TraderConsignor] =
       traderDetails.consignor
         .flatMap {
-          case TraderDetails.TraderInformation(name, address, eori) =>
-            Address.prismAddressToConsignorAddress.getOption(address).map {
-              case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
-            }
+//          case TraderDetails.TraderInformation(name, address, eori) =>
+//            Address.prismAddressToConsignorAddress.getOption(address).map {
+//              case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
+//                TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
+//            }
           case _ =>
             logger.error(s"headerConsignor failed to get name and address")
             None
@@ -209,11 +221,11 @@ class DeclarationRequestService @Inject()(
     def headerConsignee(traderDetails: TraderDetails): Option[TraderConsignee] =
       traderDetails.consignee
         .flatMap {
-          case TraderDetails.TraderInformation(name, address, eori) =>
-            Address.prismAddressToConsigneeAddress.getOption(address).map {
-              case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
-                TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
-            }
+//          case TraderDetails.TraderInformation(name, address, eori) =>
+//            Address.prismAddressToConsigneeAddress.getOption(address).map {
+//              case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
+//                TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
+//            }
           case _ =>
             logger.error(s"headerConsignee failed to get name and address")
             None
@@ -367,7 +379,9 @@ class DeclarationRequestService @Inject()(
       }
 
     def itineraries(itineraries: NonEmptyList[Itinerary]): Seq[models.messages.Itinerary] =
-      itineraries.toList.map(countryCode => models.messages.Itinerary(countryCode.countryCode.code))
+      itineraries.toList.map(
+        countryCode => models.messages.Itinerary(countryCode.countryCode.code)
+      )
 
     DeclarationRequest(
       Meta(
@@ -418,15 +432,27 @@ class DeclarationRequestService @Inject()(
       CustomsOfficeDestination(
         referenceNumber = routeDetails.destinationOffice.id
       ),
-      goodsSummarySimplifiedDetails(goodsSummary.goodSummaryDetails).map(x => ControlResult(x.controlResultDateLimit)),
+      goodsSummarySimplifiedDetails(goodsSummary.goodSummaryDetails).map(
+        x => ControlResult(x.controlResultDateLimit)
+      ),
       representative(movementDetails),
       headerSeals(goodsSummary.sealNumbers),
       guaranteeDetails(guarantee),
       goodsItems(journeyDomain.itemDetails, guarantee),
-      safetyAndSecurity.map(sas => itineraries(sas.itineraryList)).getOrElse(Seq.empty),
-      safetyAndSecurity.flatMap(sas => carrier(sas.carrier)),
-      safetyAndSecurity.flatMap(sas => safetyAndSecurityConsignor(sas.consignor)),
-      safetyAndSecurity.flatMap(sas => safetyAndSecurityConsignee(sas.consignee))
+      safetyAndSecurity
+        .map(
+          sas => itineraries(sas.itineraryList)
+        )
+        .getOrElse(Seq.empty),
+      safetyAndSecurity.flatMap(
+        sas => carrier(sas.carrier)
+      ),
+      safetyAndSecurity.flatMap(
+        sas => safetyAndSecurityConsignor(sas.consignor)
+      ),
+      safetyAndSecurity.flatMap(
+        sas => safetyAndSecurityConsignee(sas.consignee)
+      )
     )
   }
 }

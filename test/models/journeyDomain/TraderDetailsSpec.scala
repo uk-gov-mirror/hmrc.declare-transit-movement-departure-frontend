@@ -18,8 +18,9 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
+import models.ProcedureType.Simplified
 import models.domain.Address
-import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori, TraderInformation}
+import models.journeyDomain.TraderDetails._
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, ProcedureType, UserAnswers}
 import org.scalatest.TryValues
 import pages.{ConsignorEoriPage, _}
@@ -28,117 +29,301 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
   import TraderDetailsSpec._
 
   "TraderDetail can be parser from UserAnswers" - {
-    "when there is a principal trader eori details only and procedure type is Normal" in {
-      forAll(arb[UserAnswers], arb[EoriNumber]) {
-        (baseUserAnswers, eori) =>
-          val userAnswers = baseUserAnswers
-            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
-            .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
-            .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
-            .unsafeSetVal(AddConsigneePage)(false)
-            .unsafeSetVal(AddConsignorPage)(false)
+    "Principal trader details" - {
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+      "when procedure type is Normal" - {
 
-          result mustEqual TraderDetails(TraderEori(eori), None, None)
+        "when Eori is known" - {
 
+          "when Eori is answered" in {
+            forAll(arb[UserAnswers], arb[EoriNumber]) {
+              (baseUserAnswers, eori) =>
+                val userAnswers = baseUserAnswers
+                  .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                  .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                  .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
+                  .unsafeSetVal(AddConsigneePage)(false)
+                  .unsafeSetVal(AddConsignorPage)(false)
+
+                val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+                result mustEqual TraderDetails(PrincipalTraderEoriInfo(eori), None, None)
+
+            }
+          }
+
+          "when Eori is missing" ignore {}
+        }
+
+        "when Eori is not known" - {
+
+          "when principal trader name and address are answered" in {
+            forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[PrincipalAddress]) {
+              case (baseUserAnswers, name, principalAddress) =>
+                val userAnswers = baseUserAnswers
+                  .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                  .unsafeSetVal(IsPrincipalEoriKnownPage)(false)
+                  .unsafeSetVal(PrincipalNamePage)(name)
+                  .unsafeSetVal(PrincipalAddressPage)(principalAddress)
+                  .unsafeSetVal(AddConsigneePage)(false)
+                  .unsafeSetVal(AddConsignorPage)(false)
+
+                val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+                val expectedAddress = Address.prismAddressToPrincipalAddress(principalAddress)
+
+                result mustEqual TraderDetails(PrincipalTraderDetails(name, expectedAddress), None, None)
+
+            }
+          }
+
+          "when address is missing" ignore {}
+
+          "when name is missing" ignore {}
+        }
+
+        "when Principal Eori known page is missing" ignore {}
+      }
+
+      "when procedure type is Simplified" - {
+
+        "when Eori is answered" in {
+          forAll(arb[UserAnswers], arb[EoriNumber]) {
+            (baseUserAnswers, eori) =>
+              val userAnswers = baseUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
+                .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
+                .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(AddConsignorPage)(false)
+
+              val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+              result mustEqual TraderDetails(PrincipalTraderEoriInfo(eori), None, None)
+
+          }
+        }
+
+        "when Eori is missing" ignore {}
+      }
+
+    }
+
+    "Consignor trader details" - {
+
+      "when the eori is known" - {
+        "when name, address and eori are answered" in {
+          forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
+            case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
+              val userAnswers = baseUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
+                .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+                .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
+                .unsafeSetVal(ConsignorNamePage)(name)
+                .unsafeSetVal(ConsignorAddressPage)(address)
+
+              val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+              val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
+
+              result.consignor.value mustEqual ConsignorDetails(name, expectedAddress, Some(EoriNumber(eoriNumber)))
+
+          }
+        }
+
+        // TODO: Fix test
+        "when name and eori are answered but address is missing" ignore {
+          forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
+            case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
+              val userAnswers = baseUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
+                .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+                .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
+                .unsafeSetVal(ConsignorNamePage)(name)
+                .unsafeSetVal(ConsignorAddressPage)(address)
+
+              val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+              val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
+
+              result.consignor.value mustEqual ConsignorDetails(name, expectedAddress, Some(EoriNumber(eoriNumber)))
+
+          }
+        }
+
+        // TODO: Fix test
+        "when address and eori are answered but name is missing" ignore {
+          forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
+            case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
+              val userAnswers = baseUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
+                .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+                .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
+                .unsafeSetVal(ConsignorNamePage)(name)
+                .unsafeSetVal(ConsignorAddressPage)(address)
+
+              val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+              val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
+
+              result.consignor.value mustEqual ConsignorDetails(name, expectedAddress, Some(EoriNumber(eoriNumber)))
+
+          }
+        }
+
+        // TODO: Fix test
+        "when name and address are answered but eori is missing" ignore {
+          forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
+            case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
+              val userAnswers = baseUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
+                .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+                .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
+                .unsafeSetVal(ConsignorNamePage)(name)
+                .unsafeSetVal(ConsignorAddressPage)(address)
+
+              val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+              val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
+
+              result.consignor.value mustEqual ConsignorDetails(name, expectedAddress, Some(EoriNumber(eoriNumber)))
+
+          }
+        }
+      }
+
+      "when the eori is not known" - {
+        // TODO: Fix test
+        "when name is answered but address is missing" ignore {
+          forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
+            case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
+              val userAnswers = baseUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
+                .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+                .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
+                .unsafeSetVal(ConsignorNamePage)(name)
+                .unsafeSetVal(ConsignorAddressPage)(address)
+
+              val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+              val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
+
+              result.consignor.value mustEqual ConsignorDetails(name, expectedAddress, Some(EoriNumber(eoriNumber)))
+
+          }
+        }
+
+        // TODO: Fix test
+        "when address is answered but name is missing" ignore {
+          forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
+            case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
+              val userAnswers = baseUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
+                .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+                .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
+                .unsafeSetVal(ConsignorNamePage)(name)
+                .unsafeSetVal(ConsignorAddressPage)(address)
+
+              val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+              val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
+
+              result.consignor.value mustEqual ConsignorDetails(name, expectedAddress, Some(EoriNumber(eoriNumber)))
+
+          }
+        }
+      }
+
+    }
+
+    "Consignee trader details" - {
+      "when the eori is known" - {
+        "when there is consignee name, address and eori" in {
+          forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsigneeAddress]) {
+            case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
+              val userAnswers = baseUserAnswers
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
+                .unsafeSetVal(AddConsignorPage)(false)
+                .unsafeSetVal(AddConsigneePage)(true)
+                .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+                .unsafeSetVal(IsConsigneeEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsConsigneeEoriPage)(eoriNumber)
+                .unsafeSetVal(ConsigneeNamePage)(name)
+                .unsafeSetVal(ConsigneeAddressPage)(address)
+
+              val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+              val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
+
+              result.consignee.value mustEqual ConsigneeDetails(name, expectedAddress, Some(EoriNumber(eoriNumber)))
+
+          }
+        }
+
+        "when name and eori are answered but address " ignore {}
+
+        "when address and eori are answered but name is missing" ignore {}
+
+        "when name and address are answered but eori is missing" ignore {}
+      }
+
+      "when the eori is not known" - {
+        // TODO: Fix test
+        "when name is answered but address is missing" ignore {}
+
+        // TODO: Fix test
+        "when address is answered but name is missing" ignore {}
       }
     }
 
-    "when there is a principal trader eori details only and procedure type is Simplified" in {
-      forAll(arb[UserAnswers], arb[EoriNumber]) {
-        (baseUserAnswers, eori) =>
-          val userAnswers = baseUserAnswers
-            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
-            .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
-            .unsafeSetVal(AddConsigneePage)(false)
-            .unsafeSetVal(AddConsignorPage)(false)
+    "full model reads" - {
+      "for Normal" ignore {
+        forAll(arb[UserAnswers], genTraderDetailsNormal) {
+          (baseUserAnswers, traderDetails) =>
+            val userAnswers = setTraderDetails(traderDetails)(baseUserAnswers)
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+            val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
 
-          result mustEqual TraderDetails(TraderEori(eori), None, None)
+            result mustEqual traderDetails
+        }
+      }
 
+      "for Simplified" ignore {
+        forAll(arb[UserAnswers], genTraderDetailsSimplified) {
+          (baseUserAnswers, traderDetails) =>
+            val userAnswers = setTraderDetails(traderDetails)(baseUserAnswers)
+
+            val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+
+            result mustEqual traderDetails
+        }
       }
     }
-
-    "when there is a principal trader name and address only" in {
-      forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[PrincipalAddress]) {
-        case (baseUserAnswers, name, principalAddress) =>
-          val userAnswers = baseUserAnswers
-            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
-            .unsafeSetVal(IsPrincipalEoriKnownPage)(false)
-            .unsafeSetVal(PrincipalNamePage)(name)
-            .unsafeSetVal(PrincipalAddressPage)(principalAddress)
-            .unsafeSetVal(AddConsigneePage)(false)
-            .unsafeSetVal(AddConsignorPage)(false)
-
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
-
-          val expectedAddress = Address.prismAddressToPrincipalAddress(principalAddress)
-
-          result mustEqual TraderDetails(RequiredDetails(name, expectedAddress), None, None)
-
-      }
-    }
-
-    "when there is consignor name, address and eori" in {
-      forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsignorAddress]) {
-        case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
-          val userAnswers = baseUserAnswers
-            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
-            .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
-            .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
-            .unsafeSetVal(AddConsigneePage)(false)
-            .unsafeSetVal(AddConsignorPage)(true)
-            .unsafeSetVal(IsConsignorEoriKnownPage)(true)
-            .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
-            .unsafeSetVal(ConsignorNamePage)(name)
-            .unsafeSetVal(ConsignorAddressPage)(address)
-
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
-
-          val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
-
-          result.consignor.value mustEqual TraderInformation(name, expectedAddress, Some(EoriNumber(eoriNumber)))
-
-      }
-    }
-
-    "when there is consignee name, address and eori" in {
-      forAll(arb[UserAnswers], arb[EoriNumber], stringsWithMaxLength(stringMaxLength), arb[ConsigneeAddress]) {
-        case (baseUserAnswers, EoriNumber(eoriNumber), name, address) =>
-          val userAnswers = baseUserAnswers
-            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
-            .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
-            .unsafeSetVal(WhatIsPrincipalEoriPage)(eoriNumber)
-            .unsafeSetVal(AddConsignorPage)(false)
-            .unsafeSetVal(AddConsigneePage)(true)
-            .unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
-            .unsafeSetVal(IsConsigneeEoriKnownPage)(true)
-            .unsafeSetVal(WhatIsConsigneeEoriPage)(eoriNumber)
-            .unsafeSetVal(ConsigneeNamePage)(name)
-            .unsafeSetVal(ConsigneeAddressPage)(address)
-
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
-
-          val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
-
-          result.consignee.value mustEqual TraderInformation(name, expectedAddress, Some(EoriNumber(eoriNumber)))
-
-      }
-    }
-
-    "when there is a TraderDetails" in {
-      forAll(arb[UserAnswers], arbitraryTraderDetails(ProcedureType.Normal).arbitrary) {
-        (baseUserAnswers, traderDetails) =>
-          val userAnswers = setTraderDetails(traderDetails)(baseUserAnswers)
-
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
-
-          result mustEqual traderDetails
-      }
-    }
-
   }
 }
 
@@ -146,51 +331,47 @@ object TraderDetailsSpec extends UserAnswersSpecHelper {
 
   def setTraderDetails(traderDetails: TraderDetails)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
-      .unsafeSetVal(IsPrincipalEoriKnownPage)(traderDetails.principalTraderDetails.isInstanceOf[TraderEori])
+    // Set Principal Trader details
+      .unsafeSetVal(IsPrincipalEoriKnownPage)(traderDetails.principalTraderDetails.isInstanceOf[PrincipalTraderEoriInfo])
       .unsafeSetPFn(WhatIsPrincipalEoriPage)(traderDetails.principalTraderDetails)({
-        case TraderEori(eori) => eori.value
-      })
-      .unsafeSetPFn(ProcedureTypePage)(traderDetails.principalTraderDetails)({
-        case TraderEori(_) => ProcedureType.Simplified
-        case _             => ProcedureType.Normal
+        case PrincipalTraderEoriInfo(eori) => eori.value
       })
       .unsafeSetPFn(PrincipalNamePage)(traderDetails.principalTraderDetails)({
-        case PersonalInformation(name, _) => name
+        case PrincipalTraderPersonalInfo(name, _) => name
       })
       .unsafeSetPFn(PrincipalAddressPage)(traderDetails.principalTraderDetails)({
-        case PersonalInformation(_, address) => Address.prismAddressToPrincipalAddress.getOption(address).get
+        case PrincipalTraderPersonalInfo(_, address) => Address.prismAddressToPrincipalAddress.getOption(address).get
       })
-      // Set Consignor
-      .unsafeSetVal(ConsignorForAllItemsPage)(false) // TODO Need to account for this in reader (AddConsignorPage etc wont be asked)
+      .assert("Eori must be provided for Simplified procedure") {
+        ua =>
+          (ua.get(ProcedureTypePage), ua.get(WhatIsPrincipalEoriPage)) match {
+            case (Some(Simplified), None) => false
+            case _                        => true
+          }
+      }
+      // Set Consignor details
       .unsafeSetVal(AddConsignorPage)(traderDetails.consignor.isDefined)
-      .unsafeSetPFn(IsConsignorEoriKnownPage)(traderDetails.consignor)({
-        case Some(TraderInformation(_, _, Some(_))) => true
-        case Some(_)                                => false
-      })
+      .unsafeSetVal(IsConsignorEoriKnownPage)(traderDetails.consignor.fold(false)(_.eori.isDefined))
       .unsafeSetPFn(ConsignorEoriPage)(traderDetails.consignor)({
-        case Some(TraderInformation(_, _, Some(eori))) => eori.value
+        case Some(ConsignorDetails(_, _, Some(eori))) => eori.value
       })
       .unsafeSetPFn(ConsignorNamePage)(traderDetails.consignor)({
-        case Some(TraderInformation(name, _, _)) => name
+        case Some(ConsignorDetails(name, _, _)) => name
       })
       .unsafeSetPFn(ConsignorAddressPage)(traderDetails.consignor)({
-        case Some(TraderInformation(_, address, _)) => Address.prismAddressToConsignorAddress.getOption(address).get
+        case Some(ConsignorDetails(_, address, _)) => Address.prismAddressToConsignorAddress.getOption(address).get
       })
-      // Set Consignee
-      .unsafeSetVal(ConsigneeForAllItemsPage)(false) // TODO Need to account for this in reader (AddConsigneePage etc wont be asked)
+      // Set Consignee details
       .unsafeSetVal(AddConsigneePage)(traderDetails.consignee.isDefined)
-      .unsafeSetPFn(IsConsigneeEoriKnownPage)(traderDetails.consignee)({
-        case Some(TraderInformation(_, _, Some(_))) => true
-        case Some(_)                                => false
-      })
+      .unsafeSetVal(IsConsigneeEoriKnownPage)(traderDetails.consignee.fold(false)(_.eori.isDefined))
       .unsafeSetPFn(WhatIsConsigneeEoriPage)(traderDetails.consignee)({
-        case Some(TraderInformation(_, _, Some(eori))) => eori.value
+        case Some(ConsigneeDetails(_, _, Some(eori))) => eori.value
       })
       .unsafeSetPFn(ConsigneeNamePage)(traderDetails.consignee)({
-        case Some(TraderInformation(name, _, _)) => name
+        case Some(ConsigneeDetails(name, _, _)) => name
       })
       .unsafeSetPFn(ConsigneeAddressPage)(traderDetails.consignee)({
-        case Some(TraderInformation(_, address, _)) => Address.prismAddressToConsigneeAddress.getOption(address).get
+        case Some(ConsigneeDetails(_, address, _)) => Address.prismAddressToConsigneeAddress.getOption(address).get
       })
 
 }
