@@ -213,103 +213,110 @@ class TaskListViewModelSpec
       }
 
       "status" - {
+        "when dependent section is incomplete" - {
+          "is Cannot start yet when the dependent section is not complete" in {
+            val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "is Cannot start yet when the dependent section is not complete" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
-
-          viewModel.getStatus(transportSectionName).value mustEqual Status.CannotStartYet
-        }
-
-        "is Not started when there are no answers for the section" in {
-
-          val procedureType   = arb[ProcedureType].sample.value
-          val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-          val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
-          val viewModel       = TaskListViewModel(userAnswers)
-
-          viewModel.getStatus(transportSectionName).value mustEqual Status.NotStarted
-        }
-
-        "is InProgress when the first question for the section has been answered" in {
-          val procedureType   = arb[ProcedureType].sample.value
-          val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-          val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
-
-          forAll(Gen.chooseNum(10, 100)) {
-            pageAnswer =>
-              val updatedUserAnswers = userAnswers.unsafeSetVal(InlandModePage)(pageAnswer.toString)
-
-              val viewModel = TaskListViewModel(updatedUserAnswers)
-
-              viewModel.getStatus(transportSectionName).value mustEqual Status.InProgress
+            viewModel.getStatus(transportSectionName).value mustEqual Status.CannotStartYet
           }
         }
 
-        "is Completed when all the answers are completed" in {
-          val procedureType   = arb[ProcedureType].sample.value
-          val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-          val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
-          forAll(arb[TransportDetails]) {
-            sectionDetails =>
-              val updatedUserAnswers = TransportDetailsSpec.setTransportDetail(sectionDetails)(userAnswers)
+        "when dependent section is complete" - {
 
-              val viewModel = TaskListViewModel(updatedUserAnswers)
+          "is Not started when there are no answers for the section" in {
 
-              viewModel.getStatus(transportSectionName).value mustEqual Status.Completed
+            val procedureType   = arb[ProcedureType].sample.value
+            val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+            val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
+            val viewModel       = TaskListViewModel(userAnswers)
+
+            viewModel.getStatus(transportSectionName).value mustEqual Status.NotStarted
+          }
+
+          "is InProgress when the first question for the section has been answered" in {
+            val procedureType   = arb[ProcedureType].sample.value
+            val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+            val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
+
+            forAll(Gen.chooseNum(10, 100)) {
+              pageAnswer =>
+                val updatedUserAnswers = userAnswers.unsafeSetVal(InlandModePage)(pageAnswer.toString)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                viewModel.getStatus(transportSectionName).value mustEqual Status.InProgress
+            }
+          }
+
+          "is Completed when all the answers are completed" in {
+            val procedureType   = arb[ProcedureType].sample.value
+            val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+            val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
+            forAll(arb[TransportDetails]) {
+              sectionDetails =>
+                val updatedUserAnswers = TransportDetailsSpec.setTransportDetail(sectionDetails)(userAnswers)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                viewModel.getStatus(transportSectionName).value mustEqual Status.Completed
+            }
           }
         }
       }
 
       "navigation" - {
+        "when dependent section is incomplete" - {
+          "when the status is Cannot start yet with no links" in {
+            val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "when the status is Cannot start yet with no links" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
-
-          viewModel.getHref(transportSectionName).value.isEmpty mustEqual true
-        }
-
-        "when the status is Not started, links to the first page" in {
-          val procedureType   = arb[ProcedureType].sample.value
-          val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-          val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
-          val viewModel       = TaskListViewModel(userAnswers)
-
-          val expectedHref: String = controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url
-
-          viewModel.getHref(transportSectionName).value mustEqual expectedHref
-        }
-
-        "when the status is InProgress, links to the first page" in {
-          val procedureType   = arb[ProcedureType].sample.value
-          val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-          val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
-          forAll(Gen.chooseNum(10, 100)) {
-            pageAnswer =>
-              val updatedUserAnswers = userAnswers.unsafeSetVal(InlandModePage)(pageAnswer.toString)
-
-              val viewModel = TaskListViewModel(updatedUserAnswers)
-
-              val expectedHref: String = controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url
-
-              viewModel.getHref(transportSectionName).value mustEqual expectedHref
+            viewModel.getHref(transportSectionName).value.isEmpty mustEqual true
           }
         }
 
-        "when the status is Completed, links to the Check your answers page for the section" in {
-          val procedureType   = arb[ProcedureType].sample.value
-          val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-          val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
-          forAll(arb[TransportDetails]) {
-            sectionDetails =>
-              val updatedUserAnswers = TransportDetailsSpec.setTransportDetail(sectionDetails)(userAnswers)
+        "when dependent section is complete" - {
+          "when the status is Not started, links to the first page" in {
+            val procedureType   = arb[ProcedureType].sample.value
+            val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+            val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
+            val viewModel       = TaskListViewModel(userAnswers)
 
-              val viewModel = TaskListViewModel(updatedUserAnswers)
+            val expectedHref: String = controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url
 
-              val expectedHref: String = controllers.transportDetails.routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
-
-              viewModel.getHref(transportSectionName).value mustEqual expectedHref
+            viewModel.getHref(transportSectionName).value mustEqual expectedHref
           }
 
+          "when the status is InProgress, links to the first page" in {
+            val procedureType   = arb[ProcedureType].sample.value
+            val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+            val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
+            forAll(Gen.chooseNum(10, 100)) {
+              pageAnswer =>
+                val updatedUserAnswers = userAnswers.unsafeSetVal(InlandModePage)(pageAnswer.toString)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                val expectedHref: String = controllers.transportDetails.routes.InlandModeController.onPageLoad(lrn, NormalMode).url
+
+                viewModel.getHref(transportSectionName).value mustEqual expectedHref
+            }
+          }
+
+          "when the status is Completed, links to the Check your answers page for the section" in {
+            val procedureType   = arb[ProcedureType].sample.value
+            val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+            val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
+            forAll(arb[TransportDetails]) {
+              sectionDetails =>
+                val updatedUserAnswers = TransportDetailsSpec.setTransportDetail(sectionDetails)(userAnswers)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                val expectedHref: String = controllers.transportDetails.routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
+
+                viewModel.getHref(transportSectionName).value mustEqual expectedHref
+            }
+
+          }
         }
       }
     }
@@ -485,112 +492,122 @@ class TaskListViewModelSpec
       }
 
       "status when section is required" - {
-        "is Cannot start yet, when the dependent section is incomplete" in {
-          val userAnswers = emptyUserAnswers
-            .unsafeSetVal(AddSecurityDetailsPage)(true)
+        "when dependent section is incomplete" - {
+          "is Cannot start yet, when the dependent section is incomplete" in {
+            val userAnswers = emptyUserAnswers
+              .unsafeSetVal(AddSecurityDetailsPage)(true)
 
-          val viewModel = TaskListViewModel(userAnswers)
+            val viewModel = TaskListViewModel(userAnswers)
 
-          viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.CannotStartYet
-        }
-
-        "is Not started when there are no answers for the section" in {
-          val transportDetails   = arb[TransportDetails].sample.value
-          val userAnswers        = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
-          val updatedUserAnswers = userAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
-
-          val viewModel = TaskListViewModel(updatedUserAnswers)
-
-          viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.NotStarted
-        }
-
-        "is InProgress when the first question for the section has been answered" in {
-          forAll(arb[Boolean]) {
-            pageAnswer =>
-              val transportDetails = arb[TransportDetails].sample.value
-              val userAnswers      = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
-              val updatedUserAnswers = userAnswers
-                .unsafeSetVal(AddSecurityDetailsPage)(true)
-                .unsafeSetVal(AddCircumstanceIndicatorPage)(pageAnswer)
-
-              val viewModel = TaskListViewModel(updatedUserAnswers)
-
-              viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.InProgress
+            viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.CannotStartYet
           }
         }
 
-        "is Completed when all the answers are completed" in {
-          forAll(arb[SafetyAndSecurity]) {
-            sectionDetails =>
-              val transportDetails = arb[TransportDetails].sample.value
-              val userAnswers      = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
-              val transportDtlsUserAnswers = userAnswers
-                .unsafeSetVal(AddSecurityDetailsPage)(true)
-              val updatedUserAnswers = SafetyAndSecuritySpec.setSafetyAndSecurity(sectionDetails)(transportDtlsUserAnswers)
+        "when dependent section is complete" - {
 
-              val viewModel = TaskListViewModel(updatedUserAnswers)
+          "is Not started when there are no answers for the section" in {
+            val transportDetails   = arb[TransportDetails].sample.value
+            val userAnswers        = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
+            val updatedUserAnswers = userAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
 
-              viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.Completed
+            val viewModel = TaskListViewModel(updatedUserAnswers)
+
+            viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.NotStarted
+          }
+
+          "is InProgress when the first question for the section has been answered" in {
+            forAll(arb[Boolean]) {
+              pageAnswer =>
+                val transportDetails = arb[TransportDetails].sample.value
+                val userAnswers      = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
+                val updatedUserAnswers = userAnswers
+                  .unsafeSetVal(AddSecurityDetailsPage)(true)
+                  .unsafeSetVal(AddCircumstanceIndicatorPage)(pageAnswer)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.InProgress
+            }
+          }
+
+          "is Completed when all the answers are completed" in {
+            forAll(arb[SafetyAndSecurity]) {
+              sectionDetails =>
+                val transportDetails = arb[TransportDetails].sample.value
+                val userAnswers      = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
+                val transportDtlsUserAnswers = userAnswers
+                  .unsafeSetVal(AddSecurityDetailsPage)(true)
+                val updatedUserAnswers = SafetyAndSecuritySpec.setSafetyAndSecurity(sectionDetails)(transportDtlsUserAnswers)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                viewModel.getStatus(safetyAndSecuritySectionName).value mustEqual Status.Completed
+            }
           }
         }
       }
 
       "navigation when section is required" - {
 
-        "when the status is cannot start yet, no link should be provided to start the journey" in {
-          val updatedUserAnswers = emptyUserAnswers
-            .unsafeSetVal(AddSecurityDetailsPage)(true)
+        "when dependent section is incomplete" - {
 
-          val viewModel = TaskListViewModel(updatedUserAnswers)
+          "when the status is cannot start yet, no link should be provided to start the journey" in {
+            val updatedUserAnswers = emptyUserAnswers
+              .unsafeSetVal(AddSecurityDetailsPage)(true)
 
-          viewModel.getHref(safetyAndSecuritySectionName).value.isEmpty mustEqual true
-        }
+            val viewModel = TaskListViewModel(updatedUserAnswers)
 
-        "when the status is Not started, links to the first page" in {
-          val transportDetails = arb[TransportDetails].sample.value
-          val userAnswers      = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
-          val updatedUserAnswers = userAnswers
-            .unsafeSetVal(AddSecurityDetailsPage)(true)
-
-          val viewModel = TaskListViewModel(updatedUserAnswers)
-
-          val expectedHref: String = controllers.safetyAndSecurity.routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url
-
-          viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
-        }
-
-        "when the status is InProgress, links to the first page" in {
-          forAll(arb[Boolean]) {
-            pageAnswer =>
-              val transportDetails = arb[TransportDetails].sample.value
-              val userAnswers      = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
-              val updatedUserAnswers = userAnswers
-                .unsafeSetVal(AddSecurityDetailsPage)(true)
-                .unsafeSetVal(AddCircumstanceIndicatorPage)(pageAnswer)
-
-              val viewModel = TaskListViewModel(updatedUserAnswers)
-
-              val expectedHref: String = controllers.safetyAndSecurity.routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url
-
-              viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
+            viewModel.getHref(safetyAndSecuritySectionName).value.isEmpty mustEqual true
           }
         }
 
-        "when the status is Completed, links to the Check your answers page for the section" in {
-          forAll(arb[SafetyAndSecurity]) {
-            sectionDetails =>
-              val transportDetails         = arb[TransportDetails].sample.value
-              val transportDtlsUserAnswers = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
+        "when dependent section is complete" - {
+          "when the status is Not started, links to the first page" in {
+            val transportDetails = arb[TransportDetails].sample.value
+            val userAnswers      = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
+            val updatedUserAnswers = userAnswers
+              .unsafeSetVal(AddSecurityDetailsPage)(true)
 
-              val userAnswers = transportDtlsUserAnswers
-                .unsafeSetVal(AddSecurityDetailsPage)(true)
-              val updatedUserAnswers = SafetyAndSecuritySpec.setSafetyAndSecurity(sectionDetails)(userAnswers)
+            val viewModel = TaskListViewModel(updatedUserAnswers)
 
-              val viewModel = TaskListViewModel(updatedUserAnswers)
+            val expectedHref: String = controllers.safetyAndSecurity.routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url
 
-              val expectedHref: String = controllers.safetyAndSecurity.routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn).url
+            viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
+          }
 
-              viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
+          "when the status is InProgress, links to the first page" in {
+            forAll(arb[Boolean]) {
+              pageAnswer =>
+                val transportDetails = arb[TransportDetails].sample.value
+                val userAnswers      = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
+                val updatedUserAnswers = userAnswers
+                  .unsafeSetVal(AddSecurityDetailsPage)(true)
+                  .unsafeSetVal(AddCircumstanceIndicatorPage)(pageAnswer)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                val expectedHref: String = controllers.safetyAndSecurity.routes.AddCircumstanceIndicatorController.onPageLoad(lrn, NormalMode).url
+
+                viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
+            }
+          }
+
+          "when the status is Completed, links to the Check your answers page for the section" in {
+            forAll(arb[SafetyAndSecurity]) {
+              sectionDetails =>
+                val transportDetails         = arb[TransportDetails].sample.value
+                val transportDtlsUserAnswers = TransportDetailsSpec.setTransportDetail(transportDetails)(emptyUserAnswers)
+
+                val userAnswers = transportDtlsUserAnswers
+                  .unsafeSetVal(AddSecurityDetailsPage)(true)
+                val updatedUserAnswers = SafetyAndSecuritySpec.setSafetyAndSecurity(sectionDetails)(userAnswers)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                val expectedHref: String = controllers.safetyAndSecurity.routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn).url
+
+                viewModel.getHref(safetyAndSecuritySectionName).value mustEqual expectedHref
+            }
           }
         }
       }
@@ -606,148 +623,157 @@ class TaskListViewModelSpec
       }
 
       "status" - {
+        "when dependent section is incomplete" - {
+          "is Cannot start yet when there are no answers for the dependent sections" in {
+            val viewModel = TaskListViewModel(emptyUserAnswers)
 
-        "is Cannot start yet when there are no answers for the dependent sections" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
-
-          viewModel.getStatus(addItemsSectionName).value mustEqual Status.CannotStartYet
-        }
-
-        "is Not started when there are no answers for the section" in {
-          val procedureType    = arb[ProcedureType].sample.value
-          val arbTraderDetails = arbitraryTraderDetails(procedureType).arbitrary
-          val arbRouterDetails = arbitraryRouteDetails(true).arbitrary
-          val movementDetails  = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-
-          forAll(arbTraderDetails, movementDetails, arbRouterDetails, arb[SafetyAndSecurity]) {
-            (sectionDetails, generalInformation, routeDetails, safetyAndSecurity) =>
-              val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
-              val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
-              val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(generalInfoUserAnswers)
-              val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
-              val updatedUserAnswers       = SafetyAndSecuritySpec.setSafetyAndSecurity(safetyAndSecurity)(routerDetailsUserAnswers)
-
-              val viewModel = TaskListViewModel(updatedUserAnswers)
-
-              viewModel.getStatus(addItemsSectionName).value mustEqual Status.NotStarted
+            viewModel.getStatus(addItemsSectionName).value mustEqual Status.CannotStartYet
           }
         }
 
-        "is InProgress when the first question for the section has been answered" in {
-          val procedureType            = arb[ProcedureType].sample.value
-          val traderDetails            = arbitraryTraderDetails(procedureType).arbitrary.sample.value
-          val routeDetails             = arbitraryRouteDetails(false).arbitrary.sample.value
-          val generalInformation       = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-          val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
-          val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
-          val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
-          val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
+        "when dependent section is complete" - {
 
-          forAll(stringsWithMaxLength(stringMaxLength)) {
-            pageAnswer =>
-              val updatedUserAnswers = routerDetailsUserAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
+          "is Not started when there are no answers for the section" in {
+            val procedureType    = arb[ProcedureType].sample.value
+            val arbTraderDetails = arbitraryTraderDetails(procedureType).arbitrary
+            val arbRouterDetails = arbitraryRouteDetails(true).arbitrary
+            val movementDetails  = arbitraryMovementDetails(procedureType).arbitrary.sample.value
 
-              val viewModel = TaskListViewModel(updatedUserAnswers)
+            forAll(arbTraderDetails, movementDetails, arbRouterDetails, arb[SafetyAndSecurity]) {
+              (sectionDetails, generalInformation, routeDetails, safetyAndSecurity) =>
+                val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
+                val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
+                val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(generalInfoUserAnswers)
+                val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
+                val updatedUserAnswers       = SafetyAndSecuritySpec.setSafetyAndSecurity(safetyAndSecurity)(routerDetailsUserAnswers)
 
-              viewModel.getStatus(addItemsSectionName).value mustEqual Status.InProgress
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                viewModel.getStatus(addItemsSectionName).value mustEqual Status.NotStarted
+            }
           }
-        }
 
-        "is Completed when all the answers are completed" in {
-          val procedureType            = arb[ProcedureType].sample.value
-          val containersUser           = arb[Boolean].sample.value
-          val traderDetails            = arbitraryTraderDetails(procedureType).arbitrary.sample.value
-          val routeDetails             = arbitraryRouteDetails(false).arbitrary.sample.value
-          val safetyAndSecurity        = arb[SafetyAndSecurity].sample.value
-          val generalInformation       = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-          val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
-          val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
-          val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
-          val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
+          "is InProgress when the first question for the section has been answered" in {
+            val procedureType            = arb[ProcedureType].sample.value
+            val traderDetails            = arbitraryTraderDetails(procedureType).arbitrary.sample.value
+            val routeDetails             = arbitraryRouteDetails(false).arbitrary.sample.value
+            val generalInformation       = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+            val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
+            val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
+            val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
+            val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
 
-          forAll(genItemSection(containersUser, false, safetyAndSecurity, generalInformation, routeDetails)) {
-            sectionDetails =>
-              val updatedUserAnswers = ItemSectionSpec.setItemSection(sectionDetails, Index(0))(routerDetailsUserAnswers)
-              val viewModel          = TaskListViewModel(updatedUserAnswers)
+            forAll(stringsWithMaxLength(stringMaxLength)) {
+              pageAnswer =>
+                val updatedUserAnswers = routerDetailsUserAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
 
-              viewModel.getStatus(addItemsSectionName).value mustEqual Status.Completed
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                viewModel.getStatus(addItemsSectionName).value mustEqual Status.InProgress
+            }
+          }
+
+          "is Completed when all the answers are completed" in {
+            val procedureType            = arb[ProcedureType].sample.value
+            val containersUser           = arb[Boolean].sample.value
+            val traderDetails            = arbitraryTraderDetails(procedureType).arbitrary.sample.value
+            val routeDetails             = arbitraryRouteDetails(false).arbitrary.sample.value
+            val safetyAndSecurity        = arb[SafetyAndSecurity].sample.value
+            val generalInformation       = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+            val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
+            val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
+            val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
+            val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
+
+            forAll(genItemSection(containersUser, false, safetyAndSecurity, generalInformation, routeDetails)) {
+              sectionDetails =>
+                val updatedUserAnswers = ItemSectionSpec.setItemSection(sectionDetails, Index(0))(routerDetailsUserAnswers)
+                val viewModel          = TaskListViewModel(updatedUserAnswers)
+
+                viewModel.getStatus(addItemsSectionName).value mustEqual Status.Completed
+            }
           }
         }
       }
 
       "navigation" - {
 
-        "when the status is Cannot start yet with links disable until trader details section is complete" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
+        "when dependent section is incomplete" - {
+          "when the status is Cannot start yet with links disable until trader details section is complete" in {
+            val viewModel = TaskListViewModel(emptyUserAnswers)
 
-          viewModel.getHref(addItemsSectionName).value.isEmpty mustEqual true
-        }
-
-        "when the status is Not started, links to the first page" in {
-          val procedureType      = arb[ProcedureType].sample.value
-          val traderDetails      = arbitraryTraderDetails(procedureType).arbitrary.sample.value
-          val routeDetails       = arbitraryRouteDetails(false).arbitrary.sample.value
-          val generalInformation = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-
-          val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
-          val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
-          val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
-          val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
-
-          val viewModel = TaskListViewModel(routerDetailsUserAnswers)
-
-          val expectedHref: String = controllers.addItems.routes.ItemDescriptionController.onPageLoad(lrn, zeroIndex, NormalMode).url
-
-          viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
-        }
-
-        "when the status is InProgress, links to the first page" in {
-          val procedureType      = arb[ProcedureType].sample.value
-          val traderDetails      = arbitraryTraderDetails(procedureType).arbitrary.sample.value
-          val routeDetails       = arbitraryRouteDetails(false).arbitrary.sample.value
-          val generalInformation = arbitraryMovementDetails(procedureType).arbitrary.sample.value
-
-          val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
-          val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
-          val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
-          val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
-
-          forAll(stringsWithMaxLength(stringMaxLength)) {
-            pageAnswer =>
-              val updatedUserAnswers = routerDetailsUserAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
-
-              val viewModel = TaskListViewModel(updatedUserAnswers)
-
-              val expectedHref: String = controllers.addItems.routes.ItemDescriptionController.onPageLoad(lrn, zeroIndex, NormalMode).url
-
-              viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
+            viewModel.getHref(addItemsSectionName).value.isEmpty mustEqual true
           }
         }
 
-        "when the status is Completed, links to the Check your answers page for the section" in {
-          val procedureType      = arb[ProcedureType].sample.value
-          val containersUser     = arb[Boolean].sample.value
-          val traderDetails      = arbitraryTraderDetails(procedureType).arbitrary.sample.value
-          val routeDetails       = arbitraryRouteDetails(false).arbitrary.sample.value
-          val safetyAndSecurity  = arb[SafetyAndSecurity].sample.value
-          val generalInformation = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+        "when dependent section is complete" - {
 
-          val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
-          val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
-          val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
-          val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
+          "when the status is Not started, links to the first page" in {
+            val procedureType      = arb[ProcedureType].sample.value
+            val traderDetails      = arbitraryTraderDetails(procedureType).arbitrary.sample.value
+            val routeDetails       = arbitraryRouteDetails(false).arbitrary.sample.value
+            val generalInformation = arbitraryMovementDetails(procedureType).arbitrary.sample.value
 
-          forAll(genItemSection(containersUser, false, safetyAndSecurity, generalInformation, routeDetails)) {
-            sectionDetails =>
-              val updatedUserAnswers = ItemSectionSpec.setItemSection(sectionDetails, zeroIndex)(routerDetailsUserAnswers)
+            val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
+            val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
+            val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
+            val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
 
-              val viewModel = TaskListViewModel(updatedUserAnswers)
+            val viewModel = TaskListViewModel(routerDetailsUserAnswers)
 
-              val expectedHref: String = controllers.addItems.routes.AddAnotherItemController.onPageLoad(lrn).url
+            val expectedHref: String = controllers.addItems.routes.ItemDescriptionController.onPageLoad(lrn, zeroIndex, NormalMode).url
 
-              viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
+            viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
           }
 
+          "when the status is InProgress, links to the first page" in {
+            val procedureType      = arb[ProcedureType].sample.value
+            val traderDetails      = arbitraryTraderDetails(procedureType).arbitrary.sample.value
+            val routeDetails       = arbitraryRouteDetails(false).arbitrary.sample.value
+            val generalInformation = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+
+            val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
+            val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
+            val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
+            val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
+
+            forAll(stringsWithMaxLength(stringMaxLength)) {
+              pageAnswer =>
+                val updatedUserAnswers = routerDetailsUserAnswers.unsafeSetVal(ItemDescriptionPage(zeroIndex))(pageAnswer)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                val expectedHref: String = controllers.addItems.routes.ItemDescriptionController.onPageLoad(lrn, zeroIndex, NormalMode).url
+
+                viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
+            }
+          }
+
+          "when the status is Completed, links to the Check your answers page for the section" in {
+            val procedureType      = arb[ProcedureType].sample.value
+            val containersUser     = arb[Boolean].sample.value
+            val traderDetails      = arbitraryTraderDetails(procedureType).arbitrary.sample.value
+            val routeDetails       = arbitraryRouteDetails(false).arbitrary.sample.value
+            val safetyAndSecurity  = arb[SafetyAndSecurity].sample.value
+            val generalInformation = arbitraryMovementDetails(procedureType).arbitrary.sample.value
+
+            val userAnswers              = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(false)
+            val generalInfoUserAnswers   = MovementDetailsSpec.setMovementDetails(generalInformation)(userAnswers)
+            val traderDetailsUserAnswers = TraderDetailsSpec.setTraderDetails(traderDetails)(generalInfoUserAnswers)
+            val routerDetailsUserAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(traderDetailsUserAnswers)
+
+            forAll(genItemSection(containersUser, false, safetyAndSecurity, generalInformation, routeDetails)) {
+              sectionDetails =>
+                val updatedUserAnswers = ItemSectionSpec.setItemSection(sectionDetails, zeroIndex)(routerDetailsUserAnswers)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                val expectedHref: String = controllers.addItems.routes.AddAnotherItemController.onPageLoad(lrn).url
+
+                viewModel.getHref(addItemsSectionName).value mustEqual expectedHref
+            }
+
+          }
         }
       }
     }
@@ -845,102 +871,112 @@ class TaskListViewModelSpec
 
       "status" - {
 
-        "is Cannot start yet when the dependent section is incomplete" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
+        "when dependent section is incomplete" - {
+          "is Cannot start yet when the dependent section is incomplete" in {
+            val viewModel = TaskListViewModel(emptyUserAnswers)
 
-          viewModel.getStatus(guaranteeSectionName).value mustEqual Status.CannotStartYet
-        }
-
-        "is Not started when there are no answers for the section" in {
-          val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
-          val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
-
-          val userAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
-          val viewModel   = TaskListViewModel(userAnswers)
-
-          viewModel.getStatus(guaranteeSectionName).value mustEqual Status.NotStarted
-        }
-
-        "is InProgress when the first question for the section has been answered" in {
-          val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
-          val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
-
-          val userAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
-          forAll(arb[GuaranteeType]) {
-            pageAnswer =>
-              val updatedUserAnswers = userAnswers.unsafeSetVal(GuaranteeTypePage(index))(pageAnswer)
-
-              val viewModel = TaskListViewModel(updatedUserAnswers)
-
-              viewModel.getStatus(guaranteeSectionName).value mustEqual Status.InProgress
+            viewModel.getStatus(guaranteeSectionName).value mustEqual Status.CannotStartYet
           }
         }
 
-        "is Completed when all the answers are completed for the first Item" in {
-          val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
-          val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
+        "when dependent section is complete" - {
 
-          val userAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
-          forAll(nonEmptyListOf[GuaranteeDetails](1)) {
-            sectionDetails =>
-              val updatedUserAnswers = GuaranteeDetailsSpec.setGuaranteeDetails(sectionDetails)(userAnswers)
+          "is Not started when there are no answers for the section" in {
+            val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
+            val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
 
-              val viewModel = TaskListViewModel(updatedUserAnswers)
+            val userAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
+            val viewModel   = TaskListViewModel(userAnswers)
 
-              viewModel.getStatus(guaranteeSectionName).value mustEqual Status.Completed
+            viewModel.getStatus(guaranteeSectionName).value mustEqual Status.NotStarted
+          }
+
+          "is InProgress when the first question for the section has been answered" in {
+            val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
+            val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
+
+            val userAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
+            forAll(arb[GuaranteeType]) {
+              pageAnswer =>
+                val updatedUserAnswers = userAnswers.unsafeSetVal(GuaranteeTypePage(index))(pageAnswer)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                viewModel.getStatus(guaranteeSectionName).value mustEqual Status.InProgress
+            }
+          }
+
+          "is Completed when all the answers are completed for the first Item" in {
+            val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
+            val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
+
+            val userAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
+            forAll(nonEmptyListOf[GuaranteeDetails](1)) {
+              sectionDetails =>
+                val updatedUserAnswers = GuaranteeDetailsSpec.setGuaranteeDetails(sectionDetails)(userAnswers)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                viewModel.getStatus(guaranteeSectionName).value mustEqual Status.Completed
+            }
           }
         }
       }
 
       "navigation" - {
 
-        "when the status is Cannot start yet, user cannot start the journey" in {
-          val viewModel = TaskListViewModel(emptyUserAnswers)
+        "when dependent section is incomplete" - {
+          "when the status is Cannot start yet, user cannot start the journey" in {
+            val viewModel = TaskListViewModel(emptyUserAnswers)
 
-          viewModel.getHref(guaranteeSectionName).value.isEmpty mustEqual true
-        }
-
-        "when the status is Not started, links to the first page" in {
-          val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
-          val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
-
-          val userAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
-          val viewModel   = TaskListViewModel(userAnswers)
-
-          val expectedHref: String = controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, index, NormalMode).url
-
-          viewModel.getHref(guaranteeSectionName).value mustEqual expectedHref
-        }
-
-        "when the status is InProgress, links to the first page" in {
-          val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
-          val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
-          val userAnswers          = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
-          forAll(arb[GuaranteeType]) {
-            pageAnswer =>
-              val updatedUserAnswers = userAnswers.unsafeSetVal(GuaranteeTypePage(index))(pageAnswer)
-
-              val viewModel = TaskListViewModel(updatedUserAnswers)
-
-              val expectedHref: String = controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, index, NormalMode).url
-
-              viewModel.getHref(guaranteeSectionName).value mustEqual expectedHref
+            viewModel.getHref(guaranteeSectionName).value.isEmpty mustEqual true
           }
         }
 
-        "when the status is Completed, links to the add another guarantee page" in {
-          val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
-          val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
-          val userAnswers          = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
-          forAll(nonEmptyListOf[GuaranteeDetails](2)) {
-            sectionDetails =>
-              val updatedUserAnswers = GuaranteeDetailsSpec.setGuaranteeDetails(sectionDetails)(userAnswers)
+        "when dependent section is complete" - {
 
-              val viewModel = TaskListViewModel(updatedUserAnswers)
+          "when the status is Not started, links to the first page" in {
+            val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
+            val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
 
-              val expectedHref: String = controllers.guaranteeDetails.routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
+            val userAnswers = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
+            val viewModel   = TaskListViewModel(userAnswers)
 
-              viewModel.getHref(guaranteeSectionName).value mustEqual expectedHref
+            val expectedHref: String = controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, index, NormalMode).url
+
+            viewModel.getHref(guaranteeSectionName).value mustEqual expectedHref
+          }
+
+          "when the status is InProgress, links to the first page" in {
+            val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
+            val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
+            val userAnswers          = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
+            forAll(arb[GuaranteeType]) {
+              pageAnswer =>
+                val updatedUserAnswers = userAnswers.unsafeSetVal(GuaranteeTypePage(index))(pageAnswer)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                val expectedHref: String = controllers.guaranteeDetails.routes.GuaranteeTypeController.onPageLoad(lrn, index, NormalMode).url
+
+                viewModel.getHref(guaranteeSectionName).value mustEqual expectedHref
+            }
+          }
+
+          "when the status is Completed, links to the add another guarantee page" in {
+            val routeDetails         = arbitraryRouteDetails(true).arbitrary.sample.value
+            val setSafetyAndSecurity = emptyUserAnswers.unsafeSetVal(AddSecurityDetailsPage)(true)
+            val userAnswers          = RouteDetailsSpec.setRouteDetails(routeDetails)(setSafetyAndSecurity)
+            forAll(nonEmptyListOf[GuaranteeDetails](2)) {
+              sectionDetails =>
+                val updatedUserAnswers = GuaranteeDetailsSpec.setGuaranteeDetails(sectionDetails)(userAnswers)
+
+                val viewModel = TaskListViewModel(updatedUserAnswers)
+
+                val expectedHref: String = controllers.guaranteeDetails.routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
+
+                viewModel.getHref(guaranteeSectionName).value mustEqual expectedHref
+            }
           }
         }
       }
