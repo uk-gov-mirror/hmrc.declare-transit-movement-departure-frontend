@@ -16,11 +16,14 @@
 
 package pages
 
+import models.Index
+import models.reference.CountryCode
 import play.api.libs.json.JsPath
+import queries.Constants.routeDetailsOfficesOfTransit
 
-case object OfficeOfTransitCountryPage extends QuestionPage[String] {
+case class OfficeOfTransitCountryPage(index: Index) extends QuestionPage[CountryCode] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit \ index.position \ toString
 
   override def toString: String = "officeOfTransitCountry"
 }

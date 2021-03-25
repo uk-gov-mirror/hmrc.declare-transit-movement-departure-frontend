@@ -72,7 +72,7 @@ class DestinationOfficeController @Inject()(
               val json = Json.obj(
                 "form"           -> preparedForm,
                 "lrn"            -> lrn,
-                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
+                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.getAll),
                 "countryName"    -> countryName,
                 "mode"           -> mode
               )
@@ -98,7 +98,7 @@ class DestinationOfficeController @Inject()(
                     val json = Json.obj(
                       "form"           -> formWithErrors,
                       "lrn"            -> lrn,
-                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.customsOffices),
+                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.getAll),
                       "countryName"    -> countryName,
                       "mode"           -> mode
                     )

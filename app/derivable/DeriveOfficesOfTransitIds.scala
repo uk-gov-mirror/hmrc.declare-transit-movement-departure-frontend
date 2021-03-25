@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import models.Index
-import models.reference.CountryCode
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.routeDetailsOfficesOfTransit
 
-class OfficeOfTransitCountryPageSpec extends PageBehaviours {
+case object DeriveOfficesOfTransitIds extends Derivable[List[JsObject], List[String]] {
+  override val derive: List[JsObject] => List[String] = _.flatMap(
+    y => (y \ "addAnotherTransitOffice").asOpt[String]
+  )
 
-  val index = Index(0)
-
-  "OfficeOfTransitCountryPage" - {
-
-    beRetrievable[CountryCode](OfficeOfTransitCountryPage(index))
-
-    beSettable[CountryCode](OfficeOfTransitCountryPage(index))
-
-    beRemovable[CountryCode](OfficeOfTransitCountryPage(index))
-  }
+  override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit
 }
