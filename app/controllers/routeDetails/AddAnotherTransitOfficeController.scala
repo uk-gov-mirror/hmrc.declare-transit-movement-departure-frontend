@@ -19,6 +19,7 @@ package controllers.routeDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
+import derivable.DeriveOfficesOfTransitIds
 import forms.AddAnotherTransitOfficeFormProvider
 import javax.inject.Inject
 import models.reference.{CountryCode, CustomsOffice}
@@ -26,7 +27,7 @@ import models.requests.DataRequest
 import models.{CustomsOfficeList, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
-import pages.{AddAnotherTransitOfficePage, DestinationCountryPage}
+import pages.{AddAnotherTransitOfficePage, OfficeOfTransitCountryPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -57,7 +58,7 @@ class AddAnotherTransitOfficeController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(DestinationCountryPage) match {
+      request.userAnswers.get(OfficeOfTransitCountryPage(index)) match {
         case Some(countryCode) =>
           getCustomsOfficeAndCountryName(countryCode) flatMap {
             case (customsOffices, countryName) =>
@@ -69,10 +70,12 @@ class AddAnotherTransitOfficeController @Inject()(
                 .map(form.fill)
                 .getOrElse(form)
 
+              val selectedCustomsOfficeIds = request.userAnswers.get(DeriveOfficesOfTransitIds).getOrElse(Nil)
+
               val json = Json.obj(
                 "form"           -> preparedForm,
                 "lrn"            -> lrn,
-                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.customsOffices),
+                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.filterNot(selectedCustomsOfficeIds)),
                 "countryName"    -> countryName,
                 "mode"           -> mode
               )
@@ -85,11 +88,13 @@ class AddAnotherTransitOfficeController @Inject()(
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(DestinationCountryPage) match {
+      request.userAnswers.get(OfficeOfTransitCountryPage(index)) match {
         case Some(countryCode) =>
           getCustomsOfficeAndCountryName(countryCode) flatMap {
             case (customsOffices, countryName) =>
               val form = formProvider(customsOffices, countryName)
+
+              val selectedCustomsOfficeIds = request.userAnswers.get(DeriveOfficesOfTransitIds).getOrElse(Nil)
 
               form
                 .bindFromRequest()
@@ -98,7 +103,7 @@ class AddAnotherTransitOfficeController @Inject()(
                     val json = Json.obj(
                       "form"           -> formWithErrors,
                       "lrn"            -> lrn,
-                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.customsOffices),
+                      "customsOffices" -> getCustomsOfficesAsJson(formWithErrors.value, customsOffices.filterNot(selectedCustomsOfficeIds)),
                       "countryName"    -> countryName,
                       "mode"           -> mode
                     )
@@ -115,6 +120,7 @@ class AddAnotherTransitOfficeController @Inject()(
       }
   }
 
+  //TODO Refactor - 1) Make concurrent calls 2) Use transit country lookup by code
   private def getCustomsOfficeAndCountryName(countryCode: CountryCode)(implicit request: DataRequest[AnyContent]): Future[(CustomsOfficeList, String)] =
     referenceDataConnector.getCustomsOfficesOfTheCountry(countryCode) flatMap {
       customsOffices =>

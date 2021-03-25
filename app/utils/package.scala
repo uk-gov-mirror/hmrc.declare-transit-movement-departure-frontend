@@ -77,18 +77,6 @@ package object utils {
     defaultOption +: jsObjects
   }
 
-  def getOfficeOfTransitAsJson(value: Option[CustomsOffice], officeOfTransitList: Seq[CustomsOffice]): Seq[JsObject] = {
-    val officeOfTransitObjects = officeOfTransitList.map {
-      office =>
-        Json.obj(
-          "value"    -> office.id,
-          "text"     -> s"${office.name} (${office.id})",
-          "selected" -> value.contains(office)
-        )
-    }
-    defaultOption +: officeOfTransitObjects
-  }
-
   def getPreviousDocumentsAsJson(value: Option[PreviousReferencesDocumentType], documentList: Seq[PreviousReferencesDocumentType]): Seq[JsObject] = {
     val documentObjects = documentList.map {
       documentType =>
