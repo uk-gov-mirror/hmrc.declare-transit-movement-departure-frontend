@@ -35,6 +35,7 @@ import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPacka
 import models.journeyDomain.PreviousReferences.nonEUCountries
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
+import models.journeyDomain.traderDetails._
 import models.journeyDomain.traderDetails.TraderDetails._
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
