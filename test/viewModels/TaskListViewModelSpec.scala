@@ -19,6 +19,7 @@ package viewModels
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.{JourneyModelGenerators, ModelGenerators, UserAnswersGenerator}
 import models.journeyDomain._
+import models.journeyDomain.traderDetails.TraderDetailsSpec
 import models.reference.CountryCode
 import models.{DeclarationType, EoriNumber, GuaranteeType, Index, NormalMode, ProcedureType, Status}
 import org.scalacheck.Gen

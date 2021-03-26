@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package models.journeyDomain.traderDetails
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.ProcedureType.Simplified
 import models.domain.Address
-import models.journeyDomain.TraderDetails._
+import models.journeyDomain.{UserAnswersParser, UserAnswersReader}
+import models.journeyDomain.traderDetails.TraderDetails._
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, ProcedureType, UserAnswers}
 import org.scalatest.TryValues
 import pages.{ConsignorEoriPage, _}
