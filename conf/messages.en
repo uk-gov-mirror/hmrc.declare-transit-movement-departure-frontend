@@ -22,6 +22,7 @@ site.continue = Save and continue
 site.notStarted = Not started
 site.inProgress = In Progress
 site.completed = Completed
+site.cannotStartYet = Cannot start yet
 site.service_name =  Manage your transit movements
 site.textarea.char_limit = (Limit is {0} characters)
 site.title.suffix = -  Manage your transit movements - GOV.UK
@@ -203,10 +204,14 @@ declarationSummary.p = You can save your declaration and come back later. You ha
 declarationSummary.section.movementDetails = {0} general information
 declarationSummary.section.routes = {0} route
 declarationSummary.section.transport = {0} transport
+declarationSummary.section.transport.cannotStart = Transport
 declarationSummary.section.tradersDetails = {0} trader’s details
 declarationSummary.section.goodsSummary = {0} goods summary
 declarationSummary.section.guarantee = {0} guarantee
+declarationSummary.section.guarantee.cannotStart = Guarantee
 declarationSummary.section.safetyAndSecurity = {0} safety and security details
+declarationSummary.section.safetyAndSecurity.cannotStart = Safety and security details
+declarationSummary.section.addItems.cannotStart = Items
 declarationSummary.section.addItems = {0} items
 declarationSummary.backToTransitMovements = Back to transit movements
 
@@ -533,21 +538,21 @@ addCustomsApprovedLocation.heading = Do you need to add a Customs-approved locat
 addCustomsApprovedLocation.checkYourAnswersLabel = Do you need to add a Customs-approved location?
 addCustomsApprovedLocation.error.required = Select yes if you need to add a Customs-approved location
 
-sealIdDetails.title = What is the Customs seal number?
-sealIdDetails.heading = What is the Customs seal number?
-sealIdDetails.checkYourAnswersLabel.singular = Customs seal number
-sealIdDetails.checkYourAnswersLabel.plural = Customs seal numbers
-sealIdDetails.error.required = Enter the seal number
-sealIdDetails.error.length = The seal number must be 20 characters or less
-sealIdDetails.error.invalidCharacters = The seal number must only include letters a to z, numbers 0 to 9
+sealIdDetails.title = What is the new official customs seal number?
+sealIdDetails.heading = What is the new official customs seal number?
+sealIdDetails.checkYourAnswersLabel.singular = Official customs seal number
+sealIdDetails.checkYourAnswersLabel.plural = Official customs seal numbers
+sealIdDetails.error.required = Enter the new official customs seal number
+sealIdDetails.error.length = The new official customs seal number must be 20 characters or less
+sealIdDetails.error.invalidCharacters = The new official customs seal number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
 
-addSeals.title = Do you need to add Customs seals numbers?
-addSeals.heading = Do you need to add Customs seals numbers?
-addSeals.checkYourAnswersLabel = Do you need to add Customs seals numbers?
-addSeals.error.required = Select yes if you need to add seals
+addSeals.title = Do you need to add official customs seals numbers?
+addSeals.heading = Do you need to add official customs seals numbers?
+addSeals.checkYourAnswersLabel = Do you need to add official customs seals numbers?
+addSeals.error.required = Select yes if you need to add official customs seals numbers
 
-addSealsLater.title = Custom seals may be added later
-addSealsLater.heading = Custom seals may be added later
+addSealsLater.title = Official customs seals may be added later
+addSealsLater.heading = Official customs seals may be added later
 
 arrivalTimesAtOffice.title = When do you expect the transit to arrive at the office of transit?
 arrivalTimesAtOffice.heading = When do you expect the transit to arrive at the office of transit?
@@ -579,41 +584,35 @@ controlResultDateLimit.error.min.date = The control result date limit must be to
 goodsSummaryCheckYourAnswers.title = Check your answers
 goodsSummaryCheckYourAnswers.heading = Check your answers
 
-sealsInformation.title = You have added {0} Customs seal number
-sealsInformation.heading = You have added {0} Customs seal number
-sealsInformation.subHeading = Do you need to add another Customs seal number?
-sealsInformation.checkYourAnswersLabel = Customs seal numbers
-sealsInformation.error.required = Select yes if you need to add another seal
+maximumSealsInformation.paragraph = You cannot add any more official customs seals.
 
-maximumSealsInformation.paragraph = You cannot add any more customs seals.
+sealsInformation.title.singular = You have added {0} official customs seal
+sealsInformation.title.plural = You have added {0} official customs seals
+sealsInformation.heading.singular = You have added {0} official customs seal
+sealsInformation.heading.plural = You have added {0} official customs seals
+sealsInformation.radio.label = Do you need to add another official customs seal?
+sealsInformation.checkYourAnswersLabel = You have added {0} official customs seals
+sealsInformation.error.required = Select yes if you need to add another official customs seal
+sealsInformation.sealList.heading = Official customs seals
+sealsInformation.sealList.label = Official customs seal {0}
+sealsInformation.sealList.change.hidden = official customs seal {0}
+sealsInformation.sealList.delete.hidden = official customs seal {0}
 
-addSeal.title.singular = You have added {0} seal
-addSeal.title.plural = You have added {0} seals
-addSeal.heading.singular = You have added {0} seal
-addSeal.heading.plural = You have added {0} seals
-addSeal.radio.label = Do you need to add another seal?
-addSeal.checkYourAnswersLabel = You have added {0} seals
-addSeal.error.required = Select yes if you need to add another seal
-addSeal.sealList.heading = Seals
-addSeal.sealList.label = Seal {0}
-addSeal.sealList.change.hidden = seal {0}
-addSeal.sealList.delete.hidden = seal {0}
-
-confirmRemoveSeal.title = Are you sure you want to remove the seal {0}?
-confirmRemoveSeal.heading = Are you sure you want to remove the seal {0}?
-confirmRemoveSeal.error.required = Select yes if you are sure you want to remove the seal {0}
-sealIdentity.error.duplicate = Enter a seal number or mark you have not given before
+confirmRemoveSeal.title = Are you sure you want to remove the official customs seal {0}?
+confirmRemoveSeal.heading = Are you sure you want to remove the official customs seal {0}?
+confirmRemoveSeal.error.required = Select yes if you are sure you want to remove the official customs seal {0}
+sealIdentity.error.duplicate = Enter an official customs seal number or mark you have not given before
 
 confirmRemoveOfficeOfTransit.title = Are you sure you want to remove this office of transit?
 confirmRemoveOfficeOfTransit.heading = Are you sure you want to remove this office of transit?
 confirmRemoveOfficeOfTransit.Label = Office of transit
 confirmRemoveOfficeOfTransit.error.required = Select yes if you are sure you want to remove this office of transit
 
-confirmRemoveSeals.title = Are you sure you want to remove the customs seals you have added?
-confirmRemoveSeals.heading = Are you sure you want to remove the customs seals you have added?
+confirmRemoveSeals.title = Are you sure you want to remove the official customs seals you have added?
+confirmRemoveSeals.heading = Are you sure you want to remove the customs official customs seals you have added?
 confirmRemoveSeals.checkYourAnswersLabel = Are you sure you want to remove the customs seals you have added?
-confirmRemoveSeals.paragraph = Any customs seals you have entered will be deleted.
-confirmRemoveSeals.error.required = Select yes if you are sure you want to remove the customs seals you have added
+confirmRemoveSeals.paragraph = Any customs official customs seals you have entered will be deleted.
+confirmRemoveSeals.error.required = Select yes if you are sure you want to remove the official customs seals you have added
 
 guaranteeReference.title = What is the guarantee reference number?
 guaranteeReference.heading = What is the guarantee reference number?

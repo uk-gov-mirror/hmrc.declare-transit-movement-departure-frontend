@@ -101,7 +101,7 @@ class AddItemsCheckYourAnswersHelper(userAnswers: UserAnswers) {
                 Action(
                   content            = msg"site.delete",
                   href               = routes.ConfirmRemoveDocumentController.onPageLoad(userAnswers.id, index, documentIndex, CheckMode).url,
-                  visuallyHiddenText = Some(msg"addSeal.documentList.delete.hidden".withArgs(answer)),
+                  visuallyHiddenText = Some(msg"addAnotherDocument.documentList.delete.hidden".withArgs(answer)),
                   attributes         = Map("id" -> s"""remove-document-${index.display}""")
                 )
               )

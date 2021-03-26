@@ -66,7 +66,6 @@ object SpecialMentionSpec extends UserAnswersSpecHelper {
 
   def setSpecialMentionsUserAnswers(specialMention: SpecialMention, index: Index, referenceIndex: Index)(userAnswers: UserAnswers): UserAnswers =
     userAnswers
-      .unsafeSetVal(AddSpecialMentionPage(index))(true)
       .unsafeSetVal(SpecialMentionTypePage(index, referenceIndex))(specialMention.specialMention)
       .unsafeSetVal(SpecialMentionAdditionalInfoPage(index, referenceIndex))(specialMention.additionalInfo)
 

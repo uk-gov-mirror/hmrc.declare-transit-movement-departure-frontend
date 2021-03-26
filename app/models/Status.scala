@@ -28,9 +28,12 @@ object Status {
 
   case object Completed extends Status
 
+  case object CannotStartYet extends Status
+
   implicit val writes: Writes[Status] = Writes[Status] {
-    case NotStarted => JsString("notStarted")
-    case InProgress => JsString("inProgress")
-    case Completed  => JsString("completed")
+    case NotStarted     => JsString("notStarted")
+    case InProgress     => JsString("inProgress")
+    case Completed      => JsString("completed")
+    case CannotStartYet => JsString("cannotStartYet")
   }
 }

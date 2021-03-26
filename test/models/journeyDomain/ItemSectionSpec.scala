@@ -193,25 +193,29 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
   }
 
   private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
-    val smUserAnswers = startUserAnswers.set(AddSpecialMentionPage(itemIndex), false).toOption.get
+    val smUserAnswers = startUserAnswers.unsafeSetVal(AddSpecialMentionPage(itemIndex))(specialMentions.isDefined)
     specialMentions.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
       case (userAnswers, (specialMention, index)) =>
         SpecialMentionSpec.setSpecialMentionsUserAnswers(specialMention, itemIndex, Index(index))(userAnswers)
     })
   }
 
-  private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
-    producedDocument.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
+  private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
+    val prodDocsUserAnswers = startUserAnswers.unsafeSetVal(AddDocumentsPage(itemIndex))(producedDocument.isDefined)
+    producedDocument.fold(prodDocsUserAnswers)(_.zipWithIndex.foldLeft(prodDocsUserAnswers) {
       case (userAnswers, (producedDocument, index)) =>
         ProducedDocumentSpec.setProducedDocumentsUserAnswers(producedDocument, itemIndex, Index(index))(userAnswers)
     })
+  }
 
   private def setPreviousReferences(previousReferences: Option[NonEmptyList[PreviousReferences]], itemIndex: Index)(
-    startUserAnswers: UserAnswers): UserAnswers =
-    previousReferences.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
+    startUserAnswers: UserAnswers): UserAnswers = {
+    val preRefUserAnswers = startUserAnswers.unsafeSetVal(AddAdministrativeReferencePage(itemIndex))(previousReferences.isDefined)
+    previousReferences.fold(preRefUserAnswers)(_.zipWithIndex.foldLeft(preRefUserAnswers) {
       case (userAnswers, (previousReferences, index)) =>
         PreviousReferenceSpec.setPreviousReferenceUserAnswers(previousReferences, itemIndex, Index(index))(userAnswers)
     })
+  }
 
   private def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(
     userAnswers: UserAnswers): UserAnswers =

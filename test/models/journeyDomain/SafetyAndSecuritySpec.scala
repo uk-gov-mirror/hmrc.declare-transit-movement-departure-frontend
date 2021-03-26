@@ -41,7 +41,15 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
 
           val result = UserAnswersParser[Option, SafetyAndSecurity].run(userAnswers).value
 
-          result mustEqual SafetyAndSecurity(None, None, None, None, None, None, None, None, NonEmptyList.fromListUnsafe(List(Itinerary(CountryCode("GB")))))
+          result mustEqual SafetyAndSecurity(None,
+                                             None,
+                                             None,
+                                             None,
+                                             Some("data"),
+                                             None,
+                                             None,
+                                             None,
+                                             NonEmptyList.fromListUnsafe(List(Itinerary(CountryCode("GB")))))
       }
     }
 
@@ -166,6 +174,7 @@ object SafetyAndSecuritySpec extends UserAnswersSpecHelper {
       .unsafeSetVal(ModeAtBorderPage)("1")
       .unsafeSetVal(AddConveyanceReferenceNumberPage)(false)
       .unsafeSetVal(AddPlaceOfUnloadingCodePage)(false)
+      .unsafeSetVal(PlaceOfUnloadingCodePage)("data")
       .unsafeSetVal(AddSafetyAndSecurityConsignorPage)(false)
       .unsafeSetVal(AddSafetyAndSecurityConsigneePage)(false)
       .unsafeSetVal(AddCarrierPage)(false)
