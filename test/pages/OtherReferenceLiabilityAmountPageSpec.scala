@@ -16,7 +16,8 @@
 
 package pages
 
-import models.Index
+import models.{Index, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
@@ -28,5 +29,45 @@ class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
     beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
 
     beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
+
+    "cleanup logic" - {
+
+      "must remove DefaultAmount page when value is not empty" in {
+
+        val index = Index(0)
+
+        forAll(arbitrary[UserAnswers], nonEmptyString, arbitrary[Boolean]) {
+          (userAnswers, nonEmptyValue, useDefaultAmount) =>
+            val result = userAnswers
+              .set(DefaultAmountPage(index), useDefaultAmount)
+              .success
+              .value
+              .set(OtherReferenceLiabilityAmountPage(index), nonEmptyValue)
+              .success
+              .value
+
+            result.get(DefaultAmountPage(index)) must not be defined
+        }
+      }
+
+      "must not remove DefaultAmount page when value is empty" in {
+
+        val index = Index(0)
+
+        forAll(arbitrary[UserAnswers], arbitrary[Boolean]) {
+          (userAnswers, useDefaultAmount) =>
+            val result = userAnswers
+              .set(DefaultAmountPage(index), useDefaultAmount)
+              .success
+              .value
+              .set(OtherReferenceLiabilityAmountPage(index), "")
+              .success
+              .value
+
+            result.get(DefaultAmountPage(index)) must be(defined)
+        }
+      }
+    }
   }
+
 }

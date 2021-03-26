@@ -22,7 +22,7 @@ import models.GuaranteeType.GuaranteeWaiver
 import models.Index
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
-import pages.{AccessCodePage, DefaultAmountPage, LiabilityAmountPage, OtherReferencePage}
+import pages.{AccessCodePage, DefaultAmountPage, LiabilityAmountPage, OtherReferenceLiabilityAmountPage, OtherReferencePage}
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
 
 class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -62,6 +62,50 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
       data.sections.head.rows.head.value.content mustEqual Literal("test")
     }
 
+    "OtherReferenceLiabilityAmount" - {
+
+      "must show default value of EUR 10000 when default value is yes" in {
+
+        val updatedAnswers = emptyUserAnswers
+          .set(OtherReferenceLiabilityAmountPage(index), "")
+          .success
+          .value
+          .set(DefaultAmountPage(index), true)
+          .success
+          .value
+
+        val data                          = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+        val otherReferenceLiabilityAmount = data.sections.head.rows.head.value.content.asInstanceOf[Message]
+        val defaultLiabilityMessage       = data.sections.head.rows(1).value.content.asInstanceOf[Message]
+
+        data.sections.head.sectionTitle must not be defined
+        data.sections.length mustEqual 1
+        data.sections.head.rows.length mustEqual 2
+        defaultLiabilityMessage.key mustBe "site.yes"
+        otherReferenceLiabilityAmount.key mustBe "guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
+      }
+
+      "must show liabilityAmount when default value is no" in {
+
+        val updatedAnswers = emptyUserAnswers
+          .set(OtherReferenceLiabilityAmountPage(index), "123")
+          .success
+          .value
+          .set(DefaultAmountPage(index), false)
+          .success
+          .value
+
+        val data                    = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+        val defaultLiabilityMessage = data.sections.head.rows(1).value.content.asInstanceOf[Message]
+
+        data.sections.head.sectionTitle must not be defined
+        data.sections.length mustEqual 1
+        data.sections.head.rows.length mustEqual 2
+        defaultLiabilityMessage.key mustBe "site.no"
+        data.sections.head.rows.head.value.content mustEqual Literal("123")
+      }
+    }
+
     "display Liability Amount" - {
       "and amount as 10 when selected" in {
         val updatedAnswers = emptyUserAnswers.set(LiabilityAmountPage(index), "10.00").success.value
@@ -76,37 +120,36 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
     "display Default Liability Amount when selected" in {
 
       val updatedAnswers = emptyUserAnswers
-        .remove(LiabilityAmountPage(index))
-        .success
-        .value
         .set(DefaultAmountPage(index), true)
         .success
         .value
-      val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+
+      val data             = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+      val message: Message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 1
-      data.sections.head.rows.head.value.content mustEqual Literal("Yes")
-
+      message.key mustBe "site.yes"
     }
+
     "display Default Liability Amount when no is selected" in {
 
       val updatedAnswers = emptyUserAnswers
-        .remove(LiabilityAmountPage(index))
-        .success
-        .value
         .set(DefaultAmountPage(index), false)
         .success
         .value
-      val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+
+      val data             = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+      val message: Message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 1
-      data.sections.head.rows.head.value.content mustEqual Literal("No")
+      message.key mustBe "site.no"
 
     }
+
     "display Access Code when selected" in {
 
       val updatedAnswers = emptyUserAnswers.set(AccessCodePage(index), "a1b2").success.value

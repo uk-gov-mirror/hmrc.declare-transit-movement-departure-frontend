@@ -45,7 +45,7 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def otherReferenceLiabilityAmount(index: Index): Option[Row] = userAnswers.get(OtherReferenceLiabilityAmountPage(index)) map {
     answer =>
       val displayAmount = answer match {
-        case x if x.trim.nonEmpty => lit"EUR $answer"
+        case x if x.trim.nonEmpty => lit"$answer"
         case _                    => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
       }
 
