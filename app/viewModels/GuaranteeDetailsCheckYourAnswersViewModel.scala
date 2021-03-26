@@ -32,7 +32,7 @@ object GuaranteeDetailsCheckYourAnswersViewModel {
     val guaranteeReference: Option[SummaryList.Row]            = checkYourAnswersHelper.guaranteeReference(index)
     val otherReference: Option[SummaryList.Row]                = checkYourAnswersHelper.otherReference(index)
     val liabilityAmount: Option[SummaryList.Row]               = checkYourAnswersHelper.liabilityAmount(index)
-    val otherReferenceLiabilityAmount: Option[SummaryList.Row] = checkYourAnswersHelper.otherReferenceliabilityAmount(index)
+    val otherReferenceLiabilityAmount: Option[SummaryList.Row] = checkYourAnswersHelper.otherReferenceLiabilityAmount(index)
     val accessCode: Option[SummaryList.Row]                    = checkYourAnswersHelper.accessCode(index)
     val defaultAmount: Option[SummaryList.Row]                 = checkYourAnswersHelper.defaultAmount(index)
 

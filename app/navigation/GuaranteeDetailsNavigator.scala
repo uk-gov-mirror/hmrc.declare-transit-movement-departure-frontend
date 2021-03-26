@@ -87,9 +87,8 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
       case (Some(_), Some(""), _, NormalMode) => Some(routes.DefaultAmountController.onPageLoad(ua.id, index, NormalMode))
       case (Some(_), Some(_), _, NormalMode)  => Some(routes.AccessCodeController.onPageLoad(ua.id, index, NormalMode))
       case (Some(_), None, _, NormalMode)     => Some(routes.DefaultAmountController.onPageLoad(ua.id, index, NormalMode))
-
-      case (_, _, None, CheckMode) => Some(routes.AccessCodeController.onPageLoad(ua.id, index, CheckMode))
-      case _                       => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (_, _, None, CheckMode)            => Some(routes.AccessCodeController.onPageLoad(ua.id, index, CheckMode))
+      case _                                  => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
 
   def defaultAmountRoute(ua: UserAnswers, index: Index, mode: Mode) = (ua.get(DefaultAmountPage(index)), ua.get(AccessCodePage(index)), mode) match {

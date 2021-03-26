@@ -26,37 +26,32 @@ import uk.gov.hmrc.viewmodels._
 class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def defaultAmount(index: Index): Option[Row] =
-    if (userAnswers.get(LiabilityAmountPage(index)).isEmpty && userAnswers.get(OtherReferenceLiabilityAmountPage(index)).isEmpty) {
-      userAnswers.get(DefaultAmountPage(index)) map {
-
-        answer =>
-          val useDefault = if (answer) {
-            "Yes"
-          } else {
-            "No"
-          }
-          Row(
-            key   = Key(msg"defaultAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-            value = Value(lit"$useDefault"),
-            actions = List(
-              Action(
-                content            = msg"site.edit",
-                href               = routes.DefaultAmountController.onPageLoad(lrn, index, CheckMode).url,
-                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"defaultAmount.checkYourAnswersLabel")),
-                attributes         = Map("id" -> "change-default-amount")
-              )
+    userAnswers.get(DefaultAmountPage(index)) map {
+      answer =>
+        Row(
+          key   = Key(msg"defaultAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          value = Value(yesOrNo(answer)),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = routes.DefaultAmountController.onPageLoad(lrn, index, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"defaultAmount.checkYourAnswersLabel")),
+              attributes         = Map("id" -> "change-default-amount")
             )
           )
-      }
-    } else {
-      None
+        )
     }
 
-  def otherReferenceliabilityAmount(index: Index): Option[Row] = userAnswers.get(OtherReferenceLiabilityAmountPage(index)) map {
+  def otherReferenceLiabilityAmount(index: Index): Option[Row] = userAnswers.get(OtherReferenceLiabilityAmountPage(index)) map {
     answer =>
+      val displayAmount = answer match {
+        case x if x.trim.nonEmpty => lit"EUR $answer"
+        case _                    => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
+      }
+
       Row(
         key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(displayAmount),
         actions = List(
           Action(
             content            = msg"site.edit",
@@ -86,7 +81,7 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   }
 
   def accessCode(index: Index): Option[Row] = userAnswers.get(AccessCodePage(index)) map {
-    answer =>
+    _ =>
       Row(
         key   = Key(msg"accessCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"••••"),
@@ -120,14 +115,9 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def liabilityAmount(index: Index): Option[Row] =
     userAnswers.get(LiabilityAmountPage(index)) map {
       answer =>
-        val displayAmount = answer match {
-          case x if x.trim.nonEmpty => lit"$answer"
-          case _                    => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
-        }
-
         Row(
           key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-          value = Value(displayAmount),
+          value = Value(lit"$answer"),
           actions = List(
             Action(
               content            = msg"site.edit",
