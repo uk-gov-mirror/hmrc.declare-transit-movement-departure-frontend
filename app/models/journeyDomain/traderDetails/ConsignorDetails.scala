@@ -16,48 +16,31 @@
 
 package models.journeyDomain.traderDetails
 
-import cats._
-import cats.data._
 import cats.implicits._
 import models.EoriNumber
 import models.domain.Address
-import models.journeyDomain.UserAnswersReader
-import pages.{AddConsignorPage, ConsignorAddressPage, ConsignorEoriPage, ConsignorNamePage, IsConsignorEoriKnownPage}
-import models.journeyDomain._
+import models.journeyDomain.{UserAnswersReader, _}
+import pages.{ConsignorAddressPage, ConsignorEoriPage, ConsignorNamePage, IsConsignorEoriKnownPage}
 
 case class ConsignorDetails(name: String, address: Address, eori: Option[EoriNumber])
 
 object ConsignorDetails {
 
-  implicit val consignorDetails: UserAnswersReader[Option[ConsignorDetails]] = {
+  implicit val consignorDetails: UserAnswersReader[ConsignorDetails] = {
     val readConsignorEoriPage =
-      IsConsignorEoriKnownPage.reader
-        .flatMap {
-          eoriKnown =>
-            if (eoriKnown)
-              ConsignorEoriPage.reader.map(EoriNumber(_)).map(Option(_))
-            else
-              none[EoriNumber].pure[UserAnswersReader]
-        }
+      IsConsignorEoriKnownPage
+        .readerWithDependentOptionalReaders(identity)(ConsignorEoriPage.reader.map(EoriNumber(_)))
 
-    AddConsignorPage.reader
-      .flatMap(
-        addConsignor =>
-          if (addConsignor) {
-            (
-              readConsignorEoriPage,
-              ConsignorNamePage.reader,
-              ConsignorAddressPage.reader
-            ).tupled
-              .map {
-                case (eori, name, consignorAddress) =>
-                  val address = Address.prismAddressToConsignorAddress(consignorAddress)
-                  Option(ConsignorDetails(name, address, eori))
-              }
-          } else {
-            none[ConsignorDetails].pure[UserAnswersReader]
-        }
-      )
+    (
+      readConsignorEoriPage,
+      ConsignorNamePage.reader,
+      ConsignorAddressPage.reader
+    ).tupled
+      .map {
+        case (eori, name, consignorAddress) =>
+          val address = Address.prismAddressToConsignorAddress(consignorAddress)
+          ConsignorDetails(name, address, eori)
+      }
   }
 
 }
