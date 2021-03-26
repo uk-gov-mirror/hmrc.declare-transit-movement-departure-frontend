@@ -19,11 +19,10 @@ package models.journeyDomain.traderDetails
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.domain.Address
-import models.journeyDomain.traderDetails.TraderDetails._
-import models.journeyDomain.{UserAnswersParser, UserAnswersReader}
-import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, ProcedureType, UserAnswers}
+import models.journeyDomain.UserAnswersReader
+import models.{EoriNumber, PrincipalAddress, ProcedureType, UserAnswers}
 import org.scalatest.TryValues
-import pages.{ConsignorEoriPage, _}
+import pages._
 
 class PrincipalTraderSpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators with UserAnswersSpecHelper {
 
