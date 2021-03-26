@@ -30,7 +30,7 @@ import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
-import models.journeyDomain.traderDetails.TraderDetails
+import models.journeyDomain.traderDetails._
 import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, ProducedDocument, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
@@ -194,7 +194,7 @@ class DeclarationRequestService @Inject()(
 
     def principalTrader(traderDetails: TraderDetails): TraderPrincipal =
       traderDetails.principalTraderDetails match {
-        case TraderDetails.PrincipalTraderPersonalInfo(name, Address(buildingAndStreet, city, postcode, _)) =>
+        case PrincipalTraderPersonalInfo(name, Address(buildingAndStreet, city, postcode, _)) =>
           TraderPrincipalWithoutEori(
             name            = name,
             streetAndNumber = buildingAndStreet,
@@ -202,7 +202,7 @@ class DeclarationRequestService @Inject()(
             city            = city,
             countryCode     = Constants.principalTraderCountryCode.code
           )
-        case TraderDetails.PrincipalTraderEoriInfo(traderEori) =>
+        case PrincipalTraderEoriInfo(traderEori) =>
           TraderPrincipalWithEori(eori = traderEori.value, None, None, None, None, None)
       }
 
