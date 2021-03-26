@@ -68,7 +68,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
           case (otherPackage, userAnswers, mandatoryPage) =>
             val updatedUserAnswers = setPackageUserAnswers(otherPackage, index, index)(userAnswers)
 
-            val userAnswersIncomplete = updatedUserAnswers.unsafeRemoveVal(mandatoryPage)
+            val userAnswersIncomplete = updatedUserAnswers.unsafeRemove(mandatoryPage)
             val result                = UserAnswersReader[OtherPackages](OtherPackages.otherPackageReader(index, index)).run(userAnswersIncomplete)
 
             result mustEqual None
@@ -97,7 +97,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             case (packages, userAnswers, mandatoryPage) =>
               val updatedUserAnswers = setPackageUserAnswers(packages, index, index)(userAnswers)
 
-              val userAnswersIncomplete = updatedUserAnswers.unsafeRemoveVal(mandatoryPage)
+              val userAnswersIncomplete = updatedUserAnswers.unsafeRemove(mandatoryPage)
               val result                = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(userAnswersIncomplete)
 
               result mustEqual None
@@ -112,7 +112,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
               val updatedUserAnswers =
                 setPackageUserAnswers(packages, index, index)(userAnswers)
                   .unsafeSetVal(DeclareNumberOfPackagesPage(index, index))(true)
-                  .unsafeRemoveVal(HowManyPackagesPage(index, index))
+                  .unsafeRemove(HowManyPackagesPage(index, index))
 
               val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
 
@@ -128,7 +128,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
               val updatedUserAnswers =
                 setPackageUserAnswers(packages, index, index)(userAnswers)
                   .unsafeSetVal(AddMarkPage(index, index))(true)
-                  .unsafeRemoveVal(DeclareMarkPage(index, index))
+                  .unsafeRemove(DeclareMarkPage(index, index))
 
               val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
 
@@ -157,7 +157,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             case (packages, userAnswers, mandatoryPage) =>
               val updatedUserAnswers = setPackageUserAnswers(packages, index, index)(userAnswers)
 
-              val userAnswersIncomplete = updatedUserAnswers.unsafeRemoveVal(mandatoryPage)
+              val userAnswersIncomplete = updatedUserAnswers.unsafeRemove(mandatoryPage)
               val result                = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(userAnswersIncomplete)
 
               result mustEqual None
@@ -172,7 +172,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
               val updatedUserAnswers =
                 setPackageUserAnswers(packages, index, index)(userAnswers)
                   .unsafeSetVal(DeclareNumberOfPackagesPage(index, index))(true)
-                  .unsafeRemoveVal(HowManyPackagesPage(index, index))
+                  .unsafeRemove(HowManyPackagesPage(index, index))
 
               val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers)
 
@@ -188,7 +188,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
               val updatedUserAnswers =
                 setPackageUserAnswers(packages, index, index)(userAnswers)
                   .unsafeSetVal(AddMarkPage(index, index))(true)
-                  .unsafeRemoveVal(DeclareMarkPage(index, index))
+                  .unsafeRemove(DeclareMarkPage(index, index))
 
               val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers)
 

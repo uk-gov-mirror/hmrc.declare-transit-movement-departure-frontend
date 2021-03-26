@@ -55,7 +55,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
             .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
             .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
-            .unsafeRemoveVal(AddSafetyAndSecurityConsignorPage)
+            .unsafeRemove(AddSafetyAndSecurityConsignorPage)
 
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
@@ -72,7 +72,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
             .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
             .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
-            .unsafeRemoveVal(AddSafetyAndSecurityConsigneePage)
+            .unsafeRemove(AddSafetyAndSecurityConsigneePage)
 
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value

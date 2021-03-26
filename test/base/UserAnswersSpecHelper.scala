@@ -68,7 +68,8 @@ trait UserAnswersSpecHelper {
     def unsafeSetPFnOpt[A, B: Writes](page: QuestionPage[B])(value: A)(pf: PartialFunction[A, Option[B]]): UserAnswers =
       unsafeSetOpt(page)(pf.lift(value).flatten)
 
-    def unsafeRemoveVal[A](page: QuestionPage[A]): UserAnswers =
+    // Should this call the remove and then unsafe unwrap the Try?
+    def unsafeRemove[A](page: QuestionPage[A]): UserAnswers =
       userAnswers.data
         .removeObject(page.path)
         .fold(
