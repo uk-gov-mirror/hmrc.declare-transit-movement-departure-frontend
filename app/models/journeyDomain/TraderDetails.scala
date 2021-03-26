@@ -16,6 +16,7 @@
 
 package models.journeyDomain
 
+import cats._
 import cats.data._
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
@@ -45,7 +46,7 @@ object TraderDetails {
   final case class PrincipalTraderPersonalInfo(name: String, address: Address) extends PrincipalTraderDetails
   final case class PrincipalTraderEoriInfo(eori: EoriNumber) extends PrincipalTraderDetails
 
-  val principalTraderDetails: UserAnswersReader[PrincipalTraderDetails] = {
+  implicit val principalTraderDetails: UserAnswersReader[PrincipalTraderDetails] = {
     val simplified = ProcedureTypePage.reader
       .filter(_ == Simplified)
       .productR(
@@ -78,76 +79,74 @@ object TraderDetails {
     normal orElse simplified
   }
 
-  val consignorDetails: UserAnswersReader[Option[ConsignorDetails]] = {
-    def readConsignorEoriPage: UserAnswersReader[Option[EoriNumber]] =
+  implicit val consignorDetails: UserAnswersReader[Option[ConsignorDetails]] = {
+    val readConsignorEoriPage =
       IsConsignorEoriKnownPage.reader
         .flatMap {
-          bool =>
-            if (bool)
-              ConsignorEoriPage.reader.map(
-                eori => Some(EoriNumber(eori))
-              )
-            else none[EoriNumber].pure[UserAnswersReader]
-        }
-    val consignorInformation: UserAnswersReader[ConsignorDetails] =
-      (
-        ConsignorNamePage.reader,
-        ConsignorAddressPage.reader,
-        readConsignorEoriPage
-      ).tupled
-        .map {
-          case (name, consignorAddress, eori) =>
-            val address = Address.prismAddressToConsignorAddress(consignorAddress)
-//            PrincipalTrader(name, address, eori)
-            ???
+          eoriKnown =>
+            if (eoriKnown)
+              ConsignorEoriPage.reader.map(EoriNumber(_)).map(Option(_))
+            else
+              none[EoriNumber].pure[UserAnswersReader]
         }
 
     AddConsignorPage.reader
-      .filter(identity)
       .flatMap(
-        _ => consignorInformation
+        addConsignor =>
+          if (addConsignor) {
+            (
+              readConsignorEoriPage,
+              ConsignorNamePage.reader,
+              ConsignorAddressPage.reader
+            ).tupled
+              .map {
+                case (eori, name, consignorAddress) =>
+                  val address = Address.prismAddressToConsignorAddress(consignorAddress)
+                  Option(ConsignorDetails(name, address, eori))
+              }
+          } else {
+            none[ConsignorDetails].pure[UserAnswersReader]
+        }
       )
-      .lower
   }
 
-  val consigneeDetails: UserAnswersReader[Option[ConsigneeDetails]] = {
-    def readConsigneeEoriPage: UserAnswersReader[Option[EoriNumber]] =
+  implicit val consigneeDetails: UserAnswersReader[Option[ConsigneeDetails]] = {
+    val readConsigneeEoriPage =
       IsConsigneeEoriKnownPage.reader
         .flatMap {
-          bool =>
-            if (bool)
-              WhatIsConsigneeEoriPage.reader.map(
-                eori => Some(EoriNumber(eori))
-              )
-            else none[EoriNumber].pure[UserAnswersReader]
-        }
-
-    val consigneeInformation: UserAnswersReader[ConsigneeDetails] =
-      (
-        ConsigneeNamePage.reader,
-        ConsigneeAddressPage.reader,
-        readConsigneeEoriPage
-      ).tupled
-        .map {
-          case (name, consigneeAddress, eori) =>
-            val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
-            ???
+          eoriKnown =>
+            if (eoriKnown)
+              WhatIsConsigneeEoriPage.reader.map(EoriNumber(_)).map(Option(_))
+            else
+              none[EoriNumber].pure[UserAnswersReader]
         }
 
     AddConsigneePage.reader
-      .filter(identity)
       .flatMap(
-        _ => consigneeInformation
+        addConsignor =>
+          if (addConsignor) {
+            (
+              readConsigneeEoriPage,
+              ConsigneeNamePage.reader,
+              ConsigneeAddressPage.reader
+            ).tupled
+              .map {
+                case (eori, name, consigneeAddress) =>
+                  val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
+                  Option(ConsigneeDetails(name, address, eori))
+              }
+          } else {
+            none[ConsigneeDetails].pure[UserAnswersReader]
+        }
       )
-      .lower
   }
 
   implicit val userAnswersParser: UserAnswersParser[Option, TraderDetails] =
     UserAnswersOptionalParser(
       (
-        principalTraderDetails,
-        consignorDetails,
-        consigneeDetails
+        UserAnswersReader[PrincipalTraderDetails],
+        UserAnswersReader[Option[ConsignorDetails]],
+        UserAnswersReader[Option[ConsigneeDetails]]
       ).tupled
     )(
       x => TraderDetails(x._1, x._2, x._3)
