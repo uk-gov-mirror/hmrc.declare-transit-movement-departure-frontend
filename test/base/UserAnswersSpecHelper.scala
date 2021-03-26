@@ -76,7 +76,7 @@ trait UserAnswersSpecHelper {
           jsValue => userAnswers.copy(data = jsValue)
         )
 
-    def assert[A: Reads](description: String)(assertion: UserAnswers => Boolean)(implicit pos: Position): UserAnswers =
+    def assert(description: String)(assertion: UserAnswers => Boolean)(implicit pos: Position): UserAnswers =
       if (assertion(userAnswers)) {
         userAnswers
       } else {
