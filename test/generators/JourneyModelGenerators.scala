@@ -310,11 +310,6 @@ trait JourneyModelGenerators {
       consignee              <- Gen.option(arbitrary[ConsigneeDetails])
     } yield TraderDetails(principalTraderDetails, consignor, consignee)
 
-//  implicit lazy val arbitraryTraderDetails: Arbitrary[TraderDetails] =
-//    // Since genTraderDetailsSimplified is a subset of genTraderDetailsNormal
-//    //     the Normal generator is the generalised case
-//    Arbitrary(genTraderDetailsNormal)
-
   implicit val arbitraryItemSecurityTraderDetails: Arbitrary[ItemsSecurityTraderDetails] = {
     val consignorAddress = Arbitrary(arbitrary[ConsignorAddress].map(Address.prismAddressToConsignorAddress.reverseGet))
     val consigneeAddress = Arbitrary(arbitrary[ConsigneeAddress].map(Address.prismAddressToConsigneeAddress.reverseGet))
