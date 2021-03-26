@@ -123,18 +123,23 @@ trait JourneyModelGenerators {
         consigneeAddress           <- Gen.some(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
         carrierAddress             <- Gen.some(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
         itineraries                <- nonEmptyListOf[Itinerary](5)
-      } yield
+      } yield {
+        val placeOfUnloadingData = addCircumstanceIndicator match {
+          case Some("E") => placeOfUnloading
+          case _         => Some(placeOfUnloading.getOrElse("sampleData"))
+        }
         SafetyAndSecurity(
           addCircumstanceIndicator,
           paymentMethod,
           commercialReference,
           convenyanceReferenceNumber,
-          placeOfUnloading,
+          placeOfUnloadingData,
           consignorAddress,
           consigneeAddress,
           carrierAddress,
           itineraries
         )
+      }
     }
   }
 
@@ -157,7 +162,7 @@ trait JourneyModelGenerators {
     }
 
     for {
-      addCircumstanceIndicator   <- Gen.some(nonEmptyString)
+      addCircumstanceIndicator   <- Gen.option(Gen.oneOf(CircumstanceIndicator.conditionalIndicators))
       paymentMethod              <- Gen.some(nonEmptyString)
       commercialReference        <- Gen.some(nonEmptyString)
       convenyanceReferenceNumber <- genConvenyanceReferenceNumber
@@ -166,18 +171,24 @@ trait JourneyModelGenerators {
       consigneeAddress           <- Gen.some(arbitrarySecurityTraderDetails(consigneeAddress).arbitrary)
       carrierAddress             <- Gen.some(arbitrarySecurityTraderDetails(carrierAddress).arbitrary)
       itineraries                <- nonEmptyListOf[Itinerary](5)
-    } yield
+    } yield {
+      val placeOfUnloadingData = addCircumstanceIndicator match {
+        case Some("E") => placeOfUnloading
+        case _         => Some(placeOfUnloading.getOrElse("sampleData"))
+      }
+
       SafetyAndSecurity(
         addCircumstanceIndicator,
         paymentMethod,
         commercialReference,
         convenyanceReferenceNumber,
-        placeOfUnloading,
+        placeOfUnloadingData,
         consignorAddress,
         consigneeAddress,
         carrierAddress,
         itineraries
       )
+    }
   }
 
   implicit def arbitrarySecurityTraderDetails(implicit arbAddress: Arbitrary[Address]): Arbitrary[SecurityTraderDetails] =
@@ -626,8 +637,12 @@ trait JourneyModelGenerators {
         )
     }
 
-  implicit lazy val arbitraryMovementDetails: Arbitrary[MovementDetails] =
-    Arbitrary(Gen.oneOf(arbitrary[NormalMovementDetails], arbitrary[SimplifiedMovementDetails]))
+  implicit def arbitraryMovementDetails(procedureType: ProcedureType): Arbitrary[MovementDetails] =
+    if (procedureType == ProcedureType.Normal) {
+      Arbitrary(arbitrary[NormalMovementDetails])
+    } else {
+      Arbitrary(arbitrary[SimplifiedMovementDetails])
+    }
 
   val genTransitInformationWithoutArrivalTime =
     for {
