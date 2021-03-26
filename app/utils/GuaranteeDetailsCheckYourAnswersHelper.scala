@@ -42,27 +42,6 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         )
     }
 
-  def otherReferenceLiabilityAmount(index: Index): Option[Row] = userAnswers.get(OtherReferenceLiabilityAmountPage(index)) map {
-    answer =>
-      val displayAmount = answer match {
-        case x if x.trim.nonEmpty => lit"$answer"
-        case _                    => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
-      }
-
-      Row(
-        key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(displayAmount),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.OtherReferenceLiabilityAmountController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"liabilityAmount.checkYourAnswersLabel")),
-            attributes         = Map("id" -> "change-other-reference-liabilty-amount")
-          )
-        )
-      )
-  }
-
   def guaranteeType(index: Index): Option[Row] = userAnswers.get(GuaranteeTypePage(index)) map {
     answer =>
       val gtName = GuaranteeType.getId(answer.toString)
@@ -115,6 +94,11 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   def liabilityAmount(index: Index): Option[Row] =
     userAnswers.get(LiabilityAmountPage(index)) map {
       answer =>
+        val displayAmount = answer match {
+          case x if x.trim.nonEmpty => lit"$answer"
+          case _                    => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
+        }
+
         Row(
           key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
           value = Value(lit"$answer"),

@@ -16,21 +16,6 @@
 
 package pages
 
-import models.{Index, UserAnswers}
-import play.api.libs.json.JsPath
-import queries.Constants.guarantees
+import models.Index
 
-import scala.util.Try
-
-case class OtherReferenceLiabilityAmountPage(index: Index) extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ guarantees \ index.position \ toString
-
-  override def toString: String = "otherReferenceLiabilityAmount"
-
-  override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(liabilityAmount) if liabilityAmount.nonEmpty => userAnswers.remove(DefaultAmountPage(index))
-      case _                                                 => super.cleanup(value, userAnswers)
-    }
-}
+case class OtherReferenceLiabilityAmountPage(index: Index) extends Page
