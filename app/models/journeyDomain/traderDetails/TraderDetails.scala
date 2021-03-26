@@ -17,7 +17,8 @@
 package models.journeyDomain.traderDetails
 
 import cats.implicits._
-import models.journeyDomain.{UserAnswersOptionalParser, UserAnswersParser, UserAnswersReader}
+import models.journeyDomain.{UserAnswersReader, _}
+import pages.{AddConsigneePage, AddConsignorPage}
 
 case class TraderDetails(
   principalTraderDetails: PrincipalTraderDetails,
@@ -31,8 +32,8 @@ object TraderDetails {
     UserAnswersOptionalParser(
       (
         UserAnswersReader[PrincipalTraderDetails],
-        UserAnswersReader[Option[ConsignorDetails]], // TODO handle option of consignor here
-        UserAnswersReader[Option[ConsigneeDetails]] // TODO handle option of consignee here
+        AddConsignorPage.readerWithDependentOptionalReaders(identity)(UserAnswersReader[ConsignorDetails]),
+        AddConsigneePage.readerWithDependentOptionalReaders(identity)(UserAnswersReader[ConsigneeDetails])
       ).tupled
     )(
       x => TraderDetails(x._1, x._2, x._3)

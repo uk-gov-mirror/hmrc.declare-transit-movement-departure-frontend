@@ -26,38 +26,21 @@ case class ConsigneeDetails(name: String, address: Address, eori: Option[EoriNum
 
 object ConsigneeDetails {
 
-  implicit val consigneeDetails: UserAnswersReader[Option[ConsigneeDetails]] = {
-
-    import models.EoriNumber
-    import models.domain.Address
+  implicit val consigneeDetails: UserAnswersReader[ConsigneeDetails] = {
 
     val readConsigneeEoriPage =
-      IsConsigneeEoriKnownPage.reader
-        .flatMap {
-          eoriKnown =>
-            if (eoriKnown)
-              WhatIsConsigneeEoriPage.reader.map(EoriNumber(_)).map(Option(_))
-            else
-              none[EoriNumber].pure[UserAnswersReader]
-        }
+      IsConsigneeEoriKnownPage
+        .readerWithDependentOptionalReaders(identity)(WhatIsConsigneeEoriPage.reader.map(EoriNumber(_)))
 
-    AddConsigneePage.reader
-      .flatMap(
-        addConsignor =>
-          if (addConsignor) {
-            (
-              readConsigneeEoriPage,
-              ConsigneeNamePage.reader,
-              ConsigneeAddressPage.reader
-            ).tupled
-              .map {
-                case (eori, name, consigneeAddress) =>
-                  val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
-                  Option(ConsigneeDetails(name, address, eori))
-              }
-          } else {
-            none[ConsigneeDetails].pure[UserAnswersReader]
-        }
-      )
+    (
+      readConsigneeEoriPage,
+      ConsigneeNamePage.reader,
+      ConsigneeAddressPage.reader
+    ).tupled
+      .map {
+        case (eori, name, consigneeAddress) =>
+          val address = Address.prismAddressToConsigneeAddress(consigneeAddress)
+          ConsigneeDetails(name, address, eori)
+      }
   }
 }

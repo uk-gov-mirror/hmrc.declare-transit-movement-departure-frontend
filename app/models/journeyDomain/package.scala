@@ -16,6 +16,7 @@
 
 package models
 
+import cats._
 import cats.data._
 import cats.implicits._
 import play.api.libs.json.Reads
@@ -38,13 +39,39 @@ package object journeyDomain {
       )
   }
 
+  implicit class GettableAsFilterForNextReaderOps[A: Reads](a: Gettable[A]) {
+
+    /**
+      * Returns the UserAnswersReader[Option[B]], where UserAnswersReader[B] which is run only if UserAnswerReader[A]
+      * is defined and true, if it defined and false it will return None. If the result of UserAnswerReader[A]
+      * is not defined then UserAnswersReader[B] will never run `next`
+      */
+    def readerWithDependentOptionalReaders[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[Option[B]] =
+      a.reader
+        .flatMap {
+          x =>
+            if (predicate(x)) {
+              next.wrapOption
+            } else {
+              none[B].pure[UserAnswersReader]
+            }
+        }
+  }
+
   implicit class GettableAsOptionalReaderOps[A](a: Gettable[A]) {
 
     def optionalReader(implicit reads: Reads[A]): UserAnswersReader[Option[A]] =
-      reader.lower
+      a.reader.lower
+  }
+
+  implicit class GettableAsReaderOps[A](a: Gettable[A]) {
 
     def reader(implicit reads: Reads[A]): UserAnswersReader[A] =
       ReaderT[Option, UserAnswers, A](_.get(a))
+  }
+
+  implicit class ReaderLiftOptionOps[A](reader: UserAnswersReader[A]) {
+    def wrapOption: UserAnswersReader[Option[A]] = reader.map(Option(_))
   }
 
 }
