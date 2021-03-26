@@ -197,6 +197,7 @@ trait ModelGenerators {
         postcode          <- alphaStringsWithMaxLength(Address.Constants.postcodeLength)
       } yield Address(buildingAndStreet, city, postcode)
     }
+
 }
 
 object ModelGenerators extends ModelGenerators with Generators

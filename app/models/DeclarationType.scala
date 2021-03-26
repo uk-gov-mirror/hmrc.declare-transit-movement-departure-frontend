@@ -25,14 +25,10 @@ object DeclarationType extends Enumerable.Implicits {
 
   case object Option1 extends DeclarationType("T1", "option1")
   case object Option2 extends DeclarationType("T2", "option2")
-  case object Option3 extends DeclarationType("T-", "option3")
-  case object Option4 extends DeclarationType("T2", "option4")
 
   val values: Seq[DeclarationType] = Seq(
     Option1,
-    Option2,
-    Option3,
-    Option4
+    Option2
   )
 
   def radios(form: Form[_])(): Seq[Radios.Item] = {
@@ -40,9 +36,7 @@ object DeclarationType extends Enumerable.Implicits {
     val field = form("value")
     val items = Seq(
       Radios.Radio(msg"declarationType.option1", Option1.toString),
-      Radios.Radio(msg"declarationType.option2", Option2.toString),
-      Radios.Radio(msg"declarationType.option3", Option3.toString),
-      Radios.Radio(msg"declarationType.option4", Option4.toString)
+      Radios.Radio(msg"declarationType.option2", Option2.toString)
     )
 
     Radios(field, items)

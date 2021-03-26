@@ -19,6 +19,7 @@ package forms
 import base.SpecBase
 import forms.Constants._
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.eoriNumberRegex
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
@@ -57,10 +58,10 @@ class ConsignorEoriFormProviderSpec extends SpecBase with StringFieldBehaviours 
 
     behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLengthEoriNumber)
 
-    "must not bind strings that do not match the eori number format regex" ignore {
+    "must not bind strings that do not match the eori number format regex" in {
 
-      val expectedError          = FormError(fieldName, invalidFormatKey)
-      val generator: Gen[String] = RegexpGen.from(s"[]{17}")
+      val expectedError          = FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex))
+      val generator: Gen[String] = RegexpGen.from(s"^[0-9]{2}[a-zA-Z0-9]{15}")
       forAll(generator) {
         invalidString =>
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)

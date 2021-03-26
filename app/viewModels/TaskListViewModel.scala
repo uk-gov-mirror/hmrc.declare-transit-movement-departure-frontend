@@ -22,9 +22,9 @@ import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain._
 import models.journeyDomain.traderDetails.TraderDetails
 import models.{Index, NormalMode, ProcedureType, SectionDetails, UserAnswers}
+import pages._
 import pages.guaranteeDetails.GuaranteeTypePage
 import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
-import pages._
 import play.api.libs.json._
 
 private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
@@ -36,6 +36,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
   private val movementDetails =
     taskListDsl
       .sectionName("declarationSummary.section.movementDetails")
+      .ifNotDependentOnOtherSectionCompletion
       .ifCompleted(
         UserAnswersReader[MovementDetails],
         controllers.movementDetails.routes.MovementDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
@@ -50,6 +51,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
   private val routeDetails =
     taskListDsl
       .sectionName("declarationSummary.section.routes")
+      .ifNotDependentOnOtherSectionCompletion
       .ifCompleted(
         UserAnswersReader[RouteDetails],
         controllers.routeDetails.routes.RouteDetailsCheckYourAnswersController.onPageLoad(lrn).url
@@ -64,6 +66,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
   private val transportDetails =
     taskListDsl
       .sectionName("declarationSummary.section.transport")
+      .ifDependentSectionCompleted(UserAnswersReader[MovementDetails])
       .ifCompleted(
         UserAnswersReader[TransportDetails],
         controllers.transportDetails.routes.TransportDetailsCheckYourAnswersController.onPageLoad(lrn).url
@@ -91,6 +94,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
   private val traderDetails =
     taskListDsl
       .sectionName("declarationSummary.section.tradersDetails")
+      .ifNotDependentOnOtherSectionCompletion
       .ifCompleted(
         UserAnswersReader[TraderDetails],
         controllers.traderDetails.routes.TraderDetailsCheckYourAnswersController.onPageLoad(userAnswers.id).url
@@ -102,9 +106,27 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
       .ifNotStarted(traderDetailsStartPage(userAnswers.get(ProcedureTypePage)))
       .section
 
+  private val addItemsDependentSections: UserAnswersReader[_] = {
+    val commonSection = for {
+      _            <- UserAnswersReader[MovementDetails]
+      _            <- UserAnswersReader[TraderDetails]
+      routeDetails <- UserAnswersReader[RouteDetails]
+    } yield routeDetails
+
+    if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
+      for {
+        _                 <- commonSection
+        safetyAndSecurity <- UserAnswersReader[SafetyAndSecurity]
+      } yield safetyAndSecurity
+    } else {
+      commonSection
+    }
+  }
+
   private val itemDetails =
     taskListDsl
       .sectionName("declarationSummary.section.addItems")
+      .ifDependentSectionCompleted(addItemsDependentSections)
       .ifCompleted(
         UserAnswersReader[NonEmptyList[ItemSection]],
         controllers.addItems.routes.AddAnotherItemController.onPageLoad(userAnswers.id).url
@@ -119,6 +141,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
   private val goodsSummaryDetails =
     taskListDsl
       .sectionName("declarationSummary.section.goodsSummary")
+      .ifNotDependentOnOtherSectionCompletion
       .ifCompleted(
         UserAnswersReader[GoodsSummary],
         controllers.goodsSummary.routes.GoodsSummaryCheckYourAnswersController.onPageLoad(lrn).url
@@ -133,6 +156,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
   private val guaranteeDetails =
     taskListDsl
       .sectionName("declarationSummary.section.guarantee")
+      .ifDependentSectionCompleted(UserAnswersReader[RouteDetails])
       .ifCompleted(
         UserAnswersReader[NonEmptyList[GuaranteeDetails]],
         controllers.guaranteeDetails.routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
@@ -152,6 +176,7 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
           Seq(
             taskListDsl
               .sectionName("declarationSummary.section.safetyAndSecurity")
+              .ifDependentSectionCompleted(UserAnswersReader[TransportDetails])
               .ifCompleted(
                 UserAnswersReader[SafetyAndSecurity],
                 controllers.safetyAndSecurity.routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn).url
@@ -172,8 +197,8 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
     Seq(
       movementDetails,
       routeDetails,
-      transportDetails,
-      traderDetails
+      traderDetails,
+      transportDetails
     ) ++ safetyAndSecurityDetails ++ Seq(
       itemDetails,
       goodsSummaryDetails,
@@ -195,4 +220,5 @@ object TaskListViewModel {
 
   implicit val writes: Writes[TaskListViewModel] =
     taskListViewModel => Json.toJson(taskListViewModel.sections)
+
 }

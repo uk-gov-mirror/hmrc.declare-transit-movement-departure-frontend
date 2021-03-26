@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import models.Status
-import play.api.libs.json.Reads
+package derivable
 
-package object viewModels {
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.routeDetailsOfficesOfTransit
 
-  implicit val readsStatus: Reads[Status] = implicitly[Reads[String]].map {
-    case "notStarted"     => Status.NotStarted
-    case "inProgress"     => Status.InProgress
-    case "completed"      => Status.Completed
-    case "cannotStartYet" => Status.CannotStartYet
-    case _                => throw new Exception(s"Invalid string value for ${Status.getClass}")
-  }
+case object DeriveOfficesOfTransitIds extends Derivable[List[JsObject], List[String]] {
+  override val derive: List[JsObject] => List[String] = _.flatMap(
+    y => (y \ "addAnotherTransitOffice").asOpt[String]
+  )
+
+  override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit
 }

@@ -93,8 +93,8 @@ class SealsInformationController @Inject()(
       "form"        -> form,
       "mode"        -> mode,
       "lrn"         -> lrn,
-      "pageTitle"   -> msg"addSeal.title.$singularOrPlural".withArgs(numberOfSeals),
-      "heading"     -> msg"addSeal.heading.$singularOrPlural".withArgs(numberOfSeals),
+      "pageTitle"   -> msg"sealsInformation.title.$singularOrPlural".withArgs(numberOfSeals),
+      "heading"     -> msg"sealsInformation.heading.$singularOrPlural".withArgs(numberOfSeals),
       "seals"       -> sealsRows,
       "radios"      -> Radios.yesNo(form("value")),
       "onSubmitUrl" -> onSubmit
