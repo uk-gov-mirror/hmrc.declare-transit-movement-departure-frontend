@@ -19,6 +19,7 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
 import models.UserAnswers
+import models.journeyDomain.traderDetails.TraderDetailsSpec
 
 class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 

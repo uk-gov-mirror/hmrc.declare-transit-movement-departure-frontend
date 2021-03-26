@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package models.journeyDomain.traderDetails
 
-import cats._
-import cats.data._
 import cats.implicits._
+import models.EoriNumber
 import models.ProcedureType.{Normal, Simplified}
 import models.domain.Address
-import models.journeyDomain.TraderDetails._
-import models.{EoriNumber, UserAnswers}
+import models.journeyDomain.{UserAnswersOptionalParser, UserAnswersParser, UserAnswersReader}
 import pages._
+import models.journeyDomain.traderDetails.TraderDetails._ // TODO: remove when models moved to top level of package
+import models.journeyDomain._
 
 case class TraderDetails(
   principalTraderDetails: PrincipalTraderDetails,

@@ -20,6 +20,7 @@ import cats.data.{NonEmptyList, ReaderT}
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain._
+import models.journeyDomain.traderDetails.TraderDetails
 import models.{Index, NormalMode, ProcedureType, SectionDetails, UserAnswers}
 import pages.guaranteeDetails.GuaranteeTypePage
 import pages.safetyAndSecurity.AddCircumstanceIndicatorPage

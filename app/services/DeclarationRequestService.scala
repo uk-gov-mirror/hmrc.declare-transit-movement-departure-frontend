@@ -17,9 +17,9 @@
 package services
 
 import java.time.{LocalDate, LocalDateTime}
-
 import cats.data.NonEmptyList
 import cats.implicits._
+
 import javax.inject.Inject
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
@@ -30,7 +30,8 @@ import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
-import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, ProducedDocument, TraderDetails, UserAnswersReader, _}
+import models.journeyDomain.traderDetails.TraderDetails
+import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, ProducedDocument, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
