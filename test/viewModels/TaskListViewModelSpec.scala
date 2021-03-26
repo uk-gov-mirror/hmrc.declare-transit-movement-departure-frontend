@@ -554,7 +554,7 @@ class TaskListViewModelSpec
         "is Not started when there are no answers for the section" in {
           val viewModel = TaskListViewModel(emptyUserAnswers)
 
-          viewModel.getStatus(addItemsSectionName).value mustEqual Status.NotStarted
+          viewModel.getStatus(addItemsSectionName).value mustEqual Status.CannotStartYet
         }
 
         "is InProgress when the first question for the section has been answered" in {
