@@ -59,7 +59,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
                 .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
                 //                  .unsafeSetVal(AddConsigneePage)(false)
                 //                  .unsafeSetVal(AddConsignorPage)(false)
-                .unsafeRemoveVal(WhatIsPrincipalEoriPage)
+                .unsafeRemove(WhatIsPrincipalEoriPage)
 
               val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers)
 
@@ -101,7 +101,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
                 .unsafeSetVal(PrincipalNamePage)(name)
                 //                  .unsafeSetVal(AddConsigneePage)(false)
                 //                  .unsafeSetVal(AddConsignorPage)(false)
-                .unsafeRemoveVal(PrincipalAddressPage)
+                .unsafeRemove(PrincipalAddressPage)
 
               val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers)
 
@@ -120,7 +120,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
                 .unsafeSetVal(PrincipalAddressPage)(principalAddress)
                 //                  .unsafeSetVal(AddConsigneePage)(false)
                 //                  .unsafeSetVal(AddConsignorPage)(false)
-                .unsafeRemoveVal(PrincipalNamePage)
+                .unsafeRemove(PrincipalNamePage)
 
               val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers)
 
@@ -141,7 +141,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
               //                .unsafeSetVal(AddConsigneePage)(false)
               //                .unsafeSetVal(AddConsignorPage)(false)
-              .unsafeRemoveVal(IsPrincipalEoriKnownPage)
+              .unsafeRemove(IsPrincipalEoriKnownPage)
 
             val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers)
 
@@ -177,7 +177,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             val userAnswers = baseUserAnswers
               .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
               .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
-              .unsafeRemoveVal(WhatIsPrincipalEoriPage)
+              .unsafeRemove(WhatIsPrincipalEoriPage)
 //                .unsafeSetVal(AddConsigneePage)(false)
 //                .unsafeSetVal(AddConsignorPage)(false)
 
@@ -200,7 +200,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             //              .unsafeSetVal(AddConsignorPage)(false)
             .unsafeSetVal(PrincipalNamePage)(name)
             .unsafeSetVal(PrincipalAddressPage)(principalAddress)
-            .unsafeRemoveVal(ProcedureTypePage)
+            .unsafeRemove(ProcedureTypePage)
 
           val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers)
 
@@ -250,7 +250,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(IsConsignorEoriKnownPage)(true)
               .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
               .unsafeSetVal(ConsignorNamePage)(name)
-              .unsafeRemoveVal(ConsignorAddressPage)
+              .unsafeRemove(ConsignorAddressPage)
 
             val result = UserAnswersReader[Option[ConsignorDetails]].run(userAnswers)
 
@@ -271,7 +271,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(IsConsignorEoriKnownPage)(true)
               .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
               .unsafeSetVal(ConsignorAddressPage)(address)
-              .unsafeRemoveVal(ConsignorNamePage)
+              .unsafeRemove(ConsignorNamePage)
 
             val result = UserAnswersReader[Option[ConsignorDetails]].run(userAnswers)
 
@@ -290,7 +290,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(IsConsignorEoriKnownPage)(true)
               .unsafeSetVal(ConsignorNamePage)(name)
               .unsafeSetVal(ConsignorAddressPage)(address)
-              .unsafeRemoveVal(ConsignorEoriPage)
+              .unsafeRemove(ConsignorEoriPage)
 
             val result = UserAnswersReader[Option[ConsignorDetails]].run(userAnswers)
 
@@ -334,7 +334,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(AddConsignorPage)(true)
               .unsafeSetVal(IsConsignorEoriKnownPage)(false)
               .unsafeSetVal(ConsignorNamePage)(name)
-              .unsafeRemoveVal(ConsignorAddressPage)
+              .unsafeRemove(ConsignorAddressPage)
 
             val result = UserAnswersReader[Option[ConsignorDetails]].run(userAnswers)
 
@@ -355,8 +355,8 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(IsConsignorEoriKnownPage)(true)
               .unsafeSetVal(ConsignorEoriPage)(eoriNumber)
               .unsafeSetVal(ConsignorAddressPage)(address)
-              .unsafeRemoveVal(ConsignorNamePage)
-              .unsafeRemoveVal(ConsignorEoriPage)
+              .unsafeRemove(ConsignorNamePage)
+              .unsafeRemove(ConsignorEoriPage)
 
             val result = UserAnswersReader[Option[ConsignorDetails]].run(userAnswers)
 
@@ -405,7 +405,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(IsConsigneeEoriKnownPage)(true)
               .unsafeSetVal(WhatIsConsigneeEoriPage)(eoriNumber)
               .unsafeSetVal(ConsigneeNamePage)(name)
-              .unsafeRemoveVal(ConsigneeAddressPage)
+              .unsafeRemove(ConsigneeAddressPage)
 
             val result = UserAnswersReader[Option[ConsigneeDetails]].run(userAnswers)
 
@@ -425,7 +425,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(IsConsigneeEoriKnownPage)(true)
               .unsafeSetVal(WhatIsConsigneeEoriPage)(eoriNumber)
               .unsafeSetVal(ConsigneeAddressPage)(address)
-              .unsafeRemoveVal(ConsigneeNamePage)
+              .unsafeRemove(ConsigneeNamePage)
 
             val result = UserAnswersReader[Option[ConsigneeDetails]].run(userAnswers)
 
@@ -446,7 +446,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(IsConsigneeEoriKnownPage)(true)
               .unsafeSetVal(ConsigneeNamePage)(name)
               .unsafeSetVal(ConsigneeAddressPage)(address)
-              .unsafeRemoveVal(WhatIsConsigneeEoriPage)
+              .unsafeRemove(WhatIsConsigneeEoriPage)
 
             val result = UserAnswersReader[Option[ConsigneeDetails]].run(userAnswers)
 
@@ -490,7 +490,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(AddConsigneePage)(true)
               .unsafeSetVal(IsConsigneeEoriKnownPage)(false)
               .unsafeSetVal(ConsigneeNamePage)(name)
-              .unsafeRemoveVal(ConsigneeAddressPage)
+              .unsafeRemove(ConsigneeAddressPage)
 
             val result = UserAnswersReader[Option[ConsigneeDetails]].run(userAnswers)
 
@@ -509,7 +509,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
               .unsafeSetVal(AddConsigneePage)(true)
               .unsafeSetVal(IsConsigneeEoriKnownPage)(false)
               .unsafeSetVal(ConsigneeAddressPage)(address)
-              .unsafeRemoveVal(ConsigneeNamePage)
+              .unsafeRemove(ConsigneeNamePage)
 
             val result = UserAnswersReader[Option[ConsigneeDetails]].run(userAnswers)
 

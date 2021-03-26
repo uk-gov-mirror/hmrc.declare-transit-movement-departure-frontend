@@ -99,7 +99,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
               .unsafeSetVal(AddTotalNetMassPage(index))(true)
-              .unsafeRemoveVal(TotalNetMassPage(index))
+              .unsafeRemove(TotalNetMassPage(index))
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
@@ -115,7 +115,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
               .unsafeSetVal(IsCommodityCodeKnownPage(index))(true)
-              .unsafeRemoveVal(CommodityCodePage(index))
+              .unsafeRemove(CommodityCodePage(index))
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
