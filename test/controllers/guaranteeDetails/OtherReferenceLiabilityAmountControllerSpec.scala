@@ -27,7 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.OtherReferenceLiabilityAmountPage
+import pages.{LiabilityAmountPage, OtherReferenceLiabilityAmountPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -81,7 +81,7 @@ class OtherReferenceLiabilityAmountControllerSpec extends SpecBase with MockNunj
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(OtherReferenceLiabilityAmountPage(index), "1.00").success.value
+      val userAnswers = emptyUserAnswers.set(LiabilityAmountPage(index), "1.00").success.value
       dataRetrievalWithData(userAnswers)
 
       when(mockRenderer.render(any(), any())(any()))

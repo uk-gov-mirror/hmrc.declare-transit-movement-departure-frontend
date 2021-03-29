@@ -21,7 +21,7 @@ import forms.OtherReferenceLiabilityAmountFormProvider
 import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
-import pages.OtherReferenceLiabilityAmountPage
+import pages.{LiabilityAmountPage, OtherReferenceLiabilityAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -57,7 +57,7 @@ class OtherReferenceLiabilityAmountController @Inject()(
       andThen requireData
       andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
-        val preparedForm = request.userAnswers.get(OtherReferenceLiabilityAmountPage(index)) match {
+        val preparedForm = request.userAnswers.get(LiabilityAmountPage(index)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -88,13 +88,13 @@ class OtherReferenceLiabilityAmountController @Inject()(
                 "mode" -> mode
               )
 
-              renderer.render("otherReferenceLiabilityAmount.njk", json).map(BadRequest(_))
-            },
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherReferenceLiabilityAmountPage(index), value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(OtherReferenceLiabilityAmountPage(index), mode, updatedAnswers))
-          )
-    }
+            renderer.render("otherReferenceLiabilityAmount.njk", json).map(BadRequest(_))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(LiabilityAmountPage(index), value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(OtherReferenceLiabilityAmountPage(index), mode, updatedAnswers))
+        )
+  }
 }
