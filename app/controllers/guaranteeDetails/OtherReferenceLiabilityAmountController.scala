@@ -88,13 +88,13 @@ class OtherReferenceLiabilityAmountController @Inject()(
                 "mode" -> mode
               )
 
-            renderer.render("otherReferenceLiabilityAmount.njk", json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(LiabilityAmountPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(OtherReferenceLiabilityAmountPage(index), mode, updatedAnswers))
-        )
-  }
+              renderer.render("otherReferenceLiabilityAmount.njk", json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(LiabilityAmountPage(index), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(OtherReferenceLiabilityAmountPage(index), mode, updatedAnswers))
+          )
+    }
 }
