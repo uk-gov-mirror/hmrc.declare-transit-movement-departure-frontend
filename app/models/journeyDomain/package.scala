@@ -31,8 +31,9 @@ package object journeyDomain {
 
     def apply[A](fn: UserAnswers => Option[A]): UserAnswersReader[A] = ReaderT[Option, UserAnswers, A](fn)
 
-    def empty[A: UserAnswersReader]: UserAnswersReader[A] = unsafeEmpty[A]
-
+    /**
+      * Returns a UserAnswersReader for [[A]] which will always fail
+      */
     def unsafeEmpty[A]: UserAnswersReader[A] =
       UserAnswersReader[A](
         (_: UserAnswers) => Option.empty[A]
