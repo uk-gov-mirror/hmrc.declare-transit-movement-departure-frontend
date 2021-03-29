@@ -51,7 +51,7 @@ package object journeyDomain {
         .flatMap {
           x =>
             if (predicate(x)) {
-              next.wrapOption
+              next.map(Option(_))
             } else {
               none[B].pure[UserAnswersReader]
             }
@@ -68,10 +68,6 @@ package object journeyDomain {
 
     def reader(implicit reads: Reads[A]): UserAnswersReader[A] =
       ReaderT[Option, UserAnswers, A](_.get(a))
-  }
-
-  implicit class ReaderLiftOptionOps[A](reader: UserAnswersReader[A]) {
-    def wrapOption: UserAnswersReader[Option[A]] = reader.map(Option(_))
   }
 
 }
