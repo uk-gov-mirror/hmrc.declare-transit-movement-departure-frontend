@@ -16,88 +16,123 @@
 
 package navigation
 
-import base.SpecBase
+import base.{SpecBase, UserAnswersSpecHelper}
 import controllers.traderDetails.{routes => traderDetailsRoute}
 import generators.Generators
 import models._
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.{ConsigneeAddressPage, _}
 
-class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with UserAnswersSpecHelper {
 
   val navigator = new TraderDetailsNavigator
+
+  val genNormalProcedureUserAnswers: Gen[UserAnswers] =
+    arbitrary[UserAnswers].map(_.unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal))
+
+  val genSimplifiedProcedureUserAnswers: Gen[UserAnswers] =
+    arbitrary[UserAnswers].map(_.unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified))
+
+  val genUserAnswersWithProcedure: Gen[UserAnswers] =
+    Gen.oneOf(
+      genNormalProcedureUserAnswers,
+      genSimplifiedProcedureUserAnswers
+    )
 
   "TraderDetailsNavigator" - {
 
     "in Normal mode" - {
 
-      "must go from Is principal eori known page to what is eori number page when 'YES' is selected" in {
+      "Principal trader section" - {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(IsPrincipalEoriKnownPage, true)
-              .success
-              .value
-            navigator
-              .nextPage(IsPrincipalEoriKnownPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.WhatIsPrincipalEoriController.onPageLoad(answers.id, NormalMode))
+        "for a Normal procedure declaration" - {
+
+          "must go from Is principal eori known page " - {
+
+            "to what is eori number page when 'YES' is selected" in {
+
+              forAll(genNormalProcedureUserAnswers) {
+                answers =>
+                  val updatedAnswers = answers
+                    .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+
+                  navigator
+                    .nextPage(IsPrincipalEoriKnownPage, NormalMode, updatedAnswers)
+                    .mustBe(traderDetailsRoute.WhatIsPrincipalEoriController.onPageLoad(answers.id, NormalMode))
+              }
+            }
+
+            "to principal name page when 'NO' is selected" in {
+
+              forAll(genNormalProcedureUserAnswers) {
+                answers =>
+                  val updatedAnswers = answers
+                    .unsafeSetVal(IsPrincipalEoriKnownPage)(false)
+
+                  navigator
+                    .nextPage(IsPrincipalEoriKnownPage, NormalMode, updatedAnswers)
+                    .mustBe(traderDetailsRoute.PrincipalNameController.onPageLoad(answers.id, NormalMode))
+              }
+            }
+          }
+
+          "must go from Principal eori page to Add consignor page" in {
+
+            forAll(genNormalProcedureUserAnswers) {
+              answers =>
+                val ua = answers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
+
+                navigator
+                  .nextPage(WhatIsPrincipalEoriPage, NormalMode, ua)
+                  .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
+          "must go from Principal name page to Principal address page" in {
+            forAll(genNormalProcedureUserAnswers) {
+              answers =>
+                navigator
+                  .nextPage(PrincipalNamePage, NormalMode, answers)
+                  .mustBe(traderDetailsRoute.PrincipalAddressController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
+          "must go from Principal address page to Add consignor page" in {
+
+            forAll(genNormalProcedureUserAnswers) {
+              answers =>
+                navigator
+                  .nextPage(PrincipalAddressPage, NormalMode, answers)
+                  .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
         }
-      }
 
-      "must go from Is principal eori known page to principal name page when 'NO' is selected" in {
+        "for a Simplified procedure declaration" - {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(IsPrincipalEoriKnownPage, false)
-              .success
-              .value
-            navigator
-              .nextPage(IsPrincipalEoriKnownPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.PrincipalNameController.onPageLoad(answers.id, NormalMode))
+          "must go from Principal eori page to Add consignor page" in {
+            forAll(genSimplifiedProcedureUserAnswers) {
+              answers =>
+                navigator
+                  .nextPage(WhatIsPrincipalEoriPage, NormalMode, answers)
+                  .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, NormalMode))
+            }
+          }
+
         }
-      }
 
-      "must go from Principal eori page to add consignor page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(WhatIsPrincipalEoriPage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.ConsignorForAllItemsController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Principal name page to Principal address page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(PrincipalNamePage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.PrincipalAddressController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Principal address page to Add consignor page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(PrincipalAddressPage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.ConsignorForAllItemsController.onPageLoad(answers.id, NormalMode))
-        }
       }
 
       "must go from Add consignor page to Is consignor eori known page when 'YES' is selected" in {
 
-        forAll(arbitrary[UserAnswers]) {
+        forAll(genUserAnswersWithProcedure) {
           answers =>
             val updatedAnswers = answers
-              .set(AddConsignorPage, true)
-              .success
-              .value
+              .unsafeSetVal(AddConsignorPage)(true)
+
             navigator
               .nextPage(AddConsignorPage, NormalMode, updatedAnswers)
               .mustBe(traderDetailsRoute.IsConsignorEoriKnownController.onPageLoad(answers.id, NormalMode))
@@ -106,59 +141,62 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
 
       "must go from Add consignor page to Add consignee page when 'NO' is selected" in {
 
-        forAll(arbitrary[UserAnswers]) {
+        forAll(genUserAnswersWithProcedure) {
           answers =>
             val updatedAnswers = answers
-              .set(AddConsignorPage, false)
-              .success
-              .value
+              .unsafeSetVal(AddConsignorPage)(false)
+
             navigator
               .nextPage(AddConsignorPage, NormalMode, updatedAnswers)
               .mustBe(traderDetailsRoute.ConsigneeForAllItemsController.onPageLoad(answers.id, NormalMode))
         }
       }
 
-      "must go from Is consignor eori known page to Consignor eori page when 'YES' is selected" in {
+      "when consignor eori is known" - {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(IsConsignorEoriKnownPage, true)
-              .success
-              .value
-            navigator
-              .nextPage(IsConsignorEoriKnownPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.ConsignorEoriController.onPageLoad(answers.id, NormalMode))
+        "must go from Is consignor eori known page to Consignor eori page when 'YES' is selected" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+
+              navigator
+                .nextPage(IsConsignorEoriKnownPage, NormalMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsignorEoriController.onPageLoad(answers.id, NormalMode))
+          }
         }
+
+        "must go from EORI Number page to Consignor Name page" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              navigator
+                .nextPage(ConsignorEoriPage, NormalMode, answers)
+                .mustBe(traderDetailsRoute.ConsignorNameController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
       }
 
-      "must go from Is consignor eori known page to Consignor name page when 'NO' is selected" in {
+      "when consignor eori is not known" - {
+        "must go from Is consignor eori known page to Consignor name page when 'NO' is selected" in {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(IsConsignorEoriKnownPage, false)
-              .success
-              .value
-            navigator
-              .nextPage(IsConsignorEoriKnownPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.ConsignorNameController.onPageLoad(answers.id, NormalMode))
-        }
-      }
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsignorEoriKnownPage)(false)
 
-      "must go from EORI Number page to Consignor Name page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(ConsignorEoriPage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.ConsignorNameController.onPageLoad(answers.id, NormalMode))
+              navigator
+                .nextPage(IsConsignorEoriKnownPage, NormalMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsignorNameController.onPageLoad(answers.id, NormalMode))
+          }
         }
       }
 
       "must go from Consignor name page to Consignor address page" in {
 
-        forAll(arbitrary[UserAnswers]) {
+        forAll(genUserAnswersWithProcedure) {
           answers =>
             navigator
               .nextPage(ConsignorNamePage, NormalMode, answers)
@@ -168,219 +206,161 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
 
       "must go from Consignor address page to Add consignee page" in {
 
-        forAll(arbitrary[UserAnswers]) {
+        forAll(genUserAnswersWithProcedure) {
           answers =>
             navigator
               .nextPage(ConsignorAddressPage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.ConsigneeForAllItemsController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Add consignee page to Is consignee eori known page when 'YES' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(AddConsigneePage, true)
-              .success
-              .value
-            navigator
-              .nextPage(AddConsigneePage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.IsConsigneeEoriKnownController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Add consignee page to Trader details cya page when 'NO' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(AddConsigneePage, false)
-              .success
-              .value
-            navigator
-              .nextPage(AddConsigneePage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
-        }
-      }
-
-      "must go from Is consignee eori known page to Consignee eori page when 'YES' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(IsConsigneeEoriKnownPage, true)
-              .success
-              .value
-            navigator
-              .nextPage(IsConsigneeEoriKnownPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.WhatIsConsigneeEoriController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Is consignee eori known page to Consignee name page when 'NO' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(IsConsigneeEoriKnownPage, false)
-              .success
-              .value
-            navigator
-              .nextPage(IsConsigneeEoriKnownPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from EORI Number page to Consignee Name page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(WhatIsConsigneeEoriPage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Consignee name page to Consignee address page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(ConsigneeNamePage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.ConsigneeAddressController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Consignee address page to Trader details cya page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(ConsigneeAddressPage, NormalMode, answers)
-              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
-        }
-      }
-
-      "must go from Consignor for all items page to Add a consignor page when 'NO' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(ConsignorForAllItemsPage, false)
-              .success
-              .value
-            navigator
-              .nextPage(ConsignorForAllItemsPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Consignor for all items page to Consignee for all items page when 'YES' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(ConsignorForAllItemsPage, true)
-              .success
-              .value
-            navigator
-              .nextPage(ConsignorForAllItemsPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.ConsigneeForAllItemsController.onPageLoad(answers.id, NormalMode))
-        }
-      }
-
-      "must go from Consignee for all items page to Add a consignee page when 'NO' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(ConsigneeForAllItemsPage, false)
-              .success
-              .value
-            navigator
-              .nextPage(ConsigneeForAllItemsPage, NormalMode, updatedAnswers)
               .mustBe(traderDetailsRoute.AddConsigneeController.onPageLoad(answers.id, NormalMode))
         }
       }
 
-      "must go from Consignee for all items page to CYA page when 'YES' is selected" in {
+      "when consignee eori is known" - {
+        "must go from Add consignee page to Is consignee eori known page when 'YES' is selected" in {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(ConsigneeForAllItemsPage, true)
-              .success
-              .value
-            navigator
-              .nextPage(ConsigneeForAllItemsPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsigneePage)(true)
+
+              navigator
+                .nextPage(AddConsigneePage, NormalMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.IsConsigneeEoriKnownController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Is consignee eori known page to Consignee eori page when 'YES' is selected" in {
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsigneeEoriKnownPage)(true)
+
+              navigator
+                .nextPage(IsConsigneeEoriKnownPage, NormalMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.WhatIsConsigneeEoriController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Is consignee eori known page to Consignee name page when 'NO' is selected" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsigneeEoriKnownPage)(false)
+
+              navigator
+                .nextPage(IsConsigneeEoriKnownPage, NormalMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from What Is Consignee Eori Page Number page to Consignee Name page" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              navigator
+                .nextPage(WhatIsConsigneeEoriPage, NormalMode, answers)
+                .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Consignee name page to Consignee address page" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              navigator
+                .nextPage(ConsigneeNamePage, NormalMode, answers)
+                .mustBe(traderDetailsRoute.ConsigneeAddressController.onPageLoad(answers.id, NormalMode))
+          }
+        }
+
+        "must go from Consignee address page to Trader details cya page" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              navigator
+                .nextPage(ConsigneeAddressPage, NormalMode, answers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+
+      }
+
+      "when consignee eori is not known" - {
+        "must go from Add consignee page to Trader details cya page when 'NO' is selected" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsigneePage)(false)
+
+              navigator
+                .nextPage(AddConsigneePage, NormalMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
         }
       }
     }
 
     "in Check mode" - {
 
-      "Must go from Is principal eori known page to What is principal eori page if the option selected is 'YES'" in {
+      "must go from Is principal eori known page " - {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(IsPrincipalEoriKnownPage, true)
-              .toOption
-              .value
-              .remove(WhatIsPrincipalEoriPage)
-              .toOption
-              .value
+        "to What is principal eori page if the option selected is 'YES', if it was not previously answered" in {
 
-            navigator
-              .nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.WhatIsPrincipalEoriController.onPageLoad(answers.id, CheckMode))
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                .unsafeRemove(WhatIsPrincipalEoriPage)
+
+              navigator
+                .nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.WhatIsPrincipalEoriController.onPageLoad(answers.id, CheckMode))
+          }
         }
-      }
 
-      "Must go from Is principal eori known page to What is principal's name page if the option selected is 'NO'" in {
+        "to Check Your Answers Page if the option selected is 'YES', if principal eori previously answered" in {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(IsPrincipalEoriKnownPage, false)
-              .toOption
-              .value
-              .remove(WhatIsPrincipalEoriPage)
-              .toOption
-              .value
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsPrincipalEoriPage)("principalEori")
 
-            navigator
-              .nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.PrincipalNameController.onPageLoad(answers.id, CheckMode))
+              navigator
+                .nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
         }
-      }
 
-      "must go from Principal name page to Check Your Answers page if Principal's Address previously answered" in {
+        "to What is principal's name page if the option selected is 'NO', if it was not previously answered" in {
 
-        forAll(arbitrary[UserAnswers], arbitrary[PrincipalAddress]) {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(false)
+                .unsafeRemove(PrincipalNamePage)
 
-          (answers, principalAddress) =>
-            val updatedAnswers =
-              answers.set(PrincipalAddressPage, principalAddress).success.value
-            navigator
-              .nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+              navigator
+                .nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.PrincipalNameController.onPageLoad(answers.id, CheckMode))
+          }
         }
-      }
 
-      "must go from Principal name page to Principals Address page if Principal's Address not previously answered" in {
+        "to Check Your Answers Page if the option selected is 'NO', if principal's name previously answered" in {
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers =
-              answers.remove(PrincipalAddressPage).success.value
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsPrincipalEoriKnownPage)(false)
+                .unsafeSetVal(PrincipalNamePage)("principalName")
 
-            navigator
-              .nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.PrincipalAddressController.onPageLoad(updatedAnswers.id, CheckMode))
+              navigator
+                .nextPage(IsPrincipalEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
         }
+
       }
 
       "must go from What is Principal's Eori page to Check Your Answers Page" in {
@@ -393,27 +373,130 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
       }
 
-      "must go from Consignor Eori Number page to" - {
-        "Consignor Name page when Consignor Name does not exist" in {
+      "must go from Principal name page" - {
+        "to Check Your Answers page if Principal's Address previously answered" in {
+
+          forAll(arbitrary[UserAnswers], arbitrary[PrincipalAddress]) {
+
+            (answers, principalAddress) =>
+              val updatedAnswers =
+                answers.unsafeSetVal(PrincipalAddressPage)(principalAddress)
+
+              navigator
+                .nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+
+        "to Principals Address page if Principal's Address not previously answered" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers =
+                answers.unsafeRemove(PrincipalAddressPage)
+
+              navigator
+                .nextPage(PrincipalNamePage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.PrincipalAddressController.onPageLoad(updatedAnswers.id, CheckMode))
+          }
+        }
+      }
+
+      "must go from Add consignor page" - {
+        "to Is consignor eori known page when 'YES' is selected, if it was not previously answered" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeRemove(IsConsignorEoriKnownPage)
+
+              navigator
+                .nextPage(AddConsignorPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.IsConsignorEoriKnownController.onPageLoad(answers.id, CheckMode))
+          }
+        }
+
+        "to Check Your Answers Page when 'YES' is selected, if is consignor eori was previously answered" in {
+
+          forAll(genUserAnswersWithProcedure, arbitrary[Boolean]) {
+            (answers, consignorEoriKnown) =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeSetVal(IsConsignorEoriKnownPage)(consignorEoriKnown)
+
+              navigator
+                .nextPage(AddConsignorPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+          }
+        }
+
+        "to Check Your Answers Page when 'NO' is selected" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsignorPage)(false)
+
+              navigator
+                .nextPage(AddConsignorPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+          }
+        }
+
+      }
+
+      "must go from Is consignor eori known page" - {
+        "to Consignor EORI Number page when 'YES' is selected, if it was not previously answered" in {
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+                .unsafeRemove(ConsignorEoriPage)
+
+              navigator
+                .nextPage(IsConsignorEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsignorEoriController.onPageLoad(answers.id, CheckMode))
+
+          }
+        }
+
+        "to Check Your Answers Page when 'YES' is selected, if Consignor EORI Number was previously answered" in {
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsignorEoriKnownPage)(true)
+                .unsafeSetVal(ConsignorEoriPage)("consignorEori")
+
+              navigator
+                .nextPage(IsConsignorEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+          }
+        }
+      }
+
+      "must go from Consignor Eori Number page" - {
+        "to Consignor Name page, if it was not previously answered" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .remove(ConsignorNamePage)
-                .success
-                .value
+                .unsafeRemove(ConsignorNamePage)
+
               navigator
                 .nextPage(ConsignorEoriPage, CheckMode, updatedAnswers)
                 .mustBe(traderDetailsRoute.ConsignorNameController.onPageLoad(answers.id, CheckMode))
           }
         }
 
-        "Check Your Answers page when Consignor Name exists" in {
+        "to Check Your Answers page when Consignor Name exists" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(ConsignorNamePage, "Davey Jones")
-                .success
-                .value
+                .unsafeSetVal(ConsignorNamePage)("Davey Jones")
+
               navigator
                 .nextPage(ConsignorEoriPage, CheckMode, updatedAnswers)
                 .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
@@ -421,101 +504,184 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
       }
 
-      "must go from Add consignor page to Is consignor eori known page when 'YES' is selected" in {
+      "must go from Consignor Name page" - {
+        "to Check Your Answers page, when Consignor Address exists" in {
+          forAll(arbitrary[UserAnswers], arbitrary[ConsignorAddress]) {
+            (answers, address) =>
+              val updatedAnswers = answers
+                .unsafeSetVal(ConsignorAddressPage)(address)
 
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(AddConsignorPage, true)
-              .success
-              .value
-            navigator
-              .nextPage(AddConsignorPage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.IsConsignorEoriKnownController.onPageLoad(answers.id, CheckMode))
+              navigator
+                .nextPage(ConsignorNamePage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
         }
-      }
 
-      "must go from Consignor for all items page to Add a consignor page when 'NO' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(ConsignorForAllItemsPage, false)
-              .success
-              .value
-            navigator
-              .nextPage(ConsignorForAllItemsPage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.AddConsignorController.onPageLoad(answers.id, CheckMode))
-        }
-      }
-
-      "must go from Consignor for all items page to CYA page when 'YES' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(ConsignorForAllItemsPage, true)
-              .success
-              .value
-            navigator
-              .nextPage(ConsignorForAllItemsPage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
-        }
-      }
-
-      "must go from Consignee for all items page to Add a consignee page when 'NO' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(ConsigneeForAllItemsPage, false)
-              .success
-              .value
-            navigator
-              .nextPage(ConsigneeForAllItemsPage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.AddConsigneeController.onPageLoad(answers.id, CheckMode))
-        }
-      }
-
-      "must go from Consignee for all items page to CYA page when 'YES' is selected" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            val updatedAnswers = answers
-              .set(ConsigneeForAllItemsPage, true)
-              .success
-              .value
-            navigator
-              .nextPage(ConsigneeForAllItemsPage, CheckMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
-        }
-      }
-
-      "must go from Consignee Eori Number page to" - {
-        "Consignee Name page when Consignee Name does not exist" in {
+        "to Consignor Address page, when Consignor Address does not exists" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .remove(ConsigneeNamePage)
-                .success
-                .value
+                .unsafeRemove(ConsignorAddressPage)
+
+              navigator
+                .nextPage(ConsignorNamePage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsignorAddressController.onPageLoad(answers.id, CheckMode))
+          }
+        }
+
+      }
+
+      "must go from Consignor Address page to Check Your Answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+
+            navigator
+              .nextPage(ConsignorAddressPage, CheckMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+        }
+      }
+
+      "must go from Add consignee page" - {
+        "to Is consignee eori known page when 'YES' is selected, if it was not previously answered" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsigneePage)(true)
+                .unsafeRemove(IsConsigneeEoriKnownPage)
+
+              navigator
+                .nextPage(AddConsigneePage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.IsConsigneeEoriKnownController.onPageLoad(answers.id, CheckMode))
+          }
+        }
+
+        "to Check Your Answers Page when 'YES' is selected, if is consignee eori was previously answered" in {
+
+          forAll(genUserAnswersWithProcedure, arbitrary[Boolean]) {
+            (answers, consigneeEoriKnown) =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsigneePage)(true)
+                .unsafeSetVal(IsConsigneeEoriKnownPage)(consigneeEoriKnown)
+
+              navigator
+                .nextPage(AddConsigneePage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+          }
+        }
+
+        "to Check Your Answers Page when 'NO' is selected" in {
+
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsigneePage)(false)
+
+              navigator
+                .nextPage(AddConsigneePage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+          }
+        }
+
+      }
+
+      "must go from Is consignee eori known page" - {
+        "to Consignee EORI Number page when 'YES' is selected, if it was not previously answered" in {
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsigneeEoriKnownPage)(true)
+                .unsafeRemove(WhatIsConsigneeEoriPage)
+
+              navigator
+                .nextPage(IsConsigneeEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.WhatIsConsigneeEoriController.onPageLoad(answers.id, CheckMode))
+
+          }
+        }
+
+        "to Check Your Answers Page when 'YES' is selected, if Consignee EORI Number was previously answered" in {
+          forAll(genUserAnswersWithProcedure) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsigneeEoriKnownPage)(true)
+                .unsafeSetVal(WhatIsConsigneeEoriPage)("consigneeEori")
+
+              navigator
+                .nextPage(IsConsigneeEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+
+          }
+        }
+      }
+
+      "must go from Consignee Eori Number page" - {
+        "to Consignee Name page, if it was not previously answered" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeRemove(ConsigneeNamePage)
+
               navigator
                 .nextPage(WhatIsConsigneeEoriPage, CheckMode, updatedAnswers)
                 .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, CheckMode))
           }
         }
 
-        "Check Your Answers page when Consignee Name exists" in {
+        "to Check Your Answers page when Consignee Name exists" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
-                .set(ConsigneeNamePage, "Davey Jones")
-                .success
-                .value
+                .unsafeSetVal(ConsigneeNamePage)("Davey Jones")
+
               navigator
                 .nextPage(WhatIsConsigneeEoriPage, CheckMode, updatedAnswers)
                 .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
+        }
+      }
+
+      "must go from Consignee Name page to Check Your Answers page" - {
+
+        "to Check Your Answers page, when Consignee Address exists" in {
+          forAll(arbitrary[UserAnswers], arbitrary[ConsigneeAddress]) {
+            (answers, address) =>
+              val updatedAnswers = answers
+                .unsafeSetVal(ConsigneeAddressPage)(address)
+
+              navigator
+                .nextPage(ConsigneeNamePage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+
+        }
+
+        "to Consignee Address page, when Consignee Address does not exists" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeRemove(ConsigneeAddressPage)
+
+              navigator
+                .nextPage(ConsigneeNamePage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsigneeAddressController.onPageLoad(answers.id, CheckMode))
+          }
+
+        }
+
+      }
+
+      "must go from Consignee Address page to Check Your Answers page" in {
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            val updatedAnswers = answers
+
+            navigator
+              .nextPage(ConsigneeAddressPage, CheckMode, updatedAnswers)
+              .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
         }
       }
     }

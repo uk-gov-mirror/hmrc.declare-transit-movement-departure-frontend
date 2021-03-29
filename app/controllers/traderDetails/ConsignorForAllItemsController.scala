@@ -33,6 +33,7 @@ import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@deprecated("TO DELETE", "NOW")
 class ConsignorForAllItemsController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
