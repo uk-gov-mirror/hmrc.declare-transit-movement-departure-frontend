@@ -19,9 +19,8 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import derivable.DeriveNumberOfGuarantees
 import forms.AddAnotherGuaranteeFormProvider
-import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
+import models.{DependentSection, Index, LocalReferenceNumber, NormalMode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.AddAnotherGuaranteePage
@@ -29,14 +28,13 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api
 import play.twirl.api.Html
 import renderer.Renderer
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.GuaranteeDetailsCheckYourAnswersHelper
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherGuaranteeController @Inject()(
@@ -45,6 +43,7 @@ class AddAnotherGuaranteeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: AddAnotherGuaranteeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -56,23 +55,31 @@ class AddAnotherGuaranteeController @Inject()(
   def allowMoreGuarantees(ua: UserAnswers): Boolean =
     ua.get(DeriveNumberOfGuarantees).getOrElse(0) < AddAnotherGuaranteePage.maxAllowedGuarantees
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      renderPage(lrn, formProvider(allowMoreGuarantees(request.userAnswers))).map(Ok(_))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
+      implicit request =>
+        renderPage(lrn, formProvider(allowMoreGuarantees(request.userAnswers))).map(Ok(_))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      formProvider(allowMoreGuarantees(request.userAnswers))
-        .bindFromRequest()
-        .fold(
-          formWithErrors => renderPage(lrn, formWithErrors).map(BadRequest(_)),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherGuaranteePage, value))
-            } yield Redirect(navigator.nextPage(AddAnotherGuaranteePage, NormalMode, updatedAnswers))
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
+      implicit request =>
+        formProvider(allowMoreGuarantees(request.userAnswers))
+          .bindFromRequest()
+          .fold(
+            formWithErrors => renderPage(lrn, formWithErrors).map(BadRequest(_)),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherGuaranteePage, value))
+              } yield Redirect(navigator.nextPage(AddAnotherGuaranteePage, NormalMode, updatedAnswers))
+          )
+    }
 
   private def renderPage(lrn: LocalReferenceNumber, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
 

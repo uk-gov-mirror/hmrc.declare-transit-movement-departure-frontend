@@ -18,8 +18,9 @@ package controllers.addItems.previousReferences
 
 import controllers.actions._
 import forms.ConfirmRemovePreviousAdministrativeReferenceFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.ConfirmRemovePreviousAdministrativeReferencePage
@@ -41,6 +42,7 @@ class ConfirmRemovePreviousAdministrativeReferenceController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: ConfirmRemovePreviousAdministrativeReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -53,7 +55,10 @@ class ConfirmRemovePreviousAdministrativeReferenceController @Inject()(
   private val template = "addItems/confirmRemovePreviousAdministrativeReference.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(ConfirmRemovePreviousAdministrativeReferencePage(index, referenceIndex)) match {
           case None        => form
@@ -73,7 +78,10 @@ class ConfirmRemovePreviousAdministrativeReferenceController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         form
           .bindFromRequest()

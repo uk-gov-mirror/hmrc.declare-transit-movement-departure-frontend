@@ -20,9 +20,10 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import derivable.DeriveNumberOfSpecialMentions
 import forms.addItems.specialMentions.AddAnotherSpecialMentionFormProvider
+
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.AddAnotherSpecialMentionPage
@@ -46,6 +47,7 @@ class AddAnotherSpecialMentionController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: AddAnotherSpecialMentionFormProvider,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
@@ -58,24 +60,32 @@ class AddAnotherSpecialMentionController @Inject()(
   private val form     = formProvider()
   private val template = "addItems/specialMentions/addAnotherSpecialMention.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      renderPage(lrn, itemIndex, form, mode).map(Ok(_))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        renderPage(lrn, itemIndex, form, mode).map(Ok(_))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => renderPage(lrn, itemIndex, formWithErrors, mode).map(BadRequest(_)),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSpecialMentionPage(itemIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAnotherSpecialMentionPage(itemIndex), mode, updatedAnswers))
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => renderPage(lrn, itemIndex, formWithErrors, mode).map(BadRequest(_)),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSpecialMentionPage(itemIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AddAnotherSpecialMentionPage(itemIndex), mode, updatedAnswers))
+          )
+    }
 
   private def renderPage(lrn: LocalReferenceNumber, itemIndex: Index, form: Form[Boolean], mode: Mode)(
     implicit request: DataRequest[AnyContent]): Future[Html] = {

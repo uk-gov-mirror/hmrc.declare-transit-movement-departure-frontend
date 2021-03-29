@@ -18,8 +18,9 @@ package controllers.addItems.traderSecurityDetails
 
 import controllers.actions._
 import forms.addItems.traderSecurityDetails.SecurityConsigneeEoriFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TradersSecurityDetails
 import pages.addItems.traderSecurityDetails.SecurityConsigneeEoriPage
@@ -40,6 +41,7 @@ class SecurityConsigneeEoriController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: SecurityConsigneeEoriFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -50,42 +52,50 @@ class SecurityConsigneeEoriController @Inject()(
 
   private val template = "addItems/traderSecurityDetails/securityConsigneeEori.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(SecurityConsigneeEoriPage(index)) match {
-        case None        => formProvider(index)
-        case Some(value) => formProvider(index).fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(SecurityConsigneeEoriPage(index)) match {
+          case None        => formProvider(index)
+          case Some(value) => formProvider(index).fill(value)
+        }
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      formProvider(index)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(SecurityConsigneeEoriPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(SecurityConsigneeEoriPage(index), mode, updatedAnswers))
+        val json = Json.obj(
+          "form" -> preparedForm,
+          "lrn"  -> lrn,
+          "mode" -> mode
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        formProvider(index)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form" -> formWithErrors,
+                "lrn"  -> lrn,
+                "mode" -> mode
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(SecurityConsigneeEoriPage(index), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(SecurityConsigneeEoriPage(index), mode, updatedAnswers))
+          )
+    }
 }

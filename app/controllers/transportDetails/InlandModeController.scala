@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.InlandModeFormProvider
 import javax.inject.Inject
 import models.reference.TransportMode
-import models.{LocalReferenceNumber, Mode}
+import models.{DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TransportDetails
 import pages.InlandModePage
@@ -44,6 +44,7 @@ class InlandModeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: InlandModeFormProvider,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
@@ -53,38 +54,46 @@ class InlandModeController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getTransportModes() flatMap {
-        transportModes =>
-          val form = formProvider(transportModes)
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
+      implicit request =>
+        referenceDataConnector.getTransportModes() flatMap {
+          transportModes =>
+            val form = formProvider(transportModes)
 
-          val preparedForm = request.userAnswers
-            .get(InlandModePage)
-            .flatMap(transportModes.getTransportMode)
-            .map(form.fill)
-            .getOrElse(form)
+            val preparedForm = request.userAnswers
+              .get(InlandModePage)
+              .flatMap(transportModes.getTransportMode)
+              .map(form.fill)
+              .getOrElse(form)
 
-          renderPage(lrn, mode, preparedForm, transportModes.transportModes, Results.Ok)
-      }
-  }
+            renderPage(lrn, mode, preparedForm, transportModes.transportModes, Results.Ok)
+        }
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getTransportModes() flatMap {
-        transportModes =>
-          formProvider(transportModes)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(InlandModePage, value.code))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(InlandModePage, mode, updatedAnswers))
-            )
-      }
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
+      implicit request =>
+        referenceDataConnector.getTransportModes() flatMap {
+          transportModes =>
+            formProvider(transportModes)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(InlandModePage, value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(InlandModePage, mode, updatedAnswers))
+              )
+        }
+    }
 
   private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[TransportMode], transportModes: Seq[TransportMode], status: Results.Status)(
     implicit request: Request[AnyContent]): Future[Result] = {

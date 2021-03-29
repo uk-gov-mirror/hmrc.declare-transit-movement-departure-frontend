@@ -18,8 +18,9 @@ package controllers.addItems.traderDetails
 
 import controllers.actions._
 import forms.addItems.traderDetails.TraderDetailsConsignorEoriKnownFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.traderDetails.TraderDetailsConsignorEoriKnownPage
@@ -40,6 +41,7 @@ class TraderDetailsConsignorEoriKnownController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: TraderDetailsConsignorEoriKnownFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -50,46 +52,54 @@ class TraderDetailsConsignorEoriKnownController @Inject()(
 
   private val template = "addItems/traderDetails/traderDetailsConsignorEoriKnown.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(TraderDetailsConsignorEoriKnownPage(index)) match {
-        case None        => formProvider(index)
-        case Some(value) => formProvider(index).fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(TraderDetailsConsignorEoriKnownPage(index)) match {
+          case None        => formProvider(index)
+          case Some(value) => formProvider(index).fill(value)
+        }
 
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "index"  -> index.display,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      formProvider(index)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "index"  -> index.display,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderDetailsConsignorEoriKnownPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TraderDetailsConsignorEoriKnownPage(index), mode, updatedAnswers))
+        val json = Json.obj(
+          "form"   -> preparedForm,
+          "mode"   -> mode,
+          "lrn"    -> lrn,
+          "index"  -> index.display,
+          "radios" -> Radios.yesNo(preparedForm("value"))
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        formProvider(index)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"   -> formWithErrors,
+                "mode"   -> mode,
+                "lrn"    -> lrn,
+                "index"  -> index.display,
+                "radios" -> Radios.yesNo(formWithErrors("value"))
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderDetailsConsignorEoriKnownPage(index), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(TraderDetailsConsignorEoriKnownPage(index), mode, updatedAnswers))
+          )
+    }
 }

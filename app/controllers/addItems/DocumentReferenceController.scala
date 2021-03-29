@@ -18,8 +18,9 @@ package controllers.addItems
 
 import controllers.actions._
 import forms.addItems.DocumentReferenceFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.Document
 import pages.addItems.DocumentReferencePage
@@ -40,6 +41,7 @@ class DocumentReferenceController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: DocumentReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -51,7 +53,10 @@ class DocumentReferenceController @Inject()(
   private val template = "addItems/documentReference.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(DocumentReferencePage(itemIndex, documentIndex)) match {
           case None        => formProvider(itemIndex)
@@ -68,7 +73,10 @@ class DocumentReferenceController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         formProvider(itemIndex)
           .bindFromRequest()

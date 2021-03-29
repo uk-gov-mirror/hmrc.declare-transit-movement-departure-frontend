@@ -18,8 +18,9 @@ package controllers.addItems
 
 import controllers.actions._
 import forms.addItems.AddTotalNetMassFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.AddTotalNetMassPage
@@ -40,6 +41,7 @@ class AddTotalNetMassController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: AddTotalNetMassFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -48,46 +50,54 @@ class AddTotalNetMassController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AddTotalNetMassPage(index)) match {
-        case None        => formProvider(index: Index)
-        case Some(value) => formProvider(index: Index).fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AddTotalNetMassPage(index)) match {
+          case None        => formProvider(index: Index)
+          case Some(value) => formProvider(index: Index).fill(value)
+        }
 
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "index"  -> index.display,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render("addTotalNetMass.njk", json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      formProvider(index: Index)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "index"  -> index.display,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render("addTotalNetMass.njk", json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTotalNetMassPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddTotalNetMassPage(index), mode, updatedAnswers))
+        val json = Json.obj(
+          "form"   -> preparedForm,
+          "mode"   -> mode,
+          "lrn"    -> lrn,
+          "index"  -> index.display,
+          "radios" -> Radios.yesNo(preparedForm("value"))
         )
-  }
+
+        renderer.render("addTotalNetMass.njk", json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        formProvider(index: Index)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"   -> formWithErrors,
+                "mode"   -> mode,
+                "lrn"    -> lrn,
+                "index"  -> index.display,
+                "radios" -> Radios.yesNo(formWithErrors("value"))
+              )
+
+              renderer.render("addTotalNetMass.njk", json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddTotalNetMassPage(index), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AddTotalNetMassPage(index), mode, updatedAnswers))
+          )
+    }
 }

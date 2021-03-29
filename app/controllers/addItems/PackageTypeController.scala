@@ -19,9 +19,10 @@ package controllers.addItems
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.addItems.PackageTypeFormProvider
+
 import javax.inject.Inject
 import models.reference.PackageType
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.PackageTypePage
@@ -43,6 +44,7 @@ class PackageTypeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer,
   @AddItems navigator: Navigator,
@@ -54,7 +56,10 @@ class PackageTypeController @Inject()(
     with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getPackageTypes().flatMap {
           packageTypes =>
@@ -78,7 +83,10 @@ class PackageTypeController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getPackageTypes().flatMap {
           packageTypes =>
