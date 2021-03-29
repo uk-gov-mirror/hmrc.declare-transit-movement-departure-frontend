@@ -31,7 +31,7 @@ private[viewModels] class TaskListDslCollectSectionName(userAnswers: UserAnswers
 
 private[viewModels] class TaskListDslSectionNameStage(userAnswers: UserAnswers)(sectionName: String) {
 
-  def ifNotDependentOnOtherSectionCompletion[A, B]: TaskListDslIfDependentSectionStage[A] =
+  def ifNoDependencyOnOtherSection[A, B]: TaskListDslIfDependentSectionStage[A] =
     new TaskListDslIfDependentSectionStage[A](userAnswers)(sectionName, None)
 
   def ifDependentSectionCompleted[A, B](readerIfDependentSectionCompleted: UserAnswersReader[A]): TaskListDslIfDependentSectionStage[A] =

@@ -19,7 +19,7 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber}
+import models.{DependentSections, Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,21 +35,26 @@ class GuaranteeDetailsCheckYourAnswersController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val sections: Seq[Section] = GuaranteeDetailsCheckYourAnswersViewModel(request.userAnswers, index).sections
-      val json = Json.obj(
-        "lrn"      -> lrn,
-        "sections" -> Json.toJson(sections),
-        "nextPage" -> routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
-      )
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      implicit request =>
+        val sections: Seq[Section] = GuaranteeDetailsCheckYourAnswersViewModel(request.userAnswers, index).sections
+        val json = Json.obj(
+          "lrn"      -> lrn,
+          "sections" -> Json.toJson(sections),
+          "nextPage" -> routes.AddAnotherGuaranteeController.onPageLoad(lrn).url
+        )
 
-      renderer.render("guaranteeDetailsCheckYourAnswers.njk", json).map(Ok(_))
-  }
+        renderer.render("guaranteeDetailsCheckYourAnswers.njk", json).map(Ok(_))
+    }
 }

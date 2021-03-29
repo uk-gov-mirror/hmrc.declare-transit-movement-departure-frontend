@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.ModeCrossingBorderFormProvider
 import javax.inject.Inject
 import models.reference.TransportMode
-import models.{LocalReferenceNumber, Mode}
+import models.{DependentSections, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TransportDetails
 import pages.ModeCrossingBorderPage
@@ -44,6 +44,7 @@ class ModeCrossingBorderController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: ModeCrossingBorderFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer,
@@ -53,40 +54,48 @@ class ModeCrossingBorderController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getTransportModes() flatMap {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      implicit request =>
+        referenceDataConnector.getTransportModes() flatMap {
 
-        transportModes =>
-          val form = formProvider(transportModes)
+          transportModes =>
+            val form = formProvider(transportModes)
 
-          val preparedForm = request.userAnswers
-            .get(ModeCrossingBorderPage)
-            .flatMap(transportModes.getTransportMode)
-            .map(form.fill)
-            .getOrElse(form)
+            val preparedForm = request.userAnswers
+              .get(ModeCrossingBorderPage)
+              .flatMap(transportModes.getTransportMode)
+              .map(form.fill)
+              .getOrElse(form)
 
-          renderPage(lrn, mode, preparedForm, transportModes.transportModes, Results.Ok)
-      }
-  }
+            renderPage(lrn, mode, preparedForm, transportModes.transportModes, Results.Ok)
+        }
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getTransportModes() flatMap {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      implicit request =>
+        referenceDataConnector.getTransportModes() flatMap {
 
-        transportModes =>
-          formProvider(transportModes)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ModeCrossingBorderPage, value.code))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(ModeCrossingBorderPage, mode, updatedAnswers))
-            )
-      }
-  }
+          transportModes =>
+            formProvider(transportModes)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => renderPage(lrn, mode, formWithErrors, transportModes.transportModes, Results.BadRequest),
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(ModeCrossingBorderPage, value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(ModeCrossingBorderPage, mode, updatedAnswers))
+              )
+        }
+    }
 
   def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[TransportMode], transportModes: Seq[TransportMode], status: Results.Status)(
     implicit request: Request[AnyContent]): Future[Result] = {

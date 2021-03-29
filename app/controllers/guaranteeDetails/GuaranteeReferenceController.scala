@@ -21,7 +21,7 @@ import forms.guaranteeDetails.GuaranteeReferenceFormProvider
 import javax.inject.Inject
 import models.GuaranteeType.FlatRateVoucher
 import models.messages.guarantee.GuaranteeReferenceWithGrn
-import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{DependentSections, Index, LocalReferenceNumber, Mode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
@@ -42,6 +42,7 @@ class GuaranteeReferenceController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: GuaranteeReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -51,7 +52,10 @@ class GuaranteeReferenceController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.routeDetails)).async {
       implicit request =>
         val lengthGRN: Int = grnMaxLengthValue(request.userAnswers, index)
         val preparedForm = request.userAnswers.get(GuaranteeReferencePage(index)) match {
@@ -70,7 +74,10 @@ class GuaranteeReferenceController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.routeDetails)).async {
       implicit request =>
         val grnMaxLength: Int = grnMaxLengthValue(request.userAnswers, index)
         formProvider(grnMaxLength)

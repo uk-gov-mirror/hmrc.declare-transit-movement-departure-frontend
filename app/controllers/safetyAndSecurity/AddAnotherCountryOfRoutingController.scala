@@ -18,26 +18,25 @@ package controllers.safetyAndSecurity
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
+import derivable.DeriveNumberOfCountryOfRouting
 import forms.safetyAndSecurity.AddAnotherCountryOfRoutingFormProvider
-import javax.inject.Inject
-import models.{CountryList, Index, LocalReferenceNumber, Mode}
+import models.requests.DataRequest
+import models.{DependentSections, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.AddAnotherCountryOfRoutingPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
-import derivable.DeriveNumberOfCountryOfRouting
-import models.reference.Country
-import models.requests.DataRequest
-import play.api.data.Form
-import play.twirl.api.Html
-import utils.{countryJsonList, SafetyAndSecurityCheckYourAnswerHelper}
+import utils.SafetyAndSecurityCheckYourAnswerHelper
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherCountryOfRoutingController @Inject()(
@@ -47,6 +46,7 @@ class AddAnotherCountryOfRoutingController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   referenceDataConnector: ReferenceDataConnector,
   formProvider: AddAnotherCountryOfRoutingFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -60,24 +60,31 @@ class AddAnotherCountryOfRoutingController @Inject()(
   private val template = "safetyAndSecurity/addAnotherCountryOfRouting.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.transportDetails)).async {
       implicit request =>
         renderPage(lrn, form, mode).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => renderPage(lrn, formWithErrors, mode).map(BadRequest(_)),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherCountryOfRoutingPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAnotherCountryOfRoutingPage, mode, updatedAnswers))
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => renderPage(lrn, formWithErrors, mode).map(BadRequest(_)),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherCountryOfRoutingPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AddAnotherCountryOfRoutingPage, mode, updatedAnswers))
+          )
+    }
 
   private def renderPage(lrn: LocalReferenceNumber, form: Form[Boolean], mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Html] = {
 

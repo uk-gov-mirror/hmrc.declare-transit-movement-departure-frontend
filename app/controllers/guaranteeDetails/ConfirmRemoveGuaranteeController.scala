@@ -19,7 +19,7 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import forms.ConfirmRemoveGuaranteeFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode, NormalMode}
+import models.{DependentSections, Index, LocalReferenceNumber, Mode, NormalMode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.ConfirmRemoveGuaranteePage
@@ -41,6 +41,7 @@ class ConfirmRemoveGuaranteeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: ConfirmRemoveGuaranteeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -52,46 +53,54 @@ class ConfirmRemoveGuaranteeController @Inject()(
   private val form     = formProvider()
   private val template = "guaranteeDetails/confirmRemoveGuarantee.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val json = Json.obj(
-        "form"   -> form,
-        "index"  -> index.display,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "index"  -> index.display,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            Future.fromTry(request.userAnswers.set(ConfirmRemoveGuaranteePage, value)).flatMap {
-              updatedAnswers =>
-                if (value) {
-                  for {
-                    deletedAnswers <- Future.fromTry(updatedAnswers.remove(GuaranteesQuery(index)))
-                    _              <- sessionRepository.set(deletedAnswers)
-                  } yield Redirect(navigator.nextPage(ConfirmRemoveGuaranteePage, NormalMode, deletedAnswers))
-                } else {
-                  Future.successful(Redirect(navigator.nextPage(ConfirmRemoveGuaranteePage, NormalMode, updatedAnswers)))
-                }
-          }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      implicit request =>
+        val json = Json.obj(
+          "form"   -> form,
+          "index"  -> index.display,
+          "lrn"    -> lrn,
+          "radios" -> Radios.yesNo(form("value"))
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"   -> formWithErrors,
+                "index"  -> index.display,
+                "lrn"    -> lrn,
+                "radios" -> Radios.yesNo(formWithErrors("value"))
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              Future.fromTry(request.userAnswers.set(ConfirmRemoveGuaranteePage, value)).flatMap {
+                updatedAnswers =>
+                  if (value) {
+                    for {
+                      deletedAnswers <- Future.fromTry(updatedAnswers.remove(GuaranteesQuery(index)))
+                      _              <- sessionRepository.set(deletedAnswers)
+                    } yield Redirect(navigator.nextPage(ConfirmRemoveGuaranteePage, NormalMode, deletedAnswers))
+                  } else {
+                    Future.successful(Redirect(navigator.nextPage(ConfirmRemoveGuaranteePage, NormalMode, updatedAnswers)))
+                  }
+            }
+          )
+    }
 }

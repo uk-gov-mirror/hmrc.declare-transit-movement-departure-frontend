@@ -19,12 +19,10 @@ package controllers.safetyAndSecurity
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.safetyAndSecurity.TransportChargesPaymentMethodFormProvider
-import javax.inject.Inject
 import models.reference.MethodOfPayment
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSections, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
-import pages.addItems.securityDetails.TransportChargesPage
 import pages.safetyAndSecurity.TransportChargesPaymentMethodPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,6 +34,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import utils.getPaymentsAsJson
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportChargesPaymentMethodController @Inject()(
@@ -45,6 +44,7 @@ class TransportChargesPaymentMethodController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   referenceDataConnector: ReferenceDataConnector,
   formProvider: TransportChargesPaymentMethodFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -56,55 +56,63 @@ class TransportChargesPaymentMethodController @Inject()(
 
   private val template = "safetyAndSecurity/transportChargesPaymentMethod.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getMethodOfPaymentList() flatMap {
-        payments =>
-          val form: Form[MethodOfPayment] = formProvider(payments)
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      implicit request =>
+        referenceDataConnector.getMethodOfPaymentList() flatMap {
+          payments =>
+            val form: Form[MethodOfPayment] = formProvider(payments)
 
-          val preparedForm = request.userAnswers
-            .get(TransportChargesPaymentMethodPage)
-            .flatMap(payments.getMethodOfPayment)
-            .map(form.fill)
-            .getOrElse(form)
+            val preparedForm = request.userAnswers
+              .get(TransportChargesPaymentMethodPage)
+              .flatMap(payments.getMethodOfPayment)
+              .map(form.fill)
+              .getOrElse(form)
 
-          val json = Json.obj(
-            "form"     -> preparedForm,
-            "payments" -> getPaymentsAsJson(preparedForm.value, payments.methodsOfPayment),
-            "lrn"      -> lrn,
-            "mode"     -> mode
-          )
-
-          renderer.render(template, json).map(Ok(_))
-      }
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getMethodOfPaymentList() flatMap {
-        payments =>
-          val form = formProvider(payments)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => {
-
-                val json = Json.obj(
-                  "form"     -> formWithErrors,
-                  "payments" -> getPaymentsAsJson(form.value, payments.methodsOfPayment),
-                  "lrn"      -> lrn,
-                  "mode"     -> mode
-                )
-
-                renderer.render(template, json).map(BadRequest(_))
-              },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportChargesPaymentMethodPage, value.code))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(TransportChargesPaymentMethodPage, mode, updatedAnswers))
+            val json = Json.obj(
+              "form"     -> preparedForm,
+              "payments" -> getPaymentsAsJson(preparedForm.value, payments.methodsOfPayment),
+              "lrn"      -> lrn,
+              "mode"     -> mode
             )
-      }
-  }
+
+            renderer.render(template, json).map(Ok(_))
+        }
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      implicit request =>
+        referenceDataConnector.getMethodOfPaymentList() flatMap {
+          payments =>
+            val form = formProvider(payments)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => {
+
+                  val json = Json.obj(
+                    "form"     -> formWithErrors,
+                    "payments" -> getPaymentsAsJson(form.value, payments.methodsOfPayment),
+                    "lrn"      -> lrn,
+                    "mode"     -> mode
+                  )
+
+                  renderer.render(template, json).map(BadRequest(_))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportChargesPaymentMethodPage, value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(TransportChargesPaymentMethodPage, mode, updatedAnswers))
+              )
+        }
+    }
 
 }

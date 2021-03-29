@@ -20,7 +20,7 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.LocalReferenceNumber
+import models.{DependentSections, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,6 +36,7 @@ class TransportDetailsCheckYourAnswersController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   val controllerComponents: MessagesControllerComponents,
   referenceDataConnector: ReferenceDataConnector,
   renderer: Renderer
@@ -43,22 +44,26 @@ class TransportDetailsCheckYourAnswersController @Inject()(
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCountryList().flatMap {
-        countryList =>
-          referenceDataConnector.getTransportModes().flatMap {
-            transportModeList =>
-              val sections: Seq[Section] = TransportDetailsCheckYourAnswersViewModel(request.userAnswers, countryList, transportModeList).sections
-              val json = Json.obj(
-                "lrn"         -> lrn,
-                "sections"    -> Json.toJson(sections),
-                "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
-              )
+  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      implicit request =>
+        referenceDataConnector.getCountryList().flatMap {
+          countryList =>
+            referenceDataConnector.getTransportModes().flatMap {
+              transportModeList =>
+                val sections: Seq[Section] = TransportDetailsCheckYourAnswersViewModel(request.userAnswers, countryList, transportModeList).sections
+                val json = Json.obj(
+                  "lrn"         -> lrn,
+                  "sections"    -> Json.toJson(sections),
+                  "nextPageUrl" -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+                )
 
-              renderer.render("transportDetailsCheckYourAnswers.njk", json).map(Ok(_))
+                renderer.render("transportDetailsCheckYourAnswers.njk", json).map(Ok(_))
 
-          }
-      }
-  }
+            }
+        }
+    }
 }

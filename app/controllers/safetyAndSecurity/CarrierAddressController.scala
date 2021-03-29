@@ -22,7 +22,7 @@ import controllers.{routes => mainRoutes}
 import forms.safetyAndSecurity.CarrierAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
-import models.{LocalReferenceNumber, Mode}
+import models.{DependentSections, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurityTraderDetails
 import pages.safetyAndSecurity.{CarrierAddressPage, CarrierNamePage}
@@ -45,6 +45,7 @@ class CarrierAddressController @Inject()(
   referenceDataConnector: ReferenceDataConnector,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: CarrierAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -55,66 +56,74 @@ class CarrierAddressController @Inject()(
 
   private val template = "safetyAndSecurity/carrierAddress.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCountryList() flatMap {
-        countries =>
-          request.userAnswers.get(CarrierNamePage) match {
-            case Some(carrierName) =>
-              val preparedForm = request.userAnswers.get(CarrierAddressPage) match {
-                case Some(value) => formProvider(countries).fill(value)
-                case None        => formProvider(countries)
-              }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      implicit request =>
+        referenceDataConnector.getCountryList() flatMap {
+          countries =>
+            request.userAnswers.get(CarrierNamePage) match {
+              case Some(carrierName) =>
+                val preparedForm = request.userAnswers.get(CarrierAddressPage) match {
+                  case Some(value) => formProvider(countries).fill(value)
+                  case None        => formProvider(countries)
+                }
 
-              val json = Json.obj(
-                "form"        -> preparedForm,
-                "carrierName" -> carrierName,
-                "lrn"         -> lrn,
-                "mode"        -> mode,
-                "countries"   -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
-              )
-
-              renderer.render(template, json).map(Ok(_))
-            case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
-
-          }
-      }
-
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      request.userAnswers.get(CarrierNamePage) match {
-        case Some(carrierName) =>
-          referenceDataConnector.getCountryList() flatMap {
-            countries =>
-              formProvider(countries)
-                .bindFromRequest()
-                .fold(
-                  formWithErrors => {
-                    val countryValue: Option[Country] = formWithErrors.data.get("country").flatMap {
-                      country =>
-                        countries.getCountry(CountryCode(country))
-                    }
-                    val json = Json.obj(
-                      "form"        -> formWithErrors,
-                      "lrn"         -> lrn,
-                      "mode"        -> mode,
-                      "carrierName" -> carrierName,
-                      "countries"   -> countryJsonList(countryValue, countries.fullList)
-                    )
-
-                    renderer.render(template, json).map(BadRequest(_))
-                  },
-                  value =>
-                    for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(CarrierAddressPage, value))
-                      _              <- sessionRepository.set(updatedAnswers)
-                    } yield Redirect(navigator.nextPage(CarrierAddressPage, mode, updatedAnswers))
+                val json = Json.obj(
+                  "form"        -> preparedForm,
+                  "carrierName" -> carrierName,
+                  "lrn"         -> lrn,
+                  "mode"        -> mode,
+                  "countries"   -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
                 )
-          }
-        case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
 
-      }
-  }
+                renderer.render(template, json).map(Ok(_))
+              case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
+
+            }
+        }
+
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      implicit request =>
+        request.userAnswers.get(CarrierNamePage) match {
+          case Some(carrierName) =>
+            referenceDataConnector.getCountryList() flatMap {
+              countries =>
+                formProvider(countries)
+                  .bindFromRequest()
+                  .fold(
+                    formWithErrors => {
+                      val countryValue: Option[Country] = formWithErrors.data.get("country").flatMap {
+                        country =>
+                          countries.getCountry(CountryCode(country))
+                      }
+                      val json = Json.obj(
+                        "form"        -> formWithErrors,
+                        "lrn"         -> lrn,
+                        "mode"        -> mode,
+                        "carrierName" -> carrierName,
+                        "countries"   -> countryJsonList(countryValue, countries.fullList)
+                      )
+
+                      renderer.render(template, json).map(BadRequest(_))
+                    },
+                    value =>
+                      for {
+                        updatedAnswers <- Future.fromTry(request.userAnswers.set(CarrierAddressPage, value))
+                        _              <- sessionRepository.set(updatedAnswers)
+                      } yield Redirect(navigator.nextPage(CarrierAddressPage, mode, updatedAnswers))
+                  )
+            }
+          case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
+
+        }
+    }
 }

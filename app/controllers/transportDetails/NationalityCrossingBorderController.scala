@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.NationalityCrossingBorderFormProvider
 import javax.inject.Inject
 import models.reference.Country
-import models.{LocalReferenceNumber, Mode}
+import models.{DependentSections, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TransportDetails
 import pages.NationalityCrossingBorderPage
@@ -44,6 +44,7 @@ class NationalityCrossingBorderController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   referenceDataConnector: ReferenceDataConnector,
   formProvider: NationalityCrossingBorderFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -53,38 +54,46 @@ class NationalityCrossingBorderController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCountryList() flatMap {
-        countries =>
-          val form = formProvider(countries)
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      implicit request =>
+        referenceDataConnector.getCountryList() flatMap {
+          countries =>
+            val form = formProvider(countries)
 
-          val preparedForm = request.userAnswers
-            .get(NationalityCrossingBorderPage)
-            .flatMap(countries.getCountry)
-            .map(form.fill)
-            .getOrElse(form)
+            val preparedForm = request.userAnswers
+              .get(NationalityCrossingBorderPage)
+              .flatMap(countries.getCountry)
+              .map(form.fill)
+              .getOrElse(form)
 
-          renderPage(lrn, mode, preparedForm, countries.fullList, Results.Ok)
-      }
-  }
+            renderPage(lrn, mode, preparedForm, countries.fullList, Results.Ok)
+        }
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCountryList() flatMap {
-        countries =>
-          formProvider(countries)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList, Results.BadRequest),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityCrossingBorderPage, value.code))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(NationalityCrossingBorderPage, mode, updatedAnswers))
-            )
-      }
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      implicit request =>
+        referenceDataConnector.getCountryList() flatMap {
+          countries =>
+            formProvider(countries)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList, Results.BadRequest),
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalityCrossingBorderPage, value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(NationalityCrossingBorderPage, mode, updatedAnswers))
+              )
+        }
+    }
 
   private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
     implicit request: Request[AnyContent]): Future[Result] = {

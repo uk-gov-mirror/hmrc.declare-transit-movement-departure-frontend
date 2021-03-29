@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.safetyAndSecurity.CircumstanceIndicatorFormProvider
 import javax.inject.Inject
 import models.reference.CircumstanceIndicator
-import models.{CircumstanceIndicatorList, LocalReferenceNumber, Mode}
+import models.{CircumstanceIndicatorList, DependentSections, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.CircumstanceIndicatorPage
@@ -45,6 +45,7 @@ class CircumstanceIndicatorController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: CircumstanceIndicatorFormProvider,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
@@ -56,38 +57,46 @@ class CircumstanceIndicatorController @Inject()(
 
   private val template = "safetyAndSecurity/circumstanceIndicator.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCircumstanceIndicatorList() flatMap {
-        indicators =>
-          val form = formProvider(indicators)
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      implicit request =>
+        referenceDataConnector.getCircumstanceIndicatorList() flatMap {
+          indicators =>
+            val form = formProvider(indicators)
 
-          val preparedForm = request.userAnswers
-            .get(CircumstanceIndicatorPage)
-            .flatMap(indicators.getCircumstanceIndicator)
-            .map(form.fill)
-            .getOrElse(form)
+            val preparedForm = request.userAnswers
+              .get(CircumstanceIndicatorPage)
+              .flatMap(indicators.getCircumstanceIndicator)
+              .map(form.fill)
+              .getOrElse(form)
 
-          renderPage(lrn, mode, preparedForm, indicators).map(Ok(_))
-      }
-  }
+            renderPage(lrn, mode, preparedForm, indicators).map(Ok(_))
+        }
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCircumstanceIndicatorList() flatMap {
-        indicatorList =>
-          formProvider(indicatorList)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => renderPage(lrn, mode, formWithErrors, indicatorList).map(BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(CircumstanceIndicatorPage, value.code))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(CircumstanceIndicatorPage, mode, updatedAnswers))
-            )
-      }
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      implicit request =>
+        referenceDataConnector.getCircumstanceIndicatorList() flatMap {
+          indicatorList =>
+            formProvider(indicatorList)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => renderPage(lrn, mode, formWithErrors, indicatorList).map(BadRequest(_)),
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(CircumstanceIndicatorPage, value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(CircumstanceIndicatorPage, mode, updatedAnswers))
+              )
+        }
+    }
 
   private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[CircumstanceIndicator], circumstanceIndicatorList: CircumstanceIndicatorList)(
     implicit request: Request[AnyContent]): Future[Html] = {
