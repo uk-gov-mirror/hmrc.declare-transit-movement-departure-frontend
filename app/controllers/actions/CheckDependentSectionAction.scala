@@ -17,6 +17,7 @@
 package controllers.actions
 
 import controllers.routes
+import logging.Logging
 import models.DependentSection
 import models.journeyDomain.UserAnswersReader
 import models.requests.DataRequest
@@ -27,12 +28,14 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDependentSectionCompletionAction(val dependentSection: DependentSection, implicit val executionContext: ExecutionContext)
-    extends ActionFilter[DataRequest] {
+    extends ActionFilter[DataRequest]
+    with Logging {
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
     val reader: UserAnswersReader[_] = DependentSection.dependentSectionReader(dependentSection, request.userAnswers)
     if (reader.run(request.userAnswers).isDefined) {
       Future.successful(None)
     } else {
+      logger.info(s"User is redirected to 'task-list' page when trying to access the URL: ${request.request.path}")
       Future.successful(Some(Redirect(routes.DeclarationSummaryController.onPageLoad(request.userAnswers.id))))
     }
   }
