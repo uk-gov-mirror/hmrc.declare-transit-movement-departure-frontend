@@ -50,4 +50,5 @@ trait RenderConfig {
   def countdownSeconds: String
   def contactFormServiceIdentifier: String
   def contactHost: String
+
 }
