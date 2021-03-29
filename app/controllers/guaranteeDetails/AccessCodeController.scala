@@ -18,7 +18,7 @@ package controllers.guaranteeDetails
 
 import controllers.actions._
 import forms.AccessCodeFormProvider
-import models.{DependentSections, Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.AccessCodePage
@@ -34,18 +34,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AccessCodeController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      sessionRepository: SessionRepository,
-                                      @GuaranteeDetails navigator: Navigator,
-                                      identify: IdentifierAction,
-                                      getData: DataRetrievalActionProvider,
-                                      requireData: DataRequiredAction,
-                                      checkDependentSection: CheckDependentSectionAction,
-                                      formProvider: AccessCodeFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      renderer: Renderer
-                                    )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  @GuaranteeDetails navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
+  formProvider: AccessCodeFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  renderer: Renderer
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
 
@@ -55,16 +55,16 @@ class AccessCodeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(AccessCodePage(index)) match {
-          case None => form
+          case None        => form
           case Some(value) => form.fill(value)
         }
 
         val json = Json.obj(
           "form" -> preparedForm,
-          "lrn" -> lrn,
+          "lrn"  -> lrn,
           "mode" -> mode
         )
 
@@ -75,7 +75,7 @@ class AccessCodeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         form
           .bindFromRequest()
@@ -84,7 +84,7 @@ class AccessCodeController @Inject()(
 
               val json = Json.obj(
                 "form" -> formWithErrors,
-                "lrn" -> lrn,
+                "lrn"  -> lrn,
                 "mode" -> mode
               )
 
@@ -93,7 +93,7 @@ class AccessCodeController @Inject()(
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(AccessCodePage(index), value))
-                _ <- sessionRepository.set(updatedAnswers)
+                _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(AccessCodePage(index), mode, updatedAnswers))
           )
     }

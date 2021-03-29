@@ -19,7 +19,7 @@ package controllers.transportDetails
 import controllers.actions._
 import forms.ChangeAtBorderFormProvider
 import javax.inject.Inject
-import models.{DependentSections, LocalReferenceNumber, Mode}
+import models.{DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.ChangeAtBorderPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -55,7 +55,7 @@ class ChangeAtBorderController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(ChangeAtBorderPage) match {
           case None        => form
@@ -76,7 +76,7 @@ class ChangeAtBorderController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
       implicit request =>
         form
           .bindFromRequest()

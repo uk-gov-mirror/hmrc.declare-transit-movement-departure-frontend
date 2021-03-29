@@ -21,7 +21,7 @@ import controllers.actions._
 import derivable.DeriveNumberOfCountryOfRouting
 import forms.safetyAndSecurity.AddAnotherCountryOfRoutingFormProvider
 import models.requests.DataRequest
-import models.{DependentSections, Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.AddAnotherCountryOfRoutingPage
@@ -63,7 +63,7 @@ class AddAnotherCountryOfRoutingController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         renderPage(lrn, form, mode).map(Ok(_))
     }
@@ -72,7 +72,7 @@ class AddAnotherCountryOfRoutingController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         form
           .bindFromRequest()

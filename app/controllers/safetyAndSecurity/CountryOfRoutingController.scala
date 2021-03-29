@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.safetyAndSecurity.CountryOfRoutingFormProvider
 import javax.inject.Inject
 import models.reference.Country
-import models.{DependentSections, Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.CountryOfRoutingPage
@@ -61,7 +61,7 @@ class CountryOfRoutingController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         referenceDataConnector.getCountryList() flatMap {
           countries =>
@@ -81,7 +81,7 @@ class CountryOfRoutingController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         referenceDataConnector.getCountryList() flatMap {
           countries =>

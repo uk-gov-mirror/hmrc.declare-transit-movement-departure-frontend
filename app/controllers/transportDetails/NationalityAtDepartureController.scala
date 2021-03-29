@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.NationalityAtDepartureFormProvider
 import javax.inject.Inject
 import models.reference.Country
-import models.{DependentSections, LocalReferenceNumber, Mode}
+import models.{DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.NationalityAtDeparturePage
 import play.api.data.Form
@@ -58,7 +58,7 @@ class NationalityAtDepartureController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
       implicit request =>
         referenceDataConnector.getCountryList() flatMap {
           countries =>
@@ -78,7 +78,7 @@ class NationalityAtDepartureController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
       implicit request =>
         referenceDataConnector.getCountryList() flatMap {
           countries =>

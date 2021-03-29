@@ -18,7 +18,7 @@ package controllers.transportDetails
 
 import controllers.actions._
 import forms.AddNationalityAtDepartureFormProvider
-import models.{DependentSections, LocalReferenceNumber, Mode}
+import models.{DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TransportDetails
 import pages.AddNationalityAtDeparturePage
@@ -55,7 +55,7 @@ class AddNationalityAtDepartureController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(AddNationalityAtDeparturePage) match {
           case None        => form
@@ -76,7 +76,7 @@ class AddNationalityAtDepartureController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
       implicit request =>
         form
           .bindFromRequest()

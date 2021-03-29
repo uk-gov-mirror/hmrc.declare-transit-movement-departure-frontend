@@ -18,8 +18,9 @@ package controllers.addItems
 
 import controllers.actions._
 import forms.addItems.RemovePackageFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.RemovePackagePage
@@ -41,6 +42,7 @@ class RemovePackageController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: RemovePackageFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -52,7 +54,10 @@ class RemovePackageController @Inject()(
   private val template = "addItems/removePackage.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val form = formProvider(packageIndex.display)
 
@@ -74,7 +79,10 @@ class RemovePackageController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val form = formProvider(packageIndex.display)
 

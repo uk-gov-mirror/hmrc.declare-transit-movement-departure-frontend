@@ -18,8 +18,9 @@ package controllers.addItems
 
 import controllers.actions._
 import forms.addItems.ConfirmRemoveItemFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.ConfirmRemoveItemPage
@@ -41,6 +42,7 @@ class ConfirmRemoveItemController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: ConfirmRemoveItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -51,47 +53,55 @@ class ConfirmRemoveItemController @Inject()(
 
   private val template = "addItems/confirmRemoveItem.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val form = formProvider()
-      val json = Json.obj(
-        "form"   -> form,
-        "mode"   -> mode,
-        "index"  -> index.display,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val form = formProvider()
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "index"  -> index.display,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            if (value) {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.remove(ItemsQuery(index)))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ConfirmRemoveItemPage, mode, updatedAnswers))
-            } else {
-              Future.successful(Redirect(navigator.nextPage(ConfirmRemoveItemPage, mode, request.userAnswers)))
-          }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val form = formProvider()
+        val json = Json.obj(
+          "form"   -> form,
+          "mode"   -> mode,
+          "index"  -> index.display,
+          "lrn"    -> lrn,
+          "radios" -> Radios.yesNo(form("value"))
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val form = formProvider()
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"   -> formWithErrors,
+                "mode"   -> mode,
+                "index"  -> index.display,
+                "lrn"    -> lrn,
+                "radios" -> Radios.yesNo(formWithErrors("value"))
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              if (value) {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(ItemsQuery(index)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ConfirmRemoveItemPage, mode, updatedAnswers))
+              } else {
+                Future.successful(Redirect(navigator.nextPage(ConfirmRemoveItemPage, mode, request.userAnswers)))
+            }
+          )
+    }
 }

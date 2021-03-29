@@ -18,8 +18,9 @@ package controllers.addItems
 
 import controllers.actions._
 import forms.TotalNetMassFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.TotalNetMassPage
@@ -40,6 +41,7 @@ class TotalNetMassController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: TotalNetMassFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -48,44 +50,52 @@ class TotalNetMassController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(TotalNetMassPage(index)) match {
-        case None        => formProvider(index)
-        case Some(value) => formProvider(index).fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(TotalNetMassPage(index)) match {
+          case None        => formProvider(index)
+          case Some(value) => formProvider(index).fill(value)
+        }
 
-      val json = Json.obj(
-        "form"  -> preparedForm,
-        "lrn"   -> lrn,
-        "index" -> index.display,
-        "mode"  -> mode
-      )
-
-      renderer.render("totalNetMass.njk", json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      formProvider(index)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"  -> formWithErrors,
-              "lrn"   -> lrn,
-              "index" -> index.display,
-              "mode"  -> mode
-            )
-
-            renderer.render("totalNetMass.njk", json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalNetMassPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TotalNetMassPage(index), mode, updatedAnswers))
+        val json = Json.obj(
+          "form"  -> preparedForm,
+          "lrn"   -> lrn,
+          "index" -> index.display,
+          "mode"  -> mode
         )
-  }
+
+        renderer.render("totalNetMass.njk", json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        formProvider(index)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"  -> formWithErrors,
+                "lrn"   -> lrn,
+                "index" -> index.display,
+                "mode"  -> mode
+              )
+
+              renderer.render("totalNetMass.njk", json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalNetMassPage(index), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(TotalNetMassPage(index), mode, updatedAnswers))
+          )
+    }
 }

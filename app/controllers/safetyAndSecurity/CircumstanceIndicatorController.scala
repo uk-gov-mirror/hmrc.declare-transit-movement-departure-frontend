@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.safetyAndSecurity.CircumstanceIndicatorFormProvider
 import javax.inject.Inject
 import models.reference.CircumstanceIndicator
-import models.{CircumstanceIndicatorList, DependentSections, LocalReferenceNumber, Mode}
+import models.{CircumstanceIndicatorList, DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.CircumstanceIndicatorPage
@@ -61,7 +61,7 @@ class CircumstanceIndicatorController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         referenceDataConnector.getCircumstanceIndicatorList() flatMap {
           indicators =>
@@ -81,7 +81,7 @@ class CircumstanceIndicatorController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         referenceDataConnector.getCircumstanceIndicatorList() flatMap {
           indicatorList =>

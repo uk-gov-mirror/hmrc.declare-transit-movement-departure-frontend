@@ -18,20 +18,20 @@ package controllers.guaranteeDetails
 
 import controllers.actions._
 import forms.ConfirmRemoveGuaranteeFormProvider
-import javax.inject.Inject
-import models.{DependentSections, Index, LocalReferenceNumber, Mode, NormalMode}
+import models.{DependentSection, Index, LocalReferenceNumber, NormalMode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.ConfirmRemoveGuaranteePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{GuaranteesQuery, ItemsQuery}
+import queries.GuaranteesQuery
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveGuaranteeController @Inject()(
@@ -57,7 +57,7 @@ class ConfirmRemoveGuaranteeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         val json = Json.obj(
           "form"   -> form,
@@ -73,7 +73,7 @@ class ConfirmRemoveGuaranteeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         form
           .bindFromRequest()

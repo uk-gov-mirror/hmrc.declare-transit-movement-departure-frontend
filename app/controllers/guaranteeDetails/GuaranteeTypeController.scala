@@ -18,8 +18,7 @@ package controllers.guaranteeDetails
 
 import controllers.actions._
 import forms.guaranteeDetails.GuaranteeTypeFormProvider
-import javax.inject.Inject
-import models.{DependentSections, GuaranteeType, Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, GuaranteeType, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.guaranteeDetails.GuaranteeTypePage
@@ -31,6 +30,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class GuaranteeTypeController @Inject()(
@@ -55,7 +55,7 @@ class GuaranteeTypeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(GuaranteeTypePage(index)) match {
           case None        => form
@@ -76,7 +76,7 @@ class GuaranteeTypeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         form
           .bindFromRequest()

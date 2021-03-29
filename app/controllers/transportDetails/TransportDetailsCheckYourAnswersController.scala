@@ -19,8 +19,7 @@ package controllers.transportDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
-import javax.inject.Inject
-import models.{DependentSections, LocalReferenceNumber}
+import models.{DependentSection, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,6 +28,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewModels.TransportDetailsCheckYourAnswersViewModel
 import viewModels.sections.Section
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class TransportDetailsCheckYourAnswersController @Inject()(
@@ -48,7 +48,7 @@ class TransportDetailsCheckYourAnswersController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
       implicit request =>
         referenceDataConnector.getCountryList().flatMap {
           countryList =>

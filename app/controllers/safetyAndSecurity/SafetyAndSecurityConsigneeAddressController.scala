@@ -22,7 +22,7 @@ import controllers.{routes => mainRoutes}
 import forms.safetyAndSecurity.SafetyAndSecurityConsigneeAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
-import models.{DependentSections, LocalReferenceNumber, Mode}
+import models.{DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurityTraderDetails
 import pages.safetyAndSecurity.{SafetyAndSecurityConsigneeAddressPage, SafetyAndSecurityConsigneeNamePage}
@@ -60,7 +60,7 @@ class SafetyAndSecurityConsigneeAddressController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         referenceDataConnector.getCountryList() flatMap {
           countries =>
@@ -90,7 +90,7 @@ class SafetyAndSecurityConsigneeAddressController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         request.userAnswers.get(SafetyAndSecurityConsigneeNamePage) match {
           case Some(consigneeName) =>

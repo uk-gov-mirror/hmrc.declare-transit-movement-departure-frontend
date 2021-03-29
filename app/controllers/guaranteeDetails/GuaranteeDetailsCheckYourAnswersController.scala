@@ -17,9 +17,7 @@
 package controllers.guaranteeDetails
 
 import controllers.actions._
-import controllers.{routes => mainRoutes}
-import javax.inject.Inject
-import models.{DependentSections, Index, LocalReferenceNumber}
+import models.{DependentSection, Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,6 +26,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewModels.GuaranteeDetailsCheckYourAnswersViewModel
 import viewModels.sections.Section
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class GuaranteeDetailsCheckYourAnswersController @Inject()(
@@ -46,7 +45,7 @@ class GuaranteeDetailsCheckYourAnswersController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         val sections: Seq[Section] = GuaranteeDetailsCheckYourAnswersViewModel(request.userAnswers, index).sections
         val json = Json.obj(

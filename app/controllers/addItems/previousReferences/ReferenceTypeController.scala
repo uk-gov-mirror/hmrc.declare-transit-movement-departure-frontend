@@ -19,9 +19,10 @@ package controllers.addItems.previousReferences
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.ReferenceTypeFormProvider
+
 import javax.inject.Inject
 import models.reference.PreviousReferencesDocumentType
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.ReferenceTypePage
@@ -44,6 +45,7 @@ class ReferenceTypeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: ReferenceTypeFormProvider,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
@@ -56,7 +58,10 @@ class ReferenceTypeController @Inject()(
   private val template = "addItems/referenceType.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getPreviousReferencesDocumentTypes() flatMap {
           previousDocuments =>
@@ -82,7 +87,10 @@ class ReferenceTypeController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getPreviousReferencesDocumentTypes() flatMap {
           previousDocuments =>

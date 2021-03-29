@@ -18,8 +18,9 @@ package controllers.addItems.securityDetails
 
 import controllers.actions._
 import forms.addItems.securityDetails.CommercialReferenceNumberFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SecurityDetails
 import pages.addItems.securityDetails.CommercialReferenceNumberPage
@@ -40,6 +41,7 @@ class CommercialReferenceNumberController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: CommercialReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -50,42 +52,50 @@ class CommercialReferenceNumberController @Inject()(
 
   private val template = "addItems/securityDetails/commercialReferenceNumber.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(CommercialReferenceNumberPage(index)) match {
-        case None        => formProvider()
-        case Some(value) => formProvider().fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(CommercialReferenceNumberPage(index)) match {
+          case None        => formProvider()
+          case Some(value) => formProvider().fill(value)
+        }
 
-      val json = Json.obj(
-        "form" -> preparedForm,
-        "lrn"  -> lrn,
-        "mode" -> mode
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      formProvider()
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form" -> formWithErrors,
-              "lrn"  -> lrn,
-              "mode" -> mode
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(CommercialReferenceNumberPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(CommercialReferenceNumberPage(index), mode, updatedAnswers))
+        val json = Json.obj(
+          "form" -> preparedForm,
+          "lrn"  -> lrn,
+          "mode" -> mode
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        formProvider()
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form" -> formWithErrors,
+                "lrn"  -> lrn,
+                "mode" -> mode
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(CommercialReferenceNumberPage(index), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(CommercialReferenceNumberPage(index), mode, updatedAnswers))
+          )
+    }
 }

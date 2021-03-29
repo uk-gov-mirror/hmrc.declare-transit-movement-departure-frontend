@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.{Generators, JourneyModelGenerators}
 import models.journeyDomain.{MovementDetails, MovementDetailsSpec, UserAnswersReader}
 import models.requests.DataRequest
-import models.{EoriNumber, ProcedureType, UserAnswers}
+import models.{DependentSection, EoriNumber, ProcedureType, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.{AnyContent, Request, Result, Results}
@@ -34,7 +34,7 @@ class CheckDependentSectionActionSpec extends SpecBase with GuiceOneAppPerSuite 
 
   import TaskListViewModel.fromUserAnswersParser
 
-  def harness(reader: UserAnswersReader[_], userAnswers: UserAnswers, f: DataRequest[AnyContent] => Unit): Future[Result] = {
+  def harness(reader: DependentSection, userAnswers: UserAnswers, f: DataRequest[AnyContent] => Unit): Future[Result] = {
 
     lazy val actionProvider = app.injector.instanceOf[CheckDependentSectionActionImpl]
 
@@ -56,7 +56,7 @@ class CheckDependentSectionActionSpec extends SpecBase with GuiceOneAppPerSuite 
       val movementDetails = arbitraryMovementDetails(procedureType).arbitrary.sample.value
       val userAnswers     = MovementDetailsSpec.setMovementDetails(movementDetails)(emptyUserAnswers)
 
-      val result: Future[Result] = harness(UserAnswersReader[MovementDetails], userAnswers, request => request.userAnswers)
+      val result: Future[Result] = harness(DependentSection.TransportDetails, userAnswers, request => request.userAnswers)
       status(result) mustBe OK
       redirectLocation(result) mustBe None
 
@@ -64,7 +64,7 @@ class CheckDependentSectionActionSpec extends SpecBase with GuiceOneAppPerSuite 
 
     "return to task list page if dependent section is incomplete" in {
 
-      val result = harness(UserAnswersReader[MovementDetails], emptyUserAnswers, request => request.userAnswers)
+      val result = harness(DependentSection.TransportDetails, emptyUserAnswers, request => request.userAnswers)
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.DeclarationSummaryController.onPageLoad(emptyUserAnswers.id).url)
     }

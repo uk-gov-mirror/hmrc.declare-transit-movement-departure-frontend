@@ -19,7 +19,7 @@ package controllers.safetyAndSecurity
 import controllers.actions._
 import forms.safetyAndSecurity.ConfirmRemoveCountryFormProvider
 import javax.inject.Inject
-import models.{DependentSections, Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.ConfirmRemoveCountryPage
@@ -56,7 +56,7 @@ class ConfirmRemoveCountryController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         val form = formProvider()
 
@@ -75,7 +75,7 @@ class ConfirmRemoveCountryController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         val form = formProvider()
         form

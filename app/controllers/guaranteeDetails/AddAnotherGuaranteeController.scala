@@ -19,10 +19,8 @@ package controllers.guaranteeDetails
 import controllers.actions._
 import derivable.DeriveNumberOfGuarantees
 import forms.AddAnotherGuaranteeFormProvider
-
-import javax.inject.Inject
 import models.requests.DataRequest
-import models.{DependentSections, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
+import models.{DependentSection, Index, LocalReferenceNumber, NormalMode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.AddAnotherGuaranteePage
@@ -30,14 +28,13 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api
 import play.twirl.api.Html
 import renderer.Renderer
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
 import utils.GuaranteeDetailsCheckYourAnswersHelper
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherGuaranteeController @Inject()(
@@ -62,7 +59,7 @@ class AddAnotherGuaranteeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         renderPage(lrn, formProvider(allowMoreGuarantees(request.userAnswers))).map(Ok(_))
     }
@@ -71,7 +68,7 @@ class AddAnotherGuaranteeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         formProvider(allowMoreGuarantees(request.userAnswers))
           .bindFromRequest()

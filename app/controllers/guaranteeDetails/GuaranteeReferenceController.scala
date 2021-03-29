@@ -18,10 +18,9 @@ package controllers.guaranteeDetails
 
 import controllers.actions._
 import forms.guaranteeDetails.GuaranteeReferenceFormProvider
-import javax.inject.Inject
 import models.GuaranteeType.FlatRateVoucher
 import models.messages.guarantee.GuaranteeReferenceWithGrn
-import models.{DependentSections, Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode, UserAnswers}
 import navigation.Navigator
 import navigation.annotations.GuaranteeDetails
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
@@ -33,6 +32,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class GuaranteeReferenceController @Inject()(
@@ -55,7 +55,7 @@ class GuaranteeReferenceController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         val lengthGRN: Int = grnMaxLengthValue(request.userAnswers, index)
         val preparedForm = request.userAnswers.get(GuaranteeReferencePage(index)) match {
@@ -77,7 +77,7 @@ class GuaranteeReferenceController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.routeDetails)).async {
+      andThen checkDependentSection(DependentSection.GuaranteeDetails)).async {
       implicit request =>
         val grnMaxLength: Int = grnMaxLengthValue(request.userAnswers, index)
         formProvider(grnMaxLength)

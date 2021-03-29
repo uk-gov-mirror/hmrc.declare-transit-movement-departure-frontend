@@ -20,9 +20,10 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import forms.addItems.traderDetails.TraderDetailsConsignorAddressFormProvider
+
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.traderDetails.{TraderDetailsConsignorAddressPage, TraderDetailsConsignorNamePage}
@@ -44,6 +45,7 @@ class TraderDetailsConsignorAddressController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   referenceDataConnector: ReferenceDataConnector,
   formProvider: TraderDetailsConsignorAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -55,67 +57,75 @@ class TraderDetailsConsignorAddressController @Inject()(
 
   private val template = "addItems/traderDetails/traderDetailsConsignorAddress.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCountryList() flatMap {
-        countries =>
-          request.userAnswers.get(TraderDetailsConsignorNamePage(index)) match {
-            case Some(consignorName) =>
-              val preparedForm = request.userAnswers.get(TraderDetailsConsignorAddressPage(index)) match {
-                case Some(value) => formProvider(countries).fill(value)
-                case None        => formProvider(countries)
-              }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        referenceDataConnector.getCountryList() flatMap {
+          countries =>
+            request.userAnswers.get(TraderDetailsConsignorNamePage(index)) match {
+              case Some(consignorName) =>
+                val preparedForm = request.userAnswers.get(TraderDetailsConsignorAddressPage(index)) match {
+                  case Some(value) => formProvider(countries).fill(value)
+                  case None        => formProvider(countries)
+                }
 
-              val json = Json.obj(
-                "form"          -> preparedForm,
-                "lrn"           -> lrn,
-                "mode"          -> mode,
-                "index"         -> index.display,
-                "consignorName" -> consignorName,
-                "countries"     -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
-              )
-
-              renderer.render(template, json).map(Ok(_))
-            case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
-
-          }
-      }
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      request.userAnswers.get(TraderDetailsConsignorNamePage(index)) match {
-        case Some(consignorName) =>
-          referenceDataConnector.getCountryList() flatMap {
-            countries =>
-              formProvider(countries)
-                .bindFromRequest()
-                .fold(
-                  formWithErrors => {
-                    val countryValue: Option[Country] = formWithErrors.data.get("country").flatMap {
-                      country =>
-                        countries.getCountry(CountryCode(country))
-                    }
-                    val json = Json.obj(
-                      "form"          -> formWithErrors,
-                      "lrn"           -> lrn,
-                      "mode"          -> mode,
-                      "index"         -> index.display,
-                      "consignorName" -> consignorName,
-                      "countries"     -> countryJsonList(countryValue, countries.fullList)
-                    )
-
-                    renderer.render(template, json).map(BadRequest(_))
-                  },
-                  value =>
-                    for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderDetailsConsignorAddressPage(index), value))
-                      _              <- sessionRepository.set(updatedAnswers)
-                    } yield Redirect(navigator.nextPage(TraderDetailsConsignorAddressPage(index), mode, updatedAnswers))
+                val json = Json.obj(
+                  "form"          -> preparedForm,
+                  "lrn"           -> lrn,
+                  "mode"          -> mode,
+                  "index"         -> index.display,
+                  "consignorName" -> consignorName,
+                  "countries"     -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
                 )
-          }
-        case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
 
-      }
-  }
+                renderer.render(template, json).map(Ok(_))
+              case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
+
+            }
+        }
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        request.userAnswers.get(TraderDetailsConsignorNamePage(index)) match {
+          case Some(consignorName) =>
+            referenceDataConnector.getCountryList() flatMap {
+              countries =>
+                formProvider(countries)
+                  .bindFromRequest()
+                  .fold(
+                    formWithErrors => {
+                      val countryValue: Option[Country] = formWithErrors.data.get("country").flatMap {
+                        country =>
+                          countries.getCountry(CountryCode(country))
+                      }
+                      val json = Json.obj(
+                        "form"          -> formWithErrors,
+                        "lrn"           -> lrn,
+                        "mode"          -> mode,
+                        "index"         -> index.display,
+                        "consignorName" -> consignorName,
+                        "countries"     -> countryJsonList(countryValue, countries.fullList)
+                      )
+
+                      renderer.render(template, json).map(BadRequest(_))
+                    },
+                    value =>
+                      for {
+                        updatedAnswers <- Future.fromTry(request.userAnswers.set(TraderDetailsConsignorAddressPage(index), value))
+                        _              <- sessionRepository.set(updatedAnswers)
+                      } yield Redirect(navigator.nextPage(TraderDetailsConsignorAddressPage(index), mode, updatedAnswers))
+                  )
+            }
+          case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
+
+        }
+    }
 }

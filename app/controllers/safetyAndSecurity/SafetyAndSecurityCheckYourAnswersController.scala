@@ -20,7 +20,7 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import javax.inject.Inject
-import models.{DependentSections, Index, LocalReferenceNumber, NormalMode}
+import models.{DependentSection, Index, LocalReferenceNumber, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,7 +48,7 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         referenceDataConnector.getCountryList() flatMap {
           countries =>

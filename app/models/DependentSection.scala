@@ -21,31 +21,39 @@ import models.journeyDomain.{MovementDetails, RouteDetails, SafetyAndSecurity, T
 import pages.AddSecurityDetailsPage
 import viewModels.TaskListViewModel
 
-object DependentSections {
+sealed trait DependentSection
+
+object DependentSection {
+
+  case object TransportDetails extends DependentSection
+  case object GuaranteeDetails extends DependentSection
+  case object SafetyAndSecurity extends DependentSection
+  case object ItemDetails extends DependentSection
 
   import TaskListViewModel.fromUserAnswersParser
 
-  val movementDetails: UserAnswersReader[MovementDetails]     = UserAnswersReader[MovementDetails]
-  val routeDetails: UserAnswersReader[RouteDetails]           = UserAnswersReader[RouteDetails]
-  val safetyAndSecurity: UserAnswersReader[SafetyAndSecurity] = UserAnswersReader[SafetyAndSecurity]
-  val traderDetails: UserAnswersReader[TraderDetails]         = UserAnswersReader[TraderDetails]
-  val transportDetails: UserAnswersReader[TransportDetails]   = UserAnswersReader[TransportDetails]
-
-  def itemsDependentSections(userAnswers: UserAnswers): UserAnswersReader[_] = {
+  private def itemsDependentSections(userAnswers: UserAnswers): UserAnswersReader[_] = {
     val commonSection = for {
-      _            <- movementDetails
-      _            <- traderDetails
-      routeDetails <- routeDetails
+      _            <- UserAnswersReader[MovementDetails]
+      _            <- UserAnswersReader[TraderDetails]
+      routeDetails <- UserAnswersReader[RouteDetails]
     } yield routeDetails
 
     if (userAnswers.get(AddSecurityDetailsPage).contains(true)) {
       for {
         _     <- commonSection
-        sAndS <- safetyAndSecurity
+        sAndS <- UserAnswersReader[SafetyAndSecurity]
       } yield sAndS
     } else {
       commonSection
     }
   }
 
+  def dependentSectionReader(section: DependentSection, userAnswers: UserAnswers): UserAnswersReader[_] =
+    section match {
+      case TransportDetails  => UserAnswersReader[MovementDetails]
+      case SafetyAndSecurity => UserAnswersReader[TransportDetails]
+      case GuaranteeDetails  => UserAnswersReader[RouteDetails]
+      case ItemDetails       => itemsDependentSections(userAnswers)
+    }
 }

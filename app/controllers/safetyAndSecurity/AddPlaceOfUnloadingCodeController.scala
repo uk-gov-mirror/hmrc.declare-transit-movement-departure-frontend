@@ -19,7 +19,7 @@ package controllers.safetyAndSecurity
 import controllers.actions._
 import forms.safetyAndSecurity.AddPlaceOfUnloadingCodeFormProvider
 import javax.inject.Inject
-import models.{DependentSections, LocalReferenceNumber, Mode}
+import models.{DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.AddPlaceOfUnloadingCodePage
@@ -56,7 +56,7 @@ class AddPlaceOfUnloadingCodeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(AddPlaceOfUnloadingCodePage) match {
           case None        => form
@@ -77,7 +77,7 @@ class AddPlaceOfUnloadingCodeController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         form
           .bindFromRequest()

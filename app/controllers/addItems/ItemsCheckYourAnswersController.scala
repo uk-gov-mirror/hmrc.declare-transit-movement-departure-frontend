@@ -18,8 +18,9 @@ package controllers.addItems
 
 import connectors.ReferenceDataConnector
 import controllers.actions._
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber}
+import models.{DependentSection, Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,6 +37,7 @@ class ItemsCheckYourAnswersController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -45,33 +47,37 @@ class ItemsCheckYourAnswersController @Inject()(
 
   private val template = "addItems/itemsCheckYourAnswers.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val buildJson: Future[JsObject] =
-        for {
-          previousReferencesDocumentTypes <- referenceDataConnector.getPreviousReferencesDocumentTypes()
-          documentTypes                   <- referenceDataConnector.getDocumentTypes()
-          specialMentions                 <- referenceDataConnector.getSpecialMention()
-          countries                       <- referenceDataConnector.getCountryList()
-        } yield {
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val buildJson: Future[JsObject] =
+          for {
+            previousReferencesDocumentTypes <- referenceDataConnector.getPreviousReferencesDocumentTypes()
+            documentTypes                   <- referenceDataConnector.getDocumentTypes()
+            specialMentions                 <- referenceDataConnector.getSpecialMention()
+            countries                       <- referenceDataConnector.getCountryList()
+          } yield {
 
-          val sections: Seq[Section] =
-            AddItemsCheckYourAnswersViewModel(
-              request.userAnswers,
-              index,
-              documentTypes,
-              previousReferencesDocumentTypes,
-              specialMentions,
-              countries
-            ).sections
+            val sections: Seq[Section] =
+              AddItemsCheckYourAnswersViewModel(
+                request.userAnswers,
+                index,
+                documentTypes,
+                previousReferencesDocumentTypes,
+                specialMentions,
+                countries
+              ).sections
 
-          Json.obj(
-            "lrn"         -> lrn,
-            "sections"    -> Json.toJson(sections),
-            "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
-          )
-        }
+            Json.obj(
+              "lrn"         -> lrn,
+              "sections"    -> Json.toJson(sections),
+              "nextPageUrl" -> routes.AddAnotherItemController.onPageLoad(lrn).url
+            )
+          }
 
-      buildJson.flatMap(renderer.render(template, _).map(Ok(_)))
-  }
+        buildJson.flatMap(renderer.render(template, _).map(Ok(_)))
+    }
 }

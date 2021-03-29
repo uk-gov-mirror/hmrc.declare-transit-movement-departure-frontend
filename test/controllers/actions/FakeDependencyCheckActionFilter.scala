@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import models.journeyDomain.UserAnswersReader
+import models.DependentSection
 import models.requests.DataRequest
 import play.api.mvc._
 
@@ -25,11 +25,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class FakeDependencyCheckActionFilter @Inject()() extends CheckDependentSectionAction {
   val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
-  override def apply(dependentSection: UserAnswersReader[_]): ActionFilter[DataRequest] =
+  override def apply(dependentSection: DependentSection): ActionFilter[DataRequest] =
     new FakeCheckDependentSectionFilter(dependentSection, executionContext)
 }
 
-class FakeCheckDependentSectionFilter(val dependentSection: UserAnswersReader[_], implicit val executionContext: ExecutionContext)
+class FakeCheckDependentSectionFilter(val dependentSection: DependentSection, implicit val executionContext: ExecutionContext)
     extends ActionFilter[DataRequest] {
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = Future.successful(None)
 }

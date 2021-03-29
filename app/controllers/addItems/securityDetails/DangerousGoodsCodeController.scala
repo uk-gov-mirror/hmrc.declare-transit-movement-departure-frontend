@@ -19,9 +19,10 @@ package controllers.addItems.securityDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.addItems.securityDetails.DangerousGoodsCodeFormProvider
+
 import javax.inject.Inject
 import models.reference.DangerousGoodsCode
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SecurityDetails
 import pages.addItems.securityDetails.DangerousGoodsCodePage
@@ -44,6 +45,7 @@ class DangerousGoodsCodeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: DangerousGoodsCodeFormProvider,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
@@ -56,7 +58,10 @@ class DangerousGoodsCodeController @Inject()(
   private val template = "addItems/securityDetails/dangerousGoodsCode.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getDangerousGoodsCodeList() flatMap {
           dangerousGoodsCodes =>
@@ -81,7 +86,10 @@ class DangerousGoodsCodeController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getDangerousGoodsCodeList() flatMap {
           dangerousGoodsCodes =>

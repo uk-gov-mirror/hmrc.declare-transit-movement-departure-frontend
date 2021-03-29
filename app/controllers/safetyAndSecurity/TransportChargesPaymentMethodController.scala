@@ -20,7 +20,7 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.safetyAndSecurity.TransportChargesPaymentMethodFormProvider
 import models.reference.MethodOfPayment
-import models.{DependentSections, LocalReferenceNumber, Mode}
+import models.{DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.TransportChargesPaymentMethodPage
@@ -60,7 +60,7 @@ class TransportChargesPaymentMethodController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         referenceDataConnector.getMethodOfPaymentList() flatMap {
           payments =>
@@ -87,7 +87,7 @@ class TransportChargesPaymentMethodController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.transportDetails)).async {
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
       implicit request =>
         referenceDataConnector.getMethodOfPaymentList() flatMap {
           payments =>

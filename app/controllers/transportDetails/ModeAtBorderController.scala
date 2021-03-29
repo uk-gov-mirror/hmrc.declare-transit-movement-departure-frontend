@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.ModeAtBorderFormProvider
 import javax.inject.Inject
 import models.reference.TransportMode
-import models.{DependentSections, LocalReferenceNumber, Mode}
+import models.{DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.TransportDetails
 import pages.ModeAtBorderPage
@@ -58,7 +58,7 @@ class ModeAtBorderController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
       implicit request =>
         referenceDataConnector.getTransportModes flatMap {
 
@@ -79,7 +79,7 @@ class ModeAtBorderController @Inject()(
     (identify
       andThen getData(lrn)
       andThen requireData
-      andThen checkDependentSection(DependentSections.movementDetails)).async {
+      andThen checkDependentSection(DependentSection.TransportDetails)).async {
       implicit request =>
         referenceDataConnector.getTransportModes flatMap {
           transportModes =>
