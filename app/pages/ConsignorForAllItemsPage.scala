@@ -21,6 +21,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
+@deprecated("TO DELETE", "NOW")
 case object ConsignorForAllItemsPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
