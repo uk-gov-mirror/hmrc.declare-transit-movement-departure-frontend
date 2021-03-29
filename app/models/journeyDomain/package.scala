@@ -68,10 +68,16 @@ package object journeyDomain {
       gettable.reader.lower
   }
 
-  implicit class GettableAsReaderOps[A](a: Gettable[A]) {
+  implicit class GettableAsReaderOps[A](gettable: Gettable[A]) {
 
+    /**
+      * Returns a reader for [[gettable]], which will succeed with an [[A]]  if the value is defined
+      * and will fail if it is not defined
+      */
     def reader(implicit reads: Reads[A]): UserAnswersReader[A] =
-      ReaderT[Option, UserAnswers, A](_.get(a))
+      UserAnswersReader[A](
+        (ua: UserAnswers) => ua.get(gettable)
+      )
   }
 
 }
