@@ -19,9 +19,8 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.domain.Address
-import models.journeyDomain.TraderDetails.{PersonalInformation, RequiredDetails, TraderEori, TraderInformation}
+import models.journeyDomain.TraderDetails.{PersonalInformation, TraderEori, TraderInformation}
 import models.{ConsigneeAddress, ConsignorAddress, EoriNumber, PrincipalAddress, ProcedureType, UserAnswers}
-import org.scalacheck.Gen
 import org.scalatest.TryValues
 import pages.{ConsignorEoriPage, _}
 

@@ -20,7 +20,6 @@ import java.time.LocalTime
 
 import com.lucidchart.open.xtract.XmlReader
 import generators.MessagesModelGenerators
-import xml.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -28,6 +27,7 @@ import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import utils.Format
 import utils.Format.timeFormatter
+import xml.XMLWrites._
 
 import scala.xml.NodeSeq
 

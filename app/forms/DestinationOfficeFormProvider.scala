@@ -16,8 +16,8 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.CustomsOfficeList
 import models.reference.CustomsOffice
 import play.api.data.Form

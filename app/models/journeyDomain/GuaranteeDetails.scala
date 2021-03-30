@@ -16,11 +16,10 @@
 
 package models.journeyDomain
 
-import cats.data.{Kleisli, NonEmptyList}
+import cats.data.NonEmptyList
 import cats.implicits._
-import derivable.{DeriveNumberOfGuarantees, DeriveNumberOfItems}
-import models.journeyDomain.ItemSection.readerItemSection
-import models.{GuaranteeType, Index, UserAnswers}
+import derivable.DeriveNumberOfGuarantees
+import models.{GuaranteeType, Index}
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 

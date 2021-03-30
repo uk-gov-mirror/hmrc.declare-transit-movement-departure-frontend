@@ -21,12 +21,11 @@ import controllers.actions._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.LocalReferenceNumber
-import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DeclarationSubmissionService
-import uk.gov.hmrc.http.RawReads.{is2xx, is4xx}
+import uk.gov.hmrc.http.HttpReads.{is2xx, is4xx}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewModels.DeclarationSummaryViewModel
 

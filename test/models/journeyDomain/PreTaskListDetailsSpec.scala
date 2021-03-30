@@ -18,7 +18,7 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

@@ -18,7 +18,7 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import models.reference.CountryCode
 import pages.AddSecurityDetailsPage
 

@@ -20,22 +20,22 @@ import connectors.ReferenceDataConnector
 import controllers.actions._
 import derivable.DeriveNumberOfDocuments
 import forms.addItems.AddAnotherDocumentFormProvider
-
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{DependentSection, Index, LocalReferenceNumber, Mode, NormalMode}
+import models.{DependentSection, Index, LocalReferenceNumber, NormalMode}
 import navigation.Navigator
 import navigation.annotations.Document
 import pages.addItems.AddAnotherDocumentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
 import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.Text.Message
+import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios, Text}
 import utils.AddItemsCheckYourAnswersHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,7 +57,7 @@ class AddAnotherDocumentController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify
       andThen getData(lrn)
       andThen requireData
@@ -66,7 +66,7 @@ class AddAnotherDocumentController @Inject()(
         renderPage(lrn, index, formProvider(index)).map(Ok(_))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify
       andThen getData(lrn)
       andThen requireData

@@ -16,7 +16,7 @@
 
 package services
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDateTime
 
 import cats.data.NonEmptyList
 import cats.implicits._
@@ -30,7 +30,7 @@ import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
-import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, ProducedDocument, TraderDetails, UserAnswersReader, _}
+import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, TraderDetails, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
@@ -42,7 +42,6 @@ import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, U
 import play.api.Logger
 import repositories.InterchangeControlReferenceIdRepository
 
-import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DeclarationRequestServiceInt {

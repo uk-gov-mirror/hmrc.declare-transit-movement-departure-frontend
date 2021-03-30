@@ -16,9 +16,10 @@
 
 package navigation
 
+import controllers.addItems.containers.{routes => containerRoutes}
 import controllers.addItems.previousReferences.{routes => previousReferencesRoutes}
-import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.specialMentions.{routes => specialMentionsRoutes}
+import controllers.addItems.traderDetails.{routes => traderDetailsRoutes}
 import controllers.addItems.{routes => addItemsRoutes}
 import controllers.addItems.{routes => addAnotherPackageRoutes}
 import controllers.addItems.containers.{routes => containerRoutes}
@@ -26,13 +27,12 @@ import controllers.{routes => mainRoutes}
 import derivable._
 import javax.inject.{Inject, Singleton}
 import models._
-import models.reference.CountryCode
 import models.reference.PackageType.{bulkAndUnpackedCodes, bulkCodes, unpackedCodes}
 import pages._
 import pages.addItems.containers._
 import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
-import pages.safetyAndSecurity.{AddCommercialReferenceNumberAllItemsPage, AddTransportChargesPaymentMethodPage, CommercialReferenceNumberAllItemsPage}
+import pages.safetyAndSecurity.{AddCommercialReferenceNumberAllItemsPage, AddTransportChargesPaymentMethodPage}
 import play.api.mvc.Call
 
 @Singleton

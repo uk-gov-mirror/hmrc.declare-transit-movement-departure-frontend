@@ -18,12 +18,11 @@ package forms.addItems.traderDetails
 
 import forms.Constants._
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.Index
 import models.domain.StringFieldRegex.{eoriNumberRegex, stringFieldRegex}
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
-
-import javax.inject.Inject
 
 class TraderDetailsConsignorEoriNumberFormProvider @Inject() extends Mappings {
 

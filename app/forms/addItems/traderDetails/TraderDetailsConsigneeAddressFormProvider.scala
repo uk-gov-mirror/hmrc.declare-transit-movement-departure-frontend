@@ -17,14 +17,13 @@
 package forms.addItems.traderDetails
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.domain.StringFieldRegex.stringFieldRegex
 import models.reference.Country
 import models.{ConsigneeAddress, CountryList}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
-
-import javax.inject.Inject
 
 class TraderDetailsConsigneeAddressFormProvider @Inject() extends Mappings {
 

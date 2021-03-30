@@ -17,9 +17,8 @@
 package forms.addItems.securityDetails
 
 import forms.mappings.Mappings
-import play.api.data.Form
-
 import javax.inject.Inject
+import play.api.data.Form
 
 class AddDangerousGoodsCodeFormProvider @Inject() extends Mappings {
 

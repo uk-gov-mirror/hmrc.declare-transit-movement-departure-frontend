@@ -16,11 +16,13 @@
 
 package controllers
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 import config.FrontendAppConfig
 import controllers.actions._
-
 import javax.inject.Inject
-import models.{CancellationDecisionUpdateMessage, DepartureId, LocalReferenceNumber}
+import models.{CancellationDecisionUpdateMessage, DepartureId}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,8 +33,6 @@ import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
 import utils.{acceptedOrRejected, yesOrNo}
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 class CancellationDecisionUpdateController @Inject()(

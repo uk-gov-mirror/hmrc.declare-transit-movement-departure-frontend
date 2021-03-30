@@ -32,7 +32,7 @@ import pages._
 import pages.addItems._
 import pages.addItems.containers._
 import pages.addItems.traderDetails._
-import pages.safetyAndSecurity.{AddCommercialReferenceNumberAllItemsPage, AddTransportChargesPaymentMethodPage, TransportChargesPaymentMethodPage}
+import pages.safetyAndSecurity.{AddCommercialReferenceNumberAllItemsPage, AddTransportChargesPaymentMethodPage}
 import queries.{ContainersQuery, _}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

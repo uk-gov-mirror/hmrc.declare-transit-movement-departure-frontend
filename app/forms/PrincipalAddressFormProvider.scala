@@ -17,8 +17,6 @@
 package forms
 
 import forms.mappings.Mappings
-import forms.Constants._
-
 import javax.inject.Inject
 import models.PrincipalAddress
 import models.PrincipalAddress.Constants.{numberAndStreetLength, postcodeLength, townLength}

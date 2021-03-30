@@ -16,11 +16,10 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
+import javax.inject.Inject
 import models.RepresentativeCapacity
+import play.api.data.Form
 
 class RepresentativeCapacityFormProvider @Inject() extends Mappings {
 

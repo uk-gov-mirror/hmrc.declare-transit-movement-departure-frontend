@@ -17,7 +17,7 @@
 package utils
 
 import controllers.safetyAndSecurity.routes
-import models.{CheckMode, CountryList, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, CountryList, Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages.safetyAndSecurity._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._

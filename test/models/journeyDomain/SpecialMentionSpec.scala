@@ -23,7 +23,7 @@ import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.addItems.specialMentions.{AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
+import pages.addItems.specialMentions.{SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 
 class SpecialMentionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 

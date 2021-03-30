@@ -17,24 +17,22 @@
 package services
 
 import java.time.LocalDateTime
+
 import base.{GeneratorSpec, SpecBase}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
-import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
-import models.journeyDomain.GoodsSummary.GoodSummarySimplifiedDetails
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
-import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
+import models.journeyDomain.TransportDetails.InlandMode.{NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
-import models.journeyDomain.{GoodsSummary, JourneyDomain, JourneyDomainSpec, TransportDetails}
+import models.journeyDomain.{JourneyDomain, JourneyDomainSpec}
 import models.messages.goodsitem.SpecialMentionGuaranteeLiabilityAmount
-import models.messages.{ControlResult, DeclarationRequest, InterchangeControlReference}
+import models.messages.{DeclarationRequest, InterchangeControlReference}
+import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import repositories.InterchangeControlReferenceIdRepository
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

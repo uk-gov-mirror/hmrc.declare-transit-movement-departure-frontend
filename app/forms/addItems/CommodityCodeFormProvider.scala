@@ -17,7 +17,6 @@
 package forms.addItems
 
 import forms.mappings.Mappings
-
 import javax.inject.Inject
 import models.Index
 import models.domain.StringFieldRegex.{commodityCodeCharactersRegex, commodityCodeFormatRegex}

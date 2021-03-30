@@ -18,7 +18,6 @@ package forms.addItems.traderSecurityDetails
 
 import forms.Constants.consigneeNameMaxLength
 import forms.mappings.Mappings
-
 import javax.inject.Inject
 import models.Index
 import models.domain.StringFieldRegex.consignorNameRegex

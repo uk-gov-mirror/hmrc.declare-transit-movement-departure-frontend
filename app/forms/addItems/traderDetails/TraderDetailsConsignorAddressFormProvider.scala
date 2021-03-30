@@ -17,9 +17,8 @@
 package forms.addItems.traderDetails
 
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.stringFieldRegex
-
 import javax.inject.Inject
+import models.domain.StringFieldRegex.stringFieldRegex
 import models.reference.Country
 import models.{ConsignorAddress, CountryList}
 import play.api.data.Form

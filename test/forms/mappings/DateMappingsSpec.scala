@@ -20,9 +20,9 @@ import java.time.LocalDate
 
 import generators.Generators
 import org.scalacheck.Gen
+import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
 

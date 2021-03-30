@@ -17,11 +17,10 @@
 package forms
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
-
-import javax.inject.Inject
 
 class AuthorisedLocationCodeFormProvider @Inject() extends Mappings {
 

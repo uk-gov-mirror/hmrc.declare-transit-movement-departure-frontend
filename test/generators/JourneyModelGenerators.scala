@@ -17,20 +17,15 @@
 package generators
 
 import java.time.{LocalDate, LocalDateTime}
-import cats.data.{NonEmptyList, NonEmptyMap}
-import models.DeclarationType.{Option2}
+
+import cats.data.NonEmptyList
+import models.DeclarationType.Option2
 import models._
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
 import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
 import models.journeyDomain.ItemsSecurityTraderDetails.{SecurityPersonalInformation, SecurityTraderEori}
-import models.journeyDomain.MovementDetails.{
-  DeclarationForSelf,
-  DeclarationForSomeoneElse,
-  DeclarationForSomeoneElseAnswer,
-  NormalMovementDetails,
-  SimplifiedMovementDetails
-}
+import models.journeyDomain.MovementDetails.{DeclarationForSelf, DeclarationForSomeoneElse, DeclarationForSomeoneElseAnswer, NormalMovementDetails, SimplifiedMovementDetails}
 import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPackages}
 import models.journeyDomain.PreviousReferences.nonEUCountries
 import models.journeyDomain.RouteDetails.TransitInformation

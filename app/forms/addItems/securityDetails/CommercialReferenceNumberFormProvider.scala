@@ -17,11 +17,10 @@
 package forms.addItems.securityDetails
 
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
-
-import javax.inject.Inject
 
 class CommercialReferenceNumberFormProvider @Inject() extends Mappings {
 

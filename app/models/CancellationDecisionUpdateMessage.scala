@@ -17,11 +17,11 @@
 package models
 
 import java.time.LocalDate
+
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{__, XmlReader}
-import play.api.libs.json.{Json, OWrites}
-import com.lucidchart.open.xtract.XmlReader.strictReadSeq
 import models.XMLReads._
+import play.api.libs.json.{Json, OWrites}
 
 case class CancellationDecisionUpdateMessage(mrn: String,
                                              cancellationRequestDate: Option[LocalDate],

@@ -16,8 +16,8 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.TransportModeList
 import models.reference.TransportMode
 import play.api.data.Form
