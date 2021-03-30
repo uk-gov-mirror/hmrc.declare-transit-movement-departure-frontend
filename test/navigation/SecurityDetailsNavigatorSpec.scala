@@ -44,6 +44,19 @@ class SecurityDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
     }
 
+    "Must go from TransportChargesPage to CommercialReferencePage when AddCommercialReferenceNumberAllItemsPage is not completed" in {
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .remove(AddCommercialReferenceNumberAllItemsPage)
+            .success
+            .value
+          navigator
+            .nextPage(TransportChargesPage(index), NormalMode, updatedAnswers)
+            .mustBe(routes.CommercialReferenceNumberController.onPageLoad(updatedAnswers.id, index, NormalMode))
+      }
+    }
+
     "Must go from TransportChargesPage to AddsDangerousGoodsCodePage when AddCommercialReferenceNumberAllItemsPage answer is Yes" in {
       forAll(arbitrary[UserAnswers]) {
         answers =>

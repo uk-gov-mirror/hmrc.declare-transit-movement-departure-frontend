@@ -54,7 +54,7 @@ class SecurityDetailsNavigator @Inject()() extends Navigator {
   private def transportChargesRoute(ua: UserAnswers, index: Index, mode: Mode) =
     (ua.get(AddCommercialReferenceNumberAllItemsPage), mode) match {
       case (Some(true), NormalMode) => Some(routes.AddDangerousGoodsCodeController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), NormalMode) => Some(routes.CommercialReferenceNumberController.onPageLoad(ua.id, index, NormalMode))
+      case (_, NormalMode) => Some(routes.CommercialReferenceNumberController.onPageLoad(ua.id, index, NormalMode))
     }
 
   private def dangerousGoodsCodeRoute(ua: UserAnswers, index: Index) =
