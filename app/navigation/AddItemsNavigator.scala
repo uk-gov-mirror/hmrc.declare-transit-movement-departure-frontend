@@ -161,7 +161,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
   private def consignorAddress(ua: UserAnswers, index: Index, mode: Mode) =
-    (ua.get(ConsigneeForAllItemsPage), ua.get(AddConsigneePage), mode) match {
+    (ua.get(??? : QuestionPage[Boolean]), ua.get(AddConsigneePage), mode) match {
       case (Some(false), Some(false), NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, mode))
       case (None, None, NormalMode) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, mode))
       case (Some(false), Some(true), NormalMode) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), mode))
@@ -169,7 +169,7 @@ class AddItemsNavigator @Inject()() extends Navigator {
     }
 
   private def consignorAddressCheckMode(ua: UserAnswers, index: Index) =
-    (ua.get(ConsigneeForAllItemsPage), ua.get(AddConsigneePage), ua.get(TraderDetailsConsigneeEoriKnownPage(index))) match {
+    (ua.get(??? : QuestionPage[Boolean]), ua.get(AddConsigneePage), ua.get(TraderDetailsConsigneeEoriKnownPage(index))) match {
       case (Some(false), Some(false), None) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, CheckMode))
       case (Some(false), Some(false), Some(true)) => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
       case _ => Some(addItemsRoutes.ItemsCheckYourAnswersController.onPageLoad(ua.id, index))
@@ -211,8 +211,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
   // TODO revisit
   private def isCommodityKnownRoute(index:Index, ua:UserAnswers, mode:Mode) =
     (ua.get(IsCommodityCodeKnownPage(index)),ua.get(CommodityCodePage(index)),
-      ua.get(ConsignorForAllItemsPage), ua.get(AddConsignorPage),
-      ua.get(ConsigneeForAllItemsPage), ua.get(AddConsigneePage),
+      ua.get(??? : QuestionPage[Boolean]), ua.get(AddConsignorPage),
+      ua.get(??? : QuestionPage[Boolean]), ua.get(AddConsigneePage),
       mode
     ) match {
       case (Some(true),_,_,_,_,_,NormalMode)    => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, mode))
@@ -251,8 +251,8 @@ class AddItemsNavigator @Inject()() extends Navigator {
 
   private def commodityCodeRoute(index:Index, ua:UserAnswers, mode:Mode) =
     (ua.get(CommodityCodePage(index)),
-      ua.get(ConsignorForAllItemsPage), ua.get(AddConsignorPage),
-      ua.get(ConsigneeForAllItemsPage), ua.get(AddConsigneePage),
+      ua.get(??? : QuestionPage[Boolean]), ua.get(AddConsignorPage),
+      ua.get(??? : QuestionPage[Boolean]), ua.get(AddConsigneePage),
       mode) match {
       case (_,
       Some(false), Some(false),

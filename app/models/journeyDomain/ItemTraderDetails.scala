@@ -35,7 +35,10 @@ object ItemTraderDetails {
       TraderDetailsConsignorEoriKnownPage(index).reader
         .flatMap {
           bool =>
-            if (bool) TraderDetailsConsignorEoriNumberPage(index).reader.map(eori => Some(EoriNumber(eori)))
+            if (bool)
+              TraderDetailsConsignorEoriNumberPage(index).reader.map(
+                eori => Some(EoriNumber(eori))
+              )
             else none[EoriNumber].pure[UserAnswersReader]
         }
 
@@ -52,7 +55,7 @@ object ItemTraderDetails {
         }
 
     (
-      ConsignorForAllItemsPage.reader,
+      UserAnswersReader.unsafeEmpty[Boolean], // TODO - should be AddConsignorPage.reader
       AddConsignorPage.reader
     ).tupled.flatMap {
       case (consignorForAllItems, addConsignor) if !consignorForAllItems | !addConsignor => consignorInformation
@@ -65,7 +68,10 @@ object ItemTraderDetails {
       TraderDetailsConsigneeEoriKnownPage(index).reader
         .flatMap {
           bool =>
-            if (bool) TraderDetailsConsigneeEoriNumberPage(index).reader.map(eori => Some(EoriNumber(eori)))
+            if (bool)
+              TraderDetailsConsigneeEoriNumberPage(index).reader.map(
+                eori => Some(EoriNumber(eori))
+              )
             else none[EoriNumber].pure[UserAnswersReader]
         }
 
@@ -82,7 +88,7 @@ object ItemTraderDetails {
         }
 
     (
-      ConsigneeForAllItemsPage.reader,
+      UserAnswersReader.unsafeEmpty[Boolean], // TODO - should be AddConsigneePage.reader
       AddConsigneePage.reader
     ).tupled.flatMap {
       //TODO this can throw matcher error, need amending
@@ -91,5 +97,7 @@ object ItemTraderDetails {
   }
 
   def userAnswersParser(index: Index): UserAnswersParser[Option, ItemTraderDetails] =
-    UserAnswersOptionalParser((consignorDetails(index), consigneeDetails(index)).tupled)(x => ItemTraderDetails(x._1, x._2))
+    UserAnswersOptionalParser((consignorDetails(index), consigneeDetails(index)).tupled)(
+      x => ItemTraderDetails(x._1, x._2)
+    )
 }

@@ -56,9 +56,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
               .unsafeSetVal(AddCommercialReferenceNumberPage)(itemSection.producedDocuments.isDefined)
               .unsafeSetVal(AddDocumentsPage(itemIndex))(itemSection.producedDocuments.isDefined)
               .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
-              .unsafeSetVal(ConsignorForAllItemsPage)(false)
               .unsafeSetVal(AddConsignorPage)(false)
-              .unsafeSetVal(ConsigneeForAllItemsPage)(false)
               .unsafeSetVal(AddConsigneePage)(false)
 
             val updatedUserAnswer2 = itemSection.previousReferences match {
@@ -121,9 +119,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
               .unsafeSetVal(AddCircumstanceIndicatorPage)(itemSections.producedDocuments.isDefined)
               .unsafeSetVal(AddCommercialReferenceNumberPage)(itemSections.producedDocuments.isDefined)
               .unsafeSetVal(CircumstanceIndicatorPage)(indicator)
-              .unsafeSetVal(ConsignorForAllItemsPage)(false)
               .unsafeSetVal(AddConsignorPage)(false)
-              .unsafeSetVal(ConsigneeForAllItemsPage)(false)
               .unsafeSetVal(AddConsigneePage)(false)
 
             val updatedUserAnswer2 = itemSections.previousReferences match {
