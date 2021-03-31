@@ -148,7 +148,7 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
 
             navigator
               .nextPage(AddConsignorPage, NormalMode, updatedAnswers)
-              .mustBe(traderDetailsRoute.ConsigneeForAllItemsController.onPageLoad(answers.id, NormalMode))
+              .mustBe(traderDetailsRoute.AddConsigneeController.onPageLoad(answers.id, NormalMode))
         }
       }
 
