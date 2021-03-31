@@ -333,7 +333,7 @@ class TaskListViewModelSpec
           "for Normal procedure" in {
             forAll(genTraderDetailsNormal) {
               sectionDetails =>
-                val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
+                val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal))
 
                 val viewModel = TaskListViewModel(userAnswers)
 
@@ -345,7 +345,7 @@ class TaskListViewModelSpec
           "for Simplified procedure" in {
             forAll(genTraderDetailsSimplified) {
               sectionDetails =>
-                val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
+                val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified))
 
                 val viewModel = TaskListViewModel(userAnswers)
 
@@ -374,7 +374,7 @@ class TaskListViewModelSpec
           viewModel.getHref(tradersSectionName).value mustEqual expectedHref
         }
 
-        "when the status is Not started and 'Procedure Type is Unknown', links to the first page" in {
+        "when the status is Not started and 'Procedure Type is Unknown', links to Session expired" in {
           val viewModel = TaskListViewModel(emptyUserAnswers)
 
           val expectedHref: String = controllers.routes.SessionExpiredController.onPageLoad().url
@@ -412,7 +412,7 @@ class TaskListViewModelSpec
           }
         }
 
-        "when the status is InProgress and 'Procedure Type is Unknown', links to the first page" in {
+        "when the status is InProgress and 'Procedure Type is Unknown', links to the Session expired" in {
           forAll(arb[Boolean]) {
             pageAnswer =>
               val userAnswers = emptyUserAnswers.unsafeSetVal(IsPrincipalEoriKnownPage)(pageAnswer)
@@ -425,10 +425,23 @@ class TaskListViewModelSpec
           }
         }
 
-        "when the status is Completed, links to the Check your answers page for the section" in {
-          forAll(Gen.oneOf(genTraderDetailsNormal, genTraderDetailsSimplified)) {
+        "when the status is Completed and 'Procedure Type is Normal', links to the Check your answers page for the section" in {
+          forAll(genTraderDetailsNormal) {
             sectionDetails =>
-              val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers)
+              val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal))
+
+              val viewModel = TaskListViewModel(userAnswers)
+
+              val expectedHref: String = controllers.traderDetails.routes.TraderDetailsCheckYourAnswersController.onPageLoad(lrn).url
+
+              viewModel.getHref(tradersSectionName).value mustEqual expectedHref
+          }
+        }
+
+        "when the status is Completed and 'Procedure Type is Simplified', links to the Check your answers page for the section" in {
+          forAll(genTraderDetailsSimplified) {
+            sectionDetails =>
+              val userAnswers = TraderDetailsSpec.setTraderDetails(sectionDetails)(emptyUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified))
 
               val viewModel = TaskListViewModel(userAnswers)
 
