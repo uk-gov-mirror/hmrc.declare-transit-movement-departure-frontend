@@ -67,7 +67,7 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
         (ua.get(IsPrincipalEoriKnownPage), ua.get(WhatIsPrincipalEoriPage), ua.get(PrincipalNamePage)) match {
           case (Some(true), None, _)  => Some(routes.WhatIsPrincipalEoriController.onPageLoad(ua.id, CheckMode))
           case (Some(false), _, None) => Some(routes.PrincipalNameController.onPageLoad(ua.id, CheckMode))
-          case (None, None, _)        => Some(routes.IsPrincipalEoriKnownController.onPageLoad(ua.id, NormalMode))
+          case (None, None, _)        => Some(routes.IsPrincipalEoriKnownController.onPageLoad(ua.id, NormalMode)) // TODO
           case _                      => Some(checkModeDefaultPage(ua))
         }
 
@@ -87,9 +87,10 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
 
     case IsConsignorEoriKnownPage =>
       ua =>
-        (ua.get(IsConsignorEoriKnownPage), ua.get(ConsignorEoriPage)) match {
-          case (Some(true), None) => Some(routes.ConsignorEoriController.onPageLoad(ua.id, CheckMode))
-          case (_, _)             => Some(checkModeDefaultPage(ua))
+        (ua.get(IsConsignorEoriKnownPage), ua.get(ConsignorEoriPage), ua.get(ConsignorNamePage)) match {
+          case (Some(true), None, _)  => Some(routes.ConsignorEoriController.onPageLoad(ua.id, CheckMode))
+          case (Some(false), _, None) => Some(routes.ConsignorNameController.onPageLoad(ua.id, CheckMode))
+          case _                      => Some(checkModeDefaultPage(ua))
         }
 
     case ConsignorEoriPage =>
@@ -115,9 +116,10 @@ class TraderDetailsNavigator @Inject()() extends Navigator {
 
     case IsConsigneeEoriKnownPage =>
       ua =>
-        (ua.get(IsConsigneeEoriKnownPage), ua.get(WhatIsConsigneeEoriPage)) match {
-          case (Some(true), None) => Some(routes.WhatIsConsigneeEoriController.onPageLoad(ua.id, CheckMode))
-          case (_, _)             => Some(checkModeDefaultPage(ua))
+        (ua.get(IsConsigneeEoriKnownPage), ua.get(WhatIsConsigneeEoriPage), ua.get(ConsigneeNamePage)) match {
+          case (Some(true), None, _)  => Some(routes.WhatIsConsigneeEoriController.onPageLoad(ua.id, CheckMode))
+          case (Some(false), _, None) => Some(routes.ConsigneeNameController.onPageLoad(ua.id, CheckMode))
+          case _                      => Some(checkModeDefaultPage(ua))
         }
 
     case WhatIsConsigneeEoriPage =>

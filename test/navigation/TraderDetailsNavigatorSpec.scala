@@ -417,7 +417,7 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
           }
         }
 
-        "to Check Your Answers Page when 'YES' is selected, if is consignor eori was previously answered" in {
+        "to Check Your Answers Page when 'YES' is selected, if Is consignor eori known was previously answered" in {
 
           forAll(genUserAnswersWithProcedure, arbitrary[Boolean]) {
             (answers, consignorEoriKnown) =>
@@ -476,6 +476,33 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           }
         }
+
+        "to Consignor Name page when 'NO' is selected, if it was not previously answered" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsignorEoriKnownPage)(false)
+                .unsafeRemove(ConsignorNamePage)
+
+              navigator
+                .nextPage(IsConsignorEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsignorNameController.onPageLoad(answers.id, CheckMode))
+          }
+        }
+
+        "to Check Your Answers page when 'NO' is selected, and when Consignor Name exists" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsignorEoriKnownPage)(false)
+                .unsafeSetVal(ConsignorNamePage)("Davey Jones")
+
+              navigator
+                .nextPage(IsConsignorEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+
       }
 
       "must go from Consignor Eori Number page" - {
@@ -614,6 +641,32 @@ class TraderDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks 
                 .nextPage(IsConsigneeEoriKnownPage, CheckMode, updatedAnswers)
                 .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
 
+          }
+        }
+
+        "to Consignee Name page when 'NO' is selected, if it was not previously answered" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsigneeEoriKnownPage)(false)
+                .unsafeRemove(ConsigneeNamePage)
+
+              navigator
+                .nextPage(IsConsigneeEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.ConsigneeNameController.onPageLoad(answers.id, CheckMode))
+          }
+        }
+
+        "to Check Your Answers page when 'NO' is selected, and when Consignee Name exists" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(IsConsigneeEoriKnownPage)(false)
+                .unsafeSetVal(ConsigneeNamePage)("Davey Jones")
+
+              navigator
+                .nextPage(IsConsigneeEoriKnownPage, CheckMode, updatedAnswers)
+                .mustBe(traderDetailsRoute.TraderDetailsCheckYourAnswersController.onPageLoad(answers.id))
           }
         }
       }
