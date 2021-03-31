@@ -52,16 +52,19 @@ class SafetyAndSecurityCheckYourAnswersController @Inject()(
       implicit request =>
         referenceDataConnector.getCountryList() flatMap {
           countries =>
-            val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers, countries)
+            referenceDataConnector.getCircumstanceIndicatorList() flatMap {
+              circumstanceIndicators =>
+                val sections: Seq[Section] = SafetyAndSecurityCheckYourAnswersViewModel(request.userAnswers, countries, circumstanceIndicators)
 
-            val json = Json.obj(
-              "lrn"                           -> lrn,
-              "sections"                      -> Json.toJson(sections),
-              "addAnotherCountryOfRoutingUrl" -> routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, NormalMode).url,
-              "nextPageUrl"                   -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
-            )
+                val json = Json.obj(
+                  "lrn"                           -> lrn,
+                  "sections"                      -> Json.toJson(sections),
+                  "addAnotherCountryOfRoutingUrl" -> routes.AddAnotherCountryOfRoutingController.onPageLoad(lrn, NormalMode).url,
+                  "nextPageUrl"                   -> mainRoutes.DeclarationSummaryController.onPageLoad(lrn).url
+                )
 
-            renderer.render("safetyAndSecurity/SafetyAndSecurityCheckYourAnswers.njk", json).map(Ok(_))
+                renderer.render("safetyAndSecurity/SafetyAndSecurityCheckYourAnswers.njk", json).map(Ok(_))
+            }
         }
 
     }
