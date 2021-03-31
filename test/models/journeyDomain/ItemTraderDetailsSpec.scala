@@ -35,7 +35,6 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
         case (baseUserAnswers, name, address) =>
           val userAnswers = baseUserAnswers
             .unsafeSetVal(AddConsignorPage)(false)
-            .unsafeSetVal(ConsignorForAllItemsPage)(false)
             .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(false)
             .unsafeSetVal(TraderDetailsConsignorNamePage(index))(name)
             .unsafeSetVal(TraderDetailsConsignorAddressPage(index))(address)
@@ -53,7 +52,6 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
         case (baseUserAnswers, name, address, eori @ EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
             .unsafeSetVal(AddConsignorPage)(false)
-            .unsafeSetVal(ConsignorForAllItemsPage)(false)
             .unsafeSetVal(TraderDetailsConsignorNamePage(index))(name)
             .unsafeSetVal(TraderDetailsConsignorAddressPage(index))(address)
             .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(true)
@@ -72,7 +70,6 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
         case (baseUserAnswers, name, address) =>
           val userAnswers = baseUserAnswers
             .unsafeSetVal(AddConsigneePage)(false)
-            .unsafeSetVal(ConsigneeForAllItemsPage)(false)
             .unsafeSetVal(TraderDetailsConsigneeNamePage(index))(name)
             .unsafeSetVal(TraderDetailsConsigneeAddressPage(index))(address)
             .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(false)
@@ -90,7 +87,6 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
         case (baseUserAnswers, name, address, eori @ EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
             .unsafeSetVal(AddConsigneePage)(false)
-            .unsafeSetVal(ConsigneeForAllItemsPage)(false)
             .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(true)
             .unsafeSetVal(TraderDetailsConsigneeEoriNumberPage(index))(eoriNumber1)
             .unsafeSetVal(TraderDetailsConsigneeNamePage(index))(name)
@@ -109,7 +105,6 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
         case (baseUserAnswers, _ @EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
             .unsafeRemove(AddConsignorPage)
-            .unsafeSetVal(ConsignorForAllItemsPage)(true)
             .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(true)
             .unsafeSetVal(TraderDetailsConsignorEoriNumberPage(index))(eoriNumber1)
 
@@ -125,7 +120,6 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
         case (baseUserAnswers, eori1 @ EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
             .unsafeRemove(AddConsigneePage)
-            .unsafeSetVal(ConsigneeForAllItemsPage)(true)
             .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(true)
             .unsafeSetVal(TraderDetailsConsigneeEoriNumberPage(index))(eoriNumber1)
 

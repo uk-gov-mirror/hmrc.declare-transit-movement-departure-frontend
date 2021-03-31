@@ -70,7 +70,6 @@ class TraderDetailsCheckYourAnswersController @Inject()(
       Section(
         msg"consignor.cya.section.heading",
         Seq(
-          checkYourAnswersHelper.consignorForAllItems,
           checkYourAnswersHelper.addConsignor,
           checkYourAnswersHelper.isConsignorEoriKnown,
           checkYourAnswersHelper.consignorName,
@@ -81,12 +80,11 @@ class TraderDetailsCheckYourAnswersController @Inject()(
       Section(
         msg"consignee.cya.section.heading",
         Seq(
-          checkYourAnswersHelper.consigneeForAllItems,
           checkYourAnswersHelper.addConsignee,
           checkYourAnswersHelper.isConsigneeEoriKnown,
           checkYourAnswersHelper.consigneeName,
           checkYourAnswersHelper.consigneeAddress,
-          checkYourAnswersHelper.whatIsConsigneeEori,
+          checkYourAnswersHelper.whatIsConsigneeEori
         ).flatten
       )
     )
