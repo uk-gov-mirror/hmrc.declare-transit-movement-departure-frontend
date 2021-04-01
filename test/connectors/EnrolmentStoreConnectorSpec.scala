@@ -41,8 +41,6 @@ class EnrolmentStoreConnectorSpec
 
   private lazy val connector: EnrolmentStoreConnector = app.injector.instanceOf[EnrolmentStoreConnector]
 
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
-
   val credId        = "testCredId"
   val groupId       = "testGroupId"
   val enrolmentCode = "testCode"

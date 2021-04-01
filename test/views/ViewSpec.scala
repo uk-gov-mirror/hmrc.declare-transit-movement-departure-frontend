@@ -32,8 +32,6 @@ import scala.concurrent.Future
 
 trait ViewSpec extends SpecBase with ViewSpecAssertions with NunjucksSupport with GuiceOneAppPerSuite {
 
-  def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
-
   override val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest)
 
   def renderDocument(template: String, json: JsObject = Json.obj()): Future[Document] = {
