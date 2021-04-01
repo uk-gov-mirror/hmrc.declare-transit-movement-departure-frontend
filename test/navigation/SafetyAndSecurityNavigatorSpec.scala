@@ -237,6 +237,20 @@ class SafetyAndSecurityNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
       }
 
+      "must go from commercialReferenceNumberAllItems to AddConveyanceReferenceNumber if transport mode at border is not completed" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+
+            val updatedAnswers = answers
+              .remove(ModeAtBorderPage).success.value
+
+            navigator
+              .nextPage(CommercialReferenceNumberAllItemsPage, NormalMode, updatedAnswers)
+              .mustBe(routes.AddConveyanceReferenceNumberController.onPageLoad(answers.id, NormalMode))
+        }
+      }
+
       "must go from AddConveyanceReferenceNumber to ConveyanceReferenceNumber if 'true'" in {
 
         forAll(arbitrary[UserAnswers]) {
