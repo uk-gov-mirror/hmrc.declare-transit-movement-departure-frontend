@@ -19,10 +19,8 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.journeyDomain.RouteDetails.TransitInformation
-import models.{Index, LocalDateTimeWithAMPM, UserAnswers}
+import models.{Index, UserAnswers}
 import pages._
-
-import scala.util.Random
 
 class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
   import RouteDetailsSpec._
@@ -71,12 +69,10 @@ object RouteDetailsSpec extends UserAnswersSpecHelper {
 
     // TODO replace with unsafeSetSeq
 
-    def pickAmOrPm(): String = Random.shuffle(List("AM", "PM")).head
-
     val userAnswers = routeDetails.transitInformation.zipWithIndex.foldLeft(interstitialUserAnswers) {
       case (ua, (TransitInformation(transitOffice, arrivalTime), index)) =>
         ua.unsafeSetVal(AddAnotherTransitOfficePage(Index(index)))(transitOffice)
-          .unsafeSetOpt(ArrivalTimesAtOfficePage(Index(index)))(arrivalTime.map(LocalDateTimeWithAMPM(_, pickAmOrPm())))
+          .unsafeSetOpt(ArrivalTimesAtOfficePage(Index(index)))(arrivalTime)
     }
 
     userAnswers
