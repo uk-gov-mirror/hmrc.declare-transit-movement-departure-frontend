@@ -126,7 +126,39 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
           otherGoodsItemsSpecialMentionLiabilityAmount mustBe Seq()
       }
     }
+    "header.secHEA358" - {
+      "When Add Safety and Security is answered No, do not pass value for the secHEA358" in {
 
+        forAll(arb[UserAnswers], arbitraryNormalJourneyDomain) {
+          (userAnswers, journeyDomain) =>
+            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
+
+            when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
+            when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
+            val updatedJourneyDomain           = journeyDomain.copy(preTaskList = journeyDomain.preTaskList.copy(addSecurityDetails = false))
+            val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
+            val result                         = service.convert(updatedUserAnswer).futureValue.value
+
+            result.header.secHEA358 must not be (defined)
+        }
+      }
+      "When Add Safety and Security is answered Yes, do  pass value for the secHEA358" in {
+        forAll(arb[UserAnswers], arbitraryNormalJourneyDomain) {
+          (userAnswers, journeyDomain) =>
+            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
+
+            when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
+            when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
+            val updatedJourneyDomain           = journeyDomain.copy(preTaskList = journeyDomain.preTaskList.copy(addSecurityDetails = true))
+            val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
+            println(s"***UpdateDomain" + updatedJourneyDomain)
+            println(s"***updatedUserAnswer" + updatedUserAnswer)
+            val result = service.convert(updatedUserAnswer).futureValue.value
+
+            result.header.secHEA358 must be(defined)
+        }
+      }
+    }
     "identityOfTransportAtCrossing" - {
 
       val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
