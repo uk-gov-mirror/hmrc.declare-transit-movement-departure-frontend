@@ -16,32 +16,39 @@
 
 package services
 
-import java.time.LocalDateTime
-import base.{GeneratorSpec, SpecBase}
+import base.{GeneratorSpec, MockServiceApp, SpecBase}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
-import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
-import models.journeyDomain.GoodsSummary.GoodSummarySimplifiedDetails
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
-import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
+import models.journeyDomain.TransportDetails.InlandMode.{NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
-import models.journeyDomain.{GoodsSummary, JourneyDomain, JourneyDomainSpec, TransportDetails}
+import models.journeyDomain.{JourneyDomain, JourneyDomainSpec, PreTaskListDetails}
 import models.messages.goodsitem.SpecialMentionGuaranteeLiabilityAmount
-import models.messages.{ControlResult, DeclarationRequest, InterchangeControlReference}
+import models.messages.{DeclarationRequest, InterchangeControlReference}
+import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import repositories.InterchangeControlReferenceIdRepository
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with BeforeAndAfterEach {
+class DeclarationRequestServiceSpec extends SpecBase with MockServiceApp with GeneratorSpec with JourneyModelGenerators with BeforeAndAfterEach {
 
-  val mockIcrRepository   = mock[InterchangeControlReferenceIdRepository]
-  val mockDateTimeService = mock[DateTimeService]
+  val mockIcrRepository: InterchangeControlReferenceIdRepository = mock[InterchangeControlReferenceIdRepository]
+  val mockDateTimeService: DateTimeService                       = mock[DateTimeService]
+
+  val service: DeclarationRequestService = app.injector.instanceOf[DeclarationRequestService]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[InterchangeControlReferenceIdRepository].toInstance(mockIcrRepository))
+      .overrides(bind[DateTimeService].toInstance(mockDateTimeService))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -68,8 +75,6 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
       forAll(arb[UserAnswers], arb[JourneyDomain]) {
         (userAnswers, journeyDomain) =>
-          val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
           when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.failed(new Exception))
           when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
@@ -79,8 +84,6 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
     }
 
     "must None when mandatory pages are missing" in {
-      val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
       when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
       when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
@@ -126,39 +129,29 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
           otherGoodsItemsSpecialMentionLiabilityAmount mustBe Seq()
       }
     }
-    "header.secHEA358" - {
-      "When Add Safety and Security is answered No, do not pass value for the secHEA358" in {
 
-        forAll(arb[UserAnswers], arbitraryNormalJourneyDomain) {
+    "secHEA358" - {
+
+      "Pass value for the secHEA358When based on Safety and Security answer" in {
+
+        forAll(arb[UserAnswers], arb[JourneyDomain]) {
           (userAnswers, journeyDomain) =>
-            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
             when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
             when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
-            val updatedJourneyDomain           = journeyDomain.copy(preTaskList = journeyDomain.preTaskList.copy(addSecurityDetails = false))
-            val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
-            val result                         = service.convert(updatedUserAnswer).futureValue.value
 
-            result.header.secHEA358 must not be (defined)
-        }
-      }
-      "When Add Safety and Security is answered Yes, do  pass value for the secHEA358" in {
-        forAll(arb[UserAnswers], arbitraryNormalJourneyDomain) {
-          (userAnswers, journeyDomain) =>
-            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
+            val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
+            val result            = service.convert(updatedUserAnswer).futureValue
 
-            when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
-            when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
-            val updatedJourneyDomain           = journeyDomain.copy(preTaskList = journeyDomain.preTaskList.copy(addSecurityDetails = true))
-            val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
-            println(s"***UpdateDomain" + updatedJourneyDomain)
-            println(s"***updatedUserAnswer" + updatedUserAnswer)
-            val result = service.convert(updatedUserAnswer).futureValue.value
-
-            result.header.secHEA358 must be(defined)
+            result must be(defined)
+            if (journeyDomain.preTaskList.addSecurityDetails) {
+              result.value.header.secHEA358 mustBe Some(1)
+            } else {
+              result.value.header.secHEA358 mustBe None
+            }
         }
       }
     }
+
     "identityOfTransportAtCrossing" - {
 
       val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
@@ -221,8 +214,6 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
     }
 
     "identityOfTransportAtCrossing" - {
-
-      val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
 
       "must return nationality of crossing when there are new details at border and the mode is a mode with nationality" in {
 
@@ -304,8 +295,6 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
         forAll(arb[UserAnswers], arbitrarySimplifiedJourneyDomain) {
           (userAnswers, journeyDomain) =>
-            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
             when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
             when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
@@ -322,8 +311,6 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
         forAll(arb[UserAnswers], arbitraryNormalJourneyDomain) {
           (userAnswers, journeyDomain) =>
-            val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
             when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
             when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
