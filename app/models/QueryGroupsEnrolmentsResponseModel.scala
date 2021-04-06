@@ -16,20 +16,13 @@
 
 package models
 
-import play.api.libs.json.{__, JsString, Reads, Writes}
+import play.api.libs.json.Json
 
-case class EoriNumber(value: String)
+case class QueryGroupsEnrolmentsResponseModel(enrolments: Seq[Service])
 
-object EoriNumber {
-  implicit def reads: Reads[EoriNumber]   = __.read[String] map EoriNumber.apply
-  implicit def writes: Writes[EoriNumber] = Writes(eori => JsString(eori.value))
+case class Service(service: String)
 
-  private val eoriPrefix = "GB"
-  private val eoriRegex  = "[A-Z]{2}[^\n\r]{1,}"
-
-  def prefixGBIfMissing(eoriNumber: String): String =
-    if (!eoriNumber.matches(eoriRegex)) {
-      s"$eoriPrefix$eoriNumber"
-    } else eoriNumber
-
+object QueryGroupsEnrolmentsResponseModel {
+  implicit val enrolmentReads             = Json.format[Service]
+  implicit val queryGroupsEnrolmentsReads = Json.format[QueryGroupsEnrolmentsResponseModel]
 }
