@@ -16,12 +16,12 @@
 
 package forms.mappings
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 
-import models.LocalDateTimeWithAMPM
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import utils.Format
+import utils.Format.timeFormatterFromAMPM
 
 import scala.util.{Failure, Success, Try}
 
@@ -36,20 +36,14 @@ private[mappings] class LocalDateTimeFormatter(
   pastDateErrorKey: String,
   futureDateErrorKey: String,
   args: Seq[String] = Seq.empty
-) extends Formatter[LocalDateTimeWithAMPM]
+) extends Formatter[LocalDateTime]
     with Formatters {
 
   private val fieldAmOrPmKeys = List("amOrPm")
   private val fieldTimeKeys   = List("hour", "minute")
   private val fieldDateKeys   = List("day", "month", "year")
 
-  private def toDateTime(key: String,
-                         day: Int,
-                         month: Int,
-                         year: Int,
-                         hour: Int,
-                         minute: Int,
-                         amOrPm: String): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
+  private def toDateTime(key: String, day: Int, month: Int, year: Int, hour: Int, minute: Int, amOrPm: String): Either[Seq[FormError], LocalDateTime] = {
     val currentDate                     = LocalDate.now()
     val pastDateTimeArgs: Seq[String]   = args :+ s"${Format.dateFormattedWithMonthName(currentDate.minusDays(1))}"
     val futureDateTimeArgs: Seq[String] = args :+ s"${Format.dateFormattedWithMonthName(currentDate.plusWeeks(2))}"
@@ -65,14 +59,21 @@ private[mappings] class LocalDateTimeFormatter(
         } else if (hour == 0) {
           Left(Seq(FormError(key, invalidTimeKey, args)))
         } else {
-          Right(LocalDateTimeWithAMPM(dateTime, amOrPm))
+          Right(amOrPmFormatter(dateTime, amOrPm))
         }
       case Failure(_) =>
         Left(Seq(FormError(key, invalidDateKey, args)))
     }
   }
 
-  private def formatDateTime(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
+  private def amOrPmFormatter(dateTime: LocalDateTime, amOrPm: String) = {
+    val formatTimeWithAmPm = dateTime.toLocalTime + amOrPm.toUpperCase
+    val parseToTime        = LocalTime.parse(formatTimeWithAmPm, timeFormatterFromAMPM)
+
+    LocalDateTime.of(dateTime.toLocalDate, parseToTime)
+  }
+
+  private def formatDateTime(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDateTime] = {
 
     val int = intFormatter(
       requiredKey    = invalidDateKey,
@@ -97,7 +98,7 @@ private[mappings] class LocalDateTimeFormatter(
   }
 
   //noinspection ScalaStyle
-  override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDateTimeWithAMPM] = {
+  override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDateTime] = {
 
     val missingTimeFields = getMissingFields(fieldTimeKeys, key, data)
     val missingDateFields = getMissingFields(fieldDateKeys, key, data)
@@ -132,15 +133,17 @@ private[mappings] class LocalDateTimeFormatter(
     missingTimeFields
   }
 
-  override def unbind(key: String, value: LocalDateTimeWithAMPM): Map[String, String] =
+  override def unbind(key: String, value: LocalDateTime): Map[String, String] =
     Map(
-      s"$key.day"    -> value.localDateTime.getDayOfMonth.toString,
-      s"$key.month"  -> value.localDateTime.getMonthValue.toString,
-      s"$key.year"   -> value.localDateTime.getYear.toString,
-      s"$key.hour"   -> bind12HourClock(value.localDateTime.getHour).toString,
-      s"$key.minute" -> value.localDateTime.getMinute.toString,
-      s"$key.amOrPm" -> value.amOrPm
+      s"$key.day"    -> value.getDayOfMonth.toString,
+      s"$key.month"  -> value.getMonthValue.toString,
+      s"$key.year"   -> value.getYear.toString,
+      s"$key.hour"   -> bind12HourClock(value.getHour).toString,
+      s"$key.minute" -> value.getMinute.toString,
+      s"$key.amOrPm" -> amOrPm(value.getHour)
     )
+
+  private def amOrPm(hour: Int) = if (hour > 12) "pm" else "am"
 
   private def bind12HourClock(hour: Int) =
     hour match {

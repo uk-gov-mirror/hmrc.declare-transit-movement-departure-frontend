@@ -16,34 +16,35 @@
 
 package forms.behaviours
 
-import java.time.{LocalDateTime, ZoneOffset}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneOffset}
 
-import models.LocalDateTimeWithAMPM
 import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
 class DateTimeWithAMPMBehaviours extends FieldBehaviours {
 
-  val dateTime = LocalDateTime.now(ZoneOffset.UTC)
+  val dateTime = LocalDateTime.now(ZoneOffset.UTC).withHour(1)
 
-  def dateTimeField(form: Form[_], key: String, validData: Gen[LocalDateTimeWithAMPM]): Unit =
+  def dateTimeField(form: Form[_], key: String, validData: Gen[LocalDateTime]): Unit =
     "must bind valid data" in {
 
       forAll(validData -> "valid date") {
         date =>
           val data = Map(
-            s"$key.day"    -> date.localDateTime.getDayOfMonth.toString,
-            s"$key.month"  -> date.localDateTime.getMonthValue.toString,
-            s"$key.year"   -> date.localDateTime.getYear.toString,
-            s"$key.hour"   -> date.localDateTime.getHour.toString,
-            s"$key.minute" -> date.localDateTime.getMinute.toString,
-            s"$key.amOrPm" -> date.amOrPm
+            s"$key.day"    -> date.getDayOfMonth.toString,
+            s"$key.month"  -> date.getMonthValue.toString,
+            s"$key.year"   -> date.getYear.toString,
+            s"$key.hour"   -> date.getHour.toString,
+            s"$key.minute" -> date.getMinute.toString,
+            s"$key.amOrPm" -> {
+              if (date.getHour > 12) "pm" else "am"
+            }
           )
 
           val result = form.bind(data)
 
-          result.value.value mustEqual date.copy(localDateTime = date.localDateTime.withSecond(0).withNano(0))
+          result.value.value mustEqual date.withSecond(0).withNano(0)
       }
     }
 
@@ -54,15 +55,15 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
 
       forAll(generator -> "invalid dates") {
         dateTime =>
-          val dateTimeWithAmPm = LocalDateTimeWithAMPM(dateTime, "am")
-
           val data = Map(
-            s"$key.day"    -> dateTimeWithAmPm.localDateTime.getDayOfMonth.toString,
-            s"$key.month"  -> dateTimeWithAmPm.localDateTime.getMonthValue.toString,
-            s"$key.year"   -> dateTimeWithAmPm.localDateTime.getYear.toString,
-            s"$key.hour"   -> dateTimeWithAmPm.localDateTime.getHour.toString,
-            s"$key.minute" -> dateTimeWithAmPm.localDateTime.getMinute.toString,
-            s"$key.amOrPm" -> dateTimeWithAmPm.amOrPm
+            s"$key.day"    -> dateTime.getDayOfMonth.toString,
+            s"$key.month"  -> dateTime.getMonthValue.toString,
+            s"$key.year"   -> dateTime.getYear.toString,
+            s"$key.hour"   -> dateTime.getHour.toString,
+            s"$key.minute" -> dateTime.getMinute.toString,
+            s"$key.amOrPm" -> {
+              if (dateTime.getHour > 12) "PM" else "AM"
+            }
           )
 
           val result = form.bind(data)
@@ -78,14 +79,15 @@ class DateTimeWithAMPMBehaviours extends FieldBehaviours {
 
       forAll(generator -> "invalid dates") {
         dateTime =>
-          val dateTimeWithAmPm = LocalDateTimeWithAMPM(dateTime, "am")
           val data = Map(
-            s"$key.day"    -> dateTimeWithAmPm.localDateTime.getDayOfMonth.toString,
-            s"$key.month"  -> dateTimeWithAmPm.localDateTime.getMonthValue.toString,
-            s"$key.year"   -> dateTimeWithAmPm.localDateTime.getYear.toString,
-            s"$key.hour"   -> dateTimeWithAmPm.localDateTime.getHour.toString,
-            s"$key.minute" -> dateTimeWithAmPm.localDateTime.getMinute.toString,
-            s"$key.amOrPm" -> dateTimeWithAmPm.amOrPm
+            s"$key.day"    -> dateTime.getDayOfMonth.toString,
+            s"$key.month"  -> dateTime.getMonthValue.toString,
+            s"$key.year"   -> dateTime.getYear.toString,
+            s"$key.hour"   -> dateTime.getHour.toString,
+            s"$key.minute" -> dateTime.getMinute.toString,
+            s"$key.amOrPm" -> {
+              if (dateTime.getHour > 12) "PM" else "AM"
+            }
           )
 
           val result = form.bind(data)
