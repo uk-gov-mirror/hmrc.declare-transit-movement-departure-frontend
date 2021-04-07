@@ -26,6 +26,7 @@ site.cannotStartYet = Cannot start yet
 site.service_name =  Manage your transit movements
 site.textarea.char_limit = (Limit is {0} characters)
 site.title.suffix = -  Manage your transit movements - GOV.UK
+site.youMust = You must
 
 error.title.prefix = Error:
 error.summary.title = There is a problem
@@ -83,6 +84,15 @@ session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
 session_expired.guidance = We saved your answers.
 session_expired.button = Sign in
+
+unauthorisedWithGroupAccess.title = You cannot use this service authorisation
+unauthorisedWithGroupAccess.heading = You cannot use this service
+unauthorisedWithGroupAccess.p = If you already have access, you must contact your group administrator to update your access rights.
+
+unauthorisedWithoutGroupAccess.title = You cannot use this service group authorisation
+unauthorisedWithoutGroupAccess.heading = You cannot use this service
+unauthorisedWithoutGroupAccess.requestAccess = request access to NCTS
+unauthorisedWithoutGroupAccess.beforeUseThisService =  before you can use this service.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account

@@ -26,7 +26,8 @@ import org.scalatest.{OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import play.api.test.Helpers
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
 
 trait SpecBase extends AnyFreeSpec with Matchers with OptionValues with TryValues with ScalaFutures with IntegrationPatience with MockitoSugar {
@@ -48,6 +49,8 @@ trait SpecBase extends AnyFreeSpec with Matchers with OptionValues with TryValue
   val itemIndex: Index      = Index(0)
   val packageIndex: Index   = Index(0)
   val containerIndex: Index = Index(0)
+
+  def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
   val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())
 
