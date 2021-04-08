@@ -43,11 +43,12 @@ package object journeyDomain {
   implicit class GettableAsFilterForNextReaderOps[A: Reads](a: Gettable[A]) {
 
     /**
-      * Returns the UserAnswersReader[Option[B]], where UserAnswersReader[B] which is run only if UserAnswerReader[A]
-      * is defined and true, if it defined and false it will return None. If the result of UserAnswerReader[A]
-      * is not defined then UserAnswersReader[B] will never run `next`
+      * Returns UserAnswersReader[Option[B]], where UserAnswersReader[B] which is run only if UserAnswerReader[A]
+      * is defined and satisfies the predicate, if it defined and does not satisfy the predicate overall reader will
+      * will return None. If the result of UserAnswerReader[A] is not defined then the overall reader will fail and
+      * `next` will not be run
       */
-    def readerWithDependentOptionalReaders[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[Option[B]] =
+    def filterDependent[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[Option[B]] =
       a.reader
         .flatMap {
           x =>

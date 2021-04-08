@@ -32,8 +32,8 @@ object TraderDetails {
     UserAnswersOptionalParser(
       (
         UserAnswersReader[PrincipalTraderDetails],
-        AddConsignorPage.readerWithDependentOptionalReaders(identity)(UserAnswersReader[ConsignorDetails]),
-        AddConsigneePage.readerWithDependentOptionalReaders(identity)(UserAnswersReader[ConsigneeDetails])
+        AddConsignorPage.filterDependent(identity)(UserAnswersReader[ConsignorDetails]),
+        AddConsigneePage.filterDependent(identity)(UserAnswersReader[ConsigneeDetails])
       ).tupled
     )(
       x => TraderDetails(x._1, x._2, x._3)

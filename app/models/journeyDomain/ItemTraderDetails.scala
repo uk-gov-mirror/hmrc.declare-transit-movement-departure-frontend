@@ -32,7 +32,7 @@ object ItemTraderDetails {
 
   def consignorDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
     def readConsignorEoriPage: UserAnswersReader[Option[EoriNumber]] =
-      TraderDetailsConsignorEoriKnownPage(index).readerWithDependentOptionalReaders(identity) {
+      TraderDetailsConsignorEoriKnownPage(index).filterDependent(identity) {
         TraderDetailsConsignorEoriNumberPage(index).reader.map(EoriNumber(_))
       }
 
@@ -48,13 +48,13 @@ object ItemTraderDetails {
             RequiredDetails(name, address, eori)
         }
 
-    AddConsignorPage.readerWithDependentOptionalReaders(_ == false)(consignorInformation)
+    AddConsignorPage.filterDependent(_ == false)(consignorInformation)
   }
 
   def consigneeDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
 
     def readConsigneeEoriPage: UserAnswersReader[Option[EoriNumber]] =
-      TraderDetailsConsigneeEoriKnownPage(index).readerWithDependentOptionalReaders(identity) {
+      TraderDetailsConsigneeEoriKnownPage(index).filterDependent(identity) {
         TraderDetailsConsigneeEoriNumberPage(index).reader.map(EoriNumber(_))
       }
 
@@ -70,7 +70,7 @@ object ItemTraderDetails {
             RequiredDetails(name, address, eori)
         }
 
-    AddConsigneePage.readerWithDependentOptionalReaders(_ == false)(consigneeInformation)
+    AddConsigneePage.filterDependent(_ == false)(consigneeInformation)
   }
 
   def userAnswersParser(index: Index): UserAnswersParser[Option, ItemTraderDetails] =
