@@ -32,15 +32,9 @@ object ItemTraderDetails {
 
   def consignorDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
     def readConsignorEoriPage: UserAnswersReader[Option[EoriNumber]] =
-      TraderDetailsConsignorEoriKnownPage(index).reader
-        .flatMap {
-          bool =>
-            if (bool)
-              TraderDetailsConsignorEoriNumberPage(index).reader.map(
-                eori => Some(EoriNumber(eori))
-              )
-            else none[EoriNumber].pure[UserAnswersReader]
-        }
+      TraderDetailsConsignorEoriKnownPage(index).readerWithDependentOptionalReaders(identity) {
+        TraderDetailsConsignorEoriNumberPage(index).reader.map(EoriNumber(_))
+      }
 
     val consignorInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
       (
@@ -54,26 +48,15 @@ object ItemTraderDetails {
             RequiredDetails(name, address, eori)
         }
 
-    (
-      UserAnswersReader.unsafeEmpty[Boolean], // TODO - should be AddConsignorPage.reader
-      AddConsignorPage.reader
-    ).tupled.flatMap {
-      case (consignorForAllItems, addConsignor) if !consignorForAllItems | !addConsignor => consignorInformation
-    }.lower
+    AddConsignorPage.readerWithDependentOptionalReaders(_ == false)(consignorInformation)
   }
 
   def consigneeDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
 
     def readConsigneeEoriPage: UserAnswersReader[Option[EoriNumber]] =
-      TraderDetailsConsigneeEoriKnownPage(index).reader
-        .flatMap {
-          bool =>
-            if (bool)
-              TraderDetailsConsigneeEoriNumberPage(index).reader.map(
-                eori => Some(EoriNumber(eori))
-              )
-            else none[EoriNumber].pure[UserAnswersReader]
-        }
+      TraderDetailsConsigneeEoriKnownPage(index).readerWithDependentOptionalReaders(identity) {
+        TraderDetailsConsigneeEoriNumberPage(index).reader.map(EoriNumber(_))
+      }
 
     val consigneeInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
       (
@@ -87,13 +70,7 @@ object ItemTraderDetails {
             RequiredDetails(name, address, eori)
         }
 
-    (
-      UserAnswersReader.unsafeEmpty[Boolean], // TODO - should be AddConsigneePage.reader
-      AddConsigneePage.reader
-    ).tupled.flatMap {
-      //TODO this can throw matcher error, need amending
-      case (consigneeForAllItems, addConsignee) if !consigneeForAllItems | !addConsignee => consigneeInformation
-    }.lower
+    AddConsigneePage.readerWithDependentOptionalReaders(_ == false)(consigneeInformation)
   }
 
   def userAnswersParser(index: Index): UserAnswersParser[Option, ItemTraderDetails] =
