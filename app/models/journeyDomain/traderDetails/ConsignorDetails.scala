@@ -29,7 +29,7 @@ object ConsignorDetails {
   implicit val consignorDetails: UserAnswersReader[ConsignorDetails] = {
     val readConsignorEoriPage =
       IsConsignorEoriKnownPage
-        .readerWithDependentOptionalReaders(identity)(ConsignorEoriPage.reader.map(EoriNumber(_)))
+        .filterDependent(identity)(ConsignorEoriPage.reader.map(EoriNumber(_)))
 
     (
       readConsignorEoriPage,
