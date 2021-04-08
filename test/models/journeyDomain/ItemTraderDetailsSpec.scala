@@ -35,10 +35,10 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
         case (baseUserAnswers, name, address) =>
           val userAnswers = baseUserAnswers
             .unsafeSetVal(AddConsignorPage)(false)
+            .unsafeSetVal(AddConsigneePage)(true)
             .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(false)
             .unsafeSetVal(TraderDetailsConsignorNamePage(index))(name)
             .unsafeSetVal(TraderDetailsConsignorAddressPage(index))(address)
-            .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(false)
 
           val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
           val result                   = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
@@ -52,6 +52,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
         case (baseUserAnswers, name, address, eori @ EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
             .unsafeSetVal(AddConsignorPage)(false)
+            .unsafeSetVal(AddConsigneePage)(true)
             .unsafeSetVal(TraderDetailsConsignorNamePage(index))(name)
             .unsafeSetVal(TraderDetailsConsignorAddressPage(index))(address)
             .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(true)
@@ -69,6 +70,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[ConsigneeAddress]) {
         case (baseUserAnswers, name, address) =>
           val userAnswers = baseUserAnswers
+            .unsafeSetVal(AddConsignorPage)(true)
             .unsafeSetVal(AddConsigneePage)(false)
             .unsafeSetVal(TraderDetailsConsigneeNamePage(index))(name)
             .unsafeSetVal(TraderDetailsConsigneeAddressPage(index))(address)
@@ -86,6 +88,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], stringsWithMaxLength(stringMaxLength), arb[ConsigneeAddress], arb[EoriNumber]) {
         case (baseUserAnswers, name, address, eori @ EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
+            .unsafeSetVal(AddConsignorPage)(true)
             .unsafeSetVal(AddConsigneePage)(false)
             .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(true)
             .unsafeSetVal(TraderDetailsConsigneeEoriNumberPage(index))(eoriNumber1)
@@ -104,7 +107,8 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], arb[EoriNumber]) {
         case (baseUserAnswers, _ @EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
-            .unsafeRemove(AddConsignorPage)
+            .unsafeSetVal(AddConsignorPage)(true)
+            .unsafeSetVal(AddConsigneePage)(true)
             .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(true)
             .unsafeSetVal(TraderDetailsConsignorEoriNumberPage(index))(eoriNumber1)
 
@@ -119,7 +123,8 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
       forAll(arb[UserAnswers], arb[EoriNumber]) {
         case (baseUserAnswers, eori1 @ EoriNumber(eoriNumber1)) =>
           val userAnswers = baseUserAnswers
-            .unsafeRemove(AddConsigneePage)
+            .unsafeSetVal(AddConsignorPage)(true)
+            .unsafeSetVal(AddConsigneePage)(true)
             .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(true)
             .unsafeSetVal(TraderDetailsConsigneeEoriNumberPage(index))(eoriNumber1)
 
