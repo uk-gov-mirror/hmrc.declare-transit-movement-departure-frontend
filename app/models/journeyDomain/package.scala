@@ -31,13 +31,6 @@ package object journeyDomain {
 
     def apply[A](fn: UserAnswers => Option[A]): UserAnswersReader[A] = ReaderT[Option, UserAnswers, A](fn)
 
-    /**
-      * Returns a UserAnswersReader for [[A]] which will always fail
-      */
-    def unsafeEmpty[A]: UserAnswersReader[A] =
-      UserAnswersReader[A](
-        (_: UserAnswers) => Option.empty[A]
-      )
   }
 
   implicit class GettableAsFilterForNextReaderOps[A: Reads](a: Gettable[A]) {
