@@ -52,7 +52,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
           val userAnswers = ItemsSecurityTraderDetailsSpec
             .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
             .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
-            .unsafeRemoveVal(AddCommercialReferenceNumberAllItemsPage)
+            .unsafeRemove(AddCommercialReferenceNumberAllItemsPage)
 
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
