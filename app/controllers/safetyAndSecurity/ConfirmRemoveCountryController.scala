@@ -19,7 +19,7 @@ package controllers.safetyAndSecurity
 import controllers.actions._
 import forms.safetyAndSecurity.ConfirmRemoveCountryFormProvider
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.ConfirmRemoveCountryPage
@@ -41,6 +41,7 @@ class ConfirmRemoveCountryController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: ConfirmRemoveCountryFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -51,48 +52,56 @@ class ConfirmRemoveCountryController @Inject()(
 
   private val template = "confirmRemoveCountry.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val form = formProvider()
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
+      implicit request =>
+        val form = formProvider()
 
-      val json = Json.obj(
-        "form"   -> form,
-        "mode"   -> mode,
-        "index"  -> index.display,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(form("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val form = formProvider()
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "index"  -> index.display,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            if (value) {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.remove(CountriesOfRoutingQuery(index)))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ConfirmRemoveCountryPage, mode, updatedAnswers))
-            } else {
-              Future.successful(Redirect(navigator.nextPage(ConfirmRemoveCountryPage, mode, request.userAnswers)))
-          }
+        val json = Json.obj(
+          "form"   -> form,
+          "mode"   -> mode,
+          "index"  -> index.display,
+          "lrn"    -> lrn,
+          "radios" -> Radios.yesNo(form("value"))
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
+      implicit request =>
+        val form = formProvider()
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"   -> formWithErrors,
+                "mode"   -> mode,
+                "index"  -> index.display,
+                "lrn"    -> lrn,
+                "radios" -> Radios.yesNo(formWithErrors("value"))
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              if (value) {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(CountriesOfRoutingQuery(index)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ConfirmRemoveCountryPage, mode, updatedAnswers))
+              } else {
+                Future.successful(Redirect(navigator.nextPage(ConfirmRemoveCountryPage, mode, request.userAnswers)))
+            }
+          )
+    }
 }

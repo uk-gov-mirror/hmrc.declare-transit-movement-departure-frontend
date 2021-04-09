@@ -18,14 +18,12 @@ package navigation
 
 import controllers.guaranteeDetails.routes
 import derivable.DeriveNumberOfGuarantees
-
 import javax.inject.{Inject, Singleton}
 import models.GuaranteeType._
 import models._
 import models.reference.CountryCode
 import pages._
 import pages.guaranteeDetails._
-import play.api.libs.json.{JsObject, JsPath}
 import play.api.mvc.Call
 
 @Singleton
@@ -58,12 +56,11 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
   }
 
   def otherReferenceLiablityAmountRoute(ua: UserAnswers, index: Index, mode: Mode) =
-    (ua.get(OtherReferenceLiabilityAmountPage(index)), ua.get(AccessCodePage(index)), mode) match {
-      case (Some(""), _, mode)           => Some(routes.DefaultAmountController.onPageLoad(ua.id, index, mode))
+    (ua.get(LiabilityAmountPage(index)), ua.get(AccessCodePage(index)), mode) match {
+      case (None, _, _)                  => Some(routes.DefaultAmountController.onPageLoad(ua.id, index, mode))
       case (Some(_), _, NormalMode)      => Some(routes.AccessCodeController.onPageLoad(ua.id, index, NormalMode))
       case (Some(_), Some(_), CheckMode) => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, index))
       case (Some(_), None, CheckMode)    => Some(routes.AccessCodeController.onPageLoad(ua.id, index, CheckMode))
-      case (None, _, _)                  => Some(routes.DefaultAmountController.onPageLoad(ua.id, index, mode))
     }
 
   def guaranteeReferenceNormalRoutes(ua: UserAnswers, index: Index, mode: Mode) =
@@ -75,11 +72,10 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
     }
 
   def guaranteeReferenceRoutes(ua: UserAnswers, index: Index) =
-    (ua.get(LiabilityAmountPage(index)), ua.get(OtherReferenceLiabilityAmountPage(index)), ua.get(AccessCodePage(index))) match {
-      case (Some(_), None, None) => Some(routes.AccessCodeController.onPageLoad(ua.id, index, CheckMode))
-      case (None, Some(_), None) => Some(routes.AccessCodeController.onPageLoad(ua.id, index, CheckMode))
-      case (None, None, _)       => guaranteeReferenceNormalRoutes(ua: UserAnswers, index, CheckMode)
-      case _                     => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, index))
+    (ua.get(LiabilityAmountPage(index)), ua.get(AccessCodePage(index))) match {
+      case (None, _) => guaranteeReferenceNormalRoutes(ua: UserAnswers, index, CheckMode)
+      case (_, None) => Some(routes.AccessCodeController.onPageLoad(ua.id, index, CheckMode))
+      case _         => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
 
   def liabilityAmountRoute(ua: UserAnswers, index: Index, mode: Mode) =
@@ -87,18 +83,17 @@ class GuaranteeDetailsNavigator @Inject()() extends Navigator {
       case (Some(_), Some(""), _, NormalMode) => Some(routes.DefaultAmountController.onPageLoad(ua.id, index, NormalMode))
       case (Some(_), Some(_), _, NormalMode)  => Some(routes.AccessCodeController.onPageLoad(ua.id, index, NormalMode))
       case (Some(_), None, _, NormalMode)     => Some(routes.DefaultAmountController.onPageLoad(ua.id, index, NormalMode))
-
-      case (_, _, None, CheckMode) => Some(routes.AccessCodeController.onPageLoad(ua.id, index, CheckMode))
-      case _                       => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, index))
+      case (_, _, None, CheckMode)            => Some(routes.AccessCodeController.onPageLoad(ua.id, index, CheckMode))
+      case _                                  => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, index))
     }
 
-  def defaultAmountRoute(ua: UserAnswers, index: Index, mode: Mode) = (ua.get(DefaultAmountPage(index)), ua.get(AccessCodePage(index)), mode) match {
-    case (Some(true), _, NormalMode) => Some(routes.AccessCodeController.onPageLoad(ua.id, index, mode))
-    case (Some(false), _, _)         => Some(routes.OtherReferenceLiabilityAmountController.onPageLoad(ua.id, index, mode))
-
-    case (Some(true), Some(_), CheckMode) => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, index))
-    case (Some(true), None, CheckMode)    => Some(routes.AccessCodeController.onPageLoad(ua.id, index, mode))
-  }
+  def defaultAmountRoute(ua: UserAnswers, index: Index, mode: Mode) =
+    (ua.get(DefaultAmountPage(index)), ua.get(AccessCodePage(index)), mode) match {
+      case (Some(true), _, NormalMode)    => Some(routes.AccessCodeController.onPageLoad(ua.id, index, mode))
+      case (Some(true), None, CheckMode)  => Some(routes.AccessCodeController.onPageLoad(ua.id, index, mode))
+      case (Some(false), _, _)            => Some(routes.OtherReferenceLiabilityAmountController.onPageLoad(ua.id, index, mode))
+      case _                              => Some(routes.GuaranteeDetailsCheckYourAnswersController.onPageLoad(ua.id, index))
+    }
 
   def addAnotherGuaranteeRoute(ua: UserAnswers): Option[Call] = {
     val count = ua.get(DeriveNumberOfGuarantees).getOrElse(1)

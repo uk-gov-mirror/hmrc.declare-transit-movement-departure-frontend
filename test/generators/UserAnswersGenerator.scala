@@ -143,7 +143,6 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
       arbitraryIsCommodityCodeKnownUserAnswersEntry.arbitrary ::
       arbitraryAddTotalNetMassUserAnswersEntry.arbitrary ::
       arbitraryItemDescriptionUserAnswersEntry.arbitrary ::
-      arbitraryOtherReferenceLiabilityAmountUserAnswersEntry.arbitrary ::
       arbitraryItemTotalGrossMassUserAnswersEntry.arbitrary ::
       arbitraryPreLodgeDeclarationUserAnswersEntry.arbitrary ::
       arbitraryItemDescriptionUserAnswersEntry.arbitrary ::

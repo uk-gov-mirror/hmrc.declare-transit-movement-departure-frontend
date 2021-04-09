@@ -19,9 +19,10 @@ package controllers.addItems.specialMentions
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.addItems.specialMentions.SpecialMentionTypeFormProvider
+
 import javax.inject.Inject
 import models.reference.SpecialMention
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.SpecialMentionTypePage
@@ -44,6 +45,7 @@ class SpecialMentionTypeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: SpecialMentionTypeFormProvider,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
@@ -56,7 +58,10 @@ class SpecialMentionTypeController @Inject()(
   private val template = "addItems/specialMentions/specialMentionType.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getSpecialMention() flatMap {
           specialMention =>
@@ -82,7 +87,10 @@ class SpecialMentionTypeController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getSpecialMention() flatMap {
           specialMention =>

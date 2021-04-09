@@ -16,11 +16,11 @@
 
 package forms.mappings
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 
-import models.{Enumerable, LocalDateTimeWithAMPM, LocalReferenceNumber}
+import models.{Enumerable, LocalReferenceNumber}
 import play.api.data.FieldMapping
-import play.api.data.Forms.{ignored, of}
+import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
 
 trait Mappings extends Formatters with Constraints {
@@ -60,7 +60,7 @@ trait Mappings extends Formatters with Constraints {
                               amOrPmRequired: String,
                               pastDateErrorKey: String,
                               futureDateErrorKey: String,
-                              args: Seq[String] = Seq.empty): FieldMapping[LocalDateTimeWithAMPM] =
+                              args: Seq[String] = Seq.empty): FieldMapping[LocalDateTime] =
     of(
       new LocalDateTimeFormatter(invalidDateKey,
                                  invalidTimeKey,

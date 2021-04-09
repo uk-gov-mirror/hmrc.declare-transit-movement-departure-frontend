@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package derivable
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Constants.routeDetailsOfficesOfTransit
 
-class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
+case object DeriveOfficesOfTransitIds extends Derivable[List[JsObject], List[String]] {
+  override val derive: List[JsObject] => List[String] = _.flatMap(
+    y => (y \ "addAnotherTransitOffice").asOpt[String]
+  )
 
-  "OtherReferenceliabilityAmountPage" - {
-
-    beRetrievable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-  }
+  override def path: JsPath = JsPath \ routeDetailsOfficesOfTransit
 }

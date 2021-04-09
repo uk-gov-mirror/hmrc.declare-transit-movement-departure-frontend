@@ -29,7 +29,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def arrivalTimesAtOffice(index: Index): Option[Row] = userAnswers.get(ArrivalTimesAtOfficePage(index)) map {
     answer =>
-      val dateTime: String = s"${Format.dateTimeFormattedAMPM(answer.localDateTime).toLowerCase}"
+      val dateTime: String = s"${Format.dateTimeFormattedAMPM(answer).toLowerCase}"
       Row(
         key   = Key(msg"arrivalTimesAtOffice.checkYourAnswersLabel".withArgs(index.display), classes = Seq("govuk-!-width-one-half")),
         value = Value(Literal(dateTime)),
@@ -108,7 +108,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               actions = List(
                 Action(
                   content            = msg"site.edit",
-                  href               = routes.AddAnotherTransitOfficeController.onPageLoad(lrn = lrn, index = index, mode = CheckMode).url,
+                  href               = routes.OfficeOfTransitCountryController.onPageLoad(lrn = lrn, index = index, mode = CheckMode).url,
                   visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"addAnotherTransitOffice.checkYourAnswersLabel")),
                   attributes         = Map("id" -> "change-office-of-transit")
                 )
@@ -159,7 +159,12 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         customsOfficeList.getCustomsOffice(answer).map {
           office =>
             val arrivalTime =
-              userAnswers.get(ArrivalTimesAtOfficePage(index)).map(time => s"${Format.dateTimeFormattedAMPM(time.localDateTime).toLowerCase}").getOrElse("")
+              userAnswers
+                .get(ArrivalTimesAtOfficePage(index))
+                .map(
+                  time => s"${Format.dateTimeFormattedAMPM(time).toLowerCase}"
+                )
+                .getOrElse("")
 
             Row(
               key   = Key(lit"${office.name} (${office.id})"),
@@ -167,7 +172,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
               actions = List(
                 Action(
                   content            = msg"site.change",
-                  href               = routes.AddAnotherTransitOfficeController.onPageLoad(userAnswers.id, index, mode).url,
+                  href               = routes.OfficeOfTransitCountryController.onPageLoad(userAnswers.id, index, mode).url,
                   visuallyHiddenText = Some(msg"addTransitOffice.officeOfTransit.change.hidden".withArgs(answer)),
                   attributes         = Map("id" -> s"""change-office-of-transit-${index.display}""")
                 ),
@@ -199,7 +204,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def officeOfTransitCountry: Option[Row] = userAnswers.get(OfficeOfTransitCountryPage) map {
+  def officeOfTransitCountry(index: Index): Option[Row] = userAnswers.get(OfficeOfTransitCountryPage(index)) map {
     answer =>
       Row(
         key   = Key(msg"officeOfTransitCountry.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
@@ -207,7 +212,7 @@ class RouteDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
         actions = List(
           Action(
             content            = msg"site.edit",
-            href               = routes.OfficeOfTransitCountryController.onPageLoad(lrn, CheckMode).url,
+            href               = routes.OfficeOfTransitCountryController.onPageLoad(lrn, index, CheckMode).url,
             visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"officeOfTransitCountry.checkYourAnswersLabel"))
           )
         )

@@ -19,10 +19,10 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
-import models.DeclarationType.{Option1, Option2, Option3, Option4}
+import models.DeclarationType.{Option1, Option2}
 import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.reference.{CircumstanceIndicator, CountryCode}
-import models.{Index, UserAnswers}
+import models.{DeclarationType, Index, UserAnswers}
 import org.scalacheck.Gen
 import pages.addItems.{AddAdministrativeReferencePage, AddDocumentsPage}
 import pages.addItems.specialMentions.AddSpecialMentionPage
@@ -31,9 +31,9 @@ import pages._
 
 class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
-  private val genT2DeclarationType    = Gen.oneOf(Option2, Option4).sample.value
+  private val genT2DeclarationType    = Option2
   private val genNonEUCountries       = Gen.oneOf(nonEUCountries).sample.value
-  private val genOtherDeclarationType = Gen.oneOf(Option1, Option3).sample.value
+  private val genOtherDeclarationType = Option1
 
   "ItemSection" - {
     "can be parsed UserAnswers" - {
@@ -189,26 +189,30 @@ object ItemSectionSpec extends UserAnswersSpecHelper {
   }
 
   private def setSpecialMentions(specialMentions: Option[NonEmptyList[SpecialMention]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
-    val smUserAnswers = startUserAnswers.set(AddSpecialMentionPage(itemIndex), false).toOption.get
+    val smUserAnswers = startUserAnswers.unsafeSetVal(AddSpecialMentionPage(itemIndex))(specialMentions.isDefined)
     specialMentions.fold(smUserAnswers)(_.zipWithIndex.foldLeft(smUserAnswers) {
       case (userAnswers, (specialMention, index)) =>
         SpecialMentionSpec.setSpecialMentionsUserAnswers(specialMention, itemIndex, Index(index))(userAnswers)
     })
   }
 
-  private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers =
-    producedDocument.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
+  private def setProducedDocuments(producedDocument: Option[NonEmptyList[ProducedDocument]], itemIndex: Index)(startUserAnswers: UserAnswers): UserAnswers = {
+    val prodDocsUserAnswers = startUserAnswers.unsafeSetVal(AddDocumentsPage(itemIndex))(producedDocument.isDefined)
+    producedDocument.fold(prodDocsUserAnswers)(_.zipWithIndex.foldLeft(prodDocsUserAnswers) {
       case (userAnswers, (producedDocument, index)) =>
         ProducedDocumentSpec.setProducedDocumentsUserAnswers(producedDocument, itemIndex, Index(index))(userAnswers)
     })
+  }
 
   private def setPreviousReferences(previousReferences: Option[NonEmptyList[PreviousReferences]], itemIndex: Index)(
     startUserAnswers: UserAnswers
-  ): UserAnswers =
-    previousReferences.fold(startUserAnswers)(_.zipWithIndex.foldLeft(startUserAnswers) {
+  ): UserAnswers = {
+    val preRefUserAnswers = startUserAnswers.unsafeSetVal(AddAdministrativeReferencePage(itemIndex))(previousReferences.isDefined)
+    previousReferences.fold(preRefUserAnswers)(_.zipWithIndex.foldLeft(preRefUserAnswers) {
       case (userAnswers, (previousReferences, index)) =>
         PreviousReferenceSpec.setPreviousReferenceUserAnswers(previousReferences, itemIndex, Index(index))(userAnswers)
     })
+  }
 
   private def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: Option[ItemsSecurityTraderDetails], index: Index)(
     userAnswers: UserAnswers

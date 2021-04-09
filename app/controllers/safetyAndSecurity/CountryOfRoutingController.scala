@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.safetyAndSecurity.CountryOfRoutingFormProvider
 import javax.inject.Inject
 import models.reference.Country
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurity
 import pages.safetyAndSecurity.CountryOfRoutingPage
@@ -45,6 +45,7 @@ class CountryOfRoutingController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: CountryOfRoutingFormProvider,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
@@ -56,38 +57,46 @@ class CountryOfRoutingController @Inject()(
 
   private val template = "safetyAndSecurity/countryOfRouting.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCountryList() flatMap {
-        countries =>
-          val form = formProvider(countries)
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
+      implicit request =>
+        referenceDataConnector.getCountryList() flatMap {
+          countries =>
+            val form = formProvider(countries)
 
-          val preparedForm = request.userAnswers
-            .get(CountryOfRoutingPage(index))
-            .flatMap(countries.getCountry)
-            .map(form.fill)
-            .getOrElse(form)
+            val preparedForm = request.userAnswers
+              .get(CountryOfRoutingPage(index))
+              .flatMap(countries.getCountry)
+              .map(form.fill)
+              .getOrElse(form)
 
-          renderPage(lrn, mode, preparedForm, countries.fullList) map (Ok(_))
-      }
-  }
+            renderPage(lrn, mode, preparedForm, countries.fullList) map (Ok(_))
+        }
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCountryList() flatMap {
-        countries =>
-          formProvider(countries)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList) map (BadRequest(_)),
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfRoutingPage(index), value.code))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(CountryOfRoutingPage(index), mode, updatedAnswers))
-            )
-      }
-  }
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
+      implicit request =>
+        referenceDataConnector.getCountryList() flatMap {
+          countries =>
+            formProvider(countries)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => renderPage(lrn, mode, formWithErrors, countries.fullList) map (BadRequest(_)),
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfRoutingPage(index), value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(CountryOfRoutingPage(index), mode, updatedAnswers))
+              )
+        }
+    }
 
   private def renderPage(lrn: LocalReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country])(
     implicit request: Request[AnyContent]): Future[Html] = {

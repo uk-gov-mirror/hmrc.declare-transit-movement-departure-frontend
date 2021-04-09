@@ -17,7 +17,7 @@
 package utils
 
 import controllers.safetyAndSecurity.routes
-import models.{CheckMode, CountryList, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, CircumstanceIndicatorList, CountryList, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
 import pages.safetyAndSecurity._
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels._
@@ -255,11 +255,17 @@ class SafetyAndSecurityCheckYourAnswerHelper(userAnswers: UserAnswers) {
       )
   }
 
-  def circumstanceIndicator: Option[Row] = userAnswers.get(CircumstanceIndicatorPage) map {
+  def circumstanceIndicator(circumstanceIndicators: CircumstanceIndicatorList): Option[Row] = userAnswers.get(CircumstanceIndicatorPage) map {
     answer =>
+      val circumstanceIndicator = circumstanceIndicators
+        .getCircumstanceIndicator(answer)
+        .map(
+          indicator => s"(${indicator.code}) ${indicator.description}"
+        )
+        .getOrElse(answer)
       Row(
         key   = Key(msg"circumstanceIndicator.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
+        value = Value(lit"$circumstanceIndicator"),
         actions = List(
           Action(
             content            = msg"site.edit",

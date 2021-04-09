@@ -22,7 +22,7 @@ import controllers.{routes => mainRoutes}
 import forms.safetyAndSecurity.SafetyAndSecurityConsigneeAddressFormProvider
 import javax.inject.Inject
 import models.reference.{Country, CountryCode}
-import models.{LocalReferenceNumber, Mode}
+import models.{DependentSection, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SafetyAndSecurityTraderDetails
 import pages.safetyAndSecurity.{SafetyAndSecurityConsigneeAddressPage, SafetyAndSecurityConsigneeNamePage}
@@ -44,6 +44,7 @@ class SafetyAndSecurityConsigneeAddressController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   referenceDataConnector: ReferenceDataConnector,
   formProvider: SafetyAndSecurityConsigneeAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -55,65 +56,73 @@ class SafetyAndSecurityConsigneeAddressController @Inject()(
 
   private val template = "safetyAndSecurity/safetyAndSecurityConsigneeAddress.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getCountryList() flatMap {
-        countries =>
-          request.userAnswers.get(SafetyAndSecurityConsigneeNamePage) match {
-            case Some(consigneeName) =>
-              val preparedForm = request.userAnswers.get(SafetyAndSecurityConsigneeAddressPage) match {
-                case Some(value) => formProvider(countries).fill(value)
-                case None        => formProvider(countries)
-              }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
+      implicit request =>
+        referenceDataConnector.getCountryList() flatMap {
+          countries =>
+            request.userAnswers.get(SafetyAndSecurityConsigneeNamePage) match {
+              case Some(consigneeName) =>
+                val preparedForm = request.userAnswers.get(SafetyAndSecurityConsigneeAddressPage) match {
+                  case Some(value) => formProvider(countries).fill(value)
+                  case None        => formProvider(countries)
+                }
 
-              val json = Json.obj(
-                "form"          -> preparedForm,
-                "lrn"           -> lrn,
-                "mode"          -> mode,
-                "consigneeName" -> consigneeName,
-                "countries"     -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
-              )
-
-              renderer.render(template, json).map(Ok(_))
-            case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
-
-          }
-      }
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      request.userAnswers.get(SafetyAndSecurityConsigneeNamePage) match {
-        case Some(consigneeName) =>
-          referenceDataConnector.getCountryList() flatMap {
-            countries =>
-              formProvider(countries)
-                .bindFromRequest()
-                .fold(
-                  formWithErrors => {
-                    val countryValue: Option[Country] = formWithErrors.data.get("country").flatMap {
-                      country =>
-                        countries.getCountry(CountryCode(country))
-                    }
-                    val json = Json.obj(
-                      "form"          -> formWithErrors,
-                      "lrn"           -> lrn,
-                      "mode"          -> mode,
-                      "consigneeName" -> consigneeName,
-                      "countries"     -> countryJsonList(countryValue, countries.fullList)
-                    )
-
-                    renderer.render(template, json).map(BadRequest(_))
-                  },
-                  value =>
-                    for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(SafetyAndSecurityConsigneeAddressPage, value))
-                      _              <- sessionRepository.set(updatedAnswers)
-                    } yield Redirect(navigator.nextPage(SafetyAndSecurityConsigneeAddressPage, mode, updatedAnswers))
+                val json = Json.obj(
+                  "form"          -> preparedForm,
+                  "lrn"           -> lrn,
+                  "mode"          -> mode,
+                  "consigneeName" -> consigneeName,
+                  "countries"     -> countryJsonList(preparedForm.value.map(_.country), countries.fullList)
                 )
-          }
-        case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
 
-      }
-  }
+                renderer.render(template, json).map(Ok(_))
+              case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
+
+            }
+        }
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.SafetyAndSecurity)).async {
+      implicit request =>
+        request.userAnswers.get(SafetyAndSecurityConsigneeNamePage) match {
+          case Some(consigneeName) =>
+            referenceDataConnector.getCountryList() flatMap {
+              countries =>
+                formProvider(countries)
+                  .bindFromRequest()
+                  .fold(
+                    formWithErrors => {
+                      val countryValue: Option[Country] = formWithErrors.data.get("country").flatMap {
+                        country =>
+                          countries.getCountry(CountryCode(country))
+                      }
+                      val json = Json.obj(
+                        "form"          -> formWithErrors,
+                        "lrn"           -> lrn,
+                        "mode"          -> mode,
+                        "consigneeName" -> consigneeName,
+                        "countries"     -> countryJsonList(countryValue, countries.fullList)
+                      )
+
+                      renderer.render(template, json).map(BadRequest(_))
+                    },
+                    value =>
+                      for {
+                        updatedAnswers <- Future.fromTry(request.userAnswers.set(SafetyAndSecurityConsigneeAddressPage, value))
+                        _              <- sessionRepository.set(updatedAnswers)
+                      } yield Redirect(navigator.nextPage(SafetyAndSecurityConsigneeAddressPage, mode, updatedAnswers))
+                  )
+            }
+          case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
+
+        }
+    }
 }

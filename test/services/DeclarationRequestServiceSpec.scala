@@ -16,34 +16,47 @@
 
 package services
 
-import java.time.LocalDateTime
-import base.{GeneratorSpec, SpecBase}
+import base.{GeneratorSpec, MockServiceApp, SpecBase}
 import cats.data.NonEmptyList
-import generators._
-import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
-import models.journeyDomain.GoodsSummary.GoodSummarySimplifiedDetails
+import generators.JourneyModelGenerators
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
-import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, NonSpecialMode, Rail}
+import models.journeyDomain.TransportDetails.InlandMode.{NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
 import models.journeyDomain.traderDetails.ConsignorDetails
-import models.journeyDomain.{GoodsSummary, JourneyDomain, JourneyDomainSpec, TransportDetails}
+import models.journeyDomain.{JourneyDomain, JourneyDomainSpec, PreTaskListDetails}
 import models.messages.goodsitem.SpecialMentionGuaranteeLiabilityAmount
 import models.messages.trader.TraderConsignor
-import models.messages.{ControlResult, DeclarationRequest, InterchangeControlReference}
+import models.messages.{DeclarationRequest, InterchangeControlReference}
+import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import repositories.InterchangeControlReferenceIdRepository
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators with ModelGenerators with BeforeAndAfterEach {
+class DeclarationRequestServiceSpec
+    extends SpecBase
+    with MockServiceApp
+    with GeneratorSpec
+    with JourneyModelGenerators
+    with ModelGenerators
+    with BeforeAndAfterEach {
 
-  val mockIcrRepository   = mock[InterchangeControlReferenceIdRepository]
-  val mockDateTimeService = mock[DateTimeService]
+  val mockIcrRepository: InterchangeControlReferenceIdRepository = mock[InterchangeControlReferenceIdRepository]
+  val mockDateTimeService: DateTimeService                       = mock[DateTimeService]
+
+  val service: DeclarationRequestService = app.injector.instanceOf[DeclarationRequestService]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[InterchangeControlReferenceIdRepository].toInstance(mockIcrRepository))
+      .overrides(bind[DateTimeService].toInstance(mockDateTimeService))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -113,6 +126,28 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
         }
       }
 
+      "secHEA358" - {
+
+        "Pass value for the secHEA358When based on Safety and Security answer" in {
+
+          forAll(arb[UserAnswers], arb[JourneyDomain]) {
+            (userAnswers, journeyDomain) =>
+              when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
+              when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
+
+              val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
+              val result            = service.convert(updatedUserAnswer).futureValue
+
+              result must be(defined)
+              if (journeyDomain.preTaskList.addSecurityDetails) {
+                result.value.header.secHEA358 mustBe Some(1)
+              } else {
+                result.value.header.secHEA358 mustBe None
+              }
+          }
+        }
+      }
+
       "identityOfTransportAtCrossing" - {
 
         val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
@@ -125,7 +160,7 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
               val updatedTransportDetails = journeyDomain.transportDetails.copy(detailsAtBorder = newDetailsAtBorder)
-              val updatedJourneyDomain    = journeyDomain.copy(transportDetails                 = updatedTransportDetails)
+              val updatedJourneyDomain    = journeyDomain.copy(transportDetails = updatedTransportDetails)
 
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
 
@@ -144,7 +179,7 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
               val updatedTransportDetails = journeyDomain.transportDetails.copy(detailsAtBorder = SameDetailsAtBorder, inlandMode = nonSpecialMode)
-              val updatedJourneyDomain    = journeyDomain.copy(transportDetails                 = updatedTransportDetails)
+              val updatedJourneyDomain    = journeyDomain.copy(transportDetails = updatedTransportDetails)
 
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
 
@@ -163,7 +198,7 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
               val updatedTransportDetails = journeyDomain.transportDetails.copy(detailsAtBorder = SameDetailsAtBorder, inlandMode = rail)
-              val updatedJourneyDomain    = journeyDomain.copy(transportDetails                 = updatedTransportDetails)
+              val updatedJourneyDomain    = journeyDomain.copy(transportDetails = updatedTransportDetails)
 
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
 
@@ -176,8 +211,6 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
       "identityOfTransportAtCrossing" - {
 
-        val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
         "must return nationality of crossing when there are new details at border and the mode is a mode with nationality" in {
 
           forAll(arb[UserAnswers], arb[NewDetailsAtBorder], arb[JourneyDomain], arb[ModeWithNationality]) {
@@ -185,9 +218,9 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
               when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
-              val updatedNewDetailsAtBorder = newDetailsAtBorder.copy(modeCrossingBorder          = modeWithNationality)
+              val updatedNewDetailsAtBorder = newDetailsAtBorder.copy(modeCrossingBorder = modeWithNationality)
               val updatedTransportDetails   = journeyDomain.transportDetails.copy(detailsAtBorder = updatedNewDetailsAtBorder)
-              val updatedJourneyDomain      = journeyDomain.copy(transportDetails                 = updatedTransportDetails)
+              val updatedJourneyDomain      = journeyDomain.copy(transportDetails = updatedTransportDetails)
 
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
 
@@ -204,9 +237,9 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
               when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
-              val updatedNewDetailsAtBorder = newDetailsAtBorder.copy(modeCrossingBorder          = modeExemptNationality)
+              val updatedNewDetailsAtBorder = newDetailsAtBorder.copy(modeCrossingBorder = modeExemptNationality)
               val updatedTransportDetails   = journeyDomain.transportDetails.copy(detailsAtBorder = updatedNewDetailsAtBorder)
-              val updatedJourneyDomain      = journeyDomain.copy(transportDetails                 = updatedTransportDetails)
+              val updatedJourneyDomain      = journeyDomain.copy(transportDetails = updatedTransportDetails)
 
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
 
@@ -224,7 +257,7 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
               val updatedTransportDetails = journeyDomain.transportDetails.copy(detailsAtBorder = SameDetailsAtBorder, inlandMode = nonSpecialMode)
-              val updatedJourneyDomain    = journeyDomain.copy(transportDetails                 = updatedTransportDetails)
+              val updatedJourneyDomain    = journeyDomain.copy(transportDetails = updatedTransportDetails)
 
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
 
@@ -242,7 +275,7 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
               val updatedTransportDetails = journeyDomain.transportDetails.copy(detailsAtBorder = SameDetailsAtBorder, inlandMode = rail)
-              val updatedJourneyDomain    = journeyDomain.copy(transportDetails                 = updatedTransportDetails)
+              val updatedJourneyDomain    = journeyDomain.copy(transportDetails = updatedTransportDetails)
 
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
 
@@ -258,8 +291,6 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
           forAll(arb[UserAnswers], arbitrarySimplifiedJourneyDomain) {
             (userAnswers, journeyDomain) =>
-              val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
               when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
@@ -276,8 +307,6 @@ class DeclarationRequestServiceSpec extends SpecBase with GeneratorSpec with Jou
 
           forAll(arb[UserAnswers], arbitraryNormalJourneyDomain) {
             (userAnswers, journeyDomain) =>
-              val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
               when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 

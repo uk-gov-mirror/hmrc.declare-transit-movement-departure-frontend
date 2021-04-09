@@ -58,7 +58,7 @@ lazy val root = (project in file("."))
     ),
     libraryDependencies ++= AppDependencies(),
     dependencyOverrides += "commons-codec" % "commons-codec" % "1.12", //added for reactive mongo issues
-    retrieveManaged                        := true,
+    retrieveManaged                       := true,
     evictionWarningOptions in update :=
       EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     resolvers ++= Seq(
@@ -89,7 +89,7 @@ lazy val root = (project in file("."))
   )
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
-  fork := false,
+  fork := true,
   unmanagedResourceDirectories += baseDirectory.value / "test" / "resources",
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf",

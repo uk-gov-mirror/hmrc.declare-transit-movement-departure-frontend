@@ -16,8 +16,9 @@
 
 package forms
 
+import java.time.{LocalDateTime, ZoneOffset}
+
 import forms.behaviours.DateTimeWithAMPMBehaviours
-import models.LocalDateTimeWithAMPM
 import play.api.data.FormError
 import utils.Format
 
@@ -35,9 +36,7 @@ class ArrivalTimesAtOfficeFormProviderSpec extends DateTimeWithAMPMBehaviours {
 
   ".value" - {
 
-    val localDateTimeWithAMPM = LocalDateTimeWithAMPM(localDateTime, "am")
-
-    behave like dateTimeField(form, "value", localDateTimeWithAMPM)
+    behave like dateTimeField(form, "value", localDateTime)
 
     behave like dateTimeFieldWithMin(form, "value", localDateTime, formPastError)
 

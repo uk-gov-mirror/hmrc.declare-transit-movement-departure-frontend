@@ -16,12 +16,14 @@
 
 package controllers.routeDetails
 
+import java.time.LocalDateTime
+
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import controllers.{routes => mainRoutes}
 import forms.ArrivalTimesAtOfficeFormProvider
 import javax.inject.Inject
-import models.{Index, LocalDateTimeWithAMPM, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.RouteDetails
 import pages.{AddAnotherTransitOfficePage, ArrivalTimesAtOfficePage}
@@ -34,10 +36,8 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import utils.Format.timeFormatterFromAMPM
 import utils._
 import viewModels.DateTimeInput
-import java.time.{LocalDateTime, LocalTime}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -63,20 +63,25 @@ class ArrivalTimesAtOfficeController @Inject()(
         case Some(officeOfTransitId) =>
           referenceDataConnector.getCustomsOffice(officeOfTransitId) flatMap {
             office =>
-              val form: Form[LocalDateTimeWithAMPM] = formProvider(office.name)
+              val form: Form[LocalDateTime] = formProvider(office.name)
 
               val preparedForm = request.userAnswers.get(ArrivalTimesAtOfficePage(index)) match {
                 case Some(value) => form.fill(value)
                 case None        => form
               }
 
-              loadPage(lrn, mode, preparedForm.value.map(_.amOrPm), preparedForm).map(Ok(_))
+              val amOrPm: Option[String] = preparedForm.value.map {
+                dateTime =>
+                  if (dateTime.getHour > 12) "pm" else "am"
+              }
+
+              loadPage(lrn, mode, amOrPm, preparedForm).map(Ok(_))
           }
         case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
       }
   }
 
-  private def loadPage(lrn: LocalReferenceNumber, mode: Mode, selectAMPMValue: Option[String], form: Form[LocalDateTimeWithAMPM],
+  private def loadPage(lrn: LocalReferenceNumber, mode: Mode, selectAMPMValue: Option[String], form: Form[LocalDateTime],
   )(implicit request: Request[AnyContent]): Future[Html] = {
     val viewModel = DateTimeInput.localDateTime(form("value"))
 
@@ -97,7 +102,7 @@ class ArrivalTimesAtOfficeController @Inject()(
         case Some(officeOfTransitId) =>
           referenceDataConnector.getCustomsOffice(officeOfTransitId) flatMap {
             office =>
-              val form: Form[LocalDateTimeWithAMPM] = formProvider(office.name)
+              val form: Form[LocalDateTime] = formProvider(office.name)
 
               form
                 .bindFromRequest()
@@ -107,7 +112,7 @@ class ArrivalTimesAtOfficeController @Inject()(
                   },
                   value =>
                     for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(ArrivalTimesAtOfficePage(index), value.formatTo24hourTime))
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(ArrivalTimesAtOfficePage(index), value))
                       _              <- sessionRepository.set(updatedAnswers)
                     } yield Redirect(navigator.nextPage(ArrivalTimesAtOfficePage(index), mode, updatedAnswers))
                 )

@@ -18,8 +18,9 @@ package controllers.addItems.securityDetails
 
 import controllers.actions._
 import forms.addItems.securityDetails.AddDangerousGoodsCodeFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SecurityDetails
 import pages.addItems.securityDetails.AddDangerousGoodsCodePage
@@ -40,6 +41,7 @@ class AddDangerousGoodsCodeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: AddDangerousGoodsCodeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -50,44 +52,52 @@ class AddDangerousGoodsCodeController @Inject()(
 
   private val template = "addItems/securityDetails/addDangerousGoodsCode.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AddDangerousGoodsCodePage(itemIndex)) match {
-        case None        => formProvider()
-        case Some(value) => formProvider().fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AddDangerousGoodsCodePage(itemIndex)) match {
+          case None        => formProvider()
+          case Some(value) => formProvider().fill(value)
+        }
 
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      formProvider()
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDangerousGoodsCodePage(itemIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddDangerousGoodsCodePage(itemIndex), mode, updatedAnswers))
+        val json = Json.obj(
+          "form"   -> preparedForm,
+          "mode"   -> mode,
+          "lrn"    -> lrn,
+          "radios" -> Radios.yesNo(preparedForm("value"))
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        formProvider()
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"   -> formWithErrors,
+                "mode"   -> mode,
+                "lrn"    -> lrn,
+                "radios" -> Radios.yesNo(formWithErrors("value"))
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDangerousGoodsCodePage(itemIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AddDangerousGoodsCodePage(itemIndex), mode, updatedAnswers))
+          )
+    }
 }

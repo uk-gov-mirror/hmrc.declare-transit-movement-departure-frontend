@@ -18,8 +18,9 @@ package controllers.addItems
 
 import controllers.actions._
 import forms.addItems.AddItemsSameConsigneeForAllItemsFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.AddItemsSameConsigneeForAllItemsPage
@@ -40,6 +41,7 @@ class AddItemsSameConsigneeForAllItemsController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: AddItemsSameConsigneeForAllItemsFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -51,44 +53,52 @@ class AddItemsSameConsigneeForAllItemsController @Inject()(
   private val form     = formProvider()
   private val template = "addItems/addItemsSameConsigneeForAllItems.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AddItemsSameConsigneeForAllItemsPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AddItemsSameConsigneeForAllItemsPage(index)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      val json = Json.obj(
-        "form"   -> preparedForm,
-        "mode"   -> mode,
-        "lrn"    -> lrn,
-        "radios" -> Radios.yesNo(preparedForm("value"))
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"   -> formWithErrors,
-              "mode"   -> mode,
-              "lrn"    -> lrn,
-              "radios" -> Radios.yesNo(formWithErrors("value"))
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddItemsSameConsigneeForAllItemsPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddItemsSameConsigneeForAllItemsPage(index), mode, updatedAnswers))
+        val json = Json.obj(
+          "form"   -> preparedForm,
+          "mode"   -> mode,
+          "lrn"    -> lrn,
+          "radios" -> Radios.yesNo(preparedForm("value"))
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"   -> formWithErrors,
+                "mode"   -> mode,
+                "lrn"    -> lrn,
+                "radios" -> Radios.yesNo(formWithErrors("value"))
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddItemsSameConsigneeForAllItemsPage(index), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AddItemsSameConsigneeForAllItemsPage(index), mode, updatedAnswers))
+          )
+    }
 }

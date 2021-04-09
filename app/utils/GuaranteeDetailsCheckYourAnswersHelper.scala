@@ -17,7 +17,9 @@
 package utils
 
 import controllers.guaranteeDetails.routes
+import models.GuaranteeType.guaranteeReferenceRoute
 import models._
+import models.reference.CountryCode
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -26,47 +28,21 @@ import uk.gov.hmrc.viewmodels._
 class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
 
   def defaultAmount(index: Index): Option[Row] =
-    if (userAnswers.get(LiabilityAmountPage(index)).isEmpty && userAnswers.get(OtherReferenceLiabilityAmountPage(index)).isEmpty) {
-      userAnswers.get(DefaultAmountPage(index)) map {
-
-        answer =>
-          val useDefault = if (answer) {
-            "Yes"
-          } else {
-            "No"
-          }
-          Row(
-            key   = Key(msg"defaultAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-            value = Value(lit"$useDefault"),
-            actions = List(
-              Action(
-                content            = msg"site.edit",
-                href               = routes.DefaultAmountController.onPageLoad(lrn, index, CheckMode).url,
-                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"defaultAmount.checkYourAnswersLabel")),
-                attributes         = Map("id" -> "change-default-amount")
-              )
+    userAnswers.get(DefaultAmountPage(index)) map {
+      answer =>
+        Row(
+          key   = Key(msg"defaultAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+          value = Value(yesOrNo(answer)),
+          actions = List(
+            Action(
+              content            = msg"site.edit",
+              href               = routes.DefaultAmountController.onPageLoad(lrn, index, CheckMode).url,
+              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"defaultAmount.checkYourAnswersLabel")),
+              attributes         = Map("id" -> "change-default-amount")
             )
           )
-      }
-    } else {
-      None
-    }
-
-  def otherReferenceliabilityAmount(index: Index): Option[Row] = userAnswers.get(OtherReferenceLiabilityAmountPage(index)) map {
-    answer =>
-      Row(
-        key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-        value = Value(lit"$answer"),
-        actions = List(
-          Action(
-            content            = msg"site.edit",
-            href               = routes.OtherReferenceLiabilityAmountController.onPageLoad(lrn, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"liabilityAmount.checkYourAnswersLabel")),
-            attributes         = Map("id" -> "change-other-reference-liabilty-amount")
-          )
         )
-      )
-  }
+    }
 
   def guaranteeType(index: Index): Option[Row] = userAnswers.get(GuaranteeTypePage(index)) map {
     answer =>
@@ -86,7 +62,7 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   }
 
   def accessCode(index: Index): Option[Row] = userAnswers.get(AccessCodePage(index)) map {
-    answer =>
+    _ =>
       Row(
         key   = Key(msg"accessCode.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
         value = Value(lit"••••"),
@@ -118,25 +94,34 @@ class GuaranteeDetailsCheckYourAnswersHelper(userAnswers: UserAnswers) {
   }
 
   def liabilityAmount(index: Index): Option[Row] =
-    userAnswers.get(LiabilityAmountPage(index)) map {
-      answer =>
-        val displayAmount = answer match {
-          case x if x.trim.nonEmpty => lit"$answer"
-          case _                    => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
+    (userAnswers.get(OfficeOfDeparturePage), userAnswers.get(DestinationOfficePage), userAnswers.get(GuaranteeTypePage(index))) match {
+      case (Some(officeOfDeparture), Some(destinationOffice), Some(guaranteeType)) if guaranteeReferenceRoute.contains(guaranteeType) =>
+        val displayAmount = userAnswers.get(LiabilityAmountPage(index)) match {
+          case Some(value) if value.trim.nonEmpty => lit"$value"
+          case _                                  => msg"guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
         }
 
-        Row(
-          key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
-          value = Value(displayAmount),
-          actions = List(
-            Action(
-              content            = msg"site.edit",
-              href               = routes.LiabilityAmountController.onPageLoad(lrn, index, CheckMode).url,
-              visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"liabilityAmount.checkYourAnswersLabel")),
-              attributes         = Map("id" -> "change-liability-amount")
+        val href = if (officeOfDeparture.countryId == CountryCode("GB") && destinationOffice.countryId == CountryCode("GB")) {
+          routes.LiabilityAmountController.onPageLoad(lrn, index, CheckMode).url
+        } else {
+          routes.OtherReferenceLiabilityAmountController.onPageLoad(lrn, index, CheckMode).url
+        }
+
+        Some(
+          Row(
+            key   = Key(msg"liabilityAmount.checkYourAnswersLabel", classes = Seq("govuk-!-width-one-half")),
+            value = Value(displayAmount),
+            actions = List(
+              Action(
+                content            = msg"site.edit",
+                href               = href,
+                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"liabilityAmount.checkYourAnswersLabel")),
+                attributes         = Map("id" -> "change-liability-amount")
+              )
             )
           )
         )
+      case _ => None
     }
 
   def guaranteeReference(index: Index): Option[Row] = userAnswers.get(GuaranteeReferencePage(index)) map {

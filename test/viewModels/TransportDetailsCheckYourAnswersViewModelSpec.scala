@@ -57,8 +57,8 @@ class TransportDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 3
       data.sections.head.rows(0).value.content mustEqual Literal("(2) inland mode")
-      data.sections.head.rows(1).value.content mustEqual Literal("mode at border")
-      data.sections.head.rows(2).value.content mustEqual Literal("crossing border")
+      data.sections.head.rows(1).value.content mustEqual Literal("(3) mode at border")
+      data.sections.head.rows(2).value.content mustEqual Literal("(1) crossing border")
     }
 
     "display country" in {

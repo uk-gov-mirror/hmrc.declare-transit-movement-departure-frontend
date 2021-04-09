@@ -19,9 +19,10 @@ package controllers.addItems
 import controllers.actions._
 import derivable.DeriveNumberOfItems
 import forms.addItems.AddAnotherItemFormProvider
+
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, NormalMode}
+import models.{DependentSection, Index, LocalReferenceNumber, NormalMode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.AddAnotherItemPage
@@ -45,6 +46,7 @@ class AddAnotherItemController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: AddAnotherItemFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -55,24 +57,32 @@ class AddAnotherItemController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      renderPage(lrn, form).map(Ok(_))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        renderPage(lrn, form).map(Ok(_))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => renderPage(lrn, formWithErrors).map(BadRequest(_)),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherItemPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAnotherItemPage, NormalMode, updatedAnswers))
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => renderPage(lrn, formWithErrors).map(BadRequest(_)),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherItemPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AddAnotherItemPage, NormalMode, updatedAnswers))
+          )
+    }
 
   private def renderPage(lrn: LocalReferenceNumber, form: Form[Boolean])(implicit request: DataRequest[AnyContent]): Future[Html] = {
 

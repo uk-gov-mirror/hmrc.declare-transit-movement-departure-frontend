@@ -475,7 +475,7 @@ class ReferenceDataConnectorSpec extends SpecBase with WireMockServerHandler wit
 
       "must return Seq of Dangerous goods codes when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$startUrl/dangerous-goods-code"))
+          get(urlEqualTo(s"/$startUrl/dangerous-goods-codes"))
             .willReturn(okJson(dangerousGoodsCodeResponseJson))
         )
 

@@ -19,9 +19,10 @@ package controllers.addItems
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.addItems.DocumentTypeFormProvider
+
 import javax.inject.Inject
 import models.reference.DocumentType
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.Document
 import pages.addItems
@@ -44,6 +45,7 @@ class DocumentTypeController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   referenceDataConnector: ReferenceDataConnector,
   formProvider: DocumentTypeFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -56,7 +58,10 @@ class DocumentTypeController @Inject()(
   private val template = "addItems/documentType.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getDocumentTypes() flatMap {
           documents =>
@@ -81,7 +86,10 @@ class DocumentTypeController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         referenceDataConnector.getDocumentTypes() flatMap {
           documents =>

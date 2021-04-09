@@ -18,8 +18,9 @@ package controllers.addItems.specialMentions
 
 import controllers.actions._
 import forms.addItems.specialMentions.AddSpecialMentionFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.AddSpecialMentionPage
@@ -40,6 +41,7 @@ class AddSpecialMentionController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: AddSpecialMentionFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -50,46 +52,54 @@ class AddSpecialMentionController @Inject()(
 
   private val template = "addItems/specialMentions/addSpecialMention.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AddSpecialMentionPage(itemIndex)) match {
-        case None        => formProvider(itemIndex)
-        case Some(value) => formProvider(itemIndex).fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AddSpecialMentionPage(itemIndex)) match {
+          case None        => formProvider(itemIndex)
+          case Some(value) => formProvider(itemIndex).fill(value)
+        }
 
-      val json = Json.obj(
-        "form"      -> preparedForm,
-        "mode"      -> mode,
-        "lrn"       -> lrn,
-        "radios"    -> Radios.yesNo(preparedForm("value")),
-        "itemIndex" -> itemIndex.display
-      )
-
-      renderer.render(template, json).map(Ok(_))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      formProvider(itemIndex)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"      -> formWithErrors,
-              "mode"      -> mode,
-              "lrn"       -> lrn,
-              "radios"    -> Radios.yesNo(formWithErrors("value")),
-              "itemIndex" -> itemIndex.display
-            )
-
-            renderer.render(template, json).map(BadRequest(_))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSpecialMentionPage(itemIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddSpecialMentionPage(itemIndex), mode, updatedAnswers))
+        val json = Json.obj(
+          "form"      -> preparedForm,
+          "mode"      -> mode,
+          "lrn"       -> lrn,
+          "radios"    -> Radios.yesNo(preparedForm("value")),
+          "itemIndex" -> itemIndex.display
         )
-  }
+
+        renderer.render(template, json).map(Ok(_))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        formProvider(itemIndex)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+
+              val json = Json.obj(
+                "form"      -> formWithErrors,
+                "mode"      -> mode,
+                "lrn"       -> lrn,
+                "radios"    -> Radios.yesNo(formWithErrors("value")),
+                "itemIndex" -> itemIndex.display
+              )
+
+              renderer.render(template, json).map(BadRequest(_))
+            },
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSpecialMentionPage(itemIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AddSpecialMentionPage(itemIndex), mode, updatedAnswers))
+          )
+    }
 }

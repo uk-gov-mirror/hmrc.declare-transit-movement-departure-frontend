@@ -17,14 +17,14 @@
 package viewModels
 
 import derivable.DeriveNumberOfCountryOfRouting
-import models.{CheckMode, CountryList, Index, UserAnswers}
+import models.{CheckMode, CircumstanceIndicatorList, CountryList, Index, UserAnswers}
 import uk.gov.hmrc.viewmodels.{MessageInterpolators, SummaryList}
 import utils.SafetyAndSecurityCheckYourAnswerHelper
 import viewModels.sections.Section
 
 object SafetyAndSecurityCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, countries: CountryList): Seq[Section] = {
+  def apply(userAnswers: UserAnswers, countries: CountryList, circumstanceIndicators: CircumstanceIndicatorList): Seq[Section] = {
     val cyah = new SafetyAndSecurityCheckYourAnswerHelper(userAnswers)
 
     val countriesOfRoutingRows: Seq[SummaryList.Row] = List.range(0, userAnswers.get(DeriveNumberOfCountryOfRouting).getOrElse(0)).flatMap {
@@ -36,7 +36,7 @@ object SafetyAndSecurityCheckYourAnswersViewModel {
       Section(
         Seq(
           cyah.addCircumstanceIndicator,
-          cyah.circumstanceIndicator,
+          cyah.circumstanceIndicator(circumstanceIndicators),
           cyah.addTransportChargesPaymentMethod,
           cyah.transportChargesPaymentMethod,
           cyah.addCommercialReferenceNumber,

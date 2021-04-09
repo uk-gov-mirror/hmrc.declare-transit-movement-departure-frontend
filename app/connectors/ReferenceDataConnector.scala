@@ -78,7 +78,7 @@ class ReferenceDataConnector @Inject()(config: FrontendAppConfig, http: HttpClie
   }
 
   def getDangerousGoodsCodeList()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DangerousGoodsCodeList] = {
-    val serviceUrl = s"${config.referenceDataUrl}/dangerous-goods-code"
+    val serviceUrl = s"${config.referenceDataUrl}/dangerous-goods-codes"
     http.GET[Seq[DangerousGoodsCode]](serviceUrl).map(DangerousGoodsCodeList)
   }
 

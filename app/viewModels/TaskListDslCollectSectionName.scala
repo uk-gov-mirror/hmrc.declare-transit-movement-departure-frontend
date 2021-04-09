@@ -16,10 +16,11 @@
 
 package viewModels
 
-import models.Status.{Completed, InProgress, NotStarted}
-import models.{SectionDetails, Status, UserAnswers}
-import models.journeyDomain.UserAnswersReader
+import cats.data.Kleisli
 import cats.implicits._
+import models.Status.{CannotStartYet, Completed, InProgress, NotStarted}
+import models.journeyDomain.UserAnswersReader
+import models.{SectionDetails, Status, UserAnswers}
 
 private[viewModels] class TaskListDslCollectSectionName(userAnswers: UserAnswers) {
 
@@ -30,35 +31,60 @@ private[viewModels] class TaskListDslCollectSectionName(userAnswers: UserAnswers
 
 private[viewModels] class TaskListDslSectionNameStage(userAnswers: UserAnswers)(sectionName: String) {
 
-  def ifCompleted[A, B](readerIfCompleted: UserAnswersReader[A], urlIfCompleted: String): TaskListDslIfCompletedStage[A] =
-    new TaskListDslIfCompletedStage[A](userAnswers)(sectionName, readerIfCompleted, urlIfCompleted)
+  def ifNoDependencyOnOtherSection[A, B]: TaskListDslIfDependentSectionStage[A] =
+    new TaskListDslIfDependentSectionStage[A](userAnswers)(sectionName, None)
+
+  def ifDependentSectionCompleted[A, B](readerIfDependentSectionCompleted: UserAnswersReader[A]): TaskListDslIfDependentSectionStage[A] =
+    new TaskListDslIfDependentSectionStage[A](userAnswers)(sectionName, Some(readerIfDependentSectionCompleted))
 
 }
 
-private[viewModels] class TaskListDslIfCompletedStage[A](userAnswers: UserAnswers)(sectionName: String,
-                                                                                   readerIfCompleted: UserAnswersReader[A],
-                                                                                   urlIfCompleted: String) {
+private[viewModels] class TaskListDslIfDependentSectionStage[A](userAnswers: UserAnswers)(sectionName: String,
+                                                                                          readerIfDependentSectionCompleted: Option[UserAnswersReader[A]]) {
 
-  def ifInProgress[B](readerIfInProgress: UserAnswersReader[B], urlIfInProgress: String): TaskListDslIfInProgressStage[A, B] =
-    new TaskListDslIfInProgressStage(userAnswers)(sectionName, readerIfCompleted, urlIfCompleted, readerIfInProgress, urlIfInProgress)
+  def ifCompleted[B](readerIfCompleted: UserAnswersReader[B], urlIfCompleted: String): TaskListDslIfCompletedStage[A, B] =
+    new TaskListDslIfCompletedStage(userAnswers)(sectionName, readerIfDependentSectionCompleted, readerIfCompleted, urlIfCompleted)
 
 }
 
-private[viewModels] class TaskListDslIfInProgressStage[A, B](userAnswers: UserAnswers)(sectionName: String,
-                                                                                       readerIfCompleted: UserAnswersReader[A],
-                                                                                       urlIfCompleted: String,
-                                                                                       readerIfInProgress: UserAnswersReader[B],
-                                                                                       urlIfInProgress: String) {
+private[viewModels] class TaskListDslIfCompletedStage[A, B](userAnswers: UserAnswers)(sectionName: String,
+                                                                                      readerIfDependentSectionCompleted: Option[UserAnswersReader[A]],
+                                                                                      readerIfCompleted: UserAnswersReader[B],
+                                                                                      urlIfCompleted: String) {
 
-  def ifNotStarted(urlIfNotStarted: String): TaskListDsl[A, B] =
-    new TaskListDsl(userAnswers)(sectionName, readerIfCompleted, urlIfCompleted, readerIfInProgress, urlIfInProgress, urlIfNotStarted)
+  def ifInProgress[C](readerIfInProgress: UserAnswersReader[C], urlIfInProgress: String): TaskListDslIfInProgressStage[A, B, C] =
+    new TaskListDslIfInProgressStage(userAnswers)(sectionName,
+                                                  readerIfDependentSectionCompleted,
+                                                  readerIfCompleted,
+                                                  urlIfCompleted,
+                                                  readerIfInProgress,
+                                                  urlIfInProgress)
+
 }
 
-private[viewModels] class TaskListDsl[A, B](userAnswers: UserAnswers)(
+private[viewModels] class TaskListDslIfInProgressStage[A, B, C](userAnswers: UserAnswers)(sectionName: String,
+                                                                                          readerIfDependentSectionCompleted: Option[UserAnswersReader[A]],
+                                                                                          readerIfCompleted: UserAnswersReader[B],
+                                                                                          urlIfCompleted: String,
+                                                                                          readerIfInProgress: UserAnswersReader[C],
+                                                                                          urlIfInProgress: String) {
+
+  def ifNotStarted(urlIfNotStarted: String): TaskListDsl[A, B, C] =
+    new TaskListDsl(userAnswers)(sectionName,
+                                 readerIfDependentSectionCompleted,
+                                 readerIfCompleted,
+                                 urlIfCompleted,
+                                 readerIfInProgress,
+                                 urlIfInProgress,
+                                 urlIfNotStarted)
+}
+
+private[viewModels] class TaskListDsl[A, B, C](userAnswers: UserAnswers)(
   sectionName: String,
-  readerIfCompleted: UserAnswersReader[A],
+  readerIfDependentSectionCompleted: Option[UserAnswersReader[A]],
+  readerIfCompleted: UserAnswersReader[B],
   urlIfCompleted: String,
-  readerIfInProgress: UserAnswersReader[B],
+  readerIfInProgress: UserAnswersReader[C],
   urlIfInProgress: String,
   urlIfNotStarted: String
 ) {
@@ -69,7 +95,7 @@ private[viewModels] class TaskListDsl[A, B](userAnswers: UserAnswers)(
         _ => (urlIfCompleted, Completed)
       )
 
-    val inProgress = readerIfInProgress
+    val inProgress: Kleisli[Option, UserAnswers, (String, Status)] = readerIfInProgress
       .map[(String, Status)](
         _ => (urlIfInProgress, InProgress)
       )
@@ -79,6 +105,15 @@ private[viewModels] class TaskListDsl[A, B](userAnswers: UserAnswers)(
       .run(userAnswers)
       .getOrElse((urlIfNotStarted, NotStarted))
 
-    SectionDetails(sectionName, onwardRoute, status)
+    val (updatedOnwardRoute, updatedStatus) = readerIfDependentSectionCompleted match {
+      case Some(reader) =>
+        reader.run(userAnswers) match {
+          case Some(_) => (onwardRoute, status)
+          case _       => ("", CannotStartYet)
+        }
+      case _ => (onwardRoute, status)
+    }
+
+    SectionDetails(sectionName, updatedOnwardRoute, updatedStatus)
   }
 }

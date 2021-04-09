@@ -18,8 +18,9 @@ package controllers.addItems
 
 import controllers.actions._
 import forms.addItems.ConfirmRemoveDocumentFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.Document
 import pages.addItems.ConfirmRemoveDocumentPage
@@ -41,6 +42,7 @@ class ConfirmRemoveDocumentController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: ConfirmRemoveDocumentFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -53,7 +55,10 @@ class ConfirmRemoveDocumentController @Inject()(
   private val template = "addItems/confirmRemoveDocument.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(ConfirmRemoveDocumentPage(itemIndex, documentIndex)) match {
           case None        => form
@@ -73,7 +78,10 @@ class ConfirmRemoveDocumentController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         form
           .bindFromRequest()

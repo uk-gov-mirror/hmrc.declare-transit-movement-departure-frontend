@@ -85,8 +85,8 @@ class SealsInformationControllerSpec extends SpecBase with MockNunjucksRendererA
         "mode"        -> NormalMode,
         "lrn"         -> lrn,
         "radios"      -> Radios.yesNo(form("value")),
-        "pageTitle"   -> "addSeal.title.singular",
-        "heading"     -> "addSeal.heading.singular",
+        "pageTitle"   -> "sealsInformation.title.singular",
+        "heading"     -> "sealsInformation.heading.singular",
         "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, NormalMode).url
       )
 
@@ -121,8 +121,8 @@ class SealsInformationControllerSpec extends SpecBase with MockNunjucksRendererA
         "mode"        -> NormalMode,
         "lrn"         -> lrn,
         "radios"      -> Radios.yesNo(form("value")),
-        "pageTitle"   -> "addSeal.title.plural",
-        "heading"     -> "addSeal.heading.plural",
+        "pageTitle"   -> "sealsInformation.title.plural",
+        "heading"     -> "sealsInformation.heading.plural",
         "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, NormalMode).url
       )
 
@@ -174,8 +174,8 @@ class SealsInformationControllerSpec extends SpecBase with MockNunjucksRendererA
         "mode"        -> NormalMode,
         "lrn"         -> lrn,
         "radios"      -> Radios.yesNo(boundForm("value")),
-        "pageTitle"   -> "addSeal.title.singular",
-        "heading"     -> "addSeal.heading.singular",
+        "pageTitle"   -> "sealsInformation.title.singular",
+        "heading"     -> "sealsInformation.heading.singular",
         "onSubmitUrl" -> routes.SealsInformationController.onSubmit(lrn, NormalMode).url
       )
 

@@ -59,16 +59,13 @@ class TraderDetailsConsigneeEoriNumberFormProviderSpec extends StringFieldBehavi
 
     behave like fieldWithInvalidCharacters(form, fieldName, invalidKey, maxLengthEoriNumber)
 
-    "must not bind strings that do not match the EORI number format regex" ignore {
+    "must not bind strings that do not match the EORI number format regex" in {
 
       val expectedError =
         List(FormError(fieldName, invalidFormatKey, Seq(eoriNumberRegex)))
 
-      val genInvalidString: Gen[String] = {
-        alphaNumericWithMaxLength(maxLengthEoriNumber).map(_.toUpperCase) suchThat (!_.matches(eoriNumberRegex))
-      }
-
-      forAll(genInvalidString) {
+      val generator: Gen[String] = RegexpGen.from(s"^[0-9]{2}[a-zA-Z0-9]{15}")
+      forAll(generator) {
         invalidString =>
           val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors mustBe expectedError

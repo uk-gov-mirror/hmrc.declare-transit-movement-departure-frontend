@@ -16,16 +16,20 @@
 
 package pages
 
+import models.Index
+import models.reference.CountryCode
 import pages.behaviours.PageBehaviours
 
 class OfficeOfTransitCountryPageSpec extends PageBehaviours {
 
+  val index = Index(0)
+
   "OfficeOfTransitCountryPage" - {
 
-    beRetrievable[String](OfficeOfTransitCountryPage)
+    beRetrievable[CountryCode](OfficeOfTransitCountryPage(index))
 
-    beSettable[String](OfficeOfTransitCountryPage)
+    beSettable[CountryCode](OfficeOfTransitCountryPage(index))
 
-    beRemovable[String](OfficeOfTransitCountryPage)
+    beRemovable[CountryCode](OfficeOfTransitCountryPage(index))
   }
 }

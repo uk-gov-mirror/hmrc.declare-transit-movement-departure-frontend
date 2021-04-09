@@ -30,19 +30,19 @@ class AddSealHelper(userAnswers: UserAnswers) {
     userAnswers.get(SealIdDetailsPage(sealIndex)).map {
       answer =>
         Row(
-          key   = Key(msg"addSeal.sealList.label".withArgs(sealIndex.display)),
+          key   = Key(msg"sealsInformation.sealList.label".withArgs(sealIndex.display)),
           value = Value(lit"${answer.numberOrMark}"),
           actions = List(
             Action(
               content            = msg"site.edit",
               href               = SealIdDetailsController.onPageLoad(lrn, sealIndex, CheckMode).url,
-              visuallyHiddenText = Some(msg"addSeal.sealList.change.hidden".withArgs(answer.numberOrMark)),
+              visuallyHiddenText = Some(msg"sealsInformation.sealList.change.hidden".withArgs(answer.numberOrMark)),
               attributes         = Map("id" -> s"""change-seal-${sealIndex.display}""")
             ),
             Action(
               content            = msg"site.delete",
               href               = ConfirmRemoveSealController.onPageLoad(userAnswers.id, sealIndex, mode).url,
-              visuallyHiddenText = Some(msg"addSeal.sealList.delete.hidden".withArgs(answer.numberOrMark)),
+              visuallyHiddenText = Some(msg"sealsInformation.sealList.delete.hidden".withArgs(answer.numberOrMark)),
               attributes         = Map("id" -> s"""remove-seal-${sealIndex.display}""")
             )
           )

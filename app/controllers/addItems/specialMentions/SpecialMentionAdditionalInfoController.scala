@@ -18,8 +18,9 @@ package controllers.addItems.specialMentions
 
 import controllers.actions._
 import forms.addItems.specialMentions.SpecialMentionAdditionalInfoFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.SpecialMentionAdditionalInfoPage
@@ -40,6 +41,7 @@ class SpecialMentionAdditionalInfoController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: SpecialMentionAdditionalInfoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -52,7 +54,10 @@ class SpecialMentionAdditionalInfoController @Inject()(
   private val template = "addItems/specialMentions/specialMentionAdditionalInfo.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(SpecialMentionAdditionalInfoPage(itemIndex, referenceIndex)) match {
           case None        => formProvider(itemIndex, referenceIndex)
@@ -71,7 +76,10 @@ class SpecialMentionAdditionalInfoController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         formProvider(itemIndex, referenceIndex)
           .bindFromRequest()

@@ -27,21 +27,19 @@ object GuaranteeDetailsCheckYourAnswersViewModel {
 
   def apply(userAnswers: UserAnswers, index: Index): GuaranteeDetailsCheckYourAnswersViewModel = {
 
-    val checkYourAnswersHelper                                 = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers)
-    val guaranteeType: Option[SummaryList.Row]                 = checkYourAnswersHelper.guaranteeType(index)
-    val guaranteeReference: Option[SummaryList.Row]            = checkYourAnswersHelper.guaranteeReference(index)
-    val otherReference: Option[SummaryList.Row]                = checkYourAnswersHelper.otherReference(index)
-    val liabilityAmount: Option[SummaryList.Row]               = checkYourAnswersHelper.liabilityAmount(index)
-    val otherReferenceLiabilityAmount: Option[SummaryList.Row] = checkYourAnswersHelper.otherReferenceliabilityAmount(index)
-    val accessCode: Option[SummaryList.Row]                    = checkYourAnswersHelper.accessCode(index)
-    val defaultAmount: Option[SummaryList.Row]                 = checkYourAnswersHelper.defaultAmount(index)
+    val checkYourAnswersHelper                      = new GuaranteeDetailsCheckYourAnswersHelper(userAnswers)
+    val guaranteeType: Option[SummaryList.Row]      = checkYourAnswersHelper.guaranteeType(index)
+    val guaranteeReference: Option[SummaryList.Row] = checkYourAnswersHelper.guaranteeReference(index)
+    val otherReference: Option[SummaryList.Row]     = checkYourAnswersHelper.otherReference(index)
+    val liabilityAmount: Option[SummaryList.Row]    = checkYourAnswersHelper.liabilityAmount(index)
+    val accessCode: Option[SummaryList.Row]         = checkYourAnswersHelper.accessCode(index)
+    val defaultAmount: Option[SummaryList.Row]      = checkYourAnswersHelper.defaultAmount(index)
 
     val checkYourAnswersData = Seq(
       guaranteeType,
       guaranteeReference,
       otherReference,
       liabilityAmount,
-      otherReferenceLiabilityAmount,
       defaultAmount,
       accessCode
     ).flatten

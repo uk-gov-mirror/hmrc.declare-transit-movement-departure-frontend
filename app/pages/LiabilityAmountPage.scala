@@ -30,7 +30,8 @@ case class LiabilityAmountPage(index: Index) extends QuestionPage[String] {
 
   override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(x) if (x.trim.isEmpty) => userAnswers.remove(LiabilityAmountPage(index))
-      case _                           => super.cleanup(value, userAnswers)
+      case Some(x) if x.nonEmpty     => userAnswers.remove(DefaultAmountPage(index))
+      case Some(x) if x.trim.isEmpty => userAnswers.remove(LiabilityAmountPage(index))
+      case _                         => super.cleanup(value, userAnswers)
     }
 }
