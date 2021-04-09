@@ -19,9 +19,10 @@ package controllers.addItems.securityDetails
 import connectors.ReferenceDataConnector
 import controllers.actions._
 import forms.addItems.securityDetails.TransportChargesFormProvider
+
 import javax.inject.Inject
 import models.reference.MethodOfPayment
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SecurityDetails
 import pages.addItems.securityDetails.TransportChargesPage
@@ -44,6 +45,7 @@ class TransportChargesController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   referenceDataConnector: ReferenceDataConnector,
   formProvider: TransportChargesFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -55,56 +57,64 @@ class TransportChargesController @Inject()(
 
   private val template = "addItems/securityDetails/transportCharges.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getMethodOfPaymentList() flatMap {
-        payments =>
-          val form: Form[MethodOfPayment] = formProvider(payments)
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        referenceDataConnector.getMethodOfPaymentList() flatMap {
+          payments =>
+            val form: Form[MethodOfPayment] = formProvider(payments)
 
-          val preparedForm = request.userAnswers
-            .get(TransportChargesPage(itemIndex))
-            .flatMap(payments.getMethodOfPayment)
-            .map(form.fill)
-            .getOrElse(form)
+            val preparedForm = request.userAnswers
+              .get(TransportChargesPage(itemIndex))
+              .flatMap(payments.getMethodOfPayment)
+              .map(form.fill)
+              .getOrElse(form)
 
-          val json = Json.obj(
-            "form"     -> preparedForm,
-            "index"    -> itemIndex.display,
-            "payments" -> getPaymentsAsJson(preparedForm.value, payments.methodsOfPayment),
-            "lrn"      -> lrn,
-            "mode"     -> mode
-          )
-
-          renderer.render(template, json).map(Ok(_))
-      }
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getMethodOfPaymentList() flatMap {
-        payments =>
-          val form = formProvider(payments)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => {
-
-                val json = Json.obj(
-                  "form"     -> formWithErrors,
-                  "index"    -> itemIndex.display,
-                  "payments" -> getPaymentsAsJson(form.value, payments.methodsOfPayment),
-                  "lrn"      -> lrn,
-                  "mode"     -> mode
-                )
-
-                renderer.render(template, json).map(BadRequest(_))
-              },
-              value =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportChargesPage(itemIndex), value.code))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(TransportChargesPage(itemIndex), mode, updatedAnswers))
+            val json = Json.obj(
+              "form"     -> preparedForm,
+              "index"    -> itemIndex.display,
+              "payments" -> getPaymentsAsJson(preparedForm.value, payments.methodsOfPayment),
+              "lrn"      -> lrn,
+              "mode"     -> mode
             )
-      }
-  }
+
+            renderer.render(template, json).map(Ok(_))
+        }
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        referenceDataConnector.getMethodOfPaymentList() flatMap {
+          payments =>
+            val form = formProvider(payments)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => {
+
+                  val json = Json.obj(
+                    "form"     -> formWithErrors,
+                    "index"    -> itemIndex.display,
+                    "payments" -> getPaymentsAsJson(form.value, payments.methodsOfPayment),
+                    "lrn"      -> lrn,
+                    "mode"     -> mode
+                  )
+
+                  renderer.render(template, json).map(BadRequest(_))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportChargesPage(itemIndex), value.code))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(TransportChargesPage(itemIndex), mode, updatedAnswers))
+              )
+        }
+    }
 }

@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package logging
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.Logger
 
-class OtherReferenceliabilityAmountPageSpec extends PageBehaviours {
+trait Logging {
 
-  "OtherReferenceliabilityAmountPage" - {
-
-    beRetrievable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beSettable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-
-    beRemovable[String](OtherReferenceLiabilityAmountPage(Index(0)))
-  }
+  protected val logger: Logger = Logger(s"application.${this.getClass.getCanonicalName}")
 }

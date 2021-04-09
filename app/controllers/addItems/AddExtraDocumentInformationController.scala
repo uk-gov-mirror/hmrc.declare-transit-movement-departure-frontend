@@ -18,8 +18,9 @@ package controllers.addItems
 
 import controllers.actions._
 import forms.addItems.AddExtraDocumentInformationFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.Document
 import pages.addItems.AddExtraDocumentInformationPage
@@ -40,6 +41,7 @@ class AddExtraDocumentInformationController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: AddExtraDocumentInformationFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -51,7 +53,10 @@ class AddExtraDocumentInformationController @Inject()(
   private val template = "addItems/addExtraDocumentInformation.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(AddExtraDocumentInformationPage(index, documentIndex)) match {
           case None        => formProvider(index)
@@ -71,7 +76,10 @@ class AddExtraDocumentInformationController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, documentIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         formProvider(index)
           .bindFromRequest()

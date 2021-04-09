@@ -18,8 +18,9 @@ package controllers.addItems.specialMentions
 
 import controllers.actions._
 import forms.addItems.specialMentions.RemoveSpecialMentionFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.SpecialMentions
 import pages.addItems.specialMentions.RemoveSpecialMentionPage
@@ -41,6 +42,7 @@ class RemoveSpecialMentionController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: RemoveSpecialMentionFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -53,7 +55,10 @@ class RemoveSpecialMentionController @Inject()(
   private val template = "addItems/specialMentions/removeSpecialMention.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val preparedForm = request.userAnswers.get(RemoveSpecialMentionPage(itemIndex, referenceIndex)) match {
           case None        => form
@@ -71,7 +76,10 @@ class RemoveSpecialMentionController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, referenceIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         form
           .bindFromRequest()

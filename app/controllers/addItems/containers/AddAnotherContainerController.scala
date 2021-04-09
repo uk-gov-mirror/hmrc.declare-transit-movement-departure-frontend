@@ -19,9 +19,10 @@ package controllers.addItems.containers
 import controllers.actions._
 import derivable.DeriveNumberOfContainers
 import forms.addItems.containers.AddAnotherContainerFormProvider
+
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.containers.AddAnotherContainerPage
@@ -43,6 +44,7 @@ class AddAnotherContainerController @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  checkDependentSection: CheckDependentSectionAction,
   formProvider: AddAnotherContainerFormProvider,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer
@@ -54,33 +56,41 @@ class AddAnotherContainerController @Inject()(
   private val form     = formProvider()
   private val template = "addItems/containers/addAnotherContainer.njk"
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      renderPage(itemIndex, mode, form).map(Ok(_))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        renderPage(itemIndex, mode, form).map(Ok(_))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => renderPage(itemIndex, mode, formWithErrors).map(BadRequest(_)),
-          value => {
-            val onwardRoute = value match {
-              case true =>
-                val containerCount = request.userAnswers.get(DeriveNumberOfContainers(itemIndex)).getOrElse(0)
-                val containerIndex = Index(containerCount)
-                routes.ContainerNumberController.onPageLoad(request.userAnswers.id, itemIndex, containerIndex, mode)
-              case false =>
-                navigator.nextPage(AddAnotherContainerPage(itemIndex), mode, request.userAnswers)
-              case _ =>
-                controllers.routes.SessionExpiredController.onPageLoad()
+  def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => renderPage(itemIndex, mode, formWithErrors).map(BadRequest(_)),
+            value => {
+              val onwardRoute = value match {
+                case true =>
+                  val containerCount = request.userAnswers.get(DeriveNumberOfContainers(itemIndex)).getOrElse(0)
+                  val containerIndex = Index(containerCount)
+                  routes.ContainerNumberController.onPageLoad(request.userAnswers.id, itemIndex, containerIndex, mode)
+                case false =>
+                  navigator.nextPage(AddAnotherContainerPage(itemIndex), mode, request.userAnswers)
+                case _ =>
+                  controllers.routes.SessionExpiredController.onPageLoad()
+              }
+
+              Future.successful(Redirect(onwardRoute))
             }
-
-            Future.successful(Redirect(onwardRoute))
-          }
-        )
-  }
+          )
+    }
 
   private def renderPage(itemIndex: Index, mode: Mode, form: Form[_])(implicit request: DataRequest[AnyContent]): Future[Html] = {
     val cyaHelper          = new ContainersCheckYourAnswersHelper(request.userAnswers)

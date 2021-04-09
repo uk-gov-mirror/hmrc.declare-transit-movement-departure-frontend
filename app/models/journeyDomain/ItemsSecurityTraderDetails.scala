@@ -122,11 +122,10 @@ object ItemsSecurityTraderDetails {
       }
 
   private def commercialReferenceNumberPage(index: Index): UserAnswersReader[Option[String]] =
-    AddCommercialReferenceNumberAllItemsPage.reader
+    AddCommercialReferenceNumberAllItemsPage.optionalReader
       .flatMap {
-        bool =>
-          if (!bool) CommercialReferenceNumberPage(index).reader.map(Some(_))
-          else none[String].pure[UserAnswersReader]
+        case Some(true) => none[String].pure[UserAnswersReader]
+        case _          => CommercialReferenceNumberPage(index).reader.map(Some(_))
       }
 
   private def dangerousGoodsCodePage(index: Index): UserAnswersReader[Option[String]] =

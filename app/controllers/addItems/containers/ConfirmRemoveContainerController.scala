@@ -19,8 +19,9 @@ package controllers.addItems.containers
 import controllers.actions._
 import derivable.DeriveNumberOfContainers
 import forms.addItems.containers.ConfirmRemoveContainerFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.containers.{ConfirmRemoveContainerPage, ContainerNumberPage}
@@ -41,6 +42,7 @@ class ConfirmRemoveContainerController @Inject()(
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
+  checkDependentSection: CheckDependentSectionAction,
   requireData: DataRequiredAction,
   formProvider: ConfirmRemoveContainerFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -54,7 +56,10 @@ class ConfirmRemoveContainerController @Inject()(
   private val template = "addItems/containers/confirmRemoveContainer.njk"
 
   def onPageLoad(lrn: LocalReferenceNumber, index: Index, containerIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val json = Json.obj(
           "form"           -> form,
@@ -70,7 +75,10 @@ class ConfirmRemoveContainerController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, containerIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         form
           .bindFromRequest()

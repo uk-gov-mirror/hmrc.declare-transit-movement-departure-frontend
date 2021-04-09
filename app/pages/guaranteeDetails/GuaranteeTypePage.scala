@@ -50,7 +50,6 @@ case class GuaranteeTypePage(index: Index) extends QuestionPage[GuaranteeType] {
           .remove(GuaranteeReferencePage(index))
           .flatMap(_.remove(LiabilityAmountPage(index)))
           .flatMap(_.remove(AccessCodePage(index)))
-          .flatMap(_.remove(OtherReferenceLiabilityAmountPage(index)))
           .flatMap(_.remove(DefaultAmountPage(index)))
 
       case _ => super.cleanup(value, userAnswers)

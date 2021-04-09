@@ -32,6 +32,9 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
   val betaFeedbackUrl          = s"$contactHost/contact/beta-feedback"
   val nctsEnquiriesUrl: String = configuration.get[String]("urls.nctsEnquiries")
 
+  val trackingConsentUrl: String = configuration.get[String]("microservice.services.tracking-consent-frontend.url")
+  val gtmContainer: String       = configuration.get[String]("microservice.services.tracking-consent-frontend.gtm.container")
+
   //TODO: Move out into it's own config object like `ManageTransitMovementsService`
   lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.referenceData").fullServiceUrl
 
@@ -41,15 +44,18 @@ class FrontendAppConfig @Inject()(configuration: Configuration) {
 
   // TODO: Move config values for IdentifierAction to it's own config class
   // TODO: Make these values eagerly evaluated. I.e. non lazy
-  lazy val authUrl: String                = configuration.get[Service]("auth").baseUrl
-  lazy val loginUrl: String               = configuration.get[String]("urls.login")
-  lazy val loginContinueUrl: String       = configuration.get[String]("urls.loginContinue")
-  lazy val enrolmentKey: String           = configuration.get[String]("keys.enrolmentKey")
-  lazy val enrolmentIdentifierKey: String = "VATRegNoTURN"
+  lazy val authUrl: String          = configuration.get[Service]("auth").baseUrl
+  lazy val loginUrl: String         = configuration.get[String]("urls.login")
+  lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
+  lazy val enrolmentKey: String     = configuration.get[String]("keys.enrolmentKey")
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val manageTransitMovementsUrl: String             = configuration.get[String]("urls.manageTransitMovementsFrontend")
   lazy val manageTransitMovementsViewArrivalsUrl: String = s"$manageTransitMovementsUrl/view-arrivals"
+
+  lazy val enrolmentProxyUrl: String                   = configuration.get[Service]("microservice.services.enrolment-store-proxy").fullServiceUrl
+  lazy val enrolmentManagementFrontendEnrolUrl: String = configuration.get[String]("urls.enrolmentManagementFrontendEnrolUrl")
+  lazy val enrolmentIdentifierKey: String              = configuration.get[String]("keys.enrolmentIdentifierKey")
 }

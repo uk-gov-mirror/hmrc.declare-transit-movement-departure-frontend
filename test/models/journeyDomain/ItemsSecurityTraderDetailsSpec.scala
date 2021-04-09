@@ -16,19 +16,18 @@
 
 package models.journeyDomain
 
-import base.{GeneratorSpec, SpecBase}
+import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.domain.Address
 import models.journeyDomain.ItemsSecurityTraderDetails.{SecurityPersonalInformation, SecurityTraderEori}
-import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.{Index, UserAnswers}
 import org.scalatest.TryValues
 import pages.addItems.securityDetails.{AddDangerousGoodsCodePage, CommercialReferenceNumberPage, DangerousGoodsCodePage, TransportChargesPage}
 import pages.addItems.traderSecurityDetails._
 import pages.safetyAndSecurity.{AddSafetyAndSecurityConsigneePage, AddSafetyAndSecurityConsignorPage, _}
 
-class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators {
-  "ItemsSecurityTraderDetails can be parsed within user answers" ignore {
+class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with JourneyModelGenerators with UserAnswersSpecHelper {
+  "ItemsSecurityTraderDetails can be parsed within user answers" - {
     "when the minimal user answers has been answered" in {
 
       forAll(arb[UserAnswers], arb[ItemsSecurityTraderDetails]) {
@@ -37,6 +36,22 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
             .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
             .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
+
+          val result: ItemsSecurityTraderDetails =
+            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+
+          result mustBe itemsSecurityTraderDetails
+      }
+    }
+
+    "when the minimal user answers has been answered and AddCommercialReferenceNumberAllItems is not answered" in {
+
+      forAll(arb[UserAnswers], arb[ItemsSecurityTraderDetails]) {
+        (baseUserAnswers, itemsSecurityTraderDetails) =>
+          val userAnswers = ItemsSecurityTraderDetailsSpec
+            .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
+            .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
+            .unsafeRemove(AddCommercialReferenceNumberAllItemsPage)
 
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
@@ -83,11 +98,11 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
   }
 }
 
-object ItemsSecurityTraderDetailsSpec {
+object ItemsSecurityTraderDetailsSpec extends UserAnswersSpecHelper {
 
   def setItemsSecurityTraderDetails(itemsSecurityTraderDetails: ItemsSecurityTraderDetails, index: Index)(startUserAnswers: UserAnswers): UserAnswers =
     startUserAnswers
-    // Set method of payment
+      // Set method of payment
       .unsafeSetOpt(TransportChargesPage(index))(itemsSecurityTraderDetails.methodOfPayment)
 
       // Set commerical reference number

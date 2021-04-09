@@ -18,11 +18,13 @@ package viewModels
 
 import base.SpecBase
 import generators.Generators
-import models.GuaranteeType.GuaranteeWaiver
-import models.Index
+import models.GuaranteeType.{guaranteeReferenceRoute, nonGuaranteeReferenceRoute, GuaranteeWaiver}
+import models.{GuaranteeType, Index}
+import models.reference.{CountryCode, CustomsOffice}
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
-import pages.{AccessCodePage, DefaultAmountPage, LiabilityAmountPage, OtherReferencePage}
+import pages.{AccessCodePage, DefaultAmountPage, DestinationOfficePage, LiabilityAmountPage, OfficeOfDeparturePage, OtherReferencePage}
 import uk.gov.hmrc.viewmodels.Text.{Literal, Message}
 
 class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -62,51 +64,141 @@ class GuaranteeDetailsCheckYourAnswersViewModelSpec extends SpecBase with ScalaC
       data.sections.head.rows.head.value.content mustEqual Literal("test")
     }
 
-    "display Liability Amount" - {
-      "and amount as 10 when selected" in {
-        val updatedAnswers = emptyUserAnswers.set(LiabilityAmountPage(index), "10.00").success.value
-        val data           = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+    "Liability Amount" - {
+
+      "must be displayed when amount is defined and when office of departure and destination office is GB" in {
+        val updatedAnswers = emptyUserAnswers
+          .set(LiabilityAmountPage(index), "10.00")
+          .success
+          .value
+          .set(OfficeOfDeparturePage, CustomsOffice("", "", CountryCode("GB"), Seq.empty, None))
+          .success
+          .value
+          .set(DestinationOfficePage, CustomsOffice("", "", CountryCode("GB"), Seq.empty, None))
+          .success
+          .value
+          .set(GuaranteeTypePage(index), GuaranteeWaiver)
+          .success
+          .value
+
+        val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
 
         data.sections.head.sectionTitle must not be defined
         data.sections.length mustEqual 1
-        data.sections.head.rows.length mustEqual 1
-        data.sections.head.rows.head.value.content mustEqual Literal("10.00")
+        data.sections.head.rows.length mustEqual 2
+        data.sections.head.rows(1).value.content mustEqual Literal("10.00")
+      }
+
+      "must be displayed when amount is defined when selected when office of departure and destination office is not GB" in {
+        val updatedAnswers = emptyUserAnswers
+          .set(LiabilityAmountPage(index), "10.00")
+          .success
+          .value
+          .set(OfficeOfDeparturePage, CustomsOffice("", "", CountryCode("IT"), Seq.empty, None))
+          .success
+          .value
+          .set(DestinationOfficePage, CustomsOffice("", "", CountryCode("FR"), Seq.empty, None))
+          .success
+          .value
+          .set(GuaranteeTypePage(index), GuaranteeWaiver)
+          .success
+          .value
+
+        val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+
+        data.sections.head.sectionTitle must not be defined
+        data.sections.length mustEqual 1
+        data.sections.head.rows.length mustEqual 2
+        data.sections.head.rows(1).value.content mustEqual Literal("10.00")
+      }
+
+      "must be displayed when amount is not defined" in {
+        val updatedAnswers = emptyUserAnswers
+          .remove(LiabilityAmountPage(index))
+          .success
+          .value
+          .set(OfficeOfDeparturePage, CustomsOffice("", "", CountryCode("GB"), Seq.empty, None))
+          .success
+          .value
+          .set(DestinationOfficePage, CustomsOffice("", "", CountryCode("GB"), Seq.empty, None))
+          .success
+          .value
+          .set(GuaranteeTypePage(index), GuaranteeWaiver)
+          .success
+          .value
+
+        val data             = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+        val message: Message = data.sections.head.rows(1).value.content.asInstanceOf[Message]
+
+        data.sections.head.sectionTitle must not be defined
+        data.sections.length mustEqual 1
+        data.sections.head.rows.length mustEqual 2
+        message.key mustBe "guaranteeDetailsCheckYourAnswers.defaultLiabilityAmount"
+      }
+
+      "must be hidden when GuaranteeType is not a GuaranteeReferenceRoute" in {
+
+        val genNonGuaranteeReferenceGroup = Gen.oneOf(nonGuaranteeReferenceRoute)
+
+        forAll(genNonGuaranteeReferenceGroup) {
+          nonGuaranteeReferenceGroup =>
+            val updatedAnswers = emptyUserAnswers
+              .set(OfficeOfDeparturePage, CustomsOffice("", "", CountryCode("GB"), Seq.empty, None))
+              .success
+              .value
+              .set(DestinationOfficePage, CustomsOffice("", "", CountryCode("GB"), Seq.empty, None))
+              .success
+              .value
+              .set(GuaranteeTypePage(index), nonGuaranteeReferenceGroup)
+              .success
+              .value
+
+            val data    = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+            val message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
+
+            val expectedMessageKey = s"guaranteeType.${GuaranteeType.getId(nonGuaranteeReferenceGroup.toString)}"
+
+            data.sections.head.sectionTitle must not be defined
+            data.sections.length mustEqual 1
+            data.sections.head.rows.length mustEqual 1
+            message.key mustBe expectedMessageKey
+        }
       }
     }
+
     "display Default Liability Amount when selected" in {
 
       val updatedAnswers = emptyUserAnswers
-        .remove(LiabilityAmountPage(index))
-        .success
-        .value
         .set(DefaultAmountPage(index), true)
         .success
         .value
-      val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+
+      val data             = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+      val message: Message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 1
-      data.sections.head.rows.head.value.content mustEqual Literal("Yes")
-
+      message.key mustBe "site.yes"
     }
+
     "display Default Liability Amount when no is selected" in {
 
       val updatedAnswers = emptyUserAnswers
-        .remove(LiabilityAmountPage(index))
-        .success
-        .value
         .set(DefaultAmountPage(index), false)
         .success
         .value
-      val data = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+
+      val data             = GuaranteeDetailsCheckYourAnswersViewModel(updatedAnswers, index)
+      val message: Message = data.sections.head.rows.head.value.content.asInstanceOf[Message]
 
       data.sections.head.sectionTitle must not be defined
       data.sections.length mustEqual 1
       data.sections.head.rows.length mustEqual 1
-      data.sections.head.rows.head.value.content mustEqual Literal("No")
+      message.key mustBe "site.no"
 
     }
+
     "display Access Code when selected" in {
 
       val updatedAnswers = emptyUserAnswers.set(AccessCodePage(index), "a1b2").success.value

@@ -17,8 +17,9 @@
 package pages
 
 import generators.Generators
-import models.Index
+import models.{Index, RepresentativeCapacity, UserAnswers}
 import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class LiabilityAmountPageSpec extends PageBehaviours with Generators {
@@ -34,5 +35,38 @@ class LiabilityAmountPageSpec extends PageBehaviours with Generators {
     beSettable[String](LiabilityAmountPage(index))
 
     beRemovable[String](LiabilityAmountPage(index))
+
+    "cleanup" - {
+
+      "must remove DefaultAmountPage when answer is non empty" in {
+
+        forAll(arbitrary[UserAnswers], nonEmptyString, arbitrary[Boolean]) {
+          (userAnswers, liabilityAmount, useDefaultAmount) =>
+            val result = userAnswers
+              .set(DefaultAmountPage(index), useDefaultAmount)
+              .success
+              .value
+              .set(LiabilityAmountPage(index), liabilityAmount)
+              .success
+              .value
+
+            result.get(DefaultAmountPage(index)) must not be defined
+        }
+      }
+
+      "must remove LiabilityAmountPage when answer is empty" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val result = userAnswers
+              .set(LiabilityAmountPage(index), "")
+              .success
+              .value
+
+            result.get(DefaultAmountPage(index)) must not be defined
+        }
+      }
+    }
   }
+
 }

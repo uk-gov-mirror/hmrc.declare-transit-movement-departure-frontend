@@ -33,8 +33,8 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import controllers.{routes => mainRoutes}
-import models.{CountryList, NormalMode}
-import models.reference.{Country, CountryCode}
+import models.{CircumstanceIndicatorList, CountryList, NormalMode}
+import models.reference.{CircumstanceIndicator, Country, CountryCode}
 
 import scala.concurrent.Future
 
@@ -44,6 +44,7 @@ class SafetyAndSecurityCheckYourAnswersControllerSpec extends SpecBase with Mock
 
   private val mockReferenceDataConnector = mock[ReferenceDataConnector]
   val countries                          = CountryList(Seq(Country(CountryCode("GB"), "United Kingdom")))
+  val circumstanceIndicatorsList         = CircumstanceIndicatorList(Seq(CircumstanceIndicator("C", "Road mode of transport")))
 
   lazy val safetyAndSecurityRoute = routes.SafetyAndSecurityCheckYourAnswersController.onPageLoad(lrn).url
 
@@ -61,6 +62,7 @@ class SafetyAndSecurityCheckYourAnswersControllerSpec extends SpecBase with Mock
         .thenReturn(Future.successful(Html("")))
 
       when(mockReferenceDataConnector.getCountryList()(any(), any())).thenReturn(Future.successful(countries))
+      when(mockReferenceDataConnector.getCircumstanceIndicatorList()(any(), any())).thenReturn(Future.successful(circumstanceIndicatorsList))
 
       dataRetrievalWithData(emptyUserAnswers)
 

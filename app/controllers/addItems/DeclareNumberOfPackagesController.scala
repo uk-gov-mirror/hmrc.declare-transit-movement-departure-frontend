@@ -18,8 +18,9 @@ package controllers.addItems
 
 import controllers.actions._
 import forms.addItems.DeclareNumberOfPackagesFormProvider
+
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{DependentSection, Index, LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.AddItems
 import pages.addItems.DeclareNumberOfPackagesPage
@@ -39,6 +40,7 @@ class DeclareNumberOfPackagesController @Inject()(
   @AddItems navigator: Navigator,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
+  checkDependentSection: CheckDependentSectionAction,
   requireData: DataRequiredAction,
   formProvider: DeclareNumberOfPackagesFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -49,7 +51,10 @@ class DeclareNumberOfPackagesController @Inject()(
     with NunjucksSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val form = formProvider(itemIndex.display)
 
@@ -70,7 +75,10 @@ class DeclareNumberOfPackagesController @Inject()(
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    (identify
+      andThen getData(lrn)
+      andThen requireData
+      andThen checkDependentSection(DependentSection.ItemDetails)).async {
       implicit request =>
         val form = formProvider(itemIndex.display)
 
