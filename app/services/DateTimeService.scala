@@ -22,6 +22,7 @@ import com.google.inject.Singleton
 import utils.Format
 
 @Singleton
+@deprecated("Use a clock with java.time instead", "")
 class DateTimeServiceImpl extends DateTimeService {
 
   override def currentDateTime: LocalDateTime = LocalDateTime.now()
@@ -29,6 +30,7 @@ class DateTimeServiceImpl extends DateTimeService {
   def dateFormatted: String = currentDateTime.format(Format.dateFormatter)
 }
 
+@deprecated("Use a clock with java.time instead", "")
 trait DateTimeService {
 
   def currentDateTime: LocalDateTime
