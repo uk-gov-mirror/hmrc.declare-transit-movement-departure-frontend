@@ -59,16 +59,23 @@ class DeclarationRequestService @Inject()(
   val logger: Logger = Logger(getClass)
 
   override def convert(userAnswers: UserAnswers): Future[Option[DeclarationRequest]] =
-    icrRepository.nextInterchangeControlReferenceId().map {
-      icrId =>
-        UserAnswersReader[JourneyDomain]
-          .map(journeyModelToSubmissionModel(_, icrId, dateTimeService.currentDateTime))
-          .run(userAnswers)
-    }
+    icrRepository
+      .nextInterchangeControlReferenceId()
+      .map {
+        icrId =>
+          UserAnswersReader[JourneyDomain]
+            .map(journeyModelToSubmissionModel(_, icrId, dateTimeService.currentDateTime))
+            .run(userAnswers)
+      }
+      .recover {
+        case _ => None
+      }
 
-  private def journeyModelToSubmissionModel(journeyDomain: JourneyDomain,
-                                            icr: InterchangeControlReference,
-                                            dateTimeOfPrep: LocalDateTime): DeclarationRequest = {
+  private def journeyModelToSubmissionModel(
+    journeyDomain: JourneyDomain,
+    icr: InterchangeControlReference,
+    dateTimeOfPrep: LocalDateTime
+  ): DeclarationRequest = {
 
     val JourneyDomain(
       preTaskList,
@@ -205,32 +212,6 @@ class DeclarationRequestService @Inject()(
         case PrincipalTraderEoriInfo(traderEori) =>
           TraderPrincipalWithEori(eori = traderEori.value, None, None, None, None, None)
       }
-
-    def headerConsignor(traderDetails: TraderDetails): Option[TraderConsignor] =
-      traderDetails.consignor
-        .flatMap {
-//          case TraderDetails.TraderInformation(name, address, eori) =>
-//            Address.prismAddressToConsignorAddress.getOption(address).map {
-//              case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
-//                TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
-//            }
-          case _ =>
-            logger.error(s"headerConsignor failed to get name and address")
-            None
-        }
-
-    def headerConsignee(traderDetails: TraderDetails): Option[TraderConsignee] =
-      traderDetails.consignee
-        .flatMap {
-//          case TraderDetails.TraderInformation(name, address, eori) =>
-//            Address.prismAddressToConsigneeAddress.getOption(address).map {
-//              case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
-//                TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
-//            }
-          case _ =>
-            logger.error(s"headerConsignee failed to get name and address")
-            None
-        }
 
     def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder, inlandCode: Int): String =
       detailsAtBorder match {
@@ -423,8 +404,8 @@ class DeclarationRequestService @Inject()(
         codPlUnHEA357      = safetyAndSecurity.flatMap(_.placeOfUnloading)
       ),
       principalTrader(traderDetails),
-      headerConsignor(traderDetails),
-      headerConsignee(traderDetails),
+      traderDetails.consignor.map(headerConsignor),
+      traderDetails.consignee.map(headerConsignee),
       None, // not required
       CustomsOfficeDeparture(
         referenceNumber = routeDetails.officeOfDeparture.id
@@ -455,5 +436,30 @@ class DeclarationRequestService @Inject()(
         sas => safetyAndSecurityConsignee(sas.consignee)
       )
     )
+  }
+
+  // TODO: Improve by changing consignor address to have a Consignor Address instead
+  private def headerConsignor(consignorDetails: ConsignorDetails): TraderConsignor = {
+    val ConsignorDetails(name, address, eori) = consignorDetails
+
+    Address.prismAddressToConsignorAddress
+      .getOption(address)
+      .map {
+        case ConsignorAddress(addressLine1, addressLine2, addressLine3, country) =>
+          TraderConsignor(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
+      }
+      .get
+  }
+
+  // TODO: Improve by changing consignee address to have a Consignee Address instead
+  private def headerConsignee(consigneeDetails: ConsigneeDetails): TraderConsignee = {
+    val ConsigneeDetails(name, address, eori) = consigneeDetails
+    Address.prismAddressToConsigneeAddress
+      .getOption(address)
+      .map {
+        case ConsigneeAddress(addressLine1, addressLine2, addressLine3, country) =>
+          TraderConsignee(name, addressLine1, addressLine3, addressLine2, country.code.code, eori.map(_.value))
+      }
+      .get
   }
 }
