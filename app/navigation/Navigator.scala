@@ -29,7 +29,7 @@ trait Navigator {
   protected def checkRoutes: RouteMapping
 
   protected def checkModeDefaultPage(userAnswers: UserAnswers): Call =
-    routes.CheckYourAnswersController.onPageLoad(userAnswers.id)
+    routes.IndexController.onPageLoad()
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
