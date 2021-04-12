@@ -782,16 +782,6 @@ removePackage.title = Are you sure you want to remove package {0}?
 removePackage.heading = Are you sure you want to remove package {0}?
 removePackage.error.required = Select yes if you want to remove package {0}
 
-consignorForAllItems.title = Are you the consignor for all items?
-consignorForAllItems.heading = Are you the consignor for all items?
-consignorForAllItems.checkYourAnswersLabel = Are you the consignor for all the items?
-consignorForAllItems.error.required = Select yes if you are the consignor for all items
-
-consigneeForAllItems.title = Are you the consignee for all items?
-consigneeForAllItems.heading = Are you the consignee for all items?
-consigneeForAllItems.checkYourAnswersLabel = Are you the consignee for all the items?
-consigneeForAllItems.error.required = Select yes if you are the consignee for all items
-
 traderDetailsConsigneeAddress.title = What is the consignee’s address for item {0}
 traderDetailsConsigneeAddress.heading = What is {0}’s address?
 traderDetailsConsigneeAddress.checkYourAnswersLabel = {0}’s address
