@@ -40,28 +40,36 @@ object PrincipalTraderDetails {
           .map(PrincipalTraderDetails(_))
       )
 
-    val normal = ProcedureTypePage.reader
+    val normalEori = ProcedureTypePage.reader
       .filter(_ == Normal)
       .productR {
         IsPrincipalEoriKnownPage.reader
-          .flatMap {
-            case true =>
-              WhatIsPrincipalEoriPage.reader
-                .map(EoriNumber(_))
-                .map(PrincipalTraderDetails(_))
-            case false =>
-              (
-                PrincipalNamePage.reader,
-                PrincipalAddressPage.reader
-              ).tupled.map {
-                case (name, principalAddress) =>
-                  val address = Address.prismAddressToPrincipalAddress(principalAddress)
-                  PrincipalTraderDetails(name, address)
-              }
+          .filter(_ == true)
+          .productR {
+            WhatIsPrincipalEoriPage.reader
+              .map(EoriNumber(_))
+              .map(PrincipalTraderDetails(_))
           }
       }
 
-    normal orElse simplified
+    val normalNameAddress = ProcedureTypePage.reader
+      .filter(_ == Normal)
+      .productR {
+        IsPrincipalEoriKnownPage.reader
+          .filter(_ == false)
+          .productR {
+            (
+              PrincipalNamePage.reader,
+              PrincipalAddressPage.reader
+            ).tupled.map {
+              case (name, principalAddress) =>
+                val address = Address.prismAddressToPrincipalAddress(principalAddress)
+                PrincipalTraderDetails(name, address)
+            }
+          }
+      }
+
+    normalNameAddress orElse normalEori orElse simplified
   }
 
 }
