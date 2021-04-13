@@ -47,7 +47,7 @@
                   }) }}
 
           {% else %}
-            <form action="{{ routes.controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn, mode).url }}" method="post" data-testId="addOfficeRadio>
+            <form action="{{ routes.controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn, mode).url }}" method="post" data-testId="addOfficeRadio">
 
               {{ csrf() | safe }}
 

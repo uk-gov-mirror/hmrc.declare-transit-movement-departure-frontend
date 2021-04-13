@@ -15,7 +15,6 @@
  */
 
 package views
-
 import play.api.libs.json.Json
 
 class AddTransitOfficeViewSpec extends SingleViewSpec("addTransitOffice.njk") {
@@ -26,7 +25,6 @@ class AddTransitOfficeViewSpec extends SingleViewSpec("addTransitOffice.njk") {
         "maxLimitReached" -> true
       )
     val doc = renderDocument(baseJson).futureValue
-
     getByElementTestIdSelector(doc, "maxLimit") must not be (empty)
   }
 
@@ -36,7 +34,6 @@ class AddTransitOfficeViewSpec extends SingleViewSpec("addTransitOffice.njk") {
         "maxLimitReached" -> false
       )
     val doc = renderDocument(baseJson).futureValue
-
     getByElementTestIdSelector(doc, "maxLimit") must be(empty)
   }
 
@@ -46,17 +43,14 @@ class AddTransitOfficeViewSpec extends SingleViewSpec("addTransitOffice.njk") {
         "maxLimitReached" -> false
       )
     val doc = renderDocument(baseJson).futureValue
-
     getByElementTestIdSelector(doc, "addOfficeRadio") must not be (empty)
   }
-
   "must not display the add another office Yes/No radio when reached maximum office limit" in {
     val baseJson =
       Json.obj(
         "maxLimitReached" -> true
       )
     val doc = renderDocument(baseJson).futureValue
-
     getByElementTestIdSelector(doc, "addOfficeRadio") must be(empty)
   }
 }
