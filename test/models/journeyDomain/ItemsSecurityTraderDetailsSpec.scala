@@ -20,7 +20,7 @@ import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
 import models.domain.Address
 import models.journeyDomain.ItemsSecurityTraderDetails.{SecurityPersonalInformation, SecurityTraderEori}
-import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
+import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.{Index, UserAnswers}
 import org.scalatest.TryValues
 import pages.addItems.securityDetails.{AddDangerousGoodsCodePage, CommercialReferenceNumberPage, DangerousGoodsCodePage, TransportChargesPage}
@@ -52,7 +52,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
           val userAnswers = ItemsSecurityTraderDetailsSpec
             .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
             .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
-            .unsafeRemoveVal(AddCommercialReferenceNumberAllItemsPage)
+            .unsafeRemove(AddCommercialReferenceNumberAllItemsPage)
 
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
@@ -71,7 +71,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
             .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
             .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
-            .unsafeRemoveVal(AddSafetyAndSecurityConsignorPage)
+            .unsafeRemove(AddSafetyAndSecurityConsignorPage)
 
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
@@ -88,7 +88,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .setItemsSecurityTraderDetails(itemsSecurityTraderDetails, index)(baseUserAnswers)
             .unsafeSetVal(AddTransportChargesPaymentMethodPage)(itemsSecurityTraderDetails.methodOfPayment.isEmpty)
             .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
-            .unsafeRemoveVal(AddSafetyAndSecurityConsigneePage)
+            .unsafeRemove(AddSafetyAndSecurityConsigneePage)
 
           val result: ItemsSecurityTraderDetails =
             UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value

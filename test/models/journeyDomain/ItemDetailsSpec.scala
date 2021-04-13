@@ -19,7 +19,7 @@ package models.journeyDomain
 import base.{GeneratorSpec, SpecBase}
 import generators.JourneyModelGenerators
 import models.journeyDomain.ItemDetailsSpec.setItemDetailsUserAnswers
-import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
+import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -99,7 +99,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
               .unsafeSetVal(AddTotalNetMassPage(index))(true)
-              .unsafeRemoveVal(TotalNetMassPage(index))
+              .unsafeRemove(TotalNetMassPage(index))
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
@@ -115,7 +115,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
           case (userAnswers, itemDetails) =>
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
               .unsafeSetVal(IsCommodityCodeKnownPage(index))(true)
-              .unsafeRemoveVal(CommodityCodePage(index))
+              .unsafeRemove(CommodityCodePage(index))
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 

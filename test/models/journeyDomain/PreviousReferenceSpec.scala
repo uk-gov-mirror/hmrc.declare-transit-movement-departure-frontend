@@ -20,7 +20,7 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import cats.data.{NonEmptyList, ReaderT}
 import generators.JourneyModelGenerators
 import models.DeclarationType.{Option1, Option2}
-import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
+import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.journeyDomain.PreviousReferenceSpec.setPreviousReferenceUserAnswers
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -76,7 +76,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
         forAll(arb[PreviousReferences], arb[UserAnswers], mandatoryPages) {
           (previousReference, userAnswers, mandatoryPage) =>
             val setUserAnswers = setPreviousReferenceUserAnswers(previousReference, index, referenceIndex)(userAnswers)
-              .unsafeRemoveVal(mandatoryPage)
+              .unsafeRemove(mandatoryPage)
 
             val result = UserAnswersReader[PreviousReferences](PreviousReferences.previousReferenceReader(index, referenceIndex)).run(setUserAnswers)
 
@@ -181,7 +181,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
             val setPreviousReferences2: UserAnswers = setPreviousReferenceUserAnswers(previousReferences, index, Index(1))(setPreviousReferences1)
 
             val updatedUserAnswers = setPreviousReferences2
-              .unsafeRemoveVal(mandatoryPage)
+              .unsafeRemove(mandatoryPage)
 
             val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
               PreviousReferences.derivePreviousReferences(index)
@@ -205,7 +205,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
             val updatedUserAnswers = setPreviousReferences2
               .unsafeSetVal(DeclarationTypePage)(declarationType)
               .unsafeSetVal(CountryOfDispatchPage)(countryCode)
-              .unsafeRemoveVal(AddAdministrativeReferencePage(index))
+              .unsafeRemove(AddAdministrativeReferencePage(index))
 
             val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
               PreviousReferences.derivePreviousReferences(index)

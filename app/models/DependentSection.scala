@@ -17,7 +17,8 @@
 package models
 
 import cats.implicits._
-import models.journeyDomain.{MovementDetails, RouteDetails, SafetyAndSecurity, TraderDetails, TransportDetails, UserAnswersReader}
+import models.journeyDomain.traderDetails.TraderDetails
+import models.journeyDomain.{MovementDetails, RouteDetails, SafetyAndSecurity, TransportDetails, UserAnswersReader}
 import pages.AddSecurityDetailsPage
 import viewModels.TaskListViewModel
 

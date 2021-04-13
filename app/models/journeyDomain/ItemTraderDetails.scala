@@ -32,12 +32,9 @@ object ItemTraderDetails {
 
   def consignorDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
     def readConsignorEoriPage: UserAnswersReader[Option[EoriNumber]] =
-      TraderDetailsConsignorEoriKnownPage(index).reader
-        .flatMap {
-          bool =>
-            if (bool) TraderDetailsConsignorEoriNumberPage(index).reader.map(eori => Some(EoriNumber(eori)))
-            else none[EoriNumber].pure[UserAnswersReader]
-        }
+      TraderDetailsConsignorEoriKnownPage(index).filterDependent(identity) {
+        TraderDetailsConsignorEoriNumberPage(index).reader.map(EoriNumber(_))
+      }
 
     val consignorInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
       (
@@ -51,23 +48,15 @@ object ItemTraderDetails {
             RequiredDetails(name, address, eori)
         }
 
-    (
-      ConsignorForAllItemsPage.reader,
-      AddConsignorPage.reader
-    ).tupled.flatMap {
-      case (consignorForAllItems, addConsignor) if !consignorForAllItems | !addConsignor => consignorInformation
-    }.lower
+    AddConsignorPage.filterDependent(_ == false)(consignorInformation)
   }
 
   def consigneeDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
 
     def readConsigneeEoriPage: UserAnswersReader[Option[EoriNumber]] =
-      TraderDetailsConsigneeEoriKnownPage(index).reader
-        .flatMap {
-          bool =>
-            if (bool) TraderDetailsConsigneeEoriNumberPage(index).reader.map(eori => Some(EoriNumber(eori)))
-            else none[EoriNumber].pure[UserAnswersReader]
-        }
+      TraderDetailsConsigneeEoriKnownPage(index).filterDependent(identity) {
+        TraderDetailsConsigneeEoriNumberPage(index).reader.map(EoriNumber(_))
+      }
 
     val consigneeInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
       (
@@ -81,15 +70,11 @@ object ItemTraderDetails {
             RequiredDetails(name, address, eori)
         }
 
-    (
-      ConsigneeForAllItemsPage.reader,
-      AddConsigneePage.reader
-    ).tupled.flatMap {
-      //TODO this can throw matcher error, need amending
-      case (consigneeForAllItems, addConsignee) if !consigneeForAllItems | !addConsignee => consigneeInformation
-    }.lower
+    AddConsigneePage.filterDependent(_ == false)(consigneeInformation)
   }
 
   def userAnswersParser(index: Index): UserAnswersParser[Option, ItemTraderDetails] =
-    UserAnswersOptionalParser((consignorDetails(index), consigneeDetails(index)).tupled)(x => ItemTraderDetails(x._1, x._2))
+    UserAnswersOptionalParser((consignorDetails(index), consigneeDetails(index)).tupled)(
+      x => ItemTraderDetails(x._1, x._2)
+    )
 }

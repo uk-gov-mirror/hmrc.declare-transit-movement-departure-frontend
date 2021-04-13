@@ -22,9 +22,14 @@ import play.api.mvc.Call
 import controllers.routes
 
 trait Navigator {
-  protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]]
+  type RouteMapping = PartialFunction[Page, UserAnswers => Option[Call]]
 
-  protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]]
+  protected def normalRoutes: RouteMapping
+
+  protected def checkRoutes: RouteMapping
+
+  protected def checkModeDefaultPage(userAnswers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
@@ -34,7 +39,7 @@ trait Navigator {
       }
     case CheckMode =>
       checkRoutes.lift(page) match {
-        case None       => routes.CheckYourAnswersController.onPageLoad(userAnswers.id)
+        case None       => checkModeDefaultPage(userAnswers)
         case Some(call) => handleCall(userAnswers, call)
       }
   }

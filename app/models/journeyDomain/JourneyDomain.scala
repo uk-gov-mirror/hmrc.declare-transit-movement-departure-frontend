@@ -18,6 +18,7 @@ package models.journeyDomain
 
 import cats.data._
 import cats.implicits._
+import models.journeyDomain.traderDetails.TraderDetails
 import models.{Index, UserAnswers}
 import models.reference.CountryCode
 import pages.AddSecurityDetailsPage
@@ -47,11 +48,10 @@ object JourneyDomain {
     implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
       ReaderT[Option, UserAnswers, A](parser.run _)
 
-    val safetyAndSecurityReader: ReaderT[Option, UserAnswers, Option[SafetyAndSecurity]] = {
+    val safetyAndSecurityReader: ReaderT[Option, UserAnswers, Option[SafetyAndSecurity]] =
       AddSecurityDetailsPage.reader.flatMap(
         bool => if (bool) UserAnswersReader[SafetyAndSecurity].map(_.some) else none[SafetyAndSecurity].pure[UserAnswersReader]
       )
-    }
 
     for {
       preTaskList       <- UserAnswersReader[PreTaskListDetails]
