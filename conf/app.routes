@@ -9,8 +9,6 @@ GET        /this-service-has-been-reset                   controllers.SessionExp
 GET         /keep-alive                                   controllers.KeepAliveController.keepAlive(lrn: Option[LocalReferenceNumber] = None)
 GET         /:lrn/keep-alive                              controllers.KeepAliveController.keepAlive(lrn: Option[LocalReferenceNumber])
 
-GET        /:lrn/check-your-answers                       controllers.CheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
-
 GET        /unauthorised                                  controllers.UnauthorisedController.onPageLoad
 
 GET        /accessibility-statement                       controllers.AccessibilityController.onPageLoad
