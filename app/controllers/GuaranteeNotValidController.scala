@@ -47,9 +47,12 @@ class GuaranteeNotValidController @Inject()(
           val json = Json.obj("guaranteeNotValidMessage" -> Json.toJson(message), "contactUrl" -> appConfig.nctsEnquiriesUrl)
           renderer.render("guaranteeNotValid.njk", json).map(Ok(_))
         case _ =>
-          renderer.render("technicalDifficulties.njk",Json.obj(
-            "contactUrl" -> appConfig.nctsEnquiriesUrl
-          )).map(InternalServerError(_))
+          renderer
+            .render("technicalDifficulties.njk",
+                    Json.obj(
+                      "contactUrl" -> appConfig.nctsEnquiriesUrl
+                    ))
+            .map(InternalServerError(_))
       }
   }
 }

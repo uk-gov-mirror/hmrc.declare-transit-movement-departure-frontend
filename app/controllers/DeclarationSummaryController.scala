@@ -34,7 +34,7 @@ import viewModels.DeclarationSummaryViewModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationSummaryController @Inject() (
+class DeclarationSummaryController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
@@ -69,8 +69,7 @@ class DeclarationSummaryController @Inject() (
                   .render("technicalDifficulties.njk",
                           Json.obj(
                             "contactUrl" -> appConfig.nctsEnquiriesUrl
-                          )
-                  )
+                          ))
                   .map(InternalServerError(_))
             }
           case None =>
