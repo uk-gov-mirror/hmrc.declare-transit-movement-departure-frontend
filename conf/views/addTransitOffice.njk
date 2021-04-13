@@ -38,7 +38,7 @@
 
           {% if maxLimitReached %}
 
-              <p class="govuk-body"> {{ messages('addTransitOffice.maxLimit.label') }} </p>
+              <p class="govuk-body" data-testId="maxLimit"> {{ messages('addTransitOffice.maxLimit.label') }} </p>
 
                 {{ govukButton({
                     text: messages("site.continue"),
@@ -47,7 +47,7 @@
                   }) }}
 
           {% else %}
-            <form action="{{ routes.controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn, mode).url }}" method="post">
+            <form action="{{ routes.controllers.routeDetails.AddTransitOfficeController.onSubmit(lrn, mode).url }}" method="post" data-testId="addOfficeRadio>
 
               {{ csrf() | safe }}
 
