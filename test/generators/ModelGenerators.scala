@@ -181,14 +181,6 @@ trait ModelGenerators {
     }
   }
 
-  implicit lazy val arbitraryLocalDateTimeWithAMPM: Arbitrary[LocalDateTimeWithAMPM] =
-    Arbitrary {
-      for {
-        dateTime <- arbitrary[LocalDateTime]
-        amOrPm   <- Gen.oneOf("AM", "PM")
-      } yield LocalDateTimeWithAMPM(dateTime, amOrPm)
-    }
-
   implicit lazy val arbitraryTraderAddress: Arbitrary[Address] =
     Arbitrary {
       for {

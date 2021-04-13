@@ -17,12 +17,15 @@
 package base
 
 import models.{Index, UserAnswers}
+import org.scalactic.source.Position
+import org.scalatest.exceptions.TestFailedException
 import pages.QuestionPage
-import play.api.libs.json.{JsResultException, Json, Writes}
+import play.api.libs.json.{JsResultException, Json, Reads, Writes}
+import queries.Gettable
 
 trait UserAnswersSpecHelper {
 
-  implicit class UserAnswersNoErrorSet(userAnswers: UserAnswers) {
+  implicit class UserAnswersSpecHelperOps(userAnswers: UserAnswers) {
     import models.RichJsObject
 
     private def unsafeSetWithOutCleanup[A: Writes](page: QuestionPage[A], value: A): UserAnswers =
@@ -65,13 +68,33 @@ trait UserAnswersSpecHelper {
     def unsafeSetPFnOpt[A, B: Writes](page: QuestionPage[B])(value: A)(pf: PartialFunction[A, Option[B]]): UserAnswers =
       unsafeSetOpt(page)(pf.lift(value).flatten)
 
-    def unsafeRemoveVal[A](page: QuestionPage[A]): UserAnswers =
+    // Should this call the remove and then unsafe unwrap the Try?
+    def unsafeRemove[A](page: QuestionPage[A]): UserAnswers =
       userAnswers.data
         .removeObject(page.path)
         .fold(
           _ => userAnswers,
           jsValue => userAnswers.copy(data = jsValue)
         )
+
+    def assert(description: String)(assertion: UserAnswers => Boolean)(implicit pos: Position): UserAnswers =
+      if (assertion(userAnswers)) {
+        userAnswers
+      } else {
+
+        val msg = s"Validation failed - $description. Validation is run on user answers before this assertion."
+        throw UserAnswersNoErrorException("checkValidity", msg)
+      }
+
+    def unsafeGet[A: Reads](gettable: Gettable[A]): A =
+      userAnswers.get(gettable).getOrElse(throw UserAnswersNoErrorException("unsafeGet", "Value not defined. It must be set prior to this get call."))
+
   }
 
+  class UserAnswersNoErrorException(method: String, message: String, pos: Position)
+      extends TestFailedException(_ => Some(s"Failed while calling $method. Message: $message"), None, pos)
+
+  object UserAnswersNoErrorException {
+    def apply(method: String, message: String)(implicit pos: Position) = new UserAnswersNoErrorException(method, message, pos)
+  }
 }

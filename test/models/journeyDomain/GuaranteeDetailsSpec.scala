@@ -21,7 +21,7 @@ import cats.data.NonEmptyList
 import generators.JourneyModelGenerators
 import models.{Index, UserAnswers}
 import models.journeyDomain.GuaranteeDetails.{GuaranteeOther, GuaranteeReference}
-import models.journeyDomain.PackagesSpec.UserAnswersNoErrorSet
+import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
@@ -69,13 +69,12 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
           forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
-              val updatedUserAnswer = {
+              val updatedUserAnswer =
                 GuaranteeDetailsSpec
                   .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .remove(DefaultAmountPage(index))
                   .toOption
                   .value
-              }
               val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).value
 
               result mustEqual expected
@@ -86,7 +85,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
           forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
-              val updatedUserAnswer = {
+              val updatedUserAnswer =
                 GuaranteeDetailsSpec
                   .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .set(DefaultAmountPage(index), true)
@@ -95,7 +94,6 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
                   .remove(LiabilityAmountPage(index))
                   .toOption
                   .value
-              }
               val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).value
 
               result.liabilityAmount mustEqual "10000"
@@ -106,13 +104,12 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
           forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
-              val updatedUserAnswer = {
+              val updatedUserAnswer =
                 GuaranteeDetailsSpec
                   .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .set(DefaultAmountPage(index), false)
                   .toOption
                   .value
-              }
               val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).value
 
               result.liabilityAmount mustEqual expected.liabilityAmount
@@ -137,7 +134,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
           forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
-              val updatedUserAnswer = {
+              val updatedUserAnswer =
                 GuaranteeDetailsSpec
                   .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .set(DefaultAmountPage(index), false)
@@ -146,7 +143,6 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
                   .remove(LiabilityAmountPage(index))
                   .toOption
                   .value
-              }
 
               val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer)
 
@@ -158,7 +154,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
           forAll(arbitrary[GuaranteeReference], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
-              val updatedUserAnswer = {
+              val updatedUserAnswer =
                 GuaranteeDetailsSpec
                   .setGuaranteeReferenceUserAnswers(expected, index)(userAnswers)
                   .remove(DefaultAmountPage(index))
@@ -167,7 +163,6 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
                   .remove(LiabilityAmountPage(index))
                   .toOption
                   .value
-              }
 
               val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer)
 

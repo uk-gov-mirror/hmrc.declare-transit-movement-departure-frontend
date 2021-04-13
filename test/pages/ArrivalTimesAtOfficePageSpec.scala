@@ -16,7 +16,9 @@
 
 package pages
 
-import models.{Index, LocalDateTimeWithAMPM}
+import java.time.LocalDateTime
+
+import models.Index
 import pages.behaviours.PageBehaviours
 
 class ArrivalTimesAtOfficePageSpec extends PageBehaviours {
@@ -25,10 +27,10 @@ class ArrivalTimesAtOfficePageSpec extends PageBehaviours {
 
     val index = Index(0)
 
-    beRetrievable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
+    beRetrievable[LocalDateTime](ArrivalTimesAtOfficePage(index))
 
-    beSettable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
+    beSettable[LocalDateTime](ArrivalTimesAtOfficePage(index))
 
-    beRemovable[LocalDateTimeWithAMPM](ArrivalTimesAtOfficePage(index))
+    beRemovable[LocalDateTime](ArrivalTimesAtOfficePage(index))
   }
 }

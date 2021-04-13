@@ -56,7 +56,7 @@ object RouteDetails {
                         AddAnotherTransitOfficePage(Index(index)).reader,
                         ArrivalTimesAtOfficePage(Index(index)).reader
                       ).tupled.map {
-                        case (office, time) => TransitInformation(office, Some(time.localDateTime))
+                        case (office, time) => TransitInformation(office, Some(time))
                       }
                   })
               }

@@ -23,8 +23,8 @@ import connectors.ReferenceDataConnector
 import controllers.{routes => mainRoutes}
 import forms.ArrivalTimesAtOfficeFormProvider
 import matchers.JsonMatchers
+import models.NormalMode
 import models.reference.{CountryCode, CustomsOffice}
-import models.{LocalDateTimeWithAMPM, NormalMode}
 import navigation.annotations.RouteDetails
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -32,7 +32,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.{AddAnotherTransitOfficePage, ArrivalTimesAtOfficePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -61,7 +60,7 @@ class ArrivalTimesAtOfficeControllerSpec
 
   def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC).withHour(10), "am")
+  val validAnswer: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
 
   lazy val arrivalTimesAtOfficeRoute = routes.ArrivalTimesAtOfficeController.onPageLoad(lrn, index, NormalMode).url
 
@@ -77,12 +76,14 @@ class ArrivalTimesAtOfficeControllerSpec
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, arrivalTimesAtOfficeRoute)
       .withFormUrlEncodedBody(
-        "value.day"    -> validAnswer.localDateTime.getDayOfMonth.toString,
-        "value.month"  -> validAnswer.localDateTime.getMonthValue.toString,
-        "value.year"   -> validAnswer.localDateTime.getYear.toString,
-        "value.hour"   -> validAnswer.localDateTime.getHour.toString,
-        "value.minute" -> validAnswer.localDateTime.getMinute.toString,
-        "value.amOrPm" -> validAnswer.amOrPm
+        "value.day"    -> validAnswer.getDayOfMonth.toString,
+        "value.month"  -> validAnswer.getMonthValue.toString,
+        "value.year"   -> validAnswer.getYear.toString,
+        "value.hour"   -> convertTo12HourClock(validAnswer.getHour).toString,
+        "value.minute" -> validAnswer.getMinute.toString,
+        "value.amOrPm" -> {
+          if (validAnswer.getHour > 12) "pm" else "am"
+        }
       )
 
   private def convertTo12HourClock(hour: Int) =
@@ -114,7 +115,7 @@ class ArrivalTimesAtOfficeControllerSpec
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(app, getRequest).value
+      val result = route(app, getRequest()).value
 
       status(result) mustEqual OK
 
@@ -133,7 +134,7 @@ class ArrivalTimesAtOfficeControllerSpec
       jsonCaptor.getValue must containJson(expectedJson)
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered in AM format" in {
+    "must populate the view correctly on a GET" in {
 
       val userAnswers = emptyUserAnswers
         .set(AddAnotherTransitOfficePage(index), customsOffice.id)
@@ -151,7 +152,7 @@ class ArrivalTimesAtOfficeControllerSpec
       val templateCaptor = ArgumentCaptor.forClass(classOf[String])
       val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-      val result = route(app, getRequest).value
+      val result = route(app, getRequest()).value
 
       status(result) mustEqual OK
 
@@ -159,12 +160,14 @@ class ArrivalTimesAtOfficeControllerSpec
 
       val filledForm = form.bind(
         Map(
-          "value.day"    -> validAnswer.localDateTime.getDayOfMonth.toString,
-          "value.month"  -> validAnswer.localDateTime.getMonthValue.toString,
-          "value.year"   -> validAnswer.localDateTime.getYear.toString,
-          "value.hour"   -> validAnswer.localDateTime.getHour.toString,
-          "value.minute" -> validAnswer.localDateTime.getMinute.toString,
-          "value.amOrPm" -> validAnswer.amOrPm
+          "value.day"    -> validAnswer.getDayOfMonth.toString,
+          "value.month"  -> validAnswer.getMonthValue.toString,
+          "value.year"   -> validAnswer.getYear.toString,
+          "value.hour"   -> convertTo12HourClock(validAnswer.getHour).toString,
+          "value.minute" -> validAnswer.getMinute.toString,
+          "value.amOrPm" -> {
+            if (validAnswer.getHour > 12) "pm" else "am"
+          }
         )
       )
 
@@ -176,57 +179,7 @@ class ArrivalTimesAtOfficeControllerSpec
         "lrn"      -> lrn,
         "dateTime" -> viewModel
       )
-      templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
-    }
 
-    "must populate the view correctly on a GET when the question has previously been answered in PM format" in {
-
-      val genPMHours = Gen.choose(13, 23).sample.value
-
-      val validAnswer: LocalDateTimeWithAMPM = LocalDateTimeWithAMPM(LocalDateTime.now(ZoneOffset.UTC).withHour(genPMHours), "pm")
-
-      val userAnswers = emptyUserAnswers
-        .set(AddAnotherTransitOfficePage(index), customsOffice.id)
-        .toOption
-        .value
-        .set(ArrivalTimesAtOfficePage(index), validAnswer)
-        .success
-        .value
-
-      dataRetrievalWithData(userAnswers)
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-      when(mockRefDataConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(customsOffice))
-
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, getRequest).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(
-        Map(
-          "value.day"    -> validAnswer.localDateTime.getDayOfMonth.toString,
-          "value.month"  -> validAnswer.localDateTime.getMonthValue.toString,
-          "value.year"   -> validAnswer.localDateTime.getYear.toString,
-          "value.hour"   -> convertTo12HourClock(validAnswer.localDateTime.getHour).toString,
-          "value.minute" -> validAnswer.localDateTime.getMinute.toString,
-          "value.amOrPm" -> validAnswer.amOrPm
-        )
-      )
-
-      val viewModel = DateTimeInput.localDateTime(filledForm("value"))
-
-      val expectedJson = Json.obj(
-        "form"     -> filledForm,
-        "mode"     -> NormalMode,
-        "lrn"      -> lrn,
-        "dateTime" -> viewModel
-      )
       templateCaptor.getValue mustEqual "arrivalTimesAtOffice.njk"
       jsonCaptor.getValue must containJson(expectedJson)
     }
@@ -237,7 +190,7 @@ class ArrivalTimesAtOfficeControllerSpec
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockRefDataConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
-      val result = route(app, postRequest).value
+      val result = route(app, postRequest()).value
 
       status(result) mustEqual SEE_OTHER
 

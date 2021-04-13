@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import javax.inject.Inject
+import play.api.libs.json.Json
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case class QueryGroupsEnrolmentsResponseModel(enrolments: Seq[Service])
 
-class ConsigneeForAllItemsFormProvider @Inject() extends Mappings {
+case class Service(service: String)
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("consigneeForAllItems.error.required")
-    )
+object QueryGroupsEnrolmentsResponseModel {
+  implicit val enrolmentReads             = Json.format[Service]
+  implicit val queryGroupsEnrolmentsReads = Json.format[QueryGroupsEnrolmentsResponseModel]
 }

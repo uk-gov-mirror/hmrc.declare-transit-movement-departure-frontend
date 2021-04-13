@@ -18,7 +18,7 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
-import models.{Index, UserAnswers}
+import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -46,11 +46,10 @@ class PreTaskListDetailsSpec extends SpecBase with GeneratorSpec with JourneyMod
       )
 
       "when an answer is missing" in {
-
         forAll(arbitrary[PreTaskListDetails], arbitrary[UserAnswers], mandatoryPages) {
           case (preTaskListDetails, ua, mandatoryPage) =>
             val userAnswers = PreTaskListDetailsSpec.setPreTaskListDetails(preTaskListDetails)(ua).remove(mandatoryPage).success.value
-            val result      = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(userAnswers)
+            val result      = UserAnswersReader[PreTaskListDetails].run(userAnswers)
 
             result mustBe None
         }
