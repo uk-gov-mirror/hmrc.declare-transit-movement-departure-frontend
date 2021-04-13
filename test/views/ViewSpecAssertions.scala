@@ -16,13 +16,26 @@
 
 package views
 
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
+import scala.collection.JavaConverters._
 
 trait ViewSpecAssertions extends Matchers {
 
   def messages: Messages
+
+  def getByElementId(doc: Document, id: String): Element = {
+    val elem: Element = doc.getElementById(id)
+    elem must not equal (null)
+    elem
+  }
+
+  def getByElementTestIdSelector(doc: Document, id: String): Seq[Element] =
+    (doc.select(s"[data-testid=$id]")).asScala
+
+  def findByElementId(doc: Document, id: String): Option[Element] =
+    Option(doc.getElementById(id))
 
   def assertEqualsMessage(doc: Document, cssSelector: String, expectedMessageKey: String) =
     assertEqualsValue(doc, cssSelector, messages(expectedMessageKey))
