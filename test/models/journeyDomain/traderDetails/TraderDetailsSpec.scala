@@ -20,8 +20,7 @@ import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.ProcedureType.Simplified
 import models.domain.Address
-import models.journeyDomain.UserAnswersParser
-import models.journeyDomain.traderDetails.TraderDetails._
+import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.traderDetails.TraderDetailsSpec.setTraderDetails
 import models.{ProcedureType, UserAnswers}
 import org.scalatest.TryValues
@@ -37,7 +36,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             baseUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
           )
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
 
           result mustEqual traderDetails
       }
@@ -50,7 +49,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             baseUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
           )
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
 
           result mustEqual traderDetails
       }
