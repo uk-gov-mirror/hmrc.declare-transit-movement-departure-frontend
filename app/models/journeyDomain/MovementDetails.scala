@@ -16,11 +16,10 @@
 
 package models.journeyDomain
 
-import cats.data.ReaderT
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain.MovementDetails.DeclarationForSomeoneElseAnswer
-import models.{DeclarationType, RepresentativeCapacity, UserAnswers}
+import models.{DeclarationType, RepresentativeCapacity}
 import pages._
 import pages.movementDetails.PreLodgeDeclarationPage
 
@@ -33,9 +32,9 @@ sealed trait MovementDetails {
 
 object MovementDetails {
 
-  implicit val parserMovementDetails: UserAnswersParser[Option, MovementDetails] =
-    (UserAnswersParser[Option, NormalMovementDetails]: UserAnswersParser[Option, MovementDetails]) combine
-      UserAnswersParser[Option, SimplifiedMovementDetails]
+  implicit val parserMovementDetails: UserAnswersReader[MovementDetails] =
+    UserAnswersReader[NormalMovementDetails].widen[MovementDetails] orElse
+      UserAnswersReader[SimplifiedMovementDetails].widen[MovementDetails]
 
   private val declarationForSomeoneElseAnswer: UserAnswersReader[DeclarationForSomeoneElseAnswer] =
     DeclarationForSomeoneElsePage.reader.flatMap(
@@ -57,21 +56,20 @@ object MovementDetails {
 
   object NormalMovementDetails {
 
-    implicit val parseSimplifiedMovementDetails: UserAnswersParser[Option, NormalMovementDetails] =
-      UserAnswersOptionalParser(
-        ProcedureTypePage.reader
-          .filter(_ == Normal)
-          .flatMap(
-            _ =>
-              (
-                DeclarationTypePage.reader,
-                PreLodgeDeclarationPage.reader,
-                ContainersUsedPage.reader,
-                DeclarationPlacePage.reader,
-                declarationForSomeoneElseAnswer
-              ).tupled
-          )
-      )((NormalMovementDetails.apply _).tupled)
+    implicit val parseSimplifiedMovementDetails: UserAnswersReader[NormalMovementDetails] =
+      ProcedureTypePage.reader
+        .filter(_ == Normal)
+        .flatMap(
+          _ =>
+            (
+              DeclarationTypePage.reader,
+              PreLodgeDeclarationPage.reader,
+              ContainersUsedPage.reader,
+              DeclarationPlacePage.reader,
+              declarationForSomeoneElseAnswer
+            ).tupled
+        )
+        .map((NormalMovementDetails.apply _).tupled)
   }
 
   final case class SimplifiedMovementDetails(
@@ -83,20 +81,19 @@ object MovementDetails {
 
   object SimplifiedMovementDetails {
 
-    implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, SimplifiedMovementDetails] =
-      UserAnswersOptionalParser(
-        ProcedureTypePage.reader
-          .filter(_ == Simplified)
-          .flatMap(
-            _ =>
-              (
-                DeclarationTypePage.reader,
-                ContainersUsedPage.reader,
-                DeclarationPlacePage.reader,
-                declarationForSomeoneElseAnswer
-              ).tupled
-          )
-      )((SimplifiedMovementDetails.apply _).tupled)
+    implicit val makeSimplifiedMovementDetails: UserAnswersReader[SimplifiedMovementDetails] =
+      ProcedureTypePage.reader
+        .filter(_ == Simplified)
+        .flatMap(
+          _ =>
+            (
+              DeclarationTypePage.reader,
+              ContainersUsedPage.reader,
+              DeclarationPlacePage.reader,
+              declarationForSomeoneElseAnswer
+            ).tupled
+        )
+        .map((SimplifiedMovementDetails.apply _).tupled)
   }
 
   sealed trait DeclarationForSomeoneElseAnswer

@@ -39,7 +39,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
 
             result mustEqual expected
 
@@ -55,7 +55,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
 
             result mustEqual expected
 
@@ -70,7 +70,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
 
             result mustEqual expected
 
@@ -87,7 +87,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
 
             result mustEqual expected
 
@@ -103,7 +103,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
 
             result mustEqual expected
 
@@ -118,7 +118,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersParser[Option, TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
 
             result mustEqual expected
 

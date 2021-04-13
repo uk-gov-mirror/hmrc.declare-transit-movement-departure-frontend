@@ -38,7 +38,7 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
         (goodsSummary, ua) =>
           val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
-          UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
+          UserAnswersReader[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
       }
     }
 
@@ -50,8 +50,7 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
         (goodsSummary, ua) =>
           val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
-          UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
-
+          UserAnswersReader[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
       }
     }
 
@@ -67,8 +66,7 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
           (goodsSummary, ua) =>
             val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
-            UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
-
+            UserAnswersReader[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
         }
       }
 
@@ -86,8 +84,7 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
           (goodsSummary, ua) =>
             val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
-            UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
-
+            UserAnswersReader[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
         }
 
       }
@@ -104,8 +101,7 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
         (goodsSummary, ua) =>
           val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
-          UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
-
+          UserAnswersReader[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
       }
 
     }
@@ -118,8 +114,7 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
         (goodsSummary, ua) =>
           val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
-          UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
-
+          UserAnswersReader[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
       }
 
     }
@@ -131,8 +126,7 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
         (goodsSummary, ua) =>
           val userAnswers = setGoodsSummary(goodsSummary)(ua).unsafeSetVal(AddSecurityDetailsPage)(isSecurityDefined)
 
-          UserAnswersOptionalParser[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
-
+          UserAnswersReader[GoodsSummary].run(userAnswers).value mustEqual goodsSummary
       }
 
     }

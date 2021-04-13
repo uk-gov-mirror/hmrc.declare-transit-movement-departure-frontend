@@ -20,7 +20,6 @@ import cats.implicits._
 import models.journeyDomain.traderDetails.TraderDetails
 import models.journeyDomain.{MovementDetails, RouteDetails, SafetyAndSecurity, TransportDetails, UserAnswersReader}
 import pages.AddSecurityDetailsPage
-import viewModels.TaskListViewModel
 
 sealed trait DependentSection
 
@@ -30,8 +29,6 @@ object DependentSection {
   case object GuaranteeDetails extends DependentSection
   case object SafetyAndSecurity extends DependentSection
   case object ItemDetails extends DependentSection
-
-  import TaskListViewModel.fromUserAnswersParser
 
   private def itemsDependentSections(userAnswers: UserAnswers): UserAnswersReader[_] = {
     val commonSection = for {

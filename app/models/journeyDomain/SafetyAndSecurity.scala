@@ -39,20 +39,18 @@ case class SafetyAndSecurity(
 
 object SafetyAndSecurity {
 
-  implicit val parser: UserAnswersParser[Option, SafetyAndSecurity] =
-    UserAnswersOptionalParser(
-      (
-        addCircumstanceIndicator,
-        paymentMethod,
-        commercialReferenceNumber,
-        conveyanceReferenceNumber,
-        placeOfUnloading,
-        consignorDetails,
-        consigneeDetails,
-        carrierDetails,
-        readItineraries
-      ).tupled
-    )((SafetyAndSecurity.apply _).tupled)
+  implicit val parser: UserAnswersReader[SafetyAndSecurity] =
+    (
+      addCircumstanceIndicator,
+      paymentMethod,
+      commercialReferenceNumber,
+      conveyanceReferenceNumber,
+      placeOfUnloading,
+      consignorDetails,
+      consigneeDetails,
+      carrierDetails,
+      readItineraries
+    ).tupled.map((SafetyAndSecurity.apply _).tupled)
 
   sealed trait SecurityTraderDetails
 

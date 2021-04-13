@@ -73,8 +73,6 @@ object ItemTraderDetails {
     AddConsigneePage.filterDependent(_ == false)(consigneeInformation)
   }
 
-  def userAnswersParser(index: Index): UserAnswersParser[Option, ItemTraderDetails] =
-    UserAnswersOptionalParser((consignorDetails(index), consigneeDetails(index)).tupled)(
-      x => ItemTraderDetails(x._1, x._2)
-    )
+  def userAnswersParser(index: Index): UserAnswersReader[ItemTraderDetails] =
+    (consignorDetails(index), consigneeDetails(index)).tupled.map(x => ItemTraderDetails(x._1, x._2))
 }

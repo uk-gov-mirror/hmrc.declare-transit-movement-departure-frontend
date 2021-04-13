@@ -28,15 +28,12 @@ case class TraderDetails(
 
 object TraderDetails {
 
-  implicit val userAnswersParser: UserAnswersParser[Option, TraderDetails] =
-    UserAnswersOptionalParser(
-      (
-        UserAnswersReader[PrincipalTraderDetails],
-        AddConsignorPage.filterDependent(identity)(UserAnswersReader[ConsignorDetails]),
-        AddConsigneePage.filterDependent(identity)(UserAnswersReader[ConsigneeDetails])
-      ).tupled
-    )(
+  implicit val userAnswersParser: UserAnswersReader[TraderDetails] =
+    (
+      UserAnswersReader[PrincipalTraderDetails],
+      AddConsignorPage.filterDependent(identity)(UserAnswersReader[ConsignorDetails]),
+      AddConsigneePage.filterDependent(identity)(UserAnswersReader[ConsigneeDetails])
+    ).tupled.map(
       x => TraderDetails(x._1, x._2, x._3)
     )
-
 }

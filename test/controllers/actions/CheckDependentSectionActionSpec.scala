@@ -32,8 +32,6 @@ import scala.concurrent.Future
 
 class CheckDependentSectionActionSpec extends SpecBase with GuiceOneAppPerSuite with Generators with JourneyModelGenerators {
 
-  import TaskListViewModel.fromUserAnswersParser
-
   def harness(reader: DependentSection, userAnswers: UserAnswers, f: DataRequest[AnyContent] => Unit): Future[Result] = {
 
     lazy val actionProvider = app.injector.instanceOf[CheckDependentSectionActionImpl]

@@ -35,30 +35,28 @@ case class GoodsSummary(
 
 object GoodsSummary {
 
-  implicit val parser: UserAnswersParser[Option, GoodsSummary] =
-    UserAnswersOptionalParser(
-      (
-        DeclarePackagesPage.reader
-          .flatMap(
-            bool =>
-              if (bool)
-                TotalPackagesPage.optionalReader
-              else
-                none[Int].pure[UserAnswersReader]
-          ),
-        TotalGrossMassPage.reader,
-        AddSecurityDetailsPage.reader
-          .flatMap(
-            bool =>
-              if (bool)
-                LoadingPlacePage.optionalReader
-              else
-                none[String].pure[UserAnswersReader]
-          ),
-        UserAnswersReader[GoodSummaryDetails],
-        DeriveNumberOfSeals.reader orElse List.empty[SealDomain].pure[UserAnswersReader]
-      ).tupled
-    )((GoodsSummary.apply _).tupled)
+  implicit val parser: UserAnswersReader[GoodsSummary] =
+    (
+      DeclarePackagesPage.reader
+        .flatMap(
+          bool =>
+            if (bool)
+              TotalPackagesPage.optionalReader
+            else
+              none[Int].pure[UserAnswersReader]
+        ),
+      TotalGrossMassPage.reader,
+      AddSecurityDetailsPage.reader
+        .flatMap(
+          bool =>
+            if (bool)
+              LoadingPlacePage.optionalReader
+            else
+              none[String].pure[UserAnswersReader]
+        ),
+      UserAnswersReader[GoodSummaryDetails],
+      DeriveNumberOfSeals.reader orElse List.empty[SealDomain].pure[UserAnswersReader]
+    ).tupled.map((GoodsSummary.apply _).tupled)
 
   sealed trait GoodSummaryDetails
 

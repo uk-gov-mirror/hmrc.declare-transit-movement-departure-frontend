@@ -75,14 +75,12 @@ object RouteDetails {
         .flatMapF(NonEmptyList.fromList)
   }
 
-  implicit val makeSimplifiedMovementDetails: UserAnswersParser[Option, RouteDetails] =
-    UserAnswersOptionalParser(
-      (
-        CountryOfDispatchPage.reader,
-        OfficeOfDeparturePage.reader,
-        DestinationCountryPage.reader,
-        DestinationOfficePage.reader,
-        UserAnswersReader[NonEmptyList[TransitInformation]]
-      ).tupled
-    )((RouteDetails.apply _).tupled)
+  implicit val makeSimplifiedMovementDetails: UserAnswersReader[RouteDetails] =
+    (
+      CountryOfDispatchPage.reader,
+      OfficeOfDeparturePage.reader,
+      DestinationCountryPage.reader,
+      DestinationOfficePage.reader,
+      UserAnswersReader[NonEmptyList[TransitInformation]]
+    ).tupled.map((RouteDetails.apply _).tupled)
 }
