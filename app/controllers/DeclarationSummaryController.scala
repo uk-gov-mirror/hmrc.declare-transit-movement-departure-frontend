@@ -16,13 +16,15 @@
 
 package controllers
 
-import config.ManageTransitMovementsService
+import config.{FrontendAppConfig, ManageTransitMovementsService}
 import controllers.actions._
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.LocalReferenceNumber
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.DeclarationSubmissionService
@@ -32,13 +34,14 @@ import viewModels.DeclarationSummaryViewModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationSummaryController @Inject()(
+class DeclarationSummaryController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   renderer: Renderer,
+  appConfig: FrontendAppConfig,
   errorHandler: ErrorHandler,
   manageTransitMovementsService: ManageTransitMovementsService,
   submissionService: DeclarationSubmissionService
@@ -61,7 +64,14 @@ class DeclarationSummaryController @Inject()(
             result.status match {
               case status if is2xx(status) => Future.successful(Redirect(routes.SubmissionConfirmationController.onPageLoad(lrn)))
               case status if is4xx(status) => errorHandler.onClientError(request, status)
-              case _                       => Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
+              case _ =>
+                renderer
+                  .render("technicalDifficulties.njk",
+                          Json.obj(
+                            "contactUrl" -> appConfig.nctsEnquiriesUrl
+                          )
+                  )
+                  .map(InternalServerError(_))
             }
           case None =>
             errorHandler.onClientError(request, BAD_REQUEST)

@@ -57,7 +57,9 @@ class CancellationDecisionUpdateController @Inject()(
           )
           renderer.render("cancellationDecisionUpdate.njk", json).map(Ok(_))
         case _ =>
-          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
+          renderer.render("technicalDifficulties.njk",Json.obj(
+            "contactUrl" -> appConfig.nctsEnquiriesUrl
+          )).map(InternalServerError(_))
       }
   }
 
