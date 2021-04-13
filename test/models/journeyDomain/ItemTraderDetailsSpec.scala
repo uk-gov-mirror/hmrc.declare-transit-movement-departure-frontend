@@ -42,7 +42,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
             .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(false)
 
           val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
-          val result                   = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
+          val result                   = UserAnswersReader[ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
 
           result.consignor.value mustEqual RequiredDetails(name, expectedAddress, None)
       }
@@ -59,7 +59,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
             .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(true)
             .unsafeSetVal(TraderDetailsConsignorEoriNumberPage(index))(eoriNumber1)
 
-          val result = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
+          val result = UserAnswersReader[ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
 
           val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
 
@@ -77,7 +77,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
             .unsafeSetVal(TraderDetailsConsigneeAddressPage(index))(address)
             .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(false)
 
-          val result                   = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
+          val result                   = UserAnswersReader[ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
           val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
 
           result.consignee.value mustEqual RequiredDetails(name, expectedAddress, None)
@@ -96,7 +96,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
             .unsafeSetVal(TraderDetailsConsigneeNamePage(index))(name)
             .unsafeSetVal(TraderDetailsConsigneeAddressPage(index))(address)
 
-          val result = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
+          val result = UserAnswersReader[ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
 
           val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
 
@@ -113,7 +113,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
             .unsafeSetVal(TraderDetailsConsignorEoriKnownPage(index))(true)
             .unsafeSetVal(TraderDetailsConsignorEoriNumberPage(index))(eoriNumber1)
 
-          val result = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
+          val result = UserAnswersReader[ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
 
           result.consignor must be(None)
 
@@ -129,7 +129,7 @@ class ItemTraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues w
             .unsafeSetVal(TraderDetailsConsigneeEoriKnownPage(index))(true)
             .unsafeSetVal(TraderDetailsConsigneeEoriNumberPage(index))(eoriNumber1)
 
-          val result = UserAnswersParser[Option, ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
+          val result = UserAnswersReader[ItemTraderDetails](ItemTraderDetails.userAnswersParser(index)).run(userAnswers).value
 
           result.consignee must be(None)
       }

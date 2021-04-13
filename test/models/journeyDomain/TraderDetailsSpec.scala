@@ -34,7 +34,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
         (baseUserAnswers, eori) =>
           val userAnswers = setTraderDetailsPrincipalEoriOnly(eori)(baseUserAnswers)
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
 
           result mustEqual TraderDetails(TraderEori(eori), None, None)
 
@@ -50,7 +50,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             .unsafeSetVal(AddConsigneePage)(false)
             .unsafeSetVal(AddConsignorPage)(false)
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
 
           result mustEqual TraderDetails(TraderEori(eori), None, None)
 
@@ -68,7 +68,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             .unsafeSetVal(AddConsigneePage)(false)
             .unsafeSetVal(AddConsignorPage)(false)
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
 
           val expectedAddress = Address.prismAddressToPrincipalAddress(principalAddress)
 
@@ -91,7 +91,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             .unsafeSetVal(ConsignorNamePage)(name)
             .unsafeSetVal(ConsignorAddressPage)(address)
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
 
           val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
 
@@ -115,7 +115,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             .unsafeSetVal(ConsigneeNamePage)(name)
             .unsafeSetVal(ConsigneeAddressPage)(address)
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
 
           val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
 
@@ -129,7 +129,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
         (baseUserAnswers, traderDetails) =>
           val userAnswers = setTraderDetails(traderDetails)(baseUserAnswers)
 
-          val result = UserAnswersParser[Option, TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
 
           result mustEqual traderDetails
       }

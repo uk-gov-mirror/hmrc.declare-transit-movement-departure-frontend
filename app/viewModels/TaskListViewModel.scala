@@ -16,7 +16,7 @@
 
 package viewModels
 
-import cats.data.{NonEmptyList, ReaderT}
+import cats.data.NonEmptyList
 import cats.implicits._
 import models.DependentSection._
 import models.ProcedureType.{Normal, Simplified}
@@ -28,7 +28,6 @@ import pages.safetyAndSecurity.AddCircumstanceIndicatorPage
 import play.api.libs.json._
 
 private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
-  import TaskListViewModel.fromUserAnswersParser
 
   private val lrn         = userAnswers.id
   private val taskListDsl = new TaskListDslCollectSectionName(userAnswers)
@@ -190,10 +189,6 @@ private[viewModels] class TaskListViewModel(userAnswers: UserAnswers) {
 }
 
 object TaskListViewModel {
-
-  // TODO: This is a workaround till we remove UserAnswersParser
-  implicit def fromUserAnswersParser[A](implicit parser: UserAnswersParser[Option, A]): UserAnswersReader[A] =
-    ReaderT[Option, UserAnswers, A](parser.run _)
 
   object Constants {
     val sections: String = "sections"

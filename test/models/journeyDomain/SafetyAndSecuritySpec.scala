@@ -39,7 +39,7 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
         baseUserAnswers =>
           val userAnswers = setSafetyAndSecurityMinimal(baseUserAnswers)
 
-          val result = UserAnswersParser[Option, SafetyAndSecurity].run(userAnswers).value
+          val result = UserAnswersReader[SafetyAndSecurity].run(userAnswers).value
 
           result mustEqual SafetyAndSecurity(None,
                                              None,
@@ -65,7 +65,7 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
 
               val userAnswers: UserAnswers = setSafetyAndSecurity(safetyAndSecurity)(updatedUserAnswers)
 
-              val result = UserAnswersParser[Option, SafetyAndSecurity].run(userAnswers).value
+              val result = UserAnswersReader[SafetyAndSecurity].run(userAnswers).value
 
               result mustEqual safetyAndSecurity
           }
@@ -81,7 +81,7 @@ class SafetyAndSecuritySpec extends SpecBase with GeneratorSpec with TryValues w
 
           val userAnswers = setSafetyAndSecurity(safetyAndSecurity)(updatedUserAnswers)
 
-          val result = UserAnswersParser[Option, SafetyAndSecurity].run(userAnswers).value
+          val result = UserAnswersReader[SafetyAndSecurity].run(userAnswers).value
 
           result mustEqual safetyAndSecurity
       }

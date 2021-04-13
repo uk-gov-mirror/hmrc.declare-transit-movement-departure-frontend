@@ -127,15 +127,11 @@ object TraderDetails {
       .lower
   }
 
-  implicit val userAnswersParser: UserAnswersParser[Option, TraderDetails] =
-    UserAnswersOptionalParser(
-      (
-        principalTraderDetails,
-        consignorDetails,
-        consigneeDetails
-      ).tupled
-    )(
-      x => TraderDetails(x._1, x._2, x._3)
-    )
+  implicit val userAnswersParser: UserAnswersReader[TraderDetails] =
+    (
+      principalTraderDetails,
+      consignorDetails,
+      consigneeDetails
+    ).tupled.map(x => TraderDetails(x._1, x._2, x._3))
 
 }

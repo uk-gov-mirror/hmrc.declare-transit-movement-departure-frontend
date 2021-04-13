@@ -35,7 +35,7 @@ class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGene
           val userAnswers = setRouteDetails(expected)(baseUserAnswers)
             .unsafeSetVal(AddSecurityDetailsPage)(true)
 
-          val result = UserAnswersParser[Option, RouteDetails].run(userAnswers).value
+          val result = UserAnswersReader[RouteDetails].run(userAnswers).value
 
           result.transitInformation.forall(_.arrivalTime.isDefined) mustBe true
           result mustEqual expected
@@ -50,7 +50,7 @@ class RouteDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGene
         val userAnswers = setRouteDetails(expected)(baseUserAnswers)
           .unsafeSetVal(AddSecurityDetailsPage)(false)
 
-        val result = UserAnswersParser[Option, RouteDetails].run(userAnswers).value
+        val result = UserAnswersReader[RouteDetails].run(userAnswers).value
 
         result.transitInformation.forall(_.arrivalTime.isDefined) mustBe false
         result mustEqual expected

@@ -32,7 +32,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       "when all details for section have been answered" in {
         forAll(movementUserAnswers) {
           case (_, userAnswers) =>
-            val result = UserAnswersParser[Option, MovementDetails].run(userAnswers)
+            val result = UserAnswersReader[MovementDetails].run(userAnswers)
 
             result must be(defined)
         }
@@ -55,7 +55,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       "when all details for section have been answered" in {
         forAll(normalMovementUserAnswers) {
           case (expected, userAnswers) =>
-            val result = UserAnswersParser[Option, NormalMovementDetails].run(userAnswers).value
+            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers).value
 
             result mustEqual expected
         }
@@ -69,7 +69,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
           case ((_, ua), mandatoryPage) =>
             val userAnswers = ua.remove(mandatoryPage).success.value
 
-            val result = UserAnswersParser[Option, NormalMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers)
 
             result mustEqual None
         }
@@ -78,7 +78,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       "when the movement is a simplified" in {
         forAll(simpleMovementUserAnswers) {
           case (_, userAnswers) =>
-            val result = UserAnswersParser[Option, NormalMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers)
 
             result mustEqual None
         }
@@ -100,7 +100,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       "when all the answers have been answered" in {
         forAll(simpleMovementUserAnswers) {
           case (expected, userAnswers) =>
-            val result = UserAnswersParser[Option, SimplifiedMovementDetails].run(userAnswers).value
+            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers).value
 
             result mustEqual expected
         }
@@ -113,7 +113,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
           case ((_, ua), mandatoryPage) =>
             val userAnswers = ua.remove(mandatoryPage).success.value
 
-            val result = UserAnswersParser[Option, SimplifiedMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers)
 
             result mustEqual None
         }
@@ -122,7 +122,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       "when the movement is a simplified movement" in {
         forAll(normalMovementUserAnswers) {
           case (_, userAnswers) =>
-            val result = UserAnswersParser[Option, SimplifiedMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers)
 
             result mustEqual None
         }

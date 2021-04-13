@@ -29,13 +29,11 @@ case class TransportDetails(
 
 object TransportDetails {
 
-  implicit val userAnswersParser: UserAnswersParser[Option, TransportDetails] =
-    UserAnswersOptionalParser(
-      (
-        UserAnswersReader[InlandMode],
-        UserAnswersReader[DetailsAtBorder]
-      ).tupled
-    )((TransportDetails.apply _).tupled)
+  implicit val userAnswersParser: UserAnswersReader[TransportDetails] =
+    (
+      UserAnswersReader[InlandMode],
+      UserAnswersReader[DetailsAtBorder]
+    ).tupled.map((TransportDetails.apply _).tupled)
 
   sealed trait InlandMode {
     def code: Int
