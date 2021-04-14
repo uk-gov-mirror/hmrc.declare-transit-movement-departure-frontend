@@ -18,8 +18,10 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
+
 import javax.inject.Inject
 import models.DepartureId
+import pages.TechnicalDifficultiesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,12 +35,13 @@ class GuaranteeNotValidController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
-  appConfig: FrontendAppConfig,
+  val renderer: Renderer,
+  val appConfig: FrontendAppConfig,
   guaranteeNotValidMessageService: DepartureMessageService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with TechnicalDifficultiesPage {
 
   def onPageLoad(departureId: DepartureId): Action[AnyContent] = identify.async {
     implicit request =>
@@ -47,12 +50,7 @@ class GuaranteeNotValidController @Inject()(
           val json = Json.obj("guaranteeNotValidMessage" -> Json.toJson(message), "contactUrl" -> appConfig.nctsEnquiriesUrl)
           renderer.render("guaranteeNotValid.njk", json).map(Ok(_))
         case _ =>
-          renderer
-            .render("technicalDifficulties.njk",
-                    Json.obj(
-                      "contactUrl" -> appConfig.nctsEnquiriesUrl
-                    ))
-            .map(InternalServerError(_))
+          renderTechnicalDifficultiesPage
       }
   }
 }
