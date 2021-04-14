@@ -56,7 +56,7 @@ class AddTransitOfficeController @Inject()(
   private val form = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+    implicit request: DataRequest[AnyContent] =>
       renderPage(lrn, mode, form).map(Ok(_))
   }
 
@@ -79,7 +79,7 @@ class AddTransitOfficeController @Inject()(
         val routesCYAHelper          = new RouteDetailsCheckYourAnswersHelper(request.userAnswers)
         val numberOfTransitOffices   = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
         val index: Seq[Index]        = List.range(0, numberOfTransitOffices).map(Index(_))
-        val maxLimitReached: Boolean = if (numberOfTransitOffices == 9) true else false
+        val maxLimitReached: Boolean = if (numberOfTransitOffices >= 9) true else false
         val officeOfTransitRows = index.map {
           index =>
             routesCYAHelper.officeOfTransitRow(index, customsOfficeList, mode)
