@@ -442,7 +442,7 @@ class DeclarationRequestService @Inject()(
     )
   }
 
-  // TODO: Improve by changing consignor address to have a Consignor Address instead
+  // TODO: Improve by changing ConsignorDetails to have a Consignor Address instead
   private def headerConsignor(consignorDetails: ConsignorDetails): TraderConsignor = {
     val ConsignorDetails(name, address, eori) = consignorDetails
 
@@ -455,7 +455,7 @@ class DeclarationRequestService @Inject()(
       .get
   }
 
-  // TODO: Improve by changing consignee address to have a Consignee Address instead
+  // TODO: Improve by changing ConsigneeDetails to have a Consignee Address instead
   private def headerConsignee(consigneeDetails: ConsigneeDetails): TraderConsignee = {
     val ConsigneeDetails(name, address, eori) = consigneeDetails
     Address.prismAddressToConsigneeAddress

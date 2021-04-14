@@ -517,13 +517,6 @@ trait UserAnswersEntryGenerators {
       } yield (ExtraInformationPage(Index(0), Index(0)), value)
     }
 
-  implicit lazy val arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry: Arbitrary[(AddItemsSameConsignorForAllItemsPage, JsValue)] =
-    Arbitrary {
-      for {
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (AddItemsSameConsignorForAllItemsPage(Index(0)), value)
-    }
-
   implicit lazy val arbitraryConfirmRemoveItemUserAnswersEntry: Arbitrary[(ConfirmRemoveItemPage.type, JsValue)] =
     Arbitrary {
       for {
@@ -564,13 +557,6 @@ trait UserAnswersEntryGenerators {
       for {
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (AddExtraInformationPage(Index(0), Index(0)), value)
-    }
-
-  implicit lazy val arbitraryAddItemsSameConsigneeForAllItemsUserAnswersEntry: Arbitrary[(AddItemsSameConsigneeForAllItemsPage, JsValue)] =
-    Arbitrary {
-      for {
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (AddItemsSameConsigneeForAllItemsPage(Index(0)), value)
     }
 
   implicit lazy val arbitraryHowManyPackagesUserAnswersEntry: Arbitrary[(HowManyPackagesPage, JsValue)] =
