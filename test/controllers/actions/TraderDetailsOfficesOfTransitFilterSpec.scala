@@ -62,7 +62,7 @@ class TraderDetailsOfficesOfTransitFilterSpec extends SpecBase with UserAnswersS
         .unsafeSetVal(OfficeOfTransitCountryPage(Index(8)))(CountryCode("GB"))
         .unsafeSetVal(AddAnotherTransitOfficePage(Index(8)))("Test")
 
-      val actionFilter = new TraderDetailsOfficesOfTransitFilter(implicitly)
+      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(13), implicitly)
       val dataRequest  = DataRequest(fakeRequest, userAnswers.eoriNumber, userAnswers)
       val result       = actionFilter.invokeBlock(dataRequest, fakeOkResult)
 
@@ -77,15 +77,30 @@ class TraderDetailsOfficesOfTransitFilterSpec extends SpecBase with UserAnswersS
         .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("GB"))
         .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("Test")
 
-      val actionFilter = new TraderDetailsOfficesOfTransitFilter(implicitly)
+      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(1), implicitly)
       val dataRequest  = DataRequest(fakeRequest, userAnswers.eoriNumber, userAnswers)
       val result       = actionFilter.invokeBlock(dataRequest, fakeOkResult)
 
-      status(result) mustBe Ok
+      status(result) mustBe OK
       contentAsString(result) mustBe "fake ok result value"
     }
 
-    "is valid, and there is an incomplete loop, must redirect to the first page of that loop" ignore {}
+    "is valid, and there is an incomplete loop, must redirect to the first page of that loop" ignore {
+      val userAnswers = emptyUserAnswers
+        .unsafeSetVal(AddSecurityDetailsPage)(false)
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("GB"))
+        .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("Test")
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(1)))(CountryCode("GB"))
+
+      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(7), implicitly)
+      val dataRequest  = DataRequest(fakeRequest, userAnswers.eoriNumber, userAnswers)
+      val result       = actionFilter.invokeBlock(dataRequest, fakeOkResult)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(
+        controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(userAnswers.id, Index(1), NormalMode).url
+      )
+    }
 
   }
 }

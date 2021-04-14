@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import models.NormalMode
+import models.{Index, NormalMode}
 import models.requests.DataRequest
 import play.api.mvc.{ActionFilter, Result}
 import play.api.mvc.Results._
@@ -24,10 +24,20 @@ import play.api.mvc.Results._
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TraderDetailsOfficesOfTransitFilter @Inject()(ec: ExecutionContext) extends ActionFilter[DataRequest] {
+class TraderDetailsOfficesOfTransitProvider @Inject()(ec: ExecutionContext) {
+
+  def apply(index: Index): ActionFilter[DataRequest] = new TraderDetailsOfficesOfTransitFilter(index, ec)
+
+}
+
+class TraderDetailsOfficesOfTransitFilter(index: Index, ec: ExecutionContext) extends ActionFilter[DataRequest] {
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
-    Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
+    if (index.position <= 8) {
+      Future.successful(None)
+    } else {
+      Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
+    }
 
   override protected def executionContext: ExecutionContext = ec
 }
