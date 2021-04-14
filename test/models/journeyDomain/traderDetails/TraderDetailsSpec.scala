@@ -36,7 +36,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             baseUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Normal)
           )
 
-          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).right.value
 
           result mustEqual traderDetails
       }
@@ -49,7 +49,7 @@ class TraderDetailsSpec extends SpecBase with GeneratorSpec with TryValues with 
             baseUserAnswers.unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
           )
 
-          val result = UserAnswersReader[TraderDetails].run(userAnswers).value
+          val result = UserAnswersReader[TraderDetails].run(userAnswers).right.value
 
           result mustEqual traderDetails
       }

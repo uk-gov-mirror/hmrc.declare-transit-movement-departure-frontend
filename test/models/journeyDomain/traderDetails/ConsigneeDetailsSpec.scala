@@ -38,7 +38,7 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsigneeNamePage)(name)
               .unsafeSetVal(ConsigneeAddressPage)(address)
 
-            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).value
+            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).right.value
 
             val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
 
@@ -108,7 +108,7 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsigneeNamePage)(name)
               .unsafeSetVal(ConsigneeAddressPage)(address)
 
-            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).value
+            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).right.value
 
             val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
 

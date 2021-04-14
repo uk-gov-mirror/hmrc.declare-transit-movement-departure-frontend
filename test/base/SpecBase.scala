@@ -22,7 +22,7 @@ import models.{DepartureId, EoriNumber, Index, LocalReferenceNumber, PrincipalAd
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -30,7 +30,15 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
 
-trait SpecBase extends AnyFreeSpec with Matchers with OptionValues with TryValues with ScalaFutures with IntegrationPatience with MockitoSugar {
+trait SpecBase
+    extends AnyFreeSpec
+    with Matchers
+    with OptionValues
+    with EitherValues
+    with TryValues
+    with ScalaFutures
+    with IntegrationPatience
+    with MockitoSugar {
 
   val nonEUCountries =
     Seq(CountryCode("AD"), CountryCode("IS"), CountryCode("LI"), CountryCode("NO"), CountryCode("SM"), CountryCode("SJ"), CountryCode("CH"))

@@ -35,10 +35,10 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
       "when all details for section have been answered" in {
         forAll(nonEmptyListOf[GuaranteeDetails](1), arbitrary[UserAnswers]) {
           case (guarantees, userAnswers) =>
-            val updatedUserAnswer                = GuaranteeDetailsSpec.setGuaranteeDetails(guarantees)(userAnswers)
-            val result: Option[GuaranteeDetails] = UserAnswersReader[GuaranteeDetails](GuaranteeDetails.parseGuaranteeDetails(index)).run(updatedUserAnswer)
+            val updatedUserAnswer                    = GuaranteeDetailsSpec.setGuaranteeDetails(guarantees)(userAnswers)
+            val result: EitherType[GuaranteeDetails] = UserAnswersReader[GuaranteeDetails](GuaranteeDetails.parseGuaranteeDetails(index)).run(updatedUserAnswer)
 
-            result.value mustEqual guarantees.head
+            result.right.value mustEqual guarantees.head
         }
       }
       "when there are multiple GuaranteeDetails all details for section have been answered" in {
@@ -46,10 +46,10 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
           case (guarantee1, guarantee2, guarantee3, userAnswers) =>
             val guarantees = NonEmptyList(guarantee1, List(guarantee2, guarantee3))
 
-            val updatedUserAnswer                              = GuaranteeDetailsSpec.setGuaranteeDetails(guarantees)(userAnswers)
-            val result: Option[NonEmptyList[GuaranteeDetails]] = UserAnswersReader[NonEmptyList[GuaranteeDetails]].run(updatedUserAnswer)
+            val updatedUserAnswer                                  = GuaranteeDetailsSpec.setGuaranteeDetails(guarantees)(userAnswers)
+            val result: EitherType[NonEmptyList[GuaranteeDetails]] = UserAnswersReader[NonEmptyList[GuaranteeDetails]].run(updatedUserAnswer)
 
-            result.value mustEqual guarantees
+            result.right mustEqual guarantees
         }
       }
     }
@@ -75,7 +75,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
                   .remove(DefaultAmountPage(index))
                   .toOption
                   .value
-              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).value
+              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).right.value
 
               result mustEqual expected
           }
@@ -94,7 +94,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
                   .remove(LiabilityAmountPage(index))
                   .toOption
                   .value
-              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).value
+              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).right.value
 
               result.liabilityAmount mustEqual "10000"
           }
@@ -110,7 +110,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
                   .set(DefaultAmountPage(index), false)
                   .toOption
                   .value
-              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).value
+              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).right.value
 
               result.liabilityAmount mustEqual expected.liabilityAmount
           }
@@ -186,7 +186,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
           forAll(arbitrary[GuaranteeOther], arbitrary[UserAnswers]) {
             case (expected, userAnswers) =>
               val updatedUserAnswer = GuaranteeDetailsSpec.setGuaranteeOtherUserAnswers(expected, index)(userAnswers)
-              val result            = UserAnswersReader[GuaranteeOther](GuaranteeOther.parseGuaranteeOther(index)).run(updatedUserAnswer).value
+              val result            = UserAnswersReader[GuaranteeOther](GuaranteeOther.parseGuaranteeOther(index)).run(updatedUserAnswer).right.value
 
               result mustEqual expected
           }

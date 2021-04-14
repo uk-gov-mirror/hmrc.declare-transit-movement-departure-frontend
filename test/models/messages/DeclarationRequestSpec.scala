@@ -55,7 +55,6 @@ class DeclarationRequestSpec
   "DeclarationRequest" - {
 
     "must serialise DeclarationRequest to xml" in {
-      //TODO: This needs more xml nodes adding as models become available
       forAll(arbitrary[DeclarationRequest]) {
         declarationRequest =>
           val expectedResult: Node =

@@ -42,7 +42,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
             val updatedUserAnswers = setItemDetailsUserAnswers(itemDetails, index)(userAnswers)
             val result             = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
-            result.value mustEqual itemDetails
+            result.right.value mustEqual itemDetails
         }
       }
 
@@ -58,7 +58,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
-            result.value.totalNetMass mustEqual None
+            result.right.value.totalNetMass mustEqual None
         }
       }
 
@@ -74,7 +74,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
-            result.value.commodityCode mustEqual None
+            result.right.value.commodityCode mustEqual None
         }
       }
 
@@ -87,7 +87,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
             val updatedUserAnswers = userAnswers.remove(mandatoryPage).success.value
             val result             = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
-            result mustEqual None
+            result.left.value mustEqual None
         }
       }
 
@@ -103,7 +103,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
-            result mustEqual None
+            result.left.value mustEqual None
         }
       }
 
@@ -119,7 +119,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
-            result mustEqual None
+            result.left.value mustEqual None
         }
       }
 

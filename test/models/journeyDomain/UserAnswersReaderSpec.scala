@@ -53,11 +53,11 @@ class UserAnswersReaderSpec extends SpecBase {
   "reader" - {
     "when a reader for a gettable is run" - {
       "passes and reads data when present" in {
-        passingGettable1.reader.run(testData).value mustEqual 1
+        passingGettable1.reader.run(testData).right.value mustEqual 1
       }
 
       "fails when not present" in {
-        failingGettable.reader.run(testData) must not be defined
+        failingGettable.reader.run(testData).isLeft mustBe true
       }
 
     }
@@ -66,11 +66,11 @@ class UserAnswersReaderSpec extends SpecBase {
   "optionalReader" - {
     "when a reader for a gettable is run" - {
       "passes and reads data when present" in {
-        passingGettable1.optionalReader.run(testData).value mustEqual Some(1)
+        passingGettable1.optionalReader.run(testData).right.value mustEqual Some(1)
       }
 
       "passes and return a None when not present" in {
-        failingGettable.optionalReader.run(testData).value must not be defined
+        failingGettable.optionalReader.run(testData).isLeft mustBe true
       }
 
     }
@@ -83,7 +83,7 @@ class UserAnswersReaderSpec extends SpecBase {
           passingGettable2.reader
         }
 
-        val result = testReaders.run(testData).value
+        val result = testReaders.run(testData).right.value
 
         result.value mustEqual TestData(1, "asdf")
       }
@@ -93,9 +93,9 @@ class UserAnswersReaderSpec extends SpecBase {
           passingGettable2.reader
         }
 
-        val result = testReaders.run(testData).value
+        val result = testReaders.run(testData).isLeft
 
-        result must not be defined
+        result mustBe true
       }
     }
 
@@ -105,9 +105,9 @@ class UserAnswersReaderSpec extends SpecBase {
           passingGettable2.reader
         }
 
-        val result = testReaders.run(testData)
+        val result = testReaders.run(testData).isLeft
 
-        result must not be defined
+        result mustBe true
       }
     }
   }

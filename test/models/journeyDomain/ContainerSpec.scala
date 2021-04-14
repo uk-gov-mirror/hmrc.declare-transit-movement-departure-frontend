@@ -32,7 +32,7 @@ class ContainerSpec extends SpecBase with GeneratorSpec with JourneyModelGenerat
             val updatedUserAnswers = setContainerUserAnswers(container, index, referenceIndex)(userAnswers)
             val result             = UserAnswersReader[Container](Container.containerReader(index, referenceIndex)).run(updatedUserAnswers)
 
-            result.value mustEqual container
+            result.right.value mustEqual container
         }
       }
     }
@@ -42,8 +42,8 @@ class ContainerSpec extends SpecBase with GeneratorSpec with JourneyModelGenerat
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val updatedUserAnswers = userAnswers.remove(ContainerNumberPage(index, referenceIndex)).success.value
-            val result: Option[Container] =
-              UserAnswersReader[Container](Container.containerReader(index, referenceIndex)).run(updatedUserAnswers)
+            val result: String =
+              UserAnswersReader[Container](Container.containerReader(index, referenceIndex)).run(updatedUserAnswers).left.value
 
             result mustBe None
         }

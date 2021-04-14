@@ -31,10 +31,10 @@ class PreTaskListDetailsSpec extends SpecBase with GeneratorSpec with JourneyMod
       "when all details for section have been answered" in {
         forAll(arbitrary[PreTaskListDetails], arbitrary[UserAnswers]) {
           case (preTaskListDetails, userAnswers) =>
-            val updatedUserAnswer                  = PreTaskListDetailsSpec.setPreTaskListDetails(preTaskListDetails)(userAnswers)
-            val result: Option[PreTaskListDetails] = UserAnswersReader[PreTaskListDetails].run(updatedUserAnswer)
+            val updatedUserAnswer                      = PreTaskListDetailsSpec.setPreTaskListDetails(preTaskListDetails)(userAnswers)
+            val result: EitherType[PreTaskListDetails] = UserAnswersReader[PreTaskListDetails].run(updatedUserAnswer)
 
-            result.value mustEqual preTaskListDetails
+            result.right.value mustEqual preTaskListDetails
         }
       }
     }
@@ -51,7 +51,7 @@ class PreTaskListDetailsSpec extends SpecBase with GeneratorSpec with JourneyMod
             val userAnswers = PreTaskListDetailsSpec.setPreTaskListDetails(preTaskListDetails)(ua).remove(mandatoryPage).success.value
             val result      = UserAnswersReader[PreTaskListDetails].run(userAnswers)
 
-            result mustBe None
+            result.left.value mustBe None
         }
       }
     }

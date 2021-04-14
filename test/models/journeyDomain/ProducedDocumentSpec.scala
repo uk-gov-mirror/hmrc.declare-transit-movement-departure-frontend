@@ -41,7 +41,7 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               val updatedUserAnswers = setProducedDocumentsUserAnswers(producedDocument, index, referenceIndex)(userAnswers)
               val result             = UserAnswersReader[ProducedDocument](ProducedDocument.producedDocumentReader(index, referenceIndex)).run(updatedUserAnswers)
 
-              result.value mustEqual producedDocument
+              result.right.value mustEqual producedDocument
           }
         }
       }
@@ -51,10 +51,10 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
           forAll(arbitrary[UserAnswers]) {
             userAnswers =>
               val updatedUserAnswers = userAnswers.remove(DocumentTypePage(index, referenceIndex)).success.value
-              val result: Option[ProducedDocument] =
+              val result: EitherType[ProducedDocument] =
                 UserAnswersReader[ProducedDocument](ProducedDocument.producedDocumentReader(index, referenceIndex)).run(updatedUserAnswers)
 
-              result mustBe None
+              result.left.value mustBe None
           }
         }
       }
@@ -78,11 +78,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               .unsafeSetVal(AddCommercialReferenceNumberPage)(false)
               .unsafeSetVal(AddCircumstanceIndicatorPage)(false)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
+            result.right.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
         }
       }
 
@@ -106,11 +106,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               .unsafeSetVal(AddCircumstanceIndicatorPage)(true)
               .unsafeSetVal(CircumstanceIndicatorPage)(circumstanceIndicator)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
+            result.right.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
         }
       }
 
@@ -127,11 +127,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               .unsafeSetVal(AddCircumstanceIndicatorPage)(false)
               .unsafeSetVal(AddDocumentsPage(index))(true)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
+            result.right.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
         }
       }
 
@@ -148,11 +148,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               .unsafeSetVal(AddCircumstanceIndicatorPage)(false)
               .unsafeSetVal(AddDocumentsPage(index))(true)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
+            result.right.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
         }
       }
 
@@ -169,11 +169,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               .unsafeSetVal(AddCircumstanceIndicatorPage)(false)
               .unsafeSetVal(AddDocumentsPage(index))(true)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(Index(0))
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(Index(0))
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
+            result.right.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
         }
 
       }
@@ -197,11 +197,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               .unsafeSetVal(AddCircumstanceIndicatorPage)(true)
               .unsafeSetVal(CircumstanceIndicatorPage)(invalidCircumstanceIndicator)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value must be(None)
+            result.left.value must be(None)
         }
       }
 
@@ -215,11 +215,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               .unsafeSetVal(AddCircumstanceIndicatorPage)(false)
               .unsafeSetVal(AddDocumentsPage(index))(false)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value must be(None)
+            result.left.value must be(None)
         }
       }
 
@@ -233,11 +233,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               .unsafeSetVal(AddCircumstanceIndicatorPage)(false)
               .unsafeSetVal(AddDocumentsPage(index))(false)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value must be(None)
+            result.left.value must be(None)
         }
       }
 
@@ -252,11 +252,11 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               .unsafeSetVal(AddDocumentsPage(index))(false)
               .unsafeSetVal(AddDocumentsPage(Index(1)))(false)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(Index(1))
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] = ProducedDocument.deriveProducedDocuments(Index(1))
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value must be(None)
+            result.left.value must be(None)
         }
       }
     }

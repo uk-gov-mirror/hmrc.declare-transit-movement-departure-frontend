@@ -16,6 +16,7 @@
 
 package models.journeyDomain.traderDetails
 
+import akka.util.Helpers.Requiring
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.domain.Address
@@ -39,7 +40,7 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsignorNamePage)(name)
               .unsafeSetVal(ConsignorAddressPage)(address)
 
-            val result = UserAnswersReader[ConsignorDetails].run(userAnswers).value
+            val result = UserAnswersReader[ConsignorDetails].run(userAnswers).right.value
 
             val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
 
@@ -109,7 +110,7 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsignorNamePage)(name)
               .unsafeSetVal(ConsignorAddressPage)(address)
 
-            val result = UserAnswersReader[ConsignorDetails].run(userAnswers).value
+            val result = UserAnswersReader[ConsignorDetails].run(userAnswers).right.value
 
             val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
 

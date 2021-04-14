@@ -41,7 +41,7 @@ class SpecialMentionSpec extends SpecBase with GeneratorSpec with JourneyModelGe
             val updatedUserAnswers = setSpecialMentionsUserAnswers(specialMention, index, referenceIndex)(userAnswers)
             val result             = UserAnswersReader[SpecialMention](SpecialMention.specialMentionsReader(index, referenceIndex)).run(updatedUserAnswers)
 
-            result.value mustEqual specialMention
+            result.right.value mustEqual specialMention
         }
       }
     }
@@ -51,15 +51,15 @@ class SpecialMentionSpec extends SpecBase with GeneratorSpec with JourneyModelGe
         forAll(arbitrary[UserAnswers], mandatoryPages) {
           case (userAnswers, mandatoryPage) =>
             val updatedUserAnswers = userAnswers.remove(mandatoryPage).success.value
-            val result: Option[SpecialMention] =
+            val result: EitherType[SpecialMention] =
               UserAnswersReader[SpecialMention](SpecialMention.specialMentionsReader(index, referenceIndex)).run(updatedUserAnswers)
 
-            result mustBe None
+            result.left.value mustBe None
         }
       }
-
     }
   }
+
 }
 
 object SpecialMentionSpec extends UserAnswersSpecHelper {

@@ -40,7 +40,7 @@ class PrincipalTraderSpec extends SpecBase with GeneratorSpec with TryValues wit
                 .unsafeSetVal(IsPrincipalEoriKnownPage)(true)
                 .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
 
-              val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers).value
+              val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers).right.value
 
               result mustEqual PrincipalTraderEoriInfo(eori)
 
@@ -58,9 +58,7 @@ class PrincipalTraderSpec extends SpecBase with GeneratorSpec with TryValues wit
               val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers)
 
               result mustEqual None
-
           }
-
         }
       }
 
@@ -75,7 +73,7 @@ class PrincipalTraderSpec extends SpecBase with GeneratorSpec with TryValues wit
                 .unsafeSetVal(PrincipalNamePage)(name)
                 .unsafeSetVal(PrincipalAddressPage)(principalAddress)
 
-              val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers).value
+              val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers).right.value
 
               val expectedAddress = Address.prismAddressToPrincipalAddress(principalAddress)
 
@@ -148,7 +146,7 @@ class PrincipalTraderSpec extends SpecBase with GeneratorSpec with TryValues wit
               .unsafeSetVal(ProcedureTypePage)(ProcedureType.Simplified)
               .unsafeSetVal(WhatIsPrincipalEoriPage)(eori.value)
 
-            val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers).value
+            val result = UserAnswersReader[PrincipalTraderDetails].run(userAnswers).right.value
 
             result mustEqual PrincipalTraderEoriInfo(eori)
 

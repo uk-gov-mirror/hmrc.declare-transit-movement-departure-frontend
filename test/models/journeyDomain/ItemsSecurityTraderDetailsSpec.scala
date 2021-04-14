@@ -39,7 +39,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .unsafeSetVal(AddCommercialReferenceNumberAllItemsPage)(itemsSecurityTraderDetails.commercialReferenceNumber.isEmpty)
 
           val result: ItemsSecurityTraderDetails =
-            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).right.value
 
           result mustBe itemsSecurityTraderDetails
       }
@@ -55,7 +55,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .unsafeRemove(AddCommercialReferenceNumberAllItemsPage)
 
           val result: ItemsSecurityTraderDetails =
-            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).right.value
 
           result mustBe itemsSecurityTraderDetails
       }
@@ -74,7 +74,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .unsafeRemove(AddSafetyAndSecurityConsignorPage)
 
           val result: ItemsSecurityTraderDetails =
-            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).right.value
 
           result.consignor mustBe None
       }
@@ -91,7 +91,7 @@ class ItemsSecurityTraderDetailsSpec extends SpecBase with GeneratorSpec with Tr
             .unsafeRemove(AddSafetyAndSecurityConsigneePage)
 
           val result: ItemsSecurityTraderDetails =
-            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).value
+            UserAnswersReader[ItemsSecurityTraderDetails](ItemsSecurityTraderDetails.parser(index)).run(userAnswers).right.value
 
           result.consignee mustBe None
       }

@@ -34,7 +34,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
           case (_, userAnswers) =>
             val result = UserAnswersReader[MovementDetails].run(userAnswers)
 
-            result must be(defined)
+            result.isRight mustBe true
         }
       }
     }
@@ -55,7 +55,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       "when all details for section have been answered" in {
         forAll(normalMovementUserAnswers) {
           case (expected, userAnswers) =>
-            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers).value
+            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers).right.value
 
             result mustEqual expected
         }
@@ -100,7 +100,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       "when all the answers have been answered" in {
         forAll(simpleMovementUserAnswers) {
           case (expected, userAnswers) =>
-            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers).value
+            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers).right.value
 
             result mustEqual expected
         }

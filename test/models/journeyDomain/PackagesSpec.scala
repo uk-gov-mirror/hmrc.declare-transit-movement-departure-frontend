@@ -45,7 +45,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
           val updatedUserAnswers = setPackageUserAnswers(packages, index, index)(userAnswers)
           val result             = UserAnswersReader[Packages](Packages.packagesReader(index, index)).run(updatedUserAnswers)
 
-          result.value mustEqual packages
+          result.right.value mustEqual packages
       }
     }
 
@@ -58,7 +58,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             val updatedUserAnswers = setPackageUserAnswers(otherPackage, index, index)(userAnswers)
             val result             = UserAnswersReader[OtherPackages](OtherPackages.otherPackageReader(index, index)).run(updatedUserAnswers)
 
-            result.value mustEqual otherPackage
+            result.right.value mustEqual otherPackage
         }
       }
 
@@ -86,7 +86,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             val updatedUserAnswers = setPackageUserAnswers(bulkPackage, index, index)(userAnswers)
             val result             = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
 
-            result.value mustEqual bulkPackage
+            result.right.value mustEqual bulkPackage
         }
       }
 
@@ -132,7 +132,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
               val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
 
-              result mustEqual None
+              result.left.value mustEqual None
           }
         }
       }
@@ -147,7 +147,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             val updatedUserAnswers = setPackageUserAnswers(bulkPackage, index, index)(userAnswers)
             val result             = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers)
 
-            result.value mustEqual bulkPackage
+            result.right.value mustEqual bulkPackage
         }
       }
 

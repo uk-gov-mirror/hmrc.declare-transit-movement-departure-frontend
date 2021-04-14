@@ -44,7 +44,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
             val result = UserAnswersReader[PreviousReferences](PreviousReferences.previousReferenceReader(index, referenceIndex)).run(setUserAnswers)
 
-            result.value mustBe expectedResult
+            result.right.value mustBe expectedResult
         }
       }
 
@@ -58,7 +58,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
             val result = UserAnswersReader[PreviousReferences](PreviousReferences.previousReferenceReader(index, referenceIndex)).run(setUserAnswers)
 
-            result.value mustBe expectedResult
+            result.right.value mustBe expectedResult
         }
       }
     }
@@ -80,7 +80,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
             val result = UserAnswersReader[PreviousReferences](PreviousReferences.previousReferenceReader(index, referenceIndex)).run(setUserAnswers)
 
-            result mustBe None
+            result.left.value mustBe None
         }
       }
     }
@@ -107,12 +107,12 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
               .unsafeSetVal(DeclarationTypePage)(declarationType)
               .unsafeSetVal(CountryOfDispatchPage)(countryCode)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
               PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value.value mustEqual NonEmptyList(previousReferences, List(previousReferences))
+            result.right.value.value mustEqual NonEmptyList(previousReferences, List(previousReferences))
         }
       }
 
@@ -131,12 +131,12 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
               .unsafeSetVal(DeclarationTypePage)(declarationType)
               .unsafeSetVal(CountryOfDispatchPage)(countryCode)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
               PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value.value mustEqual NonEmptyList(previousReferences, List(previousReferences))
+            result.right.value.value mustEqual NonEmptyList(previousReferences, List(previousReferences))
         }
       }
 
@@ -155,12 +155,12 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
               .unsafeSetVal(CountryOfDispatchPage)(countryCode)
               .unsafeSetVal(AddAdministrativeReferencePage(index))(false)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
               PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.value must be(None)
+            result.right.value must be(None)
         }
       }
     }
@@ -183,12 +183,12 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
             val updatedUserAnswers = setPreviousReferences2
               .unsafeRemove(mandatoryPage)
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
               PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
-            result must be(None)
+            result.left.value must be(None)
         }
       }
 
@@ -207,12 +207,12 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
               .unsafeSetVal(CountryOfDispatchPage)(countryCode)
               .unsafeRemove(AddAdministrativeReferencePage(index))
 
-            val userAnswerReader: ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
+            val userAnswerReader: UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
               PreviousReferences.derivePreviousReferences(index)
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
-            result must be(None)
+            result.left.value must be(None)
         }
       }
     }

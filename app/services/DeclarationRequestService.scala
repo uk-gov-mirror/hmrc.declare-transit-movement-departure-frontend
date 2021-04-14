@@ -50,6 +50,7 @@ trait DeclarationRequestServiceInt {
   def convert(userAnswers: UserAnswers): Future[EitherType[DeclarationRequest]]
 }
 
+@deprecated("Merge with DeclarationRequestService", "")
 class DeclarationRequestService @Inject()(
   icrRepository: InterchangeControlReferenceIdRepository,
   dateTimeService: DateTimeService
@@ -68,6 +69,7 @@ class DeclarationRequestService @Inject()(
             .run(userAnswers)
       }
 
+  // TODO refactor / move to seperate module for unit testing
   private def journeyModelToSubmissionModel(
     journeyDomain: JourneyDomain,
     icr: InterchangeControlReference,
