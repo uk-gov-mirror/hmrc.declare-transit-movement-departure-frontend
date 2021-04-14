@@ -16,15 +16,18 @@
 
 package controllers.actions
 
+import models.NormalMode
 import models.requests.DataRequest
 import play.api.mvc.{ActionFilter, Result}
+import play.api.mvc.Results._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TraderDetailsOfficesOfTransitFilter @Inject()(ec: ExecutionContext) extends ActionFilter[DataRequest] {
 
-  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = ???
+  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
+    Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
 
   override protected def executionContext: ExecutionContext = ec
 }
