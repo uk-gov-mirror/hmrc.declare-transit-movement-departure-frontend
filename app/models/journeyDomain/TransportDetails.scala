@@ -71,14 +71,10 @@ object TransportDetails {
           .filter(Rail.Constants.codes.contains(_))
           .flatMap(
             code =>
-              AddIdAtDeparturePage.reader
+              AddIdAtDeparturePage.optionalReader
                 .flatMap {
-                  bool =>
-                    if (bool) {
-                      IdAtDeparturePage.reader.map(x => Rail(code, Some(x)))
-                    } else {
-                      Rail(code, None).pure[UserAnswersReader]
-                    }
+                  case Some(false) => Rail(code, None).pure[UserAnswersReader]
+                  case _           => IdAtDeparturePage.reader.map(x => Rail(code, Some(x)))
               }
           )
     }
@@ -138,7 +134,6 @@ object TransportDetails {
 
     final case class NewDetailsAtBorder(
       mode: String,
-      idCrossing: String,
       modeCrossingBorder: ModeCrossingBorder
     ) extends DetailsAtBorder
 
@@ -150,7 +145,6 @@ object TransportDetails {
           .productR(
             (
               ModeAtBorderPage.reader,
-              IdCrossingBorderPage.reader,
               UserAnswersReader[ModeCrossingBorder]
             ).tupled.map((NewDetailsAtBorder.apply _).tupled)
           )
@@ -170,14 +164,20 @@ object TransportDetails {
         .map(_.toInt)
         .flatMap(
           modeCode =>
-            if ((Mode5or7.Constants.codes ++ Rail.Constants.codes).contains(modeCode))
+            if ((Mode5or7.Constants.codes ++ Rail.Constants.codes).contains(modeCode)) {
               ModeExemptNationality(modeCode).pure[UserAnswersReader].widen[ModeCrossingBorder]
-            else
-              NationalityCrossingBorderPage.reader.map(ModeWithNationality(_, modeCode))
+            } else {
+              (
+                NationalityCrossingBorderPage.reader,
+                IdCrossingBorderPage.reader
+              ).tupled.map {
+                case (nationality, id) => ModeWithNationality(nationality, modeCode, id)
+              }
+          }
         )
 
     final case class ModeExemptNationality(modeCode: Int) extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
-    final case class ModeWithNationality(nationalityCrossingBorder: CountryCode, modeCode: Int) extends ModeCrossingBorder
+    final case class ModeWithNationality(nationalityCrossingBorder: CountryCode, modeCode: Int, idCrossing: String) extends ModeCrossingBorder
 
   }
 

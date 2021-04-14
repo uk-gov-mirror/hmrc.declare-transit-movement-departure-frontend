@@ -215,8 +215,8 @@ class DeclarationRequestService @Inject()(
 
     def detailsAtBorderMode(detailsAtBorder: DetailsAtBorder, inlandCode: Int): String =
       detailsAtBorder match {
-        case DetailsAtBorder.NewDetailsAtBorder(mode, _, _) => mode
-        case SameDetailsAtBorder                            => inlandCode.toString
+        case DetailsAtBorder.NewDetailsAtBorder(mode, _) => mode
+        case SameDetailsAtBorder                         => inlandCode.toString
       }
 
     def customsOfficeTransit(transitInformation: NonEmptyList[TransitInformation]): Seq[CustomsOfficeTransit] =
@@ -340,16 +340,20 @@ class DeclarationRequestService @Inject()(
 
     def identityOfTransportAtCrossing(detailsAtBorder: DetailsAtBorder, inlandMode: InlandMode): Option[String] =
       detailsAtBorder match {
-        case newDetailsAtBorder: NewDetailsAtBorder => Some(newDetailsAtBorder.idCrossing)
-        case DetailsAtBorder.SameDetailsAtBorder    => identityOfTransportAtDeparture(inlandMode)
+        case newDetailsAtBorder: NewDetailsAtBorder =>
+          newDetailsAtBorder.modeCrossingBorder match {
+            case ModeCrossingBorder.ModeExemptNationality(_)                           => None
+            case ModeCrossingBorder.ModeWithNationality(_, _, idOfTrasnportAtCrossing) => Some(idOfTrasnportAtCrossing)
+          }
+        case DetailsAtBorder.SameDetailsAtBorder => identityOfTransportAtDeparture(inlandMode)
       }
 
     def nationalityAtCrossing(detailsAtBorder: DetailsAtBorder, inlandMode: InlandMode): Option[String] =
       detailsAtBorder match {
         case newDetailsAtBorder: NewDetailsAtBorder =>
           newDetailsAtBorder.modeCrossingBorder match {
-            case ModeCrossingBorder.ModeExemptNationality(_)                          => None
-            case ModeCrossingBorder.ModeWithNationality(nationalityCrossingBorder, _) => Some(nationalityCrossingBorder.code)
+            case ModeCrossingBorder.ModeExemptNationality(_)                             => None
+            case ModeCrossingBorder.ModeWithNationality(nationalityCrossingBorder, _, _) => Some(nationalityCrossingBorder.code)
           }
         case DetailsAtBorder.SameDetailsAtBorder => nationalityAtDeparture(inlandMode)
       }
