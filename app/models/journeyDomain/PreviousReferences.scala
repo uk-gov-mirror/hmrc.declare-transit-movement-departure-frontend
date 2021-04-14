@@ -51,7 +51,7 @@ object PreviousReferences {
     ).tupled.map((PreviousReferences.apply _).tupled)
   }
 
-  def derivePreviousReferences(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
+  def derivePreviousReferences(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
     (
       DeclarationTypePage.reader,
       CountryOfDispatchPage.reader
@@ -65,15 +65,16 @@ object PreviousReferences {
         }
     }
 
-  private def allPreviousReferencesReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
-    DeriveNumberOfPreviousAdministrativeReferences(itemIndex).reader
-      .filter(_.nonEmpty)
-      .flatMap(
-        _.zipWithIndex.traverse[UserAnswersReader, PreviousReferences]({
-          case (_, index) =>
-            PreviousReferences.previousReferenceReader(itemIndex, Index(index))
-        })
-      )
-      .map(NonEmptyList.fromList)
+  private def allPreviousReferencesReader(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
+    DeriveNumberOfPreviousAdministrativeReferences(itemIndex).reader.flatMap {
+      case list if list.nonEmpty =>
+        list.zipWithIndex
+          .traverse[UserAnswersReader, PreviousReferences]({
+            case (_, index) =>
+              PreviousReferences.previousReferenceReader(itemIndex, Index(index))
+          })
+          .map(NonEmptyList.fromList)
+      case _ => UserAnswersReader.failed[Option[NonEmptyList[PreviousReferences]]]
+    }
 
 }

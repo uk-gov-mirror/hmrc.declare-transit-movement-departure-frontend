@@ -65,20 +65,21 @@ object GoodsSummary {
   object GoodSummaryNormalDetails {
 
     implicit val goodSummaryNormalDetailsReader: UserAnswersReader[GoodSummaryNormalDetails] =
-      ProcedureTypePage.reader
-        .filter(_ == ProcedureType.Normal)
-        .productR(
-          AddCustomsApprovedLocationPage.reader
-            .flatMap {
-              locationNeeded =>
-                if (locationNeeded)
-                  CustomsApprovedLocationPage.reader.map(
-                    location => GoodSummaryNormalDetails(Some(location))
-                  )
-                else
-                  GoodSummaryNormalDetails(None).pure[UserAnswersReader]
-            }
-        )
+      ProcedureTypePage.reader.map(_ == ProcedureType.Normal).flatMap {
+        x =>
+          if (x) {
+            AddCustomsApprovedLocationPage.reader
+              .flatMap {
+                locationNeeded =>
+                  if (locationNeeded)
+                    CustomsApprovedLocationPage.reader.map(
+                      location => GoodSummaryNormalDetails(Some(location))
+                    )
+                  else
+                    GoodSummaryNormalDetails(None).pure[UserAnswersReader]
+              }
+          } else UserAnswersReader.failed[GoodSummaryNormalDetails]
+      }
   }
 
   final case class GoodSummarySimplifiedDetails(authorisedLocationCode: String, controlResultDateLimit: LocalDate) extends GoodSummaryDetails
@@ -86,16 +87,17 @@ object GoodsSummary {
   object GoodSummarySimplifiedDetails {
 
     implicit val goodSummarySimplifiedDetailsReader: UserAnswersReader[GoodSummarySimplifiedDetails] =
-      ProcedureTypePage.reader
-        .filter(_ == ProcedureType.Simplified)
-        .productR(
-          (
-            AuthorisedLocationCodePage.reader,
-            ControlResultDateLimitPage.reader
-          ).tupled
-            .map((GoodSummarySimplifiedDetails.apply _).tupled)
-        )
-
+      ProcedureTypePage.reader.map(_ == ProcedureType.Simplified).flatMap {
+        x =>
+          if (x) {
+            (
+              AuthorisedLocationCodePage.reader,
+              ControlResultDateLimitPage.reader
+            ).tupled.map((GoodSummarySimplifiedDetails.apply _).tupled)
+          } else {
+            UserAnswersReader.failed[GoodSummarySimplifiedDetails]
+          }
+      }
   }
 
   object GoodSummaryDetails {

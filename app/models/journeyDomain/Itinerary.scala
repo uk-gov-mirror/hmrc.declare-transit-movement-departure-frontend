@@ -30,15 +30,16 @@ object Itinerary {
   def itineraryReader(index: Index): UserAnswersReader[Itinerary] =
     CountryOfRoutingPage(index).reader.map(Itinerary.apply)
 
-  def readItineraries: ReaderT[Option, UserAnswers, NonEmptyList[Itinerary]] =
-    DeriveNumberOfCountryOfRouting.reader
-      .filter(_.nonEmpty)
-      .flatMap {
-        _.zipWithIndex
+  def readItineraries: UserAnswersReader[NonEmptyList[Itinerary]] =
+    DeriveNumberOfCountryOfRouting.reader.flatMap {
+      case list if list.nonEmpty =>
+        list.zipWithIndex
           .traverse[UserAnswersReader, Itinerary]({
             case (_, index) =>
               itineraryReader(Index(index))
           })
           .map(NonEmptyList.fromListUnsafe)
-      }
+      case _ => UserAnswersReader.failed[NonEmptyList[Itinerary]]
+    }
+
 }

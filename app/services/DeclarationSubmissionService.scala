@@ -29,7 +29,7 @@ class DeclarationSubmissionService @Inject()(
   declarationRequestService: DeclarationRequestService
 )(implicit ec: ExecutionContext) {
 
-  def submit(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Option[HttpResponse]] =
+  def submit(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[String, HttpResponse]] =
     declarationRequestService
       .convert(userAnswers)
       .flatMap(_.traverse(connector.submitDepartureMovement))

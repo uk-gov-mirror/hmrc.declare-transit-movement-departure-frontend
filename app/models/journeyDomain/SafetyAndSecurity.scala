@@ -100,7 +100,7 @@ object SafetyAndSecurity {
 
   private def consignorDetails: UserAnswersReader[Option[SecurityTraderDetails]] = {
 
-    val useEori: ReaderT[Option, UserAnswers, SecurityTraderDetails] =
+    val useEori: ReaderT[EitherType, UserAnswers, SecurityTraderDetails] =
       SafetyAndSecurityConsignorEoriPage.reader.map(
         eori => SecurityTraderDetails(EoriNumber(eori))
       )
@@ -117,22 +117,20 @@ object SafetyAndSecurity {
             SecurityTraderDetails(name, address)
         }
 
-    val isEoriKnown: ReaderT[Option, UserAnswers, SecurityTraderDetails] =
+    val isEoriKnown: ReaderT[EitherType, UserAnswers, SecurityTraderDetails] =
       AddSafetyAndSecurityConsignorEoriPage.reader.flatMap(
         isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
 
-    AddSafetyAndSecurityConsignorPage.reader
-      .filter(identity)
-      .flatMap(
-        _ => isEoriKnown
-      )
-      .lower
+    AddSafetyAndSecurityConsignorPage.reader.flatMap {
+      case true  => isEoriKnown.map(_.some)
+      case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+    }
   }
 
   private def consigneeDetails: UserAnswersReader[Option[SecurityTraderDetails]] = {
 
-    val useEori: ReaderT[Option, UserAnswers, SecurityTraderDetails] =
+    val useEori: ReaderT[EitherType, UserAnswers, SecurityTraderDetails] =
       SafetyAndSecurityConsigneeEoriPage.reader.map(
         eori => SecurityTraderDetails(EoriNumber(eori))
       )
@@ -149,22 +147,20 @@ object SafetyAndSecurity {
             SecurityTraderDetails(name, address)
         }
 
-    val isEoriKnown: ReaderT[Option, UserAnswers, SecurityTraderDetails] =
+    val isEoriKnown: ReaderT[EitherType, UserAnswers, SecurityTraderDetails] =
       AddSafetyAndSecurityConsigneeEoriPage.reader.flatMap(
         isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
 
-    AddSafetyAndSecurityConsigneePage.reader
-      .filter(identity)
-      .flatMap(
-        _ => isEoriKnown
-      )
-      .lower
+    AddSafetyAndSecurityConsigneePage.reader.flatMap {
+      case true  => isEoriKnown.map(_.some)
+      case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+    }
   }
 
   private def carrierDetails: UserAnswersReader[Option[SecurityTraderDetails]] = {
 
-    val useEori: ReaderT[Option, UserAnswers, SecurityTraderDetails] =
+    val useEori: ReaderT[EitherType, UserAnswers, SecurityTraderDetails] =
       CarrierEoriPage.reader.map(
         eori => SecurityTraderDetails(EoriNumber(eori))
       )
@@ -181,17 +177,14 @@ object SafetyAndSecurity {
             SecurityTraderDetails(name, address)
         }
 
-    val isEoriKnown: ReaderT[Option, UserAnswers, SecurityTraderDetails] =
+    val isEoriKnown: ReaderT[EitherType, UserAnswers, SecurityTraderDetails] =
       AddCarrierEoriPage.reader.flatMap(
         isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
 
-    AddCarrierPage.reader
-      .filter(identity)
-      .flatMap(
-        _ => isEoriKnown
-      )
-      .lower
+    AddCarrierPage.reader.flatMap {
+      case true  => isEoriKnown.map(_.some)
+      case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+    }
   }
-
 }

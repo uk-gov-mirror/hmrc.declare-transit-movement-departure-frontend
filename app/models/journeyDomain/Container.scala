@@ -16,7 +16,7 @@
 
 package models.journeyDomain
 
-import cats.implicits.catsStdInstancesForOption
+import cats.implicits._
 import models.Index
 import pages.addItems.containers.ContainerNumberPage
 

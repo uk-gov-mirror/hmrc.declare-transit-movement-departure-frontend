@@ -57,19 +57,17 @@ object MovementDetails {
   object NormalMovementDetails {
 
     implicit val parseSimplifiedMovementDetails: UserAnswersReader[NormalMovementDetails] =
-      ProcedureTypePage.reader
-        .filter(_ == Normal)
-        .flatMap(
-          _ =>
-            (
-              DeclarationTypePage.reader,
-              PreLodgeDeclarationPage.reader,
-              ContainersUsedPage.reader,
-              DeclarationPlacePage.reader,
-              declarationForSomeoneElseAnswer
-            ).tupled
-        )
-        .map((NormalMovementDetails.apply _).tupled)
+      ProcedureTypePage.reader.flatMap {
+        case procedureType if procedureType == Normal =>
+          (
+            DeclarationTypePage.reader,
+            PreLodgeDeclarationPage.reader,
+            ContainersUsedPage.reader,
+            DeclarationPlacePage.reader,
+            declarationForSomeoneElseAnswer
+          ).tupled.map((NormalMovementDetails.apply _).tupled)
+        case _ => UserAnswersReader.failed[NormalMovementDetails]
+      }
   }
 
   final case class SimplifiedMovementDetails(
@@ -82,18 +80,16 @@ object MovementDetails {
   object SimplifiedMovementDetails {
 
     implicit val makeSimplifiedMovementDetails: UserAnswersReader[SimplifiedMovementDetails] =
-      ProcedureTypePage.reader
-        .filter(_ == Simplified)
-        .flatMap(
-          _ =>
-            (
-              DeclarationTypePage.reader,
-              ContainersUsedPage.reader,
-              DeclarationPlacePage.reader,
-              declarationForSomeoneElseAnswer
-            ).tupled
-        )
-        .map((SimplifiedMovementDetails.apply _).tupled)
+      ProcedureTypePage.reader.flatMap {
+        case procedureType if procedureType == Simplified =>
+          (
+            DeclarationTypePage.reader,
+            ContainersUsedPage.reader,
+            DeclarationPlacePage.reader,
+            declarationForSomeoneElseAnswer
+          ).tupled.map((SimplifiedMovementDetails.apply _).tupled)
+        case _ => UserAnswersReader.failed[SimplifiedMovementDetails]
+      }
   }
 
   sealed trait DeclarationForSomeoneElseAnswer

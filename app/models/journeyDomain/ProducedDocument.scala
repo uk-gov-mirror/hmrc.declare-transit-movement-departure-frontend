@@ -29,7 +29,7 @@ final case class ProducedDocument(documentType: String, documentReference: Strin
 
 object ProducedDocument {
 
-  private def readDocumentType(itemIndex: Index): ReaderT[Option, UserAnswers, Boolean] =
+  private def readDocumentType(itemIndex: Index): ReaderT[EitherType, UserAnswers, Boolean] =
     (for {
       addSecurity     <- AddSecurityDetailsPage.reader
       addRef          <- AddCommercialReferenceNumberPage.optionalReader
@@ -42,21 +42,21 @@ object ProducedDocument {
       }
     }).flatMap(x => x)
 
-  def deriveProducedDocuments(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] =
+  def deriveProducedDocuments(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] =
     readDocumentType(itemIndex)
       .flatMap {
         isTrue =>
           if (isTrue) {
-            DeriveNumberOfDocuments(itemIndex).reader
-              .filter(_.nonEmpty)
-              .flatMap {
-                _.zipWithIndex
+            DeriveNumberOfDocuments(itemIndex).reader.flatMap {
+              case list if list.nonEmpty =>
+                list.zipWithIndex
                   .traverse[UserAnswersReader, ProducedDocument]({
                     case (_, index) =>
                       ProducedDocument.producedDocumentReader(itemIndex, Index(index))
                   })
                   .map(NonEmptyList.fromList)
-              }
+              case _ => UserAnswersReader.failed[Option[NonEmptyList[ProducedDocument]]]
+            }
           } else none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]
       }
 

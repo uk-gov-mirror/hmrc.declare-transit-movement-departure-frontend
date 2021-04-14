@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 import cats.data._
 import cats.implicits._
 import derivable.DeriveNumberOfOfficeOfTransits
-import models.Index
+import models.{Index, UserAnswers}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.{CountryCode, CustomsOffice}
 import pages._
@@ -42,8 +42,7 @@ object RouteDetails {
   )
 
   object TransitInformation {
-
-    implicit val readSeqTransitInformation: UserAnswersReader[NonEmptyList[TransitInformation]] =
+    implicit val readSeqTransitInformation: UserAnswersReader[NonEmptyList[TransitInformation]] = {
       AddSecurityDetailsPage.reader
         .flatMap {
           addSecurityDetailsFlag =>
@@ -72,7 +71,14 @@ object RouteDetails {
 
             }
         }
-        .flatMapF(NonEmptyList.fromList)
+        .flatMapF(listToNonEmptyEither)
+    }
+
+    def listToNonEmptyEither[A](list: List[A]): Either[String, NonEmptyList[A]] =
+      NonEmptyList.fromList(list) match {
+        case Some(x) => Right(x)
+        case None    => Left(s"${getClass.toString}: Cannot convert empty list to NonEmptyList")
+      }
   }
 
   implicit val makeSimplifiedMovementDetails: UserAnswersReader[RouteDetails] =

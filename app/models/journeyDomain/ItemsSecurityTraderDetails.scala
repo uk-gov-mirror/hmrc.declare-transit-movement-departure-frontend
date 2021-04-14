@@ -16,10 +16,11 @@
 
 package models.journeyDomain
 
+import cats.data.ReaderT
 import cats.implicits._
 import models.domain.Address
 import models.journeyDomain.ItemsSecurityTraderDetails.SecurityTraderDetails
-import models.{EoriNumber, Index}
+import models.{EoriNumber, Index, UserAnswers}
 import pages.addItems.securityDetails.{AddDangerousGoodsCodePage, CommercialReferenceNumberPage, DangerousGoodsCodePage, TransportChargesPage}
 import pages.addItems.traderSecurityDetails._
 import pages.safetyAndSecurity._
@@ -78,11 +79,11 @@ object ItemsSecurityTraderDetails {
         isEoriKnown => if (isEoriKnown) useEori else useNameAndAddress
       )
 
-    AddSafetyAndSecurityConsignorPage.reader //TODO - add a matcher
-    .flatMap {
-      _ =>
-        isEoriKnown
-    }.lower
+    AddSafetyAndSecurityConsignorPage.reader
+      .flatMap {
+        case true  => isEoriKnown.map(_.some)
+        case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+      }
   }
 
   private def consigneeDetails(index: Index): UserAnswersReader[Option[SecurityTraderDetails]] = {
@@ -106,11 +107,11 @@ object ItemsSecurityTraderDetails {
       isEoriKnown => if (isEoriKnown) useEori else useNameAndAddress
     )
 
-    AddSafetyAndSecurityConsigneePage.reader.flatMap {
-      _ =>
-        isEoriKnown
-    }.lower
-
+    AddSafetyAndSecurityConsigneePage.reader
+      .flatMap {
+        case true  => isEoriKnown.map(_.some)
+        case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+      }
   }
 
   private def methodOfPaymentPage(index: Index): UserAnswersReader[Option[String]] =

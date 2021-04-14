@@ -36,7 +36,7 @@ object ItemTraderDetails {
         TraderDetailsConsignorEoriNumberPage(index).reader.map(EoriNumber(_))
       }
 
-    val consignorInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
+    val consignorInformation: ReaderT[EitherType, UserAnswers, RequiredDetails] =
       (
         TraderDetailsConsignorNamePage(index).reader,
         TraderDetailsConsignorAddressPage(index).reader,
@@ -58,7 +58,7 @@ object ItemTraderDetails {
         TraderDetailsConsigneeEoriNumberPage(index).reader.map(EoriNumber(_))
       }
 
-    val consigneeInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
+    val consigneeInformation: ReaderT[EitherType, UserAnswers, RequiredDetails] =
       (
         TraderDetailsConsigneeNamePage(index).reader,
         TraderDetailsConsigneeAddressPage(index).reader,

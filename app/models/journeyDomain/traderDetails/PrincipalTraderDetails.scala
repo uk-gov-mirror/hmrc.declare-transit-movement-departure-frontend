@@ -32,32 +32,32 @@ object PrincipalTraderDetails {
   def apply(name: String, address: Address): PrincipalTraderDetails = PrincipalTraderPersonalInfo(name, address)
 
   implicit val principalTraderDetails: UserAnswersReader[PrincipalTraderDetails] = {
-    val simplified = ProcedureTypePage.reader
-      .filter(_ == Simplified)
-      .productR(
+
+    val simplified: UserAnswersReader[PrincipalTraderDetails] = ProcedureTypePage.reader.flatMap {
+      case Simplified =>
         WhatIsPrincipalEoriPage.reader
           .map(EoriNumber(_))
           .map(PrincipalTraderDetails(_))
-      )
+      case _ => UserAnswersReader.failed[PrincipalTraderDetails]
+    }
 
-    val normalEori = ProcedureTypePage.reader
-      .filter(_ == Normal)
-      .productR {
-        IsPrincipalEoriKnownPage.reader
-          .filter(_ == true)
-          .productR {
+    val normalEori: UserAnswersReader[PrincipalTraderDetails] = ProcedureTypePage.reader.flatMap {
+      case Normal =>
+        IsPrincipalEoriKnownPage.reader.flatMap {
+          case true =>
             WhatIsPrincipalEoriPage.reader
               .map(EoriNumber(_))
               .map(PrincipalTraderDetails(_))
-          }
-      }
+          case false => UserAnswersReader.failed[PrincipalTraderDetails]
+        }
+      case _ => UserAnswersReader.failed[PrincipalTraderDetails]
+    }
 
-    val normalNameAddress = ProcedureTypePage.reader
-      .filter(_ == Normal)
-      .productR {
-        IsPrincipalEoriKnownPage.reader
-          .filter(_ == false)
-          .productR {
+    val normalNameAddress: UserAnswersReader[PrincipalTraderDetails] = ProcedureTypePage.reader.flatMap {
+      case Normal =>
+        IsPrincipalEoriKnownPage.reader.flatMap {
+          case true => UserAnswersReader.failed[PrincipalTraderDetails]
+          case false =>
             (
               PrincipalNamePage.reader,
               PrincipalAddressPage.reader
@@ -66,8 +66,9 @@ object PrincipalTraderDetails {
                 val address = Address.prismAddressToPrincipalAddress(principalAddress)
                 PrincipalTraderDetails(name, address)
             }
-          }
-      }
+        }
+      case _ => UserAnswersReader.failed[PrincipalTraderDetails]
+    }
 
     normalNameAddress orElse normalEori orElse simplified
   }

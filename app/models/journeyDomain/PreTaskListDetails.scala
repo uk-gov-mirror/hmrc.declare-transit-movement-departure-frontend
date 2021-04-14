@@ -17,9 +17,9 @@
 package models.journeyDomain
 
 import cats.data.ReaderT
+import cats.implicits._
 import models.{LocalReferenceNumber, ProcedureType, UserAnswers}
 import pages.{AddSecurityDetailsPage, ProcedureTypePage}
-import cats.implicits._
 
 case class PreTaskListDetails(
   lrn: LocalReferenceNumber,
@@ -30,7 +30,7 @@ case class PreTaskListDetails(
 object PreTaskListDetails {
 
   val localReferenceNumber: UserAnswersReader[LocalReferenceNumber] =
-    ReaderT[Option, UserAnswers, LocalReferenceNumber](_.id.some)
+    ReaderT[EitherType, UserAnswers, LocalReferenceNumber](ua => Right(ua.id))
 
   implicit val reader: UserAnswersReader[PreTaskListDetails] =
     (
