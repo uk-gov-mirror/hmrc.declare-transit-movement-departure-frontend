@@ -21,6 +21,7 @@ import controllers.actions._
 
 import javax.inject.Inject
 import models.{CancellationDecisionUpdateMessage, DepartureId, LocalReferenceNumber}
+import pages.TechnicalDifficultiesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,12 +40,13 @@ class CancellationDecisionUpdateController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
-  appConfig: FrontendAppConfig,
+  val renderer: Renderer,
+  val appConfig: FrontendAppConfig,
   departureMessageService: DepartureMessageService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with TechnicalDifficultiesPage {
 
   def onPageLoad(departureId: DepartureId): Action[AnyContent] = (identify).async {
     implicit request =>
@@ -57,7 +59,7 @@ class CancellationDecisionUpdateController @Inject()(
           )
           renderer.render("cancellationDecisionUpdate.njk", json).map(Ok(_))
         case _ =>
-          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
+          renderTechnicalDifficultiesPage
       }
   }
 

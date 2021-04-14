@@ -81,7 +81,7 @@ class CancellationDecisionUpdateControllerSpec extends SpecBase with MockNunjuck
     }
   }
 
-  "redirect to technical difficulties when no response from service" in {
+  "show technical difficulties page when no response from service" in {
 
     when(mockDepartureMessageService.cancellationDecisionUpdateMessage(any())(any(), any()))
       .thenReturn(Future.successful(None))
@@ -95,7 +95,6 @@ class CancellationDecisionUpdateControllerSpec extends SpecBase with MockNunjuck
 
     val result = route(app, request).value
 
-    status(result) mustEqual SEE_OTHER
-    redirectLocation(result).value mustEqual routes.TechnicalDifficultiesController.onPageLoad().url
+    status(result) mustEqual INTERNAL_SERVER_ERROR
   }
 }

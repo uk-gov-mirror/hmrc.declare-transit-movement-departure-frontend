@@ -94,17 +94,18 @@ class DeclarationSummaryControllerSpec extends SpecBase with MockNunjucksRendere
       redirectLocation(result).value mustEqual routes.SubmissionConfirmationController.onPageLoad(lrn).url
     }
 
-    "must redirected to TechnicalDifficulties page when there is a server side error" in {
+    "must show TechnicalDifficulties page when there is a server side error" in {
       dataRetrievalWithData(emptyUserAnswers)
       val genServerError = Gen.chooseNum(500, 599).sample.value
 
       when(mockDeclarationSubmissionService.submit(any())(any())).thenReturn(Future.successful(Some(HttpResponse(genServerError))))
-
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
       val request = FakeRequest(POST, routes.DeclarationSummaryController.onSubmit(lrn).url)
 
       val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+      status(result) mustEqual INTERNAL_SERVER_ERROR
 
     }
 

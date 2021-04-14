@@ -19,6 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import models.{DeclarationRejectionMessage, DepartureId}
+import pages.TechnicalDifficultiesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,6 +30,7 @@ import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
 import utils.Format.dateFormatterMonthName
 import viewModels.sections.Section
+
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,12 +39,13 @@ class DeclarationRejectionController @Inject()(
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
-  appConfig: FrontendAppConfig,
+  val renderer: Renderer,
+  val appConfig: FrontendAppConfig,
   departureMessageService: DepartureMessageService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with TechnicalDifficultiesPage {
 
   private def errorSections(message: DeclarationRejectionMessage): Seq[Section] = message.errors map {
     error =>
@@ -89,7 +92,7 @@ class DeclarationRejectionController @Inject()(
           )
           renderer.render("declarationRejection.njk", json).map(Ok(_))
         case _ =>
-          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
+          renderTechnicalDifficultiesPage
       }
   }
 }
