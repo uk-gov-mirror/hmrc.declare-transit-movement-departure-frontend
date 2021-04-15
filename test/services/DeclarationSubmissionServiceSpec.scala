@@ -26,9 +26,11 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.{Page, QuestionPage}
 import play.api.http.Status.ACCEPTED
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.JsPath
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -58,7 +60,7 @@ class DeclarationSubmissionServiceSpec extends SpecBase with MockServiceApp with
       when(mockDepartureMovementConnector.submitDepartureMovement(any())(any())).thenReturn(Future.successful(HttpResponse(ACCEPTED)))
       when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Right(request)))
 
-      declarationService.submit(emptyUserAnswers).futureValue.right.value mustBe ACCEPTED
+      declarationService.submit(emptyUserAnswers).futureValue.right.value.status mustBe ACCEPTED
     }
 
     "must return failure status on failing to create departure declaration" in {
@@ -72,9 +74,14 @@ class DeclarationSubmissionServiceSpec extends SpecBase with MockServiceApp with
     }
 
     "must return None on failing to create departure declaration" in {
-      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Left(???)))
 
-      declarationService.submit(emptyUserAnswers).futureValue.left.value mustBe None
+      case object ErrorPage extends QuestionPage[Boolean] {
+        override def path: JsPath = JsPath \ ""
+      }
+
+      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Left(ErrorPage)))
+
+      declarationService.submit(emptyUserAnswers).futureValue.left.value mustBe ErrorPage
     }
   }
 }

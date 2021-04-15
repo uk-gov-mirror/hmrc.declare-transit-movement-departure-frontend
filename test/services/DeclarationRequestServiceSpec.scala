@@ -356,27 +356,13 @@ class DeclarationRequestServiceSpec
       }
     }
 
-    "must return None when InterchangeControlReferenceIdRepository fails" in {
-
-      forAll(arb[UserAnswers], arb[JourneyDomain]) {
-        (userAnswers, journeyDomain) =>
-          val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
-          when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.failed(new Exception))
-          when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
-
-          val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
-          service.convert(updatedUserAnswer).futureValue.left.value mustEqual None
-      }
-    }
-
-    "must return None when there are missing answers from mandatory pages" in {
+    "must fail when there are missing answers from mandatory pages" in {
       val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
 
       when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
       when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
-      service.convert(emptyUserAnswers).futureValue.left.value mustBe None
+      service.convert(emptyUserAnswers).futureValue.isLeft mustBe true
     }
 
   }

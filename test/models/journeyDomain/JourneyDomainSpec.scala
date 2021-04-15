@@ -32,7 +32,14 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
 
             val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
 
-            result mustBe "Asdf"
+            result.right.value.preTaskList mustEqual journeyDomain.preTaskList
+            result.right.value.movementDetails mustEqual journeyDomain.movementDetails
+            result.right.value.routeDetails mustEqual journeyDomain.routeDetails
+            result.right.value.transportDetails mustEqual journeyDomain.transportDetails
+            result.right.value.traderDetails mustEqual journeyDomain.traderDetails
+            result.right.value.goodsSummary mustEqual journeyDomain.goodsSummary
+            result.right.value.guarantee mustEqual journeyDomain.guarantee
+            result.right.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
         }
       }
     }

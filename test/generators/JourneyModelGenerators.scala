@@ -506,7 +506,7 @@ trait JourneyModelGenerators {
       specialMentions           <- Gen.some(nonEmptyListOf[SpecialMention](1))
       producedDocuments         <- if (documentTypeIsMandatory) { nonEmptyListOf[ProducedDocument](1).map(Some(_)) } else Gen.const(None)
       previousReferences        <- Gen.some(nonEmptyListOf[PreviousReferences](1))
-      itemSecurityTraderDetails <- Gen.some(arbitrary[ItemsSecurityTraderDetails])
+      itemSecurityTraderDetails <- if (documentTypeIsMandatory) { Gen.some(arbitrary[ItemsSecurityTraderDetails]) } else Gen.const(None)
 
     } yield
       ItemSection(itemDetail,

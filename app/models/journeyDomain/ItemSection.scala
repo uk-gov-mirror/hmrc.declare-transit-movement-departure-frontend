@@ -99,8 +99,8 @@ object ItemSection {
   private def securityItemsSecurityTraderDetails(itemIndex: Index): UserAnswersReader[Option[ItemsSecurityTraderDetails]] =
     AddSecurityDetailsPage.reader
       .flatMap {
-        _ =>
-          ItemsSecurityTraderDetails.parser(itemIndex).map(_.some)
+        case true  => ItemsSecurityTraderDetails.parser(itemIndex).map(_.some)
+        case false => none[ItemsSecurityTraderDetails].pure[UserAnswersReader]
       }
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
