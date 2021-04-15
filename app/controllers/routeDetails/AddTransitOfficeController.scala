@@ -47,8 +47,7 @@ class AddTransitOfficeController @Inject()(
   formProvider: AddTransitOfficeFormProvider,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
-  officeOfTransitFilter: TraderDetailsOfficesOfTransitProvider
+  renderer: Renderer
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport

@@ -19,7 +19,7 @@ package controllers.actions
 import derivable.DeriveNumberOfOfficeOfTransits
 import models.requests.DataRequest
 import models.{Index, NormalMode}
-import pages.AddAnotherTransitOfficePage
+import pages.{AddAnotherTransitOfficePage, OfficeOfTransitCountryPage}
 import play.api.mvc.Results._
 import play.api.mvc.{ActionFilter, Result}
 
@@ -37,9 +37,8 @@ class TraderDetailsOfficesOfTransitFilter(index: Index)(implicit protected val e
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
     if (index.position <= 8) {
       navigateTransit(request, indexOutOfBound = false)
-
     } else {
-      navigateTransit(request, indexOutOfBound = true)
+      Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
     }
 
   private def navigateTransit[A](request: DataRequest[A], indexOutOfBound: Boolean) = {
@@ -55,13 +54,16 @@ class TraderDetailsOfficesOfTransitFilter(index: Index)(implicit protected val e
             }
           )
         case None =>
-          Future.successful(
-            Option(
-              Redirect(
-                controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode).url
-              )
+          if (index.position > numberOfOffices) {
+            Future.successful(
+              Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url))
             )
-          )
+          } else {
+            Future.successful(
+              None
+            )
+          }
+
       }
     } else {
       Future.successful(None)
