@@ -17,15 +17,13 @@
 package controllers.actions
 
 import base.{SpecBase, UserAnswersSpecHelper}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
 import models.reference.CountryCode
 import models.requests.DataRequest
+import models.{Index, NormalMode}
 import pages.{AddAnotherTransitOfficePage, AddSecurityDetailsPage, OfficeOfTransitCountryPage}
-import play.api.mvc.{Action, AnyContent, Result, Results}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.mvc.Result
 import play.api.mvc.Results._
+import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -74,8 +72,8 @@ class TraderDetailsOfficesOfTransitFilterSpec extends SpecBase with UserAnswersS
     "is valid, and the previous loops are all complete, must return OK" in {
       val userAnswers = emptyUserAnswers
         .unsafeSetVal(AddSecurityDetailsPage)(false)
-        .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("GB"))
-        .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("Test")
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("AS"))
+        .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("TestData")
 
       val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(1), implicitly)
       val dataRequest  = DataRequest(fakeRequest, userAnswers.eoriNumber, userAnswers)
@@ -85,21 +83,20 @@ class TraderDetailsOfficesOfTransitFilterSpec extends SpecBase with UserAnswersS
       contentAsString(result) mustBe "fake ok result value"
     }
 
-    "is valid, and there is an incomplete loop, must redirect to the first page of that loop" ignore {
+    "is valid, and there is an incomplete loop, must redirect to the first page of that loop" in {
       val userAnswers = emptyUserAnswers
         .unsafeSetVal(AddSecurityDetailsPage)(false)
         .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("GB"))
         .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("Test")
-        .unsafeSetVal(OfficeOfTransitCountryPage(Index(1)))(CountryCode("GB"))
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(1)))(CountryCode("AR"))
 
-      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(7), implicitly)
+      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(1), implicitly)
       val dataRequest  = DataRequest(fakeRequest, userAnswers.eoriNumber, userAnswers)
       val result       = actionFilter.invokeBlock(dataRequest, fakeOkResult)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(
-        controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(userAnswers.id, Index(1), NormalMode).url
-      )
+        controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(userAnswers.id, Index(index.position + 1), NormalMode).url)
     }
 
   }

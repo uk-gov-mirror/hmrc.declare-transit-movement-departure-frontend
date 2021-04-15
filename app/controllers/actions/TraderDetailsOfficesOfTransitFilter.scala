@@ -16,8 +16,10 @@
 
 package controllers.actions
 
+import derivable.DeriveNumberOfOfficeOfTransits
 import models.{Index, NormalMode}
 import models.requests.DataRequest
+import pages.{AddAnotherTransitOfficePage, AddTransitOfficePage, OfficeOfTransitCountryPage}
 import play.api.mvc.{ActionFilter, Result}
 import play.api.mvc.Results._
 
@@ -34,10 +36,22 @@ class TraderDetailsOfficesOfTransitFilter(index: Index, ec: ExecutionContext) ex
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
     if (index.position <= 8) {
-      Future.successful(None)
+      val numberOfOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+      if (numberOfOffices > 0) {
+        request.userAnswers.get(AddAnotherTransitOfficePage(Index(numberOfOffices - 1))) match {
+          case Some(_) =>
+            Future.successful(None)
+          case None =>
+            Future.successful(Option(Redirect(
+              controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode).url)))
+        }
+      } else {
+        Future.successful(None)
+      }
     } else {
       Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
     }
 
   override protected def executionContext: ExecutionContext = ec
+
 }
