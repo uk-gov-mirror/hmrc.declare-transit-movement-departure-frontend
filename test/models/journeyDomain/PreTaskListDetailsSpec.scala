@@ -18,8 +18,7 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
-import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import models.journeyDomain.GuaranteeDetails.GuaranteeReference
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.{AddSecurityDetailsPage, ProcedureTypePage, QuestionPage}
@@ -51,7 +50,7 @@ class PreTaskListDetailsSpec extends SpecBase with GeneratorSpec with JourneyMod
             val userAnswers = PreTaskListDetailsSpec.setPreTaskListDetails(preTaskListDetails)(ua).remove(mandatoryPage).success.value
             val result      = UserAnswersReader[PreTaskListDetails].run(userAnswers)
 
-            result.left.value mustBe None
+            result.left.value mustBe mandatoryPage
         }
       }
     }

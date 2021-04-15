@@ -64,12 +64,12 @@ object SafetyAndSecurity {
 
   private def addCircumstanceIndicator: UserAnswersReader[Option[String]] =
     AddCircumstanceIndicatorPage.reader.flatMap(
-      bool => if (bool) CircumstanceIndicatorPage.optionalReader else none[String].pure[UserAnswersReader]
+      bool => if (bool) CircumstanceIndicatorPage.reader.map(_.some) else none[String].pure[UserAnswersReader]
     )
 
   private def paymentMethod: UserAnswersReader[Option[String]] =
     AddTransportChargesPaymentMethodPage.reader.flatMap(
-      bool => if (bool) TransportChargesPaymentMethodPage.optionalReader else none[String].pure[UserAnswersReader]
+      bool => if (bool) TransportChargesPaymentMethodPage.reader.map(_.some) else none[String].pure[UserAnswersReader]
     )
 
   private def commercialReferenceNumber: UserAnswersReader[Option[String]] =

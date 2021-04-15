@@ -490,7 +490,7 @@ class TaskListViewModelSpec
       }
     }
 
-    "SecurityDetails" - {
+    "SecurityDetails" ignore {
 
       "section task" - {
         "is included when user has chosen to add Security Details" in {

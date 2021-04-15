@@ -87,7 +87,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
             val updatedUserAnswers = userAnswers.remove(mandatoryPage).success.value
             val result             = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
-            result.left.value mustEqual None
+            result.isLeft mustEqual true
         }
       }
 
@@ -103,7 +103,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
-            result.left.value mustEqual None
+            result.left.value mustEqual TotalNetMassPage(index)
         }
       }
 
@@ -119,7 +119,7 @@ class ItemDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
             val result = UserAnswersReader[ItemDetails](ItemDetails.itemDetailsReader(index)).run(updatedUserAnswers)
 
-            result.left.value mustEqual None
+            result.left.value mustEqual CommodityCodePage(index)
         }
       }
 

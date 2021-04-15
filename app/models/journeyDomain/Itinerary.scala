@@ -19,8 +19,10 @@ package models.journeyDomain
 import cats.data.{NonEmptyList, ReaderT}
 import cats.implicits.{catsStdInstancesForOption, _}
 import derivable.DeriveNumberOfCountryOfRouting
+import models.journeyDomain.GoodsSummary.GoodSummarySimplifiedDetails
 import models.reference.CountryCode
 import models.{Index, UserAnswers}
+import pages.ProcedureTypePage
 import pages.safetyAndSecurity.CountryOfRoutingPage
 
 case class Itinerary(countryCode: CountryCode)
@@ -39,7 +41,10 @@ object Itinerary {
               itineraryReader(Index(index))
           })
           .map(NonEmptyList.fromListUnsafe)
-      case _ => UserAnswersReader.failed[NonEmptyList[Itinerary]]
+      case _ =>
+        ReaderT[EitherType, UserAnswers, NonEmptyList[Itinerary]](
+          _ => Left(DeriveNumberOfCountryOfRouting) // TODO add message
+        )
     }
 
 }

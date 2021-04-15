@@ -22,7 +22,8 @@ import generators.JourneyModelGenerators
 import models.DeclarationType.{Option1, Option2}
 import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.journeyDomain.PreviousReferenceSpec.setPreviousReferenceUserAnswers
-import models.{Index, UserAnswers}
+import models.reference.CountryCode
+import models.{DeclarationType, Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.addItems._
@@ -80,7 +81,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
             val result = UserAnswersReader[PreviousReferences](PreviousReferences.previousReferenceReader(index, referenceIndex)).run(setUserAnswers)
 
-            result.left.value mustBe None
+            result.left.value mustBe mandatoryPage
         }
       }
     }
@@ -175,12 +176,14 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
           AddExtraInformationPage(index, referenceIndex)
         )
 
-        forAll(arbitrary[PreviousReferences], arbitrary[UserAnswers], genMandatoryPages) {
-          case (previousReferences, userAnswers, mandatoryPage) =>
+        forAll(arbitrary[PreviousReferences], arbitrary[UserAnswers], genT2DeclarationType, genNonEUCountry, genMandatoryPages) {
+          case (previousReferences, userAnswers, declarationType, countryCode, mandatoryPage) =>
             val setPreviousReferences1: UserAnswers = setPreviousReferenceUserAnswers(previousReferences, index, referenceIndex)(userAnswers)
             val setPreviousReferences2: UserAnswers = setPreviousReferenceUserAnswers(previousReferences, index, Index(1))(setPreviousReferences1)
 
             val updatedUserAnswers = setPreviousReferences2
+              .unsafeSetVal(DeclarationTypePage)(declarationType)
+              .unsafeSetVal(CountryOfDispatchPage)(countryCode)
               .unsafeRemove(mandatoryPage)
 
             val userAnswerReader: UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
@@ -188,7 +191,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.left.value must be(None)
+            result.left.value mustEqual mandatoryPage
         }
       }
 
@@ -212,7 +215,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.left.value must be(None)
+            result.left.value mustEqual AddAdministrativeReferencePage(index)
         }
       }
     }

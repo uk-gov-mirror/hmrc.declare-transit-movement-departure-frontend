@@ -16,11 +16,10 @@
 
 package models.journeyDomain
 
-import cats.data.ReaderT
 import cats.implicits._
 import models.domain.Address
 import models.journeyDomain.ItemsSecurityTraderDetails.SecurityTraderDetails
-import models.{EoriNumber, Index, UserAnswers}
+import models.{EoriNumber, Index}
 import pages.addItems.securityDetails.{AddDangerousGoodsCodePage, CommercialReferenceNumberPage, DangerousGoodsCodePage, TransportChargesPage}
 import pages.addItems.traderSecurityDetails._
 import pages.safetyAndSecurity._
@@ -79,10 +78,11 @@ object ItemsSecurityTraderDetails {
         isEoriKnown => if (isEoriKnown) useEori else useNameAndAddress
       )
 
+    // TODO add matcher
     AddSafetyAndSecurityConsignorPage.reader
       .flatMap {
-        case true  => isEoriKnown.map(_.some)
-        case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+        _ =>
+          isEoriKnown.map(_.some)
       }
   }
 
@@ -107,10 +107,11 @@ object ItemsSecurityTraderDetails {
       isEoriKnown => if (isEoriKnown) useEori else useNameAndAddress
     )
 
+    // TODO add matcher
     AddSafetyAndSecurityConsigneePage.reader
       .flatMap {
-        case true  => isEoriKnown.map(_.some)
-        case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+        _ =>
+          isEoriKnown.map(_.some)
       }
   }
 

@@ -19,11 +19,9 @@ package models.journeyDomain
 import cats.data._
 import cats.implicits._
 import derivable._
-import models.journeyDomain.ItemTraderDetails.RequiredDetails
-import models.journeyDomain.ItemsSecurityTraderDetails.SecurityTraderDetails
 import models.{Index, UserAnswers}
+import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import pages.addItems.specialMentions.AddSpecialMentionPage
-import pages.safetyAndSecurity.AddSafetyAndSecurityConsignorPage
 import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 
 case class ItemSection(
@@ -49,7 +47,10 @@ object ItemSection {
               Packages.packagesReader(itemIndex, Index(index))
           })
           .map(NonEmptyList.fromListUnsafe)
-      case _ => UserAnswersReader.failed[NonEmptyList[Packages]]
+      case _ =>
+        ReaderT[EitherType, UserAnswers, NonEmptyList[Packages]](
+          _ => Left(DeriveNumberOfPackages(itemIndex)) // TODO add message
+        )
     }
 
   private def deriveContainers(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[Container]]] =
@@ -65,7 +66,10 @@ object ItemSection {
                       Container.containerReader(itemIndex, Index(index))
                   })
                   .map(NonEmptyList.fromList)
-              case _ => UserAnswersReader.failed[Option[NonEmptyList[Container]]]
+              case _ =>
+                ReaderT[EitherType, UserAnswers, Option[NonEmptyList[Container]]](
+                  _ => Left(DeriveNumberOfContainers(itemIndex)) // TODO add message
+                )
             }
           } else none[NonEmptyList[Container]].pure[UserAnswersReader]
       }
@@ -83,16 +87,20 @@ object ItemSection {
                       SpecialMention.specialMentionsReader(itemIndex, Index(index))
                   })
                   .map(NonEmptyList.fromList)
-              case _ => UserAnswersReader.failed[Option[NonEmptyList[SpecialMention]]]
+              case _ =>
+                ReaderT[EitherType, UserAnswers, Option[NonEmptyList[SpecialMention]]](
+                  _ => Left(DeriveNumberOfSpecialMentions(itemIndex)) // TODO add message
+                )
             }
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
       }
 
+  // TODO need to add boolean check here
   private def securityItemsSecurityTraderDetails(itemIndex: Index): UserAnswersReader[Option[ItemsSecurityTraderDetails]] =
     AddSecurityDetailsPage.reader
       .flatMap {
-        case true  => ItemsSecurityTraderDetails.parser(itemIndex).map(_.some)
-        case false => none[ItemsSecurityTraderDetails].pure[UserAnswersReader]
+        _ =>
+          ItemsSecurityTraderDetails.parser(itemIndex).map(_.some)
       }
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
@@ -117,6 +125,9 @@ object ItemSection {
               readerItemSection(Index(index))
           })
           .map(NonEmptyList.fromListUnsafe)
-      case _ => UserAnswersReader.failed[NonEmptyList[ItemSection]]
+      case _ =>
+        ReaderT[EitherType, UserAnswers, NonEmptyList[ItemSection]](
+          _ => Left(DeriveNumberOfItems) // TODO add message
+        )
     }
 }

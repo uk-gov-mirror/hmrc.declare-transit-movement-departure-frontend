@@ -16,11 +16,12 @@
 
 package models.journeyDomain.traderDetails
 
+import cats.data.ReaderT
 import cats.implicits._
-import models.EoriNumber
 import models.ProcedureType.{Normal, Simplified}
 import models.domain.Address
 import models.journeyDomain.{UserAnswersReader, _}
+import models.{EoriNumber, UserAnswers}
 import pages._
 
 sealed trait PrincipalTraderDetails
@@ -33,30 +34,44 @@ object PrincipalTraderDetails {
 
   implicit val principalTraderDetails: UserAnswersReader[PrincipalTraderDetails] = {
 
-    val simplified: UserAnswersReader[PrincipalTraderDetails] = ProcedureTypePage.reader.flatMap {
-      case Simplified =>
-        WhatIsPrincipalEoriPage.reader
-          .map(EoriNumber(_))
-          .map(PrincipalTraderDetails(_))
-      case _ => UserAnswersReader.failed[PrincipalTraderDetails]
+    val simplified: UserAnswersReader[PrincipalTraderDetails] = {
+      ProcedureTypePage.reader.flatMap {
+        case Simplified =>
+          WhatIsPrincipalEoriPage.reader
+            .map(EoriNumber(_))
+            .map(PrincipalTraderDetails(_))
+        case _ =>
+          ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
+            _ => Left(ProcedureTypePage) // TODO add message
+          )
+      }
     }
 
-    val normalEori: UserAnswersReader[PrincipalTraderDetails] = ProcedureTypePage.reader.flatMap {
+    val normalEori: ReaderT[EitherType, UserAnswers, PrincipalTraderDetails] = ProcedureTypePage.reader.flatMap {
       case Normal =>
         IsPrincipalEoriKnownPage.reader.flatMap {
           case true =>
             WhatIsPrincipalEoriPage.reader
               .map(EoriNumber(_))
               .map(PrincipalTraderDetails(_))
-          case false => UserAnswersReader.failed[PrincipalTraderDetails]
+          case false =>
+            ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
+              _ => Left(IsPrincipalEoriKnownPage) // TODO add message
+            )
         }
-      case _ => UserAnswersReader.failed[PrincipalTraderDetails]
+      case _ =>
+        ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
+          _ => Left(ProcedureTypePage) // TODO add message
+        )
     }
 
     val normalNameAddress: UserAnswersReader[PrincipalTraderDetails] = ProcedureTypePage.reader.flatMap {
       case Normal =>
         IsPrincipalEoriKnownPage.reader.flatMap {
-          case true => UserAnswersReader.failed[PrincipalTraderDetails]
+          case true =>
+            ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
+              _ => Left(IsPrincipalEoriKnownPage) // TODO add message
+            )
           case false =>
             (
               PrincipalNamePage.reader,
@@ -67,10 +82,14 @@ object PrincipalTraderDetails {
                 PrincipalTraderDetails(name, address)
             }
         }
-      case _ => UserAnswersReader.failed[PrincipalTraderDetails]
+      case _ =>
+        ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
+          _ => Left(ProcedureTypePage) // TODO add message
+        )
     }
 
-    normalNameAddress orElse normalEori orElse simplified
+    // TODO need to investigate the error handling here as it will only retrieve the last left (due to orElse)
+    normalEori orElse normalNameAddress orElse simplified
   }
 
 }

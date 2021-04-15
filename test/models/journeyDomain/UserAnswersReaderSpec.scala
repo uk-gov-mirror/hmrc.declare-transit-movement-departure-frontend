@@ -64,15 +64,14 @@ class UserAnswersReaderSpec extends SpecBase {
   }
 
   "optionalReader" - {
-    "when a reader for a gettable is run" - {
-      "passes and reads data when present" in {
+    "when a reader for a gettable" - {
+      "passes when the data is defined" in {
         passingGettable1.optionalReader.run(testData).right.value mustEqual Some(1)
       }
 
-      "passes and return a None when not present" in {
-        failingGettable.optionalReader.run(testData).isLeft mustBe true
+      "passes when the data is not defined" in {
+        failingGettable.optionalReader.run(testData).right.value mustBe None
       }
-
     }
   }
 
@@ -89,8 +88,8 @@ class UserAnswersReaderSpec extends SpecBase {
       }
 
       "and the second reader has data that is missing, then the full reader fails" in {
-        val testReaders = passingGettable1.filterDependent(_ == 0) {
-          passingGettable2.reader
+        val testReaders = passingGettable1.filterDependent(_ == 1) {
+          failingGettable.reader
         }
 
         val result = testReaders.run(testData).isLeft

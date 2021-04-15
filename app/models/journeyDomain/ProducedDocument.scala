@@ -55,7 +55,10 @@ object ProducedDocument {
                       ProducedDocument.producedDocumentReader(itemIndex, Index(index))
                   })
                   .map(NonEmptyList.fromList)
-              case _ => UserAnswersReader.failed[Option[NonEmptyList[ProducedDocument]]]
+              case _ =>
+                ReaderT[EitherType, UserAnswers, Option[NonEmptyList[ProducedDocument]]](
+                  _ => Left(DeriveNumberOfDocuments(itemIndex)) // TODO add message + test
+                )
             }
           } else none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]
       }

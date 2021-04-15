@@ -32,14 +32,7 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
 
             val result = UserAnswersReader[JourneyDomain].run(updatedUserAnswer)
 
-            result.right.value.preTaskList mustEqual journeyDomain.preTaskList
-            result.right.value.movementDetails mustEqual journeyDomain.movementDetails
-            result.right.value.routeDetails mustEqual journeyDomain.routeDetails
-            result.right.value.transportDetails mustEqual journeyDomain.transportDetails
-            result.right.value.traderDetails mustEqual journeyDomain.traderDetails
-            result.right.value.goodsSummary mustEqual journeyDomain.goodsSummary
-            result.right.value.guarantee mustEqual journeyDomain.guarantee
-            result.right.value.safetyAndSecurity mustEqual journeyDomain.safetyAndSecurity
+            result mustBe "Asdf"
         }
       }
     }
@@ -48,10 +41,10 @@ class JourneyDomainSpec extends SpecBase with GeneratorSpec with JourneyModelGen
       "when some answers is missing" in {
         forAll(arb[ItemSection], arb[UserAnswers]) {
           case (itemSection, ua) =>
-            val userAnswers                     = ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, index)(ua)
-            val result: EitherType[ItemSection] = ItemSection.readerItemSection(index).run(userAnswers)
+            val userAnswers = ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, index)(ua)
+            val result      = ItemSection.readerItemSection(index).run(userAnswers).isLeft
 
-            result.left.value mustBe None
+            result mustBe true
         }
       }
     }

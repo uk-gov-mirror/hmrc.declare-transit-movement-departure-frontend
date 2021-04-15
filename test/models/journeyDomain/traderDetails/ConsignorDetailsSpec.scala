@@ -16,7 +16,6 @@
 
 package models.journeyDomain.traderDetails
 
-import akka.util.Helpers.Requiring
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
 import models.domain.Address
@@ -59,10 +58,9 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsignorNamePage)(name)
               .unsafeRemove(ConsignorAddressPage)
 
-            val result = UserAnswersReader[ConsignorDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustEqual None
-
+            result mustBe ConsignorAddressPage
         }
       }
 
@@ -76,9 +74,9 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsignorAddressPage)(address)
               .unsafeRemove(ConsignorNamePage)
 
-            val result = UserAnswersReader[ConsignorDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustEqual None
+            result mustBe ConsignorNamePage
         }
       }
 
@@ -92,10 +90,9 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsignorAddressPage)(address)
               .unsafeRemove(ConsignorEoriPage)
 
-            val result = UserAnswersReader[ConsignorDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustEqual None
-
+            result mustBe ConsignorEoriPage
         }
       }
     }
@@ -115,7 +112,6 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
             val expectedAddress: Address = Address.prismAddressToConsignorAddress(address)
 
             result mustEqual ConsignorDetails(name, expectedAddress, None)
-
         }
       }
 
@@ -128,10 +124,9 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsignorNamePage)(name)
               .unsafeRemove(ConsignorAddressPage)
 
-            val result = UserAnswersReader[ConsignorDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustEqual None
-
+            result mustBe ConsignorAddressPage
         }
       }
 
@@ -144,12 +139,12 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsignorAddressPage)(address)
               .unsafeRemove(ConsignorNamePage)
 
-            val result = UserAnswersReader[ConsignorDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustEqual None
-
+            result mustBe ConsignorNamePage
         }
       }
     }
   }
+
 }

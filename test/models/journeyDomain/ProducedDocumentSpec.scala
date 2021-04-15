@@ -48,13 +48,17 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
 
       "cannot be parsed from UserAnswers" - {
         "when a mandatory answer is missing" in {
-          forAll(arbitrary[UserAnswers]) {
-            userAnswers =>
-              val updatedUserAnswers = userAnswers.remove(DocumentTypePage(index, referenceIndex)).success.value
+          forAll(arbitrary[ProducedDocument], arbitrary[UserAnswers]) {
+            case (producedDocument, userAnswers) =>
+              val updatedUserAnswers = setProducedDocumentsUserAnswers(producedDocument, index, referenceIndex)(userAnswers)
+                .remove(DocumentTypePage(index, referenceIndex))
+                .success
+                .value
+
               val result: EitherType[ProducedDocument] =
                 UserAnswersReader[ProducedDocument](ProducedDocument.producedDocumentReader(index, referenceIndex)).run(updatedUserAnswers)
 
-              result.left.value mustBe None
+              result.left.value mustBe DocumentTypePage(index, referenceIndex)
           }
         }
       }
@@ -173,7 +177,7 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.right.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
+            result.right.value.value mustEqual NonEmptyList(producedDocument, List(producedDocument))
         }
 
       }
@@ -201,7 +205,7 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.left.value must be(None)
+            result.right.value must be(None)
         }
       }
 
@@ -219,7 +223,7 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.left.value must be(None)
+            result.right.value must be(None)
         }
       }
 
@@ -237,7 +241,7 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.left.value must be(None)
+            result.right.value must be(None)
         }
       }
 
@@ -256,7 +260,7 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
 
             val result = UserAnswersReader[Option[NonEmptyList[ProducedDocument]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.left.value must be(None)
+            result.right.value must be(None)
         }
       }
     }

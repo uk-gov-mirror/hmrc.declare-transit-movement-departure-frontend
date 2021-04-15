@@ -30,6 +30,8 @@ class GoodsSummarySpec extends SpecBase with GeneratorSpec with JourneyModelGene
 
     val isSecurityDefined: Boolean = arb[Boolean].sample.value
 
+    // TODO need to add left test here
+
     "when number of packages is declared and SafetyAndSecurity is True" in {
 
       val arbGoodsSummary = arb(arbitraryGoodsSummary(isSecurityDefined)).map(_.copy(numberOfPackages = Some(123)))

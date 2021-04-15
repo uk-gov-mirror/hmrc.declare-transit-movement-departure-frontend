@@ -16,10 +16,10 @@
 
 package models.journeyDomain
 
-import cats.data.NonEmptyList
+import cats.data.{NonEmptyList, ReaderT}
 import cats.implicits._
 import derivable.DeriveNumberOfGuarantees
-import models.{GuaranteeType, Index}
+import models.{GuaranteeType, Index, UserAnswers}
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
@@ -37,7 +37,9 @@ object GuaranteeDetails {
           })
           .map(NonEmptyList.fromListUnsafe)
       case _ =>
-        UserAnswersReader.failed[NonEmptyList[GuaranteeDetails]]
+        ReaderT[EitherType, UserAnswers, NonEmptyList[GuaranteeDetails]](
+          _ => Left(DeriveNumberOfGuarantees) // TODO add message
+        )
     }
 
   def parseGuaranteeDetails(index: Index): UserAnswersReader[GuaranteeDetails] =

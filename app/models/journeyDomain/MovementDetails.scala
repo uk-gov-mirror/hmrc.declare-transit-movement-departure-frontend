@@ -16,10 +16,11 @@
 
 package models.journeyDomain
 
+import cats.data.ReaderT
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain.MovementDetails.DeclarationForSomeoneElseAnswer
-import models.{DeclarationType, RepresentativeCapacity}
+import models.{DeclarationType, RepresentativeCapacity, UserAnswers}
 import pages._
 import pages.movementDetails.PreLodgeDeclarationPage
 
@@ -66,7 +67,10 @@ object MovementDetails {
             DeclarationPlacePage.reader,
             declarationForSomeoneElseAnswer
           ).tupled.map((NormalMovementDetails.apply _).tupled)
-        case _ => UserAnswersReader.failed[NormalMovementDetails]
+        case _ =>
+          ReaderT[EitherType, UserAnswers, NormalMovementDetails](
+            _ => Left(ProcedureTypePage) //TODO add message
+          )
       }
   }
 
@@ -88,7 +92,10 @@ object MovementDetails {
             DeclarationPlacePage.reader,
             declarationForSomeoneElseAnswer
           ).tupled.map((SimplifiedMovementDetails.apply _).tupled)
-        case _ => UserAnswersReader.failed[SimplifiedMovementDetails]
+        case _ =>
+          ReaderT[EitherType, UserAnswers, SimplifiedMovementDetails](
+            _ => Left(ProcedureTypePage) //TODO add message
+          )
       }
   }
 

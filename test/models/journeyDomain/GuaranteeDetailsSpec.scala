@@ -29,7 +29,7 @@ import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
 class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
-  "GuaranteeDetails" ignore {
+  "GuaranteeDetails" - {
 
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
@@ -49,7 +49,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
             val updatedUserAnswer                                  = GuaranteeDetailsSpec.setGuaranteeDetails(guarantees)(userAnswers)
             val result: EitherType[NonEmptyList[GuaranteeDetails]] = UserAnswersReader[NonEmptyList[GuaranteeDetails]].run(updatedUserAnswer)
 
-            result.right mustEqual guarantees
+            result.right.value mustEqual guarantees
         }
       }
     }
@@ -124,9 +124,9 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
           forAll(arbitrary[UserAnswers], mandatoryPages) {
             case (ua, mandatoryPage) =>
               val userAnswers = ua.remove(mandatoryPage).success.value
-              val result      = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(userAnswers)
+              val result      = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(userAnswers).isLeft
 
-              result mustBe None
+              result mustBe true
           }
         }
 
@@ -144,9 +144,9 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
                   .toOption
                   .value
 
-              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer)
+              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).left.value
 
-              result mustBe None
+              result mustBe LiabilityAmountPage(index)
           }
         }
 
@@ -164,9 +164,9 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
                   .toOption
                   .value
 
-              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer)
+              val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).isLeft
 
-              result mustBe None
+              result mustBe true
           }
         }
       }
@@ -200,9 +200,9 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
           forAll(arbitrary[UserAnswers], mandatoryPages) {
             case (ua, mandatoryPage) =>
               val userAnswers = ua.remove(mandatoryPage).success.value
-              val result      = UserAnswersReader[GuaranteeOther](GuaranteeOther.parseGuaranteeOther(index)).run(userAnswers)
+              val result      = UserAnswersReader[GuaranteeOther](GuaranteeOther.parseGuaranteeOther(index)).run(userAnswers).isLeft
 
-              result mustBe None
+              result mustBe true
           }
         }
       }

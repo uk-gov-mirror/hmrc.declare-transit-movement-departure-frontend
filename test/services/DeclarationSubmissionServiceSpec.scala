@@ -72,7 +72,7 @@ class DeclarationSubmissionServiceSpec extends SpecBase with MockServiceApp with
     }
 
     "must return None on failing to create departure declaration" in {
-      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Left("error")))
+      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Left(???)))
 
       declarationService.submit(emptyUserAnswers).futureValue.left.value mustBe None
     }

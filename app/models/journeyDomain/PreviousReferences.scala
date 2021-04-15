@@ -74,7 +74,10 @@ object PreviousReferences {
               PreviousReferences.previousReferenceReader(itemIndex, Index(index))
           })
           .map(NonEmptyList.fromList)
-      case _ => UserAnswersReader.failed[Option[NonEmptyList[PreviousReferences]]]
+      case _ =>
+        ReaderT[EitherType, UserAnswers, Option[NonEmptyList[PreviousReferences]]](
+          _ => Left(DeriveNumberOfPreviousAdministrativeReferences(itemIndex)) // TODO add message
+        )
     }
 
 }

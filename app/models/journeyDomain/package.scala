@@ -19,11 +19,13 @@ package models
 import cats.data._
 import cats.implicits._
 import play.api.libs.json.Reads
-import queries.Gettable
+import queries.{Gettable, Query}
 
 package object journeyDomain {
 
-  type EitherType[A]        = Either[String, A] //TODO make this a query
+  // TODO add message case class for custom errors
+
+  type EitherType[A]        = Either[Query, A]
   type UserAnswersReader[A] = ReaderT[EitherType, UserAnswers, A]
 
   object UserAnswersReader {
@@ -31,10 +33,6 @@ package object journeyDomain {
 
     def apply[A](fn: UserAnswers => EitherType[A]): UserAnswersReader[A] =
       ReaderT[EitherType, UserAnswers, A](fn)
-
-    def failed[A]: UserAnswersReader[A] = ReaderT[EitherType, UserAnswers, A](
-      _ => Left("woa") // TODO pass a helpful error
-    )
   }
 
   implicit class GettableAsFilterForNextReaderOps[A: Reads](a: Gettable[A]) {
@@ -45,6 +43,8 @@ package object journeyDomain {
       * will return None. If the result of UserAnswerReader[A] is not defined then the overall reader will fail and
       * `next` will not be run
       */
+
+    // TODO FilterOptionalDepedent
     def filterDependent[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[Option[B]] =
       a.reader
         .flatMap {
@@ -52,9 +52,7 @@ package object journeyDomain {
             if (predicate(x)) {
               next.map(Option(_))
             } else {
-              ReaderT[EitherType, UserAnswers, Option[B]](
-                _ => Left("Failed filter ops") // TODO pass a helpful error
-              )
+              none[B].pure[UserAnswersReader]
             }
         }
   }
@@ -84,7 +82,7 @@ package object journeyDomain {
         x =>
           x.get(a) match {
             case Some(value) => Right(value)
-            case None        => Left(a.path.toString())
+            case None        => Left(a)
         }
       )
   }

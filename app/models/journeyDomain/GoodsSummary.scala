@@ -18,11 +18,12 @@ package models.journeyDomain
 
 import java.time.LocalDate
 
+import cats.data.ReaderT
 import cats.implicits._
 import derivable.DeriveNumberOfSeals
-import models.ProcedureType
 import models.domain.SealDomain
 import models.journeyDomain.GoodsSummary.GoodSummaryDetails
+import models.{ProcedureType, UserAnswers}
 import pages._
 
 case class GoodsSummary(
@@ -78,7 +79,10 @@ object GoodsSummary {
                   else
                     GoodSummaryNormalDetails(None).pure[UserAnswersReader]
               }
-          } else UserAnswersReader.failed[GoodSummaryNormalDetails]
+          } else
+            ReaderT[EitherType, UserAnswers, GoodSummaryNormalDetails](
+              _ => Left(AddCustomsApprovedLocationPage) // Need to add message here
+            )
       }
   }
 
@@ -95,7 +99,9 @@ object GoodsSummary {
               ControlResultDateLimitPage.reader
             ).tupled.map((GoodSummarySimplifiedDetails.apply _).tupled)
           } else {
-            UserAnswersReader.failed[GoodSummarySimplifiedDetails]
+            ReaderT[EitherType, UserAnswers, GoodSummarySimplifiedDetails](
+              _ => Left(ProcedureTypePage) // TODO add message
+            )
           }
       }
   }

@@ -69,18 +69,18 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
           case ((_, ua), mandatoryPage) =>
             val userAnswers = ua.remove(mandatoryPage).success.value
 
-            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers).isLeft
 
-            result mustEqual None
+            result mustEqual true
         }
       }
 
       "when the movement is a simplified" in {
         forAll(simpleMovementUserAnswers) {
           case (_, userAnswers) =>
-            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers).isLeft
 
-            result mustEqual None
+            result mustEqual true
         }
       }
     }
@@ -113,18 +113,18 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
           case ((_, ua), mandatoryPage) =>
             val userAnswers = ua.remove(mandatoryPage).success.value
 
-            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers).isLeft
 
-            result mustEqual None
+            result mustEqual true
         }
       }
 
       "when the movement is a simplified movement" in {
         forAll(normalMovementUserAnswers) {
           case (_, userAnswers) =>
-            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers).isLeft
 
-            result mustEqual None
+            result mustEqual true
         }
       }
     }

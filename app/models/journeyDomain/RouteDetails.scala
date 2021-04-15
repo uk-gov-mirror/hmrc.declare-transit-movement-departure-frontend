@@ -21,10 +21,13 @@ import java.time.LocalDateTime
 import cats.data._
 import cats.implicits._
 import derivable.DeriveNumberOfOfficeOfTransits
+import models.journeyDomain.ItemTraderDetails.RequiredDetails
 import models.{Index, UserAnswers}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.{CountryCode, CustomsOffice}
 import pages._
+import play.api.libs.json.JsObject
+import queries.{Gettable, Query}
 
 final case class RouteDetails(
   countryOfDispatch: CountryCode,
@@ -66,18 +69,22 @@ object RouteDetails {
                     case (_, index) =>
                       AddAnotherTransitOfficePage(Index(index)).reader.map(TransitInformation(_, None))
                   })
-
               }
 
             }
         }
-        .flatMapF(listToNonEmptyEither)
+        .flatMap {
+          x =>
+            ReaderT[EitherType, UserAnswers, NonEmptyList[TransitInformation]](
+              _ => listToNonEmptyEither(x)(DeriveNumberOfOfficeOfTransits)
+            )
+        }
     }
 
-    def listToNonEmptyEither[A](list: List[A]): Either[String, NonEmptyList[A]] =
+    def listToNonEmptyEither[A](list: List[A])(page: Query): Either[Query, NonEmptyList[A]] =
       NonEmptyList.fromList(list) match {
         case Some(x) => Right(x)
-        case None    => Left(s"${getClass.toString}: Cannot convert empty list to NonEmptyList")
+        case None    => Left(page)
       }
   }
 

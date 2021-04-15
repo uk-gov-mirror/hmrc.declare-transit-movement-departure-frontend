@@ -16,10 +16,12 @@
 
 package models.journeyDomain
 
+import cats.data.ReaderT
 import cats.implicits._
-import models.Index
+import models.journeyDomain.MovementDetails.SimplifiedMovementDetails
+import models.{Index, UserAnswers}
 import models.reference.PackageType
-import pages.PackageTypePage
+import pages.{PackageTypePage, ProcedureTypePage}
 import pages.addItems._
 
 sealed trait Packages
@@ -49,7 +51,10 @@ object Packages {
             TotalPiecesPage(itemIndex, referenceIndex).reader,
             readMarkOrNumber(itemIndex, referenceIndex)
           ).tupled.map((UnpackedPackages.apply _).tupled)
-        case _ => UserAnswersReader.failed[UnpackedPackages]
+        case _ =>
+          ReaderT[EitherType, UserAnswers, UnpackedPackages](
+            _ => Left(PackageTypePage(itemIndex, referenceIndex)) //TODO add message
+          )
       }
   }
 
@@ -69,7 +74,10 @@ object Packages {
             readHowManyPackages(itemIndex, referenceIndex),
             readMarkOrNumber(itemIndex, referenceIndex)
           ).tupled.map((BulkPackages.apply _).tupled)
-        case _ => UserAnswersReader.failed[BulkPackages]
+        case _ =>
+          ReaderT[EitherType, UserAnswers, BulkPackages](
+            _ => Left(PackageTypePage(itemIndex, referenceIndex)) //TODO add message
+          )
       }
   }
 
@@ -85,7 +93,10 @@ object Packages {
             HowManyPackagesPage(itemIndex, referenceIndex).reader,
             DeclareMarkPage(itemIndex, referenceIndex).reader
           ).tupled.map((OtherPackages.apply _).tupled)
-        case _ => UserAnswersReader.failed[OtherPackages]
+        case _ =>
+          ReaderT[EitherType, UserAnswers, OtherPackages](
+            _ => Left(PackageTypePage(itemIndex, referenceIndex)) //TODO add message
+          )
       }
   }
 

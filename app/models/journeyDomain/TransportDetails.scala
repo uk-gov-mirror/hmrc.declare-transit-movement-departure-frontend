@@ -16,7 +16,9 @@
 
 package models.journeyDomain
 
+import cats.data.ReaderT
 import cats.implicits._
+import models.UserAnswers
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, Rail}
 import models.journeyDomain.TransportDetails._
 import models.reference.CountryCode
@@ -76,7 +78,10 @@ object TransportDetails {
                       Rail(code, None).pure[UserAnswersReader]
                     }
                 }
-            case _ => UserAnswersReader.failed[Rail]
+            case _ =>
+              ReaderT[EitherType, UserAnswers, Rail](
+                _ => Left(InlandModePage) // TODO add message
+              )
           }
         }
     }
@@ -95,7 +100,10 @@ object TransportDetails {
         InlandModePage.reader.flatMap {
           _.toInt match {
             case code if Mode5or7.Constants.codes.contains(code) => Mode5or7(code).pure[UserAnswersReader]
-            case _                                               => UserAnswersReader.failed[Mode5or7]
+            case _ =>
+              ReaderT[EitherType, UserAnswers, Mode5or7](
+                _ => Left(InlandModePage) // TODO add message
+              )
           }
         }
     }
@@ -108,11 +116,14 @@ object TransportDetails {
         InlandModePage.reader.flatMap {
           _.toInt match {
             case code if InlandMode.Constants.codes.contains(code) =>
+              ReaderT[EitherType, UserAnswers, NonSpecialMode](
+                _ => Left(InlandModePage) // TODO add message
+              )
+            case code =>
               (
                 NationalityAtDeparturePage.optionalReader,
                 IdAtDeparturePage.optionalReader
               ).tupled.map((NonSpecialMode(code, _, _)).tupled)
-            case _ => UserAnswersReader.failed[NonSpecialMode]
           }
         }
     }
@@ -131,7 +142,10 @@ object TransportDetails {
       implicit val userAnswersReader: UserAnswersReader[SameDetailsAtBorder.type] =
         ChangeAtBorderPage.reader.flatMap {
           case false => SameDetailsAtBorder.pure[UserAnswersReader]
-          case true  => UserAnswersReader.failed[SameDetailsAtBorder.type]
+          case true =>
+            ReaderT[EitherType, UserAnswers, SameDetailsAtBorder.type](
+              _ => Left(ChangeAtBorderPage) // TODO add message
+            )
         }
     }
 
@@ -151,7 +165,10 @@ object TransportDetails {
               IdCrossingBorderPage.reader,
               UserAnswersReader[ModeCrossingBorder]
             ).tupled.map((NewDetailsAtBorder.apply _).tupled)
-          case false => UserAnswersReader.failed[NewDetailsAtBorder]
+          case false =>
+            ReaderT[EitherType, UserAnswers, NewDetailsAtBorder](
+              _ => Left(ChangeAtBorderPage) // TODO add message
+            )
         }
     }
   }
