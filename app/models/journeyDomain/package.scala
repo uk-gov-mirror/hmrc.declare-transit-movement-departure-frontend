@@ -23,9 +23,9 @@ import queries.{Gettable, Query}
 
 package object journeyDomain {
 
-  // TODO add message case class for custom errors
+  case class ReaderError(page: Query, message: Option[String] = None)
 
-  type EitherType[A]        = Either[Query, A]
+  type EitherType[A]        = Either[ReaderError, A]
   type UserAnswersReader[A] = ReaderT[EitherType, UserAnswers, A]
 
   object UserAnswersReader {
@@ -44,8 +44,7 @@ package object journeyDomain {
       * `next` will not be run
       */
 
-    // TODO FilterOptionalDepedent
-    def filterDependent[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[Option[B]] =
+    def filterOptionalDependent[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[Option[B]] =
       a.reader
         .flatMap {
           x =>
@@ -55,7 +54,22 @@ package object journeyDomain {
               none[B].pure[UserAnswersReader]
             }
         }
+
+    def filterMandatoryDependent[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[B] =
+      a.reader
+        .flatMap {
+          x =>
+            if (predicate(x)) {
+              next
+            } else {
+              ReaderT[EitherType, UserAnswers, B](
+                _ => Left(ReaderError(a))
+              )
+            }
+        }
   }
+
+  // implicit class GettableListAsNonEmptyListReaderOps[A](a: Gettable[A]) {}
 
   implicit class GettableAsOptionalReaderOps[A](a: Gettable[A]) {
 
@@ -82,7 +96,16 @@ package object journeyDomain {
         x =>
           x.get(a) match {
             case Some(value) => Right(value)
-            case None        => Left(a)
+            case None        => Left(ReaderError(a))
+        }
+      )
+
+    def reader(message: String)(implicit reads: Reads[A]): UserAnswersReader[A] =
+      ReaderT[EitherType, UserAnswers, A](
+        x =>
+          x.get(a) match {
+            case Some(value) => Right(value)
+            case None        => Left(ReaderError(a, Some(message)))
         }
       )
   }

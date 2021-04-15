@@ -57,7 +57,7 @@ object ProducedDocument {
                   .map(NonEmptyList.fromList)
               case _ =>
                 ReaderT[EitherType, UserAnswers, Option[NonEmptyList[ProducedDocument]]](
-                  _ => Left(DeriveNumberOfDocuments(itemIndex)) // TODO add message + test
+                  _ => Left(ReaderError(DeriveNumberOfDocuments(itemIndex))) // TODO add message + test
                 )
             }
           } else none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]

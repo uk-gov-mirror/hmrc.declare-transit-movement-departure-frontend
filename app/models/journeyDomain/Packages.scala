@@ -53,7 +53,7 @@ object Packages {
           ).tupled.map((UnpackedPackages.apply _).tupled)
         case _ =>
           ReaderT[EitherType, UserAnswers, UnpackedPackages](
-            _ => Left(PackageTypePage(itemIndex, referenceIndex)) //TODO add message
+            _ => Left(ReaderError(PackageTypePage(itemIndex, referenceIndex))) //TODO add message
           )
       }
   }
@@ -76,7 +76,7 @@ object Packages {
           ).tupled.map((BulkPackages.apply _).tupled)
         case _ =>
           ReaderT[EitherType, UserAnswers, BulkPackages](
-            _ => Left(PackageTypePage(itemIndex, referenceIndex)) //TODO add message
+            _ => Left(ReaderError(PackageTypePage(itemIndex, referenceIndex))) //TODO add message
           )
       }
   }
@@ -95,7 +95,7 @@ object Packages {
           ).tupled.map((OtherPackages.apply _).tupled)
         case _ =>
           ReaderT[EitherType, UserAnswers, OtherPackages](
-            _ => Left(PackageTypePage(itemIndex, referenceIndex)) //TODO add message
+            _ => Left(ReaderError(PackageTypePage(itemIndex, referenceIndex))) //TODO add message
           )
       }
   }

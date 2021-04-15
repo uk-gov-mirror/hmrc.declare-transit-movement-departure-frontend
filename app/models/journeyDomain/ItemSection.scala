@@ -49,7 +49,7 @@ object ItemSection {
           .map(NonEmptyList.fromListUnsafe)
       case _ =>
         ReaderT[EitherType, UserAnswers, NonEmptyList[Packages]](
-          _ => Left(DeriveNumberOfPackages(itemIndex)) // TODO add message
+          _ => Left(ReaderError(DeriveNumberOfPackages(itemIndex))) // TODO add message
         )
     }
 
@@ -68,7 +68,7 @@ object ItemSection {
                   .map(NonEmptyList.fromList)
               case _ =>
                 ReaderT[EitherType, UserAnswers, Option[NonEmptyList[Container]]](
-                  _ => Left(DeriveNumberOfContainers(itemIndex)) // TODO add message
+                  _ => Left(ReaderError(DeriveNumberOfContainers(itemIndex))) // TODO add message
                 )
             }
           } else none[NonEmptyList[Container]].pure[UserAnswersReader]
@@ -89,7 +89,7 @@ object ItemSection {
                   .map(NonEmptyList.fromList)
               case _ =>
                 ReaderT[EitherType, UserAnswers, Option[NonEmptyList[SpecialMention]]](
-                  _ => Left(DeriveNumberOfSpecialMentions(itemIndex)) // TODO add message
+                  _ => Left(ReaderError(DeriveNumberOfSpecialMentions(itemIndex))) // TODO add message
                 )
             }
           } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
@@ -127,7 +127,7 @@ object ItemSection {
           .map(NonEmptyList.fromListUnsafe)
       case _ =>
         ReaderT[EitherType, UserAnswers, NonEmptyList[ItemSection]](
-          _ => Left(DeriveNumberOfItems) // TODO add message
+          _ => Left(ReaderError(DeriveNumberOfItems)) // TODO add message
         )
     }
 }

@@ -71,7 +71,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             val userAnswersIncomplete = updatedUserAnswers.unsafeRemove(mandatoryPage)
             val result                = UserAnswersReader[OtherPackages](OtherPackages.otherPackageReader(index, index)).run(userAnswersIncomplete).left.value
 
-            result mustEqual mandatoryPage
+            result.page mustEqual mandatoryPage
         }
       }
 
@@ -100,7 +100,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
               val userAnswersIncomplete = updatedUserAnswers.unsafeRemove(mandatoryPage)
               val result                = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(userAnswersIncomplete).left.value
 
-              result mustEqual mandatoryPage
+              result.page mustEqual mandatoryPage
           }
         }
 
@@ -116,7 +116,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
               val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers).left.value
 
-              result mustEqual HowManyPackagesPage(index, index)
+              result.page mustEqual HowManyPackagesPage(index, index)
           }
         }
 
@@ -132,7 +132,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
               val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers).left.value
 
-              result mustEqual DeclareMarkPage(index, index)
+              result.page mustEqual DeclareMarkPage(index, index)
           }
         }
       }
@@ -160,7 +160,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
               val userAnswersIncomplete = updatedUserAnswers.unsafeRemove(mandatoryPage)
               val result                = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(userAnswersIncomplete).left.value
 
-              result mustEqual mandatoryPage
+              result.page mustEqual mandatoryPage
           }
         }
 
@@ -176,7 +176,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
               val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers).left.value
 
-              result mustEqual HowManyPackagesPage(index, index)
+              result.page mustEqual HowManyPackagesPage(index, index)
           }
         }
 
@@ -192,7 +192,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
 
               val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers).left.value
 
-              result mustEqual DeclareMarkPage(index, index)
+              result.page mustEqual DeclareMarkPage(index, index)
           }
         }
       }

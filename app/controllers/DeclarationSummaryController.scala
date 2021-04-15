@@ -64,7 +64,7 @@ class DeclarationSummaryController @Inject()(
               case status if is4xx(status) => errorHandler.onClientError(request, status)
               case _                       => Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
             }
-          case Left(value) => // TODO we can pass this value back to help debug
+          case Left(_) => // TODO we can pass this value back to help debug
             errorHandler.onClientError(request, BAD_REQUEST)
         }
     }

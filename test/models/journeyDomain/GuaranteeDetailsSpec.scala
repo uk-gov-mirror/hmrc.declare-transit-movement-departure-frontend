@@ -146,7 +146,7 @@ class GuaranteeDetailsSpec extends SpecBase with GeneratorSpec with JourneyModel
 
               val result = UserAnswersReader[GuaranteeReference](GuaranteeReference.parseGuaranteeReference(index)).run(updatedUserAnswer).left.value
 
-              result mustBe LiabilityAmountPage(index)
+              result.page mustBe LiabilityAmountPage(index)
           }
         }
 

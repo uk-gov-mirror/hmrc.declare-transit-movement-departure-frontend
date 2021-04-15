@@ -45,7 +45,7 @@ class ContainerSpec extends SpecBase with GeneratorSpec with JourneyModelGenerat
             val result =
               UserAnswersReader[Container](Container.containerReader(index, referenceIndex)).run(updatedUserAnswers).left.value
 
-            result mustBe ContainerNumberPage(index, referenceIndex)
+            result.page mustBe ContainerNumberPage(index, referenceIndex)
         }
       }
     }

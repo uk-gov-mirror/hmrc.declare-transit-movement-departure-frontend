@@ -81,7 +81,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
             val result = UserAnswersReader[PreviousReferences](PreviousReferences.previousReferenceReader(index, referenceIndex)).run(setUserAnswers)
 
-            result.left.value mustBe mandatoryPage
+            result.left.value.page mustBe mandatoryPage
         }
       }
     }
@@ -191,7 +191,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.left.value mustEqual mandatoryPage
+            result.left.value.page mustEqual mandatoryPage
         }
       }
 
@@ -215,7 +215,7 @@ class PreviousReferenceSpec extends SpecBase with GeneratorSpec with JourneyMode
 
             val result = UserAnswersReader[Option[NonEmptyList[PreviousReferences]]](userAnswerReader).run(updatedUserAnswers)
 
-            result.left.value mustEqual AddAdministrativeReferencePage(index)
+            result.left.value.page mustEqual AddAdministrativeReferencePage(index)
         }
       }
     }

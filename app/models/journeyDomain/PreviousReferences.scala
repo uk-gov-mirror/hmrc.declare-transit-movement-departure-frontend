@@ -76,7 +76,7 @@ object PreviousReferences {
           .map(NonEmptyList.fromList)
       case _ =>
         ReaderT[EitherType, UserAnswers, Option[NonEmptyList[PreviousReferences]]](
-          _ => Left(DeriveNumberOfPreviousAdministrativeReferences(itemIndex)) // TODO add message
+          _ => Left(ReaderError(DeriveNumberOfPreviousAdministrativeReferences(itemIndex))) // TODO add message
         )
     }
 

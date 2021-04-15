@@ -58,7 +58,7 @@ class ProducedDocumentSpec extends SpecBase with GeneratorSpec with JourneyModel
               val result: EitherType[ProducedDocument] =
                 UserAnswersReader[ProducedDocument](ProducedDocument.producedDocumentReader(index, referenceIndex)).run(updatedUserAnswers)
 
-              result.left.value mustBe DocumentTypePage(index, referenceIndex)
+              result.left.value.page mustBe DocumentTypePage(index, referenceIndex)
           }
         }
       }

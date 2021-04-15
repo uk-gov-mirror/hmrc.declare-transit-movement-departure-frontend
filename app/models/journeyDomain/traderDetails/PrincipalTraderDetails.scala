@@ -42,7 +42,7 @@ object PrincipalTraderDetails {
             .map(PrincipalTraderDetails(_))
         case _ =>
           ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-            _ => Left(ProcedureTypePage) // TODO add message
+            _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
           )
       }
     }
@@ -56,12 +56,12 @@ object PrincipalTraderDetails {
               .map(PrincipalTraderDetails(_))
           case false =>
             ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-              _ => Left(IsPrincipalEoriKnownPage) // TODO add message
+              _ => Left(ReaderError(IsPrincipalEoriKnownPage)) // TODO add message
             )
         }
       case _ =>
         ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-          _ => Left(ProcedureTypePage) // TODO add message
+          _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
         )
     }
 
@@ -70,7 +70,7 @@ object PrincipalTraderDetails {
         IsPrincipalEoriKnownPage.reader.flatMap {
           case true =>
             ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-              _ => Left(IsPrincipalEoriKnownPage) // TODO add message
+              _ => Left(ReaderError(IsPrincipalEoriKnownPage)) // TODO add message
             )
           case false =>
             (
@@ -84,7 +84,7 @@ object PrincipalTraderDetails {
         }
       case _ =>
         ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-          _ => Left(ProcedureTypePage) // TODO add message
+          _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
         )
     }
 

@@ -81,7 +81,7 @@ object GoodsSummary {
               }
           } else
             ReaderT[EitherType, UserAnswers, GoodSummaryNormalDetails](
-              _ => Left(AddCustomsApprovedLocationPage) // Need to add message here
+              _ => Left(ReaderError(AddCustomsApprovedLocationPage)) // Need to add message here
             )
       }
   }
@@ -100,7 +100,7 @@ object GoodsSummary {
             ).tupled.map((GoodSummarySimplifiedDetails.apply _).tupled)
           } else {
             ReaderT[EitherType, UserAnswers, GoodSummarySimplifiedDetails](
-              _ => Left(ProcedureTypePage) // TODO add message
+              _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
             )
           }
       }

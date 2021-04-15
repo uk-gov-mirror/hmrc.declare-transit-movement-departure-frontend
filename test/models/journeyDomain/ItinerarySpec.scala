@@ -46,7 +46,7 @@ class ItinerarySpec extends SpecBase with GeneratorSpec with JourneyModelGenerat
             val result: EitherType[Itinerary] =
               UserAnswersReader[Itinerary](Itinerary.itineraryReader(index)).run(updatedUserAnswers)
 
-            result.left.value mustBe CountryOfRoutingPage(index)
+            result.left.value.page mustBe CountryOfRoutingPage(index)
         }
       }
 

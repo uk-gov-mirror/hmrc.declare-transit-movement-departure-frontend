@@ -80,7 +80,7 @@ object TransportDetails {
                 }
             case _ =>
               ReaderT[EitherType, UserAnswers, Rail](
-                _ => Left(InlandModePage) // TODO add message
+                _ => Left(ReaderError(InlandModePage)) // TODO add message
               )
           }
         }
@@ -102,7 +102,7 @@ object TransportDetails {
             case code if Mode5or7.Constants.codes.contains(code) => Mode5or7(code).pure[UserAnswersReader]
             case _ =>
               ReaderT[EitherType, UserAnswers, Mode5or7](
-                _ => Left(InlandModePage) // TODO add message
+                _ => Left(ReaderError(InlandModePage)) // TODO add message
               )
           }
         }
@@ -117,7 +117,7 @@ object TransportDetails {
           _.toInt match {
             case code if InlandMode.Constants.codes.contains(code) =>
               ReaderT[EitherType, UserAnswers, NonSpecialMode](
-                _ => Left(InlandModePage) // TODO add message
+                _ => Left(ReaderError(InlandModePage)) // TODO add message
               )
             case code =>
               (
@@ -144,7 +144,7 @@ object TransportDetails {
           case false => SameDetailsAtBorder.pure[UserAnswersReader]
           case true =>
             ReaderT[EitherType, UserAnswers, SameDetailsAtBorder.type](
-              _ => Left(ChangeAtBorderPage) // TODO add message
+              _ => Left(ReaderError(ChangeAtBorderPage)) // TODO add message
             )
         }
     }
@@ -167,7 +167,7 @@ object TransportDetails {
             ).tupled.map((NewDetailsAtBorder.apply _).tupled)
           case false =>
             ReaderT[EitherType, UserAnswers, NewDetailsAtBorder](
-              _ => Left(ChangeAtBorderPage) // TODO add message
+              _ => Left(ReaderError(ChangeAtBorderPage)) // TODO add message
             )
         }
     }

@@ -50,7 +50,7 @@ class PreTaskListDetailsSpec extends SpecBase with GeneratorSpec with JourneyMod
             val userAnswers = PreTaskListDetailsSpec.setPreTaskListDetails(preTaskListDetails)(ua).remove(mandatoryPage).success.value
             val result      = UserAnswersReader[PreTaskListDetails].run(userAnswers)
 
-            result.left.value mustBe mandatoryPage
+            result.left.value.page mustBe mandatoryPage
         }
       }
     }

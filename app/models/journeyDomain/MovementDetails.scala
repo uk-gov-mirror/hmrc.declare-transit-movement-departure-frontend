@@ -69,7 +69,7 @@ object MovementDetails {
           ).tupled.map((NormalMovementDetails.apply _).tupled)
         case _ =>
           ReaderT[EitherType, UserAnswers, NormalMovementDetails](
-            _ => Left(ProcedureTypePage) //TODO add message
+            _ => Left(ReaderError(ProcedureTypePage)) //TODO add message
           )
       }
   }
@@ -94,7 +94,7 @@ object MovementDetails {
           ).tupled.map((SimplifiedMovementDetails.apply _).tupled)
         case _ =>
           ReaderT[EitherType, UserAnswers, SimplifiedMovementDetails](
-            _ => Left(ProcedureTypePage) //TODO add message
+            _ => Left(ReaderError(ProcedureTypePage)) //TODO add message
           )
       }
   }

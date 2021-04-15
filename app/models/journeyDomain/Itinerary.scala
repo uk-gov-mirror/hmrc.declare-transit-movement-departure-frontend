@@ -43,7 +43,7 @@ object Itinerary {
           .map(NonEmptyList.fromListUnsafe)
       case _ =>
         ReaderT[EitherType, UserAnswers, NonEmptyList[Itinerary]](
-          _ => Left(DeriveNumberOfCountryOfRouting) // TODO add message
+          _ => Left(ReaderError(DeriveNumberOfCountryOfRouting)) // TODO add message
         )
     }
 

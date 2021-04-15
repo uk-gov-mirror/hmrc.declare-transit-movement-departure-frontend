@@ -38,7 +38,7 @@ object GuaranteeDetails {
           .map(NonEmptyList.fromListUnsafe)
       case _ =>
         ReaderT[EitherType, UserAnswers, NonEmptyList[GuaranteeDetails]](
-          _ => Left(DeriveNumberOfGuarantees) // TODO add message
+          _ => Left(ReaderError(DeriveNumberOfGuarantees)) // TODO add message
         )
     }
 

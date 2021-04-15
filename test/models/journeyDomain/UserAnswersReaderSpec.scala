@@ -75,10 +75,10 @@ class UserAnswersReaderSpec extends SpecBase {
     }
   }
 
-  "filterDependent" - {
+  "filterOptionalDependent" - {
     "when the first reader passes" - {
       "and the second reader has data that is defined, then the full reader passes" in {
-        val testReaders = passingGettable1.filterDependent(_ == 1) {
+        val testReaders = passingGettable1.filterOptionalDependent(_ == 1) {
           passingGettable2.reader
         }
 
@@ -88,7 +88,7 @@ class UserAnswersReaderSpec extends SpecBase {
       }
 
       "and the second reader has data that is missing, then the full reader fails" in {
-        val testReaders = passingGettable1.filterDependent(_ == 1) {
+        val testReaders = passingGettable1.filterOptionalDependent(_ == 1) {
           failingGettable.reader
         }
 
@@ -100,13 +100,69 @@ class UserAnswersReaderSpec extends SpecBase {
 
     "when the first reader fails" - {
       "then the full reader fails" in {
-        val testReaders = failingGettable.filterDependent(_ == 1) {
+        val testReaders = failingGettable.filterOptionalDependent(_ == 1) {
           passingGettable2.reader
         }
 
         val result = testReaders.run(testData).isLeft
 
         result mustBe true
+      }
+
+      "when the full reader fails due to not matching predicate" in {
+        val testReaders = passingGettable1.filterOptionalDependent(_ == 2) {
+          passingGettable2.reader
+        }
+
+        val result = testReaders.run(testData).right.value
+
+        result mustEqual None
+      }
+    }
+  }
+
+  "filterMandatoryDependent" - {
+    "when the first reader passes" - {
+      "and the second reader has data that is defined, then the full reader passes" in {
+        val testReaders = passingGettable1.filterMandatoryDependent(_ == 1) {
+          passingGettable2.reader
+        }
+
+        val result = testReaders.run(testData).right.value
+
+        result mustEqual TestData(1, "asdf")
+      }
+
+      "and the second reader has data that is missing, then the full reader fails" in {
+        val testReaders = passingGettable1.filterMandatoryDependent(_ == 1) {
+          failingGettable.reader
+        }
+
+        val result = testReaders.run(testData).isLeft
+
+        result mustBe true
+      }
+    }
+
+    "when the first reader fails" - {
+      "then the full reader fails" in {
+        val testReaders = failingGettable.filterMandatoryDependent(_ == 1) {
+          passingGettable2.reader
+        }
+
+        val result = testReaders.run(testData).isLeft
+
+        result mustBe true
+      }
+
+      "when the full reader fails due to not matching predicate" in {
+        val testReaders = passingGettable1.filterMandatoryDependent(_ == 2) {
+          passingGettable2.reader
+        }
+
+        val result = testReaders.run(testData).isLeft
+
+        result mustEqual true
       }
     }
   }

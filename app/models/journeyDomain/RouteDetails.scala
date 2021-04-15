@@ -81,10 +81,11 @@ object RouteDetails {
         }
     }
 
-    def listToNonEmptyEither[A](list: List[A])(page: Query): Either[Query, NonEmptyList[A]] =
+    // TODO move to reader ops
+    def listToNonEmptyEither[A](list: List[A])(page: Query): Either[ReaderError, NonEmptyList[A]] =
       NonEmptyList.fromList(list) match {
         case Some(x) => Right(x)
-        case None    => Left(page)
+        case None    => Left(ReaderError(page))
       }
   }
 

@@ -19,6 +19,7 @@ package services
 import base.{MockServiceApp, SpecBase}
 import connectors.DepartureMovementConnector
 import generators.MessagesModelGenerators
+import models.journeyDomain.ReaderError
 import models.messages.DeclarationRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -79,9 +80,9 @@ class DeclarationSubmissionServiceSpec extends SpecBase with MockServiceApp with
         override def path: JsPath = JsPath \ ""
       }
 
-      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Left(ErrorPage)))
+      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Left(ReaderError(ErrorPage))))
 
-      declarationService.submit(emptyUserAnswers).futureValue.left.value mustBe ErrorPage
+      declarationService.submit(emptyUserAnswers).futureValue.left.value.page mustBe ErrorPage
     }
   }
 }

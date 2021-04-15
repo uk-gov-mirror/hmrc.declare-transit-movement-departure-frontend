@@ -57,7 +57,7 @@ class SpecialMentionSpec extends SpecBase with GeneratorSpec with JourneyModelGe
             val result: EitherType[SpecialMention] =
               UserAnswersReader[SpecialMention](SpecialMention.specialMentionsReader(index, referenceIndex)).run(updatedUserAnswers)
 
-            result.left.value mustBe mandatoryPage
+            result.left.value.page mustBe mandatoryPage
         }
       }
     }

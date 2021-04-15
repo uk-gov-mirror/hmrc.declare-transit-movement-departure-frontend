@@ -60,7 +60,7 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustBe ConsignorAddressPage
+            result.page mustBe ConsignorAddressPage
         }
       }
 
@@ -76,7 +76,7 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustBe ConsignorNamePage
+            result.page mustBe ConsignorNamePage
         }
       }
 
@@ -92,7 +92,7 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustBe ConsignorEoriPage
+            result.page mustBe ConsignorEoriPage
         }
       }
     }
@@ -126,7 +126,7 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustBe ConsignorAddressPage
+            result.page mustBe ConsignorAddressPage
         }
       }
 
@@ -141,7 +141,7 @@ class ConsignorDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsignorDetails].run(userAnswers).left.value
 
-            result mustBe ConsignorNamePage
+            result.page mustBe ConsignorNamePage
         }
       }
     }

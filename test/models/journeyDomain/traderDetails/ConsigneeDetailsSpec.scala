@@ -59,7 +59,7 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual ConsigneeAddressPage
+            result.page mustEqual ConsigneeAddressPage
         }
       }
 
@@ -75,7 +75,7 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual ConsigneeNamePage
+            result.page mustEqual ConsigneeNamePage
         }
 
       }
@@ -92,7 +92,7 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual WhatIsConsigneeEoriPage
+            result.page mustEqual WhatIsConsigneeEoriPage
         }
 
       }
@@ -128,7 +128,7 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual ConsigneeAddressPage
+            result.page mustEqual ConsigneeAddressPage
         }
       }
 
@@ -143,7 +143,7 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual ConsigneeNamePage
+            result.page mustEqual ConsigneeNamePage
         }
       }
     }
