@@ -116,12 +116,9 @@ object ItemsSecurityTraderDetails {
   }
 
   private def methodOfPaymentPage(index: Index): UserAnswersReader[Option[String]] =
-    AddTransportChargesPaymentMethodPage.reader
-      .flatMap {
-        bool =>
-          if (!bool) TransportChargesPage(index).reader.map(Some(_))
-          else none[String].pure[UserAnswersReader]
-      }
+    AddTransportChargesPaymentMethodPage.filterOptionalDependent(_ == false) {
+      TransportChargesPage(index).reader
+    }
 
   private def commercialReferenceNumberPage(index: Index): UserAnswersReader[Option[String]] =
     AddCommercialReferenceNumberAllItemsPage.optionalReader
@@ -131,10 +128,7 @@ object ItemsSecurityTraderDetails {
       }
 
   private def dangerousGoodsCodePage(index: Index): UserAnswersReader[Option[String]] =
-    AddDangerousGoodsCodePage(index).reader
-      .flatMap {
-        bool =>
-          if (bool) DangerousGoodsCodePage(index).reader.map(Some(_))
-          else none[String].pure[UserAnswersReader]
-      }
+    AddDangerousGoodsCodePage(index).filterOptionalDependent(identity) {
+      DangerousGoodsCodePage(index).reader
+    }
 }

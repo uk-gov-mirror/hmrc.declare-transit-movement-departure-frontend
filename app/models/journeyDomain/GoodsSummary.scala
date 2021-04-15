@@ -18,12 +18,11 @@ package models.journeyDomain
 
 import java.time.LocalDate
 
-import cats.data.ReaderT
 import cats.implicits._
 import derivable.DeriveNumberOfSeals
+import models.ProcedureType
 import models.domain.SealDomain
 import models.journeyDomain.GoodsSummary.GoodSummaryDetails
-import models.{ProcedureType, UserAnswers}
 import pages._
 
 case class GoodsSummary(
@@ -38,23 +37,9 @@ object GoodsSummary {
 
   implicit val parser: UserAnswersReader[GoodsSummary] =
     (
-      DeclarePackagesPage.reader
-        .flatMap(
-          bool =>
-            if (bool)
-              TotalPackagesPage.optionalReader
-            else
-              none[Int].pure[UserAnswersReader]
-        ),
+      DeclarePackagesPage.filterOptionalDependent(identity)(TotalPackagesPage.optionalReader).map(_.flatten),
       TotalGrossMassPage.reader,
-      AddSecurityDetailsPage.reader
-        .flatMap(
-          bool =>
-            if (bool)
-              LoadingPlacePage.optionalReader
-            else
-              none[String].pure[UserAnswersReader]
-        ),
+      AddSecurityDetailsPage.filterOptionalDependent(identity)(LoadingPlacePage.optionalReader).map(_.flatten),
       UserAnswersReader[GoodSummaryDetails],
       DeriveNumberOfSeals.reader orElse List.empty[SealDomain].pure[UserAnswersReader]
     ).tupled.map((GoodsSummary.apply _).tupled)
@@ -65,25 +50,20 @@ object GoodsSummary {
 
   object GoodSummaryNormalDetails {
 
-    implicit val goodSummaryNormalDetailsReader: UserAnswersReader[GoodSummaryNormalDetails] =
-      ProcedureTypePage.reader.map(_ == ProcedureType.Normal).flatMap {
-        x =>
-          if (x) {
-            AddCustomsApprovedLocationPage.reader
-              .flatMap {
-                locationNeeded =>
-                  if (locationNeeded)
-                    CustomsApprovedLocationPage.reader.map(
-                      location => GoodSummaryNormalDetails(Some(location))
-                    )
-                  else
-                    GoodSummaryNormalDetails(None).pure[UserAnswersReader]
-              }
-          } else
-            ReaderT[EitherType, UserAnswers, GoodSummaryNormalDetails](
-              _ => Left(ReaderError(AddCustomsApprovedLocationPage)) // Need to add message here
-            )
+    implicit val goodSummaryNormalDetailsReader: UserAnswersReader[GoodSummaryNormalDetails] = {
+      ProcedureTypePage.filterMandatoryDependent(_ == ProcedureType.Normal) {
+        AddCustomsApprovedLocationPage.reader
+          .flatMap {
+            locationNeeded =>
+              if (locationNeeded)
+                CustomsApprovedLocationPage.reader.map(
+                  location => GoodSummaryNormalDetails(Some(location))
+                )
+              else
+                GoodSummaryNormalDetails(None).pure[UserAnswersReader]
+          }
       }
+    }
   }
 
   final case class GoodSummarySimplifiedDetails(authorisedLocationCode: String, controlResultDateLimit: LocalDate) extends GoodSummaryDetails
@@ -91,18 +71,11 @@ object GoodsSummary {
   object GoodSummarySimplifiedDetails {
 
     implicit val goodSummarySimplifiedDetailsReader: UserAnswersReader[GoodSummarySimplifiedDetails] =
-      ProcedureTypePage.reader.map(_ == ProcedureType.Simplified).flatMap {
-        x =>
-          if (x) {
-            (
-              AuthorisedLocationCodePage.reader,
-              ControlResultDateLimitPage.reader
-            ).tupled.map((GoodSummarySimplifiedDetails.apply _).tupled)
-          } else {
-            ReaderT[EitherType, UserAnswers, GoodSummarySimplifiedDetails](
-              _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
-            )
-          }
+      ProcedureTypePage.filterMandatoryDependent(_ == ProcedureType.Simplified) {
+        (
+          AuthorisedLocationCodePage.reader,
+          ControlResultDateLimitPage.reader
+        ).tupled.map((GoodSummarySimplifiedDetails.apply _).tupled)
       }
   }
 
@@ -112,4 +85,5 @@ object GoodsSummary {
       UserAnswersReader[GoodSummaryNormalDetails].widen[GoodSummaryDetails] orElse
         UserAnswersReader[GoodSummarySimplifiedDetails].widen[GoodSummaryDetails]
   }
+
 }

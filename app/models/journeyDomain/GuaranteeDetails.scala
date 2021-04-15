@@ -27,6 +27,7 @@ sealed trait GuaranteeDetails
 
 object GuaranteeDetails {
 
+  // TODO add list reader ops
   implicit def parseListOfGuaranteeDetails: UserAnswersReader[NonEmptyList[GuaranteeDetails]] =
     DeriveNumberOfGuarantees.reader.flatMap {
       case list if list.nonEmpty =>

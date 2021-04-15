@@ -16,11 +16,10 @@
 
 package models.journeyDomain
 
-import cats.data.ReaderT
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain.MovementDetails.DeclarationForSomeoneElseAnswer
-import models.{DeclarationType, RepresentativeCapacity, UserAnswers}
+import models.{DeclarationType, RepresentativeCapacity}
 import pages._
 import pages.movementDetails.PreLodgeDeclarationPage
 
@@ -34,8 +33,7 @@ sealed trait MovementDetails {
 object MovementDetails {
 
   implicit val parserMovementDetails: UserAnswersReader[MovementDetails] =
-    UserAnswersReader[NormalMovementDetails].widen[MovementDetails] orElse
-      UserAnswersReader[SimplifiedMovementDetails].widen[MovementDetails]
+    UserAnswersReader[NormalMovementDetails].widen[MovementDetails] orElse UserAnswersReader[SimplifiedMovementDetails].widen[MovementDetails]
 
   private val declarationForSomeoneElseAnswer: UserAnswersReader[DeclarationForSomeoneElseAnswer] =
     DeclarationForSomeoneElsePage.reader.flatMap(
@@ -57,20 +55,15 @@ object MovementDetails {
 
   object NormalMovementDetails {
 
-    implicit val parseSimplifiedMovementDetails: UserAnswersReader[NormalMovementDetails] =
-      ProcedureTypePage.reader.flatMap {
-        case procedureType if procedureType == Normal =>
-          (
-            DeclarationTypePage.reader,
-            PreLodgeDeclarationPage.reader,
-            ContainersUsedPage.reader,
-            DeclarationPlacePage.reader,
-            declarationForSomeoneElseAnswer
-          ).tupled.map((NormalMovementDetails.apply _).tupled)
-        case _ =>
-          ReaderT[EitherType, UserAnswers, NormalMovementDetails](
-            _ => Left(ReaderError(ProcedureTypePage)) //TODO add message
-          )
+    implicit val parseNormalMovementDetails: UserAnswersReader[NormalMovementDetails] =
+      ProcedureTypePage.filterMandatoryDependent(_ == Normal) {
+        (
+          DeclarationTypePage.reader,
+          PreLodgeDeclarationPage.reader,
+          ContainersUsedPage.reader,
+          DeclarationPlacePage.reader,
+          declarationForSomeoneElseAnswer
+        ).tupled.map((NormalMovementDetails.apply _).tupled)
       }
   }
 
@@ -84,18 +77,13 @@ object MovementDetails {
   object SimplifiedMovementDetails {
 
     implicit val makeSimplifiedMovementDetails: UserAnswersReader[SimplifiedMovementDetails] =
-      ProcedureTypePage.reader.flatMap {
-        case procedureType if procedureType == Simplified =>
-          (
-            DeclarationTypePage.reader,
-            ContainersUsedPage.reader,
-            DeclarationPlacePage.reader,
-            declarationForSomeoneElseAnswer
-          ).tupled.map((SimplifiedMovementDetails.apply _).tupled)
-        case _ =>
-          ReaderT[EitherType, UserAnswers, SimplifiedMovementDetails](
-            _ => Left(ReaderError(ProcedureTypePage)) //TODO add message
-          )
+      ProcedureTypePage.filterMandatoryDependent(_ == Simplified) {
+        (
+          DeclarationTypePage.reader,
+          ContainersUsedPage.reader,
+          DeclarationPlacePage.reader,
+          declarationForSomeoneElseAnswer
+        ).tupled.map((SimplifiedMovementDetails.apply _).tupled)
       }
   }
 

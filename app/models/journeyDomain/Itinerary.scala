@@ -32,6 +32,7 @@ object Itinerary {
   def itineraryReader(index: Index): UserAnswersReader[Itinerary] =
     CountryOfRoutingPage(index).reader.map(Itinerary.apply)
 
+  // TODO  add list reader ops
   def readItineraries: UserAnswersReader[NonEmptyList[Itinerary]] =
     DeriveNumberOfCountryOfRouting.reader.flatMap {
       case list if list.nonEmpty =>
