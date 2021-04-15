@@ -17,41 +17,54 @@
 package controllers.actions
 
 import derivable.DeriveNumberOfOfficeOfTransits
-import models.{Index, NormalMode}
 import models.requests.DataRequest
-import pages.{AddAnotherTransitOfficePage, AddTransitOfficePage, OfficeOfTransitCountryPage}
-import play.api.mvc.{ActionFilter, Result}
+import models.{Index, NormalMode}
+import pages.AddAnotherTransitOfficePage
 import play.api.mvc.Results._
+import play.api.mvc.{ActionFilter, Result}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TraderDetailsOfficesOfTransitProvider @Inject()(ec: ExecutionContext) {
+class TraderDetailsOfficesOfTransitProvider @Inject()()(implicit ec: ExecutionContext) {
 
-  def apply(index: Index): ActionFilter[DataRequest] = new TraderDetailsOfficesOfTransitFilter(index, ec)
+  def apply(index: Index): ActionFilter[DataRequest] = new TraderDetailsOfficesOfTransitFilter(index)
 
 }
 
-class TraderDetailsOfficesOfTransitFilter(index: Index, ec: ExecutionContext) extends ActionFilter[DataRequest] {
+class TraderDetailsOfficesOfTransitFilter(index: Index)(implicit protected val executionContext: ExecutionContext) extends ActionFilter[DataRequest] {
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
     if (index.position <= 8) {
-      val numberOfOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
-      if (numberOfOffices > 0) {
-        request.userAnswers.get(AddAnotherTransitOfficePage(Index(numberOfOffices - 1))) match {
-          case Some(_) =>
-            Future.successful(None)
-          case None =>
-            Future.successful(Option(Redirect(
-              controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode).url)))
-        }
-      } else {
-        Future.successful(None)
-      }
+      navigateTransit(request, indexOutOfBound = false)
+
     } else {
-      Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
+      navigateTransit(request, indexOutOfBound = true)
     }
 
-  override protected def executionContext: ExecutionContext = ec
-
+  private def navigateTransit[A](request: DataRequest[A], indexOutOfBound: Boolean) = {
+    val numberOfOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+    if (numberOfOffices > 0) {
+      request.userAnswers.get(AddAnotherTransitOfficePage(Index(numberOfOffices - 1))) match {
+        case Some(_) =>
+          Future.successful(
+            if (indexOutOfBound) {
+              Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url))
+            } else {
+              None
+            }
+          )
+        case None =>
+          Future.successful(
+            Option(
+              Redirect(
+                controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode).url
+              )
+            )
+          )
+      }
+    } else {
+      Future.successful(None)
+    }
+  }
 }

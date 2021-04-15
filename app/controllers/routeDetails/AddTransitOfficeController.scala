@@ -47,7 +47,8 @@ class AddTransitOfficeController @Inject()(
   formProvider: AddTransitOfficeFormProvider,
   referenceDataConnector: ReferenceDataConnector,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  renderer: Renderer,
+  officeOfTransitFilter: TraderDetailsOfficesOfTransitProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -55,10 +56,11 @@ class AddTransitOfficeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request: DataRequest[AnyContent] =>
-      renderPage(lrn, mode, form).map(Ok(_))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request: DataRequest[AnyContent] =>
+        renderPage(lrn, mode, form).map(Ok(_))
+    }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>

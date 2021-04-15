@@ -18,7 +18,7 @@ package base
 
 import controllers.actions._
 import models.UserAnswers
-import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.requests.{DataRequest, IdentifierRequest, OptionalDataRequest}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers._
@@ -29,7 +29,7 @@ import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.ActionTransformer
+import play.api.mvc.{ActionFilter, ActionTransformer, Result}
 import play.api.test.Helpers
 import repositories.SessionRepository
 import uk.gov.hmrc.nunjucks.NunjucksRenderer
@@ -45,11 +45,14 @@ trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEac
 
   val mockSessionRepository: SessionRepository = mock[SessionRepository]
 
+  val mockOfficeOfTransitProvider: TraderDetailsOfficesOfTransitProvider = mock[TraderDetailsOfficesOfTransitProvider]
+
   override def beforeEach {
     Mockito.reset(
       mockRenderer,
       mockDataRetrievalActionProvider,
-      mockSessionRepository
+      mockSessionRepository,
+      mockOfficeOfTransitProvider
     )
     super.beforeEach()
   }
@@ -74,6 +77,17 @@ trait MockNunjucksRendererApp extends GuiceOneAppPerSuite with BeforeAndAfterEac
     }
 
     when(mockDataRetrievalActionProvider.apply(any())).thenReturn(fakeDataRetrievalAction)
+  }
+
+  def officeOfTransitFilter(): Unit = {
+    val fakeOfficeOfTransitFilter: ActionFilter[DataRequest] = new ActionFilter[DataRequest] {
+      override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
+        Future.successful(None)
+
+      override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
+    }
+
+    when(mockOfficeOfTransitProvider.apply(any())).thenReturn(fakeOfficeOfTransitFilter)
   }
 
   override def fakeApplication(): Application =

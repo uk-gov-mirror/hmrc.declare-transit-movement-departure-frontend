@@ -35,7 +35,21 @@ class TraderDetailsOfficesOfTransitFilterSpec extends SpecBase with UserAnswersS
 
   "when the index in the request url" - {
 
-    "is invalid, and there is an incomplete loop, must redirect to the first page of that loop" ignore {}
+    "is invalid, and there is an incomplete loop, must redirect to the first page of that loop" in {
+      val userAnswers = emptyUserAnswers
+        .unsafeSetVal(AddSecurityDetailsPage)(false)
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("GB"))
+        .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("Test")
+        .unsafeSetVal(OfficeOfTransitCountryPage(Index(1)))(CountryCode("AR"))
+
+      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(13))
+      val dataRequest  = DataRequest(fakeRequest, userAnswers.eoriNumber, userAnswers)
+      val result       = actionFilter.invokeBlock(dataRequest, fakeOkResult)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(
+        controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(userAnswers.id, Index(index.position + 1), NormalMode).url)
+    }
 
     "is invalid, and all previous loop are complete, must redirect to Add Transit Office page" in {
 
@@ -60,7 +74,7 @@ class TraderDetailsOfficesOfTransitFilterSpec extends SpecBase with UserAnswersS
         .unsafeSetVal(OfficeOfTransitCountryPage(Index(8)))(CountryCode("GB"))
         .unsafeSetVal(AddAnotherTransitOfficePage(Index(8)))("Test")
 
-      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(13), implicitly)
+      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(13))
       val dataRequest  = DataRequest(fakeRequest, userAnswers.eoriNumber, userAnswers)
       val result       = actionFilter.invokeBlock(dataRequest, fakeOkResult)
 
@@ -75,7 +89,7 @@ class TraderDetailsOfficesOfTransitFilterSpec extends SpecBase with UserAnswersS
         .unsafeSetVal(OfficeOfTransitCountryPage(Index(0)))(CountryCode("AS"))
         .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("TestData")
 
-      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(1), implicitly)
+      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(1))
       val dataRequest  = DataRequest(fakeRequest, userAnswers.eoriNumber, userAnswers)
       val result       = actionFilter.invokeBlock(dataRequest, fakeOkResult)
 
@@ -90,7 +104,7 @@ class TraderDetailsOfficesOfTransitFilterSpec extends SpecBase with UserAnswersS
         .unsafeSetVal(AddAnotherTransitOfficePage(Index(0)))("Test")
         .unsafeSetVal(OfficeOfTransitCountryPage(Index(1)))(CountryCode("AR"))
 
-      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(1), implicitly)
+      val actionFilter = new TraderDetailsOfficesOfTransitFilter(Index(7))
       val dataRequest  = DataRequest(fakeRequest, userAnswers.eoriNumber, userAnswers)
       val result       = actionFilter.invokeBlock(dataRequest, fakeOkResult)
 

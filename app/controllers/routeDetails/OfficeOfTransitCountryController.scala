@@ -47,27 +47,29 @@ class OfficeOfTransitCountryController @Inject()(
   referenceDataConnector: ReferenceDataConnector,
   formProvider: OfficeOfTransitCountryFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  renderer: Renderer,
+  officeOfTransitFilter: TraderDetailsOfficesOfTransitProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      referenceDataConnector.getTransitCountryList() flatMap {
-        countries =>
-          val form = formProvider(countries)
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData andThen officeOfTransitFilter(index)).async {
+      implicit request =>
+        referenceDataConnector.getTransitCountryList() flatMap {
+          countries =>
+            val form = formProvider(countries)
 
-          val preparedForm = request.userAnswers
-            .get(OfficeOfTransitCountryPage(index))
-            .flatMap(countries.getCountry)
-            .map(form.fill)
-            .getOrElse(form)
+            val preparedForm = request.userAnswers
+              .get(OfficeOfTransitCountryPage(index))
+              .flatMap(countries.getCountry)
+              .map(form.fill)
+              .getOrElse(form)
 
-          renderPage(lrn, index, mode, preparedForm, countries.fullList, Results.Ok)
-      }
-  }
+            renderPage(lrn, index, mode, preparedForm, countries.fullList, Results.Ok)
+        }
+    }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
@@ -87,7 +89,8 @@ class OfficeOfTransitCountryController @Inject()(
   }
 
   def renderPage(lrn: LocalReferenceNumber, index: Index, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
-    implicit request: Request[AnyContent]): Future[Result] = {
+    implicit
+    request: Request[AnyContent]): Future[Result] = {
     val json = Json.obj(
       "form"        -> form,
       "lrn"         -> lrn,
