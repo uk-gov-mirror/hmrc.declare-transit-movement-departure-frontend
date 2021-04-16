@@ -39,9 +39,8 @@ object PreviousReferences {
   def previousReferenceReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[PreviousReferences] = {
 
     val extraInformation: UserAnswersReader[Option[String]] =
-      AddExtraInformationPage(itemIndex, referenceIndex).reader.flatMap {
-        case true  => ExtraInformationPage(itemIndex, referenceIndex).reader.map(Some(_))
-        case false => none[String].pure[UserAnswersReader]
+      AddExtraInformationPage(itemIndex, referenceIndex).filterOptionalDependent(identity) {
+        ExtraInformationPage(itemIndex, referenceIndex).reader
       }
 
     (

@@ -63,14 +63,14 @@ object SafetyAndSecurity {
   final case class TraderEori(eori: EoriNumber) extends SecurityTraderDetails
 
   private def addCircumstanceIndicator: UserAnswersReader[Option[String]] =
-    AddCircumstanceIndicatorPage.reader.flatMap(
-      bool => if (bool) CircumstanceIndicatorPage.reader.map(_.some) else none[String].pure[UserAnswersReader]
-    )
+    AddCircumstanceIndicatorPage.filterOptionalDependent(identity) {
+      CircumstanceIndicatorPage.reader
+    }
 
   private def paymentMethod: UserAnswersReader[Option[String]] =
-    AddTransportChargesPaymentMethodPage.reader.flatMap(
-      bool => if (bool) TransportChargesPaymentMethodPage.reader.map(_.some) else none[String].pure[UserAnswersReader]
-    )
+    AddTransportChargesPaymentMethodPage.filterOptionalDependent(identity) {
+      TransportChargesPaymentMethodPage.reader
+    }
 
   private def commercialReferenceNumber: UserAnswersReader[Option[String]] =
     (AddCommercialReferenceNumberPage.reader, AddCommercialReferenceNumberAllItemsPage.optionalReader).tupled.flatMap {
@@ -82,18 +82,17 @@ object SafetyAndSecurity {
     ModeAtBorderPage.optionalReader.flatMap {
       case Some("4") | Some("40") => ConveyanceReferenceNumberPage.reader.map(Some(_))
       case _ =>
-        AddConveyanceReferenceNumberPage.reader.flatMap {
-          bool =>
-            if (bool) ConveyanceReferenceNumberPage.reader.map(Some(_)) else none[String].pure[UserAnswersReader]
+        AddConveyanceReferenceNumberPage.filterOptionalDependent(identity) {
+          ConveyanceReferenceNumberPage.reader
         }
     }
 
   private def placeOfUnloading: UserAnswersReader[Option[String]] =
     addCircumstanceIndicator.flatMap {
       case Some("E") =>
-        AddPlaceOfUnloadingCodePage.reader.flatMap(
-          bool => if (bool) PlaceOfUnloadingCodePage.optionalReader else none[String].pure[UserAnswersReader]
-        )
+        AddPlaceOfUnloadingCodePage.filterMandatoryDependent(identity) {
+          PlaceOfUnloadingCodePage.optionalReader
+        }
       case _ =>
         PlaceOfUnloadingCodePage.reader.map(Some(_))
     }
@@ -122,9 +121,8 @@ object SafetyAndSecurity {
         isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
 
-    AddSafetyAndSecurityConsignorPage.reader.flatMap {
-      case true  => isEoriKnown.map(_.some)
-      case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+    AddSafetyAndSecurityConsignorPage.filterOptionalDependent(identity) {
+      isEoriKnown
     }
   }
 
@@ -152,9 +150,8 @@ object SafetyAndSecurity {
         isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
 
-    AddSafetyAndSecurityConsigneePage.reader.flatMap {
-      case true  => isEoriKnown.map(_.some)
-      case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+    AddSafetyAndSecurityConsigneePage.filterOptionalDependent(identity) {
+      isEoriKnown
     }
   }
 
@@ -182,9 +179,8 @@ object SafetyAndSecurity {
         isEoriKnown => if (isEoriKnown) useEori else useAddress
       )
 
-    AddCarrierPage.reader.flatMap {
-      case true  => isEoriKnown.map(_.some)
-      case false => none[SecurityTraderDetails].pure[UserAnswersReader]
+    AddCarrierPage.filterOptionalDependent(identity) {
+      isEoriKnown
     }
   }
 }
