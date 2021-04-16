@@ -9,8 +9,6 @@ GET        /this-service-has-been-reset                   controllers.SessionExp
 GET         /keep-alive                                   controllers.KeepAliveController.keepAlive(lrn: Option[LocalReferenceNumber] = None)
 GET         /:lrn/keep-alive                              controllers.KeepAliveController.keepAlive(lrn: Option[LocalReferenceNumber])
 
-GET        /:lrn/check-your-answers                       controllers.CheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
-
 GET        /unauthorised                                  controllers.UnauthorisedController.onPageLoad
 
 GET        /accessibility-statement                       controllers.AccessibilityController.onPageLoad
@@ -32,8 +30,6 @@ GET        /:lrn/procedure-type                           controllers.ProcedureT
 POST       /:lrn/procedure-type                           controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /:lrn/change-procedure-type                    controllers.ProcedureTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /:lrn/change-procedure-type                    controllers.ProcedureTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-
-GET        /technical-difficulties                        controllers.TechnicalDifficultiesController.onPageLoad
 
 GET        /:lrn/submissionConfirmation                   controllers.SubmissionConfirmationController.onPageLoad(lrn: LocalReferenceNumber)
 

@@ -107,13 +107,11 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with TryValues {
       arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
       arbitraryContainerNumberUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
-      arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherPreviousAdministrativeReferenceUserAnswersEntry.arbitrary ::
       arbitraryPreviousReferenceUserAnswersEntry.arbitrary ::
       arbitraryExtraInformationUserAnswersEntry.arbitrary ::
       arbitraryPreviousReferenceUserAnswersEntry.arbitrary ::
       arbitraryAddExtraInformationUserAnswersEntry.arbitrary ::
-      arbitraryAddItemsSameConsignorForAllItemsUserAnswersEntry.arbitrary ::
       arbitraryHowManyPackagesUserAnswersEntry.arbitrary ::
       arbitraryAddAnotherPackageUserAnswersEntry.arbitrary ::
       arbitraryDeclareMarkUserAnswersEntry.arbitrary ::

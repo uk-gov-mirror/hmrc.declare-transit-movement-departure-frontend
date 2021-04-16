@@ -78,20 +78,21 @@ class GuaranteeNotValidControllerSpec extends SpecBase with MockNunjucksRenderer
 
   }
 
-  "redirect to 'Technical difficulties' page when arrival rejection message is malformed" in {
-    dataRetrievalNoData()
+  "show 'Technical difficulties' page when arrival rejection message is malformed" in {
 
     when(mockGuaranteeNotValidService.guaranteeNotValidMessage(any())(any(), any()))
       .thenReturn(Future.successful(None))
+
+    when(mockRenderer.render(any(), any())(any()))
+      .thenReturn(Future.successful(Html("")))
+
+    dataRetrievalNoData()
 
     val request = FakeRequest(GET, routes.GuaranteeNotValidController.onPageLoad(departureId).url)
 
     val result = route(app, request).value
 
-    status(result) mustEqual SEE_OTHER
-
-    verify(mockGuaranteeNotValidService, times(1)).guaranteeNotValidMessage(eqTo(departureId))(any(), any())
-
+    status(result) mustEqual INTERNAL_SERVER_ERROR
   }
 
 }

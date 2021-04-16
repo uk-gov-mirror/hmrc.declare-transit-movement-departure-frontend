@@ -130,7 +130,7 @@ class DeclarationRejectionControllerSpec extends SpecBase with MockNunjucksRende
     }
   }
 
-  "redirect to technical difficulties when no response from service" in {
+  "show technical difficulties page when no response from service" in {
 
     when(mockDepartureMessageService.declarationRejectionMessage(any())(any(), any()))
       .thenReturn(Future.successful(None))
@@ -144,7 +144,6 @@ class DeclarationRejectionControllerSpec extends SpecBase with MockNunjucksRende
 
     val result = route(app, request).value
 
-    status(result) mustEqual SEE_OTHER
-    redirectLocation(result).value mustEqual routes.TechnicalDifficultiesController.onPageLoad().url
+    status(result) mustEqual INTERNAL_SERVER_ERROR
   }
 }

@@ -22,7 +22,7 @@ import play.api.libs.json._
 import queries.Gettable
 
 class UserAnswersReaderSpec extends SpecBase {
-  final case class TestData(field1: Int, field2: String)
+  case class TestData(field1: Int, field2: String)
 
   implicit val jsonReads: Reads[TestData] = Json.reads[TestData]
 
