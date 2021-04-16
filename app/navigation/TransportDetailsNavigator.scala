@@ -42,10 +42,10 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
         Some(routes.ChangeAtBorderController.onPageLoad(ua.id, NormalMode))
     case ModeAtBorderPage =>
       ua =>
-        Some(routes.IdCrossingBorderController.onPageLoad(ua.id, NormalMode))
+        Some(routes.ModeCrossingBorderController.onPageLoad(ua.id, NormalMode))
     case IdCrossingBorderPage =>
       ua =>
-        Some(routes.ModeCrossingBorderController.onPageLoad(ua.id, NormalMode))
+        Some(routes.NationalityCrossingBorderController.onPageLoad(ua.id, NormalMode))
     case ModeCrossingBorderPage =>
       ua =>
         Some(modeCrossingBorderRoute(ua, NormalMode))
@@ -125,23 +125,23 @@ class TransportDetailsNavigator @Inject()() extends Navigator {
     }
 
   private def modeAtBorderRoute(ua: UserAnswers, mode: Mode): Call =
-    ua.get(IdCrossingBorderPage) match {
-      case None => routes.IdCrossingBorderController.onPageLoad(ua.id, CheckMode)
-      case _    => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
-    }
-
-  private def idCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call =
     ua.get(ModeCrossingBorderPage) match {
       case None => routes.ModeCrossingBorderController.onPageLoad(ua.id, CheckMode)
       case _    => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
 
+  private def idCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call =
+    ua.get(NationalityCrossingBorderPage) match {
+      case None => routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
+      case _    => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
+    }
+
   private def modeCrossingBorderRoute(ua: UserAnswers, mode: Mode): Call =
-    (ua.get(ModeCrossingBorderPage), ua.get(NationalityCrossingBorderPage), mode) match {
-      case (Some(x), _, NormalMode) if !InlandMode.Constants.codesSingleDigit.map(_.toString).contains(x) =>
-        routes.NationalityCrossingBorderController.onPageLoad(ua.id, mode)
-      case (Some(x), None, CheckMode) if !InlandMode.Constants.codesSingleDigit.map(_.toString).contains(x) =>
-        routes.NationalityCrossingBorderController.onPageLoad(ua.id, CheckMode)
+    (ua.get(ModeCrossingBorderPage), ua.get(IdCrossingBorderPage), mode) match {
+      case (Some(x), _, NormalMode) if !InlandMode.Constants.codes.map(_.toString).contains(x) =>
+        routes.IdCrossingBorderController.onPageLoad(ua.id, mode)
+      case (Some(x), None, CheckMode) if !InlandMode.Constants.codes.map(_.toString).contains(x) =>
+        routes.IdCrossingBorderController.onPageLoad(ua.id, CheckMode)
       case _ => routes.TransportDetailsCheckYourAnswersController.onPageLoad(ua.id)
     }
 

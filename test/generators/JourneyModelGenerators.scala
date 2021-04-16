@@ -228,9 +228,10 @@ trait JourneyModelGenerators {
 
     Arbitrary {
       for {
-        cc       <- arbitrary[CountryCode]
-        codeMode <- arbitrary[Int].suchThat(!codeList.contains(_))
-      } yield ModeWithNationality(cc, codeMode)
+        cc         <- arbitrary[CountryCode]
+        codeMode   <- arbitrary[Int].suchThat(!codeList.contains(_))
+        idCrossing <- stringsWithMaxLength(stringMaxLength)
+      } yield ModeWithNationality(cc, codeMode, idCrossing)
     }
   }
 
@@ -249,12 +250,10 @@ trait JourneyModelGenerators {
     Arbitrary {
       for {
         mode               <- genNumberString
-        idCrossing         <- stringsWithMaxLength(stringMaxLength)
         modeCrossingBorder <- arbitrary[ModeCrossingBorder]
       } yield
         NewDetailsAtBorder(
           mode,
-          idCrossing,
           modeCrossingBorder
         )
     }

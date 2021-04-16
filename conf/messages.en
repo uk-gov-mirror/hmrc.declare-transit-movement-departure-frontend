@@ -58,8 +58,8 @@ pageNotFound.contactLink=contact the New Computerised Transit System(NCTS) helpd
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
-index.title = common-transit-convention-departure
-index.heading = common-transit-convention-departure
+index.title = Manage your transit movements - GOV.UK
+index.heading =  Manage your transit movements
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 movementDetails.preHeading = General Information

@@ -18,11 +18,13 @@ package controllers.goodsSummary
 
 import controllers.actions._
 import forms.ControlResultDateLimitFormProvider
+
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import navigation.annotations.GoodsSummary
 import pages.ControlResultDateLimitPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,6 +33,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class ControlResultDateLimitController @Inject()(
@@ -48,7 +51,7 @@ class ControlResultDateLimitController @Inject()(
     with I18nSupport
     with NunjucksSupport {
 
-  val form = formProvider()
+  def form: Form[LocalDate] = formProvider()
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
