@@ -16,9 +16,7 @@
 
 package models.journeyDomain
 
-import cats.data.ReaderT
 import cats.implicits._
-import models.UserAnswers
 import models.journeyDomain.TransportDetails.InlandMode.{Mode5or7, Rail}
 import models.journeyDomain.TransportDetails._
 import models.reference.CountryCode
@@ -71,10 +69,11 @@ object TransportDetails {
             code =>
               AddIdAtDeparturePage.optionalReader
                 .flatMap {
-                  case Some(false) => Rail(code, None).pure[UserAnswersReader]
-                  case _           => IdAtDeparturePage.reader.map(x => Rail(code, Some(x)))
-              }
-          )
+                  case Some(false) => Rail(code.toInt, None).pure[UserAnswersReader]
+                  case _           => IdAtDeparturePage.reader.map(x => Rail(code.toInt, Some(x)))
+                }
+          }
+      }
     }
 
     final case class Mode5or7(code: Int) extends InlandMode
@@ -107,6 +106,7 @@ object TransportDetails {
             ).tupled.map((NonSpecialMode(code.toInt, _, _)).tupled)
         }
     }
+
   }
 
   sealed trait DetailsAtBorder
@@ -137,7 +137,6 @@ object TransportDetails {
         ChangeAtBorderPage.filterMandatoryDependent(identity) {
           (
             ModeAtBorderPage.reader,
-            IdCrossingBorderPage.reader,
             UserAnswersReader[ModeCrossingBorder]
           ).tupled.map((NewDetailsAtBorder.apply _).tupled)
         }
@@ -172,4 +171,5 @@ object TransportDetails {
     final case class ModeExemptNationality(modeCode: Int) extends ModeCrossingBorder // 2, 20, 5, 50, 7, 70
     final case class ModeWithNationality(nationalityCrossingBorder: CountryCode, modeCode: Int, idCrossing: String) extends ModeCrossingBorder
   }
+
 }

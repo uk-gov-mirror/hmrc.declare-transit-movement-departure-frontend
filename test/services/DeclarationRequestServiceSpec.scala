@@ -171,7 +171,6 @@ class DeclarationRequestServiceSpec
               val result = service.convert(updatedUserAnswer).futureValue
 
               result.right.value.header.transportDetails.ideOfMeaOfTraCroHEA85.value mustBe modeWithNationality.idCrossing
-              result.value.header.transportDetails.ideOfMeaOfTraCroHEA85.value mustBe modeWithNationality.idCrossing
           }
         }
 
@@ -191,7 +190,7 @@ class DeclarationRequestServiceSpec
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.ideOfMeaOfTraCroHEA85 mustBe None
+              result.right.value.header.transportDetails.ideOfMeaOfTraCroHEA85 mustBe None
           }
         }
 
