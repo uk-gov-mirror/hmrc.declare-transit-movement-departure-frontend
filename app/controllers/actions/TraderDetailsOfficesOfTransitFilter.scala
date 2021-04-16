@@ -35,62 +35,56 @@ class TraderDetailsOfficesOfTransitProvider @Inject()()(implicit ec: ExecutionCo
 class TraderDetailsOfficesOfTransitFilter(index: Index, pageId: Int)(implicit protected val executionContext: ExecutionContext)
     extends ActionFilter[DataRequest] {
 
-  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
-    if (index.position <= 8) {
-      // if the index is valid
-      val numberOfOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
+
+    // if the index is valid
+    val numberOfOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
+    if (index.position == 0) {
+      Future.successful(None)
+    } else {
+
       if (numberOfOffices > 0) {
         request.userAnswers.get(AddAnotherTransitOfficePage(Index(numberOfOffices - 1))) match {
           case Some(_) =>
             Future.successful(
-              if (index.position == numberOfOffices) {
-                if (pageId == 0) {
-                  None
-                } else {
-                  request.userAnswers.get(OfficeOfTransitCountryPage(Index(numberOfOffices - 1))) match {
-                    case Some(_) =>
-                      None
-                    case None =>
-                      Option(
-                        Redirect(controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(request.userAnswers.id, index, NormalMode).url)
-                      )
+              if (index.position <= 8) {
+                if (index.position == numberOfOffices) {
+                  if (pageId == 0) {
+                    None
+                  } else {
+                    request.userAnswers.get(OfficeOfTransitCountryPage(Index(numberOfOffices - 1))) match {
+                      case Some(_) =>
+                        None
+                      case None =>
+                        Option(
+                          Redirect(controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(request.userAnswers.id, index, NormalMode).url)
+                        )
+                    }
                   }
+                } else {
+                  Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url))
                 }
               } else {
                 Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url))
               }
             )
           case None =>
-            Future.successful(
-              Option(
-                Redirect(
-                  controllers.routeDetails.routes.OfficeOfTransitCountryController
-                    .onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode)
-                    .url))
-            )
+            println(s"\n\n\n ${index.position} \n\n\n $numberOfOffices \n\n\n")
+            if (index.position == numberOfOffices - 1) {
+              Future.successful(None)
+            } else {
+              Future.successful(
+                Option(
+                  Redirect(
+                    controllers.routeDetails.routes.OfficeOfTransitCountryController
+                      .onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode)
+                      .url))
+              )
+            }
         }
       } else {
         Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
       }
-    } else {
-      // if the index is invalid
-      val numberOfOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
-      if (numberOfOffices > 0) {
-        request.userAnswers.get(AddAnotherTransitOfficePage(Index(numberOfOffices - 1))) match {
-          case Some(_) =>
-            Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
-          case None =>
-            Future.successful(
-              Option(
-                Redirect(
-                  controllers.routeDetails.routes.OfficeOfTransitCountryController
-                    .onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode)
-                    .url))
-            )
-        }
-      } else {
-        Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
-      }
-
     }
+  }
 }
