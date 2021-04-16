@@ -65,18 +65,14 @@ object PreviousReferences {
     }
 
   private def allPreviousReferencesReader(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
-    DeriveNumberOfPreviousAdministrativeReferences(itemIndex).reader.flatMap {
-      case list if list.nonEmpty =>
-        list.zipWithIndex
+    DeriveNumberOfPreviousAdministrativeReferences(itemIndex).optionalNonEmptyListReader.flatMap {
+      _.traverse(
+        _.zipWithIndex
           .traverse[UserAnswersReader, PreviousReferences]({
             case (_, index) =>
               PreviousReferences.previousReferenceReader(itemIndex, Index(index))
           })
-          .map(NonEmptyList.fromList)
-      case _ =>
-        ReaderT[EitherType, UserAnswers, Option[NonEmptyList[PreviousReferences]]](
-          _ => Left(ReaderError(DeriveNumberOfPreviousAdministrativeReferences(itemIndex))) // TODO add message
-        )
+      )
     }
 
 }

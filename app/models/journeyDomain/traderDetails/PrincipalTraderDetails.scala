@@ -35,58 +35,36 @@ object PrincipalTraderDetails {
   implicit val principalTraderDetails: UserAnswersReader[PrincipalTraderDetails] = {
 
     val simplified: UserAnswersReader[PrincipalTraderDetails] = {
-      ProcedureTypePage.reader.flatMap {
-        case Simplified =>
-          WhatIsPrincipalEoriPage.reader
-            .map(EoriNumber(_))
-            .map(PrincipalTraderDetails(_))
-        case _ =>
-          ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-            _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
-          )
+      ProcedureTypePage.filterMandatoryDependent(_ == Simplified) {
+        WhatIsPrincipalEoriPage.reader
+          .map(EoriNumber(_))
+          .map(PrincipalTraderDetails(_))
       }
     }
 
-    val normalEori: ReaderT[EitherType, UserAnswers, PrincipalTraderDetails] = ProcedureTypePage.reader.flatMap {
-      case Normal =>
-        IsPrincipalEoriKnownPage.reader.flatMap {
-          case true =>
-            WhatIsPrincipalEoriPage.reader
-              .map(EoriNumber(_))
-              .map(PrincipalTraderDetails(_))
-          case false =>
-            ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-              _ => Left(ReaderError(IsPrincipalEoriKnownPage)) // TODO add message
-            )
+    val normalEori: ReaderT[EitherType, UserAnswers, PrincipalTraderDetails] = {
+      ProcedureTypePage.filterMandatoryDependent(_ == Normal) {
+        IsPrincipalEoriKnownPage.filterMandatoryDependent(identity) {
+          WhatIsPrincipalEoriPage.reader
+            .map(EoriNumber(_))
+            .map(PrincipalTraderDetails(_))
         }
-      case _ =>
-        ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-          _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
-        )
+      }
     }
 
-    val normalNameAddress: UserAnswersReader[PrincipalTraderDetails] = ProcedureTypePage.reader.flatMap {
-      case Normal =>
-        IsPrincipalEoriKnownPage.reader.flatMap {
-          case true =>
-            ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-              _ => Left(ReaderError(IsPrincipalEoriKnownPage)) // TODO add message
-            )
-          case false =>
-            (
-              PrincipalNamePage.reader,
-              PrincipalAddressPage.reader
-            ).tupled.map {
-              case (name, principalAddress) =>
-                val address = Address.prismAddressToPrincipalAddress(principalAddress)
-                PrincipalTraderDetails(name, address)
-            }
+    val normalNameAddress: UserAnswersReader[PrincipalTraderDetails] =
+      ProcedureTypePage.filterMandatoryDependent(_ == Normal) {
+        IsPrincipalEoriKnownPage.filterMandatoryDependent(_ == false) {
+          (
+            PrincipalNamePage.reader,
+            PrincipalAddressPage.reader
+          ).tupled.map {
+            case (name, principalAddress) =>
+              val address = Address.prismAddressToPrincipalAddress(principalAddress)
+              PrincipalTraderDetails(name, address)
+          }
         }
-      case _ =>
-        ReaderT[EitherType, UserAnswers, PrincipalTraderDetails](
-          _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
-        )
-    }
+      }
 
     // TODO need to investigate the error handling here as it will only retrieve the last left (due to orElse)
     normalEori orElse normalNameAddress orElse simplified

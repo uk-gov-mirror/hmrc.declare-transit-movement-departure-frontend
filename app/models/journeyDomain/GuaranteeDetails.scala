@@ -16,10 +16,10 @@
 
 package models.journeyDomain
 
-import cats.data.{NonEmptyList, ReaderT}
+import cats.data.NonEmptyList
 import cats.implicits._
 import derivable.DeriveNumberOfGuarantees
-import models.{GuaranteeType, Index, UserAnswers}
+import models.{GuaranteeType, Index}
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
@@ -27,20 +27,12 @@ sealed trait GuaranteeDetails
 
 object GuaranteeDetails {
 
-  // TODO add list reader ops
   implicit def parseListOfGuaranteeDetails: UserAnswersReader[NonEmptyList[GuaranteeDetails]] =
-    DeriveNumberOfGuarantees.reader.flatMap {
-      case list if list.nonEmpty =>
-        list.zipWithIndex
-          .traverse[UserAnswersReader, GuaranteeDetails]({
-            case (_, index) =>
-              parseGuaranteeDetails(Index(index))
-          })
-          .map(NonEmptyList.fromListUnsafe)
-      case _ =>
-        ReaderT[EitherType, UserAnswers, NonEmptyList[GuaranteeDetails]](
-          _ => Left(ReaderError(DeriveNumberOfGuarantees)) // TODO add message
-        )
+    DeriveNumberOfGuarantees.mandatoryNonEmptyListReader.flatMap {
+      _.zipWithIndex.traverse[UserAnswersReader, GuaranteeDetails]({
+        case (_, index) =>
+          parseGuaranteeDetails(Index(index))
+      })
     }
 
   def parseGuaranteeDetails(index: Index): UserAnswersReader[GuaranteeDetails] =

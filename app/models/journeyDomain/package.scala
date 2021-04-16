@@ -19,11 +19,9 @@ package models
 import cats.data._
 import cats.implicits._
 import play.api.libs.json.Reads
-import queries.{Gettable, Query}
+import queries.Gettable
 
 package object journeyDomain {
-
-  case class ReaderError(page: Query, message: Option[String] = None)
 
   type EitherType[A]        = Either[ReaderError, A]
   type UserAnswersReader[A] = ReaderT[EitherType, UserAnswers, A]
@@ -33,6 +31,38 @@ package object journeyDomain {
 
     def apply[A](fn: UserAnswers => EitherType[A]): UserAnswersReader[A] =
       ReaderT[EitherType, UserAnswers, A](fn)
+  }
+
+  implicit class GettableNonEmptyListReaderOps[A: Reads](a: Gettable[List[A]]) {
+
+    /**
+      * Returns UserAnswerReader[NonEmptyList[A]] which will only run if the Gettable[List[A] is not empty
+      * if the gettable returns a populated list then the reader will succeed and convert the list to NonEmptyList else
+      * the reader will fail with a ReaderError[A]
+      */
+
+    def mandatoryNonEmptyListReader(implicit reads: Reads[List[A]]): UserAnswersReader[NonEmptyList[A]] =
+      a.reader
+        .flatMap {
+          x =>
+            ReaderT[EitherType, UserAnswers, NonEmptyList[A]](
+              _ =>
+                if (x.nonEmpty) {
+                  Right(NonEmptyList.fromListUnsafe(x))
+                } else {
+                  Left(ReaderError(a, Some(s"Empty list for $a")))
+              }
+            )
+        }
+
+    def optionalNonEmptyListReader(implicit reads: Reads[List[A]]): UserAnswersReader[Option[NonEmptyList[A]]] =
+      a.reader
+        .flatMap {
+          x =>
+            ReaderT[EitherType, UserAnswers, Option[NonEmptyList[A]]](
+              _ => Right(NonEmptyList.fromList(x))
+            )
+        }
   }
 
   implicit class GettableAsFilterForNextReaderOps[A: Reads](a: Gettable[A]) {
@@ -55,6 +85,13 @@ package object journeyDomain {
             }
         }
 
+    /**
+      * Returns UserAnswersReader[Option[B]], where UserAnswersReader[B] which is run only if UserAnswerReader[A]
+      * is defined and satisfies the predicate, if it defined and does not satisfy the predicate overall reader will
+      * will fail returning a ReaderError. If the result of UserAnswerReader[A] is not defined then the overall reader will fail and
+      * `next` will not be run
+      */
+
     def filterMandatoryDependent[B](predicate: A => Boolean)(next: UserAnswersReader[B]): UserAnswersReader[B] =
       a.reader
         .flatMap {
@@ -63,13 +100,24 @@ package object journeyDomain {
               next
             } else {
               ReaderT[EitherType, UserAnswers, B](
-                _ => Left(ReaderError(a))
+                _ => Left(ReaderError(a, Some(s"Mandatory predicate failed for $a")))
               )
             }
         }
-  }
 
-  // implicit class GettableListAsNonEmptyListReaderOps[A](a: Gettable[A]) {}
+    def returnMandatoryDependent(predicate: A => Boolean): UserAnswersReader[A] =
+      a.reader.flatMap {
+        x =>
+          ReaderT[EitherType, UserAnswers, A](
+            _ =>
+              if (predicate(x)) {
+                Right(x)
+              } else {
+                Left(ReaderError(a))
+            }
+          )
+      }
+  }
 
   implicit class GettableAsOptionalReaderOps[A](a: Gettable[A]) {
 

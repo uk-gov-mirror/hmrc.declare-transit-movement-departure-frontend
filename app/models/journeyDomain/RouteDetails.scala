@@ -45,48 +45,33 @@ object RouteDetails {
   )
 
   object TransitInformation {
+
     implicit val readSeqTransitInformation: UserAnswersReader[NonEmptyList[TransitInformation]] = {
       AddSecurityDetailsPage.reader
         .flatMap {
           addSecurityDetailsFlag =>
             if (addSecurityDetailsFlag) {
-              DeriveNumberOfOfficeOfTransits.reader.flatMap {
-                offices =>
-                  offices.zipWithIndex.traverse({
-                    case (_, index) =>
-                      (
-                        AddAnotherTransitOfficePage(Index(index)).reader,
-                        ArrivalTimesAtOfficePage(Index(index)).reader
-                      ).tupled.map {
-                        case (office, time) => TransitInformation(office, Some(time))
-                      }
-                  })
+              DeriveNumberOfOfficeOfTransits.mandatoryNonEmptyListReader.flatMap {
+                _.zipWithIndex.traverse({
+                  case (_, index) =>
+                    (
+                      AddAnotherTransitOfficePage(Index(index)).reader,
+                      ArrivalTimesAtOfficePage(Index(index)).reader
+                    ).tupled.map {
+                      case (office, time) => TransitInformation(office, Some(time))
+                    }
+                })
               }
             } else {
-              DeriveNumberOfOfficeOfTransits.reader.flatMap {
-                offices =>
-                  offices.zipWithIndex.traverse({
-                    case (_, index) =>
-                      AddAnotherTransitOfficePage(Index(index)).reader.map(TransitInformation(_, None))
-                  })
+              DeriveNumberOfOfficeOfTransits.mandatoryNonEmptyListReader.flatMap {
+                _.zipWithIndex.traverse({
+                  case (_, index) =>
+                    AddAnotherTransitOfficePage(Index(index)).reader.map(TransitInformation(_, None))
+                })
               }
-
             }
         }
-        .flatMap {
-          x =>
-            ReaderT[EitherType, UserAnswers, NonEmptyList[TransitInformation]](
-              _ => listToNonEmptyEither(x)(DeriveNumberOfOfficeOfTransits)
-            )
-        }
     }
-
-    // TODO move to reader ops
-    def listToNonEmptyEither[A](list: List[A])(page: Query): Either[ReaderError, NonEmptyList[A]] =
-      NonEmptyList.fromList(list) match {
-        case Some(x) => Right(x)
-        case None    => Left(ReaderError(page))
-      }
   }
 
   implicit val makeSimplifiedMovementDetails: UserAnswersReader[RouteDetails] =

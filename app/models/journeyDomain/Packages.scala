@@ -16,12 +16,10 @@
 
 package models.journeyDomain
 
-import cats.data.ReaderT
 import cats.implicits._
-import models.journeyDomain.MovementDetails.SimplifiedMovementDetails
-import models.{Index, UserAnswers}
+import models.Index
 import models.reference.PackageType
-import pages.{PackageTypePage, ProcedureTypePage}
+import pages.PackageTypePage
 import pages.addItems._
 
 sealed trait Packages
@@ -43,18 +41,15 @@ object Packages {
   object UnpackedPackages {
 
     def unpackedPackagesReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[UnpackedPackages] =
-      PackageTypePage(itemIndex, referenceIndex).reader.flatMap {
-        case packageType if PackageType.unpackedCodes.contains(packageType.code) =>
-          (
-            PackageTypePage(itemIndex, referenceIndex).reader,
-            readHowManyPackages(itemIndex, referenceIndex),
-            TotalPiecesPage(itemIndex, referenceIndex).reader,
-            readMarkOrNumber(itemIndex, referenceIndex)
-          ).tupled.map((UnpackedPackages.apply _).tupled)
-        case _ =>
-          ReaderT[EitherType, UserAnswers, UnpackedPackages](
-            _ => Left(ReaderError(PackageTypePage(itemIndex, referenceIndex))) //TODO add message
-          )
+      PackageTypePage(itemIndex, referenceIndex).filterMandatoryDependent(
+        packageType => PackageType.unpackedCodes.contains(packageType.code)
+      ) {
+        (
+          PackageTypePage(itemIndex, referenceIndex).reader,
+          readHowManyPackages(itemIndex, referenceIndex),
+          TotalPiecesPage(itemIndex, referenceIndex).reader,
+          readMarkOrNumber(itemIndex, referenceIndex)
+        ).tupled.map((UnpackedPackages.apply _).tupled)
       }
   }
 
@@ -67,17 +62,14 @@ object Packages {
   object BulkPackages {
 
     def bulkPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[BulkPackages] =
-      PackageTypePage(itemIndex, referenceIndex).reader.flatMap {
-        case packageType if PackageType.bulkCodes.contains(packageType.code) =>
-          (
-            PackageTypePage(itemIndex, referenceIndex).reader,
-            readHowManyPackages(itemIndex, referenceIndex),
-            readMarkOrNumber(itemIndex, referenceIndex)
-          ).tupled.map((BulkPackages.apply _).tupled)
-        case _ =>
-          ReaderT[EitherType, UserAnswers, BulkPackages](
-            _ => Left(ReaderError(PackageTypePage(itemIndex, referenceIndex))) //TODO add message
-          )
+      PackageTypePage(itemIndex, referenceIndex).filterMandatoryDependent(
+        packageType => PackageType.bulkCodes.contains(packageType.code)
+      ) {
+        (
+          PackageTypePage(itemIndex, referenceIndex).reader,
+          readHowManyPackages(itemIndex, referenceIndex),
+          readMarkOrNumber(itemIndex, referenceIndex)
+        ).tupled.map((BulkPackages.apply _).tupled)
       }
   }
 
@@ -86,39 +78,24 @@ object Packages {
   object OtherPackages {
 
     def otherPackageReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[OtherPackages] =
-      PackageTypePage(itemIndex, referenceIndex).reader.flatMap {
-        case packageType if !PackageType.bulkAndUnpackedCodes.contains(packageType.code) =>
-          (
-            PackageTypePage(itemIndex, referenceIndex).reader,
-            HowManyPackagesPage(itemIndex, referenceIndex).reader,
-            DeclareMarkPage(itemIndex, referenceIndex).reader
-          ).tupled.map((OtherPackages.apply _).tupled)
-        case _ =>
-          ReaderT[EitherType, UserAnswers, OtherPackages](
-            _ => Left(ReaderError(PackageTypePage(itemIndex, referenceIndex))) //TODO add message
-          )
+      PackageTypePage(itemIndex, referenceIndex).filterMandatoryDependent(
+        packageType => !PackageType.bulkAndUnpackedCodes.contains(packageType.code)
+      ) {
+        (
+          PackageTypePage(itemIndex, referenceIndex).reader,
+          HowManyPackagesPage(itemIndex, referenceIndex).reader,
+          DeclareMarkPage(itemIndex, referenceIndex).reader
+        ).tupled.map((OtherPackages.apply _).tupled)
       }
   }
 
   private def readHowManyPackages(itemIndex: Index, referenceIndex: Index): UserAnswersReader[Option[Int]] =
-    DeclareNumberOfPackagesPage(itemIndex, referenceIndex).reader
-      .flatMap {
-        bool =>
-          if (bool)
-            HowManyPackagesPage(itemIndex, referenceIndex).reader.map(_.some)
-          else {
-            none[Int].pure[UserAnswersReader]
-          }
-      }
+    DeclareNumberOfPackagesPage(itemIndex, referenceIndex).filterOptionalDependent(identity) {
+      HowManyPackagesPage(itemIndex, referenceIndex).reader
+    }
 
   private def readMarkOrNumber(itemIndex: Index, referenceIndex: Index): UserAnswersReader[Option[String]] =
-    AddMarkPage(itemIndex, referenceIndex).reader
-      .flatMap {
-        bool =>
-          if (bool) {
-            DeclareMarkPage(itemIndex, referenceIndex).reader.map(_.some)
-          } else {
-            none[String].pure[UserAnswersReader]
-          }
-      }
+    AddMarkPage(itemIndex, referenceIndex).filterOptionalDependent(identity) {
+      DeclareMarkPage(itemIndex, referenceIndex).reader
+    }
 }

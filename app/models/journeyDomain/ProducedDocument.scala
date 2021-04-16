@@ -47,20 +47,18 @@ object ProducedDocument {
       .flatMap {
         isTrue =>
           if (isTrue) {
-            DeriveNumberOfDocuments(itemIndex).reader.flatMap {
-              case list if list.nonEmpty =>
-                list.zipWithIndex
+            DeriveNumberOfDocuments(itemIndex).optionalNonEmptyListReader.flatMap {
+              _.traverse {
+                _.zipWithIndex
                   .traverse[UserAnswersReader, ProducedDocument]({
                     case (_, index) =>
                       ProducedDocument.producedDocumentReader(itemIndex, Index(index))
                   })
-                  .map(NonEmptyList.fromList)
-              case _ =>
-                ReaderT[EitherType, UserAnswers, Option[NonEmptyList[ProducedDocument]]](
-                  _ => Left(ReaderError(DeriveNumberOfDocuments(itemIndex))) // TODO add message + test
-                )
+              }
             }
-          } else none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]
+          } else {
+            none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]
+          }
       }
 
   def producedDocumentReader(index: Index, referenceIndex: Index): UserAnswersReader[ProducedDocument] =
