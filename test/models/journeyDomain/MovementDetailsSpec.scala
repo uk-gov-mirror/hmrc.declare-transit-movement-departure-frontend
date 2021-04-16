@@ -33,10 +33,10 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(movementUserAnswers) {
-          case (_, userAnswers) =>
+          case (movementDetails, userAnswers) =>
             val result = UserAnswersReader[MovementDetails].run(userAnswers).right.value
 
-            result mustBe "dunno"
+            result mustBe movementDetails
         }
       }
     }

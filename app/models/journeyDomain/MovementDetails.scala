@@ -16,10 +16,11 @@
 
 package models.journeyDomain
 
+import cats.data.ReaderT
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain.MovementDetails.DeclarationForSomeoneElseAnswer
-import models.{DeclarationType, RepresentativeCapacity}
+import models.{DeclarationType, RepresentativeCapacity, UserAnswers}
 import pages._
 import pages.movementDetails.PreLodgeDeclarationPage
 
@@ -33,7 +34,8 @@ sealed trait MovementDetails {
 object MovementDetails {
 
   implicit val parserMovementDetails: UserAnswersReader[MovementDetails] =
-    UserAnswersReader[NormalMovementDetails].widen[MovementDetails] orElse UserAnswersReader[SimplifiedMovementDetails].widen[MovementDetails]
+    UserAnswersReader[NormalMovementDetails].widen[MovementDetails] orElse
+      UserAnswersReader[SimplifiedMovementDetails].widen[MovementDetails]
 
   private val declarationForSomeoneElseAnswer: UserAnswersReader[DeclarationForSomeoneElseAnswer] =
     DeclarationForSomeoneElsePage.reader.flatMap(
@@ -55,15 +57,20 @@ object MovementDetails {
 
   object NormalMovementDetails {
 
-    implicit val parseNormalMovementDetails: UserAnswersReader[NormalMovementDetails] =
-      ProcedureTypePage.filterMandatoryDependent(_ == Normal) {
-        (
-          DeclarationTypePage.reader,
-          PreLodgeDeclarationPage.reader,
-          ContainersUsedPage.reader,
-          DeclarationPlacePage.reader,
-          declarationForSomeoneElseAnswer
-        ).tupled.map((NormalMovementDetails.apply _).tupled)
+    implicit val parseSimplifiedMovementDetails: UserAnswersReader[NormalMovementDetails] =
+      ProcedureTypePage.reader.flatMap {
+        case procedureType if procedureType == Normal =>
+          (
+            DeclarationTypePage.reader,
+            PreLodgeDeclarationPage.reader,
+            ContainersUsedPage.reader,
+            DeclarationPlacePage.reader,
+            declarationForSomeoneElseAnswer
+          ).tupled.map((NormalMovementDetails.apply _).tupled)
+        case _ =>
+          ReaderT[EitherType, UserAnswers, NormalMovementDetails](
+            _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
+          )
       }
   }
 
