@@ -57,6 +57,7 @@ object MovementDetails {
 
   object NormalMovementDetails {
 
+    // TODO investigate why filterMandatoryDependent doesnt work here
     implicit val parseSimplifiedMovementDetails: UserAnswersReader[NormalMovementDetails] =
       ProcedureTypePage.reader.flatMap {
         case procedureType if procedureType == Normal =>

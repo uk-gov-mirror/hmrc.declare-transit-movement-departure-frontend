@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import base.SpecBase
+import cats.data.NonEmptyList
 import models.UserAnswers
 import play.api.libs.json._
 import queries.Gettable
@@ -34,6 +35,14 @@ class UserAnswersReaderSpec extends SpecBase {
     override def path: JsPath = __ \ "passingGettable2Path"
   }
 
+  val passingGettable3: Gettable[List[String]] = new Gettable[List[String]] {
+    override def path: JsPath = __ \ "passingGettable3Path"
+  }
+
+  val failingListGettable: Gettable[List[String]] = new Gettable[List[String]] {
+    override def path: JsPath = __ \ "failingGettablePath"
+  }
+
   val failingGettable: Gettable[Int] = new Gettable[Int] {
     override def path: JsPath = __ \ "failingGettablePath"
   }
@@ -46,7 +55,20 @@ class UserAnswersReaderSpec extends SpecBase {
       "passingGettable2Path" -> Json.obj(
         "field1" -> 1,
         "field2" -> "asdf"
+      ),
+      "passingGettable3Path" -> Json.arr(
+        "listEntry1",
+        "listEntry2",
+        "listEntry3"
       )
+    )
+  )
+
+  val testDataWithEmptyList = UserAnswers(
+    lrn,
+    eoriNumber,
+    Json.obj(
+      "passingGettable3Path" -> JsArray.empty
     )
   )
 
@@ -164,6 +186,34 @@ class UserAnswersReaderSpec extends SpecBase {
 
         result mustEqual true
       }
+    }
+  }
+
+  "mandatoryNonEmptyListReader" - {
+    "passes and converts list to nonEmptyList" in {
+      passingGettable3.mandatoryNonEmptyListReader.run(testData).right.value mustBe NonEmptyList("listEntry1", List("listEntry2", "listEntry3"))
+    }
+
+    "fails list is empty" in {
+      passingGettable3.mandatoryNonEmptyListReader.run(testDataWithEmptyList).isLeft mustBe true
+    }
+
+    "fails when gettable cannot be found" in {
+      failingListGettable.mandatoryNonEmptyListReader.run(testData).isLeft mustBe true
+    }
+  }
+
+  "optionalNonEmptyListReader" - {
+    "passes and converts list to nonEmptyList" in {
+      passingGettable3.optionalNonEmptyListReader.run(testData).right.value.value mustBe NonEmptyList("listEntry1", List("listEntry2", "listEntry3"))
+    }
+
+    "returns None when list is empty" in {
+      passingGettable3.optionalNonEmptyListReader.run(testDataWithEmptyList).right.value mustBe None
+    }
+
+    "fails when gettable cannot be found" in {
+      failingListGettable.optionalNonEmptyListReader.run(testData).isLeft mustBe true
     }
   }
 

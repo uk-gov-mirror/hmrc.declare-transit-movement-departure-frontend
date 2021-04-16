@@ -27,8 +27,6 @@ import pages.movementDetails.PreLodgeDeclarationPage
 
 class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
-  // TODO investigate why mandatory reader ops doesnt work here
-
   "MovementDetails" - {
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
