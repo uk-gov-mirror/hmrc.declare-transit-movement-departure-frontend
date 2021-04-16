@@ -62,29 +62,11 @@ class TraderDetailsOfficesOfTransitFilter(index: Index, pageId: Int)(implicit pr
             )
           case None =>
             Future.successful(
-              if (index.position == numberOfOffices - 1) {
-                if (pageId == 0) {
-                  None
-                } else {
-                  request.userAnswers.get(OfficeOfTransitCountryPage(Index(numberOfOffices - 1))) match {
-                    case Some(_) =>
-                      None
-                    case None =>
-                      Option(
-                        Redirect(
-                          controllers.routeDetails.routes.OfficeOfTransitCountryController
-                            .onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode)
-                            .url)
-                      )
-                  }
-                }
-              } else {
-                Option(
-                  Redirect(
-                    controllers.routeDetails.routes.OfficeOfTransitCountryController
-                      .onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode)
-                      .url))
-              }
+              Option(
+                Redirect(
+                  controllers.routeDetails.routes.OfficeOfTransitCountryController
+                    .onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode)
+                    .url))
             )
         }
       } else {
