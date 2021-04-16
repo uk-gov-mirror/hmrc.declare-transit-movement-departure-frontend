@@ -152,21 +152,43 @@ class DeclarationRequestServiceSpec
 
         val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
 
-        "must return id of crossing when there are new details at border" in {
+        "must return id of crossing when the mode of crossing at the border is a ModeWithNationality " in {
 
-          forAll(arb[UserAnswers], arb[NewDetailsAtBorder], arb[JourneyDomain]) {
-            (userAnswers, newDetailsAtBorder, journeyDomain) =>
+          forAll(arb[UserAnswers], arb[NewDetailsAtBorder], arb[JourneyDomain], arb[ModeWithNationality]) {
+            (userAnswers, newDetailsAtBorder, journeyDomain, modeWithNationality) =>
               when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
-              val updatedTransportDetails = journeyDomain.transportDetails.copy(detailsAtBorder = newDetailsAtBorder)
-              val updatedJourneyDomain    = journeyDomain.copy(transportDetails                 = updatedTransportDetails)
+              val updatedTransportDetails = journeyDomain.transportDetails
+                .copy(detailsAtBorder = newDetailsAtBorder.copy(modeCrossingBorder = modeWithNationality))
+
+              val updatedJourneyDomain = journeyDomain.copy(transportDetails = updatedTransportDetails)
 
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.ideOfMeaOfTraCroHEA85.value mustBe newDetailsAtBorder.idCrossing
+              result.value.header.transportDetails.ideOfMeaOfTraCroHEA85.value mustBe modeWithNationality.idCrossing
+          }
+        }
+
+        "must return id of crossing when the mode of crossing at the border is a ModeExemptNationality " in {
+
+          forAll(arb[UserAnswers], arb[NewDetailsAtBorder], arb[JourneyDomain], arb[ModeExemptNationality]) {
+            (userAnswers, newDetailsAtBorder, journeyDomain, modeExemptNationality) =>
+              when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
+              when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
+
+              val updatedTransportDetails = journeyDomain.transportDetails
+                .copy(detailsAtBorder = newDetailsAtBorder.copy(modeCrossingBorder = modeExemptNationality))
+
+              val updatedJourneyDomain = journeyDomain.copy(transportDetails = updatedTransportDetails)
+
+              val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
+
+              val result = service.convert(updatedUserAnswer).futureValue
+
+              result.value.header.transportDetails.ideOfMeaOfTraCroHEA85 mustBe None
           }
         }
 

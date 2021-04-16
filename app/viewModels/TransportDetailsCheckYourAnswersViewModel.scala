@@ -52,8 +52,8 @@ object TransportDetailsCheckYourAnswersViewModel {
           nationalityAtDeparture,
           changeAtBorder,
           modeAtBorder,
-          idCrossingBorder,
           modeCrossingBorder,
+          idCrossingBorder,
           nationalityCrossingBorder
         ).flatten)))
   }
