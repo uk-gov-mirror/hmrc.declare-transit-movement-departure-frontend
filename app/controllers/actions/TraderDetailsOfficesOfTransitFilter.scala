@@ -37,54 +37,40 @@ class TraderDetailsOfficesOfTransitFilter(index: Index, pageId: Int)(implicit pr
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
 
-    // if the index is valid
     val numberOfOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
-    if (index.position == 0) {
-      Future.successful(None)
-    } else {
 
-      if (numberOfOffices > 0) {
-        request.userAnswers.get(AddAnotherTransitOfficePage(Index(numberOfOffices - 1))) match {
-          case Some(_) =>
-            Future.successful(
-              if (index.position <= 8) {
-                if (index.position == numberOfOffices) {
-                  if (pageId == 0) {
-                    None
-                  } else {
-                    request.userAnswers.get(OfficeOfTransitCountryPage(Index(numberOfOffices - 1))) match {
-                      case Some(_) =>
-                        None
-                      case None =>
-                        Option(
-                          Redirect(controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(request.userAnswers.id, index, NormalMode).url)
-                        )
-                    }
-                  }
-                } else {
-                  Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url))
-                }
-              } else {
-                Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url))
+    def addAnotherTransitOffice: Option[String] = request.userAnswers.get(AddAnotherTransitOfficePage(Index(numberOfOffices - 1)))
+    val officeOfTransitCountry                  = request.userAnswers.get(OfficeOfTransitCountryPage(Index(numberOfOffices - 1)))
+
+    Future(
+      if (numberOfOffices > 0 && index.position <= 8 && index.position == numberOfOffices) {
+        if (index.position != 0 || pageId != 0) {
+          addAnotherTransitOffice match {
+            case Some(_) =>
+              officeOfTransitCountry match {
+                case None =>
+                  Option(Redirect(controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(request.userAnswers.id, index, NormalMode).url))
+                case _ => None
               }
-            )
-          case None =>
-            println(s"\n\n\n ${index.position} \n\n\n $numberOfOffices \n\n\n")
-            if (index.position == numberOfOffices - 1) {
-              Future.successful(None)
-            } else {
-              Future.successful(
+            case None =>
+              if (index.position != numberOfOffices - 1) {
                 Option(
                   Redirect(
                     controllers.routeDetails.routes.OfficeOfTransitCountryController
                       .onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode)
-                      .url))
-              )
-            }
+                      .url
+                  )
+                )
+              } else {
+                None
+              }
+          }
+        } else {
+          None
         }
       } else {
-        Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
+        Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url))
       }
-    }
+    )
   }
 }
