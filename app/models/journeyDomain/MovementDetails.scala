@@ -57,7 +57,6 @@ object MovementDetails {
 
   object NormalMovementDetails {
 
-    // TODO investigate why filterMandatoryDependent doesnt work here
     implicit val parseSimplifiedMovementDetails: UserAnswersReader[NormalMovementDetails] =
       ProcedureTypePage.reader.flatMap {
         case procedureType if procedureType == Normal =>
@@ -70,7 +69,7 @@ object MovementDetails {
           ).tupled.map((NormalMovementDetails.apply _).tupled)
         case _ =>
           ReaderT[EitherType, UserAnswers, NormalMovementDetails](
-            _ => Left(ReaderError(ProcedureTypePage)) // TODO add message
+            _ => Left(ReaderError(ProcedureTypePage))
           )
       }
   }
