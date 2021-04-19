@@ -20,15 +20,21 @@ import models.UserAnswers
 import play.api.libs.json.JsPath
 import models.journeyDomain.TransportDetails.InlandMode.Constants
 
+import scala.util.Try
+
 case object ModeCrossingBorderPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "modeCrossingBorder"
 
-  override def cleanup(value: Option[String], userAnswers: UserAnswers) =
+  override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(x) if Constants.codesSingleDigit.contains(x) => userAnswers.remove(NationalityCrossingBorderPage)
-      case _                                                 => super.cleanup(value, userAnswers)
+      case Some(x) if Constants.codes.contains(x.toInt) =>
+        for {
+          noNationality <- userAnswers.remove(NationalityCrossingBorderPage)
+          noIdCrossing  <- noNationality.remove(IdCrossingBorderPage)
+        } yield noIdCrossing
+      case _ => super.cleanup(value, userAnswers)
     }
 }
