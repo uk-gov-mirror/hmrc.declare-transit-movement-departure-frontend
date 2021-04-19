@@ -69,7 +69,6 @@ class TraderDetailsOfficesOfTransitFilter(index: Index, pageId: Int)(implicit pr
               }
             )
           case None =>
-            println(s"\n\n\n ${index.position} \n\n\n $numberOfOffices \n\n\n")
             if (index.position == numberOfOffices - 1) {
               Future.successful(None)
             } else {
