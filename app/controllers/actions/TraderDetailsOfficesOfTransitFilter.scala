@@ -33,20 +33,20 @@ class TraderDetailsOfficesOfTransitProvider @Inject()()(implicit ec: ExecutionCo
 }
 
 class TraderDetailsOfficesOfTransitFilter(index: Index, pageId: Int)(implicit protected val executionContext: ExecutionContext)
-    extends ActionFilter[DataRequest] {
+  extends ActionFilter[DataRequest] {
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
 
     // if the index is valid
     val numberOfOffices = request.userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
-    if (index.position == 0) {
-      Future.successful(None)
-    } else {
+    Future(
+      if (index.position == 0) {
+        None
+      } else {
 
-      if (numberOfOffices > 0) {
-        request.userAnswers.get(AddAnotherTransitOfficePage(Index(numberOfOffices - 1))) match {
-          case Some(_) =>
-            Future.successful(
+        if (numberOfOffices > 0) {
+          request.userAnswers.get(AddAnotherTransitOfficePage(Index(numberOfOffices - 1))) match {
+            case Some(_) =>
               if (index.position <= 8) {
                 if (index.position == numberOfOffices) {
                   if (pageId == 0) {
@@ -67,23 +67,24 @@ class TraderDetailsOfficesOfTransitFilter(index: Index, pageId: Int)(implicit pr
               } else {
                 Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url))
               }
-            )
-          case None =>
-            if (index.position == numberOfOffices - 1) {
-              Future.successful(None)
-            } else {
-              Future.successful(
+
+            case None =>
+              if (index.position == numberOfOffices - 1) {
+                None
+              } else {
                 Option(
                   Redirect(
                     controllers.routeDetails.routes.OfficeOfTransitCountryController
                       .onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode)
-                      .url))
-              )
-            }
+                      .url)
+                )
+              }
+          }
+        } else {
+          Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url))
         }
-      } else {
-        Future.successful(Option(Redirect(controllers.routeDetails.routes.AddTransitOfficeController.onPageLoad(request.userAnswers.id, NormalMode).url)))
       }
-    }
+    )
   }
+
 }
