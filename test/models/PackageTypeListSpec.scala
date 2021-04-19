@@ -45,7 +45,6 @@ class PackageTypeListSpec extends AnyFreeSpec with Matchers with OptionValues {
 
       packageTypeList.getPackageType(packageType1.code).value mustBe packageType1
     }
-
   }
 
 }

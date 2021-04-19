@@ -21,10 +21,13 @@ import java.time.LocalDateTime
 import cats.data._
 import cats.implicits._
 import derivable.DeriveNumberOfOfficeOfTransits
-import models.Index
+import models.journeyDomain.ItemTraderDetails.RequiredDetails
+import models.{Index, UserAnswers}
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.reference.{CountryCode, CustomsOffice}
 import pages._
+import play.api.libs.json.JsObject
+import queries.{Gettable, Query}
 
 final case class RouteDetails(
   countryOfDispatch: CountryCode,
@@ -43,36 +46,32 @@ object RouteDetails {
 
   object TransitInformation {
 
-    implicit val readSeqTransitInformation: UserAnswersReader[NonEmptyList[TransitInformation]] =
+    implicit val readSeqTransitInformation: UserAnswersReader[NonEmptyList[TransitInformation]] = {
       AddSecurityDetailsPage.reader
         .flatMap {
           addSecurityDetailsFlag =>
             if (addSecurityDetailsFlag) {
-              DeriveNumberOfOfficeOfTransits.reader.flatMap {
-                offices =>
-                  offices.zipWithIndex.traverse({
-                    case (_, index) =>
-                      (
-                        AddAnotherTransitOfficePage(Index(index)).reader,
-                        ArrivalTimesAtOfficePage(Index(index)).reader
-                      ).tupled.map {
-                        case (office, time) => TransitInformation(office, Some(time))
-                      }
-                  })
+              DeriveNumberOfOfficeOfTransits.mandatoryNonEmptyListReader.flatMap {
+                _.zipWithIndex.traverse({
+                  case (_, index) =>
+                    (
+                      AddAnotherTransitOfficePage(Index(index)).reader,
+                      ArrivalTimesAtOfficePage(Index(index)).reader
+                    ).tupled.map {
+                      case (office, time) => TransitInformation(office, Some(time))
+                    }
+                })
               }
             } else {
-              DeriveNumberOfOfficeOfTransits.reader.flatMap {
-                offices =>
-                  offices.zipWithIndex.traverse({
-                    case (_, index) =>
-                      AddAnotherTransitOfficePage(Index(index)).reader.map(TransitInformation(_, None))
-                  })
-
+              DeriveNumberOfOfficeOfTransits.mandatoryNonEmptyListReader.flatMap {
+                _.zipWithIndex.traverse({
+                  case (_, index) =>
+                    AddAnotherTransitOfficePage(Index(index)).reader.map(TransitInformation(_, None))
+                })
               }
-
             }
         }
-        .flatMapF(NonEmptyList.fromList)
+    }
   }
 
   implicit val makeSimplifiedMovementDetails: UserAnswersReader[RouteDetails] =

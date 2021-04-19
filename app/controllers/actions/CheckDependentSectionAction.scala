@@ -32,11 +32,12 @@ class CheckDependentSectionCompletionAction(val dependentSection: DependentSecti
     with Logging {
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
     val reader: UserAnswersReader[_] = DependentSection.dependentSectionReader(dependentSection, request.userAnswers)
-    if (reader.run(request.userAnswers).isDefined) {
-      Future.successful(None)
-    } else {
-      logger.info(s"User is redirected to 'task-list' page when trying to access the URL: ${request.request.path}")
-      Future.successful(Some(Redirect(routes.DeclarationSummaryController.onPageLoad(request.userAnswers.id))))
+
+    reader.run(request.userAnswers) match {
+      case Right(_) => Future.successful(None)
+      case Left(_) =>
+        logger.info(s"User is redirected to 'task-list' page when trying to access the URL: ${request.request.path}")
+        Future.successful(Some(Redirect(routes.DeclarationSummaryController.onPageLoad(request.userAnswers.id))))
     }
   }
 }

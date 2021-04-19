@@ -18,12 +18,13 @@ package models.journeyDomain
 
 import base.{GeneratorSpec, SpecBase, UserAnswersSpecHelper}
 import generators.JourneyModelGenerators
+import models.journeyDomain.PackagesSpec.UserAnswersSpecHelperOps
 import models.journeyDomain.SpecialMentionSpec.setSpecialMentionsUserAnswers
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.addItems.specialMentions.{AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
+import pages.addItems.specialMentions.{SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 
 class SpecialMentionSpec extends SpecBase with GeneratorSpec with JourneyModelGenerators {
 
@@ -41,25 +42,27 @@ class SpecialMentionSpec extends SpecBase with GeneratorSpec with JourneyModelGe
             val updatedUserAnswers = setSpecialMentionsUserAnswers(specialMention, index, referenceIndex)(userAnswers)
             val result             = UserAnswersReader[SpecialMention](SpecialMention.specialMentionsReader(index, referenceIndex)).run(updatedUserAnswers)
 
-            result.value mustEqual specialMention
+            result.right.value mustEqual specialMention
         }
       }
     }
 
     "cannot be parsed from UserAnswers" - {
       "when a mandatory answer is missing" in {
-        forAll(arbitrary[UserAnswers], mandatoryPages) {
-          case (userAnswers, mandatoryPage) =>
-            val updatedUserAnswers = userAnswers.remove(mandatoryPage).success.value
-            val result: Option[SpecialMention] =
+        forAll(arbitrary[SpecialMention], arbitrary[UserAnswers], mandatoryPages) {
+          case (specialMention, userAnswers, mandatoryPage) =>
+            val updatedUserAnswers = setSpecialMentionsUserAnswers(specialMention, index, referenceIndex)(userAnswers)
+              .unsafeRemove(mandatoryPage)
+
+            val result: EitherType[SpecialMention] =
               UserAnswersReader[SpecialMention](SpecialMention.specialMentionsReader(index, referenceIndex)).run(updatedUserAnswers)
 
-            result mustBe None
+            result.left.value.page mustBe mandatoryPage
         }
       }
-
     }
   }
+
 }
 
 object SpecialMentionSpec extends UserAnswersSpecHelper {

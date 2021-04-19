@@ -38,7 +38,7 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsigneeNamePage)(name)
               .unsafeSetVal(ConsigneeAddressPage)(address)
 
-            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).value
+            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).right.value
 
             val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
 
@@ -57,9 +57,9 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsigneeNamePage)(name)
               .unsafeRemove(ConsigneeAddressPage)
 
-            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual None
+            result.page mustEqual ConsigneeAddressPage
         }
       }
 
@@ -73,9 +73,9 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsigneeAddressPage)(address)
               .unsafeRemove(ConsigneeNamePage)
 
-            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual None
+            result.page mustEqual ConsigneeNamePage
         }
 
       }
@@ -90,9 +90,9 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsigneeAddressPage)(address)
               .unsafeRemove(WhatIsConsigneeEoriPage)
 
-            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual None
+            result.page mustEqual WhatIsConsigneeEoriPage
         }
 
       }
@@ -108,7 +108,7 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsigneeNamePage)(name)
               .unsafeSetVal(ConsigneeAddressPage)(address)
 
-            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).value
+            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).right.value
 
             val expectedAddress: Address = Address.prismAddressToConsigneeAddress(address)
 
@@ -126,9 +126,9 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsigneeNamePage)(name)
               .unsafeRemove(ConsigneeAddressPage)
 
-            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual None
+            result.page mustEqual ConsigneeAddressPage
         }
       }
 
@@ -141,9 +141,9 @@ class ConsigneeDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
               .unsafeSetVal(ConsigneeAddressPage)(address)
               .unsafeRemove(ConsigneeNamePage)
 
-            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers)
+            val result = UserAnswersReader[ConsigneeDetails].run(userAnswers).left.value
 
-            result mustEqual None
+            result.page mustEqual ConsigneeNamePage
         }
       }
     }

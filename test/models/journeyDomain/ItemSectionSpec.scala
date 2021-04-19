@@ -25,7 +25,7 @@ import models.reference.{CircumstanceIndicator, CountryCode}
 import models.{DeclarationType, Index, UserAnswers}
 import org.scalacheck.Gen
 import pages.addItems.{AddAdministrativeReferencePage, AddDocumentsPage}
-import pages.addItems.specialMentions.AddSpecialMentionPage
+import pages.addItems.specialMentions.{AddSpecialMentionPage, SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 import pages.safetyAndSecurity._
 import pages._
 
@@ -73,28 +73,42 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
             val setSectionUserAnswers = ItemSectionSpec.setItemSection(itemSection, index)(updatedUserAnswer2)
 
-            val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(setSectionUserAnswers)
+            val result: EitherType[ItemSection] = ItemSection.readerItemSection(index).run(setSectionUserAnswers)
 
-            result.value.itemDetails mustEqual itemSection.itemDetails
-            result.value.consignor mustEqual itemSection.consignor
-            result.value.consignee mustEqual itemSection.consignee
-            result.value.packages mustEqual itemSection.packages
-            result.value.containers mustEqual itemSection.containers
-            result.value.specialMentions mustEqual itemSection.specialMentions
-            result.value.producedDocuments mustEqual itemSection.producedDocuments
-            result.value.itemSecurityTraderDetails mustEqual itemSection.itemSecurityTraderDetails
+            result.right.value.itemDetails mustEqual itemSection.itemDetails
+            result.right.value.consignor mustEqual itemSection.consignor
+            result.right.value.consignee mustEqual itemSection.consignee
+            result.right.value.packages mustEqual itemSection.packages
+            result.right.value.containers mustEqual itemSection.containers
+            result.right.value.specialMentions mustEqual itemSection.specialMentions
+            result.right.value.producedDocuments mustEqual itemSection.producedDocuments
+            result.right.value.itemSecurityTraderDetails mustEqual itemSection.itemSecurityTraderDetails
         }
       }
     }
 
     "cannot be parsed" - {
-      "when an answer is missing" in {
-        forAll(arb[ItemSection], arb[UserAnswers]) {
-          case (itemSection, ua) =>
-            val userAnswers                 = ItemDetailsSpec.setItemDetailsUserAnswers(itemSection.itemDetails, index)(ua)
-            val result: Option[ItemSection] = ItemSection.readerItemSection(index).run(userAnswers)
 
-            result mustBe None
+      val mandatoryPages: Gen[QuestionPage[_]] = Gen.oneOf(
+        AddSecurityDetailsPage,
+        AddCircumstanceIndicatorPage,
+        AddCommercialReferenceNumberPage,
+        AddDocumentsPage(itemIndex),
+        CircumstanceIndicatorPage,
+        AddConsignorPage,
+        AddConsigneePage
+      )
+
+      "when an answer is missing" in {
+        forAll(arb[ItemSection], arb[UserAnswers], mandatoryPages) {
+          case (itemSection, ua, mandatoryPage) =>
+            val userAnswers = ItemDetailsSpec
+              .setItemDetailsUserAnswers(itemSection.itemDetails, index)(ua)
+              .unsafeRemove(mandatoryPage)
+
+            val result: EitherType[ItemSection] = ItemSection.readerItemSection(index).run(userAnswers)
+
+            result.isLeft mustBe true
         }
       }
     }
@@ -139,7 +153,7 @@ class ItemSectionSpec extends SpecBase with GeneratorSpec with JourneyModelGener
 
             val result = ItemSection.readerItemSections.run(setItemSections)
 
-            result.value mustEqual NonEmptyList(itemSections, List(itemSections))
+            result.right.value mustEqual NonEmptyList(itemSections, List(itemSections))
         }
       }
     }

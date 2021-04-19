@@ -19,6 +19,7 @@ package services
 import base.{MockServiceApp, SpecBase}
 import connectors.DepartureMovementConnector
 import generators.MessagesModelGenerators
+import models.journeyDomain.ReaderError
 import models.messages.DeclarationRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -26,9 +27,11 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.{Page, QuestionPage}
 import play.api.http.Status.ACCEPTED
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.JsPath
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -56,9 +59,9 @@ class DeclarationSubmissionServiceSpec extends SpecBase with MockServiceApp with
       val request: DeclarationRequest = arbitrary[DeclarationRequest].sample.value
 
       when(mockDepartureMovementConnector.submitDepartureMovement(any())(any())).thenReturn(Future.successful(HttpResponse(ACCEPTED)))
-      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Some(request)))
+      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Right(request)))
 
-      declarationService.submit(emptyUserAnswers).futureValue.value.status mustBe ACCEPTED
+      declarationService.submit(emptyUserAnswers).futureValue.right.value.status mustBe ACCEPTED
     }
 
     "must return failure status on failing to create departure declaration" in {
@@ -66,15 +69,20 @@ class DeclarationSubmissionServiceSpec extends SpecBase with MockServiceApp with
       val request: DeclarationRequest = arbitrary[DeclarationRequest].sample.value
 
       when(mockDepartureMovementConnector.submitDepartureMovement(any())(any())).thenReturn(Future.successful(HttpResponse(errorCode)))
-      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Some(request)))
+      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Right(request)))
 
-      declarationService.submit(emptyUserAnswers).futureValue.value.status mustBe errorCode
+      declarationService.submit(emptyUserAnswers).futureValue.right.value.status mustBe errorCode
     }
 
     "must return None on failing to create departure declaration" in {
-      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(None))
 
-      declarationService.submit(emptyUserAnswers).futureValue mustBe None
+      case object ErrorPage extends QuestionPage[Boolean] {
+        override def path: JsPath = JsPath \ ""
+      }
+
+      when(mockDeclarationRequestService.convert(any())).thenReturn(Future.successful(Left(ReaderError(ErrorPage))))
+
+      declarationService.submit(emptyUserAnswers).futureValue.left.value.page mustBe ErrorPage
     }
   }
 }

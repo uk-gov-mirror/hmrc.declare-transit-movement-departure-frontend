@@ -17,8 +17,7 @@
 package viewModels
 
 import config.ManageTransitMovementsService
-import models.journeyDomain.JourneyDomain
-import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.{EitherType, JourneyDomain, UserAnswersReader}
 import models.{LocalReferenceNumber, SectionDetails, UserAnswers}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -31,13 +30,15 @@ class DeclarationSummaryViewModel(manageTransitMovementsService: ManageTransitMo
   private val sections: TaskListViewModel    = TaskListViewModel(userAnswers)
   private val backToTransitMovements: String = manageTransitMovementsService.service.fullServiceUrl
 
-  private val journeyDomain: Option[JourneyDomain] = UserAnswersReader[JourneyDomain].run(userAnswers)
+  private val journeyDomain: EitherType[JourneyDomain] = UserAnswersReader[JourneyDomain].run(userAnswers)
 
-  private val isDeclarationComplete: Boolean = journeyDomain.isDefined
+  private val isDeclarationComplete: Boolean = journeyDomain.isRight
 
-  private val onSubmitUrl: Option[String] = journeyDomain.map(
-    _ => nextPage(lrn).url
-  )
+  private val onSubmitUrl: Option[String] = if (isDeclarationComplete) {
+    Some(nextPage(lrn).url)
+  } else {
+    None
+  }
 
 }
 

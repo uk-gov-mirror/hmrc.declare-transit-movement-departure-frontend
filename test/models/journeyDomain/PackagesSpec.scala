@@ -45,7 +45,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
           val updatedUserAnswers = setPackageUserAnswers(packages, index, index)(userAnswers)
           val result             = UserAnswersReader[Packages](Packages.packagesReader(index, index)).run(updatedUserAnswers)
 
-          result.value mustEqual packages
+          result.right.value mustEqual packages
       }
     }
 
@@ -58,7 +58,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             val updatedUserAnswers = setPackageUserAnswers(otherPackage, index, index)(userAnswers)
             val result             = UserAnswersReader[OtherPackages](OtherPackages.otherPackageReader(index, index)).run(updatedUserAnswers)
 
-            result.value mustEqual otherPackage
+            result.right.value mustEqual otherPackage
         }
       }
 
@@ -69,9 +69,9 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             val updatedUserAnswers = setPackageUserAnswers(otherPackage, index, index)(userAnswers)
 
             val userAnswersIncomplete = updatedUserAnswers.unsafeRemove(mandatoryPage)
-            val result                = UserAnswersReader[OtherPackages](OtherPackages.otherPackageReader(index, index)).run(userAnswersIncomplete)
+            val result                = UserAnswersReader[OtherPackages](OtherPackages.otherPackageReader(index, index)).run(userAnswersIncomplete).left.value
 
-            result mustEqual None
+            result.page mustEqual mandatoryPage
         }
       }
 
@@ -86,7 +86,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             val updatedUserAnswers = setPackageUserAnswers(bulkPackage, index, index)(userAnswers)
             val result             = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
 
-            result.value mustEqual bulkPackage
+            result.right.value mustEqual bulkPackage
         }
       }
 
@@ -98,9 +98,9 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
               val updatedUserAnswers = setPackageUserAnswers(packages, index, index)(userAnswers)
 
               val userAnswersIncomplete = updatedUserAnswers.unsafeRemove(mandatoryPage)
-              val result                = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(userAnswersIncomplete)
+              val result                = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(userAnswersIncomplete).left.value
 
-              result mustEqual None
+              result.page mustEqual mandatoryPage
           }
         }
 
@@ -114,9 +114,9 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
                   .unsafeSetVal(DeclareNumberOfPackagesPage(index, index))(true)
                   .unsafeRemove(HowManyPackagesPage(index, index))
 
-              val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
+              val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers).left.value
 
-              result mustEqual None
+              result.page mustEqual HowManyPackagesPage(index, index)
           }
         }
 
@@ -130,9 +130,9 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
                   .unsafeSetVal(AddMarkPage(index, index))(true)
                   .unsafeRemove(DeclareMarkPage(index, index))
 
-              val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers)
+              val result = UserAnswersReader[BulkPackages](BulkPackages.bulkPackageReader(index, index)).run(updatedUserAnswers).left.value
 
-              result mustEqual None
+              result.page mustEqual DeclareMarkPage(index, index)
           }
         }
       }
@@ -147,7 +147,7 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
             val updatedUserAnswers = setPackageUserAnswers(bulkPackage, index, index)(userAnswers)
             val result             = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers)
 
-            result.value mustEqual bulkPackage
+            result.right.value mustEqual bulkPackage
         }
       }
 
@@ -158,9 +158,9 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
               val updatedUserAnswers = setPackageUserAnswers(packages, index, index)(userAnswers)
 
               val userAnswersIncomplete = updatedUserAnswers.unsafeRemove(mandatoryPage)
-              val result                = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(userAnswersIncomplete)
+              val result                = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(userAnswersIncomplete).left.value
 
-              result mustEqual None
+              result.page mustEqual mandatoryPage
           }
         }
 
@@ -174,9 +174,9 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
                   .unsafeSetVal(DeclareNumberOfPackagesPage(index, index))(true)
                   .unsafeRemove(HowManyPackagesPage(index, index))
 
-              val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers)
+              val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers).left.value
 
-              result mustEqual None
+              result.page mustEqual HowManyPackagesPage(index, index)
           }
         }
 
@@ -190,9 +190,9 @@ class PackagesSpec extends SpecBase with GeneratorSpec with JourneyModelGenerato
                   .unsafeSetVal(AddMarkPage(index, index))(true)
                   .unsafeRemove(DeclareMarkPage(index, index))
 
-              val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers)
+              val result = UserAnswersReader[UnpackedPackages](UnpackedPackages.unpackedPackagesReader(index, index)).run(updatedUserAnswers).left.value
 
-              result mustEqual None
+              result.page mustEqual DeclareMarkPage(index, index)
           }
         }
       }

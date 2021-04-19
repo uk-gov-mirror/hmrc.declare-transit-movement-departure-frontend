@@ -39,12 +39,10 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).right.value
 
             result mustEqual expected
-
         }
-
       }
 
       "when inland mode is 'Postal Consignment' or 'Fixed transport installations'" in {
@@ -55,7 +53,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).right.value
 
             result mustEqual expected
 
@@ -70,7 +68,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).right.value
 
             result mustEqual expected
 
@@ -87,7 +85,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).right.value
 
             result mustEqual expected
 
@@ -103,7 +101,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).right.value
 
             result mustEqual expected
 
@@ -118,7 +116,7 @@ class TransportDetailsSpec extends SpecBase with GeneratorSpec with TryValues wi
 
             val userAnswers = setTransportDetail(expected)(baseUserAnswers)
 
-            val result = UserAnswersReader[TransportDetails].run(userAnswers).value
+            val result = UserAnswersReader[TransportDetails].run(userAnswers).right.value
 
             result mustEqual expected
 

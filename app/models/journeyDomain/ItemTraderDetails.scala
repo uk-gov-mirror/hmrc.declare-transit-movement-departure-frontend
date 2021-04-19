@@ -32,11 +32,11 @@ object ItemTraderDetails {
 
   def consignorDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
     def readConsignorEoriPage: UserAnswersReader[Option[EoriNumber]] =
-      TraderDetailsConsignorEoriKnownPage(index).filterDependent(identity) {
+      TraderDetailsConsignorEoriKnownPage(index).filterOptionalDependent(identity) {
         TraderDetailsConsignorEoriNumberPage(index).reader.map(EoriNumber(_))
       }
 
-    val consignorInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
+    val consignorInformation: ReaderT[EitherType, UserAnswers, RequiredDetails] =
       (
         TraderDetailsConsignorNamePage(index).reader,
         TraderDetailsConsignorAddressPage(index).reader,
@@ -48,17 +48,17 @@ object ItemTraderDetails {
             RequiredDetails(name, address, eori)
         }
 
-    AddConsignorPage.filterDependent(_ == false)(consignorInformation)
+    AddConsignorPage.filterOptionalDependent(_ == false)(consignorInformation)
   }
 
   def consigneeDetails(index: Index): UserAnswersReader[Option[RequiredDetails]] = {
 
     def readConsigneeEoriPage: UserAnswersReader[Option[EoriNumber]] =
-      TraderDetailsConsigneeEoriKnownPage(index).filterDependent(identity) {
+      TraderDetailsConsigneeEoriKnownPage(index).filterOptionalDependent(identity) {
         TraderDetailsConsigneeEoriNumberPage(index).reader.map(EoriNumber(_))
       }
 
-    val consigneeInformation: ReaderT[Option, UserAnswers, RequiredDetails] =
+    val consigneeInformation: ReaderT[EitherType, UserAnswers, RequiredDetails] =
       (
         TraderDetailsConsigneeNamePage(index).reader,
         TraderDetailsConsigneeAddressPage(index).reader,
@@ -70,7 +70,7 @@ object ItemTraderDetails {
             RequiredDetails(name, address, eori)
         }
 
-    AddConsigneePage.filterDependent(_ == false)(consigneeInformation)
+    AddConsigneePage.filterOptionalDependent(_ == false)(consigneeInformation)
   }
 
   def userAnswersParser(index: Index): UserAnswersReader[ItemTraderDetails] =

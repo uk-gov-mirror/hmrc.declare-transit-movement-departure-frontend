@@ -19,7 +19,9 @@ package services
 import cats.implicits._
 import connectors.DepartureMovementConnector
 import javax.inject.Inject
-import models.UserAnswers
+import models.journeyDomain.ReaderError
+import models.{journeyDomain, UserAnswers}
+import queries.Query
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,7 +31,7 @@ class DeclarationSubmissionService @Inject()(
   declarationRequestService: DeclarationRequestService
 )(implicit ec: ExecutionContext) {
 
-  def submit(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Option[HttpResponse]] =
+  def submit(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[ReaderError, HttpResponse]] =
     declarationRequestService
       .convert(userAnswers)
       .flatMap(_.traverse(connector.submitDepartureMovement))

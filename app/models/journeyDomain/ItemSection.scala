@@ -19,8 +19,8 @@ package models.journeyDomain
 import cats.data._
 import cats.implicits._
 import derivable._
+import models.Index
 import models.journeyDomain.ItemTraderDetails.RequiredDetails
-import models.{Index, UserAnswers}
 import pages.addItems.specialMentions.AddSpecialMentionPage
 import pages.{AddSecurityDetailsPage, ContainersUsedPage}
 
@@ -38,60 +38,41 @@ case class ItemSection(
 
 object ItemSection {
 
-  private def derivePackage(itemIndex: Index): ReaderT[Option, UserAnswers, NonEmptyList[Packages]] =
-    DeriveNumberOfPackages(itemIndex).reader
-      .filter(_.nonEmpty)
-      .flatMap {
+  private def derivePackage(itemIndex: Index): UserAnswersReader[NonEmptyList[Packages]] =
+    DeriveNumberOfPackages(itemIndex).mandatoryNonEmptyListReader.flatMap {
+      _.zipWithIndex
+        .traverse[UserAnswersReader, Packages]({
+          case (_, index) =>
+            Packages.packagesReader(itemIndex, Index(index))
+        })
+    }
+
+  private def deriveContainers(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[Container]]] =
+    ContainersUsedPage.filterOptionalDependent(identity) {
+      DeriveNumberOfContainers(itemIndex).mandatoryNonEmptyListReader.flatMap {
         _.zipWithIndex
-          .traverse[UserAnswersReader, Packages]({
+          .traverse[UserAnswersReader, Container]({
             case (_, index) =>
-              Packages.packagesReader(itemIndex, Index(index))
+              Container.containerReader(itemIndex, Index(index))
           })
-          .map(NonEmptyList.fromListUnsafe)
       }
+    }
 
-  private def deriveContainers(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[Container]]] =
-    ContainersUsedPage.reader
-      .flatMap {
-        isTrue =>
-          if (isTrue) {
-            DeriveNumberOfContainers(itemIndex).reader
-              .filter(_.nonEmpty)
-              .flatMap {
-                _.zipWithIndex
-                  .traverse[UserAnswersReader, Container]({
-                    case (_, index) =>
-                      Container.containerReader(itemIndex, Index(index))
-                  })
-                  .map(NonEmptyList.fromList)
-              }
-          } else none[NonEmptyList[Container]].pure[UserAnswersReader]
+  private def deriveSpecialMentions(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[SpecialMention]]] =
+    AddSpecialMentionPage(itemIndex).filterOptionalDependent(identity) {
+      DeriveNumberOfSpecialMentions(itemIndex).mandatoryNonEmptyListReader.flatMap {
+        _.zipWithIndex
+          .traverse[UserAnswersReader, SpecialMention]({
+            case (_, index) =>
+              SpecialMention.specialMentionsReader(itemIndex, Index(index))
+          })
       }
+    }
 
-  private def deriveSpecialMentions(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[SpecialMention]]] =
-    AddSpecialMentionPage(itemIndex).reader
-      .flatMap {
-        isTrue =>
-          if (isTrue) {
-            DeriveNumberOfSpecialMentions(itemIndex).reader
-              .filter(_.nonEmpty)
-              .flatMap {
-                _.zipWithIndex
-                  .traverse[UserAnswersReader, SpecialMention]({
-                    case (_, index) =>
-                      SpecialMention.specialMentionsReader(itemIndex, Index(index))
-                  })
-                  .map(NonEmptyList.fromList)
-              }
-          } else none[NonEmptyList[SpecialMention]].pure[UserAnswersReader]
-      }
-
-  private def securityItemsSecurityTraderDetails(itemIndex: Index): ReaderT[Option, UserAnswers, Option[ItemsSecurityTraderDetails]] =
-    AddSecurityDetailsPage.reader
-      .flatMap(
-        _ => ItemsSecurityTraderDetails.parser(itemIndex)
-      )
-      .lower
+  private def securityItemsSecurityTraderDetails(itemIndex: Index): UserAnswersReader[Option[ItemsSecurityTraderDetails]] =
+    AddSecurityDetailsPage.filterOptionalDependent(identity) {
+      ItemsSecurityTraderDetails.parser(itemIndex)
+    }
 
   implicit def readerItemSection(index: Index): UserAnswersReader[ItemSection] =
     (
@@ -107,15 +88,11 @@ object ItemSection {
     ).tupled.map((ItemSection.apply _).tupled)
 
   implicit def readerItemSections: UserAnswersReader[NonEmptyList[ItemSection]] =
-    DeriveNumberOfItems.reader
-      .filter(_.nonEmpty)
-      .flatMap {
-        _.zipWithIndex
-          .traverse[UserAnswersReader, ItemSection]({
-            case (_, index) =>
-              readerItemSection(Index(index))
-          })
-          .map(NonEmptyList.fromListUnsafe)
-      }
-
+    DeriveNumberOfItems.mandatoryNonEmptyListReader.flatMap {
+      _.zipWithIndex
+        .traverse[UserAnswersReader, ItemSection]({
+          case (_, index) =>
+            readerItemSection(Index(index))
+        })
+    }
 }

@@ -31,20 +31,14 @@ final case class ItemDetails(
 object ItemDetails {
 
   private def readTotalNetMassPage(index: Index): UserAnswersReader[Option[String]] =
-    AddTotalNetMassPage(index).reader
-      .flatMap {
-        bool =>
-          if (bool) TotalNetMassPage(index).reader.map(Some(_))
-          else none[String].pure[UserAnswersReader]
-      }
+    AddTotalNetMassPage(index).filterOptionalDependent(identity) {
+      TotalNetMassPage(index).reader
+    }
 
   private def readCommodityCodePage(index: Index): UserAnswersReader[Option[String]] =
-    IsCommodityCodeKnownPage(index).reader
-      .flatMap {
-        bool =>
-          if (bool) CommodityCodePage(index).reader.map(Some(_))
-          else none[String].pure[UserAnswersReader]
-      }
+    IsCommodityCodeKnownPage(index).filterOptionalDependent(identity) {
+      CommodityCodePage(index).reader
+    }
 
   def itemDetailsReader(index: Index): UserAnswersReader[ItemDetails] =
     (

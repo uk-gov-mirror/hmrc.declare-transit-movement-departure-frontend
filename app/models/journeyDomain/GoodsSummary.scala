@@ -37,23 +37,9 @@ object GoodsSummary {
 
   implicit val parser: UserAnswersReader[GoodsSummary] =
     (
-      DeclarePackagesPage.reader
-        .flatMap(
-          bool =>
-            if (bool)
-              TotalPackagesPage.optionalReader
-            else
-              none[Int].pure[UserAnswersReader]
-        ),
+      DeclarePackagesPage.filterOptionalDependent(identity)(TotalPackagesPage.optionalReader).map(_.flatten),
       TotalGrossMassPage.reader,
-      AddSecurityDetailsPage.reader
-        .flatMap(
-          bool =>
-            if (bool)
-              LoadingPlacePage.optionalReader
-            else
-              none[String].pure[UserAnswersReader]
-        ),
+      AddSecurityDetailsPage.filterOptionalDependent(identity)(LoadingPlacePage.optionalReader).map(_.flatten),
       UserAnswersReader[GoodSummaryDetails],
       DeriveNumberOfSeals.reader orElse List.empty[SealDomain].pure[UserAnswersReader]
     ).tupled.map((GoodsSummary.apply _).tupled)
@@ -64,21 +50,20 @@ object GoodsSummary {
 
   object GoodSummaryNormalDetails {
 
-    implicit val goodSummaryNormalDetailsReader: UserAnswersReader[GoodSummaryNormalDetails] =
-      ProcedureTypePage.reader
-        .filter(_ == ProcedureType.Normal)
-        .productR(
-          AddCustomsApprovedLocationPage.reader
-            .flatMap {
-              locationNeeded =>
-                if (locationNeeded)
-                  CustomsApprovedLocationPage.reader.map(
-                    location => GoodSummaryNormalDetails(Some(location))
-                  )
-                else
-                  GoodSummaryNormalDetails(None).pure[UserAnswersReader]
-            }
-        )
+    implicit val goodSummaryNormalDetailsReader: UserAnswersReader[GoodSummaryNormalDetails] = {
+      ProcedureTypePage.filterMandatoryDependent(_ == ProcedureType.Normal) {
+        AddCustomsApprovedLocationPage.reader
+          .flatMap {
+            locationNeeded =>
+              if (locationNeeded)
+                CustomsApprovedLocationPage.reader.map(
+                  location => GoodSummaryNormalDetails(Some(location))
+                )
+              else
+                GoodSummaryNormalDetails(None).pure[UserAnswersReader]
+          }
+      }
+    }
   }
 
   final case class GoodSummarySimplifiedDetails(authorisedLocationCode: String, controlResultDateLimit: LocalDate) extends GoodSummaryDetails
@@ -86,16 +71,12 @@ object GoodsSummary {
   object GoodSummarySimplifiedDetails {
 
     implicit val goodSummarySimplifiedDetailsReader: UserAnswersReader[GoodSummarySimplifiedDetails] =
-      ProcedureTypePage.reader
-        .filter(_ == ProcedureType.Simplified)
-        .productR(
-          (
-            AuthorisedLocationCodePage.reader,
-            ControlResultDateLimitPage.reader
-          ).tupled
-            .map((GoodSummarySimplifiedDetails.apply _).tupled)
-        )
-
+      ProcedureTypePage.filterMandatoryDependent(_ == ProcedureType.Simplified) {
+        (
+          AuthorisedLocationCodePage.reader,
+          ControlResultDateLimitPage.reader
+        ).tupled.map((GoodSummarySimplifiedDetails.apply _).tupled)
+      }
   }
 
   object GoodSummaryDetails {
@@ -104,4 +85,5 @@ object GoodsSummary {
       UserAnswersReader[GoodSummaryNormalDetails].widen[GoodSummaryDetails] orElse
         UserAnswersReader[GoodSummarySimplifiedDetails].widen[GoodSummaryDetails]
   }
+
 }

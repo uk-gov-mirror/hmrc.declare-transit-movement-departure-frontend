@@ -47,9 +47,10 @@ import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DeclarationRequestServiceInt {
-  def convert(userAnswers: UserAnswers): Future[Option[DeclarationRequest]]
+  def convert(userAnswers: UserAnswers): Future[EitherType[DeclarationRequest]]
 }
 
+@deprecated("Merge with DeclarationRequestService", "")
 class DeclarationRequestService @Inject()(
   icrRepository: InterchangeControlReferenceIdRepository,
   dateTimeService: DateTimeService
@@ -58,7 +59,7 @@ class DeclarationRequestService @Inject()(
 
   val logger: Logger = Logger(getClass)
 
-  override def convert(userAnswers: UserAnswers): Future[Option[DeclarationRequest]] =
+  override def convert(userAnswers: UserAnswers): Future[EitherType[DeclarationRequest]] =
     icrRepository
       .nextInterchangeControlReferenceId()
       .map {
@@ -67,10 +68,8 @@ class DeclarationRequestService @Inject()(
             .map(journeyModelToSubmissionModel(_, icrId, dateTimeService.currentDateTime))
             .run(userAnswers)
       }
-      .recover {
-        case _ => None
-      }
 
+  // TODO refactor / move to seperate module for unit testing
   private def journeyModelToSubmissionModel(
     journeyDomain: JourneyDomain,
     icr: InterchangeControlReference,

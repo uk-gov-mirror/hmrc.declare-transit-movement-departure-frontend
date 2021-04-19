@@ -39,9 +39,8 @@ object PreviousReferences {
   def previousReferenceReader(itemIndex: Index, referenceIndex: Index): UserAnswersReader[PreviousReferences] = {
 
     val extraInformation: UserAnswersReader[Option[String]] =
-      AddExtraInformationPage(itemIndex, referenceIndex).reader.flatMap {
-        case true  => ExtraInformationPage(itemIndex, referenceIndex).reader.map(Some(_))
-        case false => none[String].pure[UserAnswersReader]
+      AddExtraInformationPage(itemIndex, referenceIndex).filterOptionalDependent(identity) {
+        ExtraInformationPage(itemIndex, referenceIndex).reader
       }
 
     (
@@ -51,7 +50,7 @@ object PreviousReferences {
     ).tupled.map((PreviousReferences.apply _).tupled)
   }
 
-  def derivePreviousReferences(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
+  def derivePreviousReferences(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
     (
       DeclarationTypePage.reader,
       CountryOfDispatchPage.reader
@@ -65,15 +64,15 @@ object PreviousReferences {
         }
     }
 
-  private def allPreviousReferencesReader(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[PreviousReferences]]] =
-    DeriveNumberOfPreviousAdministrativeReferences(itemIndex).reader
-      .filter(_.nonEmpty)
-      .flatMap(
-        _.zipWithIndex.traverse[UserAnswersReader, PreviousReferences]({
-          case (_, index) =>
-            PreviousReferences.previousReferenceReader(itemIndex, Index(index))
-        })
+  private def allPreviousReferencesReader(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[PreviousReferences]]] =
+    DeriveNumberOfPreviousAdministrativeReferences(itemIndex).optionalNonEmptyListReader.flatMap {
+      _.traverse(
+        _.zipWithIndex
+          .traverse[UserAnswersReader, PreviousReferences]({
+            case (_, index) =>
+              PreviousReferences.previousReferenceReader(itemIndex, Index(index))
+          })
       )
-      .map(NonEmptyList.fromList)
+    }
 
 }

@@ -19,8 +19,10 @@ package models.journeyDomain
 import cats.data.{NonEmptyList, ReaderT}
 import cats.implicits.{catsStdInstancesForOption, _}
 import derivable.DeriveNumberOfCountryOfRouting
+import models.journeyDomain.GoodsSummary.GoodSummarySimplifiedDetails
 import models.reference.CountryCode
 import models.{Index, UserAnswers}
+import pages.ProcedureTypePage
 import pages.safetyAndSecurity.CountryOfRoutingPage
 
 case class Itinerary(countryCode: CountryCode)
@@ -30,15 +32,12 @@ object Itinerary {
   def itineraryReader(index: Index): UserAnswersReader[Itinerary] =
     CountryOfRoutingPage(index).reader.map(Itinerary.apply)
 
-  def readItineraries: ReaderT[Option, UserAnswers, NonEmptyList[Itinerary]] =
-    DeriveNumberOfCountryOfRouting.reader
-      .filter(_.nonEmpty)
-      .flatMap {
-        _.zipWithIndex
-          .traverse[UserAnswersReader, Itinerary]({
-            case (_, index) =>
-              itineraryReader(Index(index))
-          })
-          .map(NonEmptyList.fromListUnsafe)
-      }
+  def readItineraries: UserAnswersReader[NonEmptyList[Itinerary]] =
+    DeriveNumberOfCountryOfRouting.mandatoryNonEmptyListReader.flatMap {
+      _.zipWithIndex
+        .traverse[UserAnswersReader, Itinerary]({
+          case (_, index) =>
+            itineraryReader(Index(index))
+        })
+    }
 }

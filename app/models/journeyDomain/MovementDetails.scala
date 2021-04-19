@@ -16,10 +16,11 @@
 
 package models.journeyDomain
 
+import cats.data.ReaderT
 import cats.implicits._
 import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain.MovementDetails.DeclarationForSomeoneElseAnswer
-import models.{DeclarationType, RepresentativeCapacity}
+import models.{DeclarationType, RepresentativeCapacity, UserAnswers}
 import pages._
 import pages.movementDetails.PreLodgeDeclarationPage
 
@@ -57,19 +58,20 @@ object MovementDetails {
   object NormalMovementDetails {
 
     implicit val parseSimplifiedMovementDetails: UserAnswersReader[NormalMovementDetails] =
-      ProcedureTypePage.reader
-        .filter(_ == Normal)
-        .flatMap(
-          _ =>
-            (
-              DeclarationTypePage.reader,
-              PreLodgeDeclarationPage.reader,
-              ContainersUsedPage.reader,
-              DeclarationPlacePage.reader,
-              declarationForSomeoneElseAnswer
-            ).tupled
-        )
-        .map((NormalMovementDetails.apply _).tupled)
+      ProcedureTypePage.reader.flatMap {
+        case procedureType if procedureType == Normal =>
+          (
+            DeclarationTypePage.reader,
+            PreLodgeDeclarationPage.reader,
+            ContainersUsedPage.reader,
+            DeclarationPlacePage.reader,
+            declarationForSomeoneElseAnswer
+          ).tupled.map((NormalMovementDetails.apply _).tupled)
+        case _ =>
+          ReaderT[EitherType, UserAnswers, NormalMovementDetails](
+            _ => Left(ReaderError(ProcedureTypePage))
+          )
+      }
   }
 
   final case class SimplifiedMovementDetails(
@@ -82,18 +84,14 @@ object MovementDetails {
   object SimplifiedMovementDetails {
 
     implicit val makeSimplifiedMovementDetails: UserAnswersReader[SimplifiedMovementDetails] =
-      ProcedureTypePage.reader
-        .filter(_ == Simplified)
-        .flatMap(
-          _ =>
-            (
-              DeclarationTypePage.reader,
-              ContainersUsedPage.reader,
-              DeclarationPlacePage.reader,
-              declarationForSomeoneElseAnswer
-            ).tupled
-        )
-        .map((SimplifiedMovementDetails.apply _).tupled)
+      ProcedureTypePage.filterMandatoryDependent(_ == Simplified) {
+        (
+          DeclarationTypePage.reader,
+          ContainersUsedPage.reader,
+          DeclarationPlacePage.reader,
+          declarationForSomeoneElseAnswer
+        ).tupled.map((SimplifiedMovementDetails.apply _).tupled)
+      }
   }
 
   sealed trait DeclarationForSomeoneElseAnswer

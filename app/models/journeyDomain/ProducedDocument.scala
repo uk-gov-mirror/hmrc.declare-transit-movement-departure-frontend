@@ -29,7 +29,7 @@ final case class ProducedDocument(documentType: String, documentReference: Strin
 
 object ProducedDocument {
 
-  private def readDocumentType(itemIndex: Index): ReaderT[Option, UserAnswers, Boolean] =
+  private def readDocumentType(itemIndex: Index): ReaderT[EitherType, UserAnswers, Boolean] =
     (for {
       addSecurity     <- AddSecurityDetailsPage.reader
       addRef          <- AddCommercialReferenceNumberPage.optionalReader
@@ -42,22 +42,23 @@ object ProducedDocument {
       }
     }).flatMap(x => x)
 
-  def deriveProducedDocuments(itemIndex: Index): ReaderT[Option, UserAnswers, Option[NonEmptyList[ProducedDocument]]] =
+  def deriveProducedDocuments(itemIndex: Index): UserAnswersReader[Option[NonEmptyList[ProducedDocument]]] =
     readDocumentType(itemIndex)
       .flatMap {
         isTrue =>
           if (isTrue) {
-            DeriveNumberOfDocuments(itemIndex).reader
-              .filter(_.nonEmpty)
-              .flatMap {
+            DeriveNumberOfDocuments(itemIndex).optionalNonEmptyListReader.flatMap {
+              _.traverse {
                 _.zipWithIndex
                   .traverse[UserAnswersReader, ProducedDocument]({
                     case (_, index) =>
                       ProducedDocument.producedDocumentReader(itemIndex, Index(index))
                   })
-                  .map(NonEmptyList.fromList)
               }
-          } else none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]
+            }
+          } else {
+            none[NonEmptyList[ProducedDocument]].pure[UserAnswersReader]
+          }
       }
 
   def producedDocumentReader(index: Index, referenceIndex: Index): UserAnswersReader[ProducedDocument] =
@@ -68,12 +69,7 @@ object ProducedDocument {
     ).tupled.map((ProducedDocument.apply _).tupled)
 
   private def addExtraInformationAnswer(index: Index, referenceIndex: Index): UserAnswersReader[Option[String]] =
-    AddExtraInformationPage(index, referenceIndex).reader.flatMap(
-      isTrue =>
-        if (isTrue) {
-          DocumentExtraInformationPage(index, referenceIndex).reader.map(Some(_))
-        } else {
-          none[String].pure[UserAnswersReader]
-      }
-    )
+    AddExtraInformationPage(index, referenceIndex).filterMandatoryDependent(identity) {
+      DocumentExtraInformationPage(index, referenceIndex).reader.map(Some(_))
+    }
 }

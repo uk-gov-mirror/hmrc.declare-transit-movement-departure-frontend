@@ -30,7 +30,7 @@ object ConsigneeDetails {
 
     val readConsigneeEoriPage =
       IsConsigneeEoriKnownPage
-        .filterDependent(identity)(WhatIsConsigneeEoriPage.reader.map(EoriNumber(_)))
+        .filterOptionalDependent(identity)(WhatIsConsigneeEoriPage.reader.map(EoriNumber(_)))
 
     (
       readConsigneeEoriPage,

@@ -24,7 +24,7 @@ import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder
 import models.journeyDomain.TransportDetails.InlandMode.{NonSpecialMode, Rail}
 import models.journeyDomain.TransportDetails.ModeCrossingBorder.{ModeExemptNationality, ModeWithNationality}
 import models.journeyDomain.traderDetails.ConsignorDetails
-import models.journeyDomain.{JourneyDomain, JourneyDomainSpec, PreTaskListDetails}
+import models.journeyDomain.{EitherType, JourneyDomain, JourneyDomainSpec, PreTaskListDetails}
 import models.messages.goodsitem.SpecialMentionGuaranteeLiabilityAmount
 import models.messages.trader.TraderConsignor
 import models.messages.{DeclarationRequest, InterchangeControlReference}
@@ -34,8 +34,8 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import repositories.InterchangeControlReferenceIdRepository
-
 import java.time.LocalDateTime
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -83,7 +83,7 @@ class DeclarationRequestServiceSpec
             when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
             val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
-            service.convert(updatedUserAnswer).futureValue must be(defined)
+            service.convert(updatedUserAnswer).futureValue.isRight mustBe true
         }
       }
 
@@ -97,11 +97,12 @@ class DeclarationRequestServiceSpec
 
             val updatedJourneyDomain: JourneyDomain = journeyDomain.copy(guarantee = guaranteeReferences)
 
-            val updatedUserAnswer                  = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
-            val result: Option[DeclarationRequest] = service.convert(updatedUserAnswer).futureValue
-            result must be(defined)
+            val updatedUserAnswer                      = JourneyDomainSpec.setJourneyDomain(updatedJourneyDomain)(userAnswers)
+            val result: EitherType[DeclarationRequest] = service.convert(updatedUserAnswer).futureValue
 
-            val firstGoodsItemSpecialMentionLiabilityAmount = result.get.goodsItems.head.specialMention.collect {
+            result.isRight mustBe true
+
+            val firstGoodsItemSpecialMentionLiabilityAmount = result.right.value.goodsItems.head.specialMention.collect {
               case specialMention: SpecialMentionGuaranteeLiabilityAmount => specialMention
             }
 
@@ -117,7 +118,7 @@ class DeclarationRequestServiceSpec
             }
             firstGoodsItemSpecialMentionLiabilityAmount mustBe expectedSpecialMention.toList
 
-            val otherGoodsItemsSpecialMentionLiabilityAmount = result.get.goodsItems.tail.flatMap(
+            val otherGoodsItemsSpecialMentionLiabilityAmount = result.right.value.goodsItems.tail.flatMap(
               _.specialMention.collect {
                 case specialMention: SpecialMentionGuaranteeLiabilityAmount => specialMention
               }
@@ -138,11 +139,12 @@ class DeclarationRequestServiceSpec
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
               val result            = service.convert(updatedUserAnswer).futureValue
 
-              result must be(defined)
+              result.isRight mustBe true
+
               if (journeyDomain.preTaskList.addSecurityDetails) {
-                result.value.header.secHEA358 mustBe Some(1)
+                result.right.value.header.secHEA358 mustBe Some(1)
               } else {
-                result.value.header.secHEA358 mustBe None
+                result.right.value.header.secHEA358 mustBe None
               }
           }
         }
@@ -168,7 +170,7 @@ class DeclarationRequestServiceSpec
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.ideOfMeaOfTraCroHEA85.value mustBe modeWithNationality.idCrossing
+              result.right.value.header.transportDetails.ideOfMeaOfTraCroHEA85.value mustBe modeWithNationality.idCrossing
           }
         }
 
@@ -188,7 +190,7 @@ class DeclarationRequestServiceSpec
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.ideOfMeaOfTraCroHEA85 mustBe None
+              result.right.value.header.transportDetails.ideOfMeaOfTraCroHEA85 mustBe None
           }
         }
 
@@ -207,7 +209,7 @@ class DeclarationRequestServiceSpec
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.ideOfMeaOfTraCroHEA85 mustBe nonSpecialMode.departureId
+              result.right.value.header.transportDetails.ideOfMeaOfTraCroHEA85 mustBe nonSpecialMode.departureId
           }
         }
 
@@ -226,7 +228,7 @@ class DeclarationRequestServiceSpec
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.ideOfMeaOfTraCroHEA85 mustBe None
+              result.right.value.header.transportDetails.ideOfMeaOfTraCroHEA85 mustBe None
           }
         }
       }
@@ -248,7 +250,7 @@ class DeclarationRequestServiceSpec
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.natOfMeaOfTraCroHEA87.value mustBe modeWithNationality.nationalityCrossingBorder.code
+              result.right.value.header.transportDetails.natOfMeaOfTraCroHEA87.value mustBe modeWithNationality.nationalityCrossingBorder.code
           }
         }
 
@@ -267,7 +269,7 @@ class DeclarationRequestServiceSpec
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.natOfMeaOfTraCroHEA87 mustBe None
+              result.right.value.header.transportDetails.natOfMeaOfTraCroHEA87 mustBe None
           }
         }
 
@@ -285,7 +287,7 @@ class DeclarationRequestServiceSpec
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.natOfMeaOfTraCroHEA87.get mustBe nonSpecialMode.nationalityAtDeparture.get.code
+              result.right.value.header.transportDetails.natOfMeaOfTraCroHEA87.get mustBe nonSpecialMode.nationalityAtDeparture.get.code
           }
         }
 
@@ -303,7 +305,7 @@ class DeclarationRequestServiceSpec
 
               val result = service.convert(updatedUserAnswer).futureValue
 
-              result.value.header.transportDetails.natOfMeaOfTraCroHEA87 mustBe None
+              result.right.value.header.transportDetails.natOfMeaOfTraCroHEA87 mustBe None
           }
         }
       }
@@ -318,7 +320,7 @@ class DeclarationRequestServiceSpec
 
               val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
 
-              val result = service.convert(updatedUserAnswer).futureValue.value
+              val result = service.convert(updatedUserAnswer).futureValue.right.value
 
               result.controlResult must be(defined)
               result.header.autLocOfGooCodHEA41 must be(defined)
@@ -334,7 +336,7 @@ class DeclarationRequestServiceSpec
 
               val updatedUserAnswer: UserAnswers = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
 
-              val result = service.convert(updatedUserAnswer).futureValue.value
+              val result = service.convert(updatedUserAnswer).futureValue.right.value
 
               result.controlResult must not be defined
               result.header.autLocOfGooCodHEA41 must not be defined
@@ -353,7 +355,7 @@ class DeclarationRequestServiceSpec
                 when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
                 val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
-                val result            = service.convert(updatedUserAnswer).futureValue.value
+                val result            = service.convert(updatedUserAnswer).futureValue.right.value
                 result.traderConsignor must be(defined)
               }
 
@@ -369,35 +371,20 @@ class DeclarationRequestServiceSpec
               when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
               val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
-              val result            = service.convert(updatedUserAnswer).futureValue.value
+              val result            = service.convert(updatedUserAnswer).futureValue.right.value
               result.traderConsignor must not be defined
-
           }
         }
       }
     }
 
-    "must return None when InterchangeControlReferenceIdRepository fails" in {
-
-      forAll(arb[UserAnswers], arb[JourneyDomain]) {
-        (userAnswers, journeyDomain) =>
-          val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
-
-          when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.failed(new Exception))
-          when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
-
-          val updatedUserAnswer = JourneyDomainSpec.setJourneyDomain(journeyDomain)(userAnswers)
-          service.convert(updatedUserAnswer).futureValue mustEqual None
-      }
-    }
-
-    "must return None when there are missing answers from mandatory pages" in {
+    "must fail when there are missing answers from mandatory pages" in {
       val service = new DeclarationRequestService(mockIcrRepository, mockDateTimeService)
 
       when(mockIcrRepository.nextInterchangeControlReferenceId()).thenReturn(Future.successful(InterchangeControlReference("20190101", 1)))
       when(mockDateTimeService.currentDateTime).thenReturn(LocalDateTime.now())
 
-      service.convert(emptyUserAnswers).futureValue mustBe None
+      service.convert(emptyUserAnswers).futureValue.isLeft mustBe true
     }
 
   }

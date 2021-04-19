@@ -19,7 +19,7 @@ package viewModels
 import cats.data.Kleisli
 import cats.implicits._
 import models.Status.{CannotStartYet, Completed, InProgress, NotStarted}
-import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.{SectionDetails, Status, UserAnswers}
 
 private[viewModels] class TaskListDslCollectSectionName(userAnswers: UserAnswers) {
@@ -95,7 +95,7 @@ private[viewModels] class TaskListDsl[A, B, C](userAnswers: UserAnswers)(
         _ => (urlIfCompleted, Completed)
       )
 
-    val inProgress: Kleisli[Option, UserAnswers, (String, Status)] = readerIfInProgress
+    val inProgress: Kleisli[EitherType, UserAnswers, (String, Status)] = readerIfInProgress
       .map[(String, Status)](
         _ => (urlIfInProgress, InProgress)
       )
@@ -108,8 +108,8 @@ private[viewModels] class TaskListDsl[A, B, C](userAnswers: UserAnswers)(
     val (updatedOnwardRoute, updatedStatus) = readerIfDependentSectionCompleted match {
       case Some(reader) =>
         reader.run(userAnswers) match {
-          case Some(_) => (onwardRoute, status)
-          case _       => ("", CannotStartYet)
+          case Right(_) => (onwardRoute, status)
+          case _        => ("", CannotStartYet)
         }
       case _ => (onwardRoute, status)
     }

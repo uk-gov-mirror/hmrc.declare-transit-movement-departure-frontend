@@ -31,10 +31,10 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
     "can be parsed UserAnswers" - {
       "when all details for section have been answered" in {
         forAll(movementUserAnswers) {
-          case (_, userAnswers) =>
-            val result = UserAnswersReader[MovementDetails].run(userAnswers)
+          case (movementDetails, userAnswers) =>
+            val result = UserAnswersReader[MovementDetails].run(userAnswers).right.value
 
-            result must be(defined)
+            result mustBe movementDetails
         }
       }
     }
@@ -55,7 +55,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       "when all details for section have been answered" in {
         forAll(normalMovementUserAnswers) {
           case (expected, userAnswers) =>
-            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers).value
+            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers).right.value
 
             result mustEqual expected
         }
@@ -69,18 +69,18 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
           case ((_, ua), mandatoryPage) =>
             val userAnswers = ua.remove(mandatoryPage).success.value
 
-            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers).isLeft
 
-            result mustEqual None
+            result mustEqual true
         }
       }
 
       "when the movement is a simplified" in {
         forAll(simpleMovementUserAnswers) {
           case (_, userAnswers) =>
-            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[NormalMovementDetails].run(userAnswers).isLeft
 
-            result mustEqual None
+            result mustEqual true
         }
       }
     }
@@ -100,7 +100,7 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
       "when all the answers have been answered" in {
         forAll(simpleMovementUserAnswers) {
           case (expected, userAnswers) =>
-            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers).value
+            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers).right.value
 
             result mustEqual expected
         }
@@ -113,18 +113,18 @@ class MovementDetailsSpec extends SpecBase with GeneratorSpec with JourneyModelG
           case ((_, ua), mandatoryPage) =>
             val userAnswers = ua.remove(mandatoryPage).success.value
 
-            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers).isLeft
 
-            result mustEqual None
+            result mustEqual true
         }
       }
 
       "when the movement is a simplified movement" in {
         forAll(normalMovementUserAnswers) {
           case (_, userAnswers) =>
-            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers)
+            val result = UserAnswersReader[SimplifiedMovementDetails].run(userAnswers).isLeft
 
-            result mustEqual None
+            result mustEqual true
         }
       }
     }

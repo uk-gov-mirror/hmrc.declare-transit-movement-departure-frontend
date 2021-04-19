@@ -78,11 +78,12 @@ object ItemsSecurityTraderDetails {
         isEoriKnown => if (isEoriKnown) useEori else useNameAndAddress
       )
 
-    AddSafetyAndSecurityConsignorPage.reader //TODO - add a matcher
-    .flatMap {
-      _ =>
-        isEoriKnown
-    }.lower
+    // TODO add matcher
+    AddSafetyAndSecurityConsignorPage.reader
+      .flatMap {
+        _ =>
+          isEoriKnown.map(_.some)
+      }
   }
 
   private def consigneeDetails(index: Index): UserAnswersReader[Option[SecurityTraderDetails]] = {
@@ -106,20 +107,18 @@ object ItemsSecurityTraderDetails {
       isEoriKnown => if (isEoriKnown) useEori else useNameAndAddress
     )
 
-    AddSafetyAndSecurityConsigneePage.reader.flatMap {
-      _ =>
-        isEoriKnown
-    }.lower
-
+    // TODO add matcher
+    AddSafetyAndSecurityConsigneePage.reader
+      .flatMap {
+        _ =>
+          isEoriKnown.map(_.some)
+      }
   }
 
   private def methodOfPaymentPage(index: Index): UserAnswersReader[Option[String]] =
-    AddTransportChargesPaymentMethodPage.reader
-      .flatMap {
-        bool =>
-          if (!bool) TransportChargesPage(index).reader.map(Some(_))
-          else none[String].pure[UserAnswersReader]
-      }
+    AddTransportChargesPaymentMethodPage.filterOptionalDependent(_ == false) {
+      TransportChargesPage(index).reader
+    }
 
   private def commercialReferenceNumberPage(index: Index): UserAnswersReader[Option[String]] =
     AddCommercialReferenceNumberAllItemsPage.optionalReader
@@ -129,10 +128,7 @@ object ItemsSecurityTraderDetails {
       }
 
   private def dangerousGoodsCodePage(index: Index): UserAnswersReader[Option[String]] =
-    AddDangerousGoodsCodePage(index).reader
-      .flatMap {
-        bool =>
-          if (bool) DangerousGoodsCodePage(index).reader.map(Some(_))
-          else none[String].pure[UserAnswersReader]
-      }
+    AddDangerousGoodsCodePage(index).filterOptionalDependent(identity) {
+      DangerousGoodsCodePage(index).reader
+    }
 }

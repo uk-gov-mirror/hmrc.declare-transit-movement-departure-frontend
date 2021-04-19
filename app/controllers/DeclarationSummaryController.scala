@@ -62,14 +62,15 @@ class DeclarationSummaryController @Inject()(
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         submissionService.submit(request.userAnswers) flatMap {
-          case Some(result) =>
-            result.status match {
+
+          case Right(value) =>
+            value.status match {
               case status if is2xx(status) => Future.successful(Redirect(routes.SubmissionConfirmationController.onPageLoad(lrn)))
               case status if is4xx(status) => errorHandler.onClientError(request, status)
               case _ =>
                 renderTechnicalDifficultiesPage
             }
-          case None =>
+          case Left(_) => // TODO we can pass this value back to help debug
             errorHandler.onClientError(request, BAD_REQUEST)
         }
     }

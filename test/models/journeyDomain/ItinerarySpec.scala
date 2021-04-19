@@ -33,7 +33,7 @@ class ItinerarySpec extends SpecBase with GeneratorSpec with JourneyModelGenerat
             val updatedUserAnswers = setItineraryUserAnswers(itinerary, index)(userAnswers)
             val result             = UserAnswersReader[Itinerary](Itinerary.itineraryReader(index)).run(updatedUserAnswers)
 
-            result.value mustEqual itinerary
+            result.right.value mustEqual itinerary
         }
       }
     }
@@ -43,10 +43,10 @@ class ItinerarySpec extends SpecBase with GeneratorSpec with JourneyModelGenerat
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val updatedUserAnswers = userAnswers.remove(CountryOfRoutingPage(index)).success.value
-            val result: Option[Itinerary] =
+            val result: EitherType[Itinerary] =
               UserAnswersReader[Itinerary](Itinerary.itineraryReader(index)).run(updatedUserAnswers)
 
-            result mustBe None
+            result.left.value.page mustBe CountryOfRoutingPage(index)
         }
       }
 

@@ -16,14 +16,6 @@
 
 package models.journeyDomain
 
-import cats.implicits._
-import models.Index
-import pages.addItems.containers.ContainerNumberPage
+import queries.Query
 
-final case class Container(containerNumber: String)
-
-object Container {
-
-  def containerReader(index: Index, referenceIndex: Index): UserAnswersReader[Container] =
-    ContainerNumberPage(index, referenceIndex).reader.map(Container.apply)
-}
+case class ReaderError(page: Query, message: Option[String] = None)
