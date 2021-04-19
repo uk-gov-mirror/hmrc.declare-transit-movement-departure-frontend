@@ -30,7 +30,7 @@ case object ModeCrossingBorderPage extends QuestionPage[String] {
 
   override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(x) if Constants.codes.contains(x.toInt) =>
+      case Some(x) if Constants.codes.map(_.toString).contains(x) =>
         for {
           noNationality <- userAnswers.remove(NationalityCrossingBorderPage)
           noIdCrossing  <- noNationality.remove(IdCrossingBorderPage)

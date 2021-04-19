@@ -49,10 +49,10 @@ class ModeCrossingBorderPageSpec extends PageBehaviours with TryValues with Opti
 
       newUpdateAnswers.get(NationalityCrossingBorderPage) mustBe None
       newUpdateAnswers.get(IdCrossingBorderPage) mustBe None
-      updatedAnswers.get(ModeCrossingBorderPage).value mustBe crossingMode
+      newUpdateAnswers.get(ModeCrossingBorderPage).value mustBe crossingMode
     }
 
-    "must clear IdCrossingBorder and Nationality Crossing Border Page if 2, 20, 5, 50, 7 or 70 is selected" in {
+    "must not clear IdCrossingBorder and Nationality Crossing Border Page if 2, 20, 5, 50, 7 or 70 is selected" in {
       val invalidModes = Set("2", "20", "5", "50", "7", "70")
       val crossingMode = Gen.numStr.suchThat(x => !invalidModes(x)).sample.value
       val userAnswers  = new UserAnswers(LocalReferenceNumber("AB123").get, EoriNumber("3242343"))
@@ -68,9 +68,9 @@ class ModeCrossingBorderPageSpec extends PageBehaviours with TryValues with Opti
 
       val newUpdateAnswers = updatedAnswers.set(ModeCrossingBorderPage, crossingMode).success.value
 
-      newUpdateAnswers.get(NationalityCrossingBorderPage) mustBe None
-      newUpdateAnswers.get(IdCrossingBorderPage) mustBe None
-      updatedAnswers.get(ModeCrossingBorderPage).value mustBe crossingMode
+      newUpdateAnswers.get(NationalityCrossingBorderPage).value mustBe CountryCode("JJ")
+      newUpdateAnswers.get(IdCrossingBorderPage).value mustBe "23"
+      newUpdateAnswers.get(ModeCrossingBorderPage).value mustBe crossingMode
     }
   }
 }
