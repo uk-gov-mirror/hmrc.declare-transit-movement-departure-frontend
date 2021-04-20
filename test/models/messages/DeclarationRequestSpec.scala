@@ -23,6 +23,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalacheck.Arbitrary._
 import com.lucidchart.open.xtract.XmlReader
+import models.messages.goodsitem.{SpecialMentionNoCountry, SpecialMentionNonEc}
 
 import scala.xml.{Node, NodeSeq}
 import xml.XMLWrites._

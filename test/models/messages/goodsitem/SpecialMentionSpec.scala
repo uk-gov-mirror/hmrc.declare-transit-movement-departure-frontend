@@ -23,7 +23,6 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, StreamlinedXmlEquality}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.{JsError, JsSuccess, Json}
 import xml.XMLWrites._
 
 class SpecialMentionSpec
@@ -33,310 +32,6 @@ class SpecialMentionSpec
     with MessagesModelGenerators
     with StreamlinedXmlEquality
     with OptionValues {
-
-  "SpecialMentionLiabilityAmount" - {
-
-    "must deserialise when 'liability Amount' exists and code is 'CAL'" in {
-
-      forAll(liabilityAmountGen) {
-        liabilityAmount =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> "CAL",
-            "additionalInformation"      -> liabilityAmount
-          )
-
-          val expectedSpecialMention = SpecialMentionGuaranteeLiabilityAmount("CAL", liabilityAmount)
-
-          json.validate[SpecialMentionGuaranteeLiabilityAmount] mustEqual JsSuccess(expectedSpecialMention)
-      }
-    }
-
-    "must fail to deserialise when code is not 'CAL'" in {
-
-      forAll(liabilityAmountGen) {
-        liabilityAmount =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> "XYZ",
-            "additionalInformation"      -> liabilityAmount
-          )
-
-          json.validate[SpecialMentionGuaranteeLiabilityAmount] mustEqual JsError("Failed to parse to SpecialMentionGuaranteeLiabilityAmount does not exist")
-      }
-    }
-
-    "must serialise" in {
-      forAll(liabilityAmountGen) {
-        liabilityAmount =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> "CAL",
-            "additionalInformation"      -> liabilityAmount
-          )
-
-          Json.toJson(SpecialMentionGuaranteeLiabilityAmount("CAL", liabilityAmount))(SpecialMentionGuaranteeLiabilityAmount.writes) mustEqual json
-
-      }
-    }
-  }
-
-  "SpecialMentionEc" - {
-
-    "must deserialise when `export from EC` is true and code is country specific" in {
-
-      forAll(countrySpecificCodeGen, stringsWithMaxLength(70)) {
-        (additionalInformationCoded, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> true
-          )
-
-          val expectedMention = SpecialMentionEc(additionalInformationCoded, additionalInformation)
-
-          json.validate[SpecialMentionEc] mustEqual JsSuccess(expectedMention)
-      }
-    }
-
-    "must fail to deserialise when `export from EC` is false" in {
-
-      forAll(countrySpecificCodeGen, stringsWithMaxLength(70)) {
-        (additionalInformationCoded, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> false
-          )
-
-          json.validate[SpecialMentionEc] mustEqual JsError("exportFromEc must be true")
-      }
-    }
-
-    "must fail to deserialise when the code is not country-specific" in {
-
-      forAll(nonCountrySpecificCodeGen) {
-        additionalInformation =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformation,
-            "exportFromEc"               -> true
-          )
-
-          json.validate[SpecialMentionEc] mustBe a[JsError]
-      }
-    }
-
-    "must serialise" in {
-
-      forAll(countrySpecificCodeGen, stringsWithMaxLength(70)) {
-        (additionalInformationCoded, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> true
-          )
-
-          Json.toJson(SpecialMentionEc(additionalInformationCoded, additionalInformation))(SpecialMentionEc.writes) mustEqual json
-      }
-    }
-  }
-
-  "SpecialMentionOutsideEc" - {
-
-    "must deserialise when `export from EC` is false and code is country specific" in {
-
-      forAll(countrySpecificCodeGen, stringsWithMaxLength(2), stringsWithMaxLength(70)) {
-        case (additionalInformationCoded, country, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> false,
-            "exportFromCountry"          -> country
-          )
-
-          val expectedMention = SpecialMentionNonEc(additionalInformationCoded, additionalInformation, country)
-
-          json.validate[SpecialMentionNonEc] mustEqual JsSuccess(expectedMention)
-      }
-    }
-
-    "must fail to deserialise when 'export from EC` is true" in {
-
-      forAll(countrySpecificCodeGen, stringsWithMaxLength(2), stringsWithMaxLength(70)) {
-        case (additionalInformationCoded, country, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> true,
-            "exportFromCountry"          -> country
-          )
-
-          json.validate[SpecialMentionNonEc] mustEqual JsError("exportFromEc must be false")
-      }
-    }
-
-    "must fail to deserialise when code is not country specific" in {
-
-      forAll(nonCountrySpecificCodeGen, stringsWithMaxLength(2)) {
-        case (additionalInformation, country) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformation,
-            "exportFromEc"               -> false,
-            "exportFromCountry"          -> country
-          )
-
-          json.validate[SpecialMentionEc] mustBe a[JsError]
-      }
-    }
-
-    "must serialise" in {
-
-      forAll(countrySpecificCodeGen, stringsWithMaxLength(2), stringsWithMaxLength(70)) {
-        case (additionalInformationCoded, country, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> false,
-            "exportFromCountry"          -> country
-          )
-
-          Json.toJson(SpecialMentionNonEc(additionalInformationCoded, additionalInformation, country))(SpecialMentionNonEc.writes) mustEqual json
-      }
-    }
-  }
-
-  "Special Mention No Country" - {
-
-    "must deserialise when the code is not country specific" in {
-
-      forAll(nonCountrySpecificCodeGen, stringsWithMaxLength(70)) {
-        (additionalInformationCoded, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation
-          )
-
-          val expectedMention = SpecialMentionNoCountry(additionalInformationCoded, additionalInformation)
-
-          json.validate[SpecialMentionNoCountry] mustEqual JsSuccess(expectedMention)
-      }
-    }
-
-    "must fail to deserialise when the code is country specific" in {
-
-      forAll(countrySpecificCodeGen) {
-        additionalInformation =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformation
-          )
-
-          json.validate[SpecialMentionNoCountry] mustBe a[JsError]
-      }
-    }
-
-    "must serialise" in {
-
-      forAll(nonCountrySpecificCodeGen, stringsWithMaxLength(70)) {
-        (additionalInformationCoded, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation
-          )
-
-          Json.toJson(SpecialMentionNoCountry(additionalInformationCoded, additionalInformation))(SpecialMentionNoCountry.writes) mustEqual json
-      }
-    }
-  }
-
-  "Special Mention" - {
-
-    "must deserialise to a Special Mention EC" in {
-
-      forAll(countrySpecificCodeGen, stringsWithMaxLength(70)) {
-        (additionalInformationCoded, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> true
-          )
-
-          val expectedMention = SpecialMentionEc(additionalInformationCoded, additionalInformation)
-
-          json.validate[SpecialMention] mustEqual JsSuccess(expectedMention)
-      }
-    }
-
-    "must deserialise to a Special Mention Non-EC" in {
-
-      forAll(countrySpecificCodeGen, stringsWithMaxLength(2), stringsWithMaxLength(70)) {
-        case (additionalInformationCoded, country, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> false,
-            "exportFromCountry"          -> country
-          )
-
-          val expectedMention = SpecialMentionNonEc(additionalInformationCoded, additionalInformation, country)
-
-          json.validate[SpecialMention] mustEqual JsSuccess(expectedMention)
-      }
-    }
-
-    "must deserialise to a Special Mention No Country" in {
-
-      forAll(nonCountrySpecificCodeGen, stringsWithMaxLength(70)) {
-        (additionalInformationCoded, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation
-          )
-
-          val expectedMention = SpecialMentionNoCountry(additionalInformationCoded, additionalInformation)
-
-          json.validate[SpecialMention] mustEqual JsSuccess(expectedMention)
-      }
-    }
-
-    "must serialise from a Special Mention EC" in {
-
-      forAll(nonCountrySpecificCodeGen, stringsWithMaxLength(70)) {
-        (additionalInformationCoded, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> true
-          )
-
-          Json.toJson(SpecialMentionEc(additionalInformationCoded, additionalInformation): SpecialMention) mustEqual json
-      }
-    }
-
-    "must serialise from a Special Mention Non-EC" in {
-
-      forAll(countrySpecificCodeGen, stringsWithMaxLength(2), stringsWithMaxLength(70)) {
-        (additionalInformationCoded, country, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation,
-            "exportFromEc"               -> false,
-            "exportFromCountry"          -> country
-          )
-
-          Json.toJson(SpecialMentionNonEc(additionalInformationCoded, additionalInformation, country): SpecialMention) mustEqual json
-      }
-    }
-
-    "must serialise from a Special Mention No Country" in {
-
-      forAll(nonCountrySpecificCodeGen, stringsWithMaxLength(70)) {
-        (additionalInformationCoded, additionalInformation) =>
-          val json = Json.obj(
-            "additionalInformationCoded" -> additionalInformationCoded,
-            "additionalInformation"      -> additionalInformation
-          )
-
-          Json.toJson(SpecialMentionNoCountry(additionalInformationCoded, additionalInformation): SpecialMention) mustEqual json
-      }
-    }
-  }
 
   "XML" - {
 
@@ -434,7 +129,6 @@ class SpecialMentionSpec
               <SPEMENMT2>
                 <AddInfMT21>{specialMentionEc.additionalInformation}</AddInfMT21>
                 <AddInfCodMT23>{specialMentionEc.additionalInformationCoded}</AddInfCodMT23>
-                <ExpFroECMT24>0</ExpFroECMT24>
               </SPEMENMT2>
 
             val result = XmlReader.of[SpecialMentionEc].read(xml).toOption
@@ -468,7 +162,6 @@ class SpecialMentionSpec
               <SPEMENMT2>
                 <AddInfMT21>{specialMentionNonEc.additionalInformation}</AddInfMT21>
                 <AddInfCodMT23>{specialMentionNonEc.additionalInformationCoded}</AddInfCodMT23>
-                <ExpFroECMT24>0</ExpFroECMT24>
                 <ExpFroCouMT25>{specialMentionNonEc.exportFromCountry}</ExpFroCouMT25>
               </SPEMENMT2>
 
@@ -476,7 +169,7 @@ class SpecialMentionSpec
         }
       }
 
-      "must deserialise when `export from EC` is false and code is country specific" in {
+      "must deserialise when code is country specific" in {
 
         forAll(arbitrary[SpecialMentionNonEc]) {
           specialMentionNonEc =>
@@ -484,30 +177,12 @@ class SpecialMentionSpec
               <SPEMENMT2>
                 <AddInfMT21>{specialMentionNonEc.additionalInformation}</AddInfMT21>
                 <AddInfCodMT23>{specialMentionNonEc.additionalInformationCoded}</AddInfCodMT23>
-                <ExpFroECMT24>0</ExpFroECMT24>
                 <ExpFroCouMT25>{specialMentionNonEc.exportFromCountry}</ExpFroCouMT25>
               </SPEMENMT2>
 
             val result = XmlReader.of[SpecialMention].read(xml).toOption.value
 
             result mustBe specialMentionNonEc
-        }
-      }
-
-      "must fail to deserialise when 'export from EC` is true" in {
-        forAll(arbitrary[SpecialMentionNonEc]) {
-          specialMentionNonEc =>
-            val xml =
-              <SPEMENMT2>
-                <AddInfMT21>{specialMentionNonEc.additionalInformation}</AddInfMT21>
-                <AddInfCodMT23>{specialMentionNonEc.additionalInformationCoded}</AddInfCodMT23>
-                <ExpFroECMT24>1</ExpFroECMT24>
-                <ExpFroCouMT25>{specialMentionNonEc.exportFromCountry}</ExpFroCouMT25>
-              </SPEMENMT2>
-
-            val result = XmlReader.of[SpecialMentionNonEc].read(xml).toOption
-
-            result mustBe None
         }
       }
 
@@ -532,7 +207,6 @@ class SpecialMentionSpec
           <SPEMENMT2>
             <AddInfMT21>Something</AddInfMT21>
             <AddInfCodMT23>Invalid code</AddInfCodMT23>
-            <ExpFroECMT24>0</ExpFroECMT24>
             <ExpFroCouMT25>GB</ExpFroCouMT25>
           </SPEMENMT2>
 
