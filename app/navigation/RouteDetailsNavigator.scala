@@ -93,7 +93,7 @@ class RouteDetailsNavigator @Inject()() extends Navigator {
 
   private def addOfficeOfTransit(mode: Mode, userAnswers: UserAnswers): Call = {
     val count                     = userAnswers.get(DeriveNumberOfOfficeOfTransits).getOrElse(0)
-    val maxNumberOfOfficesAllowed = 5
+    val maxNumberOfOfficesAllowed = 9
     userAnswers.get(AddTransitOfficePage) match {
       case Some(true) if count <= maxNumberOfOfficesAllowed =>
         val index = Index(count)

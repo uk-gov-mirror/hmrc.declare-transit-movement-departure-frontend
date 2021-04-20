@@ -50,41 +50,43 @@ class AddAnotherTransitOfficeController @Inject()(
   referenceDataConnector: ReferenceDataConnector,
   formProvider: AddAnotherTransitOfficeFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
+  renderer: Renderer,
+  officeOfTransitFilter: TraderDetailsOfficesOfTransitProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-      request.userAnswers.get(OfficeOfTransitCountryPage(index)) match {
-        case Some(countryCode) =>
-          getCustomsOfficeAndCountryName(countryCode) flatMap {
-            case (customsOffices, countryName) =>
-              val form: Form[CustomsOffice] = formProvider(customsOffices, countryName)
+  def onPageLoad(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData andThen officeOfTransitFilter(index, 1)).async {
+      implicit request =>
+        request.userAnswers.get(OfficeOfTransitCountryPage(index)) match {
+          case Some(countryCode) =>
+            getCustomsOfficeAndCountryName(countryCode) flatMap {
+              case (customsOffices, countryName) =>
+                val form: Form[CustomsOffice] = formProvider(customsOffices, countryName)
 
-              val preparedForm: Form[CustomsOffice] = request.userAnswers
-                .get(AddAnotherTransitOfficePage(index))
-                .flatMap(customsOffices.getCustomsOffice)
-                .map(form.fill)
-                .getOrElse(form)
+                val preparedForm: Form[CustomsOffice] = request.userAnswers
+                  .get(AddAnotherTransitOfficePage(index))
+                  .flatMap(customsOffices.getCustomsOffice)
+                  .map(form.fill)
+                  .getOrElse(form)
 
-              val selectedCustomsOfficeIds = request.userAnswers.get(DeriveOfficesOfTransitIds).getOrElse(Nil)
+                val selectedCustomsOfficeIds = request.userAnswers.get(DeriveOfficesOfTransitIds).getOrElse(Nil)
 
-              val json = Json.obj(
-                "form"           -> preparedForm,
-                "lrn"            -> lrn,
-                "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.filterNot(selectedCustomsOfficeIds)),
-                "countryName"    -> countryName,
-                "mode"           -> mode
-              )
-              renderer.render("addAnotherTransitOffice.njk", json).map(Ok(_))
-          }
+                val json = Json.obj(
+                  "form"           -> preparedForm,
+                  "lrn"            -> lrn,
+                  "customsOffices" -> getCustomsOfficesAsJson(preparedForm.value, customsOffices.filterNot(selectedCustomsOfficeIds)),
+                  "countryName"    -> countryName,
+                  "mode"           -> mode
+                )
+                renderer.render("addAnotherTransitOffice.njk", json).map(Ok(_))
+            }
 
-        case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
-      }
-  }
+          case _ => Future.successful(Redirect(mainRoutes.SessionExpiredController.onPageLoad()))
+        }
+    }
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index, mode: Mode): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
