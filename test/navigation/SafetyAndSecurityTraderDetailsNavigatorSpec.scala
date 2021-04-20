@@ -95,12 +95,51 @@ class SafetyAndSecurityTraderDetailsNavigatorSpec extends SpecBase with ScalaChe
       }
     }
 
-    "must go from AddSafetyAndSecurityConsignee to AddSafetyAndSecurityConsigneeEori if 'true'" in {
+    "must go from AddSafetyAndSecurityConsignee to SafetyAndSecurityConsigneeEoriController if 'true' and selected 'E' for circumstance indicator" in {
 
       forAll(arbitrary[UserAnswers]) {
         answers =>
           val updatedAnswers = answers
             .set(AddSafetyAndSecurityConsigneePage, true)
+            .success
+            .value
+            .set(CircumstanceIndicatorPage, "E")
+            .success
+            .value
+
+          navigator
+            .nextPage(AddSafetyAndSecurityConsigneePage, NormalMode, updatedAnswers)
+            .mustBe(routes.SafetyAndSecurityConsigneeEoriController.onPageLoad(answers.id, NormalMode))
+      }
+    }
+
+    "must go from AddSafetyAndSecurityConsignee to AddSafetyAndSecurityConsigneeEoriController if 'true' and did not select 'E' for circumstance indicator" in {
+
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(AddSafetyAndSecurityConsigneePage, true)
+            .success
+            .value
+            .set(CircumstanceIndicatorPage, "B")
+            .success
+            .value
+
+          navigator
+            .nextPage(AddSafetyAndSecurityConsigneePage, NormalMode, updatedAnswers)
+            .mustBe(routes.AddSafetyAndSecurityConsigneeEoriController.onPageLoad(answers.id, NormalMode))
+      }
+    }
+
+    "must go from AddSafetyAndSecurityConsignee to AddSafetyAndSecurityConsigneeEoriController if 'true' and selected 'No' to add circumstance indicator" in {
+
+      forAll(arbitrary[UserAnswers]) {
+        answers =>
+          val updatedAnswers = answers
+            .set(AddSafetyAndSecurityConsigneePage, true)
+            .success
+            .value
+            .set(AddCircumstanceIndicatorPage, false)
             .success
             .value
 
