@@ -16,11 +16,12 @@
 
 package services
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDateTime
+
 import cats.data.NonEmptyList
 import cats.implicits._
-
 import javax.inject.Inject
+import models.GuaranteeType.guaranteeReferenceRoute
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
 import models.journeyDomain.GuaranteeDetails.GuaranteeReference
@@ -31,7 +32,7 @@ import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
 import models.journeyDomain.TransportDetails.{DetailsAtBorder, InlandMode, ModeCrossingBorder}
 import models.journeyDomain.traderDetails._
-import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, ProducedDocument, UserAnswersReader, _}
+import models.journeyDomain.{GuaranteeDetails, ItemSection, Itinerary, JourneyDomain, Packages, UserAnswersReader, _}
 import models.messages._
 import models.messages.customsoffice.{CustomsOfficeDeparture, CustomsOfficeDestination, CustomsOfficeTransit}
 import models.messages.goodsitem.{BulkPackage, GoodsItem, RegularPackage, UnpackedPackage, _}
@@ -43,7 +44,6 @@ import models.{CarrierAddress, ConsigneeAddress, ConsignorAddress, EoriNumber, U
 import play.api.Logger
 import repositories.InterchangeControlReferenceIdRepository
 
-import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DeclarationRequestServiceInt {
@@ -101,7 +101,8 @@ class DeclarationRequestService @Inject()(
     def additionalInformationLiabilityAmount(itemIndex: Int, guaranteeDetails: NonEmptyList[GuaranteeDetails]): Seq[SpecialMentionGuaranteeLiabilityAmount] =
       if (itemIndex == 0) {
         guaranteeDetails.toList collect {
-          case GuaranteeDetails.GuaranteeReference(_, guaranteeReferenceNumber, liabilityAmount, _) =>
+          case GuaranteeDetails.GuaranteeReference(guaranteeType, guaranteeReferenceNumber, liabilityAmount, _)
+              if guaranteeReferenceRoute.contains(guaranteeType) =>
             specialMentionLiability(liabilityAmount, guaranteeReferenceNumber)
         }
       } else Seq.empty
