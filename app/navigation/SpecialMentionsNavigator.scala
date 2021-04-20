@@ -16,11 +16,14 @@
 
 package navigation
 
+import cats.data.NonEmptyList
 import controllers.addItems.specialMentions.routes
 import controllers.addItems.{routes => addItemRoutes}
 import controllers.{routes => mainRoutes}
 import derivable.{DeriveNumberOfDocuments, DeriveNumberOfSpecialMentions}
 import javax.inject.{Inject, Singleton}
+import models.GuaranteeType.guaranteeReferenceRoute
+import models.journeyDomain.{GuaranteeDetails, UserAnswersReader}
 import models.reference.CircumstanceIndicator
 import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.addItems.specialMentions._
@@ -70,12 +73,23 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
         }
   }
 
+  private def specialMentionGuaranteeCALroute(userAnswers: UserAnswers, itemIndex: Index, mode: Mode): Option[Call] =
+    UserAnswersReader[NonEmptyList[GuaranteeDetails]].run(userAnswers) match {
+      case Right(value) if value.forall(guaranteeDetails => guaranteeReferenceRoute.contains(guaranteeDetails.guaranteeType)) =>
+        Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), mode))
+      case Right(_) =>
+        Some(routes.SpecialMentionAdditionalInfoController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), mode))
+      case Left(_) => None
+    }
+
   private def addSpecialMentionPage: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddSpecialMentionPage(itemIndex) =>
       userAnswers =>
-        userAnswers.get(AddSpecialMentionPage(itemIndex)) match {
-          case Some(true) => Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), NormalMode))
-          case _          => Some(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+        {
+          userAnswers.get(AddSpecialMentionPage(itemIndex)).flatMap {
+            case true  => specialMentionGuaranteeCALroute(userAnswers, itemIndex, NormalMode)
+            case false => Some(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+          }
         }
   }
 
@@ -97,14 +111,7 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
         userAnswers.get(AddAnotherSpecialMentionPage(itemIndex)) match {
           case Some(true) => Some(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, itemIndex, Index(count(itemIndex)(userAnswers)), NormalMode))
           case _ =>
-            documentsJourney(userAnswers, itemIndex, NormalMode) //Some(controllers.addItems.routes.AddDocumentsController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
-        }
-    case RemoveSpecialMentionPage(itemIndex, _) =>
-      userAnswers =>
-        if (count(itemIndex)(userAnswers) == 0) {
-          Some(routes.AddSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
-        } else {
-          Some(routes.AddAnotherSpecialMentionController.onPageLoad(userAnswers.id, itemIndex, NormalMode))
+            documentsJourney(userAnswers, itemIndex, NormalMode)
         }
   }
 
@@ -129,7 +136,7 @@ class SpecialMentionsNavigator @Inject()() extends Navigator {
       case None        => Some(mainRoutes.SessionExpiredController.onPageLoad())
     }
 
-  private def removeSpecialMentionPage(): PartialFunction[Page, UserAnswers => Option[Call]] = {
+  private def removeSpecialMentionPage: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case RemoveSpecialMentionPage(itemIndex, _) =>
       userAnswers =>
         if (count(itemIndex)(userAnswers) == 0) {

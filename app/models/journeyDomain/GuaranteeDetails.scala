@@ -23,7 +23,9 @@ import models.{GuaranteeType, Index}
 import pages._
 import pages.guaranteeDetails.{GuaranteeReferencePage, GuaranteeTypePage}
 
-sealed trait GuaranteeDetails
+sealed trait GuaranteeDetails {
+  val guaranteeType: GuaranteeType
+}
 
 object GuaranteeDetails {
 

@@ -20,11 +20,13 @@ import base.SpecBase
 import controllers.addItems.specialMentions.routes
 import generators.Generators
 import models.reference.CircumstanceIndicator
-import models.{CheckMode, Index, NormalMode}
+import models.{CheckMode, GuaranteeType, Index, NormalMode}
 import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.AddSecurityDetailsPage
+import pages.{AddSecurityDetailsPage, OtherReferencePage}
 import pages.addItems.specialMentions._
+import pages.guaranteeDetails.GuaranteeTypePage
 import pages.safetyAndSecurity.{AddCircumstanceIndicatorPage, AddCommercialReferenceNumberPage, CircumstanceIndicatorPage}
 
 class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -136,13 +138,58 @@ class SpecialMentionsNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
     "in normal mode" - {
 
-      "must go from AddSpecialMention to SpecialMentionType" in {
+      "must go from AddSpecialMention to SpecialMentionType when GuaranteeType is define and equal to 0, 1, 2, 4 or 9" in {
 
-        val userAnswers = emptyUserAnswers.set(AddSpecialMentionPage(index), true).success.value
+        val guaranteeType  = Gen.oneOf(GuaranteeType.guaranteeReferenceRoute).sample.value
+        val otherReference = arbitrary[String].sample.value
+
+        val userAnswers = emptyUserAnswers
+          .set(GuaranteeTypePage(index), guaranteeType)
+          .success
+          .value
+          .set(OtherReferencePage(index), otherReference)
+          .success
+          .value
+          .set(AddSpecialMentionPage(index), true)
+          .success
+          .value
 
         navigator
           .nextPage(AddSpecialMentionPage(index), NormalMode, userAnswers)
           .mustBe(routes.SpecialMentionTypeController.onPageLoad(userAnswers.id, index, index, NormalMode))
+      }
+
+      "must go from AddSpecialMention to SpecialMentionType when GuaranteeType is not equal to 0, 1, 2, 4 or 9" in {
+
+        val nonGuaranteeType = Gen.oneOf(GuaranteeType.nonGuaranteeReferenceRoute).sample.value
+        val otherReference   = arbitrary[String].sample.value
+
+        val userAnswers = emptyUserAnswers
+          .set(GuaranteeTypePage(index), nonGuaranteeType)
+          .success
+          .value
+          .set(OtherReferencePage(index), otherReference)
+          .success
+          .value
+          .set(AddSpecialMentionPage(index), true)
+          .success
+          .value
+
+        navigator
+          .nextPage(AddSpecialMentionPage(index), NormalMode, userAnswers)
+          .mustBe(routes.SpecialMentionAdditionalInfoController.onPageLoad(userAnswers.id, index, index, NormalMode))
+      }
+
+      "must go from AddSpecialMention to Session Expired if GuaranteeDetails are empty" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(AddSpecialMentionPage(index), true)
+          .success
+          .value
+
+        navigator
+          .nextPage(AddSpecialMentionPage(index), NormalMode, userAnswers)
+          .mustBe(controllers.routes.SessionExpiredController.onPageLoad())
       }
 
       "to AddDocuments when set to false" in {
