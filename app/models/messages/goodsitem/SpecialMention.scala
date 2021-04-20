@@ -61,14 +61,14 @@ object SpecialMention {
 
   implicit lazy val writes: OWrites[SpecialMention] = OWrites {
     case sm: SpecialMentionGuaranteeLiabilityAmount => Json.toJsObject(sm)(SpecialMentionGuaranteeLiabilityAmount.writes)
-    case sm: SpecialMentionEc => Json.toJsObject(sm)(SpecialMentionEc.writes)
-    case sm: SpecialMentionNonEc => Json.toJsObject(sm)(SpecialMentionNonEc.writes)
-    case sm: SpecialMentionNoCountry => Json.toJsObject(sm)(SpecialMentionNoCountry.writes)
+    case sm: SpecialMentionEc                       => Json.toJsObject(sm)(SpecialMentionEc.writes)
+    case sm: SpecialMentionNonEc                    => Json.toJsObject(sm)(SpecialMentionNonEc.writes)
+    case sm: SpecialMentionNoCountry                => Json.toJsObject(sm)(SpecialMentionNoCountry.writes)
   }
 
 }
 
-final case class SpecialMentionEc(additionalInformationCoded: String) extends SpecialMention
+final case class SpecialMentionEc(additionalInformationCoded: String, additionalInformation: String) extends SpecialMention
 
 object SpecialMentionEc {
 
@@ -92,11 +92,14 @@ object SpecialMentionEc {
       }
       .flatMap {
         _ =>
-          (__ \ "AddInfCodMT23").read[String].flatMap {
-            code =>
+          (
+            (__ \ "AddInfCodMT23").read[String],
+            (__ \ "AddInfMT21").read[String]
+          ).tupled.flatMap {
+            case (code, addInfo) =>
               if (SpecialMention.countrySpecificCodes.contains(code)) {
                 XmlReader(
-                  _ => ParseSuccess(SpecialMentionEc(code))
+                  _ => ParseSuccess(SpecialMentionEc(code, addInfo))
                 )
               } else {
                 XmlReader(
@@ -142,9 +145,10 @@ object SpecialMentionEc {
           }
       )
       .andKeep(
-        (__ \ "additionalInformationCoded")
-          .read[String]
-          .map(SpecialMentionEc(_))
+        for {
+          addInfoCoded <- (__ \ "additionalInformationCoded").read[String]
+          addInfo      <- (__ \ "additionalInformation").read[String]
+        } yield SpecialMentionEc(addInfoCoded, addInfo)
       )
   }
 
@@ -154,15 +158,19 @@ object SpecialMentionEc {
 
     (
       (__ \ "exportFromEc").write[Boolean] and
-        (__ \ "additionalInformationCoded").write[String]
-      ) (
-      s => (true, s.additionalInformationCoded)
+        (__ \ "additionalInformationCoded").write[String] and
+        (__ \ "additionalInformation").write[String]
+    )(
+      s => (true, s.additionalInformationCoded, s.additionalInformation)
     )
   }
 
   implicit def writesXml: XMLWrites[SpecialMentionEc] = XMLWrites[SpecialMentionEc] {
     specialMention =>
       <SPEMENMT2>
+        <AddInfMT21>
+          {specialMention.additionalInformation}
+        </AddInfMT21>
         <AddInfCodMT23>
           {specialMention.additionalInformationCoded}
         </AddInfCodMT23>
@@ -172,9 +180,10 @@ object SpecialMentionEc {
 }
 
 final case class SpecialMentionNonEc(
-                                      additionalInformationCoded: String,
-                                      exportFromCountry: String
-                                    ) extends SpecialMention
+  additionalInformationCoded: String,
+  additionalInformation: String,
+  exportFromCountry: String
+) extends SpecialMention
 
 object SpecialMentionNonEc {
 
@@ -213,10 +222,13 @@ object SpecialMentionNonEc {
       }
       .flatMap {
         code =>
-          (__ \ "ExpFroCouMT25").read[String].flatMap {
-            exportFromCountry =>
+          (
+            (__ \ "ExpFroCouMT25").read[String],
+            (__ \ "AddInfMT21").read[String]
+          ).tupled.flatMap {
+            case (exportFromCountry, addInfo) =>
               XmlReader(
-                _ => ParseSuccess(SpecialMentionNonEc(code, exportFromCountry))
+                _ => ParseSuccess(SpecialMentionNonEc(code, addInfo, exportFromCountry))
               )
           }
       }
@@ -259,8 +271,9 @@ object SpecialMentionNonEc {
       .andKeep(
         (
           (__ \ "additionalInformationCoded").read[String] and
+            (__ \ "additionalInformation").read[String] and
             (__ \ "exportFromCountry").read[String]
-          ) (SpecialMentionNonEc(_, _))
+        )(SpecialMentionNonEc(_, _, _))
       )
   }
 
@@ -271,15 +284,19 @@ object SpecialMentionNonEc {
     (
       (__ \ "exportFromEc").write[Boolean] and
         (__ \ "additionalInformationCoded").write[String] and
+        (__ \ "additionalInformation").write[String] and
         (__ \ "exportFromCountry").write[String]
-      ) (
-      s => (false, s.additionalInformationCoded, s.exportFromCountry)
+    )(
+      s => (false, s.additionalInformationCoded, s.additionalInformation, s.exportFromCountry)
     )
   }
 
   implicit def writesXml: XMLWrites[SpecialMentionNonEc] = XMLWrites[SpecialMentionNonEc] {
     specialMention =>
       <SPEMENMT2>
+        <AddInfMT21>
+          {specialMention.additionalInformation}
+        </AddInfMT21>
         <AddInfCodMT23>
           {specialMention.additionalInformationCoded}
         </AddInfCodMT23>
@@ -301,7 +318,10 @@ object SpecialMentionNoCountry {
 
     case class SpecialMentionNoCountryParseFailure(message: String) extends ParseError
 
-    ((__ \ "AddInfCodMT23").read[String], (__ \ "AddInfMT21").read[String]).tupled.flatMap {
+    (
+      (__ \ "AddInfCodMT23").read[String],
+      (__ \ "AddInfMT21").read[String]
+    ).tupled.flatMap {
       case (code, _) if SpecialMention.countrySpecificCodes.contains(code) =>
         XmlReader(
           _ => ParseFailure(SpecialMentionNoCountryParseFailure(s"Failed to parse to SpecialMentionNoCountry: $code was country specific"))
@@ -332,14 +352,10 @@ object SpecialMentionNoCountry {
           }
       }
       .andKeep(
-        (__ \ "additionalInformationCoded")
-          .read[String]
-          .flatMap( x =>
-            (__ \ "additionalInformation")
-              .read[String].map(y =>
-                SpecialMentionNoCountry(x, y)
-            )
-          )
+        for {
+          addInfoCoded <- (__ \ "additionalInformationCoded").read[String]
+          addInfo      <- (__ \ "additionalInformation").read[String]
+        } yield SpecialMentionNoCountry(addInfoCoded, addInfo)
       )
   }
 
@@ -348,9 +364,9 @@ object SpecialMentionNoCountry {
   implicit def writesXml: XMLWrites[SpecialMentionNoCountry] = XMLWrites[SpecialMentionNoCountry] {
     specialMention =>
       <SPEMENMT2>
-        <AddInfCodMT23>
+        <AddInfMT21>
           {specialMention.additionalInformation}
-        </AddInfCodMT23>
+        </AddInfMT21>
         <AddInfCodMT23>
           {specialMention.additionalInformationCoded}
         </AddInfCodMT23>
@@ -359,9 +375,9 @@ object SpecialMentionNoCountry {
 }
 
 final case class SpecialMentionGuaranteeLiabilityAmount(
-                                                         additionalInformationCoded: String,
-                                                         additionalInformationOfLiabilityAmount: String
-                                                       ) extends SpecialMention
+  additionalInformationCoded: String,
+  additionalInformationOfLiabilityAmount: String
+) extends SpecialMention
 
 object SpecialMentionGuaranteeLiabilityAmount {
 
@@ -412,7 +428,7 @@ object SpecialMentionGuaranteeLiabilityAmount {
         (
           (__ \ "additionalInformationCoded").read[String] and
             (__ \ "additionalInformation").read[String]
-          ) (SpecialMentionGuaranteeLiabilityAmount(_, _))
+        )(SpecialMentionGuaranteeLiabilityAmount(_, _))
       )
   }
 
@@ -423,7 +439,7 @@ object SpecialMentionGuaranteeLiabilityAmount {
     (
       (__ \ "additionalInformation").write[String] and
         (__ \ "additionalInformationCoded").write[String]
-      ) (
+    )(
       s => (s.additionalInformationOfLiabilityAmount, s.additionalInformationCoded)
     )
   }

@@ -534,20 +534,27 @@ trait MessagesModelGenerators extends ModelGenerators with Generators {
 
   implicit lazy val arbitrarySpecialMentionEc: Arbitrary[SpecialMentionEc] =
     Arbitrary {
-      countrySpecificCodeGen.map(SpecialMentionEc(_))
+      for {
+        addInfoCoded <- countrySpecificCodeGen
+        addInfo      <- stringsWithMaxLength(70)
+      } yield SpecialMentionEc(addInfoCoded, addInfo)
     }
 
   implicit lazy val arbitrarySpecialMentionNonEc: Arbitrary[SpecialMentionNonEc] =
     Arbitrary {
       for {
-        additionalInfo <- countrySpecificCodeGen
-        exportCountry  <- stringsWithMaxLength(2)
-      } yield SpecialMentionNonEc(additionalInfo, exportCountry)
+        additionalInfoCoded <- countrySpecificCodeGen
+        exportCountry       <- stringsWithMaxLength(2)
+        addInfo             <- stringsWithMaxLength(70)
+      } yield SpecialMentionNonEc(additionalInfoCoded, addInfo, exportCountry)
     }
 
   implicit lazy val arbitrarySpecialMentionNoCountry: Arbitrary[SpecialMentionNoCountry] =
     Arbitrary {
-      nonCountrySpecificCodeGen.map(SpecialMentionNoCountry(_))
+      for {
+        addInfoCoded <- nonCountrySpecificCodeGen
+        addInfo      <- stringsWithMaxLength(70)
+      } yield SpecialMentionNoCountry(addInfoCoded, addInfo)
     }
 
   implicit lazy val arbitrarySpecialMention: Arbitrary[SpecialMention] =
