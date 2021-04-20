@@ -56,7 +56,11 @@ class TraderDetailsOfficesOfTransitFilter(index: Index, pageId: Int)(implicit pr
               if (index.position == numberOfOffices - 1) {
                 None
               } else {
-                Option(Redirect(controllers.routeDetails.routes.OfficeOfTransitCountryController.onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode).url))
+                Option(
+                  Redirect(
+                    controllers.routeDetails.routes.OfficeOfTransitCountryController
+                      .onPageLoad(request.userAnswers.id, Index(numberOfOffices - 1), NormalMode)
+                      .url))
               }
           }
         } else {
