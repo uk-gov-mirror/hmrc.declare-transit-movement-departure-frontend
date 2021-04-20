@@ -24,6 +24,7 @@ import controllers.addItems.{routes => addAnotherPackageRoutes}
 import controllers.addItems.containers.{routes => containerRoutes}
 import controllers.{routes => mainRoutes}
 import derivable._
+
 import javax.inject.{Inject, Singleton}
 import models._
 import models.reference.CountryCode
@@ -32,7 +33,12 @@ import pages._
 import pages.addItems.containers._
 import pages.addItems.traderDetails._
 import pages.addItems.{AddAnotherPreviousAdministrativeReferencePage, _}
-import pages.safetyAndSecurity.{AddCommercialReferenceNumberAllItemsPage, AddTransportChargesPaymentMethodPage, CommercialReferenceNumberAllItemsPage}
+import pages.safetyAndSecurity.{
+  AddCommercialReferenceNumberAllItemsPage,
+  AddTransportChargesPaymentMethodPage,
+  CircumstanceIndicatorPage,
+  CommercialReferenceNumberAllItemsPage
+}
 import play.api.mvc.Call
 
 @Singleton
@@ -147,7 +153,11 @@ class AddItemsNavigator @Inject()() extends Navigator {
 
   private def consignorAddressNormalMode(ua: UserAnswers, index: Index) =
     ua.get(AddConsigneePage) match {
-      case Some(false) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      case Some(false) =>
+        ua.get(CircumstanceIndicatorPage) match {
+          case Some("E") => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(ua.id, index, NormalMode))
+          case _ => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+        }
       case Some(true) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), NormalMode))
       case None => None
     }
@@ -190,7 +200,11 @@ class AddItemsNavigator @Inject()() extends Navigator {
     ) match {
       case (Some(true), _, _) => Some(addItemsRoutes.CommodityCodeController.onPageLoad(ua.id, index, NormalMode))
       case (Some(false), Some(false), _) => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(false), Some(true), Some(false)) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(false), Some(true), Some(false)) =>
+        ua.get(CircumstanceIndicatorPage) match {
+          case Some("E") => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(ua.id, index, NormalMode))
+          case _ => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+        }
       case (Some(false), Some(true), Some(true)) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), NormalMode))
       case _ => None
     }
@@ -207,7 +221,11 @@ class AddItemsNavigator @Inject()() extends Navigator {
   private def commodityCodeRouteNormalMode(index: Index, ua: UserAnswers) =
     ( ua.get(AddConsignorPage), ua.get(AddConsigneePage) ) match {
       case (Some(false), _) => Some(traderDetailsRoutes.TraderDetailsConsignorEoriKnownController.onPageLoad(ua.id, index, NormalMode))
-      case (Some(true), Some(false)) => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+      case (Some(true), Some(false)) =>
+        ua.get(CircumstanceIndicatorPage) match {
+          case Some("E") => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(ua.id, index, NormalMode))
+          case _ => Some(traderDetailsRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(ua.id, index, NormalMode))
+        }
       case (Some(true), Some(true)) => Some(addItemsRoutes.PackageTypeController.onPageLoad(ua.id, index, Index(0), NormalMode))
       case _ => None
     }

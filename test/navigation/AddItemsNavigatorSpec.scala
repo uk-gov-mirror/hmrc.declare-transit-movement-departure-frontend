@@ -32,7 +32,12 @@ import pages._
 import pages.addItems._
 import pages.addItems.containers._
 import pages.addItems.traderDetails._
-import pages.safetyAndSecurity.{AddCommercialReferenceNumberAllItemsPage, AddTransportChargesPaymentMethodPage}
+import pages.safetyAndSecurity.{
+  AddCircumstanceIndicatorPage,
+  AddCommercialReferenceNumberAllItemsPage,
+  AddTransportChargesPaymentMethodPage,
+  CircumstanceIndicatorPage
+}
 import queries.{ContainersQuery, _}
 
 class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with UserAnswersSpecHelper {
@@ -106,13 +111,44 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             }
           }
 
-          "Consignee's Eori when there is a Consignor for all items and no Consignee for all items" in {
+          "Consignee's Eori when there is a Consignor for all items and no Consignee for all items and user selects 'E' for circumstance indicator" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
                   .unsafeSetVal(IsCommodityCodeKnownPage(index))(false)
                   .unsafeSetVal(AddConsignorPage)(true)
                   .unsafeSetVal(AddConsigneePage)(false)
+                  .unsafeSetVal(CircumstanceIndicatorPage)("E")
+
+                navigator
+                  .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
+                  .mustBe(traderRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(answers.id, index, NormalMode))
+            }
+          }
+
+          "Consignee's Eori when there is a Consignor for all items and no Consignee for all items and user does not select 'E' for circumstance indicator" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .unsafeSetVal(IsCommodityCodeKnownPage(index))(false)
+                  .unsafeSetVal(AddConsignorPage)(true)
+                  .unsafeSetVal(AddConsigneePage)(false)
+                  .unsafeSetVal(CircumstanceIndicatorPage)("B")
+
+                navigator
+                  .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
+                  .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
+            }
+          }
+
+          "Consignee's Eori when there is a Consignor for all items and no Consignee for all items and user selects 'No' to add circumstance indicator" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .unsafeSetVal(IsCommodityCodeKnownPage(index))(false)
+                  .unsafeSetVal(AddConsignorPage)(true)
+                  .unsafeSetVal(AddConsigneePage)(false)
+                  .unsafeSetVal(AddCircumstanceIndicatorPage)(false)
 
                 navigator
                   .nextPage(IsCommodityCodeKnownPage(index), NormalMode, updatedAnswers)
@@ -164,12 +200,41 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           }
         }
 
-        "Consignee's Eori when there is a Consignor for all items and no Consignee for all items" in {
+        "Consignee's Eori when there is a Consignor for all items and no Consignee for all items and user selects 'E' for circumstance indicator" in {
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedAnswers = answers
                 .unsafeSetVal(AddConsignorPage)(true)
                 .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(CircumstanceIndicatorPage)("E")
+
+              navigator
+                .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
+                .mustBe(traderRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(answers.id, index, NormalMode))
+          }
+        }
+
+        "Consignee's Eori when there is a Consignor for all items and no Consignee for all items and does not select 'E' for circumstance indicator" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(CircumstanceIndicatorPage)("B")
+
+              navigator
+                .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
+                .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
+          }
+        }
+
+        "Consignee's Eori when there is a Consignor for all items and no Consignee for all items and selects 'No' to add circumstance indicator" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedAnswers = answers
+                .unsafeSetVal(AddConsignorPage)(true)
+                .unsafeSetVal(AddConsigneePage)(false)
+                .unsafeSetVal(AddCircumstanceIndicatorPage)(false)
 
               navigator
                 .nextPage(CommodityCodePage(index), NormalMode, updatedAnswers)
@@ -240,11 +305,36 @@ class AddItemsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
 
         "must go from ConsignorAddress to" - {
-          "Consignee's Eori when there is no Consignee for all items" in {
+          "Consignee's Eori when there is no Consignee for all items and the user selects 'E' for Circumstance Indicator" in {
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 val updatedAnswers = answers
                   .unsafeSetVal(AddConsigneePage)(false)
+                  .unsafeSetVal(CircumstanceIndicatorPage)("E")
+
+                navigator
+                  .nextPage(TraderDetailsConsignorAddressPage(index), NormalMode, updatedAnswers)
+                  .mustBe(traderRoutes.TraderDetailsConsigneeEoriNumberController.onPageLoad(answers.id, index, NormalMode))
+            }
+          }
+          "Consignee's Eori when there is no Consignee for all items and user does not select 'E' for Circumstance Indicator" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .unsafeSetVal(AddConsigneePage)(false)
+                  .unsafeSetVal(CircumstanceIndicatorPage)("B")
+
+                navigator
+                  .nextPage(TraderDetailsConsignorAddressPage(index), NormalMode, updatedAnswers)
+                  .mustBe(traderRoutes.TraderDetailsConsigneeEoriKnownController.onPageLoad(answers.id, index, NormalMode))
+            }
+          }
+          "Consignee's Eori when there is no Consignee for all items and user selects 'No' to add Circumstance Indicator" in {
+            forAll(arbitrary[UserAnswers]) {
+              answers =>
+                val updatedAnswers = answers
+                  .unsafeSetVal(AddConsigneePage)(false)
+                  .unsafeSetVal(AddCircumstanceIndicatorPage)(false)
 
                 navigator
                   .nextPage(TraderDetailsConsignorAddressPage(index), NormalMode, updatedAnswers)
