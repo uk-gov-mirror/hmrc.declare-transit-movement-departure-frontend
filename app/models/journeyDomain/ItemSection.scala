@@ -64,7 +64,7 @@ object ItemSection {
         _.zipWithIndex
           .traverse[UserAnswersReader, SpecialMention]({
             case (_, index) =>
-              SpecialMention.specialMentionsReader(itemIndex, Index(index))
+              SpecialMention.parseSpecialMention(itemIndex, Index(index))
           })
       }
     }

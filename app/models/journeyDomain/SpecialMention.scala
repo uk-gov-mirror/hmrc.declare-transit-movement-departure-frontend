@@ -20,13 +20,24 @@ import cats.implicits._
 import models.Index
 import pages.addItems.specialMentions.{SpecialMentionAdditionalInfoPage, SpecialMentionTypePage}
 
-final case class SpecialMention(specialMention: String, additionalInfo: String)
+sealed trait SpecialMention
 
 object SpecialMention {
 
-  def specialMentionsReader(index: Index, referenceIndex: Index): UserAnswersReader[SpecialMention] =
+  def parseSpecialMention(index: Index, referenceIndex: Index): UserAnswersReader[SpecialMention] =
+    specialMentionWithType(index, referenceIndex).widen[SpecialMention] orElse
+      specialMentionWithCAL(index, referenceIndex).widen[SpecialMention]
+
+  final case class SpecialMentionWithCAL(additionalInfo: String) extends SpecialMention
+
+  private def specialMentionWithCAL(index: Index, referenceIndex: Index): UserAnswersReader[SpecialMentionWithCAL] =
+    SpecialMentionAdditionalInfoPage(index, referenceIndex).reader.map(SpecialMentionWithCAL.apply)
+
+  final case class SpecialMentionWithType(specialMention: String, additionalInfo: String) extends SpecialMention
+
+  private def specialMentionWithType(index: Index, referenceIndex: Index): UserAnswersReader[SpecialMentionWithType] =
     (
       SpecialMentionTypePage(index, referenceIndex).reader,
       SpecialMentionAdditionalInfoPage(index, referenceIndex).reader,
-    ).tupled.map((SpecialMention.apply _).tupled)
+    ).tupled.map((SpecialMentionWithType.apply _).tupled)
 }

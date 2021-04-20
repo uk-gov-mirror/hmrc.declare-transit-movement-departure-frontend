@@ -17,8 +17,9 @@
 package generators
 
 import java.time.{LocalDate, LocalDateTime}
+
 import cats.data.NonEmptyList
-import models.DeclarationType.{Option2}
+import models.DeclarationType.Option2
 import models._
 import models.domain.{Address, SealDomain}
 import models.journeyDomain.GoodsSummary.{GoodSummaryDetails, GoodSummaryNormalDetails, GoodSummarySimplifiedDetails}
@@ -35,6 +36,7 @@ import models.journeyDomain.Packages.{BulkPackages, OtherPackages, UnpackedPacka
 import models.journeyDomain.PreviousReferences.nonEUCountries
 import models.journeyDomain.RouteDetails.TransitInformation
 import models.journeyDomain.SafetyAndSecurity.SecurityTraderDetails
+import models.journeyDomain.SpecialMention.{SpecialMentionWithCAL, SpecialMentionWithType}
 import models.journeyDomain.traderDetails._
 import models.journeyDomain.traderDetails.TraderDetails._
 import models.journeyDomain.TransportDetails.DetailsAtBorder.{NewDetailsAtBorder, SameDetailsAtBorder}
@@ -593,10 +595,22 @@ trait JourneyModelGenerators {
 
   implicit lazy val arbitrarySpecialMention: Arbitrary[SpecialMention] =
     Arbitrary {
+      Gen.oneOf(arbitrary[SpecialMentionWithCAL], arbitrary[SpecialMentionWithType])
+    }
+
+  implicit lazy val arbitrarySpecialMentionWithCAL: Arbitrary[SpecialMentionWithCAL] =
+    Arbitrary {
+      for {
+        additionalInfo <- nonEmptyString
+      } yield SpecialMentionWithCAL(additionalInfo)
+    }
+
+  implicit lazy val arbitrarySpecialMentionWithType: Arbitrary[SpecialMentionWithType] =
+    Arbitrary {
       for {
         specialMentionType <- nonEmptyString
         additionalInfo     <- nonEmptyString
-      } yield SpecialMention(specialMentionType, additionalInfo)
+      } yield SpecialMentionWithType(specialMentionType, additionalInfo)
     }
 
   implicit lazy val arbitraryProducedDocument: Arbitrary[ProducedDocument] =
